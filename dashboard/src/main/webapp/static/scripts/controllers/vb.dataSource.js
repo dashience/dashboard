@@ -24,8 +24,12 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
     };
 
     $scope.deleteDataSource = function (dataSource, index) {
-        $http({method: 'DELETE', url: 'admin/ui/dataSource/' + dataSource.id}).success(function () {
+        if (dataSource.id) {
+            $http({method: 'DELETE', url: 'admin/ui/dataSource/' + dataSource.id}).success(function () {
+                $scope.dataSources.splice(index, 1);
+            })
+        } else {
             $scope.dataSources.splice(index, 1);
-        })
+        }
     };
 });

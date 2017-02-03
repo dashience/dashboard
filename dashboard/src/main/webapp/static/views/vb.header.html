@@ -68,7 +68,7 @@
             <div class="form-group">
                 <!--<input type="text" placeholder="Dealer Name" class="form-control" name="search">-->
                 <ui-select ng-model="selectDealer.selected" on-select="getDealerId(selectDealer.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                    <ui-select-match placeholder="Select Dealer...">{{$select.selected.dealerName}}</ui-select-match>
+                    <ui-select-match placeholder="Select Location...">{{$select.selected.dealerName}}</ui-select-match>
                     <ui-select-choices repeat="dealer in dealers | filter: $select.search">
                         <span ng-bind-html="dealer.dealerName | highlight: $select.search"></span>
                         <!--<small ng-bind-html="country.code | highlight: $select.search"></small>-->
@@ -114,15 +114,16 @@
                                     <li class="product-dashboard-icon">
                                         <a class="active" ng-click="setParamsDate()" 
                                            data-ui-sref="index.dashboard.widget({locationId: locationId, productId: product.id?product.id:1, tabId: tabId, startDate: startDate, endDate: endDate})">
-                                            <i class="{{product.icon}}"></i> <h5>{{product.productName}}</h5>
+                                            <!--<i class="{{product.icon}}"></i> <h5>{{product.productName}}</h5>-->
+                                            <i class="fa fa-fighter-jet" aria-hidden="true"></i> <h5>{{product.productName}}</h5>
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                             <div>
                                 <ul class="col-lg-3 icon-dash">
-                                    <li class="product-dashboard-icon">
-                                        <a data-ui-sref="index.franchiseMarketing"><i class="pe-7s-graph2 text-info"></i> <h5>Franchise Marketing</h5></a>
+                                    <li class="product-dashboard-icon" ng-click="setParamsDate()">
+                                        <a data-ui-sref="index.franchiseMarketing({locationId: locationId, startDate: startDate, endDate: endDate})"><i class="pe-7s-graph2 text-info"></i> <h5>Franchise Marketing</h5></a>
                                     </li>
                                 </ul>
                             </div>

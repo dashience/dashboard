@@ -47,13 +47,13 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 controller: 'DataSetController'
             })
             .state("index.franchiseMarketing", {
-                url: "/franchiseMarketing",
+                url: "/franchiseMarketing/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/franchiseMarketing/franchiseMarketing.html",
                 controller: 'FranchiseMarketingController'
             });
 
     $urlRouterProvider.otherwise(function ($injector) {
-      $injector.get('$state').go('index.dashboard', {productId: 1}, { location: false });
+      $injector.get('$state').go('index.dashboard', {productId: 2}, { location: false });
     });
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });

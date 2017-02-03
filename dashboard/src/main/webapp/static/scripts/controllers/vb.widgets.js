@@ -1007,26 +1007,53 @@ app.directive('tickerDirective', function ($http, $stateParams) {
     return{
         restrict: 'AE',
         template: '<div ng-show="loadingTicker"><img width="40" src="static/img/logos/loader.gif"></div>' +
-                '<div  ng-hide="loadingTicker" class="panel-body text-left" >' +
-                '<div ng-hide="hideEmptyTicker">' +
-                '<i class="pe-7s-graph1 fa-4x"></i>' +
-                '<h1 class="m-xs">{{totalValue}}</h1>' +
-                '<h3 class="font-extra-bold no-margins text-success">' +
-                '{{tickerTitle}}' +
-                '</h3></div>' +
+                '<div  ng-hide="loadingTicker" >' +
+                '<div ng-hide="hideEmptyTicker" class="hpanel stats">' +
+                    '<div class="panel-body h-200">' +
+                        '<div class="stats-title pull-left">' +
+                        '<h4>{{tickerTitleName}}</h4>' +
+                        '</div>' +
+                        '<div class="stats-icon pull-right">' +
+//                        '<i class="pe-7s-share fa-4x"></i>' +
+                        '</div>' +
+                        '<div class="m-t-xl">' +
+                            '<h3 class="m-b-xs">{{firstLevelTicker.totalValue}}</h3>' +
+                            '<span class="font-bold no-margins">' +
+                            '{{firstLevelTicker.tickerTitle}}' +
+                            '</span>' +
+                            '<div class="progress m-t-xs full progress-small">' +
+                                '<div style="width: 55%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="55"' +
+                                'role="progressbar" class=" progress-bar progress-bar-success">' +
+                                ' <span class="sr-only">35% Complete (success)</span>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="row">' +
+                                '<div class="col-xs-6">' +
+                                    '<small class="stats-label">{{secondLevelTicker.tickerTitle}}</small>' +
+                                    '<h4>{{secondLevelTicker.totalValue}}</h4>' +
+                                '</div>' +
+                                '<div class="col-xs-6 count">' +
+                                    '<small class="stats-label">{{thirdLevelTicker.tickerTitle}}</small>' +
+                                    '<h4>{{thirdLevelTicker.totalValue}}</h4>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
                 '<div ng-show="hideEmptyTicker">{{tickerEmptyMessage}}</div>' +
                 '</div>',
         scope: {
             tickerSource: '@',
             tickerId: '@',
-            tickerColumns: '@'
+            tickerColumns: '@',
+            tickerTitleName: '@'
         },
         link: function (scope, element, attr) {
             scope.loadingTicker = true;
-            var tickerName;
+            var tickerName = [];
+            scope.tickers = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
-                scope.tickerTitle = value.displayName;
-                tickerName = {fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat}
+                tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
 
             var format = function (column, value) {
@@ -1058,20 +1085,26 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                     if (!response) {
                         return;
                     }
-                    var tickerData = response.data;
-                    var loopCount = 0;
-                    data = [tickerName.fieldName];
-                    setData = tickerData.map(function (a) {
-                        data.push(loopCount);
-                        loopCount++;
-                        return a[tickerName.fieldName];
+                    angular.forEach(tickerName, function (value, key) {
+                        var tickerData = response.data;
+                        var loopCount = 0;
+                        data = [value.fieldName];
+                        setData = tickerData.map(function (a) {
+                            data.push(loopCount);
+                            loopCount++;
+                            return a[value.fieldName];
+                        });
+                        var total = 0;
+                        for (var i = 0; i < setData.length; i++) {
+                            total += parseFloat(setData[i]);
+                        }
+                        scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
                     });
-                    var total = 0;
-                    for (var i = 0; i < setData.length; i++) {
-                        total += parseFloat(setData[i]);
-                    }
-                    scope.totalValue = format(tickerName, total);
                 }
+                scope.firstLevelTicker = scope.tickers[0];
+                scope.secondLevelTicker = scope.tickers[1];
+                scope.thirdLevelTicker = scope.tickers[2];
+//                console.log(scope.tickers[0].tickerTitle);                
             });
         }
     };
