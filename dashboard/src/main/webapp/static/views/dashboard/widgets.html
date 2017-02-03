@@ -115,6 +115,9 @@
         color: #333;
         background-color: rgb(235, 238, 225) !important;
     }
+    .count{
+        text-align: right;
+    }
 
 </style>
 <div class="row add-widget">
@@ -149,7 +152,7 @@
 
         <div ng-if="widget.chartType == 'ticker'">
             <div class="col-sm-{{2 * widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
-                <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
+                <div class="hpanel" ng-drag="true" ng-drag-data="widget">
                     <div class="panel-tools hover-delete">
                         <a class="edit" data-toggle="modal" data-target="#preview{{widget.id}}" ng-click="editWidget(widget);"><i class="fa fa-pencil"></i>
                         </a>
@@ -172,7 +175,7 @@
                             </div>
                         </div>
                     </div>
-                    <div ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+                    <div ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
                 </div>
             </div>
         </div>
@@ -260,27 +263,29 @@
                                         </div> 
                                     </div>
                                     <div class="row da-source">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <div class="col-md-10">
-                                            <label>Data Source</label>
-                                            <select class="form-control" ng-model="widget.dataSourceId" ng-change="selectDataSource(widget.dataSourceId, widget)" ng-options="dataSource.name for dataSource in dataSources">
-                                            </select></div>
-                                            <div class="col-md-2 circle-data-set">
-                                            <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
-                                            </div></div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <div class="col-md-10">
-                                            <label>Data Set</label>
-                                            <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets" ng-change="changeUrl(widget.dataSetId, widget)">
-                                            </select></div>
-                                            <div class="col-md-2 circle-data-set">
-                                            <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
-                                        </div></div>
-                                    </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="col-md-10">
+                                                    <label>Data Source</label>                                                  
+                                                    <select class="form-control" ng-model="widget.dataSourceId" ng-change="selectDataSource(widget.dataSourceId, widget)" ng-options="dataSource.name for dataSource in dataSources">
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 circle-data-set">
+                                                    <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                                </div></div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="col-md-10">
+                                                    <label>Data Set</label>
+                                                    <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets" ng-change="changeUrl(widget.dataSetId, widget)">
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 circle-data-set">
+                                                    <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                                </div></div>
+                                        </div>
                                     </div>
                                     <!--                                    <div class="col-md-6">
                                                                             <div class="form-group">
