@@ -1718,7 +1718,7 @@ body {
     color: inherit;
     font-weight: 600;
     font-size: 18px;
-    padding: 10px 4px;
+    padding: 5px 4px;
     transition: all .3s;
     border: 1px solid transparent;
 }
@@ -3742,7 +3742,7 @@ button.close {
     /*    color: rgb(157, 171, 109);*/
     color: rgb(132, 140, 99);
     padding-left:10px;
-    background: #fff;
+    background: #deebd8;
     /*    border-bottom: 1px solid rgb(157, 171, 109);*/
 }
 
