@@ -32,15 +32,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         } catch (e) {
         }
         if ($scope.getCurrentPage() === "dashboard") {
-            $state.go("index.dashboard." + $scope.getCurrentTab(), {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
+            $state.go("index.dashboard." + $scope.getCurrentTab(), {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
         } else if ($scope.getCurrentPage() === "reports") {
-            $state.go("index.report.reports", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
+            $state.go("index.report.reports", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
         } else if ($scope.getCurrentPage() === "newOrEdit") {
-            $state.go("index.report.newOrEdit", {locationId: $stateParams.locationId, productId: $stateParams.productId, startDate: $scope.startDate, endDate: $scope.endDate});
+            $state.go("index.report.newOrEdit", {locationId: $stateParams.locationId, productId: $stateParams.productId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
         } else if ($scope.getCurrentPage() === "dataSource") {
-            $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+            $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
         } else if ($scope.getCurrentPage() === "dataSet") {
-            $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+            $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
@@ -85,7 +85,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     if (!$stateParams.endDate) {
         $stateParams.endDate = $scope.lastDate;
     }
-    
+
     console.log($stateParams.locationId);
 
     $scope.loadDefault = function (defaultDealerId) {

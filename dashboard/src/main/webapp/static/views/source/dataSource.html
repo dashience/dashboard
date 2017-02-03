@@ -63,6 +63,7 @@
                     <div ng-show="dataSource.isEdit">
                         <button class="btn btn-default btn-xs" ng-click="saveDataSource(dataSource); dataSource.isEdit = false"><i class="fa fa-save"></i></button>
                         <button class="btn btn-default btn-xs" ng-click="dataSource.isEdit = false"><i class="fa fa-close"></i></button>
+                        <button class="btn btn-default btn-xs" ng-click="deleteDataSource(dataSource, $index)"><i class="fa fa-trash-o"></i></button>
                     </div>
                     <div ng-hide="dataSource.isEdit">
                         <button class="btn btn-default btn-xs" ng-click="dataSource.isEdit = true"><i class="fa fa-pencil"></i></button>

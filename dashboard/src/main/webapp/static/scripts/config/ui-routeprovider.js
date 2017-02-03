@@ -47,7 +47,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 controller: 'DataSetController'
             })
             .state("index.franchiseMarketing", {
-                url: "/franchiseMarketing",
+                url: "/franchiseMarketing/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/franchiseMarketing/franchiseMarketing.html",
                 controller: 'FranchiseMarketingController'
             });
