@@ -1009,11 +1009,14 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         template: '<div ng-show="loadingTicker"><img width="40" src="static/img/logos/loader.gif"></div>' +
                 '<div  ng-hide="loadingTicker" class="panel-body text-left" >' +
                 '<div ng-hide="hideEmptyTicker">' +
-                '<i class="pe-7s-graph1 fa-4x"></i>' +
-                '<h1 class="m-xs">{{totalValue}}</h1>' +
+                '<i class="pe-7s-graph1 fa-4x"></i> <br/>' +
+                '<div ng-repeat="ticker in tickers">' +
+                '<div><h1 class="m-xs">{{ticker.totalValue}}</h1></div><br/>' +
                 '<h3 class="font-extra-bold no-margins text-success">' +
-                '{{tickerTitle}}' +
-                '</h3></div>' +
+                '{{ticker.tickerTitle}}' +
+                '</h3>' +
+                '</div>' +
+                '</div>' +
                 '<div ng-show="hideEmptyTicker">{{tickerEmptyMessage}}</div>' +
                 '</div>',
         scope: {
@@ -1023,10 +1026,10 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         },
         link: function (scope, element, attr) {
             scope.loadingTicker = true;
-            var tickerName;
+            var tickerName = [];
+            scope.tickers = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
-                scope.tickerTitle = value.displayName;
-                tickerName = {fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat}
+                tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
 
             var format = function (column, value) {
@@ -1058,20 +1061,26 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                     if (!response) {
                         return;
                     }
-                    var tickerData = response.data;
-                    var loopCount = 0;
-                    data = [tickerName.fieldName];
-                    setData = tickerData.map(function (a) {
-                        data.push(loopCount);
-                        loopCount++;
-                        return a[tickerName.fieldName];
+                    angular.forEach(tickerName, function (value, key) {
+                        var tickerData = response.data;
+                        var loopCount = 0;
+                        data = [value.fieldName];
+                        setData = tickerData.map(function (a) {
+                            data.push(loopCount);
+                            loopCount++;
+                            return a[value.fieldName];
+                        });
+                        var total = 0;
+                        for (var i = 0; i < setData.length; i++) {
+                            total += parseFloat(setData[i]);
+                        }
+                        scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
                     });
-                    var total = 0;
-                    for (var i = 0; i < setData.length; i++) {
-                        total += parseFloat(setData[i]);
-                    }
-                    scope.totalValue = format(tickerName, total);
                 }
+//                console.log(scope.tickers);
+                angular.forEach(scope.tickers, function (value, key) {
+                    console.log(value[0].displayName)
+                });
             });
         }
     };
