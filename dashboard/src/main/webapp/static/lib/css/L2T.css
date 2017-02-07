@@ -3742,8 +3742,8 @@ button.close {
     /*    color: rgb(157, 171, 109);*/
     color: rgb(132, 140, 99);
     padding-left:10px;
-    background: #deebd8;
-    /*    border-bottom: 1px solid rgb(157, 171, 109);*/
+    background: #fff;
+    border-bottom: 1px solid #ddd;
 }
 
 .nav-tabs > li > a {
