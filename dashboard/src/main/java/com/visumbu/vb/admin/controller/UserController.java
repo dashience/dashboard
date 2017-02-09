@@ -100,7 +100,7 @@ public class UserController {
         session.setAttribute("userGuid", authData.getUserGuid());
         Map returnMap = new HashMap();
         returnMap.put("authData", authData);
-        returnMap.put("dealers", getDealerBySecuityBean(authData));
+        returnMap.put("dealers", new ArrayList<>());
         return returnMap;
     }
 
@@ -114,7 +114,7 @@ public class UserController {
         System.out.println((String) session.getAttribute("userGuid"));
         System.out.println((String) session.getAttribute("accessToken"));
         SecurityAuthBean authData = userService.getPermissions((String) session.getAttribute("accessToken"), (String) session.getAttribute("userGuid"));
-        return getDealerBySecuityBean(authData);
+        return new ArrayList<>();
     }
 
     @RequestMapping(value = "sampleDealers", method = RequestMethod.GET, produces = "application/json")
