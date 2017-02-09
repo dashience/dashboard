@@ -60,8 +60,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
     $http.get('admin/ui/product').success(function (response) {
         $scope.products = response;
-        $scope.name = $filter('filter')($scope.products, {id: $stateParams.productId})[0];
-        $scope.selectProductName = $scope.name.productName;
+        //$scope.name = $filter('filter')($scope.products, {id: $stateParams.productId})[0];
+        //$scope.selectProductName = $scope.name.productName;
     });
 
     $http.get('admin/user/sampleDealers').success(function (response) {

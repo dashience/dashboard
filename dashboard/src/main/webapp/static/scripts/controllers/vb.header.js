@@ -3,15 +3,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.tabId = $stateParams.tabId;
-
     $scope.selectTabID = $state;
-    $scope.productId = $stateParams.productId;
-    $scope.tabId = $stateParams.tabId;
-
+    
     $scope.setParamsDate = function () {
-        console.log($scope.productId);
-        console.log($stateParams.tabId);
-        console.log($stateParams.startDate + " - " + $stateParams.endDate)
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
         $scope.locationId = $stateParams.locationId;
@@ -20,11 +14,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.selectDealer = {};
     $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=jdbc:mysql://localhost:3306/skyzone&startDate=09/07/2016&endDate=09/30/2016&username=root&password=&port=3306&schema=vb&query=select location id, location dealerName from (select distinct location_1 location from Data) a').success(function (response) {
         $scope.dealers = response.data;
-        console.log($stateParams.locationId)
+//        console.log($stateParams.locationId)
         $stateParams.locationId = $stateParams.locationId ? $stateParams.locationId : response.data[0].id;
         $scope.name = $filter('filter')($scope.dealers, {id: $stateParams.locationId})[0];
         $scope.selectDealer.selected = {dealerName: $scope.name.dealerName};
-        //$state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId?$stateParams.tabId:1, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+//        //$state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId?$stateParams.tabId:1, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
         try {
             $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -49,8 +43,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $http.get('admin/ui/product').success(function (response) {
         $scope.products = response;
         // $scope.searchProduct.unshift({"id": 0, "productName": "All Product"});
-        $scope.name = $filter('filter')($scope.products, {id: $stateParams.dashboardId})[0];
-        $scope.selectProductName = $scope.name.productName;
+        //$scope.name = $filter('filter')($scope.products, {id: $stateParams.dashboardId})[0];
+        //$scope.selectProductName = $scope.name.productName;
         console.log($scope.selectProductName)
     });
 
