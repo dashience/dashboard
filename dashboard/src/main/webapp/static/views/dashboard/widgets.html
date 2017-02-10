@@ -355,6 +355,7 @@
                                             <td ng-if="advanceMenu == true">Format</td>
                                             <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Alignment</td>
                                             <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Column Hide</td>
+                                            <td>Search</td>
                                             <!--<td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Width</td>-->
                                             <!--<td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Wrap</td>-->
                                             <td><button class="btn btn-info" ng-click="addColumns(widget)"><i class="fa fa-plus"></i></button></td>
@@ -457,6 +458,7 @@
                                                                                                 </select>
                                                                                             </div>
                                                                                         </td>-->
+                                            <td><input type="checkbox" ng-model="currentColumn.search"></td>
                                             <td>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <button class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></button>

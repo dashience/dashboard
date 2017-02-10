@@ -33,6 +33,7 @@ public class WidgetColumnBean {
     private String wrapText;
     private String alignment;
     private Integer columnHide;
+    private Boolean search;
     
     public Integer getId() {
         return id;
@@ -218,9 +219,17 @@ public class WidgetColumnBean {
         this.columnHide = columnHide;
     }
 
+    public Boolean getSearch() {
+        return search;
+    }
+
+    public void setSearch(Boolean search) {
+        this.search = search;
+    }
+
     @Override
     public String toString() {
-        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + '}';
-    }
-    
+        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + '}';
+    }    
+        
 }

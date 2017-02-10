@@ -1,0 +1,162 @@
+<section class="content">
+    <div class="row">        
+        <div class="col-lg-12 data-table-set">
+            <table class="table table-bordered table-responsive">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Schedule Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Schedule Execution</th>
+                        <th>Schedule Last Execution</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="scheduler in schedulers">
+                        <td>{{$index + 1}}</td>
+                        <td>{{scheduler.name}}</td>
+                        <td>{{scheduler.startDate}}</td>
+                        <td>{{scheduler.startDate}}</td>
+                        <td>{{scheduler.startDate}}</td>
+                        <td>{{scheduler.endDate}}</td>
+                        <td>
+                            <button class="btn btn-default btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({locationId: locationId, schedulerId: report.id?report.id:0, startDate: startDate, endDate: endDate})"><span class="fa fa-pencil"></span></button>
+                            <button class="btn btn-default btn-xs"><span class="fa fa-trash"></span></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<div class="container">
+    <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">Add</button>
+    <div>
+        <table class="table table-striped">
+            <caption>Table</caption>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Schedule Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="table in tables">
+                    <td>{{$index + 1}}</td>
+                    <td>{{table.name}}</td>
+                    <td>{{table.startDate}}</td>
+                    <td>{{table.endDate}}</td>
+                    <td>
+                        <button class="btn btn-primary btn-xs"><span class="fa fa-edit"></span></button>
+                        <button class="btn btn-danger btn-xs"><span class="fa fa-remove"></span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>-->
+
+<!--<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Schedule Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" placeholder="Schedule Name" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Start Date</label>
+                        <div class="col-sm-10">
+                            <input type="text" placeholder="Start Date" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">End Date</label>
+                        <div class="col-sm-10">
+                            <input type="text" placeholder="End Date" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">End Date</label>
+                        <div class="col-sm-10">
+                            <input type="text" placeholder="End Date" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Schedule Start/Stop</label>
+                        <label class="switch_wrap col-sm-10" for="field">
+                            <input id="field" type="checkbox" value="1" />
+                            <div class="switch switch-mini"><span class="bullet"></span></div>
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>-->

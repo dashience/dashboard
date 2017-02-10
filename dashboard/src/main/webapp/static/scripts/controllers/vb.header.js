@@ -4,7 +4,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.productId = $stateParams.productId;
     $scope.tabId = $stateParams.tabId;
     $scope.selectTabID = $state;
-    
+
     $scope.setParamsDate = function () {
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
@@ -26,15 +26,52 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         } catch (e) {
         }
         if ($scope.getCurrentPage() === "dashboard") {
-            $state.go("index.dashboard." + $scope.getCurrentTab(), {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+            $state.go("index.dashboard." + $scope.getCurrentTab(), {
+                locationId: $stateParams.locationId,
+                productId: $stateParams.productId,
+                tabId: $stateParams.tabId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
         } else if ($scope.getCurrentPage() === "reports") {
-            $state.go("index.report.reports", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+            $state.go("index.report.reports", {
+                locationId: $stateParams.locationId,
+                productId: $stateParams.productId,
+                tabId: $stateParams.tabId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
-            $state.go("index.report.newOrEdit", {locationId: $stateParams.locationId, productId: $stateParams.productId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+            $state.go("index.report.newOrEdit", {
+                locationId: $stateParams.locationId,
+                productId: $stateParams.productId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
         } else if ($scope.getCurrentPage() === "dataSource") {
-            $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+            $state.go("index.dataSource", {
+                locationId: $stateParams.locationId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
         } else if ($scope.getCurrentPage() === "dataSet") {
-            $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+            $state.go("index.dataSet", {
+                locationId: $stateParams.locationId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "scheduler") {
+            $state.go("index.schedulerIndex.scheduler", {
+                locationId: $stateParams.locationId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+            $state.go("index.schedulerIndex.editOrNewScheduler", {
+                locationId: $stateParams.locationId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
@@ -72,7 +109,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $scope.firstDate = $stateParams.startDate ? $scope.toDate(decodeURIComponent($stateParams.startDate)) : $scope.getDay().toLocaleDateString("en-US");
     $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : new Date().toLocaleDateString("en-US");
-    console.log("Day : " + $scope.getDay().toLocaleDateString("en-US"))
+//    console.log("Day : " + $scope.getDay().toLocaleDateString("en-US"))
     if (!$stateParams.startDate) {
         $stateParams.startDate = $scope.firstDate;
     }
@@ -82,31 +119,31 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     console.log($stateParams.locationId);
 
-    $scope.loadDefault = function (defaultDealerId) {
-        console.log($stateParams.locationId);
-        try {
-            $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-            $scope.endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
-        } catch (e) {
-        }
-        console.log($stateParams);
-        console.log($scope.getCurrentTab());
-        console.log($scope.getCurrentPage());
-        if ($scope.getCurrentPage() === "dashboard") {
-            $state.go("index.dashboard." + $scope.getCurrentTab(), {locationId: $stateParams.locationId ? $stateParams.locationId : defaultDealerId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else if ($scope.getCurrentPage() === "reports") {
-            $state.go("index.report.reports", {locationId: $stateParams.locationId ? $stateParams.locationId : defaultDealerId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else if ($scope.getCurrentPage() === "newOrEdit") {
-            $state.go("index.report.newOrEdit", {locationId: $stateParams.locationId ? $stateParams.locationId : defaultDealerId, productId: $stateParams.productId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else if ($scope.getCurrentPage() === "dataSource") {
-            $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else if ($scope.getCurrentPage() === "dataSet") {
-            $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else {
-            $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
-        }
-    }
+//    $scope.loadDefault = function (defaultDealerId) {
+//        console.log($stateParams.locationId);
+//        try {
+//            $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+//
+//            $scope.endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
+//        } catch (e) {
+//        }
+//        console.log($stateParams);
+//        console.log($scope.getCurrentTab());
+//        console.log($scope.getCurrentPage());
+//        if ($scope.getCurrentPage() === "dashboard") {
+//            $state.go("index.dashboard." + $scope.getCurrentTab(), {locationId: $stateParams.locationId ? $stateParams.locationId : defaultDealerId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+//        } else if ($scope.getCurrentPage() === "reports") {
+//            $state.go("index.report.reports", {locationId: $stateParams.locationId ? $stateParams.locationId : defaultDealerId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+//        } else if ($scope.getCurrentPage() === "newOrEdit") {
+//            $state.go("index.report.newOrEdit", {locationId: $stateParams.locationId ? $stateParams.locationId : defaultDealerId, productId: $stateParams.productId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+//        } else if ($scope.getCurrentPage() === "dataSource") {
+//            $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+//        } else if ($scope.getCurrentPage() === "dataSet") {
+//            $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate, endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate});
+//        } else {
+//            $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
+//        }
+//    }
 
 
     $scope.loadNewUrl = function () {
@@ -130,6 +167,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
         } else if ($scope.getCurrentPage() === "dataSet") {
             $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+        } else if ($scope.getCurrentPage() === "scheduler") {
+            $state.go("index.schedulerIndex.scheduler", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+        } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+            $state.go("index.schedulerIndex.editOrNewScheduler", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
@@ -151,6 +192,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         if (url.indexOf("dataSet") > 0) {
             return "dataSet";
+        }
+        if (url.indexOf("editOrNewScheduler") > 0) {
+            return "editOrNewScheduler";
+        }
+        if (url.indexOf("scheduler") > 0) {
+            return "scheduler";
         }
         return "dashboard";
     };
@@ -186,8 +233,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
-                    startDate: moment().subtract(29, 'days'),
-                    endDate: moment(),
+                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
+                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
                     maxDate: new Date()
                 },
                 function (start, end) {

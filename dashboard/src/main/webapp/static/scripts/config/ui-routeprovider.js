@@ -26,7 +26,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 activetab: 'template'
             })
             .state("index.report.reports", {
-                url: "/report?:startDate/:endDate",
+                url: "/report/locationId?:startDate/:endDate",
                 templateUrl: "static/views/reports/reports.html",
                 controller: 'ReportController',
                 activetab: 'report'
@@ -50,6 +50,21 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 url: "/franchiseMarketing/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/franchiseMarketing/franchiseMarketing.html",
                 controller: 'FranchiseMarketingController'
+            })
+            .state("index.schedulerIndex", {
+                url: "/schedulerIndex/:locationId",
+                templateUrl: "static/views/scheduler/schedulerIndex.html",
+//                controller: 'SchedulerController'
+            })
+            .state("index.schedulerIndex.scheduler", {
+                url: "/scheduler/:locationId?:startDate/:endDate",
+                templateUrl: "static/views/scheduler/scheduler.html",
+                controller: 'SchedulerController'
+            })
+            .state("index.schedulerIndex.editOrNewScheduler", {
+                url: "/editOrNewScheduler/:locationId?:startDate/:endDate",
+                templateUrl: "static/views/scheduler/newOrEditScheduler.html",
+                controller: 'NewOrEditSchedulerController'
             });
 
     $urlRouterProvider.otherwise(function ($injector) {

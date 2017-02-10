@@ -182,6 +182,7 @@ public class UiService {
             widgetColumn.setxAxis(widgetColumnBean.getxAxis());
             widgetColumn.setyAxis(widgetColumnBean.getyAxis());
             widgetColumn.setWidth(widgetColumnBean.getWidth());
+            widgetColumn.setSearch(widgetColumnBean.getSearch());
             widgetColumn.setWrapText(widgetColumnBean.getWrapText());
             widgetColumn.setAlignment(widgetColumnBean.getAlignment());
             widgetColumn.setFieldType(widgetColumnBean.getFieldType());

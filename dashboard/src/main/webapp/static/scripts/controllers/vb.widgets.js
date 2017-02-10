@@ -342,7 +342,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 wrapText: value.wrapText,
                 xAxisLabel: value.xAxisLabel,
                 yAxisLabel: value.yAxisLabel,
-                columnHide: hideColumn
+                columnHide: hideColumn,
+                search: value.search
             };
             widgetColumnsData.push(columnData);
         });
@@ -442,18 +443,28 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             widgetObj: '@',
             pdfFunction: '&'
         },
-        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
+        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +                
                 '<table ng-if="ajaxLoadingCompleted" class="table table-striped" ng-hide="hideEmptyTable">' +
                 '<thead><tr>' +
                 '<th ng-if="groupingName">' +
                 '<i style="cursor: pointer" ng-click="groupingData.$hideRows = !groupingData.$hideRows; hideAll(groupingData, groupingData.$hideRows, true); selected_Row = !selected_Row" class="fa" ng-class="{\'fa-plus-circle\': !selected_Row, \'fa-minus-circle\': selected_Row}"></i>' +
                 ' Group</th>' +
                 '<th ng-repeat="col in columns" ng-if="col.columnHide == null">' +
-                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i><i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i></div>' +
-                '</th>' +
-                '</tr></thead>' +
+                '<div ng-click="initData(col)" class="text-{{col.alignment}}">'+
+                '{{col.displayName}}'+
+                '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i><i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i></div>' +                
+                '</th>' +                
+                '</tr>'+
+                '<tr>'+
+                '<th ng-repeat="col in columns">'+
+                '<div ng-if="col.search == true">'+
+                '<input type="text" placeholder="Search..." class="form-control" ng-model="search[col.fieldName]" ng-change="bindSearch(search[col.fieldName])" ng-mousedown="$event.stopPropagation()">'+
+                '<div>'+
+                '</th>'+
+                '</tr>'+
+                '</thead>'+
                 //'<tbody dir-paginate="grouping in groupingData | orderBy: sortColumn:reverse | itemsPerPage: pageSize" current-page="currentPage"">' +
-                '<tbody ng-repeat="grouping in groupingData.data">' +
+                '<tbody ng-repeat="grouping in groupingData.data | filter : searchData">' +
                 '<tr ng-if="!isZeroRow(grouping, columns)" ng-class-odd="\'odd\'" ng-class-even="\'even\'">' +
                 '<td ng-if="groupingName">' +
                 '<i style="cursor: pointer" class="fa" ng-click="grouping.$hideRows = !grouping.$hideRows; hideParent(grouping, grouping.$hideRows); hideChild(grouping.data, false)" ng-class="{\'fa-plus-circle\': !grouping.$hideRows, \'fa-minus-circle\': grouping.$hideRows}"></i>' +
@@ -492,6 +503,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 '</table>' + '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         //'<dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>',
         link: function (scope, element, attr) {
+            scope.bindSearch = function(search){
+                scope.searchData = search;
+            console.log("Test  :  ");
+            console.log(scope.searchData);
+            };
             console.log(scope.dynamicTableSource)
             scope.pdfFunction({test: "Test"});
             scope.totalShown = 0;
@@ -550,6 +566,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             //scope.pageSize = 10;
             // console.log
             scope.columns = [];
+            console.log(JSON.parse(scope.widgetColumns))
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 scope.columns.push(value);
             });

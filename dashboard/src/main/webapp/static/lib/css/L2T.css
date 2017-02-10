@@ -3913,7 +3913,7 @@ textarea.form-control {
 }
 
 .data-table-set {
-    min-height:600px;
+    height:465px;
     overflow: auto;
 }
 .circle-data-set {
