@@ -60,12 +60,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 url: "/scheduler/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/scheduler/scheduler.html",
                 controller: 'SchedulerController'
-            })
-            .state("index.schedulerIndex.editOrNewScheduler", {
-                url: "/editOrNewScheduler/:locationId?:startDate/:endDate",
-                templateUrl: "static/views/scheduler/newOrEditScheduler.html",
-                controller: 'NewOrEditSchedulerController'
             });
+//            .state("index.schedulerIndex.editOrNewScheduler", {
+//                url: "/editOrNewScheduler/:locationId?:startDate/:endDate",
+//                templateUrl: "static/views/scheduler/newOrEditScheduler.html",
+//                controller: 'NewOrEditSchedulerController'
+//            });
 
     $urlRouterProvider.otherwise(function ($injector) {
       $injector.get('$state').go('index.dashboard', {productId: 2}, { location: false });

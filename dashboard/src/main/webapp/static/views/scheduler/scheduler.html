@@ -1,3 +1,106 @@
+<style>
+
+    .switch_wrap input[type="checkbox"] {
+        display: none;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch {
+        background-color: #6cbc43;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch::before {
+        display: block;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch::after {
+        display: none;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch .bullet {
+        left: 33px;
+    }
+
+    .switch_wrap .switch {
+        position: relative;
+        display: inline-block;
+        width: 65px;
+        height: 24px;
+        line-height: 24px;
+        margin-right: 1em;
+        margin-top: -3px;
+        vertical-align: middle;
+        background-color: #c1272d;
+        border-radius: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
+    }
+
+    .switch_wrap .switch::before,
+    .switch_wrap .switch::after {
+        content: 'ON';
+        display: none;
+        width: 50%;
+        position: absolute;
+        top: 0;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    .switch_wrap .switch::after {
+        content: 'OFF';
+        display: block;
+        right: 0;
+    }
+
+    .switch_wrap .switch .bullet {
+        position: relative;
+        display: block;
+        width: 32px;
+        height: 26px;
+        top: -2px;
+        left: -2px;
+        background-color: #f0f0f0;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#e6e6e6));
+        background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -moz-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -ms-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -o-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: linear-gradient(top, #f0f0f0, #e6e6e6);
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        border-radius: 3px;
+        -webkit-box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
+        -webkit-transition: left 0.1s linear;
+        -moz-transition: left 0.1s linear;
+        -ms-transition: left 0.1s linear;
+        -o-transition: left 0.1s linear;
+        transition: left 0.1s linear;
+    }
+
+    .switch_wrap .switch .bullet::before,
+    .switch_wrap .switch .bullet::after {
+        content: '';
+        display: block;
+        height: 15px;
+        width: 3px;
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        margin-left: -6px;
+        border: 1px solid #cccccc;
+        border-width: 0 1px;
+        -webkit-box-shadow: 1px 0 0 white, 1px 0 0 white inset;
+        box-shadow: 1px 0 0 white, 1px 0 0 white inset;
+    }
+
+    .switch_wrap .switch .bullet::after {
+        margin-left: 2px;
+    }
+</style>
 <section class="content">
     <div class="row">        
         <div class="col-lg-12 data-table-set">
@@ -8,13 +111,14 @@
                         <th>Schedule Name</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Schedule Execution</th>
+                        <th>Next Schedule Execution</th>
                         <th>Schedule Last Execution</th>
+                        <th>Schedule Start/Stop</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr ng-repeat="scheduler in schedulers">
+                <tbody ng-repeat="scheduler in schedulers">
+                    <tr ng-click="showTableRow = !showTableRow">
                         <td>{{$index + 1}}</td>
                         <td>{{scheduler.name}}</td>
                         <td>{{scheduler.startDate}}</td>
@@ -22,141 +126,21 @@
                         <td>{{scheduler.startDate}}</td>
                         <td>{{scheduler.endDate}}</td>
                         <td>
-                            <button class="btn btn-default btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({locationId: locationId, schedulerId: report.id?report.id:0, startDate: startDate, endDate: endDate})"><span class="fa fa-pencil"></span></button>
+                            <label class="switch_wrap col-sm-10" for="field{{$index+1}}">
+                                <input id="field{{$index+1}}" type="checkbox" ng-model="scheduler.startStop"/>
+                                <div class="switch switch-mini"><span class="bullet"></span></div>
+                            </label>
+                        </td>
+                        <td>
+                            <!--<button class="btn btn-default btn-xs"><span class="fa fa-pencil"></span></button>-->
                             <button class="btn btn-default btn-xs"><span class="fa fa-trash"></span></button>
                         </td>
+                    </tr>
+                    <tr ng-show="showTableRow">
+                        <td colspan="7">Test Scheduler</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--<div class="container">
-    <button class="btn btn-success pull-right" data-toggle="modal" data-target="#myModal">Add</button>
-    <div>
-        <table class="table table-striped">
-            <caption>Table</caption>
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Schedule Name</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="table in tables">
-                    <td>{{$index + 1}}</td>
-                    <td>{{table.name}}</td>
-                    <td>{{table.startDate}}</td>
-                    <td>{{table.endDate}}</td>
-                    <td>
-                        <button class="btn btn-primary btn-xs"><span class="fa fa-edit"></span></button>
-                        <button class="btn btn-danger btn-xs"><span class="fa fa-remove"></span></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>-->
-
-<!--<div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Schedule Name</label>
-                        <div class="col-sm-10">
-                            <input type="text" placeholder="Schedule Name" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Start Date</label>
-                        <div class="col-sm-10">
-                            <input type="text" placeholder="Start Date" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">End Date</label>
-                        <div class="col-sm-10">
-                            <input type="text" placeholder="End Date" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">End Date</label>
-                        <div class="col-sm-10">
-                            <input type="text" placeholder="End Date" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Schedule Start/Stop</label>
-                        <label class="switch_wrap col-sm-10" for="field">
-                            <input id="field" type="checkbox" value="1" />
-                            <div class="switch switch-mini"><span class="bullet"></span></div>
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-dismiss="modal">Save</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>-->
