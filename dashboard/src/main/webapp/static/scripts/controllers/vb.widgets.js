@@ -443,26 +443,26 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             widgetObj: '@',
             pdfFunction: '&'
         },
-        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +                
+        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<table ng-if="ajaxLoadingCompleted" class="table table-striped" ng-hide="hideEmptyTable">' +
                 '<thead><tr>' +
                 '<th ng-if="groupingName">' +
                 '<i style="cursor: pointer" ng-click="groupingData.$hideRows = !groupingData.$hideRows; hideAll(groupingData, groupingData.$hideRows, true); selected_Row = !selected_Row" class="fa" ng-class="{\'fa-plus-circle\': !selected_Row, \'fa-minus-circle\': selected_Row}"></i>' +
                 ' Group</th>' +
                 '<th ng-repeat="col in columns" ng-if="col.columnHide == null">' +
-                '<div ng-click="initData(col)" class="text-{{col.alignment}}">'+
-                '{{col.displayName}}'+
-                '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i><i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i></div>' +                
-                '</th>' +                
-                '</tr>'+
-                '<tr>'+
-                '<th ng-repeat="col in columns">'+
-                '<div ng-if="col.search == true">'+
-                '<input type="text" placeholder="Search..." class="form-control" ng-model="search[col.fieldName]" ng-change="bindSearch(search[col.fieldName])" ng-mousedown="$event.stopPropagation()">'+
-                '<div>'+
-                '</th>'+
-                '</tr>'+
-                '</thead>'+
+                '<div ng-click="initData(col)" class="text-{{col.alignment}}">' +
+                '{{col.displayName}}' +
+                '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i><i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i></div>' +
+                '</th>' +
+                '</tr>' +
+                '<tr>' +
+                '<th ng-repeat="col in columns">' +
+                '<div ng-if="col.search == true">' +
+                '<input type="text" placeholder="Search..." class="form-control" ng-model="search.col[col.fieldName]" ng-change="bindSearch(search, col)" ng-mousedown="$event.stopPropagation()">' +
+                '<div>' +
+                '</th>' +
+                '</tr>' +
+                '</thead>' +
                 //'<tbody dir-paginate="grouping in groupingData | orderBy: sortColumn:reverse | itemsPerPage: pageSize" current-page="currentPage"">' +
                 '<tbody ng-repeat="grouping in groupingData.data | filter : searchData">' +
                 '<tr ng-if="!isZeroRow(grouping, columns)" ng-class-odd="\'odd\'" ng-class-even="\'even\'">' +
@@ -503,10 +503,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 '</table>' + '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         //'<dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>',
         link: function (scope, element, attr) {
-            scope.bindSearch = function(search){
-                scope.searchData = search;
-            console.log("Test  :  ");
-            console.log(scope.searchData);
+            scope.bindSearch = function (search) {
+                scope.searchData = search.col;
             };
             console.log(scope.dynamicTableSource)
             scope.pdfFunction({test: "Test"});
@@ -1026,36 +1024,36 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         template: '<div ng-show="loadingTicker"><img width="40" src="static/img/logos/loader.gif"></div>' +
                 '<div  ng-hide="loadingTicker" >' +
                 '<div ng-hide="hideEmptyTicker" class="hpanel stats">' +
-                    '<div class="panel-body h-150">' +
-                        '<div class="stats-title pull-left">' +
-                        '<h4>{{tickerTitleName}}</h4>' +
-                        '</div>' +
-                        '<div class="stats-icon pull-right">' +
+                '<div class="panel-body h-150">' +
+                '<div class="stats-title pull-left">' +
+                '<h4>{{tickerTitleName}}</h4>' +
+                '</div>' +
+                '<div class="stats-icon pull-right">' +
 //                        '<i class="pe-7s-share fa-4x"></i>' +
-                        '</div>' +
-                        '<div class="m-t-xl">' +
-                            '<h3 class="m-b-xs text-success">{{firstLevelTicker.totalValue}}</h3>' +
-                            '<span class="font-bold no-margins">' +
+                '</div>' +
+                '<div class="m-t-xl">' +
+                '<h3 class="m-b-xs text-success">{{firstLevelTicker.totalValue}}</h3>' +
+                '<span class="font-bold no-margins">' +
 //                            '{{firstLevelTicker.tickerTitle}}' +
-                            '</span>' +
+                '</span>' +
 //                            '<div class="progress m-t-xs full progress-small">' +
 //                                '<div style="width: 55%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="55"' +
 //                                'role="progressbar" class=" progress-bar progress-bar-success">' +
 //                                ' <span class="sr-only">35% Complete (success)</span>' +
 //                                '</div>' +
 //                            '</div>' +
-                            '<div class="row">' +
-                                '<div class="col-xs-6">' +
-                                    '<small class="stats-label">{{secondLevelTicker.tickerTitle}}</small>' +
-                                    '<h4>{{secondLevelTicker.totalValue}}</h4>' +
-                                '</div>' +
-                                '<div class="col-xs-6 count">' +
-                                    '<small class="stats-label">{{thirdLevelTicker.tickerTitle}}</small>' +
-                                    '<h4>{{thirdLevelTicker.totalValue}}</h4>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
+                '<div class="row">' +
+                '<div class="col-xs-6">' +
+                '<small class="stats-label">{{secondLevelTicker.tickerTitle}}</small>' +
+                '<h4>{{secondLevelTicker.totalValue}}</h4>' +
+                '</div>' +
+                '<div class="col-xs-6 count">' +
+                '<small class="stats-label">{{thirdLevelTicker.tickerTitle}}</small>' +
+                '<h4>{{thirdLevelTicker.totalValue}}</h4>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
                 '</div>' +
                 '<div ng-show="hideEmptyTicker">{{tickerEmptyMessage}}</div>' +
                 '</div>',
