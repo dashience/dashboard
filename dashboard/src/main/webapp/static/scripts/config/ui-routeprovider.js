@@ -14,6 +14,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
             })
+            .state("index.dashboard.editWidget", {
+                url: "/editWidget/:tabId?:startDate/:endDate",
+                templateUrl: "static/views/dashboard/editWidget.html",
+                controller: 'WidgetController'
+            })
             .state("index.report", {
                 url: "/reportIndex/:locationId",
                 templateUrl: "static/views/reports/reportIndex.html",

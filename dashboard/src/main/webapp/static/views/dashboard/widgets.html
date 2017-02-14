@@ -186,10 +186,10 @@
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget"> 
                     <div class="panel-heading">
                         <div class="panel-tools">
-                            <!--                            <button  type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#preview{{widget.id}}" ng-click="editWidget(widget);"><i class="fa fa-pencil"></i>
-                                                        </button>-->
-                            <a class="edit" data-toggle="modal" data-target="#preview{{widget.id}}" ng-click="editWidget(widget);"><i class="fa fa-pencil"></i>
-                            </a>
+<!--                            <button  type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#preview{{widget.id}}" ng-click="editWidget(widget);"><i class="fa fa-pencil"></i>
+                            </button>-->
+                            <!--<a class="edit" ui-sref="index.dashboard.editWidget({tabId: tabId, startDate: startDate, endDate: endDate})" ng-click="editWidget(widget);"><i class="fa fa-pencil"></i></a>-->
+                            <a class="edit" data-toggle="modal" data-target="#preview{{widget.id}}" ng-click="editWidget(widget);"><i class="fa fa-pencil"></i></a>
                             <a class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
                             <div id="delete{{widget.id}}" class="modal">
                                 <div class="modal-dialog">
@@ -249,7 +249,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <label style="font-weight:normal;">Widget</label>
-                        <button class="close" data-dismiss="modal">&times;</button>
+                        <button class="close" data-dismiss="modal" ng-click="closeWidget(widget); showFieldTable = false; showPreviewChart = false; showAddButton = false;">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="box box-default">
@@ -266,25 +266,31 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <div class="col-md-10">
-                                                    <label>Data Source</label>                                                  
-                                                    <select class="form-control" ng-model="widget.dataSourceId" ng-change="selectDataSource(widget.dataSourceId, widget)" ng-options="dataSource.name for dataSource in dataSources">
+                                                    <label>Data Source</label>                                                
+                                                    <select class="form-control" ng-model="widget.dataSourceId" 
+                                                            ng-change="selectDataSource(widget.dataSourceId, widget)" 
+                                                            ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2 circle-data-set">
                                                     <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
-                                                </div></div>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <div class="col-md-10">
                                                     <label>Data Set</label>
-                                                    <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets" ng-change="changeUrl(widget.dataSetId, widget)">
+                                                    <select class="form-control" ng-model="widget.dataSetId" 
+                                                            ng-change="changeUrl(widget.dataSetId, widget)" 
+                                                            ng-options="dataSet.name for dataSet in dataSets track by dataSet.id">
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2 circle-data-set">
                                                     <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
-                                                </div></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!--                                    <div class="col-md-6">
@@ -355,7 +361,7 @@
                                             <td ng-if="advanceMenu == true">Format</td>
                                             <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Alignment</td>
                                             <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Column Hide</td>
-                                            <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Search</td>
+                                            <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Filter</td>
                                             <!--<td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Width</td>-->
                                             <!--<td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Wrap</td>-->
                                             <td><button class="btn btn-info" ng-click="addColumns(widget)"><i class="fa fa-plus"></i></button></td>
@@ -477,7 +483,7 @@
                             </div>
                         </div>
 
-                        <button style="margin-top:5px;" class="btn btn-info" ng-click="showPreview(widget); showPreviewChart = !showPreviewChart">
+                        <button style="margin-top:5px;" class="btn btn-info" ng-click="showPreviewType(widget); showPreviewChart = !showPreviewChart">
                             <i class="fa" ng-class="{'fa-angle-down': !showPreviewChart, 'fa-angle-up': showPreviewChart}"></i> Preview 
                         </button>
 
@@ -498,12 +504,12 @@
                                 <div class="box-body chart-responsive" ng-if="previewChartType === 'pie'">
                                     <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive style="min-height:{{widget.minHeight}}"></div>
                                 </div> 
-                                <div class="box-body chart-responsive" ng-if="previewChartType === 'donut'">
+<!--                                <div class="box-body chart-responsive" ng-if="previewChartType === 'donut'">
                                     <div donut-Chart-Source='{{previewChartUrl}}' donut-Chart-Directive style="min-height:{{widget.minHeight}}"></div>
                                 </div> 
                                 <div class="box-body chart-responsive" ng-if="previewChartType === 'groupedBar'">
                                     <div grouped-Bar-Chart-Source='{{previewChartUrl}}' grouped-Bar-Chart-Directive style="min-height:{{widget.minHeight}}"></div>
-                                </div> 
+                                </div> -->
                                 <div class="box-body chart-responsive" ng-if="previewChartType === 'table'"  style="overflow: auto;">
                                     <div dynamic-Table dynamic-Table-Source="{{previewChartUrl}}" widget-Id="{{previewColumn.id}}" widget-Columns="{{previewColumn.columns}}"></div>
                                 </div> 

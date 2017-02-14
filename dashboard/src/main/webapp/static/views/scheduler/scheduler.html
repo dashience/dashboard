@@ -111,9 +111,9 @@
                         <th>Schedule Name</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Next Schedule Execution</th>
-                        <th>Schedule Last Execution</th>
-                        <th>Schedule Start/Stop</th>
+                        <th>Next Execution Time</th>
+                        <th>Schedule Last Execution Status</th>
+                        <th>Enable/Disable</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -124,7 +124,7 @@
                         <td>{{scheduler.startDate}}</td>
                         <td>{{scheduler.startDate}}</td>
                         <td>{{scheduler.startDate}}</td>
-                        <td>{{scheduler.endDate}}</td>
+                        <td>{{scheduler.endDate}} Last Execution Status</td>
                         <td>
                             <label class="switch_wrap col-sm-10" for="field{{$index+1}}">
                                 <input id="field{{$index+1}}" type="checkbox" ng-model="scheduler.startStop"/>

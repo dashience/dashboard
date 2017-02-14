@@ -1,16 +1,10 @@
-//Array.prototype.move = function (from, to) {
-//    this.splice(to, 0, this.splice(from, 1)[0]);
-//    return this;
-//};
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService) {
     $scope.permission = localStorageService.get("permission");
 
     $scope.locationID = $stateParams.locationId;
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
-    //$scope.widget = {isSpecial: 1}
     $scope.addToPdf = function (data) {
-        // alert("TTTTT");
         console.log("Adding to pdf");
         console.log(data);
     }
@@ -89,11 +83,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widget.duration = selectDateDuration.duration;
     };
 
-//    $('.dropdown-menu li').click(function () {
-//
-//        $('.dropdown-toggle b').remove().appendTo($('.dropdown-toggle').text($(this).text()));
-//    });
-
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
@@ -101,7 +90,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
     $scope.selectDataSource = function (dataSourceName, widget) {
-        console.log(dataSourceName)
+        if(!dataSourceName){
+            return;
+        }
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = []
             angular.forEach(response, function (value, key) {
@@ -110,7 +101,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
         });
-    };
+    };    
 
     $scope.widgets = [];
     function getWidgetItem() {      //Default Loading Items
@@ -132,12 +123,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log($scope.widgets)
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
-        widget.previewUrl = widget.directUrl;
-//        widget.dataSourceId = widget.dataSourceId.name;
-//        widget.dataSetId = widget.dataSetId.name;
+        widget.previewUrl = widget.dataSetId;//widget.directUrl;
+        $scope.selectDataSource(widget.dataSourceId, widget)
         widget.previewType = widget.chartType;
         widget.previewTitle = widget.widgetTitle;
-        $scope.editChartType = widget.chartType;
+//        $scope.editChartType = widget.chartType;
         //$scope.selectProductName(widget.productName, widget);
     };
 
@@ -146,9 +136,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.columns = widget.columns;
             if (widget.dataSetId) {
                 $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
-
-//        $http.get('../dbApi/admin/dataSet/getData?connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + widget.dataSetId.query + "&fieldsOnly=true").success(function (response) {
-//                $http.get("admin/proxy/getJson?url=" + widget.directUrl + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     $scope.collectionFields = response.columnDefs;
                 });
@@ -156,7 +143,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             if (widget.dataSetId) {
                 $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
-//                $http.get("admin/proxy/getJson?url=" + widget.directUrl + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     widget.columns = response.columnDefs;
                     $scope.collectionFields = response.columnDefs;
@@ -165,25 +151,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     };
 
-//    $scope.selectProductName = function (productName, widget) {
-//        if (productName === null) {
-//            return;
-//        }
-//        $http.get("admin/user/datasets").success(function (response) {                //User Based Products and Urls
-//            $scope.userProducts = [];
-//            angular.forEach(response, function (value, key) {
-//                $scope.userProducts.push(key);
-//            })
-//            $scope.productFields = response[productName];
-//        });
-//
-//    }
-//    $scope.selectProductName();
-
     $scope.changeUrl = function (dataSet, widget) {
         widget.previewUrl = dataSet;
         console.log(dataSet)
         widget.columns = [];
+        if(!dataSet){
+            return;
+        }
         $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData?connectionUrl=' + dataSet.dataSourceId.connectionString + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             angular.forEach(response.columnDefs, function (value, key) {
@@ -197,28 +171,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             });
         });
-//        angular.forEach($scope.productFields, function (value, key) {
-//            if (value.productDisplayName == displayName) {
-//                $scope.requiredUrl = value.url;
-//            }
-//        })
-//        //var searchUrl = $filter('filter')($scope.productFields, {productDisplayName: displayName})[0];
-//        widget.previewUrl = $scope.requiredUrl;
-//        widget.columns = [];
-//        $http.get("admin/proxy/getJson?url=" + $scope.requiredUrl + "&fieldsOnly=true").success(function (response) {
-//            $scope.collectionFields = [];
-//            angular.forEach(response.columnDefs, function (value, key) {
-//                widget.columns.push({fieldName: value.fieldName, displayName: value.displayName,
-//                    agregationFunction: value.agregationFunction, displayFormat: value.displayFormat, fieldType: value.type,
-//                    groupPriority: value.groupPriority, sortOrder: value.sortOrder, sortPriority: value.sortPriority});
-//            })
-//            $scope.previewFields = response.columnDefs;
-//            angular.forEach(response, function (value, key) {
-//                angular.forEach(value, function (value, key) {
-//                    $scope.collectionFields.push(value);
-//                });
-//            });
-//        });
     };
 
     $scope.pageRefresh = function () {          //Page Refresh
@@ -305,7 +257,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.setPreviewColumn = widget;
     };
 
-    $scope.showPreview = function (widget) {                                    //Show Preview Chart - Popup
+    $scope.showPreviewType = function (widget) {                                    //Show Preview Chart - Popup
         $scope.previewChartType = $scope.editChartType ? $scope.editChartType : widget.chartType;
         $scope.previewColumn = $scope.setPreviewColumn ? $scope.setPreviewColumn : widget;
         $scope.previewChartUrl = widget.previewUrl;
@@ -369,16 +321,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         widget.widgetTitle = widget.previewTitle ? widget.previewTitle : widget.widgetTitle;
         widget.widgetColumns = widgetColumnsData; // widget.columns;
+        
+        $scope.previewChartType = null;
     };
 
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
     };
-
-//    Array.prototype.move = function (from, to) {
-//        this.splice(to, 0, this.splice(from, 1)[0]);
-//        return this;
-//    };
 
     $scope.moveWidget = function (list, from, to) {
         list.splice(to, 0, list.splice(from, 1)[0]);
@@ -1036,12 +985,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 '<span class="font-bold no-margins">' +
 //                            '{{firstLevelTicker.tickerTitle}}' +
                 '</span>' +
-//                            '<div class="progress m-t-xs full progress-small">' +
-//                                '<div style="width: 55%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="55"' +
-//                                'role="progressbar" class=" progress-bar progress-bar-success">' +
-//                                ' <span class="sr-only">35% Complete (success)</span>' +
-//                                '</div>' +
-//                            '</div>' +
                 '<div class="row">' +
                 '<div class="col-xs-6">' +
                 '<small class="stats-label">{{secondLevelTicker.tickerTitle}}</small>' +
@@ -1065,8 +1008,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         },
         link: function (scope, element, attr) {
             scope.loadingTicker = true;
-            var tickerName = [];
-            scope.tickers = [];
+            var tickerName = [];            
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
@@ -1090,8 +1032,10 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
+            console.log(JSON.parse(scope.tickerSource))
             $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData?connectionUrl=' + tickerDataSource.dataSourceId.connectionString + "&driver=" + tickerDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tickerDataSource.dataSourceId.userName + '&password=' + tickerDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
 //            $http.get("admin/proxy/getJson?url=" + scope.tickerUrl + "&widgetId=" + scope.tickerId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
+                scope.tickers = [];
                 scope.loadingTicker = false;
                 if (response.length === 0) {
                     scope.tickerEmptyMessage = "No Data Found";
@@ -1119,7 +1063,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 scope.firstLevelTicker = scope.tickers[0];
                 scope.secondLevelTicker = scope.tickers[1];
                 scope.thirdLevelTicker = scope.tickers[2];
-//                console.log(scope.tickers[0].tickerTitle);                
             });
         }
     };

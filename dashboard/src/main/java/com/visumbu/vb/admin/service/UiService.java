@@ -46,7 +46,7 @@ public class UiService {
         List<Product> returnList = new ArrayList<>();
         for (Iterator<Product> iterator = product.iterator(); iterator.hasNext();) {
             Product product1 = iterator.next();
-            if (product1.getProductName().equalsIgnoreCase("skyzone")) {
+            if (product1.getProductName().equalsIgnoreCase("Marketing Data")) {
                 returnList.add(product1);
             }
         }
