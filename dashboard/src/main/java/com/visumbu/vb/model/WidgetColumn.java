@@ -117,6 +117,8 @@ public class WidgetColumn implements Serializable {
     @Size(max = 32)
     @Column(name = "column_hide")
     private Integer columnHide;
+    @Column(name = "search")
+    private Boolean search;
 
     public WidgetColumn() {
     }
@@ -299,6 +301,14 @@ public class WidgetColumn implements Serializable {
 
     public void setColumnHide(Integer columnHide) {
         this.columnHide = columnHide;
+    }
+
+    public Boolean getSearch() {
+        return search;
+    }
+
+    public void setSearch(Boolean search) {
+        this.search = search;
     }
     
     @XmlTransient

@@ -46,7 +46,7 @@ public class UiService {
         List<Product> returnList = new ArrayList<>();
         for (Iterator<Product> iterator = product.iterator(); iterator.hasNext();) {
             Product product1 = iterator.next();
-            if (product1.getProductName().equalsIgnoreCase("skyzone")) {
+            if (product1.getProductName().equalsIgnoreCase("Marketing Data")) {
                 returnList.add(product1);
             }
         }
@@ -182,6 +182,7 @@ public class UiService {
             widgetColumn.setxAxis(widgetColumnBean.getxAxis());
             widgetColumn.setyAxis(widgetColumnBean.getyAxis());
             widgetColumn.setWidth(widgetColumnBean.getWidth());
+            widgetColumn.setSearch(widgetColumnBean.getSearch());
             widgetColumn.setWrapText(widgetColumnBean.getWrapText());
             widgetColumn.setAlignment(widgetColumnBean.getAlignment());
             widgetColumn.setFieldType(widgetColumnBean.getFieldType());

@@ -2,14 +2,14 @@
     <h1 class="text-capitalize">Dashboard Reports</h1>        
 </section>
 <section class="content">  
-   
+
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-<!--            <li ng-class="{active: $state.current.activetab == 'template'}">
-                <a ui-sref="index.report.template({reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
-                    Template
-                </a>
-            </li>-->
+            <!--            <li ng-class="{active: $state.current.activetab == 'template'}">
+                            <a ui-sref="index.report.template({reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                                Template
+                            </a>
+                        </li>-->
             <li ng-class="{active: $state.current.activetab == 'report'}">
                 <a ui-sref="index.report.reports({locationId: locationId, reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
                     Reports
@@ -17,9 +17,9 @@
             </li>
         </ul>
     </div>
- <div class="row">
-    <div class="tab-content">
-        <div ui-view></div>
-    </div>
+    <div class="row">
+        <div class="tab-content">
+            <div ui-view></div>
+        </div>
     </div>
 </section>
