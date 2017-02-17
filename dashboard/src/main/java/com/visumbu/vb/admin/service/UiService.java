@@ -42,15 +42,16 @@ public class UiService {
     private UiDao uiDao;
 
     public List<Product> getProduct() {
-        List<Product> product = uiDao.read(Product.class);
-        List<Product> returnList = new ArrayList<>();
-        for (Iterator<Product> iterator = product.iterator(); iterator.hasNext();) {
-            Product product1 = iterator.next();
-            if (product1.getProductName().equalsIgnoreCase("Marketing Data")) {
-                returnList.add(product1);
-            }
-        }
-        return returnList;
+        return uiDao.read(Product.class);
+//        List<Product> product = uiDao.read(Product.class);
+//        List<Product> returnList = new ArrayList<>();
+//        for (Iterator<Product> iterator = product.iterator(); iterator.hasNext();) {
+//            Product product1 = iterator.next();
+//            if (product1.getProductName().equalsIgnoreCase("Marketing Data")) {
+//                returnList.add(product1);
+//            }
+//        }
+//        return returnList;
     }
 
     public List<Product> getDealerProduct(Integer dealerId) {
@@ -104,7 +105,7 @@ public class UiService {
         return uiDao.updateWidgetUpdateOrder(tabId, widgetOrder);
     }
 
-    public TabWidget deleteTabWidget(Integer id) {
+        public TabWidget deleteTabWidget(Integer id) {
         return uiDao.deleteTabWidget(id);
     }
 
@@ -342,7 +343,7 @@ public class UiService {
     }
 
     public DataSet deleteDataSet(Integer id) {
-        DataSet dataSet = readDataSet(id);
-        return (DataSet) uiDao.delete(dataSet);
+       // DataSet dataSet = readDataSet(id);
+        return (DataSet) uiDao.deleteDataSet(id);
     }
 }

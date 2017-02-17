@@ -40,7 +40,7 @@ app.controller('DataSetController', function ($scope, $http) {
         $scope.dataSet = "";
     };
 
-    $scope.deleteDataSet = function (dataSet, index) {
+    $scope.deleteDataSet = function (dataSet, index) {alert(dataSet.id)
         $http({method: 'DELETE', url: 'admin/ui/dataSet/' + dataSet.id}).success(function (response) {
             $scope.dataSets.splice(index, 1)
         });

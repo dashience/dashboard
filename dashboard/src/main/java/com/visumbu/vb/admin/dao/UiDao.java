@@ -296,6 +296,27 @@ public class UiDao extends BaseDao {
     public DataSet getDataSetById(Integer dataSetId) {
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
+    }    
+    
+    public DataSet deleteDataSet(Integer id) {
+       
+//        TabWidget tabwidgetColumn=new TabWidget();       
+//        Query querySet = sessionFactory.getCurrentSession().getNamedQuery("TabWidget.findByDataSetId");
+//        querySet.setParameter("dataSetId", id);
+//        tabwidgetColumn=(TabWidget) querySet.uniqueResult();        
+//        
+        String queryString = "delete from WidgetColumn d where d.widgetId.id = :widgetId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("widgetId", getTabWidgetById(id));
+        querySess.executeUpdate();
+        
+        String queryStr = "delete from TabWidget d where d.dataSetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+        
+        delete(getDataSetById(id));
+        return null;
     }
 
 }

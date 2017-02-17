@@ -1,3 +1,10 @@
+<style> 
+    .selectedTableRow {
+        background-color:#b3e0d3;
+        color:#121111;
+        font-weight:bold;
+    }
+</style>
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
@@ -5,74 +12,78 @@
                 <h1 class="data-title font-bold">Data Source</h1>
             </section>
         </div>
-        <div class="col-lg-12 data-table-set">
-            <table class="table table-bordered table-responsive">
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Connection String</td>
-                        <td>Driver</td>
-                        <td>User Name</td>
-                        <td>Password</td>
-                        <td><button class="btn btn-info btn-sm" ng-click="addDataSource()"><i class="fa fa-plus"></i></button></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="dataSource in dataSources">
-                        <td>
-                            <span ng-hide="dataSource.isEdit">
-                                {{dataSource.name}}
-                            </span>
-                            <span ng-show="dataSource.isEdit">
-                                <input type="text" class="form-control" ng-model="dataSource.name">
-                            </span>
-                        </td>
-                        <td>
-                            <span ng-hide="dataSource.isEdit">
-                                {{dataSource.connectionString}}
-                            </span>
-                            <span ng-show="dataSource.isEdit">
-                                <input type="text" class="form-control" ng-model="dataSource.connectionString">
-                            </span>
-                        </td>
-                        <td>
-                            <span ng-hide="dataSource.isEdit">
-                                {{dataSource.sqlDriver}}
-                            </span>
-                            <span ng-show="dataSource.isEdit">
-                                <input type="text" class="form-control" ng-model="dataSource.sqlDriver">
-                            </span>
-                        </td>
-                        <td>
-                            <span ng-hide="dataSource.isEdit">
-                                {{dataSource.userName}}
-                            </span>
-                            <span ng-show="dataSource.isEdit">
-                                <input type="text" class="form-control" ng-model="dataSource.userName">
-                            </span>
-                        </td>
-                        <td>
-                            <span ng-hide="dataSource.isEdit">
-                                {{dataSource.password}}
-                            </span>
-                            <span ng-show="dataSource.isEdit">
-                                <input type="text" class="form-control" ng-model="dataSource.password">
-                            </span>
-                        </td>
-                        <td>
-                            <div ng-show="dataSource.isEdit">
-                                <button class="btn btn-default btn-xs" ng-click="saveDataSource(dataSource); dataSource.isEdit = false"><i class="fa fa-save"></i></button>
-                                <button class="btn btn-default btn-xs" ng-click="dataSource.isEdit = false"><i class="fa fa-close"></i></button>
-                                <button class="btn btn-default btn-xs" ng-click="deleteDataSource(dataSource, $index)"><i class="fa fa-trash-o"></i></button>
-                            </div>
-                            <div ng-hide="dataSource.isEdit">
-                                <button class="btn btn-default btn-xs" ng-click="dataSource.isEdit = true"><i class="fa fa-pencil"></i></button>
-                                <button class="btn btn-default btn-xs" ng-click="deleteDataSource(dataSource, $index)"><i class="fa fa-trash-o"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-md-8 pull-left">
+                    <div class="data-table-set">
+                        <table class="table table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Connection String</td>
+                                    <td>Driver</td>
+                                    <td>User Name</td>
+<!--                                    <td>
+                                    </td>-->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="dataSource in dataSources" ng-click="editDataSource(dataSource)" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
+                                    <td>{{dataSource.name}}</td>
+                                    <td>{{dataSource.dataSourceType | uppercase}}</td>
+                                    <td>{{dataSource.connectionString}}</td>
+                                    <td>{{dataSource.sqlDriver}}</td>
+                                    <td>{{dataSource.userName}}</td>
+<!--                                    <td>
+                                        <button class="btn btn-default btn-xs" ng-click="deleteDataSource(dataSource, $index)"><i class="fa fa-trash-o"></i></button>
+                                    </td>-->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input class="form-control" type="text" ng-model="dataSource.name" placeholder="Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select class="form-control" ng-model="dataSource.dataSourceType">
+                                <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                <option ng-repeat="sourceType in dataSourceTypes"  value="{{sourceType.type}}">{{sourceType.name}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                            <label>Connection String</label>
+                            <input type="text" class="form-control" ng-model="dataSource.connectionString">
+                        </div>
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls' || dataSource.dataSourceType === 'https'">
+                            <label ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'">File Upload</label>
+                            <label ng-if="dataSource.dataSourceType === 'https'">File Url</label>
+                            <input type="text" class="form-control" ng-model="dataSource.sourceFile">
+                        </div>                       
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                            <label>Driver</label>
+                            <input type="text" class="form-control" ng-model="dataSource.sqlDriver">
+                        </div>
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                            <label>User Name</label>
+                            <input type="text" class="form-control" ng-model="dataSource.userName">
+                        </div>
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                            <label>Password</label>
+                            <input type="text" class="form-control" ng-model="dataSource.password">
+                        </div>
+                        <div class="form-group pull-right">
+                            <button class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
+                            <button class="btn btn-warning" ng-click="clearDataSource(dataSource)">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </section>

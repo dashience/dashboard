@@ -57,32 +57,32 @@ app.controller("MenuController", function ($scope, $http, $stateParams, $filter,
     });
 
 
-    $scope.loadNewUrl = function () {
-        console.log("ProductId : ")
-        console.log($stateParams.productId)
-        try {
-            $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-            $scope.endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
-        } catch (e) {
-        }
-        console.log($stateParams);
-        console.log($scope.getCurrentTab());
-        console.log($scope.getCurrentPage());
-        if ($scope.getCurrentPage() === "dashboard") {
-            $state.go("index.dashboard." + $scope.getCurrentTab(), {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else if ($scope.getCurrentPage() === "reports") {
-            $state.go("index.report.reports", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else if ($scope.getCurrentPage() === "newOrEdit") {
-            $state.go("index.report.newOrEdit", {locationId: $stateParams.locationId, productId: $stateParams.productId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } //else if ($scope.getCurrentPage() === "dataSource") {
-//            $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-//        } else if ($scope.getCurrentPage() === "dataSet") {
-//            $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-//        } else {
-//            $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
+//    $scope.loadNewUrl = function () {
+//        console.log("ProductId : ")
+//        console.log($stateParams.productId)
+//        try {
+//            $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+//
+//            $scope.endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
+//        } catch (e) {
 //        }
-    };
+//        console.log($stateParams);
+//        console.log($scope.getCurrentTab());
+//        console.log($scope.getCurrentPage());
+//        if ($scope.getCurrentPage() === "dashboard") {
+//            $state.go("index.dashboard." + $scope.getCurrentTab(), {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
+//        } else if ($scope.getCurrentPage() === "reports") {
+//            $state.go("index.report.reports", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $scope.startDate, endDate: $scope.endDate});
+//        } else if ($scope.getCurrentPage() === "newOrEdit") {
+//            $state.go("index.report.newOrEdit", {locationId: $stateParams.locationId, productId: $stateParams.productId, startDate: $scope.startDate, endDate: $scope.endDate});
+//        } //else if ($scope.getCurrentPage() === "dataSource") {
+////            $state.go("index.dataSource", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+////        } else if ($scope.getCurrentPage() === "dataSet") {
+////            $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+////        } else {
+////            $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
+////        }
+//    };
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         console.log(url)

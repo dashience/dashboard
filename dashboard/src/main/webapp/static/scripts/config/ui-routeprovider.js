@@ -6,18 +6,18 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/vb.index.html"
             })
             .state("index.dashboard", {
-                url: "/dashboard/:locationId/:productId",
+                url: "/dashboard/:productId",
                 templateUrl: "static/views/dashboard/dashboard.html",
             })
             .state("index.dashboard.widget", {
-                url: "/widget/:tabId?:startDate/:endDate",
+                url: "/widget/:locationId/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
             })
-            .state("index.dashboard.editWidget", {
-                url: "/editWidget/:tabId?:startDate/:endDate",
+            .state("index.editWidget", {
+                url: "/editWidget/:locationId/:productId/:tabId/:widgetId?:startDate/:endDate",
                 templateUrl: "static/views/dashboard/editWidget.html",
-                controller: 'WidgetController'
+                controller: 'EditWidgetController'
             })
             .state("index.report", {
                 url: "/reportIndex/:locationId",
@@ -47,10 +47,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/source/dataSource.html",
                 controller: 'DataSourceController'
             }).state("index.dataSet", {
-                url: "/dataSet/:locationId?:startDate/:endDate",
-                templateUrl: "static/views/source/dataSet.html",
-                controller: 'DataSetController'
-            })
+        url: "/dataSet/:locationId?:startDate/:endDate",
+        templateUrl: "static/views/source/dataSet.html",
+        controller: 'DataSetController'
+    })
             .state("index.franchiseMarketing", {
                 url: "/franchiseMarketing/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/franchiseMarketing/franchiseMarketing.html",
@@ -72,8 +72,8 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 //                controller: 'NewOrEditSchedulerController'
 //            });
 
-    $urlRouterProvider.otherwise(function ($injector) {
-      $injector.get('$state').go('index.dashboard', {productId: 2}, { location: false });
+    $urlRouterProvider.otherwise(function ($injector, $http) {
+        $injector.get('$state').go('index.dashboard', {productId: 2}, {location: true});
     });
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });

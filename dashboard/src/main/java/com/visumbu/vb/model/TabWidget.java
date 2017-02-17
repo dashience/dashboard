@@ -65,6 +65,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "TabWidget.findByCustomRange", query = "SELECT t FROM TabWidget t WHERE t.customRange = :customRange")
     , @NamedQuery(name = "TabWidget.findByFrequencyDuration", query = "SELECT t FROM TabWidget t WHERE t.frequencyDuration = :frequencyDuration")
     , @NamedQuery(name = "TabWidget.findByDataset", query = "SELECT t FROM TabWidget t WHERE t.dataset = :dataset")
+        , @NamedQuery(name = "TabWidget.findByDataSetId", query = "SELECT t FROM TabWidget t WHERE t.dataSetId = :dataSetId")
     , @NamedQuery(name = "TabWidget.findByDatasource", query = "SELECT t FROM TabWidget t WHERE t.datasource = :datasource")})
 public class TabWidget implements Serializable {
 

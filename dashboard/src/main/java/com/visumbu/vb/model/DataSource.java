@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -34,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DataSource.findByConnectionString", query = "SELECT d FROM DataSource d WHERE d.connectionString = :connectionString")
     , @NamedQuery(name = "DataSource.findByUserName", query = "SELECT d FROM DataSource d WHERE d.userName = :userName")
     , @NamedQuery(name = "DataSource.findByPassword", query = "SELECT d FROM DataSource d WHERE d.password = :password")
-    , @NamedQuery(name = "DataSource.findBySqlDriver", query = "SELECT d FROM DataSource d WHERE d.sqlDriver = :sqlDriver")})
+    , @NamedQuery(name = "DataSource.findBySqlDriver", query = "SELECT d FROM DataSource d WHERE d.sqlDriver = :sqlDriver")
+    , @NamedQuery(name = "DataSource.findByDataSourceType", query = "SELECT d FROM DataSource d WHERE d.dataSourceType = :dataSourceType")})
 public class DataSource implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,6 +60,13 @@ public class DataSource implements Serializable {
     @Size(max = 255)
     @Column(name = "sql_driver")
     private String sqlDriver;
+    @Size(max = 45)
+    @Column(name = "data_source_type")
+    private String dataSourceType;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "source_file")
+    private String sourceFile;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
@@ -115,6 +124,22 @@ public class DataSource implements Serializable {
 
     public void setSqlDriver(String sqlDriver) {
         this.sqlDriver = sqlDriver;
+    }
+
+    public String getDataSourceType() {
+        return dataSourceType;
+    }
+
+    public void setDataSourceType(String dataSourceType) {
+        this.dataSourceType = dataSourceType;
+    }
+
+    public String getSourceFile() {
+        return sourceFile;
+    }
+
+    public void setSourceFile(String sourceFile) {
+        this.sourceFile = sourceFile;
     }
 
     public VbUser getUserId() {
