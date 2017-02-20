@@ -79,6 +79,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function splitCamelCase(s) {
         return s.split(/(?=[A-Z])/).join(' ');
     }
+
+    function makeUnselectable(node) {
+        if (node.nodeType == 1) {
+            node.setAttribute("unselectable", "on");
+        }
+        var child = node.firstChild;
+        while (child) {
+            makeUnselectable(child);
+            child = child.nextSibling;
+        }
+    }
 });
 
 app.directive('dateRangePicker', function () {
@@ -120,9 +131,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 '<i style="cursor: pointer" ng-click="groupingData.$hideRows = !groupingData.$hideRows; hideAll(groupingData, groupingData.$hideRows, true); selected_Row = !selected_Row" class="fa" ng-class="{\'fa-plus-circle\': !selected_Row, \'fa-minus-circle\': selected_Row}"></i>' +
                 ' Group</th>' +
                 '<th ng-repeat="col in columns" ng-if="col.columnHide == null">' +
-                '<div ng-click="initData(col)" class="text-{{col.alignment}}">' +
-                '{{col.displayName}}' +
-                '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i><i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i></div>' +
+                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i><i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i></div>' +
                 '</th>' +
                 '</tr>' +
                 '<tr>' +
@@ -139,7 +148,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 '<td ng-if="groupingName">' +
                 '<i style="cursor: pointer" class="fa" ng-click="grouping.$hideRows = !grouping.$hideRows; hideParent(grouping, grouping.$hideRows); hideChild(grouping.data, false)" ng-class="{\'fa-plus-circle\': !grouping.$hideRows, \'fa-minus-circle\': grouping.$hideRows}"></i>' +
 //                ' {{grouping._groupField}} : {{grouping._key}}' +
-                ' {{grouping._key}}' +
+                ' <span ng-bind-html="grouping._key"></span>' +
                 '</td>' +
                 '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
                 '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, grouping[col.fieldName])"></span></div>' +
@@ -147,14 +156,14 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 '</tr>' +
                 '<tr ng-if="!isZeroRow(item, columns)" ng-show="grouping.$hideRows" ng-repeat-start="item in grouping.data">' +
                 '<td>' +
-                '<i ng-if="item._groupField" style="cursor: pointer" class="fa" ng-click="item.$hideRows = !item.$hideRows; hideChild(item, item.$hideRows)" ng-class="{\'fa-plus-circle\': !item.$hideRows, \'fa-minus-circle\': item.$hideRows}"></i>' +
+                '<i ng-if="item._groupField && item.data.length != 1" style="cursor: pointer" class="fa" ng-click="item.$hideRows = !item.$hideRows; hideChild(item, item.$hideRows)" ng-class="{\'fa-plus-circle\': !item.$hideRows, \'fa-minus-circle\': item.$hideRows}"></i>' +
 //                ' {{item._groupField}} : {{item._key}}</td>' +
-                ' {{item._key}}</td>' +
+                ' <span ng-bind-html="item._key"></span></td>' +
                 '<td ng-repeat="col in columns" ng-if="col.columnHide == null">' +
                 '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, item[col.fieldName])"></span></div>' + //ng-bind-html-unsafe=todo.text
                 '</td>' +
                 '</tr>' +
-                '<tr ng-show="item.$hideRows" ng-if="!isZeroRow(childItem, columns)" ng-repeat="childItem in item.data" ng-repeat-end><td></td>' +
+                '<tr ng-show="item.$hideRows" ng-if="!isZeroRow(childItem, columns) && item.data.length != 1" ng-repeat="childItem in item.data" ng-repeat-end><td></td>' +
                 '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
                 '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, childItem[col.fieldName])"></span></div>' +
                 '</td>' +
@@ -165,7 +174,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 '<td ng-if="groupingName">{{ showTotal() }}</td>' +
                 //'<td ng-repeat="col in columns" class="col.alignment[groupingData]">{{format(col, groupingData[col.fieldName])}}</td>' +
                 '<td ng-repeat="col in columns" ng-if="col.columnHide == null">' +
-                '<div ng-if="totalShown == 1" class="text-{{col.alignment}}">{{format(col, groupingData[col.fieldName])}}</div>' +
+                '<div ng-if="totalShown == 1" class="text-{{col.alignment}}"><span ng-bind-html="format(col, groupingData[col.fieldName])"></span></div>' +
                 '<div ng-if="totalShown != 1" class="text-{{col.alignment}}">{{ showTotal() }}</div>' +
                 '</td>' +
                 '</tr>' +
@@ -196,9 +205,10 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 if (!grouping)
                     return;
                 angular.forEach(grouping.data, function (value, key) {
-                    if (!value.data) {
+                    if (hideStatus == false) {
                         value.$hideRows = hideStatus;
                         scope.hideParent(value, hideStatus);
+                        scope.hideParent(value.data, false)
                     }
                     // scope.hideChild(value.data, false)
                     //value.data.$hideRows = true;
@@ -211,18 +221,24 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                     return;
                 angular.forEach(item, function (value, key) {
                     value.$hideRows = hideStatus;
+
+                    if (hideStatus == false) {
                     scope.hideChild(value, hideStatus);
+                    }
                     //value.data.$hideRows = true;
                 });
-            }
+            };
 
             scope.hideAll = function (grouping, hideStatus) {
                 if (!grouping)
                     return;
                 angular.forEach(grouping.data, function (value, key) {
                     value.$hideRows = hideStatus;
+//                    if (value.data)
+//                        return;
                     if (hideStatus == false) {
                         scope.hideAll(value, hideStatus);
+                        scope.hideAll(value.data, false)
                     }
                 });
             };
@@ -308,6 +324,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
 
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
+                if (!response.data) {
+                    return;
+                }
                 var pdfData = {};
                 if (response.data.length === 0) {
                     scope.tableEmptyMessage = "No Data Found";
@@ -499,6 +518,31 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push(function (a) {
                                 var parsedValue = parseFloat(a[value.fieldName]);
+                                console.log(parsedValue);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
+                        }
+                    } else if (value.fieldType == "date") {
+                        if (value.sortOrder == "asc") {
+                            //fieldsOrder.push(value.fieldname);
+                            fieldsOrder.push(function (a) {
+
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                console.log(parsedValue);
+                                console.log("TIME ---> " + parsedValue);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
                                 console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
@@ -792,7 +836,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
     };
 });
 
-app.directive('lineChartDirective', function ($http, $stateParams) {
+app.directive('lineChartDirective', function ($http,$filter, $stateParams) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -821,7 +865,10 @@ app.directive('lineChartDirective', function ($http, $stateParams) {
             var axes = {};
             var startDate = "";
             var endDate = "";
+            var sortFields = [];
+           
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
+                console.log(value)
                 if (!labels["format"]) {
                     labels = {format: {}};
                 }
@@ -830,7 +877,7 @@ app.directive('lineChartDirective', function ($http, $stateParams) {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
+                            //return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -854,35 +901,116 @@ app.directive('lineChartDirective', function ($http, $stateParams) {
                 if (value.yAxis > 1) {
                     y2 = {show: true, label: ''};
                 }
+                if (value.sortOrder) {
+                    sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
             });
             var xData = [];
             var xTicks = [];
+scope.orderData = function (list, fieldnames) {
+                if (fieldnames.length == 0) {
+                    return list;
+                }
+                var fieldsOrder = [];
+                angular.forEach(fieldnames, function (value, key) {
+                    if (value.fieldType == "string") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(value.fieldName);
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push("-" + value.fieldName);
+                        }
+                        console.log(fieldsOrder);
+                    } else if (value.fieldType == "number") {
+                        if (value.sortOrder == "asc") {
+                            //fieldsOrder.push(value.fieldname);
+                            fieldsOrder.push(function (a) {
 
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                console.log(parsedValue);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                console.log(parsedValue);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
+                        }
+                    } else if (value.fieldType == "date") {
+                        if (value.sortOrder == "asc") {
+                            //fieldsOrder.push(value.fieldname);
+                            fieldsOrder.push(function (a) {
 
-            function sortResults(unsortedData, prop, asc) {
-                sortedData = unsortedData.sort(function (a, b) {
-                    if (asc) {
-                        if (isNaN(a[prop])) {
-                            return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
-                        } else {
-                            return (parseInt(a[prop]) > parseInt(b[prop])) ? 1 : ((parseInt(a[prop]) < parseInt(b[prop])) ? -1 : 0);
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                console.log(parsedValue);
+                                console.log("TIME ---> " + parsedValue);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                console.log(parsedValue);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
                         }
                     } else {
-                        if (isNaN(a[prop])) {
-                            return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
-                        } else {
-                            return (parseInt(b[prop]) > parseInt(a[prop])) ? 1 : ((parseInt(b[prop]) < parseInt(a[prop])) ? -1 : 0);
+                        if (value.sortOrder == "asc") {
+                            //fieldsOrder.push(value.fieldname);
+                            fieldsOrder.push(function (a) {
+
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                console.log(parsedValue);
+                                if (isNaN(parsedValue)) {
+                                    return a[value.fieldName];
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                return -1 * parseFloat(a[value.fieldName])
+                            });
                         }
                     }
                 });
-                return sortedData;
+                return $filter('orderBy')(list, fieldsOrder);
             }
+
+//            function sortResults(unsortedData, prop, asc) {
+//                sortedData = unsortedData.sort(function (a, b) {
+//                    if (asc) {
+//                        if (isNaN(a[prop])) {
+//                            return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
+//                        } else {
+//                            return (parseInt(a[prop]) > parseInt(b[prop])) ? 1 : ((parseInt(a[prop]) < parseInt(b[prop])) ? -1 : 0);
+//                        }
+//                    } else {
+//                        if (isNaN(a[prop])) {
+//                            return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
+//                        } else {
+//                            return (parseInt(b[prop]) > parseInt(a[prop])) ? 1 : ((parseInt(b[prop]) < parseInt(a[prop])) ? -1 : 0);
+//                        }
+//                    }
+//                });
+//                return sortedData;
+//            }
             var lineChartDataSource = JSON.parse(scope.lineChartSource);
-            console.log(lineChartDataSource)
             if (scope.lineChartSource) {
                 $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData?connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + lineChartDataSource.dataSourceId.userName + '&password=' + lineChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
 //                $http.get("admin/proxy/getJson?url=" + scope.lineChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
-                    console.log(response)
                     scope.loadingLine = false;
                     if (response.data.length === 0) {
                         scope.lineEmptyMessage = "No Data Found";

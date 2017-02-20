@@ -118,7 +118,21 @@
     .count{
         text-align: right;
     }
+    .as-sortable-item, .as-sortable-placeholder {
+        display: table-row !important;
+    }
+    *.unselectable {
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
 
+        /*
+          Introduced in IE 10.
+          See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+        */
+        -ms-user-select: none;
+        user-select: none;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
@@ -369,9 +383,9 @@
                                             <td style="width:14%"><button class="btn btn-info" ng-click="addColumns(widget)"><i class="fa fa-plus"></i></button></td>
                                         </tr>
                                     </thead>
-                                    <tbody ui:sortable ng:model="widget.columns">
-                                        <tr ng-repeat="currentColumn in widget.columns" style="cursor: move;">
-                                            <td>
+                                    <tbody data-as-sortable="" data-ng-model="widget.columns" unselectable="on" class="unselectable">
+                                        <tr ng-repeat="currentColumn in widget.columns" data-as-sortable-item>
+                                            <td data-as-sortable-item-handle>
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.displayName}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <select ng-model="currentColumn.fieldName" class="form-control" ng-change="dispName(currentColumn)">
@@ -379,13 +393,13 @@
                                                     </select>
                                                 </div>
                                             </td>
-                                            <td ng-if="advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.displayName}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <input type="text" class="form-control" ng-model="currentColumn.displayName">
                                                 </div>
                                             </td>
-                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.agregationFunction}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <!--<input type="text" class="form-control" ng-model="column.agregationFunction">-->
@@ -394,7 +408,7 @@
                                                     </select>
                                                 </div>
                                             </td>
-                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.groupPriority}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <select ng-model="currentColumn.groupPriority" class="form-control">
@@ -403,7 +417,7 @@
                                                     <!--<input type="text" class="form-control" ng-model="currentColumn.groupPriority">-->
                                                 </div>
                                             </td>
-                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.xAxis| xAxis}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <select ng-model="currentColumn.xAxis" class="form-control">
@@ -412,7 +426,7 @@
                                                     <!--<input type="text" class="form-control" ng-model="currentColumn.xAxis">-->
                                                 </div>
                                             </td>
-                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.yAxis| yAxis}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <select ng-model="currentColumn.yAxis" class="form-control">
@@ -421,7 +435,7 @@
                                                     <!--<input type="text" class="form-control" ng-model="currentColumn.yAxis">-->
                                                 </div>  
                                             </td>
-                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.sortOrder}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <!--<input type="text" class="form-control" ng-model="widget.sortOrder">-->
@@ -430,13 +444,13 @@
                                                     </select>
                                                 </div> 
                                             </td>
-                                            <td style="width:8%" ng-if="advanceMenu == true">
+                                            <td data-as-sortable-item-handle style="width:8%" ng-if="advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.displayFormat}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <input type="text" class="form-control" ng-model="currentColumn.displayFormat">
                                                 </div>
                                             </td>
-                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.alignment}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <select ng-model="currentColumn.alignment" class="form-control">
@@ -444,7 +458,7 @@
                                                     </select>
                                                 </div>
                                             </td>
-                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
+                                            <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.columnHide| hideColumn}}</div>
                                                 <div ng-show="currentColumn.isEdit">
                                                     <select ng-model="currentColumn.columnHide" class="form-control">
@@ -466,8 +480,8 @@
                                                                                                 </select>
                                                                                             </div>
                                                                                         </td>-->
-                                            <td  ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true"><input type="checkbox" ng-model="currentColumn.search"></td>
-                                            <td style="width:14%">
+                                            <td data-as-sortable-item-handle  ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true"><input type="checkbox" ng-model="currentColumn.search"></td>
+                                            <td data-as-sortable-item-handle style="width:14%">
                                                 <div ng-show="currentColumn.isEdit">
                                                     <button class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></button>
                                                     <!--<button class="btn btn-default btn-xs" ng-click="saveColumn(widget, column); widget.isEdit = false"><i class="fa fa-save"></i></button>-->
