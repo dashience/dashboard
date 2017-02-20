@@ -968,7 +968,7 @@ public class CustomReportDesigner {
             //final JFreeChart chart = new JFreeChart(tabWidget.getWidgetTitle(), plot);
             final JFreeChart chart = new JFreeChart(plot);
             CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
-            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
 
             chart.setBackgroundPaint(Color.white);
 //        chart.getLegend().setAnchor(Legend.SOUTH);
@@ -1115,17 +1115,14 @@ public class CustomReportDesigner {
                             result.add(item);
                         }
                     }
-
                     return result;
-
                 }
-
             };
             plot.setRangeGridlinesVisible(true);
             plot.setDomainGridlinesVisible(true);
             final JFreeChart chart = new JFreeChart(tabWidget.getWidgetTitle(), plot);
             CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
-            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
             chart.setBackgroundPaint(Color.white);
 //        chart.getLegend().setAnchor(Legend.SOUTH);
             // plot.setBackgroundPaint(new Color(0xEE, 0xEE, 0xFF));
@@ -1282,7 +1279,7 @@ public class CustomReportDesigner {
             // final JFreeChart chart = new JFreeChart(tabWidget.getWidgetTitle(), plot);
             final JFreeChart chart = new JFreeChart(plot);
             CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
-            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
             chart.setBackgroundPaint(Color.white);
 //        chart.getLegend().setAnchor(Legend.SOUTH);
             // plot.setBackgroundPaint(new Color(0xEE, 0xEE, 0xFF));
