@@ -86,8 +86,8 @@ public class CustomReportDesigner {
 //    private static BaseColor tableFooterColor = new BaseColor(241, 241, 241);
 //    private static BaseColor widgetBorderColor = BaseColor.DARK_GRAY;
 
-    private static BaseColor widgetTitleColor = new BaseColor(231, 231, 231);
-    private static BaseColor tableTitleColor = new BaseColor(209, 215, 218);
+    private static BaseColor widgetTitleColor = BaseColor.WHITE;
+    private static BaseColor tableHeaderFontColor = new BaseColor(61, 70, 77);
     private static BaseColor tableHeaderColor = new BaseColor(241, 241, 241);
     private static BaseColor tableFooterColor = new BaseColor(241, 241, 241);
     private static BaseColor widgetBorderColor = new BaseColor(204, 204, 204);
@@ -277,7 +277,7 @@ public class CustomReportDesigner {
 
     public PdfPTable dynamicPdfTable(TabWidget tabWidget) throws DocumentException {
 //        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
-        BaseColor tableTitleFontColor = new BaseColor(61, 70, 77);
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originalData = tabWidget.getData();
@@ -294,7 +294,7 @@ public class CustomReportDesigner {
             cell.setHorizontalAlignment(1);
             cell.setColspan(columns.size());
             cell.setBorderColor(widgetBorderColor);
-            cell.setBackgroundColor(tableTitleColor);
+            cell.setBackgroundColor(widgetTitleColor);
             cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
             cell.setPadding(10);
             table.addCell(cell);
@@ -302,7 +302,7 @@ public class CustomReportDesigner {
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
                 pdfFontHeader.setSize(13);
-                pdfFontHeader.setColor(tableTitleFontColor);
+                pdfFontHeader.setColor(tableHeaderFontColor);
 
                 PdfPCell dataCell = new PdfPCell(new Phrase(WordUtils.capitalize(column.getFieldName()), pdfFontHeader));
                 dataCell.setPadding(5);
@@ -378,14 +378,14 @@ public class CustomReportDesigner {
     }
 
     private void generateGroupedRows(Map groupedData, TabWidget tabWidget, PdfPTable table) {
-        BaseColor tableTitleFontColor = new BaseColor(61, 70, 77);
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
         List<WidgetColumn> columns = tabWidget.getColumns();
         List data = (List) groupedData.get("data");
         for (Iterator iterator = data.iterator(); iterator.hasNext();) {
             Map mapData = (Map) iterator.next();
             if (mapData.get(mapData.get("_groupField")) != null) {
                 String groupValue = mapData.get(mapData.get("_groupField")) + "";
-                pdfFont.setColor(tableTitleFontColor);
+                pdfFont.setColor(tableHeaderFontColor);
                 PdfPCell dataCell = new PdfPCell(new Phrase(groupValue, pdfFont));
                 dataCell.setBorderColor(widgetBorderColor);
                 table.addCell(dataCell);
@@ -402,7 +402,7 @@ public class CustomReportDesigner {
                         if (column.getDisplayFormat() != null) {
                             value = Formatter.format(column.getDisplayFormat(), value);
                         }
-                        pdfFont.setColor(tableTitleFontColor);
+                        pdfFont.setColor(tableHeaderFontColor);
                         PdfPCell dataCell = new PdfPCell(new Phrase(value, pdfFont));
                         if (column.getAlignment() != null) {
                             dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
@@ -437,7 +437,7 @@ public class CustomReportDesigner {
     private PdfPTable generateTable(Map groupedData, TabWidget tabWidget) {
 
         //       BaseColor textHighlightColor = new BaseColor(242, 156, 33);
-        BaseColor tableTitleFontColor = new BaseColor(61, 70, 77);
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> data = tabWidget.getData();
@@ -454,7 +454,7 @@ public class CustomReportDesigner {
         cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
         cell.setFixedHeight(30);
         cell.setBorderColor(widgetBorderColor);
-        cell.setBackgroundColor(tableTitleColor);
+        cell.setBackgroundColor(widgetTitleColor);
         cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
         cell.setColspan(noOfColumns);
         cell.setPaddingTop(5);
@@ -463,7 +463,7 @@ public class CustomReportDesigner {
         table.setWidthPercentage(95f);
         if (groupFields != null && groupFields.size() > 0) {
             pdfFontHeader.setSize(13);
-            pdfFontHeader.setColor(tableTitleFontColor);
+            pdfFontHeader.setColor(tableHeaderFontColor);
             PdfPCell dataCell = new PdfPCell(new Phrase("Group", pdfFontHeader));
             dataCell.setPadding(5);
             dataCell.setBorderColor(widgetBorderColor);
@@ -494,7 +494,7 @@ public class CustomReportDesigner {
                     if (column.getDisplayFormat() != null) {
                         value = Formatter.format(column.getDisplayFormat(), value);
                     }
-                    pdfFont.setColor(tableTitleFontColor);
+                    pdfFont.setColor(tableHeaderFontColor);
                     dataCell = new PdfPCell(new Phrase(value, pdfFont));
                     if (column.getAlignment() != null) {
                         dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
@@ -511,7 +511,7 @@ public class CustomReportDesigner {
         if (tabWidget.getTableFooter() != null && tabWidget.getTableFooter()) {
             Boolean totalDisplayed = false;
             if (groupFields != null && groupFields.size() > 0) {
-                pdfFont.setColor(tableTitleFontColor);
+                pdfFont.setColor(tableHeaderFontColor);
                 PdfPCell dataCell = new PdfPCell(new Phrase("Total:", pdfFont));
                 dataCell.setBorderColor(widgetBorderColor);
                 dataCell.setBackgroundColor(tableFooterColor);
@@ -522,7 +522,7 @@ public class CustomReportDesigner {
                 WidgetColumn column = iterator.next();
                 if (column.getColumnHide() == null || column.getColumnHide() == 0) {
                     if (totalDisplayed == false) {
-                        pdfFont.setColor(tableTitleFontColor);
+                        pdfFont.setColor(tableHeaderFontColor);
                         PdfPCell dataCell = new PdfPCell(new Phrase("Total:", pdfFont));
                         dataCell.setBorderColor(widgetBorderColor);
                         dataCell.setBackgroundColor(tableFooterColor);
@@ -533,7 +533,7 @@ public class CustomReportDesigner {
                         if (column.getDisplayFormat() != null) {
                             value = Formatter.format(column.getDisplayFormat(), value);
                         }
-                        pdfFont.setColor(tableTitleFontColor);
+                        pdfFont.setColor(tableHeaderFontColor);
                         PdfPCell dataCell = new PdfPCell(new Phrase(value, pdfFont));
                         if (column.getAlignment() != null) {
                             dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
@@ -552,10 +552,10 @@ public class CustomReportDesigner {
     public void addReportHeader(Document document) {
         try {
             // 236, 255, 224
-            BaseColor backgroundColor = new BaseColor(244, 250, 245);
-            BaseColor reportTitleColor = new BaseColor(241, 136, 60);
-            BaseColor textHighlightColor = new BaseColor(242, 156, 33);
-            BaseColor bobSmithBMWColor = new BaseColor(1, 67, 98);
+            BaseColor backgroundColor = new BaseColor(241, 243, 246);
+            BaseColor reportTitleColor = BaseColor.BLACK;
+            BaseColor textHighlightColor = new BaseColor(98, 203, 49);
+            BaseColor paulWalkerColor = new BaseColor(1, 67, 98);
 
             Integer headerCellCount = 4;
             Font f = new Font(pdfFont);
@@ -579,7 +579,7 @@ public class CustomReportDesigner {
             pdfFontBoldSmall.setColor(BaseColor.GRAY);
             pdfFontBoldSmall.setSize(12);
             pdfFontBoldLarge.setStyle(Font.BOLD);
-            pdfFontBoldLarge.setColor(bobSmithBMWColor);
+            pdfFontBoldLarge.setColor(paulWalkerColor);
             pdfFontBoldLarge.setSize(16);
 
             pdfFontHighlight.setSize(14);
@@ -595,7 +595,7 @@ public class CustomReportDesigner {
             reportTitle.setIndentationLeft(25);
 
             LineSeparator dottedline = new LineSeparator();
-            BaseColor dottedLineColor = new BaseColor(90, 113, 122);
+            BaseColor dottedLineColor = new BaseColor(98, 203, 49);
 
             dottedline.setOffset(6);
             dottedline.setLineWidth(4);
@@ -618,17 +618,17 @@ public class CustomReportDesigner {
             leftParagraph.add(new Paragraph("Budget ", pdfFontNormal));
             leftParagraph.add(new Paragraph("$1,500", pdfFontHighlight));
             leftParagraph.add(new Phrase("\n\n"));
-            leftParagraph.add(new Paragraph("Bob Smith BMW", pdfFontBoldLarge));
+            leftParagraph.add(new Paragraph("PAUL WALKER", pdfFontBoldLarge));
 
             Paragraph rightParagraph = new Paragraph("DIGITAL ADVISOR", pdfFontHighlight);
             rightParagraph.add(new Phrase("\n"));
-            rightParagraph.add(new Paragraph("Zoe Suffety", pdfFontBoldSmall));
+            rightParagraph.add(new Paragraph("Zoe", pdfFontBoldSmall));
             rightParagraph.add(new Phrase("\n"));
             rightParagraph.add(new Paragraph("EMAIL: ", pdfFontNormalLight));
-            rightParagraph.add(new Paragraph("zsuffety@l2tmedia.com", pdfFontBoldSmall));
+            rightParagraph.add(new Paragraph("info@deetaanalytics.com", pdfFontBoldSmall));
             rightParagraph.add(new Phrase("\n"));
             rightParagraph.add(new Paragraph("PHONE: ", pdfFontNormalLight));
-            rightParagraph.add(new Paragraph("847-901-8156", pdfFontBoldSmall));
+            rightParagraph.add(new Paragraph("773-446-7565", pdfFontBoldSmall));
 
             PdfPCell bottomCell = new PdfPCell(new Phrase("\n\n"));
             bottomCell.setBackgroundColor(backgroundColor);
@@ -704,7 +704,7 @@ public class CustomReportDesigner {
         try {
             PdfWriter writer = null;
             Document document = new Document(pageSize, 36, 36, 72, 72);
-            BaseColor tableTitleFontColor = new BaseColor(61, 70, 77);
+            BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
             writer = PdfWriter.getInstance(document, out);
             document.open();
@@ -735,7 +735,7 @@ public class CustomReportDesigner {
                     cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
                     cell.setFixedHeight(30);
                     cell.setBorderColor(widgetBorderColor);
-                    cell.setBackgroundColor(tableTitleColor);
+                    cell.setBackgroundColor(widgetTitleColor);
                     cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
                     cell.setColspan(1);
                     cell.setPaddingTop(5);
@@ -762,7 +762,7 @@ public class CustomReportDesigner {
                     cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
                     cell.setFixedHeight(30);
                     cell.setBorderColor(widgetBorderColor);
-                    cell.setBackgroundColor(tableTitleColor);
+                    cell.setBackgroundColor(widgetTitleColor);
                     cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
                     cell.setColspan(1);
                     cell.setPaddingTop(5);
@@ -797,7 +797,7 @@ public class CustomReportDesigner {
                     if (lineChart != null) {
                         PdfPCell chartCell = new PdfPCell(lineChart);
                         chartCell.setBorderColor(widgetBorderColor);
-                        chartCell.setPadding(10);
+                        chartCell.setPadding(5);
                         table.addCell(chartCell);
                         document.add(table);
                     }
@@ -932,7 +932,7 @@ public class CustomReportDesigner {
                         r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
                         r.setBaseItemLabelsVisible(true);
                         ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.CENTER_LEFT);
+                                TextAnchor.BASELINE_LEFT);
                         r.setBasePositiveItemLabelPosition(position);
                         if (r != null) {
                             final LegendItem item = r.getLegendItem(0, 0);
@@ -948,7 +948,7 @@ public class CustomReportDesigner {
                         renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
                         renderer2.setBaseItemLabelsVisible(true);
                         ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.CENTER_RIGHT);
+                                TextAnchor.BASELINE_RIGHT);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
                             final LegendItem item = renderer2.getLegendItem(1, 1);
@@ -1091,7 +1091,7 @@ public class CustomReportDesigner {
                         r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
                         r.setBaseItemLabelsVisible(true);
                         ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.CENTER_LEFT);
+                                TextAnchor.BASELINE_LEFT);
                         r.setBasePositiveItemLabelPosition(position);
 
                         if (r != null) {
@@ -1108,7 +1108,7 @@ public class CustomReportDesigner {
                         renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
                         renderer2.setBaseItemLabelsVisible(true);
                         ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.CENTER_RIGHT);
+                                TextAnchor.BASELINE_RIGHT);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
                             final LegendItem item = renderer2.getLegendItem(1, 1);
@@ -1638,7 +1638,7 @@ public class CustomReportDesigner {
         }
 
         JFreeChart chart = ChartFactory.createPieChart(
-                tabWidget.getWidgetTitle(), dataSet, true, false, false);
+                "", dataSet, true, false, false);
 
         Paint[] paintSequence = new Paint[]{
             new Color(116, 196, 198),
@@ -1650,6 +1650,7 @@ public class CustomReportDesigner {
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setDrawingSupplier(new ChartDrawingSupplier());
         plot.setBackgroundPaint(Color.white);
+        plot.setOutlineVisible(false);
         int i = 0;
         for (Iterator<String> iterator = legends.iterator(); iterator.hasNext();) {
             if (i > 4) {
@@ -1889,9 +1890,9 @@ public class CustomReportDesigner {
 //            }
                 // System.out.println("LOCATION PATH " + getClass().getProtectionDomain().getCodeSource().getLocation());
                 Rectangle rectangle = pageSize; // new Rectangle(10, 900, 100, 850);
-                Image img = Image.getInstance(CustomReportDesigner.class.getResource("") + "/../images/l2tmedia-logo-dark.png");
-                img.scaleToFit(200, 200);
-                img.setAbsolutePosition(60, rectangle.getTop() - 85);
+                Image img = Image.getInstance(CustomReportDesigner.class.getResource("") + "/../images/deeta-logo.png");
+                img.scaleToFit(90, 90);
+                img.setAbsolutePosition(62, rectangle.getTop() - 50);
                 img.setAlignment(Element.ALIGN_TOP);
                 writer.getDirectContent().addImage(img);
 
