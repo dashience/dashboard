@@ -17,7 +17,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $stateParams.tabId = ""
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
-        $scope.locationId = $stateParams.locationId;
+        $scope.locationId = $stateParams.locationId;        
     };
     $scope.setParams = function () {
         $scope.startDate = $stateParams.startDate;
@@ -101,7 +101,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $http.get('admin/ui/product').success(function (response) {
         $scope.products = response;
-        ;
     });
 
     $scope.getDealerId = function (dealer) {
@@ -260,26 +259,26 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         });
 
         //$("#config-demo").click(function (e) {
-        
+
         $(document).on('click', '.table-condensed .month', function () {
-           		var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-	   		var selectedMonth=$(this).text();
-			var splitMY=selectedMonth.split(" ");
-			var monthvalue=$.inArray(splitMY[0],months);
-			var FirstDay = new Date(splitMY[1], monthvalue, 1);
-			var LastDay = new Date(splitMY[1],monthvalue+1, 0);
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var selectedMonth = $(this).text();
+            var splitMY = selectedMonth.split(" ");
+            var monthvalue = $.inArray(splitMY[0], months);
+            var FirstDay = new Date(splitMY[1], monthvalue, 1);
+            var LastDay = new Date(splitMY[1], monthvalue + 1, 0);
 
-			$("input[name='daterangepicker_start']").daterangepicker({
-			  singleDatePicker: false,
-			  startDate:FirstDay
-			});
+            $("input[name='daterangepicker_start']").daterangepicker({
+                singleDatePicker: false,
+                startDate: FirstDay
+            });
 
-			$("input[name='daterangepicker_end']").daterangepicker({
-			  singleDatePicker: false,
-			  startDate: LastDay
-			});		
+            $("input[name='daterangepicker_end']").daterangepicker({
+                singleDatePicker: false,
+                startDate: LastDay
+            });
 
-		});
-            
+        });
+
     });
 });
