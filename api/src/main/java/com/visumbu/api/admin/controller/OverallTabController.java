@@ -314,7 +314,7 @@ public class OverallTabController {
             if (accountDetails.getAdwordsAccountId() != null) {
                 List<Map<String, String>> gaData = new ArrayList<>();
                 if (accountDetails.getAnalyticsProfileId() != null) {
-                    GetReportsResponse goals = gaService.getGoals(accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
+                    GetReportsResponse goals = gaService.getGoals(accountDetails.getAnalyticsAccountId(), accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
                     gaData = (List) gaService.getResponseAsMap(goals).get("data");
                 }
                 AccountReport displayAdwordsAccountReport = adwordsService.getAccountReport(startDate, endDate, accountDetails.getAdwordsAccountId(), aggregation, "CONTENT");
@@ -334,12 +334,12 @@ public class OverallTabController {
                     performanceBean.setAveragePosition(row.getAvgPosition());
                     performanceBean.setConversions(row.getConversions());
 
-                    performanceBean.setDirectionsPageView(getGaDataFor(gaData, row.getDay(), "Goal1Completions"));
-                    performanceBean.setInventoryPageViews(getGaDataFor(gaData, row.getDay(), "Goal2Completions"));
-                    performanceBean.setLeadSubmission(getGaDataFor(gaData, row.getDay(), "Goal3Completions"));
-                    performanceBean.setSpecialsPageView(getGaDataFor(gaData, row.getDay(), "Goal4Completions"));
-                    performanceBean.setTimeOnSiteGt2Mins(getGaDataFor(gaData, row.getDay(), "Goal5Completions"));
-                    performanceBean.setVdpViews(getGaDataFor(gaData, row.getDay(), "Goal6Completions"));
+                    performanceBean.setDirectionsPageView(getGaDataFor(gaData, row.getDay(), "directionsPageView"));
+                    performanceBean.setInventoryPageViews(getGaDataFor(gaData, row.getDay(), "inventoryPageViews"));
+                    performanceBean.setLeadSubmission(getGaDataFor(gaData, row.getDay(), "leadSubmission"));
+                    performanceBean.setSpecialsPageView(getGaDataFor(gaData, row.getDay(), "specialsPageView"));
+                    performanceBean.setTimeOnSiteGt2Mins(getGaDataFor(gaData, row.getDay(), "timeOnSiteGt2Mins"));
+                    performanceBean.setVdpViews(getGaDataFor(gaData, row.getDay(), "vdpViews"));
                     Integer engagements = 0;
                     engagements += (ApiUtils.toInteger(performanceBean.getDirectionsPageView() == null ? "0" : performanceBean.getDirectionsPageView())
                             + ApiUtils.toInteger(performanceBean.getInventoryPageViews() == null ? "0" : performanceBean.getInventoryPageViews())

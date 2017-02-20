@@ -128,7 +128,7 @@ public class VideoTabController {
             List<VideoPerformanceReportBean> performanceReportBeans = new ArrayList<>();
             AccountDetails accountDetails = ApiUtils.toAccountDetails(request, "youtube");
             if (accountDetails.getAdwordsAccountId() != null) {
-                VideoReport adwordsVideoReport = adwordsService.getVideoReport(startDate, endDate, accountDetails.getAdwordsAccountId(), "", "YOUTUBE_WATCH");
+                VideoReport adwordsVideoReport = adwordsService.getVideoReport(startDate, endDate, accountDetails.getAdwordsAccountId(), "videoTab", "YOUTUBE_WATCH");
                 List<VideoReportRow> adwordsVideoRow = adwordsVideoReport.getVideoReportRow();
                 for (Iterator<VideoReportRow> reportRow = adwordsVideoRow.iterator(); reportRow.hasNext();) {
                     VideoReportRow row = reportRow.next();
@@ -249,7 +249,7 @@ public class VideoTabController {
             columnDefs.add(new ColumnDef("cost", "number", "Cost", ColumnDef.Aggregation.SUM, ColumnDef.Format.CURRENCY));
             columnDefs.add(new ColumnDef("conversions", "number", "Conversions", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
             columnDefs.add(new ColumnDef("cpa", "number", "CPL", ColumnDef.Aggregation.CPA, ColumnDef.Format.CURRENCY));
-            columnDefs.add(new ColumnDef("week", "string", "Day"));
+            columnDefs.add(new ColumnDef("week", "date", "Day"));
 
             columnDefs.add(new ColumnDef("viewRate", "string", "View Rate", ColumnDef.Aggregation.AVG, ColumnDef.Format.PERCENTAGE));
             columnDefs.add(new ColumnDef("views", "number", "Views", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
@@ -287,7 +287,7 @@ public class VideoTabController {
                     performanceBean.setVideoPlayedTo25(row.getVideoPlayedTo25());
                     performanceBean.setVideoTitle(row.getVideoTitle());
                     performanceBean.setViews(row.getViews());
-                    performanceBean.setWeek(row.getWeek());
+                    performanceBean.setWeek(DateUtils.dateToString(DateUtils.toDate(row.getWeek(), "yyyy-MM-dd"), "MM/dd/yyyy"));
 
                     performanceBean.setViewRate(row.getViewRate());
                     performanceBean.setAveragePosition(row.getAvgPosition());

@@ -117,7 +117,7 @@ public class SocialImpactTabController {
         columnDefs.add(new ColumnDef("likes", "number", "Likes", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
         columnDefs.add(new ColumnDef("reactions", "number", "Reactions", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
         columnDefs.add(new ColumnDef("engagements", "number", "Engagements", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
-        columnDefs.add(new ColumnDef("created_time", "string", "Created Time"));
+        columnDefs.add(new ColumnDef("created_time", "date", "Created Time"));
 
         returnMap.put("columnDefs", columnDefs);
         if (fieldsOnly != null) {
@@ -243,14 +243,14 @@ public class SocialImpactTabController {
         Map returnMap = new HashMap();
         List<ColumnDef> columnDefs = new ArrayList<>();
         columnDefs.add(new ColumnDef("message", "string", "Message"));
-        columnDefs.add(new ColumnDef("date", "string", "Week"));
+        columnDefs.add(new ColumnDef("date", "date", "Week"));
         columnDefs.add(new ColumnDef("type", "string", "type"));
         columnDefs.add(new ColumnDef("shares", "number", "Shares", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
         columnDefs.add(new ColumnDef("comments", "number", "Comments", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
         columnDefs.add(new ColumnDef("likes", "number", "Likes", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
         columnDefs.add(new ColumnDef("reactions", "number", "Reactions", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
         columnDefs.add(new ColumnDef("engagements", "number", "Engagements", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
-        columnDefs.add(new ColumnDef("created_time", "string", "Created Time"));
+        columnDefs.add(new ColumnDef("created_time", "date", "Created Time"));
 
         returnMap.put("columnDefs", columnDefs);
         if (fieldsOnly != null) {

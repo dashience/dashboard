@@ -6,8 +6,10 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,12 +21,15 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -65,6 +70,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "TabWidget.findByCustomRange", query = "SELECT t FROM TabWidget t WHERE t.customRange = :customRange")
     , @NamedQuery(name = "TabWidget.findByFrequencyDuration", query = "SELECT t FROM TabWidget t WHERE t.frequencyDuration = :frequencyDuration")
     , @NamedQuery(name = "TabWidget.findByDataset", query = "SELECT t FROM TabWidget t WHERE t.dataset = :dataset")
+        , @NamedQuery(name = "TabWidget.findByDataSetId", query = "SELECT t FROM TabWidget t WHERE t.dataSetId = :dataSetId")
     , @NamedQuery(name = "TabWidget.findByDatasource", query = "SELECT t FROM TabWidget t WHERE t.datasource = :datasource")})
 public class TabWidget implements Serializable {
 
@@ -144,12 +150,16 @@ public class TabWidget implements Serializable {
     private Boolean zeroSuppression;
     @Column(name = "max_record")
     private Integer maxRecord;
-    @Size(max = 255)
-    @Column(name = "custom_range")
-    private String customRange;
+    
+    
     @Size(max = 255)
     @Column(name = "frequency_duration")
     private String frequencyDuration;
+    @Size(max = 255)
+    @Column(name = "custom_range")
+    private String customRange;
+    
+    
     @Size(max = 255)
     @Column(name = "dataset")
     private String dataset;
@@ -171,6 +181,9 @@ public class TabWidget implements Serializable {
     
     @Transient
     private List<WidgetColumn> columns;
+
+    @Transient
+    private List<Map<String, Object>> data;
 
     public TabWidget() {
     }
@@ -235,6 +248,14 @@ public class TabWidget implements Serializable {
         this.displayColumns = displayColumns;
     }
 
+    public List<Map<String, Object>> getData() {
+        return data;
+    }
+
+    public void setData(List<Map<String, Object>> data) {
+        this.data = data;
+    }
+    
     public Short getEditable() {
         return editable;
     }

@@ -5,8 +5,17 @@
  */
 package com.visumbu.api.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -53,6 +62,21 @@ public class FileUtils {
         } catch (JAXBException ex) {
 
         }
+    }
+
+    public static String readFileAsString(String filename) throws FileNotFoundException, IOException {
+        InputStream is = new FileInputStream(filename);
+        BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+
+        String line = buf.readLine();
+        StringBuilder sb = new StringBuilder();
+
+        while (line != null) {
+            sb.append(line).append("\n");
+            line = buf.readLine();
+        }
+        String fileAsString = sb.toString();
+        return fileAsString;
     }
 
 }

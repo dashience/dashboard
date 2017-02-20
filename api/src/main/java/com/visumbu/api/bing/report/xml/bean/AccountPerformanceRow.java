@@ -5,6 +5,7 @@
  */
 package com.visumbu.api.bing.report.xml.bean;
 
+import com.visumbu.api.utils.ApiUtils;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -162,7 +163,7 @@ public class AccountPerformanceRow {
     }
 
     public Data getImpressionSharePercent() {
-        return impressionSharePercent;
+        return ApiUtils.removePercent(impressionSharePercent);
     }
 
     @XmlElement(name = "ImpressionSharePercent")
@@ -171,7 +172,7 @@ public class AccountPerformanceRow {
     }
 
     public Data getImpressionLostToBudgetPercent() {
-        return impressionLostToBudgetPercent;
+        return ApiUtils.removePercent(impressionLostToBudgetPercent);
     }
 
     @XmlElement(name = "ImpressionLostToBudgetPercent")
@@ -180,7 +181,7 @@ public class AccountPerformanceRow {
     }
 
     public Data getImpressionLostToRankPercent() {
-        return impressionLostToRankPercent;
+        return ApiUtils.removePercent(impressionLostToRankPercent);
     }
 
     @XmlElement(name = "ImpressionLostToRankPercent")

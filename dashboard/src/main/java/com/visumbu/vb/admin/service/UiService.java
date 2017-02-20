@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.UiDao;
+import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.bean.ReportColumnBean;
 import com.visumbu.vb.bean.ReportWidgetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
@@ -22,9 +23,16 @@ import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -42,15 +50,16 @@ public class UiService {
     private UiDao uiDao;
 
     public List<Product> getProduct() {
-        List<Product> product = uiDao.read(Product.class);
-        List<Product> returnList = new ArrayList<>();
-        for (Iterator<Product> iterator = product.iterator(); iterator.hasNext();) {
-            Product product1 = iterator.next();
-            if (product1.getProductName().equalsIgnoreCase("Marketing Data")) {
-                returnList.add(product1);
-            }
-        }
-        return returnList;
+        return uiDao.read(Product.class);
+//        List<Product> product = uiDao.read(Product.class);
+//        List<Product> returnList = new ArrayList<>();
+//        for (Iterator<Product> iterator = product.iterator(); iterator.hasNext();) {
+//            Product product1 = iterator.next();
+//            if (product1.getProductName().equalsIgnoreCase("Marketing Data")) {
+//                returnList.add(product1);
+//            }
+//        }
+//        return returnList;
     }
 
     public List<Product> getDealerProduct(Integer dealerId) {
@@ -76,6 +85,9 @@ public class UiService {
 
     public List<DashboardTabs> getDashboardTabs(Integer dbId) {
         return uiDao.getDashboardTabs(dbId);
+    }
+    public List<DashboardTabs> getDashboardTabsByProduct(Integer pId, Integer uId) {
+        return uiDao.getDashboardTabsByProduct(pId, uId);
     }
 
     public DashboardTabs deleteDashboardTab(Integer id) {
@@ -104,7 +116,7 @@ public class UiService {
         return uiDao.updateWidgetUpdateOrder(tabId, widgetOrder);
     }
 
-    public TabWidget deleteTabWidget(Integer id) {
+        public TabWidget deleteTabWidget(Integer id) {
         return uiDao.deleteTabWidget(id);
     }
 
@@ -162,6 +174,8 @@ public class UiService {
         tabWidget.setTableFooter(tabWidgetBean.getTableFooter());
         tabWidget.setZeroSuppression(tabWidgetBean.getZeroSuppression());
         tabWidget.setDateDuration(tabWidgetBean.getDateDuration());
+        tabWidget.setCustomRange(tabWidgetBean.getCustomRange());
+        tabWidget.setFrequencyDuration(tabWidgetBean.getFrequencyDuration());
         tabWidget.setMaxRecord(tabWidgetBean.getMaxRecord());
         tabWidget.setDatasource(tabWidgetBean.getDatasource());
         tabWidget.setDataset(tabWidgetBean.getDataset());
@@ -342,7 +356,41 @@ public class UiService {
     }
 
     public DataSet deleteDataSet(Integer id) {
-        DataSet dataSet = readDataSet(id);
-        return (DataSet) uiDao.delete(dataSet);
+       // DataSet dataSet = readDataSet(id);
+        return (DataSet) uiDao.deleteDataSet(id);
+    }
+
+    public DataSource saveDataSource(DataSourceBean dataSource) {
+        try {
+            DataSource dbDataSource = new DataSource();
+            BeanUtils.copyProperties(dbDataSource, dataSource);
+            String filename = "/tmp/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
+            if(dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
+                filename = filename + dataSource.getSourceFileName();
+                PrintWriter out = new PrintWriter(filename);
+                out.print(dataSource.getSourceFile());
+                out.close();
+                dbDataSource.setConnectionString(filename);
+                dbDataSource.setSqlDriver(dataSource.getSourceFileName());
+                uiDao.create(dbDataSource);
+            }
+            if(dbDataSource.getDataSourceType().equalsIgnoreCase("xls")) {
+                filename = filename + dataSource.getSourceFileName();
+                PrintWriter out = new PrintWriter(filename);
+                out.print(dataSource.getSourceFile());
+                out.close();
+                dbDataSource.setConnectionString(filename);
+                dbDataSource.setSqlDriver(dataSource.getSourceFileName());
+                uiDao.create(dbDataSource);
+            }
+            
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
+            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }

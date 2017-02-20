@@ -49,7 +49,7 @@ public class ReviewPushController extends BaseController {
     @RequestMapping(value = "reviews", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getReviews(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get12WeeksBack(request.getParameter("startDate"));
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String fieldsOnly = request.getParameter("fieldsOnly");
         Map returnMap = new HashMap();
@@ -59,7 +59,7 @@ public class ReviewPushController extends BaseController {
         columnDefs.add(new ColumnDef("reviewer", "string", "Reviewer"));
         columnDefs.add(new ColumnDef("type", "string", "Type"));
         columnDefs.add(new ColumnDef("respond_url", "string", "Respond Url"));
-        columnDefs.add(new ColumnDef("review_date", "string", "Review Date"));
+        columnDefs.add(new ColumnDef("review_date", "date", "Review Date"));
         columnDefs.add(new ColumnDef("review", "string", "Review"));
         columnDefs.add(new ColumnDef("review_time", "string", "Review Time"));
         columnDefs.add(new ColumnDef("created_time", "string", "Created Time"));
@@ -80,7 +80,7 @@ public class ReviewPushController extends BaseController {
     @RequestMapping(value = "ratingSummary", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getRatingSummaryByDealer(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get12WeeksBack(request.getParameter("startDate"));
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String fieldsOnly = request.getParameter("fieldsOnly");
         Map returnMap = new HashMap();
@@ -117,7 +117,7 @@ public class ReviewPushController extends BaseController {
     @RequestMapping(value = "bySources", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getBySources(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get12WeeksBack(request.getParameter("startDate"));
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String fieldsOnly = request.getParameter("fieldsOnly");
         Map returnMap = new HashMap();

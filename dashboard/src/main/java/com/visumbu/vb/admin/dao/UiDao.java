@@ -49,6 +49,13 @@ public class UiDao extends BaseDao {
         query.setParameter("dashboardId", dbId);
         return query.list();
     }
+    public List<DashboardTabs> getDashboardTabsByProduct(Integer productId, Integer userId) {
+        String queryStr = "SELECT d FROM DashboardTabs d WHERE (d.status is null or d.status != 'Deleted') and d.dashboardId.productId.id = :productId and d.dashboardId.userId.id = :userId order by tabOrder";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("productId", productId);
+        query.setParameter("userId", userId);
+        return query.list();
+    }
 
     public DashboardTabs getDashboardTabById(Integer tabId) {
         DashboardTabs dashboardTabs = (DashboardTabs) sessionFactory.getCurrentSession().get(DashboardTabs.class, tabId);
@@ -282,6 +289,8 @@ public class UiDao extends BaseDao {
                 .addScalar("product_name", StringType.INSTANCE)
                 .addScalar("remarks", StringType.INSTANCE)
                 .addScalar("icon", StringType.INSTANCE)
+                .addScalar("show_product", StringType.INSTANCE)
+                .addScalar("product_order", StringType.INSTANCE)
                 .setResultTransformer(Transformers.aliasToBean(ProductBean.class));
          query.setParameter("dealerId", dealerId);
         return query.list();
@@ -296,6 +305,27 @@ public class UiDao extends BaseDao {
     public DataSet getDataSetById(Integer dataSetId) {
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
+    }    
+    
+    public DataSet deleteDataSet(Integer id) {
+       
+//        TabWidget tabwidgetColumn=new TabWidget();       
+//        Query querySet = sessionFactory.getCurrentSession().getNamedQuery("TabWidget.findByDataSetId");
+//        querySet.setParameter("dataSetId", id);
+//        tabwidgetColumn=(TabWidget) querySet.uniqueResult();        
+//        
+        String queryString = "delete from WidgetColumn d where d.widgetId.id = :widgetId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("widgetId", getTabWidgetById(id));
+        querySess.executeUpdate();
+        
+        String queryStr = "delete from TabWidget d where d.dataSetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+        
+        delete(getDataSetById(id));
+        return null;
     }
 
 }

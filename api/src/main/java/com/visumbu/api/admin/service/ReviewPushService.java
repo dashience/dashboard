@@ -60,7 +60,7 @@ public class ReviewPushService {
                 JSONObject dataArr1 = (JSONObject) dataArr.get(i);
                 Map dataMap = getDataAsMap(dataArr1);
                 dataMap.putAll(getDataAsMap((JSONObject) dataArr1.get("attributes")));
-                dataMap.put("review_date", DateUtils.dateToString(DateUtils.toDate(dataMap.get("review_date") + "", "yyyy-MM-dd"), "MM-dd-yyyy"));
+                dataMap.put("review_date", DateUtils.dateToString(DateUtils.toDate(dataMap.get("review_date") + "", "yyyy-MM-dd"), "MM/dd/yyyy"));
                 returnAll.add(dataMap);
             }
             return returnAll;
@@ -148,6 +148,9 @@ public class ReviewPushService {
                 dataMap.putAll(getDataAsMap((JSONObject) dataArr1.get("attributes")));
                 dataMap.putAll(getDataAsMap((JSONObject) ((JSONObject) dataArr1.get("attributes")).get("site"), "site_"));
                 dataMap.putAll(getDataAsMap((JSONObject) ((JSONObject) dataArr1.get("attributes")).get("aggregate")));
+                if(((String)dataMap.get("site_name")).equalsIgnoreCase("ReviewPush")){
+                    dataMap.put("site_name", "Private Reviews");
+                }
                 returnAll.add(dataMap);
             }
             return returnAll;

@@ -27,6 +27,7 @@ public class ColumnDef {
         public static final String CTR = "ctr";   // clicks/impressions
         public static final String CPA = "cpa";   // cost/conversions
         public static final String CPC = "cpc";   // cost/clicks
+        public static final String CPS = "cps";   // spend/clicks
         public static final String MAX = "max";
         public static final String MIN = "min";
         public static final String COUNT = "count";

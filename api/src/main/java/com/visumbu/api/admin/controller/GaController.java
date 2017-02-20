@@ -5,6 +5,7 @@
  */
 package com.visumbu.api.admin.controller;
 
+import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
 import com.visumbu.api.admin.service.BingService;
 import com.visumbu.api.admin.service.GaService;
 import com.visumbu.api.admin.service.UserService;
@@ -41,6 +42,23 @@ public class GaController {
     private GaService gaService;
     
 
+    @RequestMapping(value = "getGa", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getGa(HttpServletRequest request, HttpServletResponse response) throws IOException, GeneralSecurityException {
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String metrics = request.getParameter("metrics"); // "ga:sessions,sessions;ga:visits,visits";
+        String dimensions = request.getParameter("dimensions"); // "ga:browser";
+        String filter = request.getParameter("filter"); //"ga:channelGrouping==Display;ga:medium==cpc";
+        String raw = request.getParameter("_raw"); //"ga:channelGrouping==Display;ga:medium==cpc";
+        filter=filter.replaceAll(",", "==");
+        GetReportsResponse gaData = gaService.getGenericData("82176546", startDate, endDate, null, null, metrics, dimensions, filter);
+        if(raw != null) {
+            return gaData;
+        }
+        return gaService.getResponseAsMap(gaData);
+    }
+    
     @RequestMapping(value = "testGa", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getAllDataSets(HttpServletRequest request, HttpServletResponse response) throws IOException, GeneralSecurityException {
@@ -58,7 +76,7 @@ public class GaController {
     Object getSeoPerformance(HttpServletRequest request, HttpServletResponse response) throws IOException, GeneralSecurityException {
         Date startDate = DateUtils.get30DaysBack();
         Date endDate = new Date();
-        return gaService.getSeoPerformance("82176546", startDate, endDate, null, null);
+        return gaService.getSeoPerformance("","82176546", startDate, endDate, null, null);
     }
     
     

@@ -147,6 +147,17 @@ public class DateUtils {
         return c.getTime();
     }
 
+    public static String getStartDayOfWeek(Date date, String format) {
+        // Get calendar set to current date and time
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+// Set the calendar to sunday of the current week
+        c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+
+// Print dates of the current week starting on Monday
+        return dateToString(c.getTime(), format);
+    }
+
     public static String getStartDayOfWeek(Date date) {
         // Get calendar set to current date and time
         Calendar c = Calendar.getInstance();
@@ -533,5 +544,19 @@ public class DateUtils {
             return "today";
         }
         return toAdWordsDate(endDate);
+    }
+
+    public static String yearWeekToDate(String yearWeek, String format) {
+        Integer year = ApiUtils.toInteger(yearWeek.substring(0, 4));
+        Integer week = ApiUtils.toInteger(yearWeek.substring(4, 6));
+        Calendar cld = Calendar.getInstance();
+        cld.set(Calendar.YEAR, year);
+        cld.set(Calendar.WEEK_OF_YEAR, week);
+        Date result = cld.getTime();
+        return dateToString(result, format);
+    }
+    
+    public static void main(String[] argv) {
+        System.out.println(yearWeekToDate("201701", "MM/dd/yyyy"));
     }
 }

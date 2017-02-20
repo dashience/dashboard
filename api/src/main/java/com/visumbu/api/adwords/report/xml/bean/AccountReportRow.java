@@ -30,6 +30,7 @@ public class AccountReportRow {
     private String searchImprShare;
     private String avgPosition;
     private String allConv;
+    private String phoneCalls;
     private String avgCPC;
     private String ctr;
     private String cost;
@@ -49,6 +50,15 @@ public class AccountReportRow {
     @XmlAttribute
     public void setAvgCPC(String avgCPC) {
         this.avgCPC = avgCPC;
+    }
+
+    public String getPhoneCalls() {
+        return phoneCalls;
+    }
+
+    @XmlAttribute
+    public void setPhoneCalls(String phoneCalls) {
+        this.phoneCalls = phoneCalls;
     }
 
     public String getCtr() {
