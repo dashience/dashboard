@@ -1,4 +1,4 @@
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
     $scope.permission = localStorageService.get("permission");
 
     $scope.locationID = $stateParams.locationId;
@@ -6,6 +6,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
+    
+    $scope.downloadPdf = function () { 
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+        $window.open(url);
+    };
     
     $scope.addWidget = function (newWidget) {       //Add Widget
         var data = {
