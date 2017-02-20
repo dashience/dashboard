@@ -3742,7 +3742,7 @@ button.close {
     /*    color: rgb(157, 171, 109);*/
     color: rgb(132, 140, 99);
     padding-left:10px;
-    background: #f1f1f1;
+    background: #fff;
     border-bottom: 1px solid #ddd;
 }
 
@@ -3810,7 +3810,7 @@ body.modal-open {
 
 .hdropdown.bigmenu {
     width:100%;
-    min-width:500px;
+    min-width:700px;
 }
 
 .product-dashboard-icon {
@@ -3960,17 +3960,46 @@ textarea.form-control {
 }
 
 .table-fixed thead {
-  /*width: 97%;*/
+    /*width: 97%;*/
 }
 .table-fixed tbody {
-  height: 230px;
-  overflow-y: auto;
-  /*width: 100%;*/
+    height: 230px;
+    overflow-y: auto;
+    /*width: 100%;*/
 }
 .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-  /*display: block;*/
+    /*display: block;*/
 }
 .table-fixed tbody td, .table-fixed thead > tr> th {
-  /*float: left;*/
-  /*border-bottom-width: 0;*/
+    /*float: left;*/
+    /*border-bottom-width: 0;*/
+}
+
+.clear {
+    clear: both;
+    margin-top:10px;
+    border-top: 1px solid #f1f1f1;
+}
+
+.data-search {
+    margin-bottom: 15px;
+}
+
+.radio label, .checkbox label {
+    min-height: 0px !important;
+    vertical-align:middle;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin: 2px 0 0 !important;
+}
+
+.radio, .checkbox {
+    margin-top:0px !important;
+    padding-left: 0px;
+}
+.upload-border {
+    border: 1px solid #ddd;
+    padding: 5px;
+    overflow: hidden;
 }

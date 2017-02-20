@@ -425,16 +425,16 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             };
 
             listOfCalculatedFunction = [
-                {name: 'ctr', field1: 'data_clicks', field2: 'data_impressions'},
-                {name: 'cpa', field1: 'data_cost', field2: 'data_conversions'},
-                {name: 'cpc', field1: 'data_cost', field2: 'data_clicks'},
-                {name: 'cpr', field1: 'data_cost', field2: 'data_reactions'},
-                {name: 'ctl', field1: 'data_cost', field2: 'data_likes'},
-                {name: 'cplc', field1: 'data_cost', field2: 'data_link_clicks'},
-                {name: 'cpcomment', field1: 'data_cost', field2: 'data_comments'},
-                {name: 'cposte', field1: 'data_cost', field2: 'data_post_engagements'},
-                {name: 'cpagee', field1: 'data_cost', field2: 'data_page_engagements'},
-                {name: 'cpp', field1: 'data_cost', field2: 'data_posts'},
+                {name: 'ctr', field1: 'data__clicks', field2: 'data__impressions'},
+                {name: 'cpa', field1: 'data__cost', field2: 'data__conversions'},
+                {name: 'cpc', field1: 'data__cost', field2: 'data__clicks'},
+                {name: 'cpr', field1: 'data__cost', field2: 'data__reactions'},
+                {name: 'ctl', field1: 'data__cost', field2: 'data__likes'},
+                {name: 'cplc', field1: 'data__cost', field2: 'data__link_clicks'},
+                {name: 'cpcomment', field1: 'data__cost', field2: 'data__comments'},
+                {name: 'cposte', field1: 'data__cost', field2: 'data__post_engagements'},
+                {name: 'cpagee', field1: 'data__cost', field2: 'data__page_engagements'},
+                {name: 'cpp', field1: 'data__cost', field2: 'data__posts'},
             ];
 
             function aggregate(list, aggreationList) {

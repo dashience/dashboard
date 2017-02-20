@@ -63,10 +63,10 @@ public class DataSource implements Serializable {
     @Size(max = 45)
     @Column(name = "data_source_type")
     private String dataSourceType;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "source_file")
-    private String sourceFile;
+//    @Lob
+//    @Size(max = 65535)
+//    @Column(name = "source_file")
+//    private String sourceFile;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
@@ -134,13 +134,13 @@ public class DataSource implements Serializable {
         this.dataSourceType = dataSourceType;
     }
 
-    public String getSourceFile() {
-        return sourceFile;
-    }
-
-    public void setSourceFile(String sourceFile) {
-        this.sourceFile = sourceFile;
-    }
+//    public String getSourceFile() {
+//        return sourceFile;
+//    }
+//
+//    public void setSourceFile(String sourceFile) {
+//        this.sourceFile = sourceFile;
+//    }
 
     public VbUser getUserId() {
         return userId;

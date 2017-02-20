@@ -50,6 +50,10 @@ public class Product implements Serializable {
     @Size(max = 255)
     @Column(name = "icon")
     private String icon;
+    @Column(name = "show_product")
+    private Boolean showProduct;
+    @Column(name = "product_order")
+    private Integer productOrder;
 
     @OneToMany(mappedBy = "productId")
     private Collection<Dashboard> dashboardCollection;
@@ -92,6 +96,23 @@ public class Product implements Serializable {
     public void setIcon(String icon) {
         this.icon = icon;
     }
+
+    public Boolean getShowProduct() {
+        return showProduct;
+    }
+
+    public void setShowProduct(Boolean showProduct) {
+        this.showProduct = showProduct;
+    }
+
+    public Integer getProductOrder() {
+        return productOrder;
+    }
+
+    public void setProductOrder(Integer productOrder) {
+        this.productOrder = productOrder;
+    }   
+    
 
     @XmlTransient
     @JsonIgnore

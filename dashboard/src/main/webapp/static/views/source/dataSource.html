@@ -4,6 +4,24 @@
         color:#121111;
         font-weight:bold;
     }
+
+    .fileUpload {
+        position: relative;
+        overflow: hidden;
+        margin: 10px;
+    }
+    .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
 </style>
 <section class="content">
     <div class="row">
@@ -24,20 +42,20 @@
                                     <td>Connection String</td>
                                     <td>Driver</td>
                                     <td>User Name</td>
-<!--                                    <td>
-                                    </td>-->
+                                    <!--                                    <td>
+                                                                        </td>-->
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="dataSource in dataSources" ng-click="editDataSource(dataSource)" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
                                     <td>{{dataSource.name}}</td>
-                                    <td>{{dataSource.dataSourceType | uppercase}}</td>
+                                    <td>{{dataSource.dataSourceType| uppercase}}</td>
                                     <td>{{dataSource.connectionString}}</td>
                                     <td>{{dataSource.sqlDriver}}</td>
                                     <td>{{dataSource.userName}}</td>
-<!--                                    <td>
-                                        <button class="btn btn-default btn-xs" ng-click="deleteDataSource(dataSource, $index)"><i class="fa fa-trash-o"></i></button>
-                                    </td>-->
+                                    <!--                                    <td>
+                                                                            <button class="btn btn-default btn-xs" ng-click="deleteDataSource(dataSource, $index)"><i class="fa fa-trash-o"></i></button>
+                                                                        </td>-->
                                 </tr>
                             </tbody>
                         </table>
@@ -62,8 +80,31 @@
                         </div>
                         <div class="form-group" ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls' || dataSource.dataSourceType === 'https'">
                             <label ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'">File Upload</label>
+                            <div class="fileUpload btn btn-primary" ng-if="dataSource.dataSourceType === 'csv'">
+                                <span>Upload</span>
+                                <input class="upload" type="file" 
+                                       accept=".csv" 
+                                       ID="fileSelect" runat="server"
+                                       ng-model-instant onchange="angular.element(this).scope().csvFileUpload(event)" />
+                            </div>                            
+
+                            <div class="fileUpload btn btn-primary" ng-if="dataSource.dataSourceType === 'xls'">
+                                <span>Upload</span>
+                                <input class="upload" type="file" 
+                                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
+                                       ID="fileSelect" runat="server"
+                                       ng-model-instant onchange="angular.element(this).scope().xlsFileUpload(event)" />
+                            </div>
+
+                            <div ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'">
+                                <div class="upload-border">{{sourceFileName?sourceFileName:dataSource.connectionString}}</div>
+                            </div>
+
                             <label ng-if="dataSource.dataSourceType === 'https'">File Url</label>
-                            <input type="text" class="form-control" ng-model="dataSource.sourceFile">
+                            <div ng-if="dataSource.dataSourceType === 'https'">
+                                <input id="uploadFile" type="text" class="form-control" ng-model="dataSource.sourceFile">
+                            </div>
+
                         </div>                       
                         <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
                             <label>Driver</label>

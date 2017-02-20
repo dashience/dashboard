@@ -79,14 +79,13 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         if (!response) {
             return;
         }
-        //$scope.startId = response[0].id ? response[0].id : 0;
-        //$rootScope.$emit('dealerTabId', {tabId: response[0].id});
-//        $stateParams.tabId = response[0].id;
-        if (!$stateParams.tabId) {
-            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: response[0].id, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-        } else {
-            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-        }
+        $timeout(function () {
+            if (!$stateParams.tabId) {
+                $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: response[0].id, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+            } else {
+                $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+            }
+        }, 100);
     });
 
     var dates = $(".pull-right i").text();

@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.admin.controller;
 
+import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ReportWidgetBean;
@@ -96,10 +97,14 @@ public class UiController extends BaseController {
         return null;
     }
 
-    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{productId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
-        return uiService.getDashboardTabs(dashboardId);
+    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getDashboardTabsByProduct(productId, user.getId());
     }
 
     @RequestMapping(value = "dbTab/{tabId}", method = RequestMethod.DELETE, produces = "application/json")
@@ -288,8 +293,9 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dataSource", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DataSource create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSource dataSource) {
-        return uiService.create(dataSource);
+    DataSource create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
+        
+        return uiService.saveDataSource(dataSource);
     }
 
     @RequestMapping(value = "dataSource", method = RequestMethod.PUT, produces = "application/json")
