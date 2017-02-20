@@ -16,6 +16,8 @@ import com.visumbu.api.adwords.report.xml.bean.AccountReport;
 import com.visumbu.api.adwords.report.xml.bean.AccountReportRow;
 import com.visumbu.api.adwords.report.xml.bean.AdReport;
 import com.visumbu.api.adwords.report.xml.bean.AdReportRow;
+import com.visumbu.api.adwords.report.xml.bean.CallConversionReport;
+import com.visumbu.api.adwords.report.xml.bean.CallConversionReportRow;
 import com.visumbu.api.adwords.report.xml.bean.CampaignDeviceReport;
 import com.visumbu.api.adwords.report.xml.bean.CampaignDeviceReportRow;
 import com.visumbu.api.adwords.report.xml.bean.CampaignPerformanceReportRow;
@@ -109,7 +111,7 @@ public class DisplayTabController {
             List<GeoReportRow> adwordsGeoReportRow = adwordsGeoReport.getGeoReportRow();
             List<Map<String, String>> gaData = new ArrayList<>();
             if (accountDetails.getAnalyticsProfileId() != null) {
-                GetReportsResponse goals = gaService.getGeoGoals(accountDetails.getAnalyticsProfileId(), startDate, endDate);
+                GetReportsResponse goals = gaService.getGeoGoals(accountDetails.getAnalyticsAccountId(),accountDetails.getAnalyticsProfileId(), startDate, endDate);
                 //GetReportsResponse goals = gaService.getGeoGoals("123125706", startDate, endDate);
                 gaData = (List) gaService.getResponseAsMap(goals).get("data");
             }
@@ -131,12 +133,12 @@ public class DisplayTabController {
                 performanceBean.setCpa(cpa);
                 performanceBean.setAveragePosition(row.getAvgPosition());
                 performanceBean.setConversions(row.getAllConv());
-                performanceBean.setDirectionsPageView(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "Goal1Completions"));
-                performanceBean.setInventoryPageViews(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "Goal2Completions"));
-                performanceBean.setLeadSubmission(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "Goal3Completions"));
-                performanceBean.setSpecialsPageView(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "Goal4Completions"));
-                performanceBean.setTimeOnSiteGt2Mins(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "Goal5Completions"));
-                performanceBean.setVdpViews(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "Goal6Completions"));
+                performanceBean.setDirectionsPageView(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "directionsPageView"));
+                performanceBean.setInventoryPageViews(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "inventoryPageViews"));
+                performanceBean.setLeadSubmission(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "leadSubmission"));
+                performanceBean.setSpecialsPageView(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "specialsPageView"));
+                performanceBean.setTimeOnSiteGt2Mins(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "timeOnSiteGt2Mins"));
+                performanceBean.setVdpViews(getGaDataForType(gaData, "ga:city", performanceBean.getCity(), "vdpViews"));
                 Integer engagements = 0;
                 engagements += (parseInt(performanceBean.getDirectionsPageView() == null ? "0" : performanceBean.getDirectionsPageView())
                         + parseInt(performanceBean.getInventoryPageViews() == null ? "0" : performanceBean.getInventoryPageViews())
@@ -191,7 +193,7 @@ public class DisplayTabController {
             List<CampaignDeviceReportRow> adwordsCampaignDeviceReportRow = adwordsCampaignDeviceReport.getCampaignDeviceReportRow();
             List<Map<String, String>> gaData = new ArrayList<>();
             if (accountDetails.getAnalyticsProfileId() != null) {
-                GetReportsResponse goals = gaService.getCampaignDeviceGoals(accountDetails.getAnalyticsProfileId(), startDate, endDate);
+                GetReportsResponse goals = gaService.getCampaignDeviceGoals(accountDetails.getAnalyticsAccountId(),accountDetails.getAnalyticsProfileId(), startDate, endDate);
                 gaData = (List) gaService.getResponseAsMap(goals).get("data");
             }
             for (Iterator<CampaignDeviceReportRow> reportRow = adwordsCampaignDeviceReportRow.iterator(); reportRow.hasNext();) {
@@ -223,12 +225,12 @@ public class DisplayTabController {
                 performanceBean.setAveragePosition(row.getAvgPosition());
                 performanceBean.setConversions(row.getAllConv());
                 performanceBean.setSearchImpressionsShare(row.getSearchImprShare());
-                performanceBean.setDirectionsPageView(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "Goal1Completions"));
-                performanceBean.setInventoryPageViews(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "Goal2Completions"));
-                performanceBean.setLeadSubmission(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "Goal3Completions"));
-                performanceBean.setSpecialsPageView(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "Goal4Completions"));
-                performanceBean.setTimeOnSiteGt2Mins(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "Goal5Completions"));
-                performanceBean.setVdpViews(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "Goal6Completions"));
+                performanceBean.setDirectionsPageView(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "directionsPageView"));
+                performanceBean.setInventoryPageViews(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "inventoryPageViews"));
+                performanceBean.setLeadSubmission(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "leadSubmission"));
+                performanceBean.setSpecialsPageView(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "specialsPageView"));
+                performanceBean.setTimeOnSiteGt2Mins(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "timeOnSiteGt2Mins"));
+                performanceBean.setVdpViews(getGaDataFor2Types(gaData, "ga:deviceCategory", performanceBean.getDevice(), "ga:campaign", row.getCampaign(), "vdpViews"));
                 Integer engagements = 0;
                 engagements += (parseInt(performanceBean.getDirectionsPageView() == null ? "0" : performanceBean.getDirectionsPageView())
                         + parseInt(performanceBean.getInventoryPageViews() == null ? "0" : performanceBean.getInventoryPageViews())
@@ -283,7 +285,7 @@ public class DisplayTabController {
             List<AccountDeviceReportRow> adwordsAccountDeviceReportRow = adwordsAccountDeviceReport.getAccountDeviceReportRow();
             List<Map<String, String>> gaData = new ArrayList<>();
             if (accountDetails.getAnalyticsProfileId() != null) {
-                GetReportsResponse goals = gaService.getDeviceGoals(accountDetails.getAnalyticsProfileId(), startDate, endDate);
+                GetReportsResponse goals = gaService.getDeviceGoals(accountDetails.getAnalyticsAccountId(),accountDetails.getAnalyticsProfileId(), startDate, endDate);
                 gaData = (List) gaService.getResponseAsMap(goals).get("data");
             }
             for (Iterator<AccountDeviceReportRow> reportRow = adwordsAccountDeviceReportRow.iterator(); reportRow.hasNext();) {
@@ -315,12 +317,12 @@ public class DisplayTabController {
                 performanceBean.setAveragePosition(row.getAvgPosition());
                 performanceBean.setConversions(row.getAllConv());
                 performanceBean.setSearchImpressionsShare(row.getSearchImprShare());
-                performanceBean.setDirectionsPageView(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "Goal1Completions"));
-                performanceBean.setInventoryPageViews(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "Goal2Completions"));
-                performanceBean.setLeadSubmission(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "Goal3Completions"));
-                performanceBean.setSpecialsPageView(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "Goal4Completions"));
-                performanceBean.setTimeOnSiteGt2Mins(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "Goal5Completions"));
-                performanceBean.setVdpViews(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "Goal6Completions"));
+                performanceBean.setDirectionsPageView(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "directionsPageView"));
+                performanceBean.setInventoryPageViews(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "inventoryPageViews"));
+                performanceBean.setLeadSubmission(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "leadSubmission"));
+                performanceBean.setSpecialsPageView(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "specialsPageView"));
+                performanceBean.setTimeOnSiteGt2Mins(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "timeOnSiteGt2Mins"));
+                performanceBean.setVdpViews(getGaDataForType(gaData, "ga:deviceCategory", performanceBean.getDevice(), "vdpViews"));
                 Integer engagements = 0;
                 engagements += (parseInt(performanceBean.getDirectionsPageView() == null ? "0" : performanceBean.getDirectionsPageView())
                         + parseInt(performanceBean.getInventoryPageViews() == null ? "0" : performanceBean.getInventoryPageViews())
@@ -390,7 +392,7 @@ public class DisplayTabController {
             AdReport adwordsAdReport = adwordsService.getAdReport(startDate, endDate, accountDetails.getAdwordsAccountId(), "", "CONTENT");
             List<Map<String, String>> gaData = new ArrayList<>();
             if (accountDetails.getAnalyticsProfileId() != null) {
-                GetReportsResponse goals = gaService.getAdGoals(accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
+                GetReportsResponse goals = gaService.getAdGoals(accountDetails.getAnalyticsAccountId(),accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
                 gaData = (List) gaService.getResponseAsMap(goals).get("data");
             }
             returnMap.put("gaData", gaData);
@@ -417,12 +419,12 @@ public class DisplayTabController {
                 performanceBean.setConversions(row.getAllConversions());
                 performanceBean.setCreativeFinalUrls(row.getCreativeFinalUrls());
                 performanceBean.setHeadline(row.getHeadline());
-                performanceBean.setDirectionsPageView(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "Goal1Completions"));
-                performanceBean.setInventoryPageViews(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "Goal2Completions"));
-                performanceBean.setLeadSubmission(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "Goal3Completions"));
-                performanceBean.setSpecialsPageView(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "Goal4Completions"));
-                performanceBean.setTimeOnSiteGt2Mins(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "Goal5Completions"));
-                performanceBean.setVdpViews(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "Goal6Completions"));
+                performanceBean.setDirectionsPageView(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "directionsPageView"));
+                performanceBean.setInventoryPageViews(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "inventoryPageViews"));
+                performanceBean.setLeadSubmission(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "leadSubmission"));
+                performanceBean.setSpecialsPageView(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "specialsPageView"));
+                performanceBean.setTimeOnSiteGt2Mins(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "timeOnSiteGt2Mins"));
+                performanceBean.setVdpViews(getGaDataForDateAdType(gaData, "ga:adContent", row.getHeadline(), "vdpViews"));
                 performanceBean.setAdDescription(ApiUtils.getDisplayAdDescription(performanceBean));
                 performanceReportBeans.add(performanceBean);
             }
@@ -472,7 +474,7 @@ public class DisplayTabController {
             List<CampaignPerformanceReportRow> adwordsCampaignPerformanceReportRow = adWordsCampaignPerformanceReport.getCampaignPerformanceReportRow();
             List<Map<String, String>> gaData = new ArrayList<>();
             if (accountDetails.getAnalyticsProfileId() != null) {
-                GetReportsResponse goals = gaService.getCampaignGoals(accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
+                GetReportsResponse goals = gaService.getCampaignGoals(accountDetails.getAnalyticsAccountId(),accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
                 gaData = (List) gaService.getResponseAsMap(goals).get("data");
             }
             returnMap.put("gaData", gaData);
@@ -494,12 +496,12 @@ public class DisplayTabController {
                 performanceBean.setSearchImpressionsShareLostByRank(row.getSearchLostISRank());
                 performanceBean.setDay(row.getDay());
 
-                performanceBean.setDirectionsPageView(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "Goal1Completions"));
-                performanceBean.setInventoryPageViews(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "Goal2Completions"));
-                performanceBean.setLeadSubmission(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "Goal3Completions"));
-                performanceBean.setSpecialsPageView(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "Goal4Completions"));
-                performanceBean.setTimeOnSiteGt2Mins(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "Goal5Completions"));
-                performanceBean.setVdpViews(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "Goal6Completions"));
+                performanceBean.setDirectionsPageView(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "directionsPageView"));
+                performanceBean.setInventoryPageViews(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "inventoryPageViews"));
+                performanceBean.setLeadSubmission(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "leadSubmission"));
+                performanceBean.setSpecialsPageView(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "specialsPageView"));
+                performanceBean.setTimeOnSiteGt2Mins(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "timeOnSiteGt2Mins"));
+                performanceBean.setVdpViews(getGaDataForDateType(gaData, "ga:campaign", row.getCampaign(), "vdpViews"));
                 performanceReportBeans.add(performanceBean);
             }
         }
@@ -518,7 +520,7 @@ public class DisplayTabController {
             String fieldsOnly = request.getParameter("fieldsOnly");
             List<ColumnDef> columnDefs = new ArrayList<>();
             columnDefs.add(new ColumnDef("source", "string", "Source", 1));
-            columnDefs.add(new ColumnDef("week", "string", "Week", 1));
+            columnDefs.add(new ColumnDef("week", "date", "Week", 1));
             columnDefs.add(new ColumnDef("impressions", "number", "Impressions", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
             columnDefs.add(new ColumnDef("clicks", "number", "Clicks", ColumnDef.Aggregation.SUM, ColumnDef.Format.INTEGER));
             columnDefs.add(new ColumnDef("ctr", "number", "CTR", ColumnDef.Aggregation.CTR, ColumnDef.Format.PERCENTAGE));
@@ -546,7 +548,8 @@ public class DisplayTabController {
                     performanceBean.setImpressions(row.getImpressions());
                     performanceBean.setClicks(row.getClicks());
                     performanceBean.setCtr(row.getCtr());
-                    performanceBean.setDay(row.getWeek());
+                    performanceBean.setDay(DateUtils.dateToString(DateUtils.toDate(row.getWeek(), "yyyy-MM-dd"), "MM/dd/yyyy"));
+                    performanceBean.setWeek(DateUtils.dateToString(DateUtils.toDate(row.getWeek(), "yyyy-MM-dd"), "MM/dd/yyyy")); //
                     String cost = row.getCost(); //Integer.toString(Integer.parseInt(row.getCost()) / 1000000);
                     performanceBean.setCost(cost);
                     String cpc = row.getAvgCPC(); //Integer.toString(Integer.parseInt(row.getAvgCPC()) / 1000000);
@@ -604,9 +607,28 @@ public class DisplayTabController {
                 return returnMap;
             }
             AccountDetails accountDetails = ApiUtils.toAccountDetails(request, "display");
+            
+//            com.visumbu.api.adwords.report.xml.bean.CampaignPerformanceReport adWordsCampaignPerformanceReport = adwordsService.getCampaignPerformanceReport(startDate, endDate, accountDetails.getAdwordsAccountId(), "", "CONTENT");
+//                Integer conversionSum = 0;
+//                List<CampaignPerformanceReportRow> campaignPerformanceReportRow = adWordsCampaignPerformanceReport.getCampaignPerformanceReportRow();
+//                for (Iterator<CampaignPerformanceReportRow> iterator = campaignPerformanceReportRow.iterator(); iterator.hasNext();) {
+//                    CampaignPerformanceReportRow reportRow = iterator.next();
+//                    System.out.println("Conversion => " + reportRow.getPhoneCalls());
+//                    conversionSum += ApiUtils.toInteger(reportRow.getPhoneCalls());
+//                }
+//
+//                CallConversionReport accountCallConversionsReport = adwordsService.getAccountCallConversionsReport(startDate, endDate, accountDetails.getAdwordsAccountId(), "", "CONTENT");
+//                if (accountCallConversionsReport != null) {
+//                    List<CallConversionReportRow> callConversionReportRow = accountCallConversionsReport.getCallConversionReportRow();
+//                    for (Iterator<CallConversionReportRow> iterator = callConversionReportRow.iterator(); iterator.hasNext();) {
+//                        CallConversionReportRow reportRow = iterator.next();
+//                        System.out.println("Conversion1 => " + ApiUtils.toDouble(reportRow.getConversions()));
+//                        conversionSum += ApiUtils.toDouble(reportRow.getConversions()).intValue();
+//                    }
+//                }
             List<AccountPerformanceReportBean> performanceReportBeans = new ArrayList<>();
             if (accountDetails.getAdwordsAccountId() != null) {
-                GetReportsResponse goals = gaService.getGoals(accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
+                GetReportsResponse goals = gaService.getGoals(accountDetails.getAnalyticsAccountId(),accountDetails.getAnalyticsProfileId(), startDate, endDate, "");
                 List<Map<String, String>> gaData = (List) gaService.getResponseAsMap(goals).get("data");
 
                 AccountReport adwordsAccountReport = adwordsService.getAccountReport(startDate, endDate, accountDetails.getAdwordsAccountId(), "", "CONTENT");
@@ -629,15 +651,16 @@ public class DisplayTabController {
 
                     performanceBean.setAveragePosition(row.getAvgPosition());
                     performanceBean.setConversions(row.getAllConv());
+                    // performanceBean.setConversions(conversionSum + "");
                     performanceBean.setSearchImpressionsShare(row.getSearchImprShare());
                     performanceBean.setSearchImpressionsShareLostDueToRank(row.getSearchLostISRank());
                     performanceBean.setSearchImpressionsShareLostDueToBudget(row.getSearchLostISBudget());
-                    performanceBean.setDirectionsPageView(getGaDataFor(gaData, row.getDay(), "Goal1Completions"));
-                    performanceBean.setInventoryPageViews(getGaDataFor(gaData, row.getDay(), "Goal2Completions"));
-                    performanceBean.setLeadSubmission(getGaDataFor(gaData, row.getDay(), "Goal3Completions"));
-                    performanceBean.setSpecialsPageView(getGaDataFor(gaData, row.getDay(), "Goal4Completions"));
-                    performanceBean.setTimeOnSiteGt2Mins(getGaDataFor(gaData, row.getDay(), "Goal5Completions"));
-                    performanceBean.setVdpViews(getGaDataFor(gaData, row.getDay(), "Goal6Completions"));
+                    performanceBean.setDirectionsPageView(getGaDataFor(gaData, row.getDay(), "directionsPageView"));
+                    performanceBean.setInventoryPageViews(getGaDataFor(gaData, row.getDay(), "inventoryPageViews"));
+                    performanceBean.setLeadSubmission(getGaDataFor(gaData, row.getDay(), "leadSubmission"));
+                    performanceBean.setSpecialsPageView(getGaDataFor(gaData, row.getDay(), "specialsPageView"));
+                    performanceBean.setTimeOnSiteGt2Mins(getGaDataFor(gaData, row.getDay(), "timeOnSiteGt2Mins"));
+                    performanceBean.setVdpViews(getGaDataFor(gaData, row.getDay(), "vdpViews"));
                     performanceReportBeans.add(performanceBean);
                 }
             }

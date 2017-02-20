@@ -331,6 +331,8 @@ public class AdReportRow {
 
     @Override
     public String toString() {
-        return "AdReportRow{" + "campaignId=" + campaignId + ", accountDescriptiveName=" + account + ", campaignName=" + campaign + ", videoViews=" + videoViews + ", videoViewRate=" + videoViewRate + ", videoQuartile100Rate=" + videoQuartile100Rate + ", videoQuartile25Rate=" + videoQuartile25Rate + ", videoQuartile50Rate=" + videoQuartile50Rate + ", videoQuartile75Rate=" + videoQuartile75Rate + ", impressions=" + impressions + ", clicks=" + clicks + ", day=" + day + ", conversions=" + conversions + ", averagePosition=" + averagePosition + ", allConversions=" + allConversions + ", adGroupName=" + adGroupName + ", adGroupId=" + adGroupId + ", headline=" + headline + ", adType=" + adType + ", description=" + description + ", description1=" + description1 + ", description2=" + description2 + ", displayUrl=" + displayUrl + ", creativeFinalUrls=" + creativeFinalUrls + ", creativeDestinationUrl=" + creativeDestinationUrl + ", averageCpc=" + averageCpc + ", ctr=" + ctr + ", cost=" + cost + ", costPerConversion=" + costPerConversion + ", conversionRate=" + conversionRate + '}';
+        return "AdReportRow{" + "conversions=" + conversions + ", adGroupId=" + adGroupId + ", description=" + description + ", description1=" + description1 + ", description2=" + description2 + '}';
     }
+
+    
 }

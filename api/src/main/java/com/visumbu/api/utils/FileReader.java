@@ -7,6 +7,7 @@ package com.visumbu.api.utils;
 
 import com.google.api.ads.adwords.axis.v201603.rm.Rule;
 import com.visumbu.api.adwords.report.xml.bean.AccountReport;
+import com.visumbu.api.adwords.report.xml.bean.AdReport;
 import com.visumbu.api.adwords.report.xml.bean.CampaignDeviceReport;
 import com.visumbu.api.adwords.report.xml.bean.CampaignPerformanceReport;
 import com.visumbu.api.bing.report.xml.bean.CampaignDevicePerformanceReport;
@@ -134,10 +135,29 @@ public class FileReader {
         }
         return null;
     }
+    public static Object readXmlAsMap(String fileName) {
+        try {
+//            JAXBContext context = JAXBContext.newInstance(inputClass);
+//            Unmarshaller um = context.createUnmarshaller();
+//
+//            XMLReader reader = XMLReaderFactory.createXMLReader();
+//            NamespaceFilter inFilter = new NamespaceFilter("test", false);
+//            inFilter.setParent(reader);
+//            InputSource is = new InputSource(new FileInputStream(fileName));
+//            SAXSource source = new SAXSource(inFilter, is);
+//            Object obj = (Object) um.unmarshal(source);
+//            return obj;
+//            XStream xStream = new XStream(new DomDriver());
+//            Map<String,Object> map2 = (Map<String,Object>) xStream.fromXML(xml);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     public static void main(String[] argv) {
-        String fileName = "E:\\tmp\\adwords-WOV6LJ5ETDUPPKYBMZ9SORHF2YABHCFQ.xml";
-                    AccountReport areport = (AccountReport) FileReader.readXML(fileName, AccountReport.class);
+        String fileName = "E:\\tmp\\adwords-LGFL88HCOWNYZ4DBCSVAGAHU2VT71LQC.xml";
+                    AdReport areport = (AdReport) FileReader.readXML(fileName, AdReport.class);
 System.out.println(areport);
         //CampaignPerformanceReport report = (CampaignPerformanceReport) FileReader.readXML(fileName, CampaignPerformanceReport.class);
         //System.out.println(report);

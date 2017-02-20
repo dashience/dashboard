@@ -5,6 +5,8 @@
  */
 package com.visumbu.api.dashboard.bean;
 
+import com.visumbu.api.utils.ApiUtils;
+
 /**
  *
  * @author user
@@ -194,7 +196,7 @@ public class GeoPerformanceReportBean {
     }
 
     public String getSearchImpressionsShare() {
-        return searchImpressionsShare;
+        return ApiUtils.removePercent(searchImpressionsShare);
     }
 
     public void setSearchImpressionsShare(String searchImpressionsShare) {

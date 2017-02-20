@@ -45,6 +45,20 @@ import java.util.logging.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import com.google.api.services.analytics.Analytics;
+import com.google.api.services.analytics.AnalyticsScopes;
+import com.google.api.services.analytics.model.Accounts;
+import com.google.api.services.analytics.model.GaData;
+import com.google.api.services.analytics.model.Profiles;
+import com.google.api.services.analytics.model.Webproperties;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.analytics.model.Goal;
+import com.google.api.services.analytics.model.Goals;
 
 /**
  *
@@ -56,7 +70,7 @@ public class GaService {
 
     // private static final String CLIENT_SECRET_JSON_RESOURCE = "F:\\GaToken\\client_secret_384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com.json";
     // Replace with your view ID.
-     private static final String VIEW_ID = "82176546";
+    private static final String VIEW_ID = "82176546";
     // The directory where the user's credentials will be stored.
     private static final File DATA_STORE_DIR = new File("/tmp/");
 
@@ -65,6 +79,27 @@ public class GaService {
     private static NetHttpTransport httpTransport;
     private static FileDataStoreFactory dataStoreFactory;
     private static AnalyticsReporting analyticsReporting = initializeAnalyticsReporting();
+
+    private static Analytics initializeAnalytics() throws Exception {
+    // Initializes an authorized analytics service object.
+
+        // Construct a GoogleCredential object with the service account email
+        // and p12 file downloaded from the developer console.
+        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
+
+        GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
+                httpTransport, JSON_FACTORY, "384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com", "1nJygCmZKdFCOykaGmbjBpKy",
+                Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
+                        dataStoreFactory).build();
+        // Authorize.
+        Credential credential = new AuthorizationCodeInstalledApp(flow1,
+                new LocalServerReceiver()).authorize("user");
+
+        // Construct the Analytics service object.
+        return new Analytics.Builder(httpTransport, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME).build();
+    }
 
     /**
      * Initializes an authorized Analytics Reporting service object.
@@ -107,23 +142,21 @@ public class GaService {
         return null;
     }
 
-    public GetReportsResponse getSeoPerformance(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2) {
+    public GetReportsResponse getSeoPerformance(String accountId, String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2) {
         Date startDate = DateUtils.get30DaysBack();
         Date endDate = new Date();
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;ga:percentNewSessions,PercentNewSessions;"
                 + "ga:newUsers,NewUsers;ga:pageViews,PageViews;ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + getGaGoals(accountId, viewId);
         String dimensions = "ga:medium";
         String filter = "ga:medium==organic,ga:medium==Organic";
         return getGenericData(viewId, startDate1, endDate1, startDate2, endDate2, metricsList, dimensions, filter);
     }
 
-    public GetReportsResponse getGoals(String viewId, Date startDate, Date endDate, String aggregation) {
+    public GetReportsResponse getGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
                 + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + getGaGoals(accountId, viewId);
 
         String dimensions = "ga:channelGrouping;ga:date";
         if (aggregation == null || aggregation.isEmpty()) {
@@ -132,12 +165,10 @@ public class GaService {
         String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
         return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
     }
-    
-    public GetReportsResponse getDynamicDisplayGoals(String viewId, Date startDate, Date endDate, String aggregation) {
+
+    public GetReportsResponse getDynamicDisplayGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
 
         String dimensions = "ga:source;ga:date";
         if (aggregation == null || aggregation.isEmpty()) {
@@ -148,11 +179,9 @@ public class GaService {
         return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
     }
 
-    public GetReportsResponse getCampaignGoals(String viewId, Date startDate, Date endDate, String aggregation) {
+    public GetReportsResponse getCampaignGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
         String dimensions = "ga:channelGrouping;ga:date;ga:campaign";
         if (aggregation == null || aggregation.isEmpty()) {
             dimensions = "ga:channelGrouping;ga:campaign";
@@ -161,11 +190,9 @@ public class GaService {
         return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
     }
 
-    public GetReportsResponse getAdGoals(String viewId, Date startDate, Date endDate, String aggregation) {
+    public GetReportsResponse getAdGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
         String dimensions = "ga:channelGrouping;ga:date;ga:adContent";
         if (aggregation == null || aggregation.isEmpty()) {
             dimensions = "ga:channelGrouping;ga:adContent";
@@ -174,36 +201,41 @@ public class GaService {
         return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
     }
 
-    public GetReportsResponse getDeviceGoals(String viewId, Date startDate, Date endDate) {
+    public GetReportsResponse getDeviceGoals(String accountId, String viewId, Date startDate, Date endDate) {
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
         String dimensions = "ga:channelGrouping;ga:deviceCategory";
         String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
         return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
     }
 
-    public GetReportsResponse getCampaignDeviceGoals(String viewId, Date startDate, Date endDate) {
+    public GetReportsResponse getCampaignDeviceGoals(String accountId, String viewId, Date startDate, Date endDate) {
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
         String dimensions = "ga:channelGrouping;ga:campaign;ga:deviceCategory";
         String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
         return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
     }
 
-    public GetReportsResponse getGeoGoals(String viewId, Date startDate, Date endDate) {
+    public GetReportsResponse getGeoGoals(String accountId, String viewId, Date startDate, Date endDate) {
         String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
+                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
         String dimensions = "ga:channelGrouping;ga:city";
         String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
         return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
     }
 
+    public GetReportsResponse getSeoOverallPerformanceGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
+        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
+                + "ga:bounceRate,BounceRate;"+ getGaGoals(accountId, viewId); 
+        String dimensions = "ga:channelGrouping;ga:date";
+        if (aggregation == null || aggregation.isEmpty()) {
+            dimensions = "ga:channelGrouping";
+        }
+        String filter = "ga:medium==organic,ga:medium==Organic";
+        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
+    }
+    
     public GetReportsResponse getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2, String metrics, String dimentions, String filter) {
         System.out.println(viewId);
         try {
@@ -353,18 +385,6 @@ public class GaService {
         return null;
     }
 
-    public GetReportsResponse getSeoOverallPerformanceGoals(String viewId, Date startDate, Date endDate, String aggregation) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + "ga:goal1Completions,Goal1Completions;ga:goal2Completions,Goal2Completions;ga:goal3Completions,Goal3Completions;"
-                + "ga:goal4Completions,Goal4Completions;ga:goal5Completions,Goal5Completions;ga:goal6Completions,Goal6Completions;";
-        String dimensions = "ga:channelGrouping;ga:date";
-        if (aggregation == null || aggregation.isEmpty()) {
-            dimensions = "ga:channelGrouping";
-        }
-        String filter = "ga:medium==organic,ga:medium==Organic";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
 
     public static Map getResponseAsMap(GetReportsResponse response) {
         Map returnMap = new HashMap();
@@ -501,12 +521,49 @@ public class GaService {
         return response;
     }
 
+    public static String getGaGoals(String accountId, String viewId) {
+        String returnStr = "";
+        try {
+            Analytics analytics = initializeAnalytics();
+            try {
+                Goals goals = analytics.management().goals().list(accountId, "~all", "~all").execute();
+                for (Goal goal : goals.getItems()) {
+                    if (goal.getProfileId().equalsIgnoreCase(viewId) && goal.getActive()) {
+                        if (goal.getName().equalsIgnoreCase("Directions Page View") || goal.getName().equalsIgnoreCase("Directions Page Views")) {
+                            returnStr += "ga:goal" + goal.getId() + "Completions,directionsPageView;";
+                        } else if (goal.getName().equalsIgnoreCase("Inventory Page View") || goal.getName().equalsIgnoreCase("Inventory Page Views")) {
+                            returnStr += "ga:goal" + goal.getId() + "Completions,inventoryPageViews;";
+                        } else if (goal.getName().equalsIgnoreCase("Lead Submission") || goal.getName().equalsIgnoreCase("Lead Submission - General")) {
+                            returnStr += "ga:goal" + goal.getId() + "Completions,leadSubmission;";
+                        } else if (goal.getName().equalsIgnoreCase("Specials Page Views") || goal.getName().equalsIgnoreCase("Specials Page View")) {
+                            returnStr += "ga:goal" + goal.getId() + "Completions,specialsPageView;";
+                        } else if (goal.getName().equalsIgnoreCase("Time on Site > 2 Min") || goal.getName().equalsIgnoreCase("Time on Site > 2 Minutes")) {
+                            returnStr += "ga:goal" + goal.getId() + "Completions,timeOnSiteGt2Mins;";
+                        } else if (goal.getName().equalsIgnoreCase("VDP Views")) {
+                            returnStr += "ga:goal" + goal.getId() + "Completions,vdpViews;";
+                        }
+                    }
+                }
+
+            } catch (GoogleJsonResponseException e) {
+                System.err.println("There was a service error: "
+                        + e.getDetails().getCode() + " : "
+                        + e.getDetails().getMessage());
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returnStr;
+    }
+
     public static void main(String[] args) {
         try {
-            AnalyticsReporting service = initializeAnalyticsReporting();
-
-            GetReportsResponse response = getReport(service);
-            printResponse(response);
+            getGaGoals("43651400", "79919517");
+//            AnalyticsReporting service = initializeAnalyticsReporting();
+//
+//            GetReportsResponse response = getReport(service);
+//            printResponse(response);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -6,6 +6,7 @@
 package com.visumbu.api.utils;
 
 import com.visumbu.api.bean.AccountDetails;
+import com.visumbu.api.bing.report.xml.bean.Data;
 import com.visumbu.api.dashboard.bean.AdPerformanceReportBean;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,27 +21,27 @@ public class ApiUtils {
 
     public static String getDisplayAdDescription(AdPerformanceReportBean reportBean) {
         String adDescription = "";
-        adDescription = reportBean.getHeadline() + "<br/>"
+        adDescription = reportBean.getHeadline().replaceAll("’", "'") + "<br/>"
                 + ((reportBean.getCreativeFinalUrls() == null || reportBean.getCreativeFinalUrls().isEmpty()) ? "" : (reportBean.getCreativeFinalUrls() + "<br/>"));
         return adDescription;
     }
 
     public static String getPaidAdDescription(AdPerformanceReportBean reportBean) {
         String adDescription = "";
-        adDescription = reportBean.getDescription() + "<br/>"
-                + ((reportBean.getDescription1() == null || reportBean.getDescription1().isEmpty()) ? "" : (reportBean.getDescription1() + "<br/>"))
+        adDescription = reportBean.getDescription().replaceAll("’", "'") + "<br/>"
+                + ((reportBean.getDescription1() == null || reportBean.getDescription1().isEmpty()) ? "" : (reportBean.getDescription1().replaceAll("’", "'") + "<br/>"))
                 + ((reportBean.getDisplayUrl() == null || reportBean.getDisplayUrl().isEmpty()) ? "" : (reportBean.getDisplayUrl() + "<br/>"));
         if (reportBean.getDescription() == null || reportBean.getDescription().isEmpty() || reportBean.getDescription().equalsIgnoreCase("--")) {
             adDescription
-                    = ((reportBean.getDescription1() == null || reportBean.getDescription1().isEmpty()) ? "" : (reportBean.getDescription1() + "<br/>"))
-                    + ((reportBean.getDescription2() == null || reportBean.getDescription2().isEmpty()) ? "" : (reportBean.getDescription2() + "<br/>"));
+                    = ((reportBean.getDescription1() == null || reportBean.getDescription1().isEmpty()) ? "" : (reportBean.getDescription1().replaceAll("’", "'") + "<br/>"))
+                    + ((reportBean.getDescription2() == null || reportBean.getDescription2().isEmpty()) ? "" : (reportBean.getDescription2().replaceAll("’", "'") + "<br/>"));
         }
         return adDescription;
     }
 
     public static Integer toInteger(String string) {
         try {
-            return Integer.parseInt(string);
+            return toDouble(string).intValue();
         } catch (Exception e) {
 
         }
@@ -74,9 +75,7 @@ public class ApiUtils {
         return "Unknown";
     }
 
-    public static void main(String[] argv) {
-        System.out.println(toGaAccountId("5360684369"));
-    }
+   
 
     public static String toGaAccountId(String ppcBingAccountId) {
         return ppcBingAccountId.substring(0, 3) + "-" + ppcBingAccountId.substring(3, 6) + "-" + ppcBingAccountId.substring(6);
@@ -154,7 +153,7 @@ public class ApiUtils {
     }
 
     public static String removePercent(String value) {
-        if(value == null) {
+        if (value == null) {
             return "0.0";
         }
         value = value.replaceAll("%", "");
@@ -164,6 +163,35 @@ public class ApiUtils {
 
         }
         return "0.0";
+    }
+
+    public static Data removePercent(Data value) {
+        Data data = new Data();
+        String value1 = value.getValue();
+        if (value == null) {
+            data.setValue("0.0");
+            return data;
+        }
+        value1 = value1.replaceAll("%", "");
+        try {
+            data.setValue((Double.parseDouble(value1) / 100.0) + "");
+            return data;
+        } catch (Exception e) {
+
+        }
+        data.setValue("0.0");
+        return data;
+    }
+
+    public static String toMins(String seconds) {
+        Double secondsInt = toDouble(seconds);
+        Double minsInt = secondsInt/60;
+        secondsInt = secondsInt%60;
+        return String.format("%02d", minsInt.intValue()) + ":" + String.format("%02d", secondsInt.intValue());
+    }
+
+     public static void main(String[] argv) {
+        System.out.println(toMins("7468"));
     }
 
 }

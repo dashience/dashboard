@@ -5,6 +5,7 @@
  */
 package com.visumbu.api.admin.service;
 
+import com.visumbu.api.utils.ApiUtils;
 import com.visumbu.api.utils.DateUtils;
 import com.visumbu.api.utils.ExampleConfig;
 import com.visumbu.api.utils.Rest;
@@ -78,6 +79,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
                 dataValueList.add(dataList);
             }
             return dataValueList;  //getActions(actionsArr);
@@ -116,6 +118,8 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
+                                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+
                 dataValueList.add(dataList);
             }
             return dataValueList;  //getActions(actionsArr);
@@ -154,6 +158,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
                 dataValueList.add(dataList);
             }
             return dataValueList;  //getActions(actionsArr);
@@ -170,7 +175,7 @@ public class FacebookService {
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 //https://graph.facebook.com/v2.8/act_10153963646170050/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_range[since]=2016-10-01&time_range[until]=2016-10-31&breakdowns=impression_device&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw 
 
-            String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&breakdowns=impression_device&"
+            String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,cpc,spend,actions,cost_per_action_type&breakdowns=impression_device&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
                     + "&access_token=" + ACCESS_TOKEN;
             String fbData = Rest.getData(url);
@@ -192,6 +197,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
                 dataValueList.add(dataList);
             }
             return dataValueList;
@@ -208,7 +214,7 @@ public class FacebookService {
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 //https://graph.facebook.com/v2.8/act_10153963646170050/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_range[since]=2016-10-01&time_range[until]=2016-10-31&breakdowns=age&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw
 
-            String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&breakdowns=age&"
+            String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,cpc,spend,actions,cost_per_action_type&breakdowns=age&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
                     + "&access_token=" + ACCESS_TOKEN;
             String fbData = Rest.getData(url);
@@ -230,6 +236,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
                 dataValueList.add(dataList);
             }
             return dataValueList;
@@ -246,7 +253,7 @@ public class FacebookService {
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 //https://graph.facebook.com/v2.8/act_10153963646170050/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_range[since]=2016-10-01&time_range[until]=2016-10-31&breakdowns=gender&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw
 
-            String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&breakdowns=gender&"
+            String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,cpc,spend,actions,cost_per_action_type&breakdowns=gender&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
                     + "&access_token=" + ACCESS_TOKEN;
             String fbData = Rest.getData(url);
@@ -268,6 +275,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
                 dataValueList.add(dataList);
             }
             return dataValueList;
@@ -300,7 +308,7 @@ public class FacebookService {
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 Map<String, String> dataList = getDataValue(data);
-                dataList.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataList.get("created_time").replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM-dd-yyyy HH:mm"));
+                dataList.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataList.get("created_time").replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM/dd/yyyy HH:mm"));
                 dataList.put("date", startDateStr);
                 dataList.put("reactions", getActionsCount((JSONObject) data.get("reactions")) + "");
                 dataList.put("likes", getActionsCount((JSONObject) data.get("likes")) + "");
@@ -492,6 +500,9 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
+                dataList.put("date_start", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_start"), "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataList.put("date_stop", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_stop"), "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
                 dataValueList.add(dataList);
             }
             return dataValueList;
