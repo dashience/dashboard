@@ -174,6 +174,8 @@ public class UiService {
         tabWidget.setTableFooter(tabWidgetBean.getTableFooter());
         tabWidget.setZeroSuppression(tabWidgetBean.getZeroSuppression());
         tabWidget.setDateDuration(tabWidgetBean.getDateDuration());
+        tabWidget.setCustomRange(tabWidgetBean.getCustomRange());
+        tabWidget.setFrequencyDuration(tabWidgetBean.getFrequencyDuration());
         tabWidget.setMaxRecord(tabWidgetBean.getMaxRecord());
         tabWidget.setDatasource(tabWidgetBean.getDatasource());
         tabWidget.setDataset(tabWidgetBean.getDataset());

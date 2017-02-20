@@ -49,6 +49,8 @@ public class TabWidgetBean {
     private Boolean tableFooter;
     private Boolean zeroSuppression;
     private String dateDuration;
+    private String customRange;
+    private String frequencyDuration;
     private String productDisplayName;
     private Integer maxRecord;
     private Integer dataSetId;
@@ -294,6 +296,23 @@ public class TabWidgetBean {
     public void setMaxRecord(Integer maxRecord) {
         this.maxRecord = maxRecord;
     }
+    
+    public String getCustomRange() {
+        return customRange;
+    }
+
+    public void setCustomRange(String customRange) {
+        this.customRange = customRange;
+    }
+
+    public String getFrequencyDuration() {
+        return frequencyDuration;
+    }
+
+    public void setFrequencyDuration(String frequencyDuration) {
+        this.frequencyDuration = frequencyDuration;
+    }
+
 
     public Integer getDataSetId() {
         return dataSetId;
@@ -313,7 +332,7 @@ public class TabWidgetBean {
 
     @Override
     public String toString() {
-        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", widgetColumns=" + widgetColumns + '}';
-    }    
-   
+        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", widgetColumns=" + widgetColumns + '}';
+    }
+
 }
