@@ -13,6 +13,7 @@ import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -133,11 +134,27 @@ public class ProxyController {
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next();
             try {
+
                 String url = tabWidget.getDirectUrl();
+                System.out.println("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
+                if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
+                    url = "../dbApi/admin/dataSet/getData";
+                    valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
+                    valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
+                    valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
+                }
+                if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+                    System.out.println("DS TYPE ==>  CSV");
+                    url = "../VizBoard/admin/csv/getData";
+                }
+                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                valueMap.put("driver", Arrays.asList(tabWidget.getDataSourceId().getSqlDriver()));
+                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+
                 Integer port = request.getServerPort();
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-
+                System.out.println("UR:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
@@ -149,6 +166,8 @@ public class ProxyController {
                 tabWidget.setData(dataList);
 
             } catch (ParseException ex) {
+                Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

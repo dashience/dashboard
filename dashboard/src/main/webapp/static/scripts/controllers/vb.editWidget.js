@@ -90,9 +90,30 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     });
 
     $scope.selectDataSource = function (dataSourceName, widget) {
+        console.log(dataSourceName)
         if (!dataSourceName) {
             return;
         }
+//        if (dataSourceName.dataSourceType == 'csv') {
+////            $scope.changeUrl(dataSourceName, widget)
+//            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            if (dataSourceName.dataSourceType == "csv") {
+//                url = "admin/csv/getData?";
+//            }
+//            $http.get(url + 'connectionUrl=' + dataSourceName.connectionString + "&driver=" + dataSourceName.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourceName.userName + '&password=' + dataSourceName.password + '&port=3306&schema=vb&query=' + encodeURI(dataSourceName.query) + "&fieldsOnly=true").success(function (response) {
+//                $scope.collectionFields = [];
+//                angular.forEach(response.columnDefs, function (value, key) {
+//                    widget.columns.push({fieldName: value.fieldName, displayName: value.displayName,
+//                        agregationFunction: value.agregationFunction, displayFormat: value.displayFormat, fieldType: value.type,
+//                        groupPriority: value.groupPriority, sortOrder: value.sortOrder, sortPriority: value.sortPriority});
+//                });
+//                angular.forEach(response, function (value, key) {
+//                    angular.forEach(value, function (value, key) {
+//                        $scope.collectionFields.push(value);
+//                    });
+//                });
+//            });
+//        }
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = []
             angular.forEach(response, function (value, key) {
@@ -135,14 +156,22 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         if (widget.columns) {
             widget.columns = widget.columns;
             if (widget.dataSetId) {
-                $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
+                    url = "admin/csv/getData?";
+                }
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     $scope.collectionFields = response.columnDefs;
                 });
             }
         } else {
             if (widget.dataSetId) {
-                $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
+                    url = "admin/csv/getData?";
+                }
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     widget.columns = response.columnDefs;
                     $scope.collectionFields = response.columnDefs;
@@ -158,7 +187,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         if (!dataSet) {
             return;
         }
-        $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData?connectionUrl=' + dataSet.dataSourceId.connectionString + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
+        var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+        if (dataSet.dataSourceId.dataSourceType == "csv") {
+            url = "admin/csv/getData?";
+        }
+        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             angular.forEach(response.columnDefs, function (value, key) {
                 widget.columns.push({fieldName: value.fieldName, displayName: value.displayName,
