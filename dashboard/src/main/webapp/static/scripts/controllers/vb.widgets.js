@@ -31,9 +31,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
 
-    $scope.removeBackDrop = function () {
+    $scope.removeBackDrop = function () {alert(1)
         $('body').removeClass().removeAttr('style');
         $('.modal-backdrop').remove();
+
+        $state.go('index.dataSource', {locationId: $stateParams.locationId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        alert(2)
     }
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget

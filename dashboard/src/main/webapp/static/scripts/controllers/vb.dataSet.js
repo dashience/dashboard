@@ -14,6 +14,8 @@ app.controller('DataSetController', function ($scope, $http) {
             getItems();
         });
         $scope.dataSet = "";
+        $scope.showPreviewChart = false;
+        $scope.previewData = null;
     };
 
     $scope.editDataSet = function (dataSet) {
@@ -38,6 +40,8 @@ app.controller('DataSetController', function ($scope, $http) {
 
     $scope.clearDataSet = function (dataSet) {
         $scope.dataSet = "";
+        $scope.showPreviewChart = false;
+        $scope.previewData = null;
     };
 
     $scope.deleteDataSet = function (dataSet, index) {

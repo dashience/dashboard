@@ -261,7 +261,7 @@
             </div>            
         </div> 
 
-        <div id="preview{{widget.id}}" class="modal fade">
+<!--        <div id="preview{{widget.id}}" class="modal fade">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -310,7 +310,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!--                                    <div class="col-md-6">
+                                                                        <div class="col-md-6">
                                                                             <div class="form-group">
                                                                                 <label>Product</label>
                                                                                 <select class="form-control" ng-model="widget.productName" ng-change="selectProductName(widget.productName, widget)" ng-options="userProduct for userProduct in userProducts">
@@ -324,7 +324,7 @@
                                                                                     <option ng-repeat="productField in productFields">{{productField.productDisplayName}}</option>
                                                                                 </select>
                                                                             </div>
-                                                                        </div>-->
+                                                                        </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label>Type</label><br/>
@@ -336,7 +336,7 @@
                                     <div class="col-md-2" ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker'">
                                         <div class="form-group">
                                             <input type="checkbox" ng-model="widget.tableFooter" ng-checked="widget.tableFooter == 1" />
-                                            <!--<input type="checkbox" ng-model="widget.tableFooter" ng-checked="widget.tableFooter == true" />-->
+                                            <input type="checkbox" ng-model="widget.tableFooter" ng-checked="widget.tableFooter == true" />
                                             <label>Table Footer</label>
                                         </div>
                                     </div>
@@ -379,8 +379,8 @@
                                             <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Alignment</td>
                                             <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Hide</td>
                                             <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table' && (widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'ticker' && advanceMenu == true">Filter</td>
-                                            <!--<td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Width</td>-->
-                                            <!--<td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Wrap</td>-->
+                                            <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Width</td>
+                                            <td ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'table'">Wrap</td>
                                             <td style="width:14%"><button class="btn btn-info" ng-click="addColumns(widget)"><i class="fa fa-plus"></i></button></td>
                                         </tr>
                                     </thead>
@@ -403,7 +403,7 @@
                                             <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.agregationFunction}}</div>
                                                 <div ng-show="currentColumn.isEdit">
-                                                    <!--<input type="text" class="form-control" ng-model="column.agregationFunction">-->
+                                                    <input type="text" class="form-control" ng-model="column.agregationFunction">
                                                     <select ng-model="currentColumn.agregationFunction" class="form-control">
                                                         <option ng-repeat="selectAggregation in selectAggregations" value="{{selectAggregation.value}}">{{selectAggregation.name}}</option>
                                                     </select>
@@ -415,7 +415,7 @@
                                                     <select ng-model="currentColumn.groupPriority" class="form-control">
                                                         <option ng-repeat="selectGroupPriority in selectGroupPriorities" value="{{selectGroupPriority.value}}">{{selectGroupPriority.num}}</option>
                                                     </select>
-                                                    <!--<input type="text" class="form-control" ng-model="currentColumn.groupPriority">-->
+                                                    <input type="text" class="form-control" ng-model="currentColumn.groupPriority">
                                                 </div>
                                             </td>
                                             <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
@@ -424,7 +424,7 @@
                                                     <select ng-model="currentColumn.xAxis" class="form-control">
                                                         <option ng-repeat="selectxAxis in selectXAxis" value="{{selectxAxis.value}}">{{selectxAxis.label}}</option>
                                                     </select>
-                                                    <!--<input type="text" class="form-control" ng-model="currentColumn.xAxis">-->
+                                                    <input type="text" class="form-control" ng-model="currentColumn.xAxis">
                                                 </div>
                                             </td>
                                             <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
@@ -433,13 +433,13 @@
                                                     <select ng-model="currentColumn.yAxis" class="form-control">
                                                         <option ng-repeat="selectyAxis in selectYAxis" value="{{selectyAxis.value}}">{{selectyAxis.label}}</option>
                                                     </select>
-                                                    <!--<input type="text" class="form-control" ng-model="currentColumn.yAxis">-->
+                                                    <input type="text" class="form-control" ng-model="currentColumn.yAxis">
                                                 </div>  
                                             </td>
                                             <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
                                                 <div ng-hide="currentColumn.isEdit"> {{currentColumn.sortOrder}}</div>
                                                 <div ng-show="currentColumn.isEdit">
-                                                    <!--<input type="text" class="form-control" ng-model="widget.sortOrder">-->
+                                                    <input type="text" class="form-control" ng-model="widget.sortOrder">
                                                     <select ng-model="currentColumn.sortOrder" class="form-control">
                                                         <option ng-repeat="sort in sorting" value="{{sort.value}}">{{sort.name}}</option>
                                                     </select>
@@ -467,25 +467,25 @@
                                                     </select>
                                                 </div>
                                             </td>
-                                            <!--                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table'">
+                                                                                        <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table'">
                                                                                             <div ng-hide="isEdit"> {{currentColumn.width}}</div>
                                                                                             <div ng-show="isEdit">
                                                                                                 <input type="text" class="form-control" ng-model="currentColumn.width">
                                                                                             </div>
-                                                                                        </td>-->
-                                            <!--                                            <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table'">
+                                                                                        </td>
+                                                                                        <td ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table'">
                                                                                             <div ng-hide="isEdit"> {{currentColumn.wrapText| capitalize}}</div>
                                                                                             <div ng-show="isEdit">                                                
                                                                                                 <select ng-model="currentColumn.wrapText" class="form-control">
                                                                                                     <option ng-repeat="tableWrap in tableWrapText" value="{{tableWrap.value}}">{{tableWrap.name}}</option>
                                                                                                 </select>
                                                                                             </div>
-                                                                                        </td>-->
+                                                                                        </td>
                                             <td data-as-sortable-item-handle  ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true"><input type="checkbox" ng-model="currentColumn.search"></td>
                                             <td data-as-sortable-item-handle style="width:14%">
                                                 <div ng-show="currentColumn.isEdit">
                                                     <button class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></button>
-                                                    <!--<button class="btn btn-default btn-xs" ng-click="saveColumn(widget, column); widget.isEdit = false"><i class="fa fa-save"></i></button>-->
+                                                    <button class="btn btn-default btn-xs" ng-click="saveColumn(widget, column); widget.isEdit = false"><i class="fa fa-save"></i></button>
                                                     <button class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-close"></i></button>
                                                     <button class="btn btn-default btn-xs" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></button>
                                                 </div>
@@ -521,12 +521,12 @@
                                 <div class="box-body chart-responsive" ng-if="previewChartType === 'pie'">
                                     <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive style="min-height:{{widget.minHeight}}"></div>
                                 </div> 
-                                <!--                                <div class="box-body chart-responsive" ng-if="previewChartType === 'donut'">
+                                                                <div class="box-body chart-responsive" ng-if="previewChartType === 'donut'">
                                                                     <div donut-Chart-Source='{{previewChartUrl}}' donut-Chart-Directive style="min-height:{{widget.minHeight}}"></div>
                                                                 </div> 
                                                                 <div class="box-body chart-responsive" ng-if="previewChartType === 'groupedBar'">
                                                                     <div grouped-Bar-Chart-Source='{{previewChartUrl}}' grouped-Bar-Chart-Directive style="min-height:{{widget.minHeight}}"></div>
-                                                                </div> -->
+                                                                </div> 
                                 <div class="box-body chart-responsive" ng-if="previewChartType === 'table'"  style="overflow: auto;">
                                     <div dynamic-Table dynamic-Table-Source="{{previewChartUrl}}" widget-Id="{{previewColumn.id}}" widget-Obj="{{widget}}" widget-Columns="{{previewColumn.columns}}"></div>
                                 </div> 
@@ -539,6 +539,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </div>

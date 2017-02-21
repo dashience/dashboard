@@ -1,5 +1,12 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $state) {
     $scope.editWidgetData = []
+    
+    $scope.locationID = $stateParams.locationId;
+    $scope.productID = $stateParams.productId;
+    $scope.widgetTabId = $stateParams.tabId;
+    $scope.widgetStartDate = $stateParams.startDate;
+    $scope.widgetEndDate = $stateParams.endDate;   
+    
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId) {
@@ -94,26 +101,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         if (!dataSourceName) {
             return;
         }
-//        if (dataSourceName.dataSourceType == 'csv') {
-////            $scope.changeUrl(dataSourceName, widget)
-//            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-//            if (dataSourceName.dataSourceType == "csv") {
-//                url = "admin/csv/getData?";
-//            }
-//            $http.get(url + 'connectionUrl=' + dataSourceName.connectionString + "&driver=" + dataSourceName.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourceName.userName + '&password=' + dataSourceName.password + '&port=3306&schema=vb&query=' + encodeURI(dataSourceName.query) + "&fieldsOnly=true").success(function (response) {
-//                $scope.collectionFields = [];
-//                angular.forEach(response.columnDefs, function (value, key) {
-//                    widget.columns.push({fieldName: value.fieldName, displayName: value.displayName,
-//                        agregationFunction: value.agregationFunction, displayFormat: value.displayFormat, fieldType: value.type,
-//                        groupPriority: value.groupPriority, sortOrder: value.sortOrder, sortPriority: value.sortPriority});
-//                });
-//                angular.forEach(response, function (value, key) {
-//                    angular.forEach(value, function (value, key) {
-//                        $scope.collectionFields.push(value);
-//                    });
-//                });
-//            });
-//        }
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = []
             angular.forEach(response, function (value, key) {

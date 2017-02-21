@@ -1,7 +1,6 @@
 app.controller("DataSourceController", function ($scope, $stateParams, $http) {
-
-    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}]
-
+    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}];
+    
     function getItems() {
         $http.get('admin/ui/dataSource').success(function (response) {
             $scope.dataSources = response;
@@ -10,7 +9,6 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
     getItems();
 
     $scope.csvFileUpload = function (event) {
-        console.log(event)
         var files = event.target.files;
         angular.forEach(files, function (value, key) {
             $scope.sourceFileName = value.name;
@@ -27,15 +25,11 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
             r.readAsText(files[0]);
         }
     };
-//$scope.dataSource={}
     var sourceData;
     $scope.xlsFileUpload = function (event) {
-        alert(event)
-        console.log(event)
         var files = event.target.files;
         angular.forEach(files, function (value, key) {
             $scope.sourceFileName = value.name;
-            console.log($scope.sourceFileName)
         });
 
         if (files.length) {
@@ -44,8 +38,6 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
                 var contents = e.target.result;
                 $scope.$apply(function () {
                     $scope.fileReader = contents;
-                    console.log("XLS")
-                    console.log($scope.fileReader)
                 });
             };
             r.readAsText(files[0]);
@@ -64,9 +56,8 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
             sourceFile: dataSource.sourceFile ? dataSource.sourceFile : $scope.fileReader,
             sourceFileName: $scope.sourceFileName
         };
-        console.log(data)
         $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
-            getItems()
+            getItems();
         });
         $scope.dataSource = "";
         $scope.sourceFileName = "";
@@ -84,14 +75,14 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
             password: dataSource.password,
             dataSourceType: dataSource.dataSourceType,
             sourceFile: dataSource.sourceFile
-        }
+        };
         $scope.dataSource = data;
-    }
+    };
 
     $scope.clearDataSource = function (dataSource) {
         $scope.dataSource = "";
         $scope.sourceFileName = "";
-    }
+    };
 
     $scope.deleteDataSource = function (dataSource, index) {
         if (dataSource.id) {

@@ -46,7 +46,8 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 url: "/dataSource/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/source/dataSource.html",
                 controller: 'DataSourceController'
-            }).state("index.dataSet", {
+            })
+            .state("index.dataSet", {
                 url: "/dataSet/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/source/dataSet.html",
                 controller: 'DataSetController'
@@ -73,7 +74,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 //            });
 
     $urlRouterProvider.otherwise(function ($injector) {
-      $injector.get('$state').go('index.dashboard', {productId: 2});
+        $injector.get('$state').go('index.dashboard', {productId: 2});
     });
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });
