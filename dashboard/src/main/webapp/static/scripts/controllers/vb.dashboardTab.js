@@ -2,6 +2,24 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.permission = localStorageService.get("permission");
 
 //    $scope.selectTabID = $state;
+
+    $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
+        $scope.loadTab = false;
+        $scope.tabs = response;
+        angular.forEach(response, function (value, key) {
+            $scope.dashboardName = value.dashboardId.dashboardTitle;
+            console.log(value.dashboardId.dashboardTitle)
+        });
+        if (!response) {
+            return;
+        }
+        if (!$stateParams.tabId) {
+            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: response[0].id, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+        } else {
+            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+        }
+    });
+
     $scope.userName = $cookies.getObject("username");
     $scope.productId = $stateParams.productId;
     $scope.tabId = $stateParams.tabId;
@@ -69,24 +87,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     });
 
     $scope.loadTab = true;
-    $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
-        $scope.loadTab = false;
-        $scope.tabs = response;
-        angular.forEach(response, function (value, key) {
-            $scope.dashboardName = value.dashboardId.dashboardTitle;
-            console.log(value.dashboardId.dashboardTitle)
-        });
-        if (!response) {
-            return;
-        }
-        $timeout(function () {
-            if (!$stateParams.tabId) {
-                $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: response[0].id, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-            } else {
-                $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-            }
-        }, 100);
-    });
 
     var dates = $(".pull-right i").text();
 

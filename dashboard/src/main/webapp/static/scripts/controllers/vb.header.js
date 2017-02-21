@@ -2,7 +2,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.userName = $cookies.getObject("username");
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
-    $scope.tabId = $stateParams.tabId;
+//    $scope.tabId = $stateParams.tabId;
     $scope.selectTabID = $state;
 
     $scope.hideLocationBox = function (urlName) {

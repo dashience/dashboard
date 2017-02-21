@@ -1,10 +1,4 @@
 <style> 
-    .selectedTableRow {
-        background-color:#b3e0d3;
-        color:#121111;
-        font-weight:bold;
-    }
-
     .fileUpload {
         position: relative;
         overflow: hidden;
@@ -22,6 +16,23 @@
         filter: alpha(opacity=0);
     }
 
+    .table-fixed thead {
+        width: 100%;
+        border-bottom: none;
+    }
+    .table-fixed tbody {
+        height: 430px;
+        overflow-y: auto !important;
+        width: 100%;
+    }
+    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+        display: block;
+        overflow: hidden;
+    }
+    .table-fixed tbody td, .table-fixed thead > tr> th {
+        float: left;
+        border-bottom-width: 0;
+    }
 </style>
 <section class="content">
     <div class="row">
@@ -33,29 +44,24 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="col-md-8 pull-left">
-                    <div class="data-table-set">
-                        <table class="table table-bordered table-responsive">
+                    <div>
+                        <table class="table table-responsive table-fixed">
                             <thead>
                                 <tr>
-                                    <td>Name</td>
-                                    <td>Type</td>
-                                    <td>Connection String</td>
-                                    <td>Driver</td>
-                                    <td>User Name</td>
-                                    <!--                                    <td>
-                                                                        </td>-->
+                                    <th class="col-xs-2">Name</th>
+                                    <th class="col-xs-2">Type</th>
+                                    <th class="col-xs-4">Connection String</th>
+                                    <th class="col-xs-2">Driver</th>
+                                    <th class="col-xs-2">User Name</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="dataSource in dataSources" ng-click="editDataSource(dataSource)" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
-                                    <td>{{dataSource.name}}</td>
-                                    <td>{{dataSource.dataSourceType| uppercase}}</td>
-                                    <td>{{dataSource.connectionString}}</td>
-                                    <td>{{dataSource.sqlDriver}}</td>
-                                    <td>{{dataSource.userName}}</td>
-                                    <!--                                    <td>
-                                                                            <button class="btn btn-default btn-xs" ng-click="deleteDataSource(dataSource, $index)"><i class="fa fa-trash-o"></i></button>
-                                                                        </td>-->
+                                <tr ng-repeat="dataSource in dataSources" ng-click="editDataSource(dataSource, $index)" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <td class="col-xs-2">{{dataSource.name ? dataSource.name:'-'}}</td>
+                                    <td class="col-xs-2">{{dataSource.dataSourceType ? dataSource.dataSourceType : '-'}}</td>
+                                    <td class="col-xs-4">{{dataSource.connectionString?dataSource.connectionString:'-'}}</td>
+                                    <td class="col-xs-2">{{dataSource.sqlDriver?dataSource.sqlDriver:'-'}}</td>
+                                    <td class="col-xs-2">{{dataSource.userName?dataSource.userName:'-'}}</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -37,7 +37,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
             $scope.sourceFileName = value.name;
             console.log($scope.sourceFileName)
         });
-        
+
         if (files.length) {
             var r = new FileReader();
             r.onload = function (e) {
@@ -72,7 +72,9 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
         $scope.sourceFileName = "";
     };
 
-    $scope.editDataSource = function (dataSource) {
+    $scope.selectedRow = null;
+    $scope.editDataSource = function (dataSource, index) {
+        $scope.selectedRow = index;
         var data = {
             id: dataSource.id,
             name: dataSource.name,
@@ -95,7 +97,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
         if (dataSource.id) {
             $http({method: 'DELETE', url: 'admin/ui/dataSource/' + dataSource.id}).success(function () {
                 $scope.dataSources.splice(index, 1);
-            })
+            });
         } else {
             $scope.dataSources.splice(index, 1);
         }

@@ -6,11 +6,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/vb.index.html"
             })
             .state("index.dashboard", {
-                url: "/dashboard/:productId",
+                url: "/dashboard/:productId/:locationId",
                 templateUrl: "static/views/dashboard/dashboard.html",
             })
             .state("index.dashboard.widget", {
-                url: "/widget/:locationId/:tabId?:startDate/:endDate",
+                url: "/widget/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
             })
@@ -73,7 +73,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 //            });
 
     $urlRouterProvider.otherwise(function ($injector) {
-      $injector.get('$state').go('index.dashboard', {productId: 2}, { location: true });
+      $injector.get('$state').go('index.dashboard', {productId: 2});
     });
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });

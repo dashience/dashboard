@@ -29,9 +29,9 @@ app.controller('DataSetController', function ($scope, $http) {
 
     $scope.resetPreview = function (dataSet) {
         $scope.previewData = null;
-        console.log(dataSet);
     };
     $scope.previewDataSet = function (dataSet) {
+        $scope.showPreviewChart = true;
         $scope.previewData = dataSet;
         console.log(dataSet);
     };
@@ -49,15 +49,9 @@ app.controller('DataSetController', function ($scope, $http) {
     $scope.selectedRow = null;
     $scope.setClickedRow = function (index) {
         $scope.selectedRow = index;
-    }
-
-
-    //$(function () {
-//        var editor = ace.edit("editor");
-//        editor.setTheme("ace/theme/monokai");
-//        editor.getSession().setMode("ace/mode/sql");
-
-    // });
+        $scope.showPreviewChart = false;
+        $scope.previewData = null;
+    };
 });
 app.directive('previewTable', function ($http, $filter, $stateParams) {
     return{
@@ -72,12 +66,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<table ng-if="ajaxLoadingCompleted" class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
-                '<th class="text-capitalize info table-bg" ng-repeat="col in tableColumns">' +
+                '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
                 '{{col.displayName}}' +
                 '</th>' +
                 '</tr></thead>' +
                 '<tbody ng-repeat="tableRow in tableRows">' +
-                '<tr class="text-capitalize text-info info">' +
+                '<tr class="text-capitalize">' +
                 '<td ng-repeat="col in tableColumns">' +
                 '<div>{{tableRow[col.fieldName]}}</div>' +
                 '</td>' +
