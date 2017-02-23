@@ -7,16 +7,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         console.log(response)
         $scope.filterDashboard = [];
         angular.forEach(response, function (value, key) {
-            console.log(value)
             $scope.filterDashboard.push({id: value.id, name: value.dashboardTitle, dasahoardProductId: value.productId.id})
             $scope.findDashboardId = $filter('filter')($scope.filterDashboard, {dasahoardProductId: $stateParams.productId})[0];
             console.log($scope.findDashboardId)
         });
         console.log($scope.findDashboardId.name);
-//        angular.forEach($scope.findDashboardId, function(value, key){
-//            $scope.dashboardName = value.name;
-//            console.log($scope.dashboardName)
-//        })
         $http.get("admin/ui/dbTabs/" + $scope.findDashboardId.id).success(function (response) {
             console.log(response)
             $scope.loadTab = false;
@@ -94,8 +89,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
     $http.get('admin/ui/product').success(function (response) {
         $scope.products = response;
-        //$scope.name = $filter('filter')($scope.products, {id: $stateParams.productId})[0];
-        //$scope.selectProductName = $scope.name.productName;
     });
 
     $http.get('admin/user/sampleDealers').success(function (response) {
@@ -120,8 +113,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
 
     $scope.deleteTab = function (index, tab) {
+        console.log($scope.findDashboardId.id)
         $http({method: 'DELETE', url: 'admin/ui/dbTab/' + tab.id}).success(function (response) {
-            $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
+            $http.get("admin/ui/dbTabs/" + $scope.findDashboardId.id).success(function (response) {
                 $scope.loadTab = false;
                 $scope.tabs = response;
                 angular.forEach(response, function (value, key) {
@@ -130,7 +124,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 //$scope.startId = response[0].id ? response[0].id : 0;
                 $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: response[0].id, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
             });
-            // $scope.tabs.splice(index, 1);
         });
     };
 
@@ -157,9 +150,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             var otherIndex = $scope.tabs.indexOf(tab);
 
             $scope.tabs = $scope.moveItem($scope.tabs, otherIndex, index);
-
-//            $scope.tabs[index] = tab;
-//            $scope.tabs[otherIndex] = otherObj;
             var tabOrder = $scope.tabs.map(function (value, key) {
                 if (value) {
                     return value.id;
