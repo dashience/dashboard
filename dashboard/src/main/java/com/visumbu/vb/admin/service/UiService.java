@@ -86,8 +86,8 @@ public class UiService {
     public List<DashboardTabs> getDashboardTabs(Integer dbId) {
         return uiDao.getDashboardTabs(dbId);
     }
-    public List<DashboardTabs> getDashboardTabsByProduct(Integer pId, Integer uId) {
-        return uiDao.getDashboardTabsByProduct(pId, uId);
+    public List<DashboardTabs> getDashboardTabsByProductDashboard(Integer dashboardId, Integer uId) {
+        return uiDao.getDashboardTabsByDbId(dashboardId, uId);
     }
 
     public DashboardTabs deleteDashboardTab(Integer id) {
@@ -364,7 +364,7 @@ public class UiService {
         try {
             DataSource dbDataSource = new DataSource();
             BeanUtils.copyProperties(dbDataSource, dataSource);
-            String filename = "/tmp/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
+            String filename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
             if(dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
                 filename = filename + dataSource.getSourceFileName();
                 PrintWriter out = new PrintWriter(filename);

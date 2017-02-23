@@ -17,7 +17,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //        $stateParams.tabId = ""
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
-        $scope.locationId = $stateParams.locationId;        
+        $scope.locationId = $stateParams.locationId;
     };
     $scope.setParams = function () {
         $scope.startDate = $stateParams.startDate;

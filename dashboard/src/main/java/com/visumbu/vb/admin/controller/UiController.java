@@ -97,14 +97,14 @@ public class UiController extends BaseController {
         return null;
     }
 
-    @RequestMapping(value = "dbTabs/{productId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
+    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
         VbUser user = userService.findByUsername(getUser(request));
         if (user == null) {
             return null;
         }
-        return uiService.getDashboardTabsByProduct(productId, user.getId());
+        return uiService.getDashboardTabsByProductDashboard(dashboardId, user.getId());
     }
 
     @RequestMapping(value = "dbTab/{tabId}", method = RequestMethod.DELETE, produces = "application/json")

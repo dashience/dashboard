@@ -28,7 +28,15 @@
             </section>
         </div>
         <div class="col-md-4 data-search">
-            <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search..">
+            <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
+        </div>
+        <div class="col-md-2 data-search">
+            <select class="form-control" 
+                    ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
+                    placeholder="Data Source" 
+                    ng-model="dataSourceId">
+                <option value="" selected="selected" ng-disabled="true">Search Data Source...</option>
+            </select>
         </div>
         <div class="row">
             <div class="col-lg-12">
@@ -42,7 +50,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="dataSet in dataSets| filter: searchDataSource" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
+                                <tr ng-repeat="dataSet in dataSets| filter: dataSourceId.name | filter: searchDataSource" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
                                     <td class="col-xs-6" ng-click="editDataSet(dataSet)">
                                         {{dataSet.dataSourceId.name}}
                                     </td>

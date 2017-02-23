@@ -1,24 +1,40 @@
 app.controller('UiController', function ($scope, $http, $stateParams, $state, $filter, $cookies, $timeout, localStorageService, $rootScope) {
     $scope.permission = localStorageService.get("permission");
+    console.log($stateParams.productId)
 
 //    $scope.selectTabID = $state;
-
-    $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
-        $scope.loadTab = false;
-        $scope.tabs = response;
+    $http.get("admin/ui/dashboard").success(function (response) {
+        console.log(response)
+        $scope.filterDashboard = [];
         angular.forEach(response, function (value, key) {
-            $scope.dashboardName = value.dashboardId.dashboardTitle;
-            console.log(value.dashboardId.dashboardTitle)
+            console.log(value)
+            $scope.filterDashboard.push({id: value.id, name: value.dashboardTitle, dasahoardProductId: value.productId.id})
+            $scope.findDashboardId = $filter('filter')($scope.filterDashboard, {dasahoardProductId: $stateParams.productId})[0];
+            console.log($scope.findDashboardId)
         });
-        if (!response) {
-            return;
-        }
-        if (!$stateParams.tabId) {
-            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: response[0].id, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-        } else {
-            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-        }
-    });
+        console.log($scope.findDashboardId.name);
+//        angular.forEach($scope.findDashboardId, function(value, key){
+//            $scope.dashboardName = value.name;
+//            console.log($scope.dashboardName)
+//        })
+        $http.get("admin/ui/dbTabs/" + $scope.findDashboardId.id).success(function (response) {
+            console.log(response)
+            $scope.loadTab = false;
+            $scope.tabs = response;
+            angular.forEach(response, function (value, key) {
+                $scope.dashboardName = value.dashboardId.dashboardTitle;
+                console.log(value.dashboardId.dashboardTitle)
+            });
+            if (!response) {
+                return;
+            }
+            if (!$stateParams.tabId) {
+                $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: response[0].id, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+            } else {
+                $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+            }
+        });
+    })
 
     $scope.userName = $cookies.getObject("username");
     $scope.productId = $stateParams.productId;
@@ -92,13 +108,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     $scope.tabs = [];
     $scope.addTab = function (tab) {
+        console.log($scope.findDashboardId)
+        console.log($scope.findDashboardId.id)
         var data = {
             tabName: tab.tabName
         };
-        $http({method: 'POST', url: 'admin/ui/dbTabs/' + $stateParams.productId, data: data}).success(function (response) {
+        $http({method: 'POST', url: 'admin/ui/dbTabs/' + $scope.findDashboardId.id, data: data}).success(function (response) {
             $scope.tabs.push({id: response.id, tabName: tab.tabName, tabClose: true});
         });
-        //tab.tabName = "";
+        $scope.tab = "";
     };
 
     $scope.deleteTab = function (index, tab) {
