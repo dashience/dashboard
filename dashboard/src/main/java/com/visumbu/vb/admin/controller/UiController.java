@@ -97,14 +97,14 @@ public class UiController extends BaseController {
         return null;
     }
 
-    @RequestMapping(value = "dbTabs/{productId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
+    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
         VbUser user = userService.findByUsername(getUser(request));
         if (user == null) {
             return null;
         }
-        return uiService.getDashboardTabsByProduct(productId, user.getId());
+        return uiService.getDashboardTabsByProductDashboard(dashboardId, user.getId());
     }
 
     @RequestMapping(value = "dbTab/{tabId}", method = RequestMethod.DELETE, produces = "application/json")
@@ -339,7 +339,30 @@ public class UiController extends BaseController {
     DataSet deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.deleteDataSet(id);
     }
+    
+    @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getUser(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getUser();
+    }
+    
+    @RequestMapping(value = "user", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    VbUser createUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
+        return uiService.createUser(vbUser);
+    }
+
+    @RequestMapping(value = "user", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    VbUser updateUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
+        return uiService.updateUser(vbUser);
+    }
    
+    @RequestMapping(value = "user/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    VbUser deleteUser(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return uiService.deleteUser(id);
+    }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {

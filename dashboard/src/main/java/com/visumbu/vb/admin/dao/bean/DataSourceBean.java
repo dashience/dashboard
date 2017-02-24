@@ -100,8 +100,4 @@ public class DataSourceBean {
     public String toString() {
         return "DataSourceBean{" + "id=" + id + ", name=" + name + ", connectionString=" + connectionString + ", userName=" + userName + ", password=" + password + ", sqlDriver=" + sqlDriver + ", dataSourceType=" + dataSourceType + ", sourceFile=" + sourceFile + '}';
     }
-    
-   
-    
-    
 }

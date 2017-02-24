@@ -86,8 +86,8 @@ public class UiService {
     public List<DashboardTabs> getDashboardTabs(Integer dbId) {
         return uiDao.getDashboardTabs(dbId);
     }
-    public List<DashboardTabs> getDashboardTabsByProduct(Integer pId, Integer uId) {
-        return uiDao.getDashboardTabsByProduct(pId, uId);
+    public List<DashboardTabs> getDashboardTabsByProductDashboard(Integer dashboardId, Integer uId) {
+        return uiDao.getDashboardTabsByDbId(dashboardId, uId);
     }
 
     public DashboardTabs deleteDashboardTab(Integer id) {
@@ -364,7 +364,7 @@ public class UiService {
         try {
             DataSource dbDataSource = new DataSource();
             BeanUtils.copyProperties(dbDataSource, dataSource);
-            String filename = "/tmp/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
+            String filename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
             if(dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
                 filename = filename + dataSource.getSourceFileName();
                 PrintWriter out = new PrintWriter(filename);
@@ -383,6 +383,12 @@ public class UiService {
                 dbDataSource.setSqlDriver(dataSource.getSourceFileName());
                 uiDao.create(dbDataSource);
             }
+            if(dbDataSource.getDataSourceType().equalsIgnoreCase("sql")) {
+                uiDao.create(dbDataSource);
+            }
+            if(dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
+                uiDao.create(dbDataSource);
+            }
             
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
@@ -392,5 +398,28 @@ public class UiService {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public List<VbUser> getUser() {
+        List<VbUser> vbUser = uiDao.read(VbUser.class);
+        return vbUser;
+    }
+    
+    public VbUser createUser(VbUser vbUser) {
+        return (VbUser) uiDao.create(vbUser);
+    }
+    
+    public VbUser updateUser(VbUser vbUser) {
+        return (VbUser) uiDao.update(vbUser);
+    }
+    
+    public VbUser readUser(Integer id) {
+        return (VbUser) uiDao.read(VbUser.class, id);
+    }
+
+    public VbUser deleteUser(Integer id) {
+        VbUser vbUser = readUser(id);
+        return (VbUser) uiDao.delete(vbUser);
+        //return dealer;
     }
 }
