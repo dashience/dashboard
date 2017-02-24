@@ -22,6 +22,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         {name: 'Sum', value: "sum"},
         {name: 'CTR', value: "ctr"},
         {name: 'CPC', value: "cpc"},
+        {name: 'CPS', value: "cps"},
         {name: 'CPA', value: "cpa"},
         {name: 'Avg', value: "avg"},
         {name: 'Count', value: "count"},

@@ -1,0 +1,96 @@
+<style> 
+    .table-fixed thead {
+        width: 100%;
+        border-bottom: none;
+    }
+    .table-fixed tbody {
+        height: 430px;
+        overflow-y: auto !important;
+        width: 100%;
+    }
+    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+        display: block;
+        overflow: hidden;
+    }
+    .table-fixed tbody td, .table-fixed thead > tr> th {
+        float: left;
+        border-bottom-width: 0;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="content-header">
+                <h1 class="data-title font-bold">Users</h1>
+            </section>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-md-8 pull-left">
+                    <div>
+                        <table class="table table-responsive table-fixed">
+                            <thead>
+                                <tr>
+                                    <th class="col-xs-3">First Name</th>
+                                    <th class="col-xs-2">Last Name</th>
+                                    <th class="col-xs-2">User Name</th>
+                                    <th class="col-xs-2">Email</th>
+                                    <th class="col-xs-2">Primary Phone</th>
+                                    <th class="col-xs-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="user in users" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <td class="col-xs-3" ng-click="editUser(user)">{{user.firstName? user.firstName:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.lastName? user.lastName : '-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.userName?user.userName:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.email?user.email:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.primaryPhone?user.primaryPhone:'-'}}</td>
+                                    <td class="col-xs-1">
+                                        <button class="btn btn-default btn-xs" ng-click="deleteUser($index, user)"><i class="fa fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input class="form-control" type="text" ng-model="user.firstName" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input class="form-control" type="text" ng-model="user.lastName" placeholder="Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label>User Name</label>
+                            <input class="form-control" type="text" ng-model="user.userName" placeholder="User Name">
+                        </div>                                            
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" ng-model="user.email" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" class="form-control" ng-model="user.password" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Phone</label>
+                            <input type="text" class="form-control" ng-model="user.primaryPhone" placeholder="Primary Phone">
+                        </div>
+                        <div class="form-group">
+                            <label>Secondary Phone</label>
+                            <input type="text" class="form-control" ng-model="user.secondaryPhone" placeholder="Secondary Phone">
+                        </div>
+                        <div class="form-group pull-right">
+                            <button class="btn btn-info" ng-click="saveUser(user)">Save</button>
+                            <button class="btn btn-warning" ng-click="clearUser(user)">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

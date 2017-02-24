@@ -1,5 +1,6 @@
 app.controller("DataSourceController", function ($scope, $stateParams, $http) {
-    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}];
+    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
+//    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}];
     
     function getItems() {
         $http.get('admin/ui/dataSource').success(function (response) {

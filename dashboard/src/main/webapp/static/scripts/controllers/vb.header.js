@@ -94,6 +94,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
             });
+        } else if ($scope.getCurrentPage() === "user") {
+            $state.go("index.user", {
+                locationId: $stateParams.locationId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
@@ -158,6 +164,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $state.go("index.dataSet", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+        } else if ($scope.getCurrentPage() === "user") {
+            $state.go("index.user", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
@@ -187,6 +195,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         if (url.indexOf("scheduler") > 0) {
             return "scheduler";
+        }
+        if (url.indexOf("user") > 0) {
+            return "user";
         }
         return "dashboard";
     };
