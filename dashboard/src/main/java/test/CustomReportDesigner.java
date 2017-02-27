@@ -67,7 +67,6 @@ import org.jfree.chart.axis.ValueAxis;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAnchor;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
@@ -165,9 +164,11 @@ public class CustomReportDesigner {
     }
 
     private List<Map<String, Object>> sortData(List<Map<String, Object>> data, List<SortType> sortType) {
-        if (1 == 1) {
-            return data;
-        }
+        System.out.println("SortData method");                
+//        if (1 == 1) {
+//            System.out.println("Data"+data);
+//            return data;
+//        }
         Collections.sort(data, (Map<String, Object> o1, Map<String, Object> o2) -> {
             for (Iterator<SortType> iterator = sortType.iterator(); iterator.hasNext();) {
                 SortType sortType1 = iterator.next();
@@ -1266,6 +1267,7 @@ public class CustomReportDesigner {
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
                             final LegendItem item = renderer2.getLegendItem(1, 1);
+                            System.out.println("Item:"+item);
                             result.add(item);
                         }
                     }
@@ -1294,6 +1296,7 @@ public class CustomReportDesigner {
             final BarRenderer renderer2 = new BarRenderer();
             plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+            
             // OPTIONAL CUSTOMISATION COMPLETED.
 
             plot.setDrawingSupplier(new ChartDrawingSupplier());
@@ -1638,11 +1641,15 @@ public class CustomReportDesigner {
                 "", dataSet, true, false, false);
 
         Paint[] paintSequence = new Paint[]{
-            new Color(116, 196, 198),
-            new Color(34, 137, 149),
-            new Color(90, 113, 122),
-            new Color(61, 70, 77),
-            new Color(241, 136, 60)
+            new Color(255, 191, 128),
+            new Color(98, 203, 49),
+           //new Color(34, 137, 149),
+           // new Color(90, 113, 122),
+            new Color(117, 204, 208),
+            new Color(165, 209, 105),
+           // new Color(61, 70, 77),
+            new Color(102, 102, 102)
+           // new Color(241, 136, 60)
         };
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setDrawingSupplier(new ChartDrawingSupplier());
