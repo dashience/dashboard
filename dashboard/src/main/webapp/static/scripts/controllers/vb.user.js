@@ -17,7 +17,6 @@ app.controller('UserController', function ($scope, $http) {
             primaryPhone: user.primaryPhone,
             secondaryPhone: user.secondaryPhone
         };
-        console.log(userData)
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: userData}).success(function (response) {
             getUser();
         });
@@ -42,7 +41,7 @@ app.controller('UserController', function ($scope, $http) {
         $scope.user = data;
     };
 
-    $scope.deleteUser = function (index, user) {
+    $scope.deleteUser = function (user, index) {
         $http({method: 'DELETE', url: 'admin/ui/user/' + user.id}).success(function (response) {
             $scope.users.splice(index, 1);
         });

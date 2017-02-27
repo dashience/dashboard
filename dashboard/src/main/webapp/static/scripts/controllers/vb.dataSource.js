@@ -65,8 +65,11 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
     };
 
     $scope.selectedRow = null;
-    $scope.editDataSource = function (dataSource, index) {
-        $scope.selectedRow = index;
+    $scope.highlightDataSource = function(index){
+        $scope.selectedRow = index;        
+    };
+    
+    $scope.editDataSource = function (dataSource) {
         var data = {
             id: dataSource.id,
             name: dataSource.name,

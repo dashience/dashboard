@@ -313,7 +313,7 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSource/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DataSource delete(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
-        return uiService.delete(id);
+        return uiService.deleteDataSource(id);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.POST, produces = "application/json")

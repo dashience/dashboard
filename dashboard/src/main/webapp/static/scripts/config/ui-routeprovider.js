@@ -71,6 +71,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 url: "/user/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/admin/user.html",
                 controller: 'UserController'
+            })
+            .state("index.account", {
+                url: "/account/:locationId?:startDate/:endDate",
+                templateUrl: "static/views/admin/account.html",
+                controller: 'AccountController'
             });
 //            .state("index.schedulerIndex.editOrNewScheduler", {
 //                url: "/editOrNewScheduler/:locationId?:startDate/:endDate",

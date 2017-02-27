@@ -23,7 +23,10 @@ import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -66,7 +69,6 @@ public class UiService {
         return uiDao.getDealerProduct(dealerId);
     }
 
-    
     public List<Dashboard> getDashboards(VbUser user) {
         return uiDao.getDashboards(user);
     }
@@ -86,6 +88,7 @@ public class UiService {
     public List<DashboardTabs> getDashboardTabs(Integer dbId) {
         return uiDao.getDashboardTabs(dbId);
     }
+
     public List<DashboardTabs> getDashboardTabsByProductDashboard(Integer dashboardId, Integer uId) {
         return uiDao.getDashboardTabsByDbId(dashboardId, uId);
     }
@@ -116,7 +119,7 @@ public class UiService {
         return uiDao.updateWidgetUpdateOrder(tabId, widgetOrder);
     }
 
-        public TabWidget deleteTabWidget(Integer id) {
+    public TabWidget deleteTabWidget(Integer id) {
         return uiDao.deleteTabWidget(id);
     }
 
@@ -142,30 +145,30 @@ public class UiService {
 
     public TabWidget saveTabWidget(Integer tabId, TabWidgetBean tabWidgetBean) {
         TabWidget tabWidget = null;
-        
+
         if (tabWidgetBean.getId() != null) {
             tabWidget = uiDao.getTabWidgetById(tabWidgetBean.getId());
 
         } else {
             tabWidget = new TabWidget();
         }
-        
+
         DataSource dataSource = null;
-        if (tabWidgetBean.getDataSourceId()!= null) {
+        if (tabWidgetBean.getDataSourceId() != null) {
             dataSource = uiDao.getDataSourceById(tabWidgetBean.getDataSourceId());
 
         } else {
             dataSource = new DataSource();
         }
-        
+
         DataSet dataSet = null;
-        if (tabWidgetBean.getDataSourceId()!= null) {
+        if (tabWidgetBean.getDataSourceId() != null) {
             dataSet = uiDao.getDataSetById(tabWidgetBean.getDataSetId());
 
         } else {
             dataSet = new DataSet();
-        }        
-        
+        }
+
         tabWidget.setChartType(tabWidgetBean.getChartType());
         tabWidget.setDirectUrl(tabWidgetBean.getDirectUrl());
         tabWidget.setWidgetTitle(tabWidgetBean.getWidgetTitle());
@@ -325,8 +328,8 @@ public class UiService {
     }
 
     public DataSource delete(Integer id) {
-        DataSource dataSource = read(id);
-        return (DataSource) uiDao.delete(dataSource);
+//        DataSource dataSource = read(id);
+        return (DataSource) uiDao.deleteDataSource(id);
     }
 
     public List<DataSource> getDataSource() {
@@ -356,8 +359,12 @@ public class UiService {
     }
 
     public DataSet deleteDataSet(Integer id) {
-       // DataSet dataSet = readDataSet(id);
         return (DataSet) uiDao.deleteDataSet(id);
+    }
+
+    public DataSource deleteDataSource(Integer id) {
+
+        return (DataSource) uiDao.deleteDataSource(id);
     }
 
     public DataSource saveDataSource(DataSourceBean dataSource) {
@@ -365,7 +372,7 @@ public class UiService {
             DataSource dbDataSource = new DataSource();
             BeanUtils.copyProperties(dbDataSource, dataSource);
             String filename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
                 filename = filename + dataSource.getSourceFileName();
                 PrintWriter out = new PrintWriter(filename);
                 out.print(dataSource.getSourceFile());
@@ -374,27 +381,30 @@ public class UiService {
                 dbDataSource.setSqlDriver(dataSource.getSourceFileName());
                 uiDao.create(dbDataSource);
             }
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("xls")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("xls")) {
                 filename = filename + dataSource.getSourceFileName();
-                PrintWriter out = new PrintWriter(filename);
-                out.print(dataSource.getSourceFile());
-                out.close();
+                FileInputStream fstream = new FileInputStream(filename);
+//                PrintWriter out = new PrintWriter(filename);
+//                out.print(dataSource.getSourceFile());
+//                out.close();
                 dbDataSource.setConnectionString(filename);
                 dbDataSource.setSqlDriver(dataSource.getSourceFileName());
                 uiDao.create(dbDataSource);
             }
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("sql")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("sql")) {
                 uiDao.create(dbDataSource);
             }
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
                 uiDao.create(dbDataSource);
             }
-            
+
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
+            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -404,15 +414,15 @@ public class UiService {
         List<VbUser> vbUser = uiDao.read(VbUser.class);
         return vbUser;
     }
-    
+
     public VbUser createUser(VbUser vbUser) {
         return (VbUser) uiDao.create(vbUser);
     }
-    
+
     public VbUser updateUser(VbUser vbUser) {
         return (VbUser) uiDao.update(vbUser);
     }
-    
+
     public VbUser readUser(Integer id) {
         return (VbUser) uiDao.read(VbUser.class, id);
     }

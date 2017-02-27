@@ -10,7 +10,10 @@ import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.UrlBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthRoleBean;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Dealer;
+import com.visumbu.vb.model.Permission;
+import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.VbUser;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,30 +81,39 @@ public class UserController {
         return userService.delete(id);
     }
 
+//    @RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    Map login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginUserBean loginUserBean) {
+//        SecurityAuthBean authData = userService.getPermissions(loginUserBean);
+//        //LoginUserBean userBean = userService.authenicate(loginUserBean);
+//        HttpSession session = request.getSession();
+//
+//        session.setAttribute("isAuthenticated", authData != null);
+//        if (authData == null) {
+//            Map returnMap = new HashMap();
+//            returnMap.put("authData", null);
+//            returnMap.put("errorMessage", "Login Failed");
+//            return returnMap;
+//        }
+//        VbUser user = userService.createNewUser(authData);
+//        session.setAttribute("userId", user.getId());
+//        session.setAttribute("username", authData.getUserName());
+//        session.setAttribute("accessToken", authData.getAccessToken());
+//        session.setAttribute("permission", authData.getPermission());
+//        session.setAttribute("userGuid", authData.getUserGuid());
+//        Map returnMap = new HashMap();
+//        returnMap.put("authData", authData);
+//        returnMap.put("dealers", new ArrayList<>());
+//        return returnMap;
+//    }
     @RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    Map login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginUserBean loginUserBean) {
-        SecurityAuthBean authData = userService.getPermissions(loginUserBean);
-        //LoginUserBean userBean = userService.authenicate(loginUserBean);
+    LoginUserBean login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginUserBean loginUserBean) {
+        LoginUserBean userBean = userService.authenicate(loginUserBean);
         HttpSession session = request.getSession();
-
-        session.setAttribute("isAuthenticated", authData != null);
-        if (authData == null) {
-            Map returnMap = new HashMap();
-            returnMap.put("authData", null);
-            returnMap.put("errorMessage", "Login Failed");
-            return returnMap;
-        }
-        VbUser user = userService.createNewUser(authData);
-        session.setAttribute("userId", user.getId());
-        session.setAttribute("username", authData.getUserName());
-        session.setAttribute("accessToken", authData.getAccessToken());
-        session.setAttribute("permission", authData.getPermission());
-        session.setAttribute("userGuid", authData.getUserGuid());
-        Map returnMap = new HashMap();
-        returnMap.put("authData", authData);
-        returnMap.put("dealers", new ArrayList<>());
-        return returnMap;
+        session.setAttribute("isAuthenticated", userBean.getAuthenticated());
+        session.setAttribute("username", userBean.getUsername());
+        return userBean;
     }
 
     @RequestMapping(value = "allowedDealers", method = RequestMethod.GET, produces = "application/json")
@@ -366,6 +378,78 @@ public class UserController {
             returnList.add(new UrlBean(url[0], url[1]));
         }
         return returnList;
+    }
+
+    @RequestMapping(value = "account", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Account createAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody Account account) {
+        return userService.createAccount(account);
+    }
+
+    @RequestMapping(value = "account", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    Account updateAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody Account account) {
+        return userService.updateAccount(account);
+    }
+
+    @RequestMapping(value = "account", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAccount(HttpServletRequest request, HttpServletResponse response) {
+        return userService.getAccount();
+    }
+
+    @RequestMapping(value = "account/{accountId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    Account deleteAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId) {
+        return userService.deleteAccount(accountId);
+    }
+
+    @RequestMapping(value = "property", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Property createProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody Property property) {
+        return userService.createProperty(property);
+    }
+
+    @RequestMapping(value = "property", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    Property updateProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody Property property) {
+        return userService.updateProperty(property);
+    }
+
+    @RequestMapping(value = "property", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getProperty(HttpServletRequest request, HttpServletResponse response) {
+        return userService.getProperty();
+    }
+
+    @RequestMapping(value = "property/{propertyId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    Property deleteProperty(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer propertyId) {
+        return userService.deleteProperty(propertyId);
+    }
+
+    @RequestMapping(value = "permission", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Permission createPermission(HttpServletRequest request, HttpServletResponse response, @RequestBody Permission permission) {
+        return userService.createPermission(permission);
+    }
+
+    @RequestMapping(value = "permission", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    Permission updatePermission(HttpServletRequest request, HttpServletResponse response, @RequestBody Permission permission) {
+        return userService.updatePermission(permission);
+    }
+
+    @RequestMapping(value = "permission", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getPermission(HttpServletRequest request, HttpServletResponse response) {
+        return userService.getPermission();
+    }
+
+    @RequestMapping(value = "permission/{permissionId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    Permission deletePermission(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer permissionId) {
+        return userService.deletePermission(permissionId);
     }
 
     @ExceptionHandler
