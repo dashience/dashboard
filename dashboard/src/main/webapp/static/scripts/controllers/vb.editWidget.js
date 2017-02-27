@@ -1,12 +1,12 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $state) {
     $scope.editWidgetData = []
-    
+
     $scope.locationID = $stateParams.locationId;
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
-    $scope.widgetEndDate = $stateParams.endDate;   
-    
+    $scope.widgetEndDate = $stateParams.endDate;
+
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId) {
@@ -84,6 +84,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     ];
     $scope.isEditPreviewColumn = false;
 
+    $scope.formats = [
+        {name: "Currency", value: '$,.2f'}, 
+        {name: "Integer", value: ',.0f'}, 
+        {name: "Percentage", value: ',.2%'}, 
+        {name: "Decimal1", value: ',.1f'}, 
+        {name: "Decimal2", value: ',.2f'}
+    ];
 
     $('.dropdown-menu input').click(function (e) {
         e.stopPropagation();

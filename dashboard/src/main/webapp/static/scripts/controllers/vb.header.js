@@ -101,12 +101,24 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
             });
         } else if ($scope.getCurrentPage() === "account") {
-            $state.go("index.account", {
+            $state.go("index.accountIndex.account", {
                 locationId: $stateParams.locationId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
             });
-        } else {
+        }else if ($scope.getCurrentPage() === "property") {
+            $state.go("index.accountIndex.property", {
+                locationId: $stateParams.locationId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "permission") {
+            $state.go("index.accountIndex.permission", {
+                locationId: $stateParams.locationId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        }  else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     });
@@ -173,8 +185,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
         } else if ($scope.getCurrentPage() === "account") {
-            $state.go("index.account", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else {
+            $state.go("index.accountIndex.account", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+        }else if ($scope.getCurrentPage() === "property") {
+            $state.go("index.accountIndex.property", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+        } else if ($scope.getCurrentPage() === "permission") {
+            $state.go("index.accountIndex.permission", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+        }  else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
@@ -207,9 +223,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("user") > 0) {
             return "user";
         }
+         if (url.indexOf("permission") > 0) {
+            return "permission";
+        }
+        if (url.indexOf("property") > 0) {
+            return "property";
+        }
         if (url.indexOf("account") > 0) {
             return "account";
-        }
+        }  
         return "dashboard";
     };
     $scope.getCurrentTab = function () {

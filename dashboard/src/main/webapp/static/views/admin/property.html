@@ -1,30 +1,9 @@
-<style> 
-    #editor {
-        height: 300px;
-    }   
-    .table-fixed thead {
-        width: 100%;
-        border-bottom: none;
-    }
-    .table-fixed tbody {
-        height: 430px;
-        overflow-y: auto !important;
-        width: 100%;
-    }
-    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-        display: block;
-        overflow: hidden;
-    }
-    .table-fixed tbody td, .table-fixed thead > tr> th {
-        float: left;
-        border-bottom-width: 0;
-    }    
-</style>
 <section class="content">
     <div class="row">
         <div class="col-md-4 data-search">
-            <input type="text" class="form-control" ng-model="searchAccount" placeholder="Search...">
+            <input type="text" class="form-control" ng-model="searchProperty" placeholder="Search...">
         </div>
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="col-md-6 pull-left">
@@ -32,22 +11,26 @@
                         <table class="table table-fixed">
                             <thead>
                                 <tr>
-                                    <th class="col-xs-5">Name</th>
-                                    <th class="col-xs-6">Geo Location</th>
+                                    <th class="col-xs-4">Name</th>
+                                    <th class="col-xs-4">Account Name</th>
+                                    <th class="col-xs-3">Value</th>
                                     <th class="col-xs-1"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="account in accounts| filter: searchAccount" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
-                                    <td class="col-xs-5" ng-click="editAccount(account)">
-                                        {{account.accountName}}
+                                <tr ng-repeat="property in properties" ng-class="{'selectedTableRow':$index == selectedRows}" ng-click="setPropertyRow($index)">
+                                    <td class="col-xs-4" ng-click="editProperty(property)">
+                                        {{property.propertyName}}
                                     </td>
-                                    <td class="col-xs-6" ng-click="editAccount(account)">
-                                        {{account.geoLocation?account.geoLocation:'-'}}
+                                    <td class="col-xs-4" ng-click="editProperty(property)">
+                                        {{property.accountId.accountName}}
                                     </td>
-                                    <td class="col-md-1">
-                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccount{{account.id}}"><i class="fa fa-trash-o"></i></button>
-                                        <div class="modal hmodal-success" id="deleteAccount{{account.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                    <td class="col-xs-3" ng-click="editProperty(property)">
+                                        {{property.propertyValue}}
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteProperty{{property.id}}"><i class="fa fa-trash-o"></i></button>
+                                        <div class="modal hmodal-success" id="deleteProperty{{property.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="color-line"></div>
@@ -68,7 +51,7 @@
                                                     <div class="modal-footer">
                                                         <div class="col-sm-12">
                                                             <button type="button" class="btn btn-primary btn-xs " 
-                                                                    ng-click="deleteAccount(account, $index)" 
+                                                                    ng-click="deleteProperty(property, $index)" 
                                                                     data-dismiss="modal">
                                                                 <span class="fa fa-trash"></span> Yes
                                                             </button>
@@ -91,31 +74,41 @@
                     <form class="form-horizontal">
                         <div class="form-group">
                             <label class="col-sm-2">Name</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" ng-model="account.accountName" placeholder="Name">
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" ng-model="property.propertyName" placeholder="Name">
+                            </div>
+
+                            <label class="col-sm-2">Account Name</label>
+                            <div class="col-sm-4">
+                                <!--<input type="text" class="form-control" ng-model="property.accountId" placeholder="Name">-->
+                                <select class="form-control" 
+                                        ng-options="account.accountName for account in accounts track by account.id" 
+                                        ng-model="property.accountId">
+                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-2">Geo Location</label>
+                            <label class="col-sm-2">Value</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" ng-model="account.geoLocation" placeholder="Geo">
+                                <input type="text" class="form-control" ng-model="property.propertyValue" placeholder="Value">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-sm-2">Description</label>
+                            <label class="col-sm-2">Remark</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" ng-model="account.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
+                                <textarea class="form-control" ng-model="property.propertyRemark" placeholder="Remark" rows="1" style="min-height: 100px;"></textarea>
                             </div>
                         </div>
                         <div class="form-group pull-right">
-                            <button class="btn btn-info" ng-click="saveAccount(account)">Save</button>
-                            <button class="btn btn-warning" ng-click="clearAccount(account)">Cancel</button>
+                            <button class="btn btn-info" ng-click="saveProperty(property)">Save</button>
+                            <button class="btn btn-warning" ng-click="clearProperty(property)">Cancel</button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>                
+        </div>
     </div>
 </section>

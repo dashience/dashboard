@@ -1,0 +1,217 @@
+<style>
+.switch_wrap input[type="checkbox"] {
+        display: none;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch {
+        background-color: #6cbc43;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch::before {
+        display: block;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch::after {
+        display: none;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch .bullet {
+        left: 33px;
+    }
+
+    .switch_wrap .switch {
+        position: relative;
+        display: inline-block;
+        width: 65px;
+        height: 24px;
+        line-height: 24px;
+        margin-right: 1em;
+        margin-top: -3px;
+        vertical-align: middle;
+        background-color: #c1272d;
+        border-radius: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
+    }
+
+    .switch_wrap .switch::before,
+    .switch_wrap .switch::after {
+        content: 'ON';
+        display: none;
+        width: 50%;
+        position: absolute;
+        top: 0;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    .switch_wrap .switch::after {
+        content: 'OFF';
+        display: block;
+        right: 0;
+    }
+
+    .switch_wrap .switch .bullet {
+        position: relative;
+        display: block;
+        width: 32px;
+        height: 26px;
+        top: -2px;
+        left: -2px;
+        background-color: #f0f0f0;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#e6e6e6));
+        background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -moz-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -ms-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -o-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: linear-gradient(top, #f0f0f0, #e6e6e6);
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        border-radius: 3px;
+        -webkit-box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
+        -webkit-transition: left 0.1s linear;
+        -moz-transition: left 0.1s linear;
+        -ms-transition: left 0.1s linear;
+        -o-transition: left 0.1s linear;
+        transition: left 0.1s linear;
+    }
+
+    .switch_wrap .switch .bullet::before,
+    .switch_wrap .switch .bullet::after {
+        content: '';
+        display: block;
+        height: 15px;
+        width: 3px;
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        margin-left: -6px;
+        border: 1px solid #cccccc;
+        border-width: 0 1px;
+        -webkit-box-shadow: 1px 0 0 white, 1px 0 0 white inset;
+        box-shadow: 1px 0 0 white, 1px 0 0 white inset;
+    }
+
+    .switch_wrap .switch .bullet::after {
+        margin-left: 2px;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-md-4 data-search">
+            <input type="text" class="form-control" ng-model="searchPermission" placeholder="Search...">
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-md-6 pull-left">
+                    <div>
+                        <table class="table table-fixed">
+                            <thead>
+                                <tr>
+                                    <th class="col-xs-4">Account Name</th>
+                                    <th class="col-xs-4">Property Name</th>
+                                    <th class="col-xs-3">Status</th>
+                                    <th class="col-xs-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="permission in permissions" ng-class="{'selectedTableRow':$index == selectedPermission}" ng-click="setPermissionRow($index)">
+                                    <td class="col-xs-4" ng-click="editPermission(permission)">
+                                        {{permission.accountId.accountName}}
+                                    </td>
+                                    <td class="col-xs-4" ng-click="editPermission(permission)">
+                                        {{permission.propertyId.propertyName}}
+                                    </td>
+                                    <td class="col-xs-3" ng-click="editPermission(permission)">
+                                        <i class="fa" ng-class="{'fa-times': !permission.status, 'text-danger':!permission.status, 'fa-circle': permission.status, 'text-success':permission.status}"></i>
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deletePermission{{permission.id}}"><i class="fa fa-trash-o"></i></button>
+                                        <div class="modal hmodal-success" id="deletePermission{{permission.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="color-line"></div>
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Delete</h4>
+                                                        <small class="font-bold"></small>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-horizontal" role="form">
+                                                            <div class="form-group">
+                                                                <div class="col-sm-12  col-md-12">
+                                                                    <span>Want to delete ?</span>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-primary btn-xs " 
+                                                                    ng-click="deletePermission(permission, $index)" 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-trash"></span> Yes
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-xs " 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-times"></span> No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2">Account Name</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" 
+                                        ng-options="account.accountName for account in accounts track by account.id" 
+                                        ng-model="permission.accountId">
+                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2">Property Name</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" 
+                                        ng-options="property.propertyName for property in properties track by property.id" 
+                                        ng-model="permission.propertyId">
+                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2">Status</label>
+                            <div class="col-sm-10">
+                                <label class="switch_wrap col-sm-10" for="field">
+                                    <input id="field" type="checkbox" ng-model="permission.status" value="1" />
+                                    <div class="switch switch-mini"><span class="bullet"></span></div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group pull-right">
+                            <button class="btn btn-info" ng-click="savePermission(permission)">Save</button>
+                            <button class="btn btn-warning" ng-click="clearPermission(permission)">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

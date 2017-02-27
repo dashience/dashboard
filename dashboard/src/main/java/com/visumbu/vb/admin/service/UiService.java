@@ -26,6 +26,7 @@ import com.visumbu.vb.model.WidgetColumn;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +37,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -368,6 +372,8 @@ public class UiService {
     }
 
     public DataSource saveDataSource(DataSourceBean dataSource) {
+        HSSFWorkbook workBook = new HSSFWorkbook();
+
         try {
             DataSource dbDataSource = new DataSource();
             BeanUtils.copyProperties(dbDataSource, dataSource);
@@ -383,7 +389,17 @@ public class UiService {
             }
             if (dbDataSource.getDataSourceType().equalsIgnoreCase("xls")) {
                 filename = filename + dataSource.getSourceFileName();
-                FileInputStream fstream = new FileInputStream(filename);
+                System.out.println(filename);
+                FileOutputStream fos = new FileOutputStream(filename);
+                workBook.write(fos);
+                fos.flush();
+                fos.close();
+                //PrintWriter out = new PrintWriter(filename);
+                //out.print(dataSource.getSourceFile());
+                //out.close();
+//                out.close();
+
+                //FileInputStream fstream = new FileInputStream(filename);
 //                PrintWriter out = new PrintWriter(filename);
 //                out.print(dataSource.getSourceFile());
 //                out.close();

@@ -1,0 +1,35 @@
+<section class="content-header">
+    <h1 class="text-capitalize">Accounts</h1>        
+</section>
+<section class="content">  
+
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li ng-class="{active: $state.current.activetab == 'account'}">
+                <a ui-sref="index.accountIndex.account({locationId: locationId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                    Account
+                </a>
+            </li>
+            <li ng-class="{active: $state.current.activetab == 'property'}">
+                <a ui-sref="index.accountIndex.property({locationId: locationId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                    Property
+                </a>
+            </li>
+            <li ng-class="{active: $state.current.activetab == 'user'}">
+                <a ui-sref="index.accountIndex.user({locationId: locationId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                    User
+                </a>
+            </li>
+            <li ng-class="{active: $state.current.activetab == 'permission'}">
+                <a ui-sref="index.accountIndex.permission({locationId: locationId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                    Permission
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="tab-content">
+            <div ui-view></div>
+        </div>
+    </div>
+</section>
