@@ -99,8 +99,8 @@ public class CustomReportDesigner {
 
     static {
         FontFactory.register(FONT, "proxima_nova_rgregular");
-        calcualtedFunctions.add(new CalcualtedFunction("ctr", "clicks", "impressions"));
-        calcualtedFunctions.add(new CalcualtedFunction("cpa", "cost", "conversions"));
+        calcualtedFunctions.add(new CalcualtedFunction("ctr", "data__clicks", "data__impressions"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpa", "data__cost", "data__conversions"));
     }
     Font pdfFont = FontFactory.getFont("proxima_nova_rgregular", "Cp1253", true);
     Font pdfFontTitle = FontFactory.getFont("proxima_nova_rgregular", "Cp1253", true);
@@ -164,7 +164,7 @@ public class CustomReportDesigner {
     }
 
     private List<Map<String, Object>> sortData(List<Map<String, Object>> data, List<SortType> sortType) {
-        System.out.println("SortData method");                
+        System.out.println("SortData method");
 //        if (1 == 1) {
 //            System.out.println("Data"+data);
 //            return data;
@@ -255,6 +255,9 @@ public class CustomReportDesigner {
                 returnMap.put(aggregation.getFieldName(), sum(data, aggregation.getFieldName()) + "");
             }
             if (aggregation.getAggregationType().equalsIgnoreCase("avg")) {
+                System.out.println("Data value: "+data);
+                System.out.println("Data Size: "+data.size());
+                System.out.println("Aggregation field name: "+aggregation.getFieldName());
                 returnMap.put(aggregation.getFieldName(), (sum(data, aggregation.getFieldName()) / data.size()) + "");
             }
             if (aggregation.getAggregationType().equalsIgnoreCase("count")) {
@@ -273,6 +276,7 @@ public class CustomReportDesigner {
                 }
             }
         }
+        System.out.println("Aggregation data: "+returnMap);
         return returnMap;
     }
 
@@ -494,6 +498,7 @@ public class CustomReportDesigner {
                     String value = dataMap.get(column.getFieldName()) + "";
                     if (column.getDisplayFormat() != null) {
                         value = Formatter.format(column.getDisplayFormat(), value);
+                        System.out.println("data value: "+value);
                     }
                     pdfFont.setColor(tableHeaderFontColor);
                     dataCell = new PdfPCell(new Phrase(value, pdfFont));
@@ -533,6 +538,7 @@ public class CustomReportDesigner {
                         String value = (String) groupedData.get(column.getFieldName());
                         if (column.getDisplayFormat() != null) {
                             value = Formatter.format(column.getDisplayFormat(), value);
+                            System.out.println("Value: "+value);
                         }
                         pdfFont.setColor(tableHeaderFontColor);
                         PdfPCell dataCell = new PdfPCell(new Phrase(value, pdfFont));
@@ -546,7 +552,6 @@ public class CustomReportDesigner {
                 }
             }
         }
-
         return table;
     }
 
@@ -719,7 +724,7 @@ public class CustomReportDesigner {
             reportHeader.getReportHeader(document);
             document.add(new Phrase("\n"));
             document.add(new Phrase("\n"));
-            
+
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
@@ -769,6 +774,9 @@ public class CustomReportDesigner {
                     cell.setPaddingTop(5);
                     cell.setPaddingLeft(10);
                     table.addCell(cell);
+                    System.out.println("Bar Writer: " + writer);
+                    System.out.println("Bar Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("Bar Tab Widget DataSource: " + tabWidget.getDatasource());
 
                     Image barChart = multiAxisBarChart(writer, tabWidget);
                     if (barChart != null) {
@@ -794,6 +802,9 @@ public class CustomReportDesigner {
                     cell.setPaddingTop(5);
                     cell.setPaddingLeft(10);
                     table.addCell(cell);
+                    System.out.println("line Writer: " + writer);
+                    System.out.println("line Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("line Tab Widget DataSource: " + tabWidget.getDatasource());
                     Image lineChart = multiAxisLineChart(writer, tabWidget);
                     if (lineChart != null) {
                         PdfPCell chartCell = new PdfPCell(lineChart);
@@ -914,6 +925,12 @@ public class CustomReportDesigner {
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
             final CategoryAxis domainAxis = new CategoryAxis(xAxis);
             // final NumberAxis rangeAxis = new NumberAxis("Value");
+
+            System.out.println("Dataset1 line data: " + data);
+            System.out.println("Dataset1 line first Axis: " + firstAxis);
+            System.out.println("Dataset1 line Second Axis: " + secondAxis);
+            System.out.println("Dataset1 line X Axis: " + xAxis);
+
             final NumberAxis rangeAxis = new NumberAxis();
             final LineAndShapeRenderer renderer1 = new LineAndShapeRenderer();
             final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
@@ -943,24 +960,24 @@ public class CustomReportDesigner {
 
                     // the JDK 1.2.2 compiler complained about the name of this
                     // variable 
-                    final CategoryDataset dset2 = getDataset(1);
-                    if (dset2 != null) {
-                        final CategoryItemRenderer renderer2 = getRenderer(1);
-                        renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                        renderer2.setBaseItemLabelsVisible(true);
-                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.BASELINE_RIGHT);
-                        renderer2.setBasePositiveItemLabelPosition(position);
-                        if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
-                            result.add(item);
+                    if (secondAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset dset2 = getDataset(1);
+                        if (dset2 != null) {
+                            final CategoryItemRenderer renderer2 = getRenderer(1);
+                            renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            renderer2.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_RIGHT);
+                            renderer2.setBasePositiveItemLabelPosition(position);
+                            if (renderer2 != null) {
+                                final LegendItem item = renderer2.getLegendItem(1, 1);
+                                result.add(item);
+                            }
                         }
                     }
-
                     return result;
-
                 }
-
             };
 
             plot.setRangeGridlinesVisible(true);
@@ -1112,7 +1129,7 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_RIGHT);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
+                            final LegendItem item = renderer2.getLegendItem(0, 0);
                             result.add(item);
                         }
                     }
@@ -1226,6 +1243,12 @@ public class CustomReportDesigner {
 //            final CategoryDataset dataset2 = createDataset4();
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+
+            System.out.println("Dataset1 bar data: " + data);
+            System.out.println("Dataset1 bar first Axis: " + firstAxis);
+            System.out.println("Dataset1 bar Second Axis: " + secondAxis);
+            System.out.println("Dataset1 bar X Axis: " + xAxis);
+
             final CategoryAxis domainAxis = new CategoryAxis(xAxis);
             //final NumberAxis rangeAxis = new NumberAxis("Value");
             final NumberAxis rangeAxis = new NumberAxis();
@@ -1257,18 +1280,22 @@ public class CustomReportDesigner {
 
                     // the JDK 1.2.2 compiler complained about the name of this
                     // variable 
-                    final CategoryDataset dset2 = getDataset(1);
-                    if (dset2 != null) {
-                        final CategoryItemRenderer renderer2 = getRenderer(1);
-                        renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                        renderer2.setBaseItemLabelsVisible(true);
-                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.BASELINE_CENTER);
-                        renderer2.setBasePositiveItemLabelPosition(position);
-                        if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
-                            System.out.println("Item:"+item);
-                            result.add(item);
+                    if (secondAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset dset2 = getDataset(1);
+                        if (dset2 != null) {
+                            System.out.println("dset2");
+                            final CategoryItemRenderer renderer2 = getRenderer(1);
+                            renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            renderer2.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_CENTER);
+                            renderer2.setBasePositiveItemLabelPosition(position);
+                            if (renderer2 != null) {
+                                final LegendItem item = renderer2.getLegendItem(1, 1);
+                                System.out.println("Item:" + item);
+                                result.add(item);
+                            }
                         }
                     }
                     return result;
@@ -1296,9 +1323,8 @@ public class CustomReportDesigner {
             final BarRenderer renderer2 = new BarRenderer();
             plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
-            
-            // OPTIONAL CUSTOMISATION COMPLETED.
 
+            // OPTIONAL CUSTOMISATION COMPLETED.
             plot.setDrawingSupplier(new ChartDrawingSupplier());
 
             PdfContentByte contentByte = writer.getDirectContent();
@@ -1643,13 +1669,13 @@ public class CustomReportDesigner {
         Paint[] paintSequence = new Paint[]{
             new Color(255, 191, 128),
             new Color(98, 203, 49),
-           //new Color(34, 137, 149),
-           // new Color(90, 113, 122),
+            //new Color(34, 137, 149),
+            // new Color(90, 113, 122),
             new Color(117, 204, 208),
             new Color(165, 209, 105),
-           // new Color(61, 70, 77),
+            // new Color(61, 70, 77),
             new Color(102, 102, 102)
-           // new Color(241, 136, 60)
+        // new Color(241, 136, 60)
         };
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setDrawingSupplier(new ChartDrawingSupplier());
@@ -1912,5 +1938,4 @@ public class CustomReportDesigner {
             }
         }
     }
-
 }
