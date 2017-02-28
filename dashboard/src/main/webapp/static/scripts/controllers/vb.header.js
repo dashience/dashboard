@@ -20,14 +20,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.locationId = $stateParams.locationId;
     };
     $scope.setParams = function () {
+        $scope.locationId = $stateParams.locationId;
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
-        $scope.locationId = $stateParams.locationId;
     };
 
     $scope.selectDealer = {};
 //    $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=jdbc:mysql://localhost:3306/marketing_data&startDate=09/07/2016&endDate=09/30/2016&username=root&password=root&port=3306&schema=deeta_dashboard&query=select location id, location dealerName from (select distinct location_1 location from Data) a').success(function (response) {
-    $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=jdbc:mysql://localhost:3306/skyzone&startDate=09/07/2016&endDate=09/30/2016&username=root&password=root&port=3306&schema=dashboard&query=select location id, location dealerName from (select distinct location_1 location from Data) a').success(function (response) {
+    $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=jdbc:mysql://localhost:3306/skyzone&startDate=09/07/2016&endDate=09/30/2016&username=root&password=&port=3306&schema=vb&query=select location id, location dealerName from (select distinct location_1 location from Data) a').success(function (response) {
         $scope.dealers = response.data;
         $stateParams.locationId = $stateParams.locationId ? $stateParams.locationId : response.data[0].id;
         $scope.name = $filter('filter')($scope.dealers, {id: $stateParams.locationId})[0];
@@ -101,24 +101,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
             });
         } else if ($scope.getCurrentPage() === "account") {
-            $state.go("index.accountIndex.account", {
+            $state.go("index.account", {
                 locationId: $stateParams.locationId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
             });
-        }else if ($scope.getCurrentPage() === "property") {
-            $state.go("index.accountIndex.property", {
-                locationId: $stateParams.locationId,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-            });
-        } else if ($scope.getCurrentPage() === "permission") {
-            $state.go("index.accountIndex.permission", {
-                locationId: $stateParams.locationId,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-            });
-        }  else {
+        } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     });
@@ -185,12 +173,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
         } else if ($scope.getCurrentPage() === "account") {
-            $state.go("index.accountIndex.account", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-        }else if ($scope.getCurrentPage() === "property") {
-            $state.go("index.accountIndex.property", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-        } else if ($scope.getCurrentPage() === "permission") {
-            $state.go("index.accountIndex.permission", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
-        }  else {
+            $state.go("index.account", {locationId: $stateParams.locationId, startDate: $scope.startDate, endDate: $scope.endDate});
+        } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
@@ -222,16 +206,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         if (url.indexOf("user") > 0) {
             return "user";
-        }
-         if (url.indexOf("permission") > 0) {
-            return "permission";
-        }
-        if (url.indexOf("property") > 0) {
-            return "property";
-        }
+        }        
         if (url.indexOf("account") > 0) {
             return "account";
-        }  
+        }
         return "dashboard";
     };
     $scope.getCurrentTab = function () {

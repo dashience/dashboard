@@ -85,11 +85,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     $scope.isEditPreviewColumn = false;
 
     $scope.formats = [
-        {name: "Currency", value: '$,.2f'}, 
-        {name: "Integer", value: ',.0f'}, 
-        {name: "Percentage", value: ',.2%'}, 
-        {name: "Decimal1", value: ',.1f'}, 
-        {name: "Decimal2", value: ',.2f'}
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "None", value: ''}
     ];
 
     $('.dropdown-menu input').click(function (e) {
@@ -352,4 +353,22 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
 });
-    
+
+app.filter('xAxis', [function () {
+        return function (chartXAxis) {
+            var xAxis = ['', 'x-1']
+            return xAxis[chartXAxis];
+        };
+    }]);
+app.filter('yAxis', [function () {
+        return function (chartYAxis) {
+            var yAxis = ['', 'y-1', 'y-2']
+            return yAxis[chartYAxis];
+        };
+    }]);
+app.filter('hideColumn', [function () {
+        return function (chartYAxis) {
+            var hideColumn = ['No', 'Yes']
+            return hideColumn[chartYAxis];
+        };
+    }]);  

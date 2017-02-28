@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +16,12 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -32,6 +36,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Account.findByAccountName", query = "SELECT a FROM Account a WHERE a.accountName = :accountName")
     , @NamedQuery(name = "Account.findByGeoLocation", query = "SELECT a FROM Account a WHERE a.geoLocation = :geoLocation")})
 public class Account implements Serializable {
+
+    @OneToMany(mappedBy = "accountId")
+    private Collection<Property> propertyCollection;
+
+    @OneToMany(mappedBy = "accountId")
+    private Collection<AccountUser> accountUserCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -112,6 +122,26 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.Account[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AccountUser> getAccountUserCollection() {
+        return accountUserCollection;
+    }
+
+    public void setAccountUserCollection(Collection<AccountUser> accountUserCollection) {
+        this.accountUserCollection = accountUserCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Property> getPropertyCollection() {
+        return propertyCollection;
+    }
+
+    public void setPropertyCollection(Collection<Property> propertyCollection) {
+        this.propertyCollection = propertyCollection;
     }
     
 }

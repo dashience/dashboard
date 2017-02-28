@@ -10,8 +10,8 @@ import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Dealer;
-import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.VbUtils;
@@ -191,6 +191,10 @@ public class UserService {
         List<Property> property = userDao.read(Property.class);
         return property;
     }
+    
+    public List<Property> getPropertyById(Integer accountId) {
+        return userDao.getPropertyById(accountId);
+    }
 
     public Property getPropertyId(Integer id) {
         return (Property) userDao.read(Property.class, id);
@@ -200,24 +204,28 @@ public class UserService {
         return userDao.deleteProperty(propertyId);
     }
     
-    public Permission createPermission(Permission permission) {
-        return (Permission) userDao.create(permission);
+    public AccountUser createAccountUser(AccountUser accountUser) {
+        return (AccountUser) userDao.create(accountUser);
     }
 
-    public Permission updatePermission(Permission permission) {
-        return (Permission) userDao.update(permission);
+    public AccountUser updateAccountUser(AccountUser accountUser) {
+        return (AccountUser) userDao.update(accountUser);
     }
 
-    public List<Permission> getPermission() {
-        List<Permission> permission = userDao.read(Permission.class);
-        return permission;
+    public List<AccountUser> getAccountUser() {
+        List<AccountUser> accountUser = userDao.read(AccountUser.class);
+        return accountUser;
     }
 
-    public Permission getPermissionId(Integer id) {
-        return (Permission) userDao.read(Permission.class, id);
+    public AccountUser getAccountUserId(Integer id) {
+        return (AccountUser) userDao.read(AccountUser.class, id);
     }
 
-    public Permission deletePermission(Integer permissionId) {
-        return userDao.deletePermission(permissionId);
+    public AccountUser deleteAccountUser(Integer accountUserId) {
+        return userDao.deleteAccountUser(accountUserId);
+    }    
+
+    public List getAccountUserById(Integer accountId) {
+        return userDao.getAccountUserById(accountId);
     }
 }

@@ -7,9 +7,9 @@ package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
-import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.VbUser;
@@ -151,8 +151,8 @@ public class UserDao extends BaseDao {
     }
 
     public Account deleteAccount(Integer accountId) {
-        String queryPermission = "delete Permission d where d.accountId.id = :accountId";
-        Query querySession = sessionFactory.getCurrentSession().createQuery(queryPermission);
+        String queryAccountUser = "delete AccountUser d where d.accountId.id = :accountId";
+        Query querySession = sessionFactory.getCurrentSession().createQuery(queryAccountUser);
         querySession.setParameter("accountId", accountId);
         querySession.executeUpdate();
 
@@ -169,10 +169,10 @@ public class UserDao extends BaseDao {
     }
 
     public Property deleteProperty(Integer propertyId) {
-        String queryStr = "delete from Permission d where d.propertyId.id = :propertyId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("propertyId", propertyId);
-        query.executeUpdate();
+//        String queryStr = "delete from AccountUser d where d.propertyId.id = :propertyId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("propertyId", propertyId);
+//        query.executeUpdate();
 
         String queryString = "delete Property d where d.id = :propertyId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
@@ -181,12 +181,26 @@ public class UserDao extends BaseDao {
         return null;
     }
 
-    public Permission deletePermission(Integer permissionId) {
-        String queryString = "delete Permission d where d.id = :permissionId";
+    public AccountUser deleteAccountUser(Integer accountUserId) {
+        String queryString = "delete AccountUser d where d.id = :accountUserId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
-        querySess.setParameter("permissionId", permissionId);
+        querySess.setParameter("accountUserId", accountUserId);
         querySess.executeUpdate();
         return null;
+    }
+
+    public List<Property> getPropertyById(Integer accountId) {
+        String queryStr = "select d from Property d where d.accountId.id = :accountId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", accountId);
+        return query.list();
+    }
+
+    public List getAccountUserById(Integer accountId) {
+        String queryStr = "select d from AccountUser d where d.accountId.id = :accountId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", accountId);
+        return query.list();
     }
 
 }

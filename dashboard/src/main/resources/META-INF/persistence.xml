@@ -25,6 +25,8 @@
     <class>com.visumbu.vb.model.DataSet</class>
     <class>com.visumbu.vb.model.DataSource</class>
     <class>com.visumbu.vb.model.Account</class>
+    <class>com.visumbu.vb.model.AccountUser</class>
+    <class>com.visumbu.vb.model.Property</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

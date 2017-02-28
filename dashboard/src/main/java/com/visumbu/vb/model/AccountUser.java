@@ -24,13 +24,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author duc-dev-04
  */
 @Entity
-@Table(name = "permission")
+@Table(name = "account_user")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Permission.findAll", query = "SELECT p FROM Permission p")
-    , @NamedQuery(name = "Permission.findById", query = "SELECT p FROM Permission p WHERE p.id = :id")
-    , @NamedQuery(name = "Permission.findByStatus", query = "SELECT p FROM Permission p WHERE p.status = :status")})
-public class Permission implements Serializable {
+    @NamedQuery(name = "AccountUser.findAll", query = "SELECT a FROM AccountUser a")
+    , @NamedQuery(name = "AccountUser.findById", query = "SELECT a FROM AccountUser a WHERE a.id = :id")
+    , @NamedQuery(name = "AccountUser.findByStatus", query = "SELECT a FROM AccountUser a WHERE a.status = :status")})
+public class AccountUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,14 +43,14 @@ public class Permission implements Serializable {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
     private Account accountId;
-    @JoinColumn(name = "property_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
-    private Property propertyId;
+    private VbUser userId;
 
-    public Permission() {
+    public AccountUser() {
     }
 
-    public Permission(Integer id) {
+    public AccountUser(Integer id) {
         this.id = id;
     }
 
@@ -78,12 +78,12 @@ public class Permission implements Serializable {
         this.accountId = accountId;
     }
 
-    public Property getPropertyId() {
-        return propertyId;
+    public VbUser getUserId() {
+        return userId;
     }
 
-    public void setPropertyId(Property propertyId) {
-        this.propertyId = propertyId;
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -96,10 +96,10 @@ public class Permission implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Permission)) {
+        if (!(object instanceof AccountUser)) {
             return false;
         }
-        Permission other = (Permission) object;
+        AccountUser other = (AccountUser) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -108,7 +108,7 @@ public class Permission implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.Permission[ id=" + id + " ]";
+        return "com.visumbu.vb.model.AccountUser[ id=" + id + " ]";
     }
     
 }

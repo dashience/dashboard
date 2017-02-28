@@ -952,7 +952,7 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_RIGHT);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
+                            final LegendItem item = renderer2.getLegendItem(0, 0);
                             result.add(item);
                         }
                     }
@@ -1112,7 +1112,7 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_RIGHT);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
+                            final LegendItem item = renderer2.getLegendItem(0, 0);
                             result.add(item);
                         }
                     }
@@ -1266,7 +1266,7 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_CENTER);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
+                            final LegendItem item = renderer2.getLegendItem(0, 0);
                             System.out.println("Item:"+item);
                             result.add(item);
                         }

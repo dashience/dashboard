@@ -11,8 +11,8 @@ import com.visumbu.vb.bean.UrlBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthRoleBean;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Dealer;
-import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.VbUser;
 import java.io.IOException;
@@ -421,6 +421,11 @@ public class UserController {
     List getProperty(HttpServletRequest request, HttpServletResponse response) {
         return userService.getProperty();
     }
+    @RequestMapping(value = "property/{accountId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getPropertyById (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId) {
+        return userService.getPropertyById(accountId);
+    }
 
     @RequestMapping(value = "property/{propertyId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
@@ -428,28 +433,34 @@ public class UserController {
         return userService.deleteProperty(propertyId);
     }
 
-    @RequestMapping(value = "permission", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "accountUser", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    Permission createPermission(HttpServletRequest request, HttpServletResponse response, @RequestBody Permission permission) {
-        return userService.createPermission(permission);
+    AccountUser createAccountUser(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountUser accountUser) {
+        return userService.createAccountUser(accountUser);
     }
 
-    @RequestMapping(value = "permission", method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "accountUser", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    Permission updatePermission(HttpServletRequest request, HttpServletResponse response, @RequestBody Permission permission) {
-        return userService.updatePermission(permission);
+    AccountUser updateAccountUser(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountUser accountUser) {
+        return userService.updateAccountUser(accountUser);
     }
 
-    @RequestMapping(value = "permission", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "accountUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getPermission(HttpServletRequest request, HttpServletResponse response) {
-        return userService.getPermission();
+    List getAccountUser(HttpServletRequest request, HttpServletResponse response) {
+        return userService.getAccountUser();
+    }
+    
+    @RequestMapping(value = "accountUser/{accountId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAccountUserById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId) {
+        return userService.getAccountUserById(accountId);
     }
 
-    @RequestMapping(value = "permission/{permissionId}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "accountUser/{accountUserId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    Permission deletePermission(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer permissionId) {
-        return userService.deletePermission(permissionId);
+    AccountUser deleteAccountUser(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountUserId) {
+        return userService.deleteAccountUser(accountUserId);
     }
 
     @ExceptionHandler

@@ -6,7 +6,6 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,12 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -57,8 +53,6 @@ public class Property implements Serializable {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
     private Account accountId;
-    @OneToMany(mappedBy = "propertyId")
-    private Collection<Permission> permissionCollection;
 
     public Property() {
     }
@@ -105,16 +99,6 @@ public class Property implements Serializable {
 
     public void setAccountId(Account accountId) {
         this.accountId = accountId;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Permission> getPermissionCollection() {
-        return permissionCollection;
-    }
-
-    public void setPermissionCollection(Collection<Permission> permissionCollection) {
-        this.permissionCollection = permissionCollection;
     }
 
     @Override

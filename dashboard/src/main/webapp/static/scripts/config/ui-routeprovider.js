@@ -72,29 +72,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/admin/user.html",
                 controller: 'UserController'
             })
-            .state("index.accountIndex", {
-                url: "/accountIndex/:locationId?:startDate/:endDate",
-                templateUrl: "static/views/admin/accountIndex.html",
-                controller: 'AccountIndexController'
-            })
-            .state("index.accountIndex.account", {
+            .state("index.account", {
                 url: "/account/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/admin/account.html",
                 controller: 'AccountController',
-                 activetab: 'account'
+                activetab: 'account'
             })
-            .state("index.accountIndex.property", {
-                url: "/property/:locationId?:startDate/:endDate",
-                templateUrl: "static/views/admin/property.html",
-                controller: 'PropertyController',
-                 activetab: 'property'
-            })
-            .state("index.accountIndex.permission", {
-                url: "/permission/:locationId?:startDate/:endDate",
-                templateUrl: "static/views/admin/permission.html",
-                controller: 'PermissionController',
-                 activetab: 'permission'
-            });
 //            .state("index.schedulerIndex.editOrNewScheduler", {
 //                url: "/editOrNewScheduler/:locationId?:startDate/:endDate",
 //                templateUrl: "static/views/scheduler/newOrEditScheduler.html",
