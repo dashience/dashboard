@@ -257,9 +257,9 @@
                                                 <table class="table table-fixed">
                                                     <thead>
                                                         <tr>
-                                                            <th class="col-xs-4">Name</th>
-                                                            <th class="col-xs-4">Account Name</th>
-                                                            <th class="col-xs-3">Value</th>
+                                                            <th class="col-xs-5">Name</th>
+                                                            <!--<th class="col-xs-4">Account Name</th>-->
+                                                            <th class="col-xs-6">Value</th>
                                                             <th class="col-xs-1">
                                                                 <button class="btn btn-success btn-xs" ng-click="addProperty()"><i class="fa fa-plus"></i></button>
                                                             </th>
@@ -267,13 +267,13 @@
                                                     </thead>
                                                     <tbody style="height:420px">
                                                         <tr ng-repeat="property in properties" ng-class="{'selectedTableRow':$index == selectedRows}" ng-click="setPropertyRow($index)">
-                                                            <td class="col-xs-4" ng-click="editProperty(property)">
+                                                            <td class="col-xs-5" ng-click="editProperty(property)">
                                                                 {{property.propertyName}}
                                                             </td>
-                                                            <td class="col-xs-4" ng-click="editProperty(property)">
-                                                                {{property.accountId.accountName}}
-                                                            </td>
-                                                            <td class="col-xs-3" ng-click="editProperty(property)">
+                                                            <!--                                                            <td class="col-xs-4" ng-click="editProperty(property)">
+                                                                                                                            {{property.accountId.accountName}}
+                                                                                                                        </td>-->
+                                                            <td class="col-xs-6" ng-click="editProperty(property)">
                                                                 {{property.propertyValue}}
                                                             </td>
                                                             <td class="col-xs-1">
@@ -321,19 +321,19 @@
                                                 <form class="form-horizontal">
                                                     <div class="form-group">
                                                         <label class="col-sm-2">Name</label>
-                                                        <div class="col-sm-4">
+                                                        <div class="col-sm-10">
                                                             <input type="text" class="form-control" ng-model="property.propertyName" placeholder="Name">
                                                         </div>
 
-                                                        <label class="col-sm-2">Account Name</label>
-                                                        <div class="col-sm-4">
-                                                            <!--<input type="text" class="form-control" ng-model="property.accountId" placeholder="Name">-->
-                                                            <select class="form-control" 
-                                                                    ng-options="account.accountName for account in accounts track by account.id" 
-                                                                    ng-model="property.accountId">
-                                                                <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                            </select>
-                                                        </div>
+                                                        <!--                                                        <label class="col-sm-2">Account Name</label>
+                                                                                                                <div class="col-sm-4">
+                                                                                                                    <input type="text" class="form-control" ng-model="property.accountId" placeholder="Name">
+                                                                                                                    <select class="form-control" 
+                                                                                                                            ng-options="account.accountName for account in accounts track by account.id" 
+                                                                                                                            ng-model="property.accountId">
+                                                                                                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                                                                                                    </select>
+                                                                                                                </div>-->
                                                     </div>
 
                                                     <div class="form-group">
@@ -367,9 +367,9 @@
                                                 <table class="table table-fixed">
                                                     <thead>
                                                         <tr>
-                                                            <th class="col-xs-4">Account Name</th>
-                                                            <th class="col-xs-4">User Name</th>
-                                                            <th class="col-xs-3">Status</th>
+                                                            <!--<th class="col-xs-4">Account Name</th>-->
+                                                            <th class="col-xs-6">User Name</th>
+                                                            <th class="col-xs-5">Status</th>
                                                             <th class="col-xs-1">
                                                                 <button class="btn btn-success btn-xs" ng-click="addAccountUser()"><i class="fa fa-plus"></i></button>
                                                             </th>
@@ -377,13 +377,13 @@
                                                     </thead>
                                                     <tbody style="height:420px">
                                                         <tr ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
-                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
-                                                                {{accountUser.accountId.accountName}}
-                                                            </td>
-                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
+                                                            <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
+                                                                                                                            {{accountUser.accountId.accountName}}
+                                                                                                                        </td>-->
+                                                            <td class="col-xs-6" ng-click="editAccountUser(accountUser)">
                                                                 {{accountUser.userId.userName}}
                                                             </td>
-                                                            <td class="col-xs-3" ng-click="editAccountUser(accountUser)">
+                                                            <td class="col-xs-5" ng-click="editAccountUser(accountUser)">
                                                                 <i class="fa" ng-class="{'fa-times': !accountUser.status, 'text-danger':!accountUser.status, 'fa-circle': accountUser.status, 'text-success':accountUser.status}"></i>
                                                             </td>
                                                             <td class="col-xs-1">
@@ -429,21 +429,32 @@
                                             </div>
                                             <div class="col-md-12" ng-show="showAccountUserEditPage">
                                                 <form class="form-horizontal">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2">Account Name</label>
-                                                        <!--<div class="col-sm-10">{{accountUser.accountId.accountName}}</div>-->
-                                                        <div class="col-sm-10">
-                                                            <select class="form-control" 
-                                                                    ng-options="account.accountName for account in accounts track by account.id" 
-                                                                    ng-model="accountUser.accountId" ng-disabled="true">
-                                                                <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
+                                                    <!--                                                    <div class="form-group">
+                                                                                                            <label class="col-sm-2">Account Name</label>
+                                                                                                            <div class="col-sm-10">{{accountUser.accountId.accountName}}</div>
+                                                                                                            <div class="col-sm-10">
+                                                                                                                <select class="form-control" 
+                                                                                                                        ng-options="account.accountName for account in accounts track by account.id" 
+                                                                                                                        ng-model="accountUser.accountId" ng-disabled="true">
+                                                                                                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>-->
 
                                                     <div class="form-group">
                                                         <label class="col-sm-2">User Name</label>
                                                         <div class="col-sm-10">
+
+
+<!--                                                            <ui-select ng-model="selectDealer.selected" on-select="getDealerId(selectDealer.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
+                                                                <ui-select-match placeholder="Select Location...">{{$select.selected.dealerName}}</ui-select-match>
+                                                                <ui-select-choices repeat="dealer in dealers | filter: $select.search">
+                                                                    <span ng-bind-html="dealer.dealerName | highlight: $select.search"></span>
+                                                                    <small ng-bind-html="country.code | highlight: $select.search"></small>
+                                                                </ui-select-choices>
+                                                            </ui-select>-->
+
+
                                                             <select class="form-control" 
                                                                     ng-options="user.userName for user in users track by user.id" 
                                                                     ng-model="accountUser.userId">

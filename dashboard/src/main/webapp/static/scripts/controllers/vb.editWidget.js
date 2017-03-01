@@ -293,6 +293,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     };
 
     $scope.save = function (widget) {
+        console.log(widget.content);
+        
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -338,12 +340,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
             tableFooter: widget.tableFooter,
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
-            dateDuration: widget.dateDuration
+            dateDuration: widget.dateDuration,
+            content: widget.content
         };
-        widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
+        //widget.chartType = "";
         $scope.previewChartType = null;
     };
 
@@ -372,3 +375,39 @@ app.filter('hideColumn', [function () {
             return hideColumn[chartYAxis];
         };
     }]);  
+//app.directive("textEditor", function () {
+//    return{
+//        restrict: 'A',
+//
+//        link: function (scope, element, attr) {
+//            CKEDITOR.editorConfig = function (config) {
+//                config.language = 'es';
+//                config.uiColor = '#F7B42C';
+//                config.height = 300;
+//                config.toolbarCanCollapse = true;
+//
+//            };
+//            CKEDITOR.replace(element[0]);
+//        }
+//    };
+//});
+app.directive('ckEditor', function() {
+  return {
+    require: '?ngModel',
+    link: function(scope, elm, attr, ngModel) {
+      var ck = CKEDITOR.replace(elm[0]);
+
+      if (!ngModel) return;
+
+      ck.on('pasteState', function() {
+        scope.$apply(function() {
+          ngModel.$setViewValue(ck.getData());
+        });
+      });
+
+      ngModel.$render = function(value) {
+        ck.setData(ngModel.$viewValue);
+      };
+    }
+  };
+});

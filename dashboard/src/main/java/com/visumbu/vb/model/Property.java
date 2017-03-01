@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -31,8 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Property.findAll", query = "SELECT p FROM Property p")
     , @NamedQuery(name = "Property.findById", query = "SELECT p FROM Property p WHERE p.id = :id")
     , @NamedQuery(name = "Property.findByPropertyName", query = "SELECT p FROM Property p WHERE p.propertyName = :propertyName")
-    , @NamedQuery(name = "Property.findByPropertyValue", query = "SELECT p FROM Property p WHERE p.propertyValue = :propertyValue")
-    , @NamedQuery(name = "Property.findByPropertyRemark", query = "SELECT p FROM Property p WHERE p.propertyRemark = :propertyRemark")})
+    , @NamedQuery(name = "Property.findByPropertyValue", query = "SELECT p FROM Property p WHERE p.propertyValue = :propertyValue")})
 public class Property implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,7 +47,8 @@ public class Property implements Serializable {
     @Size(max = 255)
     @Column(name = "property_value")
     private String propertyValue;
-    @Size(max = 255)
+    @Lob
+    @Size(max = 65535)
     @Column(name = "property_remark")
     private String propertyRemark;
     @JoinColumn(name = "account_id", referencedColumnName = "id")

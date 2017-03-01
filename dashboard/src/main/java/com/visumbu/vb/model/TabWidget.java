@@ -70,7 +70,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByCustomRange", query = "SELECT t FROM TabWidget t WHERE t.customRange = :customRange")
     , @NamedQuery(name = "TabWidget.findByFrequencyDuration", query = "SELECT t FROM TabWidget t WHERE t.frequencyDuration = :frequencyDuration")
     , @NamedQuery(name = "TabWidget.findByDataset", query = "SELECT t FROM TabWidget t WHERE t.dataset = :dataset")
-        , @NamedQuery(name = "TabWidget.findByDataSetId", query = "SELECT t FROM TabWidget t WHERE t.dataSetId = :dataSetId")
     , @NamedQuery(name = "TabWidget.findByDatasource", query = "SELECT t FROM TabWidget t WHERE t.datasource = :datasource")})
 public class TabWidget implements Serializable {
 
@@ -159,6 +158,10 @@ public class TabWidget implements Serializable {
     @Column(name = "custom_range")
     private String customRange;
     
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "content")
+    private String content;
     
     @Size(max = 255)
     @Column(name = "dataset")
@@ -495,6 +498,15 @@ public class TabWidget implements Serializable {
     public void setColumns(List<WidgetColumn> columns) {
         this.columns = columns;
     }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+    
 
     @Override
     public int hashCode() {

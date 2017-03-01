@@ -55,6 +55,7 @@ public class TabWidgetBean {
     private Integer maxRecord;
     private Integer dataSetId;
     private Integer dataSourceId;
+    private String content;
     private List<WidgetColumnBean> widgetColumns;
 
     public Integer getId() {
@@ -330,9 +331,17 @@ public class TabWidgetBean {
         this.dataSourceId = dataSourceId;
     }    
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     @Override
     public String toString() {
-        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", widgetColumns=" + widgetColumns + '}';
+        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", widgetColumns=" + widgetColumns + '}';
     }
 
 }

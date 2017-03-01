@@ -19,8 +19,8 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     $scope.setAccountId = function (account) {
         $stateParams.accountId = account.id;
     };
-    
-    function getAccountProperty(account){
+
+    function getAccountProperty(account) {
         $http.get('admin/user/property/' + account.id).success(function (response) {
             $scope.properties = response;
         });
@@ -60,7 +60,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             geoLocation: account.geoLocation,
             description: account.description
         };
-        $scope.account = data;        
+        $scope.account = data;
         $scope.selectedRow = index;
     };
 
@@ -76,14 +76,24 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
 
 
     $scope.properties = [];
-    $scope.addProperty = function(){
-         $scope.property = "";
+    $scope.addProperty = function () {
+        $scope.property = "";
         $scope.showEditPage = true;
     };
-    
+
     $scope.saveProperty = function (property) {
-       var accountId = $scope.accountUserId;
-        $http({method: property.id ? 'PUT' : 'POST', url: 'admin/user/property', data: property}).success(function (response) {
+        var accountId = $scope.accountUserId;
+        console.log($scope.accountUserId);
+        console.log(accountId);
+        var data = {
+            id: property.id,
+            propertyName: property.propertyName,
+            accountId: accountId.id, //property.accountId,
+            propertyValue: property.propertyValue,
+            propertyRemark: property.propertyRemark
+        }
+
+        $http({method: property.id ? 'PUT' : 'POST', url: 'admin/user/property', data: data}).success(function (response) {
             getAccountProperty(accountId);
         });
 
@@ -118,18 +128,22 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             $scope.properties.splice(index, 1);
         });
     };
-    
-    
-    $scope.addAccountUser = function(){
+
+
+    $scope.addAccountUser = function () {
         $scope.showAccountUserEditPage = true;
         $scope.accountUser = "";
     }
 
     $scope.saveAccountUser = function (accountUser) {
-        console.log(accountUser)
-        console.log($scope.accountUserId)
         var account = $scope.accountUserId;
-        $http({method: accountUser.id ? 'PUT' : 'POST', url: 'admin/user/accountUser', data: accountUser}).success(function (response) {
+        var data = {
+            id: accountUser.id,
+            accountId: account.id,//accountUser.accountId,
+            userId: accountUser.userId,
+            status: accountUser.status
+        };
+        $http({method: accountUser.id ? 'PUT' : 'POST', url: 'admin/user/accountUser', data: data}).success(function (response) {
             getAccountProperty(account);
         });
 
