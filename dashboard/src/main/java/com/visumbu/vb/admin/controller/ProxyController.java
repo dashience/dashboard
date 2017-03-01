@@ -7,7 +7,6 @@ package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.UiService;
-import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
