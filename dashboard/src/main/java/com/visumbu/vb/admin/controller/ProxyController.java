@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import test.CustomReportDesigner;
+import test.PPTReportDesigner;
 
 /**
  *
@@ -178,6 +179,9 @@ public class ProxyController {
             OutputStream out = response.getOutputStream();
             CustomReportDesigner crd = new CustomReportDesigner();
             crd.dynamicPdfTable(tabWidgets, out);
+            PPTReportDesigner ppt = new PPTReportDesigner();
+            ppt.dynamicPPTTable(tabWidgets, out);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
