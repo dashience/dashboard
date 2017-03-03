@@ -17,6 +17,8 @@ import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.UserAccount;
+import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import java.util.Iterator;
@@ -315,7 +317,7 @@ public class UiDao extends BaseDao {
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
-         
+
     public void removeDsFromDataSet(Integer id) {
         String queryStr = "delete DataSet d where d.dataSourceId.id = :dataSourceId";
 //        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
@@ -323,7 +325,7 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSourceId", id);
         query.executeUpdate();
     }
-    
+
     public void removeDsFromWidget(Integer id) {
         String queryStr = "update TabWidget d set dataSourceId=NULL, dataSetId=NULL  where d.dataSourceId.id = :dataSourceId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -340,21 +342,56 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
         return null;
     }
-    
-      
+
     public void removeDataSetFromWidget(Integer id) {
         String queryStr = "update TabWidget d set dataSetId=NULL  where d.dataSetId.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();
     }
-    
+
     public DataSet deleteDataSet(Integer id) {
         removeDataSetFromWidget(id);
         String queryStr = "delete DataSet d where d.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();
+        return null;
+    }
+
+    public List<UserAccount> getUserAccountById(Integer userId) {
+        String queryStr = "select d from UserAccount d where d.userId.id = :userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+        return query.list();
+    }
+
+    public UserAccount deleteUserAccount(Integer userAccountId) {
+        String queryString = "delete UserAccount d where d.id = :userAccountId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("userAccountId", userAccountId);
+        querySess.executeUpdate();
+        return null;
+    }
+
+//    public List getUserAccountId(Integer userId) {
+//        String queryStr = "select d from AccountUser d where d.userId.id = :userId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("userId", userId);           
+//        return query.list();
+//    }
+    public List getUserPermission(Integer userId) {
+        String queryStr = "select d from UserPermission d where d.userId.id = :userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+        return query.list();
+    }
+
+    public UserPermission deleteUserPermission(Integer userPermissionId) {
+        String queryString = "delete UserPermission d where d.id = :userPermissionId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("userPermissionId", userPermissionId);
+        querySess.executeUpdate();
         return null;
     }
 }

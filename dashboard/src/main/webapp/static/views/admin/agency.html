@@ -1,8 +1,7 @@
 <style> 
     #editor {
         height: 300px;
-    }
-
+    }   
     .table-fixed thead {
         width: 100%;
         border-bottom: none;
@@ -14,7 +13,7 @@
     }
     .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
         display: block;
-        /*overflow: hidden;*/
+        overflow: hidden;
     }
     .table-fixed tr{
         cursor: pointer;
@@ -22,120 +21,27 @@
     .table-fixed tbody td, .table-fixed thead > tr> th {
         float: left;
         border-bottom-width: 0;
-    }    
-    .switch_wrap input[type="checkbox"] {
+    }
+    .image-upload img{
+        max-width: 150px;
+        max-height: 125px;
+        display: block;
+        cursor: pointer;
+    }
+    .image-upload > input
+    {
         display: none;
-    }
-
-    .switch_wrap input[type="checkbox"]:checked + .switch {
-        background-color: #6cbc43;
-    }
-
-    .switch_wrap input[type="checkbox"]:checked + .switch::before {
-        display: block;
-    }
-
-    .switch_wrap input[type="checkbox"]:checked + .switch::after {
-        display: none;
-    }
-
-    .switch_wrap input[type="checkbox"]:checked + .switch .bullet {
-        left: 33px;
-    }
-
-    .switch_wrap .switch {
-        position: relative;
-        display: inline-block;
-        width: 65px;
-        height: 24px;
-        line-height: 24px;
-        margin-right: 1em;
-        margin-top: -3px;
-        vertical-align: middle;
-        background-color: #c1272d;
-        border-radius: 3px;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
-    }
-
-    .switch_wrap .switch::before,
-    .switch_wrap .switch::after {
-        content: 'ON';
-        display: none;
-        width: 50%;
-        position: absolute;
-        top: 0;
-        font-size: 11px;
-        font-weight: bold;
-        color: white;
-        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-        text-align: center;
-    }
-
-    .switch_wrap .switch::after {
-        content: 'OFF';
-        display: block;
-        right: 0;
-    }
-
-    .switch_wrap .switch .bullet {
-        position: relative;
-        display: block;
-        width: 32px;
-        height: 26px;
-        top: -2px;
-        left: -2px;
-        background-color: #f0f0f0;
-        background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#e6e6e6));
-        background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
-        background-image: -moz-linear-gradient(top, #f0f0f0, #e6e6e6);
-        background-image: -ms-linear-gradient(top, #f0f0f0, #e6e6e6);
-        background-image: -o-linear-gradient(top, #f0f0f0, #e6e6e6);
-        background-image: linear-gradient(top, #f0f0f0, #e6e6e6);
-        border: 1px solid rgba(0, 0, 0, 0.3);
-        border-radius: 3px;
-        -webkit-box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
-        box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
-        -webkit-transition: left 0.1s linear;
-        -moz-transition: left 0.1s linear;
-        -ms-transition: left 0.1s linear;
-        -o-transition: left 0.1s linear;
-        transition: left 0.1s linear;
-    }
-
-    .switch_wrap .switch .bullet::before,
-    .switch_wrap .switch .bullet::after {
-        content: '';
-        display: block;
-        height: 15px;
-        width: 3px;
-        position: absolute;
-        top: 5px;
-        left: 50%;
-        margin-left: -6px;
-        border: 1px solid #cccccc;
-        border-width: 0 1px;
-        -webkit-box-shadow: 1px 0 0 white, 1px 0 0 white inset;
-        box-shadow: 1px 0 0 white, 1px 0 0 white inset;
-    }
-
-    .switch_wrap .switch .bullet::after {
-        margin-left: 2px;
-    }
-    .account-new{
-        margin-bottom: 10px;
     }
 </style>
 <section class="content">
     <div class="row">
         <div class="col-lg-12">
             <section class="content-header">
-                <h1 class="text-capitalize">Accounts</h1>        
+                <h1 class="text-capitalize">Agency</h1>        
             </section>
         </div>
         <div class="col-md-4 data-search">
-            <input type="text" class="form-control" ng-model="searchAccount" placeholder="Search...">
+            <input type="text" class="form-control" ng-model="searchAgency" placeholder="Search...">
         </div>
         <div class="row">
             <div class="col-lg-12">
@@ -145,21 +51,21 @@
                             <thead>
                                 <tr>
                                     <th class="col-xs-5">Name</th>
-                                    <th class="col-xs-6">Geo Location</th>
+                                    <th class="col-xs-6">Email</th>
                                     <th class="col-xs-1"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="account in accounts| filter: searchAccount" ng-class="{'selectedTableRow':$index == selectedRow}">
-                                    <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
-                                        {{account.accountName}}
+                                <tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
+                                        {{agency.agencyName}}
                                     </td>
-                                    <td class="col-xs-6" ng-click="editAccount(account, $index); accountData()">
-                                        {{account.geoLocation?account.geoLocation:'-'}}
+                                    <td class="col-xs-6" ng-click="editAgency(agency, $index); agencyData()">
+                                        {{agency.email}}
                                     </td>
                                     <td class="col-xs-1s">
-                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccount{{account.id}}"><i class="fa fa-trash-o"></i></button>
-                                        <div class="modal hmodal-success" id="deleteAccount{{account.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgency{{agency.id}}"><i class="fa fa-trash-o"></i></button>
+                                        <div class="modal hmodal-success" id="deleteAgency{{agency.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="color-line"></div>
@@ -180,7 +86,7 @@
                                                     <div class="modal-footer">
                                                         <div class="col-sm-12">
                                                             <button type="button" class="btn btn-primary btn-xs " 
-                                                                    ng-click="deleteAccount(account, $index)" 
+                                                                    ng-click="deleteAgency(agency, $index)" 
                                                                     data-dismiss="modal">
                                                                 <span class="fa fa-trash"></span> Yes
                                                             </button>
@@ -203,15 +109,15 @@
                 <div class="col-md-6">
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
-                            <li ng-class="{ active: isSet(1) }">
-                                <a href ng-click="setTab(1)"> Details</a>
+                            <li ng-class="{ active: isSetAgency(1) }">
+                                <a href ng-click="setTabAgency(1)"> Details</a>
                             </li>
-                            <li ng-class="{ active: isSet(2) }">
-                                <a href ng-click="setTab(2)"> Property
+                            <li ng-class="{ active: isSetAgency(2) }">
+                                <a href ng-click="setTabAgency(2)"> Licence
                                 </a>
                             </li>
-                            <li ng-class="{ active: isSet(3) }">
-                                <a href ng-click="setTab(3)"> User
+                            <li ng-class="{ active: isSetAgency(3) }">
+                                <a href ng-click="setTabAgency(3)"> User
                                 </a>
                             </li>
                         </ul>
@@ -219,154 +125,105 @@
 
                     <div class="row">
                         <div class="tab-content">
-                            <div ng-show="isSet(1)">
+                            <div ng-show="isSetAgency(1)">
                                 <section class="content">
                                     <div class="pull-right account-new">
-                                        <button class="btn btn-success" ng-click="addAccount()">New</button>
+                                        <button class="btn btn-success" ng-click="addAgency()">New</button>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <form class="form-horizontal">
-                                                <div class="form-group">
-                                                    <label class="col-sm-2">Name</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control" ng-model="account.accountName" placeholder="Name">
+                                                <div class="form-group">                                                    
+                                                    <div class="col-sm-3">
+                                                        <div class="image-upload">
+                                                            <label for="file-input">
+                                                                <img class="img-responsive img-thumbnail" ng-src="{{agency.logo}}"/>
+                                                            </label>
+
+                                                            <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
+                                                        </div>
+                                                    </div>
+                                                    <label class="col-sm-3">Agency Name</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" ng-model="agency.agencyName" placeholder="Name">
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label class="col-sm-2">Geo Location</label>
+                                                    <label class="col-sm-2">Email</label>
                                                     <div class="col-sm-10">
-                                                        <input type="text" class="form-control" ng-model="account.geoLocation" placeholder="Geo">
+                                                        <input type="email" class="form-control" ng-model="agency.email" placeholder="Email">
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label class="col-sm-2">Description</label>
                                                     <div class="col-sm-10">
-                                                        <textarea class="form-control" ng-model="account.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
+                                                        <textarea class="form-control" ng-model="agency.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
                                                     </div>
                                                 </div>
                                                 <div class="pull-right">
-                                                    <button class="btn btn-info" ng-click="saveAccount(account)">Save</button>
-                                                    <button class="btn btn-warning" ng-click="clearAccount(account)">Cancel</button>
+                                                    <button class="btn btn-info" ng-click="saveAgency(agency)">Save</button>
+                                                    <button class="btn btn-warning" ng-click="clearAgency(agency)">Cancel</button>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </section>
                             </div>
-                            <div ng-show="isSet(2)">
+                            <div ng-show="isSetAgency(2)">
                                 <section class="content">
                                     <div class="row">
                                         <div class="row">
-                                            <div class="col-lg-12" ng-hide="showEditPage">
-                                                <table class="table table-fixed">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="col-xs-5">Name</th>
-                                                            <!--<th class="col-xs-4">Account Name</th>-->
-                                                            <th class="col-xs-6">Value</th>
-                                                            <th class="col-xs-1">
-                                                                <button class="btn btn-success btn-xs" ng-click="addProperty()"><i class="fa fa-plus"></i></button>
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody style="height:420px">
-                                                        <tr ng-repeat="property in properties" ng-class="{'selectedTableRow':$index == selectedRows}" ng-click="setPropertyRow($index)">
-                                                            <td class="col-xs-5" ng-click="editProperty(property)">
-                                                                {{property.propertyName}}
-                                                            </td>
-                                                            <!--                                                            <td class="col-xs-4" ng-click="editProperty(property)">
-                                                                                                                            {{property.accountId.accountName}}
-                                                                                                                        </td>-->
-                                                            <td class="col-xs-6" ng-click="editProperty(property)">
-                                                                {{property.propertyValue}}
-                                                            </td>
-                                                            <td class="col-xs-1">
-                                                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteProperty{{property.id}}"><i class="fa fa-trash-o"></i></button>
-                                                                <div class="modal hmodal-success" id="deleteProperty{{property.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="color-line"></div>
-                                                                            <div class="modal-header">
-                                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                                <h4 class="modal-title">Delete</h4>
-                                                                                <small class="font-bold"></small>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <form class="form-horizontal" role="form">
-                                                                                    <div class="form-group">
-                                                                                        <div class="col-sm-12  col-md-12">
-                                                                                            <span>Want to delete ?</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <div class="col-sm-12">
-                                                                                    <button type="button" class="btn btn-primary btn-xs " 
-                                                                                            ng-click="deleteProperty(property, $index)" 
-                                                                                            data-dismiss="modal">
-                                                                                        <span class="fa fa-trash"></span> Yes
-                                                                                    </button>
-                                                                                    <button type="button" class="btn btn-danger btn-xs " 
-                                                                                            data-dismiss="modal">
-                                                                                        <span class="fa fa-times"></span> No
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div ng-show="showEditPage" class="col-md-12">
+                                            <div class="col-lg-12">
                                                 <form class="form-horizontal">
                                                     <div class="form-group">
-                                                        <label class="col-sm-2">Name</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control" ng-model="property.propertyName" placeholder="Name">
+                                                        <label class="col-sm-6">Number Of Tabs</label>
+                                                        <div class="col-sm-6">
+                                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoTab">
                                                         </div>
-
-                                                        <!--                                                        <label class="col-sm-2">Account Name</label>
-                                                                                                                <div class="col-sm-4">
-                                                                                                                    <input type="text" class="form-control" ng-model="property.accountId" placeholder="Name">
-                                                                                                                    <select class="form-control" 
-                                                                                                                            ng-options="account.accountName for account in accounts track by account.id" 
-                                                                                                                            ng-model="property.accountId">
-                                                                                                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                                                                                    </select>
-                                                                                                                </div>-->
                                                     </div>
-
                                                     <div class="form-group">
-                                                        <label class="col-sm-2">Value</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control" ng-model="property.propertyValue" placeholder="Value">
+                                                        <label class="col-sm-6">Number Of Users</label>
+                                                        <div class="col-sm-6">
+                                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoUser">
                                                         </div>
                                                     </div>
-
                                                     <div class="form-group">
-                                                        <label class="col-sm-2">Remark</label>
-                                                        <div class="col-sm-10">
-                                                            <textarea class="form-control" ng-model="property.propertyRemark" placeholder="Remark" rows="1" style="min-height: 100px;"></textarea>
+                                                        <label class="col-sm-6">Number Of Clients</label>
+                                                        <div class="col-sm-6">
+                                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoClient">
+                                                        </div>
+                                                    </div>                                            
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Number Of Accounts</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" ng-model="agencyLicence.maxNoAccount">
                                                         </div>
                                                     </div>
-                                                    <div class="pull-right">
-                                                        <button class="btn btn-info" ng-click="saveProperty(property)">Save</button>
-                                                        <button class="btn btn-warning" ng-click="clearProperty(property)">Cancel</button>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Expiry Date</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" date-Picker class="form-control" ng-model="agencyLicence.expiryDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Number Of Widgets Per Tabs</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" ng-model="agencyLicence.maxNoWidgetPerTab">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group pull-right">
+                                                        <button class="btn btn-info" ng-click="saveAgencyLicence(agencyLicence)">Save</button>
+                                                        <!--<button class="btn btn-warning" ng-click="clearAgencyLicence(agencyLicence)">Cancel</button>-->
                                                     </div>
                                                 </form>
-                                            </div>
+                                            </div>                                           
                                         </div>
                                     </div>
                                 </section>
                             </div>
-                            <div ng-show="isSet(3)">
+                            <div ng-show="isSetAgency(3)">
                                 <section class="content">
                                     <div class="row">
                                         <div class="row">
@@ -387,7 +244,7 @@
                                                             <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
                                                                                                                             {{accountUser.accountId.accountName}}
                                                                                                                         </td>-->
-                                                            <td class="col-xs-6 account-select2" ng-click="editAccountUser(accountUser)">
+                                                            <td class="col-xs-6" ng-click="editAccountUser(accountUser)">
                                                                 <div ng-hide="accountUser.isEdit">
                                                                     {{accountUser.userId.userName}}
                                                                 </div>

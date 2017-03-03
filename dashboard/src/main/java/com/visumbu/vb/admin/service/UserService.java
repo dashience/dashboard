@@ -11,6 +11,8 @@ import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AccountUser;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.VbUser;
@@ -228,4 +230,43 @@ public class UserService {
     public List getAccountUserById(Integer accountId) {
         return userDao.getAccountUserById(accountId);
     }
+
+    public Agency createAgency(Agency agency) {
+        return (Agency) userDao.create(agency);
+    }
+
+    public Agency updateAgency(Agency agency) {
+        return (Agency) userDao.update(agency);
+    }
+
+    public List<Agency> getAgency() {
+        List<Agency> agency = userDao.read(Agency.class);
+        return agency;
+    }
+
+    public Agency deleteAgency(Integer agencyId) {
+        return userDao.deleteAgency(agencyId);
+    }
+
+    public AgencyLicence createAgencyLicence(AgencyLicence agencyLicence) {
+       return (AgencyLicence) userDao.create(agencyLicence);
+    }
+
+    public AgencyLicence updateAgencyLicence(AgencyLicence agencyLicence) {
+        return (AgencyLicence) userDao.update(agencyLicence);
+    }
+
+    public List<AgencyLicence> getAgencyLicence() {
+        List<AgencyLicence> agencyLicence = userDao.read(AgencyLicence.class);
+        return agencyLicence;
+    }
+    
+    public List getAgencyLicenceById(Integer agencyId) {
+        return userDao.getAgencyLicenceById(agencyId);
+    }
+
+    public Agency deleteAgencyLicence(Integer agencyLicenceId) {
+        return userDao.deleteAgencyLicence(agencyLicenceId);
+    }
+
 }

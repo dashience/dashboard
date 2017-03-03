@@ -12,6 +12,8 @@ import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthRoleBean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AccountUser;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.VbUser;
@@ -461,6 +463,60 @@ public class UserController {
     public @ResponseBody
     AccountUser deleteAccountUser(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountUserId) {
         return userService.deleteAccountUser(accountUserId);
+    }
+    
+    @RequestMapping(value = "agency", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Agency createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
+        return userService.createAgency(agency);
+    }
+
+    @RequestMapping(value = "agency", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    Agency updateAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
+        return userService.updateAgency(agency);
+    }
+
+    @RequestMapping(value = "agency", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgency(HttpServletRequest request, HttpServletResponse response) {
+        return userService.getAgency();
+    }
+
+    @RequestMapping(value = "agency/{agencyId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    Agency deleteAgency(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+        return userService.deleteAgency(agencyId);
+    }
+    
+    @RequestMapping(value = "agencyLicence", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    AgencyLicence createAgencyLicence(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencyLicence agencyLicence) {
+        return userService.createAgencyLicence(agencyLicence);
+    }
+
+    @RequestMapping(value = "agencyLicence", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    AgencyLicence updateAgencyLicence(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencyLicence agencyLicence) {
+        return userService.updateAgencyLicence(agencyLicence);
+    }
+
+    @RequestMapping(value = "agencyLicence", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgencyLicence(HttpServletRequest request, HttpServletResponse response) {
+        return userService.getAgencyLicence();
+    }
+    
+    @RequestMapping(value = "agencyLicence/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgencyLicenceById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+        return userService.getAgencyLicenceById(agencyId);
+    }
+
+    @RequestMapping(value = "agencyLicence/{agencyLicenceId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    Agency deleteAgencyLicence(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyLicenceId) {
+        return userService.deleteAgencyLicence(agencyLicenceId);
     }
 
     @ExceptionHandler

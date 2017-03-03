@@ -16,10 +16,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         return $scope.tab === tabNum;
     };
 
-    $scope.setAccountId = function (account) {
-        $stateParams.accountId = account.id;
-    };
-
+    $scope.accountUsers = []
     function getAccountProperty(account) {
         $http.get('admin/user/property/' + account.id).success(function (response) {
             $scope.properties = response;
@@ -27,12 +24,16 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         $http.get('admin/user/accountUser/' + account.id).success(function (response) {
             $scope.accountUsers = response;
         });
-        $http.get('admin/ui/user').success(function (response) {
-            $scope.users = response;
-        });
     }
+    $http.get('admin/ui/user').success(function (response) {
+        $scope.users = response;
+    });
 
     $scope.accounts = [];
+
+    $scope.addAccount = function () {
+        $scope.account = "";
+    };
 
     function getAccount() {
         $http.get('admin/user/account').success(function (response) {
@@ -130,16 +131,30 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     };
 
 
+    $scope.accountUsers = []
     $scope.addAccountUser = function () {
-        $scope.showAccountUserEditPage = true;
-        $scope.accountUser = "";
-    }
+        $scope.accountUsers.push({isEdit: true});
+    };
+
+    $scope.saveStatus = function (accountUser) {
+        var account = $scope.accountUserId;
+        var data = {
+            id: accountUser.id,
+            accountId: account.id,
+            userId: accountUser.userId,
+            status: accountUser.status
+        };
+        if (accountUser.id) {
+            $http({method: 'PUT', url: 'admin/user/accountUser', data: data}).success(function (response) {
+            });
+        }
+    };
 
     $scope.saveAccountUser = function (accountUser) {
         var account = $scope.accountUserId;
         var data = {
             id: accountUser.id,
-            accountId: account.id,//accountUser.accountId,
+            accountId: account.id, //accountUser.accountId,
             userId: accountUser.userId,
             status: accountUser.status
         };
@@ -148,7 +163,6 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         });
 
         $scope.accountUser = "";
-        $scope.showAccountUserEditPage = false;
     };
 
     $scope.editAccountUser = function (accountUser) {
@@ -159,7 +173,6 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             status: accountUser.status
         };
         $scope.accountUser = data;
-        $scope.showAccountUserEditPage = true;
     };
 
     $scope.selectedAccountUser = null;
@@ -168,9 +181,13 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     };
 
     $scope.deleteAccountUser = function (accountUser, index) {
-        $http({method: 'DELETE', url: 'admin/user/accountUser/' + accountUser.id}).success(function (response) {
+        if (accountUser.id) {
+            $http({method: 'DELETE', url: 'admin/user/accountUser/' + accountUser.id}).success(function (response) {
+                $scope.accountUsers.splice(index, 1);
+            });
+        } else {
             $scope.accountUsers.splice(index, 1);
-        });
+        }
     };
 
     $scope.clearAccountUser = function (accountUser) {

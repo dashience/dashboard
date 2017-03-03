@@ -15,12 +15,15 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.UserAccount;
+import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import java.io.File;
@@ -448,5 +451,55 @@ public class UiService {
         VbUser vbUser = readUser(id);
         return (VbUser) uiDao.delete(vbUser);
         //return dealer;
+    }
+
+    public UserAccount createUserAccount(UserAccount userAccount) {
+        return (UserAccount) uiDao.create(userAccount);
+    }
+
+    public UserAccount updateUserAccount(UserAccount userAccount) {
+        return (UserAccount) uiDao.update(userAccount);
+    }
+
+    public List<UserAccount> getUserAccount() {
+        List<UserAccount> userAccount = uiDao.read(UserAccount.class);
+        return userAccount;
+    }
+
+    public List<UserAccount> getUserAccountById(Integer userId) {
+        return uiDao.getUserAccountById(userId);
+    }
+
+    public UserAccount deleteUserAccount(Integer userAccountId) {
+        return uiDao.deleteUserAccount(userAccountId);
+    }
+
+//    public List getUserAccountId(Integer userId) {
+//        return uiDao.getUserAccountId(userId);
+//    }
+    public List<Permission> getPermission() {
+        List<Permission> permission = uiDao.read(Permission.class);
+        return permission;
+    }
+
+    public UserPermission createUserPermission(UserPermission userPermission) {
+       return (UserPermission) uiDao.create(userPermission);
+    }
+
+    public UserPermission updateUserPermission(UserPermission userPermission) {
+        return (UserPermission) uiDao.update(userPermission);
+    }
+
+    public List<UserPermission> getUserPermission() {
+        List<UserPermission> userPermission = uiDao.read(UserPermission.class);
+        return userPermission;
+    }
+
+    public List getUserPermissionById(Integer userId) {
+        return uiDao.getUserPermission(userId);
+    }
+
+    public UserPermission deleteUserPermission(Integer userPermissionId) {
+        return uiDao.deleteUserPermission(userPermissionId);
     }
 }

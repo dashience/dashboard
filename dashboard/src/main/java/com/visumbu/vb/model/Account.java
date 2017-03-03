@@ -38,6 +38,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class Account implements Serializable {
 
     @OneToMany(mappedBy = "accountId")
+    private Collection<UserAccount> userAccountCollection;
+
+    @OneToMany(mappedBy = "accountId")
     private Collection<Property> propertyCollection;
 
     @OneToMany(mappedBy = "accountId")
@@ -142,6 +145,16 @@ public class Account implements Serializable {
 
     public void setPropertyCollection(Collection<Property> propertyCollection) {
         this.propertyCollection = propertyCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<UserAccount> getUserAccountCollection() {
+        return userAccountCollection;
+    }
+
+    public void setUserAccountCollection(Collection<UserAccount> userAccountCollection) {
+        this.userAccountCollection = userAccountCollection;
     }
     
 }

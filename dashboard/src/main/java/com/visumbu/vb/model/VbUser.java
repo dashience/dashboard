@@ -54,6 +54,15 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class VbUser implements Serializable {
 
     @OneToMany(mappedBy = "userId")
+    private Collection<AgencyUser> agencyUserCollection;
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<UserPermission> userPermissionCollection;
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<UserAccount> userAccountCollection;
+
+    @OneToMany(mappedBy = "userId")
     private Collection<AccountUser> accountUserCollection;
 
     @OneToMany(mappedBy = "userId")
@@ -382,6 +391,36 @@ public class VbUser implements Serializable {
 
     public void setAccountUserCollection(Collection<AccountUser> accountUserCollection) {
         this.accountUserCollection = accountUserCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<UserAccount> getUserAccountCollection() {
+        return userAccountCollection;
+    }
+
+    public void setUserAccountCollection(Collection<UserAccount> userAccountCollection) {
+        this.userAccountCollection = userAccountCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<UserPermission> getUserPermissionCollection() {
+        return userPermissionCollection;
+    }
+
+    public void setUserPermissionCollection(Collection<UserPermission> userPermissionCollection) {
+        this.userPermissionCollection = userPermissionCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyUser> getAgencyUserCollection() {
+        return agencyUserCollection;
+    }
+
+    public void setAgencyUserCollection(Collection<AgencyUser> agencyUserCollection) {
+        this.agencyUserCollection = agencyUserCollection;
     }
 
 }

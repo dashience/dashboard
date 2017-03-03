@@ -75,9 +75,13 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             .state("index.account", {
                 url: "/account/:locationId?:startDate/:endDate",
                 templateUrl: "static/views/admin/account.html",
-                controller: 'AccountController',
-                activetab: 'account'
+                controller: 'AccountController'
             })
+            .state("index.agency", {
+                url: "/agency/:locationId?:startDate/:endDate",
+                templateUrl: "static/views/admin/agency.html",
+                controller: 'AgencyController'
+            });
 //            .state("index.schedulerIndex.editOrNewScheduler", {
 //                url: "/editOrNewScheduler/:locationId?:startDate/:endDate",
 //                templateUrl: "static/views/scheduler/newOrEditScheduler.html",

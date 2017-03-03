@@ -27,6 +27,12 @@
     <class>com.visumbu.vb.model.Account</class>
     <class>com.visumbu.vb.model.AccountUser</class>
     <class>com.visumbu.vb.model.Property</class>
+    <class>com.visumbu.vb.model.UserPermission</class>
+    <class>com.visumbu.vb.model.UserAccount</class>
+    <class>com.visumbu.vb.model.Permission</class>
+    <class>com.visumbu.vb.model.AgencyUser</class>
+    <class>com.visumbu.vb.model.Agency</class>
+    <class>com.visumbu.vb.model.AgencyLicence</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

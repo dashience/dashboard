@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AccountUser;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.Property;
@@ -202,5 +203,34 @@ public class UserDao extends BaseDao {
         query.setParameter("accountId", accountId);
         return query.list();
     }
+
+    public Agency deleteAgency(Integer agencyId) {
+        String queryStr = "delete from AgencyLicence d where d.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", agencyId);
+        query.executeUpdate();
+
+        String queryString = "delete Agency d where d.id = :agencyId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("agencyId", agencyId);
+        querySess.executeUpdate();
+        return null;
+    }
+    
+    public List getAgencyLicenceById(Integer agencyId) {
+        String queryStr = "select d from AgencyLicence d where d.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", agencyId);
+        return query.list();
+    }
+
+    public Agency deleteAgencyLicence(Integer agencyLicenceId) {
+        String queryString = "delete AgencyLicence d where d.id = :agencyLicenceId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("agencyLicenceId", agencyLicenceId);
+        querySess.executeUpdate();
+        return null;
+    }
+
 
 }
