@@ -51,18 +51,20 @@ public class Rest {
         }
         String returnStr = "";
         try {
-            System.out.println(urlString);
+            System.out.println("urlString:"+urlString);
             URL httpUrl = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
 
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                System.out.println("if condition");
                 System.out.println(urlString);
                 System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
                 throw new RuntimeException("Failed : HTTP error code : "
                         + conn.getResponseCode());
             } else {
+                System.out.println("else condition");
                 System.out.println(urlString);
                 System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
 
