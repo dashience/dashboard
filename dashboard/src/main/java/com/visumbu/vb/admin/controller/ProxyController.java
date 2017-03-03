@@ -10,6 +10,7 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -38,7 +39,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import test.CustomReportDesigner;
-import test.PPTReportDesigner;
 
 /**
  *
@@ -134,7 +134,7 @@ public class ProxyController {
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next();
             try {
-                if(tabWidget.getDataSourceId() == null) {
+                if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
                 String url = tabWidget.getDirectUrl();
@@ -150,7 +150,7 @@ public class ProxyController {
                     url = "../VizBoard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(),"UTF-8")));
+                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
 
                 Integer port = request.getServerPort();
@@ -160,8 +160,8 @@ public class ProxyController {
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
-                System.out.println("url: "+url);
-                System.out.println("valuemap: "+valueMap);
+                System.out.println("url: " + url);
+                System.out.println("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
@@ -179,9 +179,7 @@ public class ProxyController {
             OutputStream out = response.getOutputStream();
             CustomReportDesigner crd = new CustomReportDesigner();
             crd.dynamicPdfTable(tabWidgets, out);
-            PPTReportDesigner ppt = new PPTReportDesigner();
-            ppt.dynamicPPTTable(tabWidgets, out);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
