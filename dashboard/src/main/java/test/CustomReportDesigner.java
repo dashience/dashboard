@@ -611,7 +611,7 @@ public class CustomReportDesigner {
     
     public XSLFTable staticPptTable(XSLFSlide slide){
         XSLFTable tbl = slide.createTable();
-        tbl.setAnchor(new java.awt.Rectangle(50, 50, 450, 300));
+        tbl.setAnchor(new java.awt.Rectangle(30, 30, 450, 300));
         int numColumns = 3;
         int numRows = 5;
         XSLFTableRow headerRow = tbl.addRow();
@@ -1295,7 +1295,7 @@ return tbl;
                     // XSLFPictureShape pic = slide.createPicture(idx);
                    
                      XSLFTable table = slide.createTable();
-                    table.setAnchor(new java.awt.Rectangle(50, 50, 680, 480));
+                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
 
                     XSLFTableRow row = table.addRow();
                     row.addCell().setText("Pie Chart");
@@ -1335,7 +1335,7 @@ return tbl;
                     //XSLFPictureShape pic = slide.createPicture(idx);
                     
                      XSLFTable table = slide.createTable();
-                    table.setAnchor(new java.awt.Rectangle(50, 50, 680, 480));
+                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
 
                     XSLFTableRow row = table.addRow();
                     row.addCell().setText("Bar Chart");
@@ -1373,7 +1373,7 @@ return tbl;
                     //creating a slide with given picture on it
                     //XSLFPictureShape pic = slide.createPicture(idx);
                     XSLFTable table = slide.createTable();
-                    table.setAnchor(new java.awt.Rectangle(50, 50, 680, 480));
+                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
 
                     XSLFTableRow row = table.addRow();
                     row.addCell().setText("Line Chart");
