@@ -53,6 +53,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.configuration.FileOptionsProvider;
 import org.apache.commons.lang.WordUtils;
+import org.apache.poi.POIXMLDocumentPart.RelationPart;
 import org.apache.poi.sl.usermodel.PaintStyle;
 import org.apache.poi.sl.usermodel.PictureData;
 import org.apache.poi.sl.usermodel.TableCell;
@@ -63,6 +64,7 @@ import org.apache.poi.util.IOUtils;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFPictureData;
 import org.apache.poi.xslf.usermodel.XSLFPictureShape;
+import org.apache.poi.xslf.usermodel.XSLFRelation;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.apache.poi.xslf.usermodel.XSLFTable;
 import org.apache.poi.xslf.usermodel.XSLFTableCell;
@@ -102,6 +104,10 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.ui.HorizontalAlignment;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTBlip;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTBlipFillProperties;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTRelativeRect;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTableCell;
 
 /**
  *
@@ -605,7 +611,7 @@ public class CustomReportDesigner {
     
     public XSLFTable staticPptTable(XSLFSlide slide){
         XSLFTable tbl = slide.createTable();
-        tbl.setAnchor(new java.awt.Rectangle(100, 100, 450, 300));
+        tbl.setAnchor(new java.awt.Rectangle(50, 50, 450, 300));
         int numColumns = 3;
         int numRows = 5;
         XSLFTableRow headerRow = tbl.addRow();
@@ -1283,10 +1289,34 @@ return tbl;
                     byte[] picture = IOUtils.toByteArray(new FileInputStream(image));
 
                     //adding the image to the presentation
-                    PictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
+                    XSLFPictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
 
                     //creating a slide with given picture on it
-                    XSLFPictureShape pic = slide.createPicture(idx);
+                    // XSLFPictureShape pic = slide.createPicture(idx);
+                   
+                     XSLFTable table = slide.createTable();
+                    table.setAnchor(new java.awt.Rectangle(50, 50, 680, 480));
+
+                    XSLFTableRow row = table.addRow();
+                    row.addCell().setText("Pie Chart");
+                    table.setColumnWidth(0, 600);
+                    
+                    XSLFTableRow row1 = table.addRow();
+                    row1.setHeight(400);
+                    
+                    XSLFTableCell cell = row1.addCell();
+
+                    CTBlipFillProperties blipPr = ((CTTableCell)cell.getXmlObject()).getTcPr().addNewBlipFill();
+                    blipPr.setDpi(72);
+                    // http://officeopenxml.com/drwPic-ImageData.php
+                    CTBlip blib = blipPr.addNewBlip();
+                    blipPr.addNewSrcRect();
+                    CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
+                    fillRect.setL(30000);
+                    fillRect.setR(30000);
+
+                    RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
+                    blib.setEmbed(rp.getRelationship().getId());
 
                 } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
                     System.out.println("Bar");
@@ -1299,10 +1329,34 @@ return tbl;
                     byte[] picture = IOUtils.toByteArray(new FileInputStream(image));
 
                     //adding the image to the presentation
-                    PictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
+                    XSLFPictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
 
                     //creating a slide with given picture on it
-                    XSLFPictureShape pic = slide.createPicture(idx);
+                    //XSLFPictureShape pic = slide.createPicture(idx);
+                    
+                     XSLFTable table = slide.createTable();
+                    table.setAnchor(new java.awt.Rectangle(50, 50, 680, 480));
+
+                    XSLFTableRow row = table.addRow();
+                    row.addCell().setText("Bar Chart");
+                    table.setColumnWidth(0, 600);
+                    
+                    XSLFTableRow row1 = table.addRow();
+                    row1.setHeight(400);
+                    
+                    XSLFTableCell cell = row1.addCell();
+
+                    CTBlipFillProperties blipPr = ((CTTableCell)cell.getXmlObject()).getTcPr().addNewBlipFill();
+                    blipPr.setDpi(72);
+                    // http://officeopenxml.com/drwPic-ImageData.php
+                    CTBlip blib = blipPr.addNewBlip();
+                    blipPr.addNewSrcRect();
+                    CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
+                    fillRect.setL(30000);
+                    fillRect.setR(30000);
+
+                    RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
+                    blib.setEmbed(rp.getRelationship().getId());
                 } else if (tabWidget.getChartType().equalsIgnoreCase("line")) {
                     System.out.println("Line");
                     XSLFSlide slide = ppt.createSlide();
@@ -1314,10 +1368,33 @@ return tbl;
                     byte[] picture = IOUtils.toByteArray(new FileInputStream(image));
 
                     //adding the image to the presentation
-                    PictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
+                    XSLFPictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
 
                     //creating a slide with given picture on it
-                    XSLFPictureShape pic = slide.createPicture(idx);
+                    //XSLFPictureShape pic = slide.createPicture(idx);
+                    XSLFTable table = slide.createTable();
+                    table.setAnchor(new java.awt.Rectangle(50, 50, 680, 480));
+
+                    XSLFTableRow row = table.addRow();
+                    row.addCell().setText("Line Chart");
+                    table.setColumnWidth(0, 600);
+                    
+                    XSLFTableRow row1 = table.addRow();
+                    row1.setHeight(400);
+                    
+                    XSLFTableCell cell = row1.addCell();
+
+                    CTBlipFillProperties blipPr = ((CTTableCell)cell.getXmlObject()).getTcPr().addNewBlipFill();
+                    blipPr.setDpi(72);
+                    // http://officeopenxml.com/drwPic-ImageData.php
+                    CTBlip blib = blipPr.addNewBlip();
+                    blipPr.addNewSrcRect();
+                    CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
+                    fillRect.setL(30000);
+                    fillRect.setR(30000);
+
+                    RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
+                    blib.setEmbed(rp.getRelationship().getId());
                 }
             }
             out = new FileOutputStream("/home/deldot/Pictures/ppt/ppttable.pptx");
