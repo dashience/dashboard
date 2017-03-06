@@ -84,13 +84,16 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
-            console.log(dataSourcePath)
-            console.log(dataSourcePath.dataSourceId.userName)
+            console.log(dataSourcePath);
+            console.log(dataSourcePath.dataSourceId.userName);
+            console.log(dataSourcePath.dataSourceId.connectionString);
+            console.log(dataSourcePath.dataSourceId.sqlDriver);
+            console.log(dataSourcePath.dataSourceId.password);
             var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             if (dataSourcePath.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
-            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&driver=" + dataSourcePath.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&driver=" + dataSourcePath.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;
