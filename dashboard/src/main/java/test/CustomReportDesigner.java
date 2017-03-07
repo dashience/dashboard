@@ -562,7 +562,6 @@ public class CustomReportDesigner {
 //        return generatePptTable(groupedMapData, tabWidget);
 //
 //    }
-
     private void generateGroupedRows(Map groupedData, TabWidget tabWidget, PdfPTable table) {
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
         List<WidgetColumn> columns = tabWidget.getColumns();
@@ -608,8 +607,8 @@ public class CustomReportDesigner {
             }
         }
     }
-    
-    public XSLFTable staticPptTable(XSLFSlide slide){
+
+    public XSLFTable staticPptTable(XSLFSlide slide) {
         XSLFTable tbl = slide.createTable();
         tbl.setAnchor(new java.awt.Rectangle(30, 30, 450, 300));
         int numColumns = 3;
@@ -617,12 +616,12 @@ public class CustomReportDesigner {
         XSLFTableRow headerRow = tbl.addRow();
         headerRow.setHeight(50);
         // header
-        for(int i = 0; i < numColumns; i++) {
+        for (int i = 0; i < numColumns; i++) {
             XSLFTableCell th = headerRow.addCell();
             XSLFTextParagraph p = th.addNewTextParagraph();
             p.setTextAlign(TextParagraph.TextAlign.CENTER);
             XSLFTextRun r = p.addNewTextRun();
-            r.setText("Header " + (i+1));
+            r.setText("Header " + (i + 1));
             r.setBold(true);
             r.setFontColor(Color.white);
             th.setFillColor(new Color(79, 129, 189));
@@ -631,28 +630,232 @@ public class CustomReportDesigner {
 
             tbl.setColumnWidth(i, 150);  // all columns are equally sized
         }
-        
+
         // rows
-        
-        for(int rownum = 0; rownum < numRows; rownum ++){
+        for (int rownum = 0; rownum < numRows; rownum++) {
             XSLFTableRow tr = tbl.addRow();
             tr.setHeight(50);
             // header
-            for(int i = 0; i < numColumns; i++) {
+            for (int i = 0; i < numColumns; i++) {
                 XSLFTableCell cell = tr.addCell();
                 XSLFTextParagraph p = cell.addNewTextParagraph();
                 XSLFTextRun r = p.addNewTextRun();
 
-                r.setText("Cell " + (i+1));
-                if(rownum % 2 == 0)
+                r.setText("Cell " + (i + 1));
+                if (rownum % 2 == 0) {
                     cell.setFillColor(new Color(208, 216, 232));
-                else
+                } else {
                     cell.setFillColor(new Color(233, 247, 244));
+                }
 
             }
-            
+
         }
-return tbl;
+        return tbl;
+    }
+
+    private XSLFTable generateTableForPpt(Map groupedData, TabWidget tabWidget, XSLFSlide slide) {
+
+        //       BaseColor textHighlightColor = new BaseColor(242, 156, 33);
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+        List<Map<String, Object>> data = tabWidget.getData();
+        List<String> groupFields = (List< String>) groupedData.get("_groupFields");
+        Integer noOfColumns = countColumns(columns); //.size();
+        if (groupFields != null && groupFields.size() > 0) {
+            noOfColumns++;
+        }
+        XSLFTable tbl = slide.createTable();
+        tbl.setAnchor(new java.awt.Rectangle(30, 30, 450, 300));
+        XSLFTableRow tr = tbl.addRow();
+        XSLFTableCell cell = tr.addCell();
+//        pdfFontTitle.setSize(14);
+//        pdfFontTitle.setStyle(Font.BOLD);
+//        pdfFontTitle.setColor(tableTitleFontColor);
+//        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+//        cell.setFixedHeight(30);
+//        cell.setBorderColor(widgetBorderColor);
+//        cell.setBackgroundColor(widgetTitleColor);
+//        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+//        cell.setColspan(noOfColumns);
+//        cell.setPaddingTop(5);
+//        cell.setPaddingLeft(10);
+//        table.addCell(cell);
+//        table.setWidthPercentage(95f);
+        cell.setText(tabWidget.getWidgetTitle());
+        XSLFTableRow headerRow = tbl.addRow();
+        if (groupFields != null && groupFields.size() > 0) {
+            XSLFTableCell headerCell = headerRow.addCell();
+//            pdfFontHeader.setSize(13);
+//            pdfFontHeader.setColor(tableHeaderFontColor);
+//            PdfPCell dataCell = new PdfPCell(new Phrase("Group", pdfFontHeader));
+//            dataCell.setPadding(5);
+//            dataCell.setBorderColor(widgetBorderColor);
+//            dataCell.setBackgroundColor(tableHeaderColor);
+//            table.addCell(dataCell);
+            headerCell.setText("Group");
+        }
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getColumnHide() == null || column.getColumnHide() == 0) {
+//                PdfPCell dataCell = new PdfPCell(new Phrase(column.getDisplayName(), pdfFontHeader));
+//                dataCell.setPadding(5);
+//                dataCell.setBorderColor(widgetBorderColor);
+//                dataCell.setBackgroundColor(tableHeaderColor);
+//                if (column.getAlignment() != null) {
+//                    dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+//                }
+//                table.addCell(dataCell);
+                XSLFTableCell headerCell = headerRow.addCell();
+                headerCell.setText(column.getDisplayName());
+            }
+        }
+        if (groupFields == null || groupFields.isEmpty()) {
+            // System.out.println(tabWidget.getWidgetTitle() + "No Group Enabled ===> " + data.size());
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                XSLFTableRow dataRow = tbl.addRow();
+                for (Iterator<WidgetColumn> iterator1 = columns.iterator(); iterator1.hasNext();) {
+                    WidgetColumn column = iterator1.next();
+                    //PdfPCell dataCell;
+                    String value = dataMap.get(column.getFieldName()) + "";
+                    if (column.getDisplayFormat() != null) {
+                        value = Formatter.format(column.getDisplayFormat(), value);
+                        System.out.println("data value: " + value);
+                    }
+                    pdfFont.setColor(tableHeaderFontColor);
+                    //dataCell = new PdfPCell(new Phrase(value, pdfFont));
+                    if (column.getAlignment() != null) {
+                        //dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                    }
+                    // dataCell.setBackgroundColor(BaseColor.GREEN);
+                    //dataCell.setBorderColor(widgetBorderColor);
+                    //table.addCell(dataCell);
+                    XSLFTableCell dataCell = dataRow.addCell();
+                    dataCell.setText(value);
+                }
+            }
+        } else {
+            generateGroupedRows(groupedData, tabWidget, tbl);
+        }
+        if (tabWidget.getTableFooter() != null && tabWidget.getTableFooter()) {
+            XSLFTableRow footerRow = tbl.addRow();
+            Boolean totalDisplayed = false;
+            if (groupFields != null && groupFields.size() > 0) {
+                //pdfFont.setColor(tableHeaderFontColor);
+                //PdfPCell dataCell = new PdfPCell(new Phrase("Total:", pdfFont));
+                //dataCell.setBorderColor(widgetBorderColor);
+                //dataCell.setBackgroundColor(tableFooterColor);
+                //table.addCell(dataCell);
+                XSLFTableCell dataCell = footerRow.addCell();
+                dataCell.setText("Total");
+                totalDisplayed = true;
+            }
+            for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+                WidgetColumn column = iterator.next();
+                if (column.getColumnHide() == null || column.getColumnHide() == 0) {
+                    if (totalDisplayed == false) {
+                        //pdfFont.setColor(tableHeaderFontColor);
+                        //PdfPCell dataCell = new PdfPCell(new Phrase("Total:", pdfFont));
+                        //dataCell.setBorderColor(widgetBorderColor);
+                        //dataCell.setBackgroundColor(tableFooterColor);
+                        //table.addCell(dataCell);
+                        XSLFTableCell dataCell = footerRow.addCell();
+                        dataCell.setText("Total");
+                        totalDisplayed = true;
+                    } else {
+                        String value = (String) groupedData.get(column.getFieldName());
+                        if (column.getDisplayFormat() != null) {
+                            value = Formatter.format(column.getDisplayFormat(), value);
+                            System.out.println("Value: " + value);
+                        }
+                        pdfFont.setColor(tableHeaderFontColor);
+                        //PdfPCell dataCell = new PdfPCell(new Phrase(value, pdfFont));
+                        if (column.getAlignment() != null) {
+                            //dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                        }
+                        //dataCell.setBorderColor(widgetBorderColor);
+                        //dataCell.setBackgroundColor(tableFooterColor);
+                        //table.addCell(dataCell);
+                        XSLFTableCell dataCell = footerRow.addCell();
+                        dataCell.setText(value);
+                    }
+                }
+            }
+        }
+        return tbl;
+    }
+
+    public XSLFTable dynamicPptTable(TabWidget tabWidget, XSLFSlide slide) throws DocumentException {
+//        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+        List<Map<String, Object>> originalData = tabWidget.getData();
+        List<Map<String, Object>> data = new ArrayList<>(originalData);
+        // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
+        List<Map<String, Object>> tempData = new ArrayList<>();
+
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****5 " + data.size());
+        if (tabWidget.getZeroSuppression() != null && tabWidget.getZeroSuppression()) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                if (!isZeroRow(dataMap, columns)) {
+                    tempData.add(dataMap);
+                }
+            }
+            // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****4 " + tempData.size());
+
+            data = tempData;
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****3 " + data.size());
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+        List<String> groupByFields = new ArrayList<>();
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null) {
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+            if (column.getGroupPriority() != null) {
+                groupByFields.add(column.getFieldName());
+            }
+        }
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+        Map groupedMapData = new HashMap();
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****1 " + data.size());
+
+        // System.out.prin`tln("Group by Fields --> " + groupByFields.size());
+        // System.out.println(groupByFields);
+        List<String> originalGroupByFields = new ArrayList<>(groupByFields);
+        if (groupByFields.size() > 0) {
+            List groupedData = groupData(data, groupByFields, aggreagtionList);
+
+            groupedMapData.putAll(aggregateData(data, aggreagtionList));
+            groupedMapData.put("_groupFields", originalGroupByFields);
+            groupedMapData.put("data", groupedData);
+        } else {
+            groupedMapData.putAll(aggregateData(data, aggreagtionList));
+            groupedMapData.put("data", data);
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size " + data.size());
+        // System.out.println(groupedMapData.get("_groupFields"));
+
+        return generateTableForPpt(groupedMapData, tabWidget, slide);
+
     }
 
 //    private void generateGroupedRowsForPpt(Map groupedData, TabWidget tabWidget, XSLFTable tbl) {
@@ -736,7 +939,6 @@ return tbl;
 //            }
 //        }
 //    }
-
     private Integer countColumns(List<WidgetColumn> columns) {
         Integer count = 0;
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
@@ -1112,7 +1314,6 @@ return tbl;
 //        }
 //        return tbl;
 //    }
-
     public void addReportHeader(Document document) {
         try {
             // 236, 255, 224
@@ -1263,7 +1464,7 @@ return tbl;
             Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void dynamicPptTable(List<TabWidget> tabWidgets, OutputStream out) throws DocumentException, IOException {
 
         //creating a presentation
@@ -1276,8 +1477,8 @@ return tbl;
                     System.out.println("Table");
                     XSLFSlide slide = ppt.createSlide();
                     //XSLFTable tbl = slide.createTable();
-//                    XSLFTable tbl = dynamicPptTable(tabWidget, slide);
-                       XSLFTable tbl = staticPptTable(slide);
+                    XSLFTable tbl = dynamicPptTable(tabWidget, slide);
+                    // XSLFTable tbl = staticPptTable(slide);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
                     System.out.println("Pie");
                     XSLFSlide slide = ppt.createSlide();
@@ -1293,20 +1494,19 @@ return tbl;
 
                     //creating a slide with given picture on it
                     // XSLFPictureShape pic = slide.createPicture(idx);
-                   
-                     XSLFTable table = slide.createTable();
+                    XSLFTable table = slide.createTable();
                     table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
 
                     XSLFTableRow row = table.addRow();
                     row.addCell().setText("Pie Chart");
                     table.setColumnWidth(0, 600);
-                    
+
                     XSLFTableRow row1 = table.addRow();
                     row1.setHeight(400);
-                    
+
                     XSLFTableCell cell = row1.addCell();
 
-                    CTBlipFillProperties blipPr = ((CTTableCell)cell.getXmlObject()).getTcPr().addNewBlipFill();
+                    CTBlipFillProperties blipPr = ((CTTableCell) cell.getXmlObject()).getTcPr().addNewBlipFill();
                     blipPr.setDpi(72);
                     // http://officeopenxml.com/drwPic-ImageData.php
                     CTBlip blib = blipPr.addNewBlip();
@@ -1333,20 +1533,19 @@ return tbl;
 
                     //creating a slide with given picture on it
                     //XSLFPictureShape pic = slide.createPicture(idx);
-                    
-                     XSLFTable table = slide.createTable();
+                    XSLFTable table = slide.createTable();
                     table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
 
                     XSLFTableRow row = table.addRow();
                     row.addCell().setText("Bar Chart");
                     table.setColumnWidth(0, 600);
-                    
+
                     XSLFTableRow row1 = table.addRow();
                     row1.setHeight(400);
-                    
+
                     XSLFTableCell cell = row1.addCell();
 
-                    CTBlipFillProperties blipPr = ((CTTableCell)cell.getXmlObject()).getTcPr().addNewBlipFill();
+                    CTBlipFillProperties blipPr = ((CTTableCell) cell.getXmlObject()).getTcPr().addNewBlipFill();
                     blipPr.setDpi(72);
                     // http://officeopenxml.com/drwPic-ImageData.php
                     CTBlip blib = blipPr.addNewBlip();
@@ -1378,13 +1577,13 @@ return tbl;
                     XSLFTableRow row = table.addRow();
                     row.addCell().setText("Line Chart");
                     table.setColumnWidth(0, 600);
-                    
+
                     XSLFTableRow row1 = table.addRow();
                     row1.setHeight(400);
-                    
+
                     XSLFTableCell cell = row1.addCell();
 
-                    CTBlipFillProperties blipPr = ((CTTableCell)cell.getXmlObject()).getTcPr().addNewBlipFill();
+                    CTBlipFillProperties blipPr = ((CTTableCell) cell.getXmlObject()).getTcPr().addNewBlipFill();
                     blipPr.setDpi(72);
                     // http://officeopenxml.com/drwPic-ImageData.php
                     CTBlip blib = blipPr.addNewBlip();
@@ -1397,7 +1596,7 @@ return tbl;
                     blib.setEmbed(rp.getRelationship().getId());
                 }
             }
-            out = new FileOutputStream("/home/deldot/Pictures/ppt/ppttable.pptx");
+            // out = new FileOutputStream("/home/deldot/Pictures/ppt/ppttable.pptx");
             ppt.write(out);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
@@ -2805,6 +3004,62 @@ return tbl;
         //contentByte.addTemplate(templateBar, 30, 30);
         Image img = Image.getInstance(templateBar);
         return img;
+    }
+
+    private void generateGroupedRows(Map groupedData, TabWidget tabWidget, XSLFTable tbl) {
+
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
+        List<WidgetColumn> columns = tabWidget.getColumns();
+        List data = (List) groupedData.get("data");
+        for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+            Map mapData = (Map) iterator.next();
+            XSLFTableRow dataRow = tbl.addRow();
+            if (mapData.get(mapData.get("_groupField")) != null) {
+                String groupValue = mapData.get(mapData.get("_groupField")) + "";
+                //pdfFont.setColor(tableHeaderFontColor);
+                //PdfPCell dataCell = new PdfPCell(new Phrase(groupValue, pdfFont));
+                //dataCell.setBorderColor(widgetBorderColor);
+                //table.addCell(dataCell);
+                XSLFTableCell dataCell = dataRow.addCell();
+                dataCell.setText(groupValue);
+            } else {
+                //PdfPCell dataCell = new PdfPCell(new Phrase(""));
+                //dataCell.setBorderColor(widgetBorderColor);
+                //table.addCell(dataCell);
+                XSLFTableCell dataCell = dataRow.addCell();
+                dataCell.setText("");
+            }
+            for (Iterator<WidgetColumn> iterator1 = columns.iterator(); iterator1.hasNext();) {
+                WidgetColumn column = iterator1.next();
+                if (column.getColumnHide() == null || column.getColumnHide() == 0) {
+                    if (mapData.get(column.getFieldName()) != null) {
+                        String value = mapData.get(column.getFieldName()) + "";
+                        if (column.getDisplayFormat() != null) {
+                            value = Formatter.format(column.getDisplayFormat(), value);
+                        }
+                        pdfFont.setColor(tableHeaderFontColor);
+                        //PdfPCell dataCell = new PdfPCell(new Phrase(value, pdfFont));
+                        if (column.getAlignment() != null) {
+                            //dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                        }
+                        //dataCell.setBorderColor(widgetBorderColor);
+                        //table.addCell(dataCell);
+                        XSLFTableCell dataCell = dataRow.addCell();
+                        dataCell.setText(value);
+                    } else {
+//                        PdfPCell dataCell = new PdfPCell(new Phrase(""));
+//                        dataCell.setBorderColor(widgetBorderColor);
+//                        table.addCell(dataCell);
+                        XSLFTableCell dataCell = dataRow.addCell();
+                        dataCell.setText("");
+                    }
+                }
+            }
+
+            if (mapData.get("data") != null) {
+                generateGroupedRows(mapData, tabWidget, tbl);
+            }
+        }
     }
 
     public static class CustomRenderer extends BarRenderer {

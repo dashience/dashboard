@@ -196,6 +196,12 @@ public class ProxyController {
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         String dealerId = request.getParameter("dealerId");
+        String exportType = request.getParameter("exportType");
+        System.out.println("EXport type ==> " + exportType);
+        if (exportType == null || exportType.isEmpty()) {
+            exportType = "pdf";
+        }
+        System.out.println(" ===> " + exportType);
         Map<String, String> dealerAccountDetails = dealerService.getDealerAccountDetails(dealerId);
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (Map.Entry<String, String> entrySet : dealerAccountDetails.entrySet()) {
@@ -256,11 +262,21 @@ public class ProxyController {
             }
         }
         try {
-            OutputStream out = response.getOutputStream();
-            CustomReportDesigner crd = new CustomReportDesigner();
-           // crd.dynamicPdfTable(tabWidgets, out);
-           crd.dynamicPptTable(tabWidgets, out);
+            if (exportType.equalsIgnoreCase("pdf")) {
+//                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+                OutputStream out = response.getOutputStream();
+                CustomReportDesigner crd = new CustomReportDesigner();
+                crd.dynamicPdfTable(tabWidgets, out);
 
+            } else if (exportType.equalsIgnoreCase("ppt")) {
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=ppttable.pptx");
+                OutputStream out = response.getOutputStream();
+                CustomReportDesigner crd = new CustomReportDesigner();
+                // crd.dynamicPdfTable(tabWidgets, out);
+                crd.dynamicPptTable(tabWidgets, out);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
