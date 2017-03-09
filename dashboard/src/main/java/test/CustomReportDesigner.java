@@ -141,6 +141,14 @@ public class CustomReportDesigner {
         FontFactory.register(FONT, "proxima_nova_rgregular");
         calcualtedFunctions.add(new CalcualtedFunction("ctr", "data__clicks", "data__impressions"));
         calcualtedFunctions.add(new CalcualtedFunction("cpa", "data__cost", "data__conversions"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpc", "data__cost", "data__clicks"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpr", "data__cost", "data__reactions"));
+        calcualtedFunctions.add(new CalcualtedFunction("ctl", "data__cost", "data__likes"));
+        calcualtedFunctions.add(new CalcualtedFunction("cplc", "data__cost", "data__link_clicks"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpcomment", "data__cost", "data__comments"));
+        calcualtedFunctions.add(new CalcualtedFunction("cposte", "data__cost", "data__post_engagements"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpagee", "data__cost", "data__page_engagements"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpp", "data__cost", "data__posts"));
     }
     Font pdfFont = FontFactory.getFont("proxima_nova_rgregular", "Cp1253", true);
     Font pdfFontTitle = FontFactory.getFont("proxima_nova_rgregular", "Cp1253", true);
@@ -911,9 +919,7 @@ public class CustomReportDesigner {
             groupedMapData.putAll(aggregateData(data, aggreagtionList));
             groupedMapData.put("data", data);
         }
-
         return generateTableForPpt(groupedMapData, tabWidget, slide);
-
     }
 
     private Integer countColumns(List<WidgetColumn> columns) {
