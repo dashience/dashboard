@@ -1,7 +1,7 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
     $scope.permission = localStorageService.get("permission");
-
-    $scope.locationID = $stateParams.locationId;
+    $scope.accountID = $stateParams.accountId;
+    $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
@@ -11,18 +11,26 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
         $window.open(url);
     };
+    
+    function getWidgetItem() {      //Default Loading Items
+        if (!$stateParams.tabId) {
+            $stateParams.tabId = 0;
+        }
+        $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+            $scope.widgets = response;
+        });
+    }
+    getWidgetItem();
 
     $scope.addWidget = function (newWidget) {       //Add Widget
         var data = {
             width: newWidget, 'minHeight': 25, columns: [], chartType: ""
         };
         $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            //$scope.widgets.unshift({id: response.id, width: newWidget, 'minHeight': 25, columns: [], tableFooter: 1, zeroSuppression: 1});
-            //$scope.newWidgetId = response.id;
-
             $state.go("index.editWidget", {
-                locationId: $stateParams.locationId,
                 productId: $stateParams.productId,
+                accountId: $stateParams.accountId, 
+                accountName: $stateParams.accountName,
                 tabId: $stateParams.tabId,
                 widgetId: response.id,
                 startDate: $stateParams.startDate,
@@ -31,29 +39,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
 
-    $scope.removeBackDrop = function () {alert(1)
+    $scope.removeBackDrop = function () {
         $('body').removeClass().removeAttr('style');
         $('.modal-backdrop').remove();
-
-        $state.go('index.dataSource', {locationId: $stateParams.locationId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-        alert(2)
+        $state.go('index.dataSource', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     }
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
-    };
-
-    function getWidgetItem() {      //Default Loading Items
-        if (!$stateParams.tabId) {
-            $stateParams.tabId = 1;
-        }
-        $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            $scope.widgets = response;
-        });
-    }
-    getWidgetItem();
+    };    
 
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();

@@ -6,11 +6,13 @@
 package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.UiDao;
+import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.bean.ReportColumnBean;
 import com.visumbu.vb.bean.ReportWidgetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
+import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
@@ -58,6 +60,9 @@ public class UiService {
 
     @Autowired
     private UiDao uiDao;
+   
+    @Autowired
+    private UserDao userDao;
 
     public List<Product> getProduct() {
         return uiDao.read(Product.class);
@@ -88,13 +93,16 @@ public class UiService {
         return (DashboardTabs) uiDao.update(dashboardTab);
     }
 
-    public String updateDashboardTab(Integer dashboardId, String tabOrder) {
-        return uiDao.updateTabOrder(dashboardId, tabOrder);
+    public String updateAgencyProductTab(Integer agencyProductId, String tabOrder) {
+        return uiDao.updateTabOrder(agencyProductId, tabOrder);
     }
 
-    public List<DashboardTabs> getDashboardTabs(Integer dbId) {
-        return uiDao.getDashboardTabs(dbId);
+    public List<DashboardTabs> getAgencyProductTab(Integer agencyProductId) {
+        return uiDao.getAgencyProductTab(agencyProductId);
     }
+//    public List<DashboardTabs> getDashboardTabs(Integer dbId) {
+//        return uiDao.getDashboardTabs(dbId);
+//    }
 
     public List<DashboardTabs> getDashboardTabsByProductDashboard(Integer dashboardId, Integer uId) {
         return uiDao.getDashboardTabsByDbId(dashboardId, uId);
@@ -136,6 +144,10 @@ public class UiService {
 
     public Dashboard getDashboardById(Integer dashboardId) {
         return uiDao.getDashboardById(dashboardId);
+    }
+    
+    public AgencyProduct getAgencyProductById(Integer agencyProductId) {
+        return uiDao.getAgencyProductById(agencyProductId);
     }
 
     public WidgetColumn addWidgetColumn(Integer widgetId, WidgetColumn widgetColumn) {
@@ -340,18 +352,25 @@ public class UiService {
         return (DataSource) uiDao.deleteDataSource(id);
     }
 
-    public List<DataSource> getDataSource() {
-        List<DataSource> dataSource = uiDao.read(DataSource.class);
-        return dataSource;
+//    public List<DataSource> getDataSource() {
+//        List<DataSource> dataSource = uiDao.read(DataSource.class);
+//        return dataSource;
+//    }
+    public List<DataSource> getDataSourceByUser(VbUser user) {
+        return uiDao.getDataSourceByUser(user);
     }
 
     public DataSource update(DataSource dataSource) {
         return (DataSource) uiDao.update(dataSource);
     }
 
-    public List<DataSet> getDateSet() {
-        List<DataSet> dataSet = uiDao.read(DataSet.class);
-        return dataSet;
+//    public List<DataSet> getDataSet() {
+//        List<DataSet> dataSet = uiDao.read(DataSet.class);
+//        return dataSet;
+//    }
+    
+    public List<DataSet> getDataSetByUser(VbUser user) {
+        return uiDao.getDataSetByUser(user);
     }
 
     public DataSet create(DataSet dataSet) {
@@ -434,6 +453,13 @@ public class UiService {
         List<VbUser> vbUser = uiDao.read(VbUser.class);
         return vbUser;
     }
+    
+    public List<VbUser> getAgencyUser(VbUser user) {
+        if(user.getAgencyId() == null) {
+            return userDao.read();
+        }
+        return uiDao.getUsersByAgencyUser(user);
+    }
 
     public VbUser createUser(VbUser vbUser) {
         return (VbUser) uiDao.create(vbUser);
@@ -464,6 +490,10 @@ public class UiService {
     public List<UserAccount> getUserAccount() {
         List<UserAccount> userAccount = uiDao.read(UserAccount.class);
         return userAccount;
+    }
+    
+    public List<UserAccount> getUserAccountByUser(VbUser user) {
+        return uiDao.getUserAccountByUser(user);
     }
 
     public List<UserAccount> getUserAccountById(Integer userId) {
@@ -501,5 +531,5 @@ public class UiService {
 
     public UserPermission deleteUserPermission(Integer userPermissionId) {
         return uiDao.deleteUserPermission(userPermissionId);
-    }
+    }    
 }

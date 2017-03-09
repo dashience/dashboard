@@ -44,6 +44,18 @@ public class Agency implements Serializable {
     @Column(name = "logo")
     private String logo;
     @OneToMany(mappedBy = "agencyId")
+    private Collection<DataSet> dataSetCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<DataSource> dataSourceCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<AgencyProduct> agencyProductCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<Account> accountCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<AgencyUser> agencyUserCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<VbUser> vbUserCollection;
+    @OneToMany(mappedBy = "agencyId")
     private Collection<AgencyLicence> agencyLicenceCollection;
 
     private static final long serialVersionUID = 1L;
@@ -120,7 +132,6 @@ public class Agency implements Serializable {
         this.logo = logo;
     }
 
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -156,5 +167,67 @@ public class Agency implements Serializable {
     public void setAgencyLicenceCollection(Collection<AgencyLicence> agencyLicenceCollection) {
         this.agencyLicenceCollection = agencyLicenceCollection;
     }
+
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<VbUser> getVbUserCollection() {
+        return vbUserCollection;
+    }
+
+    public void setVbUserCollection(Collection<VbUser> vbUserCollection) {
+        this.vbUserCollection = vbUserCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyUser> getAgencyUserCollection() {
+        return agencyUserCollection;
+    }
+
+    public void setAgencyUserCollection(Collection<AgencyUser> agencyUserCollection) {
+        this.agencyUserCollection = agencyUserCollection;
+    }
     
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Account> getAccountCollection() {
+        return accountCollection;
+    }
+
+    public void setAccountCollection(Collection<Account> accountCollection) {
+        this.accountCollection = accountCollection;
+    }
+
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyProduct> getAgencyProductCollection() {
+        return agencyProductCollection;
+    }
+
+    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
+        this.agencyProductCollection = agencyProductCollection;
+    }
+  
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DataSet> getDataSetCollection() {
+        return dataSetCollection;
+    }
+
+    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
+        this.dataSetCollection = dataSetCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DataSource> getDataSourceCollection() {
+        return dataSourceCollection;
+    }
+
+    public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
+        this.dataSourceCollection = dataSourceCollection;
+    }
+
 }

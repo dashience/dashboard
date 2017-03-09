@@ -16,13 +16,13 @@
                 <div class="hpanel hgreen">
                     <ul class="nav nav-tabs">
                         <li ng-repeat="tab in tabs" ui-sref-active="active" ng-dblclick="startEditing(tab);" ng-drop="true" ng-drop-success="onDropTabComplete($index, $data,$event)">
-                            <a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({productId: productId, tabId: tab.id?tab.id:0})">
+                            <a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">
                                 <span ng-hide="tab.editing">{{tab.tabName}}</span>
                                 <form ng-submit="doneEditing(tab)" ng-show="tab.editing">
                                     <input class="form-control" ng-model="tab.tabName" ng-blur="doneEditing(tab)" ng-focus="tab == editedItem">
                                 </form>
                             </a>
-                            <button class="close closeTab" data-toggle="modal" data-target="#deleteTabModal{{tab.id}}" type="button">×</button>
+                            <button ng-if="permission.deleteTab === true;" class="close closeTab" data-toggle="modal" data-target="#deleteTabModal{{tab.id}}" type="button">×</button>
 
 
                             <div class="modal hmodal-success" id="deleteTabModal{{tab.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -46,7 +46,7 @@
                                 </div>
                             </div>
                         </li> 
-                        <li class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> Add Tab</li> 
+                        <li ng-if="permission.addTab === true;" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> Add Tab</li> 
                         <div class="modal fade hmodal-success" id="tabModal" tabindex="-1" role="dialog"  aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -81,14 +81,7 @@
                                 </div>
                             </div>
                         </div>
-
                     </ul>
-
-
-
-
-
-
                     <!--                <div class="hpanel">
                                 <ul class="nav nav-tabs">
                                     <li class="active"><a data-toggle="tab" href="#tab-1"> This is tab</a></li>
@@ -102,11 +95,6 @@
                                     </div>
                                     
                                 </div>-->
-
-
-
-
-
                     <div class="tab-content">
                         <div class="row" ngsf-fullscreen="fullscreenCtrl">
                             <div id="tab-1" class="tab-pane active">

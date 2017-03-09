@@ -83,6 +83,9 @@ public class DataSource implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
+    @JoinColumn(name = "agency_id", referencedColumnName = "id")
+    @ManyToOne
+    private Agency agencyId;
 
     public DataSource() {
     }
@@ -147,6 +150,15 @@ public class DataSource implements Serializable {
         this.dataSourceType = dataSourceType;
     }
 
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
+    }
+    
+    
 //    public String getSourceFile() {
 //        return sourceFile;
 //    }

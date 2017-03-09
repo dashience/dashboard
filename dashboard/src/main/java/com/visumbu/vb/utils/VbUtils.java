@@ -11,6 +11,8 @@ import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthPermission;
 import com.visumbu.vb.bean.map.auth.SecurityAuthRoleBean;
 import com.visumbu.vb.bean.map.auth.SecurityTokenBean;
+import com.visumbu.vb.model.UserPermission;
+import com.visumbu.vb.model.VbUser;
 import static com.visumbu.vb.utils.Rest.getData;
 import java.io.IOException;
 import java.net.URI;
@@ -81,68 +83,6 @@ public class VbUtils {
         }
         return null;
     }
-
-    public static SecurityAuthBean getAuthData(String username, String password) {
-        try {
-            if(!username.equalsIgnoreCase("admin") || !password.equalsIgnoreCase("admin")) {
-                return null;
-            }
-            
-//            String output = Rest.postRawForm(Settings.getSecurityTokenUrl(), "client_id=f8f06d06436f4104ade219fd7d535654&client_secret=ba082149c90f41c49e86f4862e22e980&grant_type=password&scope=FullControl&username=" + username + "&password=" + password);
-//            if (output == null) {
-//                return null;
-//            }
-//            ObjectMapper mapper = new ObjectMapper();
-//            SecurityTokenBean token = mapper.readValue(output, SecurityTokenBean.class);
-//
-//            Map<String, String> accessHeader = new HashMap<>();
-//            accessHeader.put("Authorization", token.getAccessToken());
-//            String dataOut = getData(Settings.getSecurityAuthUrl() + "?Userid=" + token.getUserGuid(), null, accessHeader);
-            SecurityAuthBean authData = new SecurityAuthBean(); //mapper.readValue(dataOut, SecurityAuthBean.class);
-            authData.setFullName(authData.getUserName());
-            authData.setUserName(username);
-            authData.setUserGuid("temp-user-guid");
-            authData.setAccessToken("temp-access-token");
-            System.out.println(authData);
-            Permission permission = getAllPermissions(); //getPermissions(authData);
-            authData.setPermission(permission);
-            return authData;
-        } catch (Exception  ex) {
-            Logger.getLogger(Rest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public static SecurityAuthBean getAuthDataByGuid(String accessToken, String userGuid) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> accessHeader = new HashMap<>();
-            accessHeader.put("Authorization", accessToken);
-            //String dataOut = getData(Settings.getSecurityAuthUrl() + "?Userid=" + userGuid, null, accessHeader);
-            SecurityAuthBean authData = new SecurityAuthBean(); // mapper.readValue(dataOut, SecurityAuthBean.class);
-            authData.setAccessToken(accessToken);
-            authData.setAccessToken(userGuid);
-            System.out.println(authData);
-            Permission permission = getAllPermissions(); //getPermissions(authData);
-            authData.setPermission(permission);
-            return authData;
-        } catch (Exception ex) {
-            Logger.getLogger(Rest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    private static Permission getAllPermissions() {
-        Permission permission = new Permission();
-        permission.setAllowCreateReport(Boolean.TRUE);
-        permission.setAllowCreateTab(Boolean.TRUE);
-        permission.setAllowCreateWidget(Boolean.TRUE);
-        permission.setAllowDeleteReport(Boolean.TRUE);
-        permission.setAllowDeleteWidget(Boolean.TRUE);
-        permission.setAllowDownloadReport(Boolean.FALSE);
-        permission.setAllowScheduleReport(Boolean.FALSE);
-        return permission;
-    }
     
     private static Permission getPermissions(SecurityAuthBean authData) {
         List<SecurityAuthRoleBean> roles = authData.getRoles();
@@ -157,4 +97,17 @@ public class VbUtils {
         }
         return permission;
     }
+    
+    public static Permission getPermissions(VbUser user, List<UserPermission> userPermissions) {
+        
+        Permission permission = new Permission();
+        for (Iterator<UserPermission> iterator = userPermissions.iterator(); iterator.hasNext();) {
+            UserPermission userPermission = iterator.next();
+            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), Boolean.TRUE);
+        }
+        if(user.getAgencyId() == null || (user.getIsAdmin() != null && user.getIsAdmin() )) {
+            permission.setViewAgency(Boolean.TRUE);
+        }
+        return permission;
+    }    
 }

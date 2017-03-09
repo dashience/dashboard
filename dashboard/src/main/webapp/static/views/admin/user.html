@@ -195,11 +195,11 @@
                             <li ng-class="{ active: isSetUser(1) }">
                                 <a href ng-click="setTabUser(1)"> Details</a>
                             </li>
-                            <li ng-class="{ active: isSetUser(2) }">
+                            <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSetUser(2) }">
                                 <a href ng-click="setTabUser(2)"> Account
                                 </a>
                             </li>
-                            <li ng-class="{ active: isSetUser(3) }">
+                            <li ng-if="permission.grantPermission === true;" ng-class="{ active: isSetUser(3) }">
                                 <a href ng-click="setTabUser(3)"> Permission
                                 </a>
                             </li>
@@ -330,19 +330,19 @@
                                                     <div class="form-group" ng-repeat="permission in permissions">
                                                         <label class="col-lg-4">{{permission.permissionName}}</label>
                                                         <div class="col-lg-8">
-                                                            <label class="switch_wrap col-sm-10" for="field{{$index+1}}">
-                                                                <input id="field{{$index+1}}" type="checkbox"
+                                                            <label class="switch_wrap col-sm-10" for="field{{$index + 1}}">
+                                                                <input id="field{{$index + 1}}" type="checkbox"
                                                                        ng-model="permission.status" 
                                                                        ng-change="saveUserPermission(permission)"          
                                                                        ng-click="testClick(permission)"
                                                                        ng-true-value="1"
                                                                        ng-false-value="0"/>
-                                                                    <div class="switch switch-mini"><span class="bullet"></span></div>
-                                                                </label>
-<!--                                                            <label class="switch_wrap col-sm-10">
-                                                                <input type="checkbox" ng-model="userPermission.status" ng-checked="hasPermission(permission.permissionName)" ng-change="saveUserPermission(permission, userPermission)" value="1" />
                                                                 <div class="switch switch-mini"><span class="bullet"></span></div>
-                                                            </label>-->
+                                                            </label>
+                                                            <!--                                                            <label class="switch_wrap col-sm-10">
+                                                                                                                            <input type="checkbox" ng-model="userPermission.status" ng-checked="hasPermission(permission.permissionName)" ng-change="saveUserPermission(permission, userPermission)" value="1" />
+                                                                                                                            <div class="switch switch-mini"><span class="bullet"></span></div>
+                                                                                                                        </label>-->
                                                         </div>
                                                     </div> 
                                                 </div>

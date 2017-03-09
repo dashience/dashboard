@@ -1,9 +1,6 @@
-app.controller('AccountController', function ($scope, $http, $state, $stateParams) {
+app.controller('AccountController', function ($scope, $http, $state, $stateParams, localStorageService) {
+    $scope.permission = localStorageService.get("permission");
     $scope.$state = $state;
-    $scope.location = $stateParams.locationId;
-    $scope.startDate = $stateParams.startDate;
-    $scope.endDate = $stateParams.endDate;
-    $scope.accountId = $stateParams.accountId;
 
 //Tabs
     $scope.tab = 1;
@@ -21,7 +18,10 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         $http.get('admin/user/property/' + account.id).success(function (response) {
             $scope.properties = response;
         });
-        $http.get('admin/user/accountUser/' + account.id).success(function (response) {
+//        $http.get('admin/user/accountUser/' + account.id).success(function (response) {
+//            $scope.accountUsers = response;
+//        });
+        $http.get('admin/user/userAccount/' + account.id).success(function (response) {
             $scope.accountUsers = response;
         });
     }
@@ -158,7 +158,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             userId: accountUser.userId,
             status: accountUser.status
         };
-        $http({method: accountUser.id ? 'PUT' : 'POST', url: 'admin/user/accountUser', data: data}).success(function (response) {
+        $http({method: accountUser.id ? 'PUT' : 'POST', url: 'admin/user/userAccount', data: data}).success(function (response) {
             getAccountProperty(account);
         });
 
@@ -182,7 +182,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
 
     $scope.deleteAccountUser = function (accountUser, index) {
         if (accountUser.id) {
-            $http({method: 'DELETE', url: 'admin/user/accountUser/' + accountUser.id}).success(function (response) {
+            $http({method: 'DELETE', url: 'admin/user/userAccount/' + accountUser.id}).success(function (response) {
                 $scope.accountUsers.splice(index, 1);
             });
         } else {

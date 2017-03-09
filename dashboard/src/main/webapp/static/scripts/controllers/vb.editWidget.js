@@ -1,7 +1,8 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $state) {
     $scope.editWidgetData = []
 
-    $scope.locationID = $stateParams.locationId;
+    $scope.accountID = $stateParams.accountId;
+    $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
@@ -344,7 +345,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
             content: widget.content
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+            $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
         //widget.chartType = "";
         $scope.previewChartType = null;
@@ -353,7 +354,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
         $scope.previewChartType = null;
-        $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
 });
 

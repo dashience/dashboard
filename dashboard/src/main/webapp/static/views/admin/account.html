@@ -210,7 +210,7 @@
                                 <a href ng-click="setTab(2)"> Property
                                 </a>
                             </li>
-                            <li ng-class="{ active: isSet(3) }">
+                            <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
                                 <a href ng-click="setTab(3)"> User
                                 </a>
                             </li>

@@ -5,6 +5,8 @@
  */
 package com.visumbu.vb.bean;
 
+import com.visumbu.vb.model.Agency;
+
 /**
  *
  * @author user
@@ -17,7 +19,9 @@ public class LoginUserBean {
     private Integer failLoginCount;
     private String errorMessage;
     private String announcement;
-
+    private Permission permission;
+    private Agency agencyId;
+    
     public String getUsername() {
         return username;
     }
@@ -72,6 +76,22 @@ public class LoginUserBean {
 
     public void setAnnouncement(String announcement) {
         this.announcement = announcement;
+    }
+
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission = permission;
+    }
+
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
     }
 
     @Override

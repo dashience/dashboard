@@ -12,8 +12,9 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
             } else {
                 $cookies.putObject("fullname", response.username);
                 $cookies.putObject("username", response.username);
-//                localStorageService.set("permission", response.authData.permission)
-                //$cookies.putObject("isAdmin", response.isAdmin);
+                localStorageService.set("permission", response.permission);
+                $cookies.putObject("isAdmin", response.isAdmin);
+                $cookies.putObject("agencyId", response.agencyId);
                 $window.location.href = 'index.html' 
                 $scope.loadDashboard = false;
             }

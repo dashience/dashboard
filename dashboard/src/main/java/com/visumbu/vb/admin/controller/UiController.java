@@ -78,37 +78,53 @@ public class UiController extends BaseController {
         return uiService.getDashboards(user);
     }
 
-    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.POST, produces = "application/json")
+//    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    DashboardTabs createDashboardTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId, @RequestBody DashboardTabs dashboardTabs) {
+//        dashboardTabs.setDashboardId(uiService.getDashboardById(dashboardId));
+//        return uiService.createDashboardTabs(dashboardTabs);
+//    }
+    @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTabs createDashboardTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId, @RequestBody DashboardTabs dashboardTabs) {
-        dashboardTabs.setDashboardId(uiService.getDashboardById(dashboardId));
+    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @RequestBody DashboardTabs dashboardTabs) {
+        dashboardTabs.setAgencyProductId(uiService.getAgencyProductById(agencyProductId));
         return uiService.createDashboardTabs(dashboardTabs);
     }
 
-    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    DashboardTabs updateTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId, @RequestBody DashboardTabs dashboardTab) {
+    DashboardTabs updateAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @RequestBody DashboardTabs dashboardTab) {
         return uiService.updateTab(dashboardTab);
     }
 
-    @RequestMapping(value = "dbTabUpdateOrder/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
+//    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.PUT, produces = "application/json")
+//    public @ResponseBody
+//    DashboardTabs updateTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId, @RequestBody DashboardTabs dashboardTab) {
+//        return uiService.updateTab(dashboardTab);
+//    }
+    @RequestMapping(value = "dbTabUpdateOrder/{agencyProductId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    Object updateDashboardTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
+    Object updateAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
         String tabOrder = request.getParameter("tabOrder");
-        uiService.updateDashboardTab(dashboardId, tabOrder);
+        uiService.updateAgencyProductTab(agencyProductId, tabOrder);
         return null;
     }
 
-    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
-        VbUser user = userService.findByUsername(getUser(request));
-        if (user == null) {
-            return null;
-        }
-        return uiService.getDashboardTabsByProductDashboard(dashboardId, user.getId());
+    List getAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
+        return uiService.getAgencyProductTab(agencyProductId);
     }
 
+//    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
+//        VbUser user = userService.findByUsername(getUser(request));
+//        if (user == null) {
+//            return null;
+//        }
+//        return uiService.getDashboardTabsByProductDashboard(dashboardId, user.getId());
+//    }
     @RequestMapping(value = "dbTab/{tabId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DashboardTabs deleteDashboardTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
@@ -296,7 +312,9 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSource", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     DataSource create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
-
+        VbUser user = userService.findByUsername(getUser(request));
+        dataSource.setUserId(user);
+        dataSource.setAgencyId(user.getAgencyId());
         return uiService.saveDataSource(dataSource);
     }
 
@@ -309,8 +327,18 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSource(HttpServletRequest request, HttpServletResponse response) {
-        return uiService.getDataSource();
+         VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getDataSourceByUser(user);
     }
+    
+//    @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getDataSource(HttpServletRequest request, HttpServletResponse response) {
+//        return uiService.getDataSource();
+//    }
 
     @RequestMapping(value = "dataSource/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
@@ -321,6 +349,9 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSet", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     DataSet create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
+        VbUser user = userService.findByUsername(getUser(request));
+        dataSet.setUserId(user);
+        dataSet.setAgencyId(user.getAgencyId());
         return uiService.create(dataSet);
     }
 
@@ -333,8 +364,18 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
-        return uiService.getDateSet();
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getDataSetByUser(user);
     }
+//    @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getDataSet(HttpServletRequest request, HttpServletResponse response) {
+//        return uiService.getDateSet();
+//    }
+       
 
     @RequestMapping(value = "dataSet/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
@@ -342,15 +383,28 @@ public class UiController extends BaseController {
         return uiService.deleteDataSet(id);
     }
 
+//    @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getUser(HttpServletRequest request, HttpServletResponse response) {
+//        return uiService.getUser();
+//    }
     @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getUser(HttpServletRequest request, HttpServletResponse response) {
-        return uiService.getUser();
+    List getAgencyUser(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getAgencyUser(user);
     }
 
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     VbUser createUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
+        if (vbUser.getAgencyId() == null) {
+            VbUser loggedInUser = userService.findByUsername(getUser(request));
+            vbUser.setAgencyId(loggedInUser.getAgencyId());
+        }
         return uiService.createUser(vbUser);
     }
 
@@ -383,6 +437,16 @@ public class UiController extends BaseController {
     List getUserAccount(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getUserAccount();
     }
+    
+    @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getUserAccountByUser(user);
+    }
 
     @RequestMapping(value = "userAccount/{userId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -406,7 +470,7 @@ public class UiController extends BaseController {
     List getPermission(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getPermission();
     }
-    
+
     @RequestMapping(value = "userPermission", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     UserPermission createPermission(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPermission userPermission) {
@@ -430,7 +494,7 @@ public class UiController extends BaseController {
     List getUserPermissionById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
         return uiService.getUserPermissionById(userId);
     }
-    
+
     @RequestMapping(value = "userAccount/{userPermissionId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     UserPermission deleteUserPermission(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userPermissionId) {
