@@ -73,6 +73,10 @@ public class LoginUserBean {
     public void setAnnouncement(String announcement) {
         this.announcement = announcement;
     }
-    
+
+    @Override
+    public String toString() {
+        return "LoginUserBean{" + "username=" + username + ", password=" + password + ", isAdmin=" + isAdmin + ", authenticated=" + authenticated + ", failLoginCount=" + failLoginCount + ", errorMessage=" + errorMessage + ", announcement=" + announcement + '}';
+    }   
     
 }

@@ -1,4 +1,9 @@
-app.controller('DataSetController', function ($scope, $http) {
+app.controller('DataSetController', function ($scope, $http, $stateParams) {
+    
+    $scope.locationID = $stateParams.locationId;
+    $scope.startDate = $stateParams.startDate;
+    $scope.endDate = $stateParams.endDate
+    
     function getItems() {
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = response;

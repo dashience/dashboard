@@ -262,21 +262,21 @@ public class ProxyController {
             }
         }
         try {
-//            if (exportType.equalsIgnoreCase("pdf")) {
-////                response.setContentType("application/x-msdownload");
-//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
-//                OutputStream out = response.getOutputStream();
-//                CustomReportDesigner crd = new CustomReportDesigner();
-//                crd.dynamicPdfTable(tabWidgets, out);
-//
-//            } else if (exportType.equalsIgnoreCase("ppt")) {
-//                response.setContentType("application/vnd.ms-powerpoint");
-//                response.setHeader("Content-disposition", "attachment; filename=ppttable.pptx");
+            if (exportType.equalsIgnoreCase("pdf")) {
+               response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+                OutputStream out = response.getOutputStream();
+                CustomReportDesigner crd = new CustomReportDesigner();
+                crd.dynamicPdfTable(tabWidgets, out);
+
+            } else if (exportType.equalsIgnoreCase("ppt")) {
+                response.setContentType("application/vnd.ms-powerpoint");
+                response.setHeader("Content-disposition", "attachment; filename=ppttable.pptx");
 
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
-//            }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

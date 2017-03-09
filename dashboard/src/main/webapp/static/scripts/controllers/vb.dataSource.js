@@ -1,6 +1,6 @@
 app.controller("DataSourceController", function ($scope, $stateParams, $http) {
-    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
-//    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}];
+//    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
+    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}];
     
     function getItems() {
         $http.get('admin/ui/dataSource').success(function (response) {
@@ -65,8 +65,11 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
     };
 
     $scope.selectedRow = null;
-    $scope.editDataSource = function (dataSource, index) {
-        $scope.selectedRow = index;
+    $scope.highlightDataSource = function(index){
+        $scope.selectedRow = index;        
+    };
+    
+    $scope.editDataSource = function (dataSource) {
         var data = {
             id: dataSource.id,
             name: dataSource.name,

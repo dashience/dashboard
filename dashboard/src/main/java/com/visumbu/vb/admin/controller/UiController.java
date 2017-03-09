@@ -18,6 +18,8 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.UserAccount;
+import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import java.io.BufferedReader;
@@ -59,7 +61,7 @@ public class UiController extends BaseController {
     List getProduct(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getProduct();
     }
-    
+
     @RequestMapping(value = "product/{dealerId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDealerProduct(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dealerId) {
@@ -294,7 +296,7 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSource", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     DataSource create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
-        
+
         return uiService.saveDataSource(dataSource);
     }
 
@@ -309,11 +311,11 @@ public class UiController extends BaseController {
     List getDataSource(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getDataSource();
     }
-    
+
     @RequestMapping(value = "dataSource/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DataSource delete(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
-        return uiService.delete(id);
+        return uiService.deleteDataSource(id);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.POST, produces = "application/json")
@@ -333,19 +335,19 @@ public class UiController extends BaseController {
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getDateSet();
     }
-    
+
     @RequestMapping(value = "dataSet/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DataSet deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.deleteDataSet(id);
     }
-    
+
     @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUser(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getUser();
     }
-    
+
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     VbUser createUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
@@ -357,12 +359,84 @@ public class UiController extends BaseController {
     VbUser updateUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
         return uiService.updateUser(vbUser);
     }
-   
+
     @RequestMapping(value = "user/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     VbUser deleteUser(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.deleteUser(id);
     }
+
+    @RequestMapping(value = "userAccount", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    UserAccount createProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody UserAccount userAccount) {
+        return uiService.createUserAccount(userAccount);
+    }
+
+    @RequestMapping(value = "userAccount", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    UserAccount updateProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody UserAccount userAccount) {
+        return uiService.updateUserAccount(userAccount);
+    }
+
+    @RequestMapping(value = "userAccount", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getUserAccount(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getUserAccount();
+    }
+
+    @RequestMapping(value = "userAccount/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getUserAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
+        return uiService.getUserAccountById(userId);
+    }
+
+//    @RequestMapping(value = "userAccountId/{userId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getUserAccountId (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
+//        return uiService.getUserAccountId(userId);
+//    }
+    @RequestMapping(value = "userAccount/{userAccountId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    UserAccount deleteUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userAccountId) {
+        return uiService.deleteUserAccount(userAccountId);
+    }
+
+    @RequestMapping(value = "permission", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getPermission(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getPermission();
+    }
+    
+    @RequestMapping(value = "userPermission", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    UserPermission createPermission(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPermission userPermission) {
+        return uiService.createUserPermission(userPermission);
+    }
+
+    @RequestMapping(value = "userPermission", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    UserPermission updatePermission(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPermission userPermission) {
+        return uiService.updateUserPermission(userPermission);
+    }
+
+    @RequestMapping(value = "userPermission", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getUserPermission(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getUserPermission();
+    }
+
+    @RequestMapping(value = "userPermission/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getUserPermissionById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
+        return uiService.getUserPermissionById(userId);
+    }
+    
+    @RequestMapping(value = "userAccount/{userPermissionId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    UserPermission deleteUserPermission(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userPermissionId) {
+        return uiService.deleteUserPermission(userPermissionId);
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {

@@ -1,12 +1,12 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $state) {
     $scope.editWidgetData = []
-    
+
     $scope.locationID = $stateParams.locationId;
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
-    $scope.widgetEndDate = $stateParams.endDate;   
-    
+    $scope.widgetEndDate = $stateParams.endDate;
+
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId) {
@@ -84,6 +84,14 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     ];
     $scope.isEditPreviewColumn = false;
 
+    $scope.formats = [
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "None", value: ''}
+    ];
 
     $('.dropdown-menu input').click(function (e) {
         e.stopPropagation();
@@ -285,6 +293,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     };
 
     $scope.save = function (widget) {
+        console.log(widget.content);
+        
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -330,12 +340,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
             tableFooter: widget.tableFooter,
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
-            dateDuration: widget.dateDuration
+            dateDuration: widget.dateDuration,
+            content: widget.content
         };
-        widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
+        //widget.chartType = "";
         $scope.previewChartType = null;
     };
 
@@ -345,4 +356,58 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
 });
-    
+
+app.filter('xAxis', [function () {
+        return function (chartXAxis) {
+            var xAxis = ['', 'x-1']
+            return xAxis[chartXAxis];
+        };
+    }]);
+app.filter('yAxis', [function () {
+        return function (chartYAxis) {
+            var yAxis = ['', 'y-1', 'y-2']
+            return yAxis[chartYAxis];
+        };
+    }]);
+app.filter('hideColumn', [function () {
+        return function (chartYAxis) {
+            var hideColumn = ['No', 'Yes']
+            return hideColumn[chartYAxis];
+        };
+    }]);  
+//app.directive("textEditor", function () {
+//    return{
+//        restrict: 'A',
+//
+//        link: function (scope, element, attr) {
+//            CKEDITOR.editorConfig = function (config) {
+//                config.language = 'es';
+//                config.uiColor = '#F7B42C';
+//                config.height = 300;
+//                config.toolbarCanCollapse = true;
+//
+//            };
+//            CKEDITOR.replace(element[0]);
+//        }
+//    };
+//});
+app.directive('ckEditor', function() {
+  return {
+    require: '?ngModel',
+    link: function(scope, elm, attr, ngModel) {
+      var ck = CKEDITOR.replace(elm[0]);
+
+      if (!ngModel) return;
+
+      ck.on('pasteState', function() {
+        scope.$apply(function() {
+          ngModel.$setViewValue(ck.getData());
+        });
+      });
+
+      ngModel.$render = function(value) {
+        ck.setData(ngModel.$viewValue);
+      };
+    }
+  };
+});

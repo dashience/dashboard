@@ -15,15 +15,22 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.UserAccount;
+import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -33,6 +40,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -66,7 +76,6 @@ public class UiService {
         return uiDao.getDealerProduct(dealerId);
     }
 
-    
     public List<Dashboard> getDashboards(VbUser user) {
         return uiDao.getDashboards(user);
     }
@@ -86,6 +95,7 @@ public class UiService {
     public List<DashboardTabs> getDashboardTabs(Integer dbId) {
         return uiDao.getDashboardTabs(dbId);
     }
+
     public List<DashboardTabs> getDashboardTabsByProductDashboard(Integer dashboardId, Integer uId) {
         return uiDao.getDashboardTabsByDbId(dashboardId, uId);
     }
@@ -116,7 +126,7 @@ public class UiService {
         return uiDao.updateWidgetUpdateOrder(tabId, widgetOrder);
     }
 
-        public TabWidget deleteTabWidget(Integer id) {
+    public TabWidget deleteTabWidget(Integer id) {
         return uiDao.deleteTabWidget(id);
     }
 
@@ -142,30 +152,30 @@ public class UiService {
 
     public TabWidget saveTabWidget(Integer tabId, TabWidgetBean tabWidgetBean) {
         TabWidget tabWidget = null;
-        
+
         if (tabWidgetBean.getId() != null) {
             tabWidget = uiDao.getTabWidgetById(tabWidgetBean.getId());
 
         } else {
             tabWidget = new TabWidget();
         }
-        
+
         DataSource dataSource = null;
-        if (tabWidgetBean.getDataSourceId()!= null) {
+        if (tabWidgetBean.getDataSourceId() != null) {
             dataSource = uiDao.getDataSourceById(tabWidgetBean.getDataSourceId());
 
         } else {
             dataSource = new DataSource();
         }
-        
+
         DataSet dataSet = null;
-        if (tabWidgetBean.getDataSourceId()!= null) {
+        if (tabWidgetBean.getDataSourceId() != null) {
             dataSet = uiDao.getDataSetById(tabWidgetBean.getDataSetId());
 
         } else {
             dataSet = new DataSet();
-        }        
-        
+        }
+
         tabWidget.setChartType(tabWidgetBean.getChartType());
         tabWidget.setDirectUrl(tabWidgetBean.getDirectUrl());
         tabWidget.setWidgetTitle(tabWidgetBean.getWidgetTitle());
@@ -181,6 +191,7 @@ public class UiService {
         tabWidget.setDataset(tabWidgetBean.getDataset());
         tabWidget.setDataSetId(dataSet);
         tabWidget.setDataSourceId(dataSource);
+        tabWidget.setContent(tabWidgetBean.getContent());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
         uiDao.deleteWidgetColumns(tabWidget.getId());
@@ -325,8 +336,8 @@ public class UiService {
     }
 
     public DataSource delete(Integer id) {
-        DataSource dataSource = read(id);
-        return (DataSource) uiDao.delete(dataSource);
+//        DataSource dataSource = read(id);
+        return (DataSource) uiDao.deleteDataSource(id);
     }
 
     public List<DataSource> getDataSource() {
@@ -356,16 +367,22 @@ public class UiService {
     }
 
     public DataSet deleteDataSet(Integer id) {
-       // DataSet dataSet = readDataSet(id);
         return (DataSet) uiDao.deleteDataSet(id);
     }
 
+    public DataSource deleteDataSource(Integer id) {
+
+        return (DataSource) uiDao.deleteDataSource(id);
+    }
+
     public DataSource saveDataSource(DataSourceBean dataSource) {
+        HSSFWorkbook workBook = new HSSFWorkbook();
+
         try {
             DataSource dbDataSource = new DataSource();
             BeanUtils.copyProperties(dbDataSource, dataSource);
             String filename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
                 filename = filename + dataSource.getSourceFileName();
                 PrintWriter out = new PrintWriter(filename);
                 out.print(dataSource.getSourceFile());
@@ -374,27 +391,40 @@ public class UiService {
                 dbDataSource.setSqlDriver(dataSource.getSourceFileName());
                 uiDao.create(dbDataSource);
             }
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("xls")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("xls")) {
                 filename = filename + dataSource.getSourceFileName();
-                PrintWriter out = new PrintWriter(filename);
-                out.print(dataSource.getSourceFile());
-                out.close();
+                System.out.println(filename);
+                FileOutputStream fos = new FileOutputStream(filename);
+                workBook.write(fos);
+                fos.flush();
+                fos.close();
+                //PrintWriter out = new PrintWriter(filename);
+                //out.print(dataSource.getSourceFile());
+                //out.close();
+//                out.close();
+
+                //FileInputStream fstream = new FileInputStream(filename);
+//                PrintWriter out = new PrintWriter(filename);
+//                out.print(dataSource.getSourceFile());
+//                out.close();
                 dbDataSource.setConnectionString(filename);
                 dbDataSource.setSqlDriver(dataSource.getSourceFileName());
                 uiDao.create(dbDataSource);
             }
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("sql")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("sql")) {
                 uiDao.create(dbDataSource);
             }
-            if(dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
                 uiDao.create(dbDataSource);
             }
-            
+
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
+            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -404,15 +434,15 @@ public class UiService {
         List<VbUser> vbUser = uiDao.read(VbUser.class);
         return vbUser;
     }
-    
+
     public VbUser createUser(VbUser vbUser) {
         return (VbUser) uiDao.create(vbUser);
     }
-    
+
     public VbUser updateUser(VbUser vbUser) {
         return (VbUser) uiDao.update(vbUser);
     }
-    
+
     public VbUser readUser(Integer id) {
         return (VbUser) uiDao.read(VbUser.class, id);
     }
@@ -421,5 +451,55 @@ public class UiService {
         VbUser vbUser = readUser(id);
         return (VbUser) uiDao.delete(vbUser);
         //return dealer;
+    }
+
+    public UserAccount createUserAccount(UserAccount userAccount) {
+        return (UserAccount) uiDao.create(userAccount);
+    }
+
+    public UserAccount updateUserAccount(UserAccount userAccount) {
+        return (UserAccount) uiDao.update(userAccount);
+    }
+
+    public List<UserAccount> getUserAccount() {
+        List<UserAccount> userAccount = uiDao.read(UserAccount.class);
+        return userAccount;
+    }
+
+    public List<UserAccount> getUserAccountById(Integer userId) {
+        return uiDao.getUserAccountById(userId);
+    }
+
+    public UserAccount deleteUserAccount(Integer userAccountId) {
+        return uiDao.deleteUserAccount(userAccountId);
+    }
+
+//    public List getUserAccountId(Integer userId) {
+//        return uiDao.getUserAccountId(userId);
+//    }
+    public List<Permission> getPermission() {
+        List<Permission> permission = uiDao.read(Permission.class);
+        return permission;
+    }
+
+    public UserPermission createUserPermission(UserPermission userPermission) {
+       return (UserPermission) uiDao.create(userPermission);
+    }
+
+    public UserPermission updateUserPermission(UserPermission userPermission) {
+        return (UserPermission) uiDao.update(userPermission);
+    }
+
+    public List<UserPermission> getUserPermission() {
+        List<UserPermission> userPermission = uiDao.read(UserPermission.class);
+        return userPermission;
+    }
+
+    public List getUserPermissionById(Integer userId) {
+        return uiDao.getUserPermission(userId);
+    }
+
+    public UserPermission deleteUserPermission(Integer userPermissionId) {
+        return uiDao.deleteUserPermission(userPermissionId);
     }
 }

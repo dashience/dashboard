@@ -10,11 +10,111 @@
     }
     .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
         display: block;
-        overflow: hidden;
+        /*overflow: hidden;*/
     }
     .table-fixed tbody td, .table-fixed thead > tr> th {
         float: left;
         border-bottom-width: 0;
+    }
+    .switch_wrap input[type="checkbox"] {
+        display: none;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch {
+        background-color: #6cbc43;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch::before {
+        display: block;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch::after {
+        display: none;
+    }
+
+    .switch_wrap input[type="checkbox"]:checked + .switch .bullet {
+        left: 33px;
+    }
+
+    .switch_wrap .switch {
+        position: relative;
+        display: inline-block;
+        width: 65px;
+        height: 24px;
+        line-height: 24px;
+        margin-right: 1em;
+        margin-top: -3px;
+        vertical-align: middle;
+        background-color: #c1272d;
+        border-radius: 3px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgb(255,255,255);
+    }
+
+    .switch_wrap .switch::before,
+    .switch_wrap .switch::after {
+        content: 'ON';
+        display: none;
+        width: 50%;
+        position: absolute;
+        top: 0;
+        font-size: 11px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        text-align: center;
+    }
+
+    .switch_wrap .switch::after {
+        content: 'OFF';
+        display: block;
+        right: 0;
+    }
+
+    .switch_wrap .switch .bullet {
+        position: relative;
+        display: block;
+        width: 32px;
+        height: 26px;
+        top: -2px;
+        left: -2px;
+        background-color: #f0f0f0;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#e6e6e6));
+        background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -moz-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -ms-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: -o-linear-gradient(top, #f0f0f0, #e6e6e6);
+        background-image: linear-gradient(top, #f0f0f0, #e6e6e6);
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        border-radius: 3px;
+        -webkit-box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 1px 0 white inset, 0 1px 1px rgba(0, 0, 0, 0.25);
+        -webkit-transition: left 0.1s linear;
+        -moz-transition: left 0.1s linear;
+        -ms-transition: left 0.1s linear;
+        -o-transition: left 0.1s linear;
+        transition: left 0.1s linear;
+    }
+
+    .switch_wrap .switch .bullet::before,
+    .switch_wrap .switch .bullet::after {
+        content: '';
+        display: block;
+        height: 15px;
+        width: 3px;
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        margin-left: -6px;
+        border: 1px solid #cccccc;
+        border-width: 0 1px;
+        -webkit-box-shadow: 1px 0 0 white, 1px 0 0 white inset;
+        box-shadow: 1px 0 0 white, 1px 0 0 white inset;
+    }
+
+    .switch_wrap .switch .bullet::after {
+        margin-left: 2px;
     }
 </style>
 <section class="content">
@@ -40,14 +140,48 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="user in users" ng-class="{'selectedTableRow':$index == selectedRow}">
-                                    <td class="col-xs-3" ng-click="editUser(user)">{{user.firstName? user.firstName:'-'}}</td>
-                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.lastName? user.lastName : '-'}}</td>
-                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.userName?user.userName:'-'}}</td>
-                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.email?user.email:'-'}}</td>
-                                    <td class="col-xs-2" ng-click="editUser(user)">{{user.primaryPhone?user.primaryPhone:'-'}}</td>
+                                <tr ng-repeat="user in users" ng-class="{'selectedTableRow':$index == selectedUser}">
+                                    <td class="col-xs-3" ng-click="editUser(user, $index)">{{user.firstName? user.firstName:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.lastName? user.lastName : '-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.userName?user.userName:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.email?user.email:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.primaryPhone?user.primaryPhone:'-'}}</td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-default btn-xs" ng-click="deleteUser($index, user)"><i class="fa fa-trash"></i></button>
+                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUser{{user.id}}"><i class="fa fa-trash"></i></button>
+                                        <div class="modal hmodal-success" id="deleteUser{{user.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="color-line"></div>
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Delete</h4>
+                                                        <small class="font-bold"></small>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-horizontal" role="form">
+                                                            <div class="form-group">
+                                                                <div class="col-sm-12  col-md-12">
+                                                                    <span>Want to delete ?</span>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-primary btn-xs " 
+                                                                    ng-click="deleteUser(user, $index)" 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-trash"></span> Yes
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-xs " 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-times"></span> No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -55,40 +189,170 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label>First Name</label>
-                            <input class="form-control" type="text" ng-model="user.firstName" placeholder="First Name">
+
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li ng-class="{ active: isSetUser(1) }">
+                                <a href ng-click="setTabUser(1)"> Details</a>
+                            </li>
+                            <li ng-class="{ active: isSetUser(2) }">
+                                <a href ng-click="setTabUser(2)"> Account
+                                </a>
+                            </li>
+                            <li ng-class="{ active: isSetUser(3) }">
+                                <a href ng-click="setTabUser(3)"> Permission
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="tab-content">
+                            <div ng-show="isSetUser(1)">
+                                <section class="content">
+                                    <div class="pull-right account-new">
+                                        <button class="btn btn-success" ng-click="addUser()">New</button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form class="form-horizontal">
+                                                <div class="form-group">
+                                                    <label>First Name</label>
+                                                    <input class="form-control" type="text" ng-model="user.firstName" placeholder="First Name">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Last Name</label>
+                                                    <input class="form-control" type="text" ng-model="user.lastName" placeholder="Last Name">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>User Name</label>
+                                                    <input class="form-control" type="text" ng-model="user.userName" placeholder="User Name">
+                                                </div>                                            
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input type="email" class="form-control" ng-model="user.email" placeholder="Email">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Password</label>
+                                                    <input type="password" class="form-control" ng-model="user.password" placeholder="Password">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Primary Phone</label>
+                                                    <input type="text" class="form-control" ng-model="user.primaryPhone" placeholder="Primary Phone">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Secondary Phone</label>
+                                                    <input type="text" class="form-control" ng-model="user.secondaryPhone" placeholder="Secondary Phone">
+                                                </div>
+                                                <div class="form-group pull-right">
+                                                    <button class="btn btn-info" ng-click="saveUser(user)">Save</button>
+                                                    <button class="btn btn-warning" ng-click="clearUser(user)">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div ng-show="isSetUser(2)">
+                                <section class="content">
+                                    <table class="table table-responsive table-fixed">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-xs-11">Account Name</th>                                                
+                                                <th class="col-xs-1">
+                                                    <button class="btn btn-success btn-xs" ng-click="addUserAccount()"><i class="fa fa-plus"></i></button>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="userAccount in userAccounts" ng-class="{'selectedTableRow':$index == selectedtUserAccount}" ng-click="setUserAccountRow($index)">
+                                                <td class="col-xs-11">
+                                                    <div ng-hide="userAccount.isEdit">{{userAccount.accountId.accountName}}</div>
+                                                    <div ng-show="userAccount.isEdit">
+                                                        <ui-select ng-model="userAccount.accountId" theme="select2" ng-disabled="disabled">
+                                                            <ui-select-match placeholder="Select User...">{{$select.selected.accountName}}</ui-select-match>
+                                                            <ui-select-choices repeat="account in accounts | filter: $select.search">
+                                                                <span ng-bind-html="account.accountName | highlight: $select.search"></span>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </div>
+                                                </td>                                                
+                                                <td class="col-xs-1">
+                                                    <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount); userAccount.isEdit = false;"><i class="fa fa-save"></i></button>
+                                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash"></i></button>
+                                                    <div class="modal hmodal-success" id="deleteUserAccount{{userAccount.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="color-line"></div>
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title">Delete</h4>
+                                                                    <small class="font-bold"></small>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="form-horizontal" role="form">
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-12  col-md-12">
+                                                                                <span>Want to delete ?</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <div class="col-sm-12">
+                                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                                                ng-click="deleteUserAccount(userAccount, $index)" 
+                                                                                data-dismiss="modal">
+                                                                            <span class="fa fa-trash"></span> Yes
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-danger btn-xs " 
+                                                                                data-dismiss="modal">
+                                                                            <span class="fa fa-times"></span> No
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </section>
+                            </div>
+                            <div ng-show="isSetUser(3)">
+                                <section class="content">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form class="form-horizontal">
+                                                <div>
+                                                    <div class="form-group" ng-repeat="permission in permissions">
+                                                        <label class="col-lg-4">{{permission.permissionName}}</label>
+                                                        <div class="col-lg-8">
+                                                            <label class="switch_wrap col-sm-10" for="field{{$index+1}}">
+                                                                <input id="field{{$index+1}}" type="checkbox"
+                                                                       ng-model="permission.status" 
+                                                                       ng-change="saveUserPermission(permission)"          
+                                                                       ng-click="testClick(permission)"
+                                                                       ng-true-value="1"
+                                                                       ng-false-value="0"/>
+                                                                    <div class="switch switch-mini"><span class="bullet"></span></div>
+                                                                </label>
+<!--                                                            <label class="switch_wrap col-sm-10">
+                                                                <input type="checkbox" ng-model="userPermission.status" ng-checked="hasPermission(permission.permissionName)" ng-change="saveUserPermission(permission, userPermission)" value="1" />
+                                                                <div class="switch switch-mini"><span class="bullet"></span></div>
+                                                            </label>-->
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Last Name</label>
-                            <input class="form-control" type="text" ng-model="user.lastName" placeholder="Last Name">
-                        </div>
-                        <div class="form-group">
-                            <label>User Name</label>
-                            <input class="form-control" type="text" ng-model="user.userName" placeholder="User Name">
-                        </div>                                            
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" ng-model="user.email" placeholder="Email">
-                        </div>
-                        <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" class="form-control" ng-model="user.password" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <label>Primary Phone</label>
-                            <input type="text" class="form-control" ng-model="user.primaryPhone" placeholder="Primary Phone">
-                        </div>
-                        <div class="form-group">
-                            <label>Secondary Phone</label>
-                            <input type="text" class="form-control" ng-model="user.secondaryPhone" placeholder="Secondary Phone">
-                        </div>
-                        <div class="form-group pull-right">
-                            <button class="btn btn-info" ng-click="saveUser(user)">Save</button>
-                            <button class="btn btn-warning" ng-click="clearUser(user)">Cancel</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

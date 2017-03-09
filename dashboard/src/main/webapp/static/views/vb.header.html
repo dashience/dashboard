@@ -112,7 +112,7 @@
                             <div ng-repeat="product in products| orderBy:'productOrder'">
                                 <ul class="col-lg-3 icon-dash"  ng-if="product.showProduct == 1">
                                     <li class="product-dashboard-icon">
-                                        <a class="active" ng-click="setParamsProduct(); hideLocationBox('dashboard')" 
+                                        <a class="active" ng-click="setParamsProduct()" 
                                            data-ui-sref="index.dashboard.widget({locationId: locationId, productId: product.id?product.id:2, tabId: tabId, startDate: startDate, endDate: endDate})">
                                             <i class="{{product.icon}}"></i> <h5>{{product.productName}}</h5>
                                             <!--<i class="fa fa-fighter-jet" aria-hidden="true"></i> <h5>{{product.productName}}</h5>-->
@@ -121,18 +121,18 @@
                                 </ul>
                             </div>
 
-<!--                            <div>
-                                <ul class="col-lg-3 icon-dash">
-                                    <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('franchiseMarketing')">
-                                        <a data-ui-sref="index.franchiseMarketing({locationId: locationId, startDate: startDate, endDate: endDate})"><i class="pe-7s-graph2 text-info"></i> <h5>Franchise Marketing</h5></a>
-                                    </li>
-                                </ul>
-                            </div>-->
+                            <!--                            <div>
+                                                            <ul class="col-lg-3 icon-dash">
+                                                                <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('franchiseMarketing')">
+                                                                    <a data-ui-sref="index.franchiseMarketing({locationId: locationId, startDate: startDate, endDate: endDate})"><i class="pe-7s-graph2 text-info"></i> <h5>Franchise Marketing</h5></a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>-->
 
                             <div class="clear">
                                 <div>
                                     <ul class="col-lg-3 icon-dash">                                    
-                                        <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('dataSource')">
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
                                             <a data-ui-sref="index.dataSource({locationId: locationId, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-database text-warning"></i> <h5>Data Source</h5>
                                             </a>
@@ -141,22 +141,40 @@
                                 </div>
                                 <div>
                                     <ul class="col-lg-3 icon-dash"> 
-                                        <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('dataSet')">
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
                                             <a data-ui-sref="index.dataSet({locationId: locationId, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-dashcube text-success"></i> <h5>Data Sets</h5>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
-<!--                                <div>
+                                <div>
                                     <ul class="col-lg-3 icon-dash"> 
-                                        <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('user')">
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
                                             <a data-ui-sref="index.user({locationId: locationId, startDate: startDate, endDate: endDate})">
-                                                <i class="fa fa-users text-success"></i> <h5>Users</h5>
+                                                <i class="fa fa-users text-info"></i> <h5>Users</h5>
                                             </a>
                                         </li>
                                     </ul>
-                                </div>-->
+                                </div>
+                                <div>
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.account({locationId: locationId, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-cog text-warning"></i> <h5>Account</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.agency({locationId: locationId, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-cog text-warning"></i> <h5>Agency</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <!--                            <div>
                                                             <ul class="col-lg-3 icon-dash"> 

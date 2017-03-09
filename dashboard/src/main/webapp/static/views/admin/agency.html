@@ -1,0 +1,319 @@
+<style> 
+    #editor {
+        height: 300px;
+    }   
+    .table-fixed thead {
+        width: 100%;
+        border-bottom: none;
+    }
+    .table-fixed tbody {        
+        height: 480px;
+        overflow-y: auto !important;
+        width: 100%;
+    }
+    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+        display: block;
+        overflow: hidden;
+    }
+    .table-fixed tr{
+        cursor: pointer;
+    }
+    .table-fixed tbody td, .table-fixed thead > tr> th {
+        float: left;
+        border-bottom-width: 0;
+    }
+    .image-upload img{
+        max-width: 150px;
+        max-height: 125px;
+        display: block;
+        cursor: pointer;
+    }
+    .image-upload > input
+    {
+        display: none;
+    }
+</style>
+<section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="content-header">
+                <h1 class="text-capitalize">Agency</h1>        
+            </section>
+        </div>
+        <div class="col-md-4 data-search">
+            <input type="text" class="form-control" ng-model="searchAgency" placeholder="Search...">
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-md-6">
+                    <div>
+                        <table class="table table-fixed">
+                            <thead>
+                                <tr>
+                                    <th class="col-xs-5">Name</th>
+                                    <th class="col-xs-6">Email</th>
+                                    <th class="col-xs-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
+                                        {{agency.agencyName}}
+                                    </td>
+                                    <td class="col-xs-6" ng-click="editAgency(agency, $index); agencyData()">
+                                        {{agency.email}}
+                                    </td>
+                                    <td class="col-xs-1s">
+                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgency{{agency.id}}"><i class="fa fa-trash-o"></i></button>
+                                        <div class="modal hmodal-success" id="deleteAgency{{agency.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="color-line"></div>
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Delete</h4>
+                                                        <small class="font-bold"></small>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-horizontal" role="form">
+                                                            <div class="form-group">
+                                                                <div class="col-sm-12  col-md-12">
+                                                                    <span>Want to delete ?</span>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-primary btn-xs " 
+                                                                    ng-click="deleteAgency(agency, $index)" 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-trash"></span> Yes
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-xs " 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-times"></span> No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>  
+
+                <div class="col-md-6">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li ng-class="{ active: isSetAgency(1) }">
+                                <a href ng-click="setTabAgency(1)"> Details</a>
+                            </li>
+                            <li ng-class="{ active: isSetAgency(2) }">
+                                <a href ng-click="setTabAgency(2)"> Licence
+                                </a>
+                            </li>
+                            <li ng-class="{ active: isSetAgency(3) }">
+                                <a href ng-click="setTabAgency(3)"> User
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="row">
+                        <div class="tab-content">
+                            <div ng-show="isSetAgency(1)">
+                                <section class="content">
+                                    <div class="pull-right account-new">
+                                        <button class="btn btn-success" ng-click="addAgency()">New</button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <form class="form-horizontal">
+                                                <div class="form-group">                                                    
+                                                    <div class="col-sm-3">
+                                                        <div class="image-upload">
+                                                            <label for="file-input">
+                                                                <img class="img-responsive img-thumbnail" ng-src="{{agency.logo}}"/>
+                                                            </label>
+
+                                                            <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
+                                                        </div>
+                                                    </div>
+                                                    <label class="col-sm-3">Agency Name</label>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" ng-model="agency.agencyName" placeholder="Name">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-2">Email</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="email" class="form-control" ng-model="agency.email" placeholder="Email">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="col-sm-2">Description</label>
+                                                    <div class="col-sm-10">
+                                                        <textarea class="form-control" ng-model="agency.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="pull-right">
+                                                    <button class="btn btn-info" ng-click="saveAgency(agency)">Save</button>
+                                                    <button class="btn btn-warning" ng-click="clearAgency(agency)">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div ng-show="isSetAgency(2)">
+                                <section class="content">
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <form class="form-horizontal">
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Number Of Tabs</label>
+                                                        <div class="col-sm-6">
+                                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoTab">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Number Of Users</label>
+                                                        <div class="col-sm-6">
+                                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoUser">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Number Of Clients</label>
+                                                        <div class="col-sm-6">
+                                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoClient">
+                                                        </div>
+                                                    </div>                                            
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Number Of Accounts</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" ng-model="agencyLicence.maxNoAccount">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Expiry Date</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" date-Picker class="form-control" ng-model="agencyLicence.expiryDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-sm-6">Number Of Widgets Per Tabs</label>
+                                                        <div class="col-sm-6">
+                                                            <input type="text" class="form-control" ng-model="agencyLicence.maxNoWidgetPerTab">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group pull-right">
+                                                        <button class="btn btn-info" ng-click="saveAgencyLicence(agencyLicence)">Save</button>
+                                                        <!--<button class="btn btn-warning" ng-click="clearAgencyLicence(agencyLicence)">Cancel</button>-->
+                                                    </div>
+                                                </form>
+                                            </div>                                           
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div ng-show="isSetAgency(3)">
+                                <section class="content">
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <table class="table table-fixed">
+                                                    <thead>
+                                                        <tr>
+                                                            <!--<th class="col-xs-4">Account Name</th>-->
+                                                            <th class="col-xs-6">User Name</th>
+                                                            <th class="col-xs-4">Status</th>
+                                                            <th class="col-xs-2">
+                                                                <button class="btn btn-success btn-xs" ng-click="addAccountUser()"><i class="fa fa-plus"></i></button>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="height:420px">
+                                                        <tr ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
+                                                            <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
+                                                                                                                            {{accountUser.accountId.accountName}}
+                                                                                                                        </td>-->
+                                                            <td class="col-xs-6" ng-click="editAccountUser(accountUser)">
+                                                                <div ng-hide="accountUser.isEdit">
+                                                                    {{accountUser.userId.userName}}
+                                                                </div>
+                                                                <div ng-show="accountUser.isEdit">
+                                                                    <ui-select ng-model="accountUser.userId" theme="select2" ng-disabled="disabled">
+                                                                        <ui-select-match placeholder="Select User...">{{$select.selected.userName}}</ui-select-match>
+                                                                        <ui-select-choices repeat="user in users | filter: $select.search">
+                                                                            <span ng-bind-html="user.userName | highlight: $select.search"></span>
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+                                                                </div>
+                                                            </td>
+                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
+                                                                <label class="switch_wrap col-sm-10" for="field{{accountUser.id}}">
+                                                                    <input id="field{{accountUser.id}}" type="checkbox" ng-model="accountUser.status" ng-change="saveStatus(accountUser)" value="1" />
+                                                                    <div class="switch switch-mini"><span class="bullet"></span></div>
+                                                                </label>
+                                                                <!--<i class="fa" ng-class="{'fa-times': !accountUser.status, 'text-danger':!accountUser.status, 'fa-circle': accountUser.status, 'text-success':accountUser.status}"></i>-->
+                                                            </td>
+                                                            <td class="col-xs-2">
+                                                                <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser); accountUser.isEdit = false;"><i class="fa fa-save"></i></button>
+                                                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccountUser{{accountUser.id}}"><i class="fa fa-trash-o"></i></button>
+                                                                <div class="modal hmodal-success" id="deleteAccountUser{{accountUser.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                                    <div class="modal-dialog">
+                                                                        <div class="modal-content">
+                                                                            <div class="color-line"></div>
+                                                                            <div class="modal-header">
+                                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                <h4 class="modal-title">Delete</h4>
+                                                                                <small class="font-bold"></small>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <form class="form-horizontal" role="form">
+                                                                                    <div class="form-group">
+                                                                                        <div class="col-sm-12  col-md-12">
+                                                                                            <span>Want to delete ?</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </form>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <div class="col-sm-12">
+                                                                                    <button type="button" class="btn btn-primary btn-xs " 
+                                                                                            ng-click="deleteAccountUser(accountUser, $index)" 
+                                                                                            data-dismiss="modal">
+                                                                                        <span class="fa fa-trash"></span> Yes
+                                                                                    </button>
+                                                                                    <button type="button" class="btn btn-danger btn-xs " 
+                                                                                            data-dismiss="modal">
+                                                                                        <span class="fa fa-times"></span> No
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>                
+    </div>
+</section>

@@ -19,6 +19,9 @@
         float: left;
         border-bottom-width: 0;
     }
+    .table-fixed tr td {
+        cursor:pointer;
+    }
 </style>
 <section class="content">
     <div class="row">
@@ -40,22 +43,61 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <div class="col-md-6 pull-left">
+                <div class="col-md-6">
                     <div>
                         <table class="table table-fixed">
                             <thead>
                                 <tr>
-                                    <th class="col-xs-6">Data Source</th>
+                                    <th class="col-xs-5">Data Source</th>
                                     <th class="col-xs-6">Name</th>
+                                    <th class="col-xs-1"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="dataSet in dataSets| filter: dataSourceId.name | filter: searchDataSource" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
-                                    <td class="col-xs-6" ng-click="editDataSet(dataSet)">
+                                    <td class="col-xs-5" ng-click="editDataSet(dataSet)">
                                         {{dataSet.dataSourceId.name}}
                                     </td>
                                     <td class="col-xs-6" ng-click="editDataSet(dataSet)">
                                         {{dataSet.name?dataSet.name:'-'}}
+                                    </td>
+                                    <td class="col-md-1">
+                                        <!--<button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = true"><i class="fa fa-pencil"></i></button>-->
+                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSet{{dataSet.id}}"><i class="fa fa-trash-o"></i></button>
+                                        <div class="modal hmodal-success" id="deleteDataSet{{dataSet.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="color-line"></div>
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Delete</h4>
+                                                        <small class="font-bold"></small>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-horizontal" role="form">
+                                                            <div class="form-group">
+                                                                <div class="col-sm-12  col-md-12">
+                                                                    <span>Want to delete ?</span>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-primary btn-xs " 
+                                                                    ng-click="deleteDataSet(dataSet, $index)" 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-trash"></span> Yes
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-xs " 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-times"></span> No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -63,7 +105,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <form class="form-horizontal">
+                    <form class="col-md-12 form-horizontal">
                         <div class="form-group">
                             <label>Data Source</label>
                             <select class="form-control" 
