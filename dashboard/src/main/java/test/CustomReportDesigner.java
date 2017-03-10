@@ -2488,8 +2488,8 @@ public class CustomReportDesigner {
             Map<String, Object> dataMap = iterator.next();
             for (Iterator<String> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
                 String axis = iterator1.next();
-                System.out.println(ApiUtils.toDouble((String) dataMap.get(axis) + "") + "---" + axis + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble( dataMap.get(axis) + ""), axis, dataMap.get(xAxis) + "");
+                System.out.println(ApiUtils.toDouble(dataMap.get(axis) + "") + "---" + axis + "----" + dataMap.get(xAxis) + "");
+                dataset.addValue(ApiUtils.toDouble(dataMap.get(axis) + ""), axis, dataMap.get(xAxis) + "");
             }
 //            for (Iterator<String> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
 //                String axis = iterator1.next();
