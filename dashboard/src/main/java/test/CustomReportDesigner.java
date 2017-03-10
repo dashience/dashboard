@@ -46,6 +46,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -303,9 +304,6 @@ public class CustomReportDesigner {
                 returnMap.put(aggregation.getFieldName(), sum(data, aggregation.getFieldName()) + "");
             }
             if (aggregation.getAggregationType().equalsIgnoreCase("avg")) {
-                System.out.println("Data value: " + data);
-                System.out.println("Data Size: " + data.size());
-                System.out.println("Aggregation field name: " + aggregation.getFieldName());
                 returnMap.put(aggregation.getFieldName(), (sum(data, aggregation.getFieldName()) / data.size()) + "");
             }
             if (aggregation.getAggregationType().equalsIgnoreCase("count")) {
@@ -690,7 +688,6 @@ public class CustomReportDesigner {
                     String value = dataMap.get(column.getFieldName()) + "";
                     if (column.getDisplayFormat() != null) {
                         value = Formatter.format(column.getDisplayFormat(), value);
-                        System.out.println("data value: " + value);
                     }
 
                     XSLFTableCell dataCell = dataRow.addCell();
@@ -1018,7 +1015,6 @@ public class CustomReportDesigner {
                     String value = dataMap.get(column.getFieldName()) + "";
                     if (column.getDisplayFormat() != null) {
                         value = Formatter.format(column.getDisplayFormat(), value);
-                        System.out.println("data value: " + value);
                     }
                     pdfFont.setColor(tableHeaderFontColor);
                     dataCell = new PdfPCell(new Phrase(value, pdfFont));
@@ -1256,6 +1252,31 @@ public class CustomReportDesigner {
                     XSLFSlide slide = ppt.createSlide();
 
                     JFreeChart pieChart = generatePieJFreeChart(tabWidget);
+                    if(pieChart == null){
+                    XSLFTable table = slide.createTable();
+                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+                    XSLFTableRow titleRow = table.addRow();
+
+                    XSLFTableCell titleCell = titleRow.addCell();
+                    //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
+                    //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
+                    XSLFTextParagraph p = titleCell.addNewTextParagraph();
+                    p.setTextAlign(TextParagraph.TextAlign.LEFT);
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setText(tabWidget.getWidgetTitle());
+                    r.setBold(true);
+                    r.setFontSize(13.0);
+                    r.setFontColor(tableTitleFontColor);
+                    //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                    titleCell.setFillColor(widgetTitleColor);
+                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                    titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+
+                    table.setColumnWidth(0, 600);
+                    } else {
                     float quality = 1;
 
                     ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
@@ -1310,7 +1331,7 @@ public class CustomReportDesigner {
 
                     RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
                     blib.setEmbed(rp.getRelationship().getId());
-
+                    }
                 } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
                     System.out.println("Bar");
                     XSLFSlide slide = ppt.createSlide();
@@ -1590,6 +1611,12 @@ public class CustomReportDesigner {
 
                     if (pieChart != null) {
                         PdfPCell chartCell = new PdfPCell(pieChart);
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(table);
+                    } else {
+                        PdfPCell chartCell = new PdfPCell();
                         chartCell.setBorderColor(widgetBorderColor);
                         chartCell.setPadding(10);
                         table.addCell(chartCell);
@@ -2731,7 +2758,13 @@ public class CustomReportDesigner {
     public JFreeChart generatePieJFreeChart(TabWidget tabWidget) throws BadElementException {
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originaldata = tabWidget.getData();
-        List<Map<String, Object>> data = new ArrayList<>(originaldata);
+        List<Map<String, Object>> data;
+        if(originaldata == null || originaldata.isEmpty()){
+            data = new ArrayList<>();
+            return null;
+        } else {
+            data = new ArrayList<>(originaldata);
+        }
 
         String xAxis = null;
         String yAxis = null;
@@ -2793,7 +2826,13 @@ public class CustomReportDesigner {
     public static Image generatePieChart(PdfWriter writer, TabWidget tabWidget) throws BadElementException {
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originaldata = tabWidget.getData();
-        List<Map<String, Object>> data = new ArrayList<>(originaldata);
+        List<Map<String, Object>> data;
+        if(originaldata == null || originaldata.isEmpty()){
+            data = new ArrayList<>();
+            return null;
+        } else {
+            data = new ArrayList<>(originaldata);
+        }
 
         String xAxis = null;
         String yAxis = null;
