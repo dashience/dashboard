@@ -256,6 +256,23 @@ public class UserDao extends BaseDao {
         query.setParameter("agencyId", agencyProductId);
         return query.list();
     }
+    
+     public AgencyProduct getAgencyProductOrderId(Integer agencyProductId) {
+        AgencyProduct agencyProduct = (AgencyProduct) sessionFactory.getCurrentSession().get(AgencyProduct.class, agencyProductId);
+        return agencyProduct;
+    }
+
+    public String productUpdateOrder(Integer agencyProductId, String productOrder) {
+        System.out.println(productOrder);
+        String[] productOrderArray = productOrder.split(",");
+        for (int i = 0; i < productOrderArray.length; i++) {
+            Integer productId = Integer.parseInt(productOrderArray[i]);
+            AgencyProduct agencyProduct = getAgencyProductOrderId(productId);
+            agencyProduct.setProductOrder(i);
+            update(agencyProduct);
+        }
+        return null;
+    }
 
 
 }

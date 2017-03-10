@@ -25,6 +25,8 @@ import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfTemplate;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.pdf.L2TReportHeader;
@@ -35,8 +37,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -51,10 +54,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.configuration.FileOptionsProvider;
 import org.apache.commons.lang.WordUtils;
-import org.apache.poi.sl.usermodel.PaintStyle;
+import org.apache.poi.POIXMLDocumentPart.RelationPart;
+import org.apache.poi.hslf.usermodel.*;
 import org.apache.poi.sl.usermodel.PictureData;
+import org.apache.poi.sl.usermodel.SlideShow;
 import org.apache.poi.sl.usermodel.TableCell;
 import org.apache.poi.sl.usermodel.TextParagraph;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -62,11 +66,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFPictureData;
-import org.apache.poi.xslf.usermodel.XSLFPictureShape;
+import org.apache.poi.xslf.usermodel.XSLFRelation;
+import org.apache.poi.xslf.usermodel.XSLFShape;
+
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.apache.poi.xslf.usermodel.XSLFTable;
 import org.apache.poi.xslf.usermodel.XSLFTableCell;
 import org.apache.poi.xslf.usermodel.XSLFTableRow;
+import org.apache.poi.xslf.usermodel.XSLFTextBox;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextRun;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
@@ -101,7 +108,10 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.ui.HorizontalAlignment;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTBlip;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTBlipFillProperties;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTRelativeRect;
+import org.openxmlformats.schemas.drawingml.x2006.main.CTTableCell;
 
 /**
  *
@@ -131,6 +141,14 @@ public class CustomReportDesigner {
         FontFactory.register(FONT, "proxima_nova_rgregular");
         calcualtedFunctions.add(new CalcualtedFunction("ctr", "data__clicks", "data__impressions"));
         calcualtedFunctions.add(new CalcualtedFunction("cpa", "data__cost", "data__conversions"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpc", "data__cost", "data__clicks"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpr", "data__cost", "data__reactions"));
+        calcualtedFunctions.add(new CalcualtedFunction("ctl", "data__cost", "data__likes"));
+        calcualtedFunctions.add(new CalcualtedFunction("cplc", "data__cost", "data__link_clicks"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpcomment", "data__cost", "data__comments"));
+        calcualtedFunctions.add(new CalcualtedFunction("cposte", "data__cost", "data__post_engagements"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpagee", "data__cost", "data__page_engagements"));
+        calcualtedFunctions.add(new CalcualtedFunction("cpp", "data__cost", "data__posts"));
     }
     Font pdfFont = FontFactory.getFont("proxima_nova_rgregular", "Cp1253", true);
     Font pdfFontTitle = FontFactory.getFont("proxima_nova_rgregular", "Cp1253", true);
@@ -310,6 +328,61 @@ public class CustomReportDesigner {
         return returnMap;
     }
 
+    public PdfPTable generateTextPdfTable(TabWidget tabWidget) {
+        try {
+            BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
+
+            PdfPTable table = new PdfPTable(1);
+            PdfPCell titleCell;
+            pdfFontTitle.setSize(14);
+            pdfFontTitle.setStyle(Font.BOLD);
+            pdfFontTitle.setColor(tableTitleFontColor);
+            titleCell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+            titleCell.setHorizontalAlignment(1);
+            titleCell.setColspan(1);
+            titleCell.setBorderColor(widgetBorderColor);
+            titleCell.setBackgroundColor(widgetTitleColor);
+            titleCell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+            titleCell.setPadding(10);
+            table.addCell(titleCell);
+
+            pdfFont.setSize(12);
+            pdfFont.setColor(tableHeaderFontColor);
+            if (tabWidget.getContent() != null) {
+                String HTML = tabWidget.getContent();
+                PdfPCell dataCell = new PdfPCell();
+                for (Element e : XMLWorkerHelper.parseToElementList(HTML, null)) {
+                    dataCell.addElement(e);
+                }
+                dataCell.setHorizontalAlignment(1);
+                dataCell.setColspan(1);
+                dataCell.setNoWrap(false);
+                dataCell.setBorderColor(widgetBorderColor);
+                dataCell.setBackgroundColor(widgetTitleColor);
+                dataCell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                dataCell.setPadding(5);
+                table.addCell(dataCell);
+                table.setWidthPercentage(95f);
+            } else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
+                PdfPCell dataCell = new PdfPCell(new Phrase(""));
+                dataCell.setHorizontalAlignment(1);
+                dataCell.setColspan(1);
+                dataCell.setNoWrap(false);
+                dataCell.setBorderColor(widgetBorderColor);
+                dataCell.setBackgroundColor(widgetTitleColor);
+                dataCell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                dataCell.setPadding(5);
+                table.addCell(dataCell);
+                table.setWidthPercentage(95f);
+            }
+
+            return table;
+        } catch (IOException ex) {
+            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public PdfPTable dynamicPdfTable(TabWidget tabWidget) throws DocumentException {
 //        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
@@ -319,6 +392,7 @@ public class CustomReportDesigner {
         List<Map<String, Object>> data = new ArrayList<>(originalData);
         // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
         List<Map<String, Object>> tempData = new ArrayList<>();
+
         if (data == null || data.isEmpty()) {
             PdfPTable table = new PdfPTable(columns.size());
             PdfPCell cell;
@@ -457,7 +531,397 @@ public class CustomReportDesigner {
             }
         }
     }
-    
+
+    public XSLFTable staticPptTable(XSLFSlide slide) {
+        XSLFTable tbl = slide.createTable();
+        tbl.setAnchor(new java.awt.Rectangle(30, 30, 450, 300));
+        int numColumns = 3;
+        int numRows = 5;
+        XSLFTableRow headerRow = tbl.addRow();
+        headerRow.setHeight(50);
+        // header
+        for (int i = 0; i < numColumns; i++) {
+            XSLFTableCell th = headerRow.addCell();
+            XSLFTextParagraph p = th.addNewTextParagraph();
+            p.setTextAlign(TextParagraph.TextAlign.CENTER);
+            XSLFTextRun r = p.addNewTextRun();
+            r.setText("Header " + (i + 1));
+            r.setBold(true);
+            r.setFontColor(Color.white);
+            th.setFillColor(new Color(79, 129, 189));
+            th.setBorderWidth(TableCell.BorderEdge.bottom, 2.0);
+            th.setBorderColor(TableCell.BorderEdge.bottom, Color.white);
+
+            tbl.setColumnWidth(i, 150);  // all columns are equally sized
+        }
+
+        // rows
+        for (int rownum = 0; rownum < numRows; rownum++) {
+            XSLFTableRow tr = tbl.addRow();
+            tr.setHeight(50);
+            // header
+            for (int i = 0; i < numColumns; i++) {
+                XSLFTableCell cell = tr.addCell();
+                XSLFTextParagraph p = cell.addNewTextParagraph();
+                XSLFTextRun r = p.addNewTextRun();
+
+                r.setText("Cell " + (i + 1));
+                if (rownum % 2 == 0) {
+                    cell.setFillColor(new Color(208, 216, 232));
+                } else {
+                    cell.setFillColor(new Color(233, 247, 244));
+                }
+
+            }
+
+        }
+        return tbl;
+    }
+
+    private XSLFTable generateTableForPpt(Map groupedData, TabWidget tabWidget, XSLFSlide slide) {
+
+        //       BaseColor textHighlightColor = new BaseColor(242, 156, 33);
+        Color tableTitleFontColor = new Color(132, 140, 99);
+        Color widgetBorderColor = new Color(204, 204, 204);
+        Color widgetTitleColor = Color.WHITE;
+        Color tableHeaderFontColor = new Color(61, 70, 77);
+        Color tableHeaderColor = new Color(241, 241, 241);
+        Color tableFooterColor = new Color(241, 241, 241);
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+        List<Map<String, Object>> data = tabWidget.getData();
+        List<String> groupFields = (List< String>) groupedData.get("_groupFields");
+        Integer noOfColumns = countColumns(columns); //.size();
+        if (groupFields != null && groupFields.size() > 0) {
+            noOfColumns++;
+        }
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null) {
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+//            if (column.getGroupPriority() != null) {
+//                groupByFields.add(column.getFieldName());
+//            }
+        }
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+
+        XSLFTable tbl = slide.createTable();
+        tbl.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+        XSLFTableRow titleRow = tbl.addRow();
+
+        XSLFTableCell titleCell = titleRow.addCell();
+        XSLFTextParagraph p = titleCell.addNewTextParagraph();
+        p.setTextAlign(TextParagraph.TextAlign.LEFT);
+        XSLFTextRun r = p.addNewTextRun();
+        r.setText(tabWidget.getWidgetTitle());
+        r.setBold(true);
+        r.setFontSize(13.0);
+        r.setFontColor(tableTitleFontColor);
+        titleCell.setFillColor(widgetTitleColor);
+        titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+        titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+        titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+        titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+        XSLFTableRow headerRow = tbl.addRow();
+        if (groupFields != null && groupFields.size() > 0) {
+            XSLFTableCell headerCell = headerRow.addCell();
+            XSLFTextParagraph ph = headerCell.addNewTextParagraph();
+            ph.setTextAlign(TextParagraph.TextAlign.CENTER);
+            XSLFTextRun rh = ph.addNewTextRun();
+            rh.setText("Group");
+            rh.setBold(true);
+            rh.setFontSize(12.0);
+            rh.setFontColor(tableHeaderFontColor);
+            headerCell.setFillColor(tableHeaderColor);
+            headerCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+            headerCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+            headerCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+            headerCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+        }
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getColumnHide() == null || column.getColumnHide() == 0) {
+
+                XSLFTableCell headerCell = headerRow.addCell();
+                if (column.getAlignment() != null) {
+                    if (column.getAlignment().equalsIgnoreCase("right")) {
+                        headerCell.setLeftInset(5);
+                    } else if (column.getAlignment().equalsIgnoreCase("left")) {
+                        headerCell.setRightInset(5);
+                    } else if (column.getAlignment().equalsIgnoreCase("center")) {
+                        headerCell.setHorizontalCentered(Boolean.TRUE);
+                    }
+                    //headerCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                }
+                XSLFTextParagraph ph = headerCell.addNewTextParagraph();
+                ph.setTextAlign(TextParagraph.TextAlign.CENTER);
+                XSLFTextRun rh = ph.addNewTextRun();
+                rh.setText(column.getDisplayName());
+                rh.setBold(true);
+                rh.setFontSize(12.0);
+                rh.setFontColor(tableHeaderFontColor);
+                headerCell.setFillColor(tableHeaderColor);
+                headerCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                headerCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                headerCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                headerCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+            }
+        }
+        if (groupFields == null || groupFields.isEmpty()) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                XSLFTableRow dataRow = tbl.addRow();
+                for (Iterator<WidgetColumn> iterator1 = columns.iterator(); iterator1.hasNext();) {
+                    WidgetColumn column = iterator1.next();
+                    String value = dataMap.get(column.getFieldName()) + "";
+                    if (column.getDisplayFormat() != null) {
+                        value = Formatter.format(column.getDisplayFormat(), value);
+                        System.out.println("data value: " + value);
+                    }
+
+                    XSLFTableCell dataCell = dataRow.addCell();
+                    if (column.getAlignment() != null) {
+                        if (column.getAlignment().equalsIgnoreCase("right")) {
+                            dataCell.setLeftInset(5);
+                        } else if (column.getAlignment().equalsIgnoreCase("left")) {
+                            dataCell.setRightInset(5);
+                        } else if (column.getAlignment().equalsIgnoreCase("center")) {
+                            dataCell.setHorizontalCentered(Boolean.TRUE);
+                        }
+                        //dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                    }
+
+                    XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                    pd.setTextAlign(TextParagraph.TextAlign.LEFT);
+                    XSLFTextRun rd = pd.addNewTextRun();
+                    rd.setText(value);
+                    rd.setBold(false);
+                    rd.setFontSize(10.0);
+                    rd.setFontColor(tableHeaderFontColor);
+                    dataCell.setFillColor(widgetTitleColor);
+                    dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                }
+            }
+        } else {
+            generateGroupedRows(groupedData, tabWidget, tbl);
+        }
+        if (tabWidget.getTableFooter() != null && tabWidget.getTableFooter()) {
+            XSLFTableRow footerRow = tbl.addRow();
+            Boolean totalDisplayed = false;
+            if (groupFields != null && groupFields.size() > 0) {
+                XSLFTableCell dataCell = footerRow.addCell();
+                XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                pd.setTextAlign(TextParagraph.TextAlign.CENTER);
+                XSLFTextRun rd = pd.addNewTextRun();
+                rd.setText("Total");
+                rd.setBold(true);
+                rd.setFontSize(12.0);
+                rd.setFontColor(tableHeaderFontColor);
+                dataCell.setFillColor(tableFooterColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                totalDisplayed = true;
+            }
+            for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+                WidgetColumn column = iterator.next();
+                if (column.getColumnHide() == null || column.getColumnHide() == 0) {
+                    if (totalDisplayed == false) {
+                        XSLFTableCell dataCell = footerRow.addCell();
+                        XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                        pd.setTextAlign(TextParagraph.TextAlign.CENTER);
+                        XSLFTextRun rd = pd.addNewTextRun();
+                        rd.setText("Total");
+                        rd.setBold(true);
+                        rd.setFontSize(12.0);
+                        rd.setFontColor(tableHeaderFontColor);
+                        dataCell.setFillColor(tableFooterColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                        totalDisplayed = true;
+                    } else {
+                        String value = (String) groupedData.get(column.getFieldName());
+                        if (column.getDisplayFormat() != null) {
+                            value = Formatter.format(column.getDisplayFormat(), value);
+                            System.out.println("Value: " + value);
+                        }
+                        XSLFTableCell dataCell = footerRow.addCell();
+                        if (column.getAlignment() != null) {
+                            if (column.getAlignment().equalsIgnoreCase("right")) {
+                                dataCell.setLeftInset(5);
+                            } else if (column.getAlignment().equalsIgnoreCase("left")) {
+                                dataCell.setRightInset(5);
+                            } else if (column.getAlignment().equalsIgnoreCase("center")) {
+                                dataCell.setHorizontalCentered(Boolean.TRUE);
+                            }
+                            //dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                        }
+
+                        XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                        pd.setTextAlign(TextParagraph.TextAlign.CENTER);
+                        XSLFTextRun rd = pd.addNewTextRun();
+                        rd.setText(value);
+                        rd.setBold(true);
+                        rd.setFontSize(12.0);
+                        rd.setFontColor(tableHeaderFontColor);
+                        dataCell.setFillColor(tableFooterColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                    }
+                }
+            }
+        }
+        return tbl;
+    }
+
+    public XSLFSlide generateTextPptTable(TabWidget tabWidget, XSLFSlide slide) {
+        Color tableTitleFontColor = new Color(132, 140, 99);
+        Color widgetBorderColor = new Color(204, 204, 204);
+        Color widgetTitleColor = Color.WHITE;
+        Color tableHeaderFontColor = new Color(61, 70, 77);
+        Color tableHeaderColor = new Color(241, 241, 241);
+        Color tableFooterColor = new Color(241, 241, 241);
+
+//        XSLFTable tbl = slide.createTable();
+//        tbl.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+//        XSLFTableRow titleRow = tbl.addRow();
+//        XSLFTableCell titleCell = titleRow.addCell();
+//        XSLFTextParagraph p = titleCell.addNewTextParagraph();
+//        p.setTextAlign(TextParagraph.TextAlign.LEFT);
+//        XSLFTextRun r = p.addNewTextRun();
+//        r.setText(tabWidget.getWidgetTitle());
+//        r.setBold(true);
+//        r.setFontSize(13.0);
+//        r.setFontColor(tableTitleFontColor);
+//        titleCell.setFillColor(widgetTitleColor);
+//        titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+//        titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+//        titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+//        titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+//        XSLFTableRow dataRow = tbl.addRow();
+//        XSLFTableCell dataCell = dataRow.addCell();
+//        XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+//        pd.setTextAlign(TextParagraph.TextAlign.LEFT);
+//        XSLFTextRun rd = pd.addNewTextRun();
+        if (tabWidget.getContent() != null) {
+            System.out.println(tabWidget.getContent());
+
+            String html = tabWidget.getContent();
+//                FileInputStream fis = null;
+//                BufferedInputStream bis = null;
+//                DataInputStream dis = null;
+//                fis = new FileInputStream(html);
+//                bis = new BufferedInputStream(fis);
+//                dis = new DataInputStream(bis);
+//                String st = "";
+//                while (dis.available() != 0) {
+//                    st += dis.toString();
+//                }
+            XSLFTextBox text = slide.createTextBox();
+            text.setText(html);
+            slide.addShape(text);
+        }
+//        else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
+//            rd.setText("");
+//        }
+//        rd.setBold(false);
+//        rd.setFontSize(12.0);
+//        rd.setFontColor(tableHeaderFontColor);
+//        //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+//        dataCell.setFillColor(widgetTitleColor);
+//        //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+//        dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+//        dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+//        dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+//        dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+        return slide;
+    }
+
+    public XSLFTable dynamicPptTable(TabWidget tabWidget, XSLFSlide slide) {
+//        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+        List<Map<String, Object>> originalData = tabWidget.getData();
+        List<Map<String, Object>> data = new ArrayList<>(originalData);
+        // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
+        List<Map<String, Object>> tempData = new ArrayList<>();
+
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****5 " + data.size());
+        if (tabWidget.getZeroSuppression() != null && tabWidget.getZeroSuppression()) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                if (!isZeroRow(dataMap, columns)) {
+                    tempData.add(dataMap);
+                }
+            }
+            // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****4 " + tempData.size());
+
+            data = tempData;
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****3 " + data.size());
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+        List<String> groupByFields = new ArrayList<>();
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null) {
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+            if (column.getGroupPriority() != null) {
+                groupByFields.add(column.getFieldName());
+            }
+        }
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+        Map groupedMapData = new HashMap();
+        List<String> originalGroupByFields = new ArrayList<>(groupByFields);
+        if (groupByFields.size() > 0) {
+            List groupedData = groupData(data, groupByFields, aggreagtionList);
+
+            groupedMapData.putAll(aggregateData(data, aggreagtionList));
+            groupedMapData.put("_groupFields", originalGroupByFields);
+            groupedMapData.put("data", groupedData);
+        } else {
+            groupedMapData.putAll(aggregateData(data, aggreagtionList));
+            groupedMapData.put("data", data);
+        }
+        return generateTableForPpt(groupedMapData, tabWidget, slide);
+    }
+
     private Integer countColumns(List<WidgetColumn> columns) {
         Integer count = 0;
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
@@ -481,6 +945,32 @@ public class CustomReportDesigner {
         if (groupFields != null && groupFields.size() > 0) {
             noOfColumns++;
         }
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+        List<String> groupByFields = new ArrayList<>();
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null) {
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+//            if (column.getGroupPriority() != null) {
+//                groupByFields.add(column.getFieldName());
+//            }
+        }
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+
         PdfPTable table = new PdfPTable(noOfColumns);
         PdfPCell cell;
         pdfFontTitle.setSize(14);
@@ -736,6 +1226,322 @@ public class CustomReportDesigner {
         }
     }
 
+    public void dynamicPptTable(List<TabWidget> tabWidgets, OutputStream out) throws IOException {
+
+        //creating a presentation
+        XMLSlideShow ppt = new XMLSlideShow();
+
+        //Color
+        Color tableTitleFontColor = new Color(132, 140, 99);
+        Color widgetBorderColor = new Color(204, 204, 204);
+        Color widgetTitleColor = Color.WHITE;
+        Color tableHeaderFontColor = new Color(61, 70, 77);
+        Color tableHeaderColor = new Color(241, 241, 241);
+        Color tableFooterColor = new Color(241, 241, 241);
+
+        try {
+            //creating a slide in it
+            for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
+                TabWidget tabWidget = iterator.next();
+                if (tabWidget.getChartType().equalsIgnoreCase("table")) {
+                    System.out.println("Table");
+                    XSLFSlide slide = ppt.createSlide();
+                    XSLFTable tbl = dynamicPptTable(tabWidget, slide);
+                } else if (tabWidget.getChartType().equalsIgnoreCase("text")) {
+
+                    XSLFSlide slide = ppt.createSlide();
+                    slide = generateTextPptTable(tabWidget, slide);
+                } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
+                    System.out.println("Pie");
+                    XSLFSlide slide = ppt.createSlide();
+
+                    JFreeChart pieChart = generatePieJFreeChart(tabWidget);
+                    float quality = 1;
+
+                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, 640, 480);
+                    XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
+                    chart_out.close();
+
+                    XSLFTable table = slide.createTable();
+                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+                    XSLFTableRow titleRow = table.addRow();
+
+                    XSLFTableCell titleCell = titleRow.addCell();
+                    //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
+                    //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
+                    XSLFTextParagraph p = titleCell.addNewTextParagraph();
+                    p.setTextAlign(TextParagraph.TextAlign.LEFT);
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setText(tabWidget.getWidgetTitle());
+                    r.setBold(true);
+                    r.setFontSize(13.0);
+                    r.setFontColor(tableTitleFontColor);
+                    //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                    titleCell.setFillColor(widgetTitleColor);
+                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                    titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+
+                    table.setColumnWidth(0, 600);
+
+                    XSLFTableRow chartRow = table.addRow();
+                    chartRow.setHeight(400);
+
+                    XSLFTableCell chartCell = chartRow.addCell();
+
+                    //chartCell.setFillColor(widgetTitleColor);
+                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                    chartCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+
+                    CTBlipFillProperties blipPr = ((CTTableCell) chartCell.getXmlObject()).getTcPr().addNewBlipFill();
+                    blipPr.setDpi(72);
+                    // http://officeopenxml.com/drwPic-ImageData.php
+                    CTBlip blib = blipPr.addNewBlip();
+                    blipPr.addNewSrcRect();
+                    CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
+                    fillRect.setL(30000);
+                    fillRect.setR(30000);
+
+                    RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
+                    blib.setEmbed(rp.getRelationship().getId());
+
+                } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
+                    System.out.println("Bar");
+                    XSLFSlide slide = ppt.createSlide();
+                    JFreeChart barChart = multiAxisBarJFreeChart(tabWidget);
+                    float quality = 1;
+
+                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out, quality, barChart, 640, 480);
+                    XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), PictureData.PictureType.PNG);
+                    chart_out.close();
+
+                    //creating a slide with given picture on it
+                    //XSLFPictureShape pic = slide.createPicture(idx);
+                    XSLFTable table = slide.createTable();
+                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+
+                    XSLFTableRow titleRow = table.addRow();
+                    XSLFTableCell titleCell = titleRow.addCell();
+                    //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
+                    //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
+                    XSLFTextParagraph p = titleCell.addNewTextParagraph();
+                    p.setTextAlign(TextParagraph.TextAlign.LEFT);
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setText(tabWidget.getWidgetTitle());
+                    r.setBold(true);
+                    r.setFontSize(13.0);
+                    r.setFontColor(tableTitleFontColor);
+                    //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                    titleCell.setFillColor(widgetTitleColor);
+                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                    titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                    table.setColumnWidth(0, 600);
+
+                    XSLFTableRow chartRow = table.addRow();
+                    chartRow.setHeight(400);
+
+                    XSLFTableCell chartCell = chartRow.addCell();
+
+                    //chartCell.setFillColor(widgetTitleColor);
+                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                    chartCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+
+                    CTBlipFillProperties blipPr = ((CTTableCell) chartCell.getXmlObject()).getTcPr().addNewBlipFill();
+                    blipPr.setDpi(72);
+                    // http://officeopenxml.com/drwPic-ImageData.php
+                    CTBlip blib = blipPr.addNewBlip();
+                    blipPr.addNewSrcRect();
+                    CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
+                    fillRect.setL(30000);
+                    fillRect.setR(30000);
+
+                    RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
+                    blib.setEmbed(rp.getRelationship().getId());
+                } else if (tabWidget.getChartType().equalsIgnoreCase("line")) {
+                    System.out.println("Line");
+                    XSLFSlide slide = ppt.createSlide();
+                    JFreeChart lineChart = multiAxisLineJFreeChart(tabWidget);
+                    float quality = 1;
+                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out, quality, lineChart, 640, 480);
+                    org.apache.poi.sl.usermodel.PictureData.PictureType test;
+                    XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
+                    chart_out.close();
+
+                    //creating a slide with given picture on it
+                    //XSLFPictureShape pic = slide.createPicture(idx);
+                    XSLFTable table = slide.createTable();
+                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+
+                    XSLFTableRow titleRow = table.addRow();
+                    XSLFTableCell titleCell = titleRow.addCell();
+                    //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
+                    //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
+                    XSLFTextParagraph p = titleCell.addNewTextParagraph();
+                    p.setTextAlign(TextParagraph.TextAlign.LEFT);
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setText(tabWidget.getWidgetTitle());
+                    r.setBold(true);
+                    r.setFontSize(13.0);
+                    r.setFontColor(tableTitleFontColor);
+                    //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                    titleCell.setFillColor(widgetTitleColor);
+                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                    titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+
+                    table.setColumnWidth(0, 600);
+
+                    XSLFTableRow chartRow = table.addRow();
+                    chartRow.setHeight(400);
+
+                    XSLFTableCell chartCell = chartRow.addCell();
+
+                    //chartCell.setFillColor(widgetTitleColor);
+                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                    chartCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                    chartCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+
+                    CTBlipFillProperties blipPr = ((CTTableCell) chartCell.getXmlObject()).getTcPr().addNewBlipFill();
+                    blipPr.setDpi(72);
+                    // http://officeopenxml.com/drwPic-ImageData.php
+                    CTBlip blib = blipPr.addNewBlip();
+                    blipPr.addNewSrcRect();
+                    CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
+                    fillRect.setL(30000);
+                    fillRect.setR(30000);
+
+                    RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
+                    blib.setEmbed(rp.getRelationship().getId());
+                }
+            }
+            // out = new FileOutputStream("/home/deldot/Pictures/ppt/ppttable.pptx");
+            ppt.write(out);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BadElementException ex) {
+            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            out.close();
+            ppt.close();
+        }
+    }
+
+    public void dynamicXlsDownload(List<TabWidget> tabWidgets, OutputStream out, FileOutputStream out1) {
+
+        try {
+            JFreeChart pieChart = null;
+            JFreeChart lineChart = null;
+            JFreeChart barChart = null;
+
+            String sheetName = "Sheet1";//name of sheet
+
+            XSSFWorkbook wb = new XSSFWorkbook();
+            XSSFSheet sheet = wb.createSheet(sheetName);
+
+            /* Specify the height and width of the Pie Chart */
+            int width = 640;
+            /* Width of the chart */
+
+            int height = 480;
+            /* Height of the chart */
+
+            float quality = 1;
+
+            XSSFDrawing drawing = sheet.createDrawingPatriarch();
+            for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
+                TabWidget tabWidget = iterator.next();
+                if (tabWidget.getChartType().equalsIgnoreCase("table")) {
+
+                } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
+
+                    pieChart = generatePieJFreeChart(tabWidget);
+                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, width, height);
+                    int my_picture_id = wb.addPicture(chart_out.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    chart_out.close();
+                    ClientAnchor my_anchor = new XSSFClientAnchor();
+                    my_anchor.setCol1(4);
+                    my_anchor.setRow1(5);
+                    XSSFPicture my_picture = drawing.createPicture(my_anchor, my_picture_id);
+                    my_picture.resize();
+                } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
+                    barChart = multiAxisBarJFreeChart(tabWidget);
+                    ByteArrayOutputStream chart_out1 = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out1, quality, barChart, width, height);
+                    int my_picture_id1 = wb.addPicture(chart_out1.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    chart_out1.close();
+                    ClientAnchor my_anchor1 = new XSSFClientAnchor();
+                    my_anchor1.setCol1(10);
+                    my_anchor1.setRow1(50);
+                    XSSFPicture my_picture1 = drawing.createPicture(my_anchor1, my_picture_id1);
+                    my_picture1.resize();
+
+                } else if (tabWidget.getChartType().equalsIgnoreCase("line")) {
+
+                    lineChart = multiAxisLineJFreeChart(tabWidget);
+                    ByteArrayOutputStream chart_out2 = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out2, quality, lineChart, width, height);
+                    int my_picture_id2 = wb.addPicture(chart_out2.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    chart_out2.close();
+                    ClientAnchor my_anchor2 = new XSSFClientAnchor();
+                    my_anchor2.setCol1(10);
+                    my_anchor2.setRow1(100);
+                    XSSFPicture my_picture2 = drawing.createPicture(my_anchor2, my_picture_id2);
+                    my_picture2.resize();
+                }
+            }
+
+            wb.write(out);
+            wb.write(out1);
+            out.flush();
+            out.close();
+            out1.flush();
+            out1.close();
+        } catch (IOException ex) {
+            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BadElementException ex) {
+            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public JFreeChart getSampleJFreeChart() {
+        System.out.println("JfreeChart");
+        DefaultCategoryDataset line_chart_dataset = new DefaultCategoryDataset();
+        line_chart_dataset.addValue(15, "schools", "1970");
+        line_chart_dataset.addValue(30, "schools", "1980");
+        line_chart_dataset.addValue(60, "schools", "1990");
+        line_chart_dataset.addValue(120, "schools", "2000");
+        line_chart_dataset.addValue(240, "schools", "2010");
+        line_chart_dataset.addValue(300, "schools", "2014");
+
+        JFreeChart lineChartObject = ChartFactory.createLineChart(
+                "Schools Vs Years", "Year",
+                "Schools Count",
+                line_chart_dataset, PlotOrientation.VERTICAL,
+                true, true, false);
+        return lineChartObject;
+    }
+
     public void dynamicPdfTable(List<TabWidget> tabWidgets, OutputStream out) {
         try {
             PdfWriter writer = null;
@@ -759,6 +1565,9 @@ public class CustomReportDesigner {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
                     PdfPTable pdfTable = dynamicPdfTable(tabWidget);
+                    document.add(pdfTable);
+                } else if (tabWidget.getChartType().equalsIgnoreCase("text")) {
+                    PdfPTable pdfTable = generateTextPdfTable(tabWidget);
                     document.add(pdfTable);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
 
@@ -972,20 +1781,22 @@ public class CustomReportDesigner {
 
                     final LegendItemCollection result = new LegendItemCollection();
 
-                    final CategoryDataset data = getDataset();
-                    if (data != null) {
-                        final CategoryItemRenderer r = getRenderer();
-                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                        r.setBaseItemLabelsVisible(true);
-                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.BASELINE_LEFT);
-                        r.setBasePositiveItemLabelPosition(position);
-                        if (r != null) {
-                            final LegendItem item = r.getLegendItem(0, 0);
-                            result.add(item);
+                    if (firstAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset data = getDataset();
+                        if (data != null) {
+                            final CategoryItemRenderer r = getRenderer();
+                            r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            r.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_LEFT);
+                            r.setBasePositiveItemLabelPosition(position);
+                            if (r != null) {
+                                final LegendItem item = r.getLegendItem(0, 0);
+                                result.add(item);
+                            }
                         }
                     }
-
                     // the JDK 1.2.2 compiler complained about the name of this
                     // variable 
                     if (secondAxis.isEmpty()) {
@@ -1116,18 +1927,20 @@ public class CustomReportDesigner {
             public LegendItemCollection getLegendItems() {
 
                 final LegendItemCollection result = new LegendItemCollection();
-
-                final CategoryDataset data = getDataset();
-                if (data != null) {
-                    final CategoryItemRenderer r = getRenderer();
-                    r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                    r.setBaseItemLabelsVisible(true);
-                    ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                            TextAnchor.BASELINE_LEFT);
-                    r.setBasePositiveItemLabelPosition(position);
-                    if (r != null) {
-                        final LegendItem item = r.getLegendItem(0, 0);
-                        result.add(item);
+                if (firstAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset data = getDataset();
+                    if (data != null) {
+                        final CategoryItemRenderer r = getRenderer();
+                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        r.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_LEFT);
+                        r.setBasePositiveItemLabelPosition(position);
+                        if (r != null) {
+                            final LegendItem item = r.getLegendItem(0, 0);
+                            result.add(item);
+                        }
                     }
                 }
 
@@ -1228,34 +2041,39 @@ public class CustomReportDesigner {
 
                     final LegendItemCollection result = new LegendItemCollection();
 
-                    final CategoryDataset data = getDataset();
-                    if (data != null) {
-                        final CategoryItemRenderer r = getRenderer();
-                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                        r.setBaseItemLabelsVisible(true);
-                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.BASELINE_LEFT);
-                        r.setBasePositiveItemLabelPosition(position);
+                    if (firstAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset data = getDataset();
+                        if (data != null) {
+                            final CategoryItemRenderer r = getRenderer();
+                            r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            r.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_LEFT);
+                            r.setBasePositiveItemLabelPosition(position);
 
-                        if (r != null) {
-                            final LegendItem item = r.getLegendItem(0, 0);
-                            result.add(item);
+                            if (r != null) {
+                                final LegendItem item = r.getLegendItem(0, 0);
+                                result.add(item);
+                            }
                         }
                     }
-
                     // the JDK 1.2.2 compiler complained about the name of this
                     // variable 
-                    final CategoryDataset dset2 = getDataset(1);
-                    if (dset2 != null) {
-                        final CategoryItemRenderer renderer2 = getRenderer(1);
-                        renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                        renderer2.setBaseItemLabelsVisible(true);
-                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.BASELINE_RIGHT);
-                        renderer2.setBasePositiveItemLabelPosition(position);
-                        if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(0, 0);
-                            result.add(item);
+                    if (secondAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset dset2 = getDataset(1);
+                        if (dset2 != null) {
+                            final CategoryItemRenderer renderer2 = getRenderer(1);
+                            renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            renderer2.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_RIGHT);
+                            renderer2.setBasePositiveItemLabelPosition(position);
+                            if (renderer2 != null) {
+                                final LegendItem item = renderer2.getLegendItem(0, 0);
+                                result.add(item);
+                            }
                         }
                     }
                     return result;
@@ -1389,17 +2207,20 @@ public class CustomReportDesigner {
 
                     final LegendItemCollection result = new LegendItemCollection();
 
-                    final CategoryDataset data = getDataset();
-                    if (data != null) {
-                        final CategoryItemRenderer r = getRenderer();
-                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                        r.setBaseItemLabelsVisible(true);
-                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                                TextAnchor.BASELINE_CENTER);
-                        r.setBasePositiveItemLabelPosition(position);
-                        if (r != null) {
-                            final LegendItem item = r.getLegendItem(0, 0);
-                            result.add(item);
+                    if (firstAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset data = getDataset();
+                        if (data != null) {
+                            final CategoryItemRenderer r = getRenderer();
+                            r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            r.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_CENTER);
+                            r.setBasePositiveItemLabelPosition(position);
+                            if (r != null) {
+                                final LegendItem item = r.getLegendItem(0, 0);
+                                result.add(item);
+                            }
                         }
                     }
 
@@ -1515,8 +2336,6 @@ public class CustomReportDesigner {
             data = data.subList(0, tabWidget.getMaxRecord());
         }
 
-//            final CategoryDataset dataset1 = createDataset3();
-//            final CategoryDataset dataset2 = createDataset4();
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
         final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
 
@@ -1538,18 +2357,20 @@ public class CustomReportDesigner {
             public LegendItemCollection getLegendItems() {
 
                 final LegendItemCollection result = new LegendItemCollection();
-
-                final CategoryDataset data = getDataset();
-                if (data != null) {
-                    final CategoryItemRenderer r = getRenderer();
-                    r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-                    r.setBaseItemLabelsVisible(true);
-                    ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-                            TextAnchor.BASELINE_CENTER);
-                    r.setBasePositiveItemLabelPosition(position);
-                    if (r != null) {
-                        final LegendItem item = r.getLegendItem(0, 0);
-                        result.add(item);
+                if (firstAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset data = getDataset();
+                    if (data != null) {
+                        final CategoryItemRenderer r = getRenderer();
+                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        r.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_CENTER);
+                        r.setBasePositiveItemLabelPosition(position);
+                        if (r != null) {
+                            final LegendItem item = r.getLegendItem(0, 0);
+                            result.add(item);
+                        }
                     }
                 }
 
@@ -1955,17 +2776,16 @@ public class CustomReportDesigner {
             String legend = iterator.next();
             plot.setSectionPaint(legend, paintSequence[i++]);
         }
-        PdfWriter writer = null;
-        PdfContentByte contentByte = writer.getDirectContent();
-        PdfTemplate templateBar = contentByte.createTemplate(widgetWidth, widgetHeight);
-        Graphics2D graphics2dBar = templateBar.createGraphics(widgetWidth, widgetHeight,
-                new DefaultFontMapper());
-        Rectangle2D rectangle2dBar = new Rectangle2D.Double(0, 0, widgetWidth,
-                widgetHeight);
 
-        chart.draw(graphics2dBar, rectangle2dBar);
-
-        graphics2dBar.dispose();
+//        PdfWriter contentByte = writer.getDirectContent();
+//        PdfTemplate templateBar = contentByte.createTemplate(widgetWidth, widgetHeight);
+//        Graphics2D graphics2dBar = templateBar.createGraphics(widgetWidth, widgetHeight,
+//                new DefaultFontMapper());
+//        Rectangle2D rectangle2dBar = new Rectangle2D.Double(0, 0, widgetWidth,
+//                widgetHeight);
+//
+//        chart.draw(graphics2dBar, rectangle2dBar);
+//        graphics2dBar.dispose();
         //contentByte.addTemplate(templateBar, 30, 30);
         return chart;
     }
@@ -2036,6 +2856,124 @@ public class CustomReportDesigner {
         //contentByte.addTemplate(templateBar, 30, 30);
         Image img = Image.getInstance(templateBar);
         return img;
+    }
+
+    private void generateGroupedRows(Map groupedData, TabWidget tabWidget, XSLFTable tbl) {
+
+        Color tableTitleFontColor = new Color(132, 140, 99);
+        Color widgetBorderColor = new Color(204, 204, 204);
+        Color widgetTitleColor = Color.WHITE;
+        Color tableHeaderFontColor = new Color(61, 70, 77);
+        Color tableHeaderColor = new Color(241, 241, 241);
+        Color tableFooterColor = new Color(241, 241, 241);
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+        List data = (List) groupedData.get("data");
+        for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+            Map mapData = (Map) iterator.next();
+            XSLFTableRow dataRow = tbl.addRow();
+            if (mapData.get(mapData.get("_groupField")) != null) {
+                String groupValue = mapData.get(mapData.get("_groupField")) + "";
+                //pdfFont.setColor(tableHeaderFontColor);
+                //PdfPCell dataCell = new PdfPCell(new Phrase(groupValue, pdfFont));
+                //dataCell.setBorderColor(widgetBorderColor);
+                //table.addCell(dataCell);
+                XSLFTableCell dataCell = dataRow.addCell();
+                XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                pd.setTextAlign(TextParagraph.TextAlign.LEFT);
+                XSLFTextRun rd = pd.addNewTextRun();
+                rd.setText(groupValue);
+                rd.setBold(false);
+                rd.setFontSize(10.0);
+                rd.setFontColor(tableHeaderFontColor);
+                //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                dataCell.setFillColor(widgetTitleColor);
+                //dataCell.setBorderWidth(TableCell.BorderEdge.bottom, 2.0);
+                dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                //dataCell.setText(groupValue);
+            } else {
+                //PdfPCell dataCell = new PdfPCell(new Phrase(""));
+                //dataCell.setBorderColor(widgetBorderColor);
+                //table.addCell(dataCell);
+                XSLFTableCell dataCell = dataRow.addCell();
+                XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                pd.setTextAlign(TextParagraph.TextAlign.LEFT);
+                XSLFTextRun rd = pd.addNewTextRun();
+                rd.setText("");
+                rd.setBold(false);
+                rd.setFontSize(10.0);
+                rd.setFontColor(tableHeaderFontColor);
+                //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                dataCell.setFillColor(widgetTitleColor);
+                //dataCell.setBorderWidth(TableCell.BorderEdge.bottom, 2.0);
+                dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                //dataCell.setText("");
+            }
+            for (Iterator<WidgetColumn> iterator1 = columns.iterator(); iterator1.hasNext();) {
+                WidgetColumn column = iterator1.next();
+                if (column.getColumnHide() == null || column.getColumnHide() == 0) {
+                    if (mapData.get(column.getFieldName()) != null) {
+                        String value = mapData.get(column.getFieldName()) + "";
+                        if (column.getDisplayFormat() != null) {
+                            value = Formatter.format(column.getDisplayFormat(), value);
+                        }
+                        //pdfFont.setColor(tableHeaderFontColor);
+                        //PdfPCell dataCell = new PdfPCell(new Phrase(value, pdfFont));
+                        if (column.getAlignment() != null) {
+                            //dataCell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                        }
+                        //dataCell.setBorderColor(widgetBorderColor);
+                        //table.addCell(dataCell);
+                        XSLFTableCell dataCell = dataRow.addCell();
+                        XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                        pd.setTextAlign(TextParagraph.TextAlign.LEFT);
+                        XSLFTextRun rd = pd.addNewTextRun();
+                        rd.setText(value);
+                        rd.setBold(false);
+                        rd.setFontSize(10.0);
+                        rd.setFontColor(tableHeaderFontColor);
+                        //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                        dataCell.setFillColor(widgetTitleColor);
+                        //dataCell.setBorderWidth(TableCell.BorderEdge.bottom, 2.0);
+                        dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                        //dataCell.setText(value);
+                    } else {
+//                        PdfPCell dataCell = new PdfPCell(new Phrase(""));
+//                        dataCell.setBorderColor(widgetBorderColor);
+//                        table.addCell(dataCell);
+                        XSLFTableCell dataCell = dataRow.addCell();
+                        XSLFTextParagraph pd = dataCell.addNewTextParagraph();
+                        pd.setTextAlign(TextParagraph.TextAlign.LEFT);
+                        XSLFTextRun rd = pd.addNewTextRun();
+                        rd.setText("");
+                        rd.setBold(false);
+                        rd.setFontSize(10.0);
+                        rd.setFontColor(tableHeaderFontColor);
+                        //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                        dataCell.setFillColor(widgetTitleColor);
+                        //dataCell.setBorderWidth(TableCell.BorderEdge.bottom, 2.0);
+                        dataCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                        dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                        //dataCell.setText("");
+                    }
+                }
+            }
+
+            if (mapData.get("data") != null) {
+                generateGroupedRows(mapData, tabWidget, tbl);
+            }
+        }
     }
 
     public static class CustomRenderer extends BarRenderer {

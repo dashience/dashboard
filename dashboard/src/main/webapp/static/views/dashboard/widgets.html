@@ -124,7 +124,12 @@
         <div class="btn-group">
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
         </div>
-        <a class="refresh" ng-click="downloadPdf()"><i class="fa fa-download"></i> PDF</a>
+        <div ng-if="permission.downloadReport === true;" class="btn-group">
+            <a class="refresh" ng-click="downloadPdf()"><i class="fa fa-download"></i> PDF</a>
+        </div>
+        <div ng-if="permission.downloadReport === true;" class="btn-group">
+            <a class="refresh" ng-click="downloadPpt()"><i class="fa fa-download"></i> PPT</a>
+        </div>
         <div class="btn-group dropdown" ng-if="permission.addWidget === true;">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
                 <button type="button" class="btn btn-block btn-info"><i class="fa fa-plus-circle"></i> Add Widget</button>

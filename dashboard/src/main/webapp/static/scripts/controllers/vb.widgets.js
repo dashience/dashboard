@@ -8,10 +8,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetEndDate = $stateParams.endDate;
 
     $scope.downloadPdf = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
     };
-    
+
+    $scope.downloadPpt = function () {
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
+        $window.open(url);
+    };
+
     function getWidgetItem() {      //Default Loading Items
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
@@ -29,7 +34,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             $state.go("index.editWidget", {
                 productId: $stateParams.productId,
-                accountId: $stateParams.accountId, 
+                accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 tabId: $stateParams.tabId,
                 widgetId: response.id,
@@ -49,7 +54,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
-    };    
+    };
 
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();
@@ -132,73 +137,72 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
 //                Start Table
                 '<table ng-if="ajaxLoadingCompleted" class="table table-striped" ng-hide="hideEmptyTable">' +
 //                        Start Table Header
-                    '<thead>'+
-                        '<tr>' +
-                            '<th ng-if="groupingName">' +       //Group Header Name with Icon
-                                '<i style="cursor: pointer" ng-click="groupingData.$hideRows = !groupingData.$hideRows; hideAll(groupingData, groupingData.$hideRows, true); selected_Row = !selected_Row" class="fa" ng-class="{\'fa-plus-circle\': !selected_Row, \'fa-minus-circle\': selected_Row}"></i>' +
-                                ' Group'+
-                            '</th>' +
-                            '<th ng-repeat="col in columns" ng-if="col.columnHide == null">' +      //Display Fields Header Names and Sorting Icons
-                                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}'+
-                                '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i>'+
-                                '<i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i>'+
-                                '</div>' +
-                            '</th>' +
-                        '</tr>' +
-                        '<tr>' +
-                            '<th ng-repeat="col in columns">' +     //Search Box
-                                '<div ng-if="col.search == true">' +
-                                    '<input type="text" placeholder="Search..." class="form-control" ng-model="search.col[col.fieldName]" ng-change="bindSearch(search, col)" ng-mousedown="$event.stopPropagation()">' +
-                                '<div>' +
-                            '</th>' +
-                        '</tr>' +
-                    '</thead>' +
+                '<thead>' +
+                '<tr>' +
+                '<th ng-if="groupingName">' + //Group Header Name with Icon
+                '<i style="cursor: pointer" ng-click="groupingData.$hideRows = !groupingData.$hideRows; hideAll(groupingData, groupingData.$hideRows, true); selected_Row = !selected_Row" class="fa" ng-class="{\'fa-plus-circle\': !selected_Row, \'fa-minus-circle\': selected_Row}"></i>' +
+                ' Group' +
+                '</th>' +
+                '<th ng-repeat="col in columns" ng-if="col.columnHide == null">' + //Display Fields Header Names and Sorting Icons
+                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}' +
+                '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i>' +
+                '<i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i>' +
+                '</div>' +
+                '</th>' +
+                '</tr>' +
+                '<tr>' +
+                '<th ng-repeat="col in columns">' + //Search Box
+                '<div ng-if="col.search == true">' +
+                '<input type="text" placeholder="Search..." class="form-control" ng-model="search.col[col.fieldName]" ng-change="bindSearch(search, col)" ng-mousedown="$event.stopPropagation()">' +
+                '<div>' +
+                '</th>' +
+                '</tr>' +
+                '</thead>' +
 //                          End Of Table Header
 //                          Start Table Body
-                    '<tbody ng-repeat="grouping in groupingData.data | filter : searchData">' +
-                        '<tr ng-if="!isZeroRow(grouping, columns)" ng-class-odd="\'odd\'" ng-class-even="\'even\'">' +      //First Level Grouping Name and Data
-                            '<td ng-if="groupingName">' +
-                                '<i style="cursor: pointer" class="fa" ng-click="grouping.$hideRows = !grouping.$hideRows; hideParent(grouping, grouping.$hideRows); hideChild(grouping.data, false)" ng-class="{\'fa-plus-circle\': !grouping.$hideRows, \'fa-minus-circle\': grouping.$hideRows}"></i>' +
-                                ' <span ng-bind-html="grouping._key"></span>' +
-                            '</td>' +
-                            '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
-                                '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, grouping[col.fieldName])"></span></div>' +
-                            '</td>' +
-                        '</tr>' +
-                        '<tr ng-if="!isZeroRow(item, columns)" ng-show="grouping.$hideRows" ng-repeat-start="item in grouping.data">' +     //Second Level Grouping and Data
-                            '<td class="right-group">' +
-                                '<i ng-if="item._groupField && item.data.length != 1" style="cursor: pointer" class="fa" ng-click="item.$hideRows = !item.$hideRows; hideChild(item, item.$hideRows)" ng-class="{\'fa-plus-circle\': !item.$hideRows, \'fa-minus-circle\': item.$hideRows}"></i>' +
-                                ' <span ng-bind-html="item._key"></span>'+
-                            '</td>' +
-                            '<td ng-repeat="col in columns" ng-if="col.columnHide == null">' +
-                                '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, item[col.fieldName])"></span></div>' +
-                            '</td>' +
-                        '</tr>' +
-                        '<tr ng-show="item.$hideRows" ng-if="!isZeroRow(childItem, columns) && item.data.length != 1" ng-repeat="childItem in item.data" ng-repeat-end>'+       //Third Level Grouping and Data
-                            '<td>'+'</td>' +
-                            '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
-                                '<div class="text-{{col.alignment}}">'+
-                                    '<span ng-bind-html="format(col, childItem[col.fieldName])"></span>'+
-                                '</div>' +
-                            '</td>' +
-                        '</tr>' +
-                    '</tbody>' +
+                '<tbody ng-repeat="grouping in groupingData.data | filter : searchData">' +
+                '<tr ng-if="!isZeroRow(grouping, columns)" ng-class-odd="\'odd\'" ng-class-even="\'even\'">' + //First Level Grouping Name and Data
+                '<td ng-if="groupingName">' +
+                '<i style="cursor: pointer" class="fa" ng-click="grouping.$hideRows = !grouping.$hideRows; hideParent(grouping, grouping.$hideRows); hideChild(grouping.data, false)" ng-class="{\'fa-plus-circle\': !grouping.$hideRows, \'fa-minus-circle\': grouping.$hideRows}"></i>' +
+                ' <span ng-bind-html="grouping._key"></span>' +
+                '</td>' +
+                '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
+                '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, grouping[col.fieldName])"></span></div>' +
+                '</td>' +
+                '</tr>' +
+                '<tr ng-if="!isZeroRow(item, columns)" ng-show="grouping.$hideRows" ng-repeat-start="item in grouping.data">' + //Second Level Grouping and Data
+                '<td class="right-group">' +
+                '<i ng-if="item._groupField && item.data.length != 1" style="cursor: pointer" class="fa" ng-click="item.$hideRows = !item.$hideRows; hideChild(item, item.$hideRows)" ng-class="{\'fa-plus-circle\': !item.$hideRows, \'fa-minus-circle\': item.$hideRows}"></i>' +
+                ' <span ng-bind-html="item._key"></span>' +
+                '</td>' +
+                '<td ng-repeat="col in columns" ng-if="col.columnHide == null">' +
+                '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, item[col.fieldName])"></span></div>' +
+                '</td>' +
+                '</tr>' +
+                '<tr ng-show="item.$hideRows" ng-if="!isZeroRow(childItem, columns) && item.data.length != 1" ng-repeat="childItem in item.data" ng-repeat-end>' + //Third Level Grouping and Data
+                '<td>' + '</td>' +
+                '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
+                '<div class="text-{{col.alignment}}">' +
+                '<span ng-bind-html="format(col, childItem[col.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                '</tr>' +
+                '</tbody>' +
 //                    End Of table Body
 //                    Start Of Table Footer
-                    '<tfoot ng-if="displayFooter == \'true\'">' +
-                        '<tr> {{initTotalPrint()}}' +
-                            '<td ng-if="groupingName">{{ showTotal() }}</td>' +
-                            '<td ng-repeat="col in columns" ng-if="col.columnHide == null">' +
-                                '<div ng-if="totalShown == 1" class="text-{{col.alignment}}">'+
-                                    '<span ng-bind-html="format(col, groupingData[col.fieldName])"></span>'+
-                                '</div>' +
-                                '<div ng-if="totalShown != 1" class="text-{{col.alignment}}">{{showTotal()}}</div>' +
-                            '</td>' +
-                        '</tr>' +
-                    '</tfoot>' +
+                '<tfoot ng-if="displayFooter == \'true\'">' +
+                '<tr> {{initTotalPrint()}}' +
+                '<td ng-if="groupingName">{{ showTotal() }}</td>' +
+                '<td ng-repeat="col in columns" ng-if="col.columnHide == null">' +
+                '<div ng-if="totalShown == 1" class="text-{{col.alignment}}">' +
+                '<span ng-bind-html="format(col, groupingData[col.fieldName])"></span>' +
+                '</div>' +
+                '<div ng-if="totalShown != 1" class="text-{{col.alignment}}">{{showTotal()}}</div>' +
+                '</td>' +
+                '</tr>' +
+                '</tfoot>' +
 //                    End Of table Footer
-                '</table>' + 
-                
+                '</table>' +
                 '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         link: function (scope, element, attr) {
             scope.bindSearch = function (search) {
@@ -1047,7 +1051,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                 $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + lineChartDataSource.dataSourceId.userName + '&password=' + lineChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
 //                $http.get("admin/proxy/getJson?url=" + scope.lineChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                     scope.loadingLine = false;
-                    if(!response.data){
+                    if (!response.data) {
                         return;
                     }
                     if (response.data.length === 0) {

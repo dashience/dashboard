@@ -156,7 +156,6 @@ public class Agency implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.Agency[ id=" + id + " ]";
     }
-    
 
     @XmlTransient
     @JsonIgnore
@@ -167,7 +166,6 @@ public class Agency implements Serializable {
     public void setAgencyLicenceCollection(Collection<AgencyLicence> agencyLicenceCollection) {
         this.agencyLicenceCollection = agencyLicenceCollection;
     }
-
 
     @XmlTransient
     @JsonIgnore
@@ -188,7 +186,7 @@ public class Agency implements Serializable {
     public void setAgencyUserCollection(Collection<AgencyUser> agencyUserCollection) {
         this.agencyUserCollection = agencyUserCollection;
     }
-    
+
     @XmlTransient
     @JsonIgnore
     public Collection<Account> getAccountCollection() {
@@ -209,7 +207,7 @@ public class Agency implements Serializable {
     public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
         this.agencyProductCollection = agencyProductCollection;
     }
-  
+
     @XmlTransient
     @JsonIgnore
     public Collection<DataSet> getDataSetCollection() {

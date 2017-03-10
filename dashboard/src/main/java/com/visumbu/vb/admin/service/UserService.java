@@ -286,4 +286,8 @@ public class UserService {
         return userDao.getAgencyProductById(agencyProductId);
     }
 
+    public String productUpdateOrder(Integer agencyProductId, String productOrder) {
+        return userDao.productUpdateOrder(agencyProductId, productOrder);
+    }
+
 }

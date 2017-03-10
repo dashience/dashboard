@@ -16,21 +16,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $stateParams.tabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
         $scope.loadTab = false;
         $scope.tabs = response;
-        console.log($scope.tabs)
-        console.log($stateParams.tabId)
         angular.forEach($scope.tabs, function (value, key) {
             $scope.dashboardName = value.agencyProductId.productName;
-            console.log($scope.dashboardName)
-//            $http.get('admin/user/agencyProduct/' + $stateParams.accountId).success(function (response) {
-//                console.log(response);
-//            });
-        })
+        });
         $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     });
-//    
-//    $timeout(function () {
-//        
-//    }, 2000);
 
 
     $scope.toDate = function (strDate) {

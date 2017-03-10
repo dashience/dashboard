@@ -2,6 +2,21 @@
     #editor {
         height: 300px;
     }   
+    .as-sortable-item, .as-sortable-placeholder {
+        /*display: table-row !important;*/
+    }
+    *.unselectable {
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+
+        /*
+          Introduced in IE 10.
+          See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+        */
+        -ms-user-select: none;
+        user-select: none;
+    }
     .table-fixed thead {
         width: 100%;
         border-bottom: none;
@@ -425,17 +440,17 @@
                                                             </th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody style="height:420px">
-                                                        <tr ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
-                                                            <td class="col-xs-4">
+                                                    <tbody data-as-sortable="changeOrder(agencyProducts)" data-ng-model="agencyProducts" ng-submit="changeOrder(agencyProducts)" unselectable="on" class="unselectable" style="height:420px">
+                                                        <tr ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)" data-as-sortable-item>
+                                                            <td data-as-sortable-item-handle class="col-xs-4">
                                                                 <div class="image-upload">
                                                                     <label for="file-input">
                                                                         <img class="agencyImg-size img-responsive img-thumbnail" ng-src="{{agencyProduct.icon}}"/>
                                                                     </label>
                                                                 </div>
                                                             </td>
-                                                            <td class="col-xs-6">{{agencyProduct.productName}}</td>
-                                                            <td class="col-xs-2"></td>
+                                                            <td data-as-sortable-item-handle class="col-xs-6">{{agencyProduct.productName}}</td>
+                                                            <td data-as-sortable-item-handle class="col-xs-2"></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>                                                

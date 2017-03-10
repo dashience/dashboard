@@ -535,6 +535,14 @@ public class UserController extends BaseController {
     List getAgencyProductById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
         return userService.getAgencyProductById(agencyProductId);
     }
+    
+    @RequestMapping(value = "productUpdateOrder/{agencyProductId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object updateWidgetUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
+        String productOrder = request.getParameter("productOrder");
+        userService.productUpdateOrder(agencyProductId, productOrder);
+        return null;
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

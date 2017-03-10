@@ -73,6 +73,8 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agencies.splice(index, 1);
         });
     };
+
+    $scope.agencyProducts = [];
     function getAgencyLicence(agency) {
         $http.get('admin/user/agencyLicence/' + agency.id).success(function (response) {
             $scope.agencyLicence = {}
@@ -182,6 +184,21 @@ app.controller('AgencyController', function ($scope, $http) {
     $scope.clearAgencyProduct = function () {
         $scope.showAgencyProductForm = false;
         $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+    };
+    $scope.changeOrder = function (s) {
+        var agencyProductId = $scope.agencyLicenceId;
+//        console.log(s)
+//if()
+        var order = s.map(function (value, key) {
+            if (value) {
+                return value.id;
+            }
+        }).join(',');
+        console.log(order)
+        
+//        if (order) {
+//            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
+//        }
     };
 });
 app.directive("datePicker", function () {
