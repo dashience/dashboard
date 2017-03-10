@@ -77,6 +77,7 @@ import org.apache.poi.xslf.usermodel.XSLFTableRow;
 import org.apache.poi.xslf.usermodel.XSLFTextBox;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextRun;
+import org.apache.poi.xslf.usermodel.XSLFTextShape;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
@@ -618,7 +619,7 @@ public class CustomReportDesigner {
         }
 
         XSLFTable tbl = slide.createTable();
-        tbl.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+        tbl.setAnchor(new java.awt.Rectangle(30, 30, 500, 480));
         XSLFTableRow titleRow = tbl.addRow();
 
         XSLFTableCell titleCell = titleRow.addCell();
@@ -634,6 +635,10 @@ public class CustomReportDesigner {
         titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
         titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
         titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+        titleCell.removeBorder(TableCell.BorderEdge.left);
+        titleCell.removeBorder(TableCell.BorderEdge.right);
+        titleCell.removeBorder(TableCell.BorderEdge.top);
+        
         XSLFTableRow headerRow = tbl.addRow();
         if (groupFields != null && groupFields.size() > 0) {
             XSLFTableCell headerCell = headerRow.addCell();
@@ -677,8 +682,12 @@ public class CustomReportDesigner {
                 headerCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
                 headerCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
                 headerCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
-            }
+            }            
         }
+        int col = tbl.getNumberOfColumns();
+        int row = tbl.getNumberOfRows();
+        System.out.println("col: "+col+" "+"row: "+row);
+        
         if (groupFields == null || groupFields.isEmpty()) {
             for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -835,7 +844,7 @@ public class CustomReportDesigner {
 //                String st = "";
 //                while (dis.available() != 0) {
 //                    st += dis.toString();
-//                }
+//                } 
             XSLFTextBox text = slide.createTextBox();
             text.setText(html);
             slide.addShape(text);
@@ -1241,8 +1250,9 @@ public class CustomReportDesigner {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
                     System.out.println("Table");
+
                     XSLFSlide slide = ppt.createSlide();
-                    XSLFTable tbl = dynamicPptTable(tabWidget, slide);
+                    XSLFTable table = dynamicPptTable(tabWidget, slide);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("text")) {
 
                     XSLFSlide slide = ppt.createSlide();
@@ -1252,85 +1262,85 @@ public class CustomReportDesigner {
                     XSLFSlide slide = ppt.createSlide();
 
                     JFreeChart pieChart = generatePieJFreeChart(tabWidget);
-                    if(pieChart == null){
-                    XSLFTable table = slide.createTable();
-                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
-                    XSLFTableRow titleRow = table.addRow();
+                    if (pieChart == null) {
+                        XSLFTable table = slide.createTable();
+                        table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+                        XSLFTableRow titleRow = table.addRow();
 
-                    XSLFTableCell titleCell = titleRow.addCell();
-                    //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
-                    //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
-                    XSLFTextParagraph p = titleCell.addNewTextParagraph();
-                    p.setTextAlign(TextParagraph.TextAlign.LEFT);
-                    XSLFTextRun r = p.addNewTextRun();
-                    r.setText(tabWidget.getWidgetTitle());
-                    r.setBold(true);
-                    r.setFontSize(13.0);
-                    r.setFontColor(tableTitleFontColor);
-                    //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
-                    titleCell.setFillColor(widgetTitleColor);
-                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
-                    titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
-                    titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
-                    titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
-                    titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                        XSLFTableCell titleCell = titleRow.addCell();
+                        //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
+                        //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
+                        XSLFTextParagraph p = titleCell.addNewTextParagraph();
+                        p.setTextAlign(TextParagraph.TextAlign.LEFT);
+                        XSLFTextRun r = p.addNewTextRun();
+                        r.setText(tabWidget.getWidgetTitle());
+                        r.setBold(true);
+                        r.setFontSize(13.0);
+                        r.setFontColor(tableTitleFontColor);
+                        //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                        titleCell.setFillColor(widgetTitleColor);
+                        //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                        titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                        titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                        titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                        titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
 
-                    table.setColumnWidth(0, 600);
+                        table.setColumnWidth(0, 600);
                     } else {
-                    float quality = 1;
+                        float quality = 1;
 
-                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
-                    ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, 640, 480);
-                    XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
-                    chart_out.close();
+                        ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                        ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, 640, 480);
+                        XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
+                        chart_out.close();
 
-                    XSLFTable table = slide.createTable();
-                    table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
-                    XSLFTableRow titleRow = table.addRow();
+                        XSLFTable table = slide.createTable();
+                        table.setAnchor(new java.awt.Rectangle(30, 30, 680, 480));
+                        XSLFTableRow titleRow = table.addRow();
 
-                    XSLFTableCell titleCell = titleRow.addCell();
-                    //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
-                    //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
-                    XSLFTextParagraph p = titleCell.addNewTextParagraph();
-                    p.setTextAlign(TextParagraph.TextAlign.LEFT);
-                    XSLFTextRun r = p.addNewTextRun();
-                    r.setText(tabWidget.getWidgetTitle());
-                    r.setBold(true);
-                    r.setFontSize(13.0);
-                    r.setFontColor(tableTitleFontColor);
-                    //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
-                    titleCell.setFillColor(widgetTitleColor);
-                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
-                    titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
-                    titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
-                    titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
-                    titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                        XSLFTableCell titleCell = titleRow.addCell();
+                        //        titleCell.setLineHeadWidth(LineDecoration.DecorationSize.LARGE);
+                        //        titleCell.setLineHeadLength(LineDecoration.DecorationSize.LARGE);
+                        XSLFTextParagraph p = titleCell.addNewTextParagraph();
+                        p.setTextAlign(TextParagraph.TextAlign.LEFT);
+                        XSLFTextRun r = p.addNewTextRun();
+                        r.setText(tabWidget.getWidgetTitle());
+                        r.setBold(true);
+                        r.setFontSize(13.0);
+                        r.setFontColor(tableTitleFontColor);
+                        //titlecell.setLineTailWidth(LineDecoration.DecorationSize.SMALL);
+                        titleCell.setFillColor(widgetTitleColor);
+                        //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                        titleCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                        titleCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                        titleCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                        titleCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
 
-                    table.setColumnWidth(0, 600);
+                        table.setColumnWidth(0, 600);
 
-                    XSLFTableRow chartRow = table.addRow();
-                    chartRow.setHeight(400);
+                        XSLFTableRow chartRow = table.addRow();
+                        chartRow.setHeight(400);
 
-                    XSLFTableCell chartCell = chartRow.addCell();
+                        XSLFTableCell chartCell = chartRow.addCell();
 
-                    //chartCell.setFillColor(widgetTitleColor);
-                    //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
-                    chartCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
-                    chartCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
-                    chartCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
-                    chartCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
+                        //chartCell.setFillColor(widgetTitleColor);
+                        //titleCell.setBorderWidth(TableCell.BorderEdge.bottom, 1.0);
+                        chartCell.setBorderColor(TableCell.BorderEdge.bottom, widgetBorderColor);
+                        chartCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
+                        chartCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
+                        chartCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
 
-                    CTBlipFillProperties blipPr = ((CTTableCell) chartCell.getXmlObject()).getTcPr().addNewBlipFill();
-                    blipPr.setDpi(72);
-                    // http://officeopenxml.com/drwPic-ImageData.php
-                    CTBlip blib = blipPr.addNewBlip();
-                    blipPr.addNewSrcRect();
-                    CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
-                    fillRect.setL(30000);
-                    fillRect.setR(30000);
+                        CTBlipFillProperties blipPr = ((CTTableCell) chartCell.getXmlObject()).getTcPr().addNewBlipFill();
+                        blipPr.setDpi(72);
+                        // http://officeopenxml.com/drwPic-ImageData.php
+                        CTBlip blib = blipPr.addNewBlip();
+                        blipPr.addNewSrcRect();
+                        CTRelativeRect fillRect = blipPr.addNewStretch().addNewFillRect();
+                        fillRect.setL(30000);
+                        fillRect.setR(30000);
 
-                    RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
-                    blib.setEmbed(rp.getRelationship().getId());
+                        RelationPart rp = slide.addRelation(null, XSLFRelation.IMAGES, idx);
+                        blib.setEmbed(rp.getRelationship().getId());
                     }
                 } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
                     System.out.println("Bar");
@@ -1855,8 +1865,6 @@ public class CustomReportDesigner {
             axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
 
             chart.setBackgroundPaint(Color.white);
-//        chart.getLegend().setAnchor(Legend.SOUTH);
-            //plot.setBackgroundPaint(new Color(0xEE, 0xEE, 0xFF));
             plot.setBackgroundPaint(Color.white);
             plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
             plot.setDataset(1, dataset2);
@@ -1866,6 +1874,9 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
+            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
+            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+            plot.setRenderer(0, renderer2);
             plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             // OPTIONAL CUSTOMISATION COMPLETED.
@@ -2007,6 +2018,9 @@ public class CustomReportDesigner {
         plot.setRangeAxis(1, axis2);
         plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
+        renderer2.setSeriesPaint(0, new Color(98, 203, 49));
+        renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+        plot.setRenderer(0, renderer2);
         plot.setRenderer(1, renderer2);
         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
         plot.setDrawingSupplier(new ChartDrawingSupplier());
@@ -2112,8 +2126,6 @@ public class CustomReportDesigner {
             CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
             axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
             chart.setBackgroundPaint(Color.white);
-//        chart.getLegend().setAnchor(Legend.SOUTH);
-            // plot.setBackgroundPaint(new Color(0xEE, 0xEE, 0xFF));
             plot.setBackgroundPaint(Color.white);
             plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
             plot.setDataset(1, dataset2);
@@ -2123,6 +2135,9 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final AreaRenderer renderer2 = new AreaRenderer();
+            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
+            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+            plot.setRenderer(0, renderer2);
             plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             // OPTIONAL CUSTOMISATION COMPLETED.
@@ -2283,23 +2298,22 @@ public class CustomReportDesigner {
             CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
             axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
             chart.setBackgroundPaint(Color.white);
-//        chart.getLegend().setAnchor(Legend.SOUTH);
-            // plot.setBackgroundPaint(new Color(0xEE, 0xEE, 0xFF));
             plot.setBackgroundPaint(Color.white);
             plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
             plot.setDataset(1, dataset2);
             plot.mapDatasetToRangeAxis(1, 1);
-            //final ValueAxis axis2 = new NumberAxis("Secondary");
             final ValueAxis axis2 = new NumberAxis();
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final BarRenderer renderer2 = new BarRenderer();
+            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
+            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+            plot.setRenderer(0, renderer2);
             plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 
             // OPTIONAL CUSTOMISATION COMPLETED.
             plot.setDrawingSupplier(new ChartDrawingSupplier());
-
             PdfContentByte contentByte = writer.getDirectContent();
 
             PdfTemplate templatePie = contentByte.createTemplate(widgetWidth, widgetHeight);
@@ -2442,6 +2456,9 @@ public class CustomReportDesigner {
         plot.setRangeAxis(1, axis2);
         plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         final BarRenderer renderer2 = new BarRenderer();
+        renderer2.setSeriesPaint(0, new Color(98, 203, 49));
+        renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+        plot.setRenderer(0, renderer2);
         plot.setRenderer(1, renderer2);
         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 
@@ -2759,7 +2776,7 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originaldata = tabWidget.getData();
         List<Map<String, Object>> data;
-        if(originaldata == null || originaldata.isEmpty()){
+        if (originaldata == null || originaldata.isEmpty()) {
             data = new ArrayList<>();
             return null;
         } else {
@@ -2827,7 +2844,7 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originaldata = tabWidget.getData();
         List<Map<String, Object>> data;
-        if(originaldata == null || originaldata.isEmpty()){
+        if (originaldata == null || originaldata.isEmpty()) {
             data = new ArrayList<>();
             return null;
         } else {
@@ -3241,9 +3258,7 @@ public class CustomReportDesigner {
                 }
             } catch (BadElementException ex) {
                 Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (DocumentException ex) {
+            } catch (IOException | DocumentException ex) {
                 Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
