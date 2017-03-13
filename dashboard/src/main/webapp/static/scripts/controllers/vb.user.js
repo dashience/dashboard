@@ -16,7 +16,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
     function getUser() {
         $http.get('admin/ui/user').success(function (response) {
             $scope.users = response;
-            $scope.editUser(response[0], 0);
+            //$scope.editUser(response[0], 0);
         });
 
         $http.get('admin/user/account').success(function (response) {

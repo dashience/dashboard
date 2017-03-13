@@ -14,7 +14,7 @@ app.controller('AgencyController', function ($scope, $http) {
     function getAgency() {
         $http.get('admin/user/agency').success(function (response) {
             $scope.agencies = response;
-            $scope.editAgency(response[0], 0);
+          //  $scope.editAgency(response[0], 0);
         });
     }
     getAgency();
@@ -83,7 +83,7 @@ app.controller('AgencyController', function ($scope, $http) {
             angular.forEach(response, function (value, key) {
                 $scope.agencyLicence = {id: value.id, maxNoTab: value.maxNoTab, maxNoUser: value.maxNoUser, maxNoClient: value.maxNoClient, maxNoAccount: value.maxNoAccount, expiryDate: value.expiryDate, maxNoWidgetPerTab: value.maxNoWidgetPerTab}
                 console.log($scope.agencyLicence)
-            })
+            });
         });
 
         $http.get('admin/user/agencyUser/' + agency.id).success(function (response) {

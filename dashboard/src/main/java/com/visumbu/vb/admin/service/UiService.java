@@ -469,9 +469,8 @@ public class UiService {
     }
 
     public VbUser deleteUser(Integer id) {
-        VbUser vbUser = readUser(id);
-        return (VbUser) uiDao.delete(vbUser);
-        //return dealer;
+        //VbUser vbUser = readUser(id);
+        return uiDao.deleteUser(id);
     }
 
     public UserAccount createUserAccount(UserAccount userAccount) {

@@ -47,7 +47,8 @@ public class UiDao extends BaseDao {
     }
 
     public List<UserAccount> getUserAccountByUser(VbUser user) {
-        String queryStr = "select d from UserAccount d where d.userId.id = :userId";
+        System.out.println(user);
+        String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", user.getId());
         return query.list();
@@ -399,7 +400,7 @@ public class UiDao extends BaseDao {
 //        return query.list();
 //    }
     public List getUserPermission(Integer userId) {
-        String queryStr = "select d from UserPermission d where d.userId.id = :userId";
+        String queryStr = "select d from UserPermission d where (d.userId.status is null or d.userId.status != 'Deleted') and d.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", userId);
         return query.list();
@@ -414,10 +415,18 @@ public class UiDao extends BaseDao {
     }
 
     public List<VbUser> getUsersByAgencyUser(VbUser user) {
-        String queryStr = "select d from VbUser d where d.agencyId.id = :agencyId";
+        String queryStr = "select d from VbUser d where (d.agencyId.status is null or d.agencyId.status != 'Deleted') and d.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", user.getAgencyId().getId());
         return query.list();
+    }
+    
+    public VbUser deleteUser(Integer id) {
+        String queryString = "update VbUser d set status = 'Deleted' where d.id = :userId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("userId", id);
+        querySess.executeUpdate();
+        return null;
     }
 
     public List<DataSet> getDataSetByUser(VbUser user) {

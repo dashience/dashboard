@@ -38,7 +38,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     function getAccount() {
         $http.get('admin/user/account').success(function (response) {
             $scope.accounts = response;
-            $scope.editAccount($scope.accounts[0], 0);
+//            $scope.editAccount($scope.accounts[0], 0);
         });
     }
     getAccount();
@@ -181,15 +181,15 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     };
 
     $scope.deleteAccountUser = function (accountUser, index) {
-        if (accountUser.id) {
-            $http({method: 'DELETE', url: 'admin/user/userAccount/' + accountUser.id}).success(function (response) {
-                $scope.accountUsers.splice(index, 1);
-            });
-        } else {
+        $http({method: 'DELETE', url: 'admin/user/userAccount/' + accountUser.id}).success(function (response) {
             $scope.accountUsers.splice(index, 1);
-        }
+        });
     };
-
+    
+    $scope.removeAccountUser = function (index) {
+        $scope.accountUsers.splice(index, 1);
+    };
+    
     $scope.clearAccountUser = function (accountUser) {
         $scope.accountUser = "";
         $scope.showAccountUserEditPage = false;

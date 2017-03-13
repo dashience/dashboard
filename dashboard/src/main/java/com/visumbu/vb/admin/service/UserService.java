@@ -165,8 +165,8 @@ public class UserService {
     }
 
     public List<Account> getAccount() {
-        List<Account> account = userDao.read(Account.class);
-        return account;
+//        List<Account> account = userDao.read(Account.class);
+        return userDao.getAccount();
     }
 
     public Account getAccountId(Integer id) {
@@ -237,8 +237,8 @@ public class UserService {
     }
 
     public List<Agency> getAgency() {
-        List<Agency> agency = userDao.read(Agency.class);
-        return agency;
+//        List<Agency> agency = userDao.read(Agency.class);
+        return userDao.getActiveAgency();
     }
 
     public Agency deleteAgency(Integer agencyId) {

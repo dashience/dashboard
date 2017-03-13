@@ -70,8 +70,9 @@ public class Agency implements Serializable {
     @Size(max = 4096)
     @Column(name = "description")
     private String description;
+    @Size(max = 45)
     @Column(name = "status")
-    private Boolean status;
+    private String status;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 255)
     @Column(name = "email")
@@ -108,11 +109,11 @@ public class Agency implements Serializable {
         this.description = description;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -39,7 +39,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
         $scope.name = $filter('filter')($scope.accounts, {id: $stateParams.accountId})[0];
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        getAgencyProduct($scope.name.accountId.agencyId.id);
+        console.log($scope.name.userId.agencyId)
+        if(!$scope.name.userId.agencyId){
+            return
+        }
+        getAgencyProduct($scope.name.userId.agencyId.id);
     });
 
     $scope.getAccountId = function (account) {
