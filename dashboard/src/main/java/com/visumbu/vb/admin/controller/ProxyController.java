@@ -10,7 +10,6 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -263,8 +262,8 @@ public class ProxyController {
         }
         try {
             if (exportType.equalsIgnoreCase("pdf")) {
-               response.setContentType("application/x-msdownload");
-               response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);

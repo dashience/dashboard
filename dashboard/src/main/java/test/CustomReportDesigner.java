@@ -638,7 +638,7 @@ public class CustomReportDesigner {
         titleCell.removeBorder(TableCell.BorderEdge.left);
         titleCell.removeBorder(TableCell.BorderEdge.right);
         titleCell.removeBorder(TableCell.BorderEdge.top);
-        
+
         XSLFTableRow headerRow = tbl.addRow();
         if (groupFields != null && groupFields.size() > 0) {
             XSLFTableCell headerCell = headerRow.addCell();
@@ -682,12 +682,12 @@ public class CustomReportDesigner {
                 headerCell.setBorderColor(TableCell.BorderEdge.right, widgetBorderColor);
                 headerCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
                 headerCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
-            }            
+            }
         }
         int col = tbl.getNumberOfColumns();
         int row = tbl.getNumberOfRows();
-        System.out.println("col: "+col+" "+"row: "+row);
-        
+        System.out.println("col: " + col + " " + "row: " + row);
+
         if (groupFields == null || groupFields.isEmpty()) {
             for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -1588,10 +1588,6 @@ public class CustomReportDesigner {
 
             addReportHeader(document);
 
-            reportHeader.getReportHeader(document);
-            document.add(new Phrase("\n"));
-            document.add(new Phrase("\n"));
-
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
@@ -1693,8 +1689,6 @@ public class CustomReportDesigner {
                 }
                 // System.out.println("Chart Type ===> " + tabWidget.getChartType());
 
-                document.add(new Phrase("\n"));
-                document.add(new Phrase("\n"));
                 document.add(new Phrase("\n"));
             }
             document.close();
@@ -2308,6 +2302,7 @@ public class CustomReportDesigner {
             final BarRenderer renderer2 = new BarRenderer();
             renderer2.setSeriesPaint(0, new Color(98, 203, 49));
             renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+            renderer2.setShadowVisible(false);
             plot.setRenderer(0, renderer2);
             plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
@@ -2458,6 +2453,7 @@ public class CustomReportDesigner {
         final BarRenderer renderer2 = new BarRenderer();
         renderer2.setSeriesPaint(0, new Color(98, 203, 49));
         renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+        renderer2.setShadowVisible(false);
         plot.setRenderer(0, renderer2);
         plot.setRenderer(1, renderer2);
         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
@@ -2808,7 +2804,7 @@ public class CustomReportDesigner {
                 "", dataSet, true, false, false);
 
         Paint[] paintSequence = new Paint[]{
-            new Color(255, 191, 128),
+          //  new Color(255, 191, 128),
             new Color(98, 203, 49),
             new Color(117, 204, 208),
             new Color(165, 209, 105),
@@ -2821,22 +2817,11 @@ public class CustomReportDesigner {
         int i = 0;
         for (Iterator<String> iterator = legends.iterator(); iterator.hasNext();) {
             if (i > 4) {
-                i = 2;
+                i = 1;
             }
             String legend = iterator.next();
             plot.setSectionPaint(legend, paintSequence[i++]);
         }
-
-//        PdfWriter contentByte = writer.getDirectContent();
-//        PdfTemplate templateBar = contentByte.createTemplate(widgetWidth, widgetHeight);
-//        Graphics2D graphics2dBar = templateBar.createGraphics(widgetWidth, widgetHeight,
-//                new DefaultFontMapper());
-//        Rectangle2D rectangle2dBar = new Rectangle2D.Double(0, 0, widgetWidth,
-//                widgetHeight);
-//
-//        chart.draw(graphics2dBar, rectangle2dBar);
-//        graphics2dBar.dispose();
-        //contentByte.addTemplate(templateBar, 30, 30);
         return chart;
     }
 
@@ -2876,15 +2861,11 @@ public class CustomReportDesigner {
                 "", dataSet, true, false, false);
 
         Paint[] paintSequence = new Paint[]{
-            new Color(255, 191, 128),
+         //   new Color(255, 191, 128),
             new Color(98, 203, 49),
-            //new Color(34, 137, 149),
-            // new Color(90, 113, 122),
             new Color(117, 204, 208),
             new Color(165, 209, 105),
-            // new Color(61, 70, 77),
             new Color(102, 102, 102)
-        // new Color(241, 136, 60)
         };
         PiePlot plot = (PiePlot) chart.getPlot();
         plot.setDrawingSupplier(new ChartDrawingSupplier());
@@ -2893,9 +2874,10 @@ public class CustomReportDesigner {
         int i = 0;
         for (Iterator<String> iterator = legends.iterator(); iterator.hasNext();) {
             if (i > 4) {
-                i = 2;
+                i = 1;
             }
             String legend = iterator.next();
+            System.out.println("legend: "+legend);
             plot.setSectionPaint(legend, paintSequence[i++]);
         }
 
