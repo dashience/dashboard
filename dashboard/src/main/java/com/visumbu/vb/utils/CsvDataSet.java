@@ -44,23 +44,19 @@ public class CsvDataSet {
         List<Map<String, String>> data = new ArrayList<>();
         System.out.println(headerMap);
         for (CSVRecord record : parser) {
-            System.out.println(record);
-            System.out.println(record.get("Name"));
+            Map<String, String> dataMap = new HashMap<>();
             for (Map.Entry<String, Integer> entrySet : headerMap.entrySet()) {
                 String key = entrySet.getKey();
-                Map<String, String> dataMap = new HashMap<>();
                 dataMap.put(key, record.get(key));
-                data.add(dataMap);
             }
+            data.add(dataMap);
         }
-        returnMap.put(data, data);
+        returnMap.put("data", data);
         //close the parser
         parser.close();
-        System.out.println(returnMap);
         return returnMap;
     }
 
-    
     public static void main(String[] argv) {
         try {
             System.out.println(CsvDataSet("/tmp/employees.csv"));

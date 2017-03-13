@@ -1,5 +1,13 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $state) {
     $scope.editWidgetData = []
+
+    $scope.accountID = $stateParams.accountId;
+    $scope.accountName = $stateParams.accountName;
+    $scope.productID = $stateParams.productId;
+    $scope.widgetTabId = $stateParams.tabId;
+    $scope.widgetStartDate = $stateParams.startDate;
+    $scope.widgetEndDate = $stateParams.endDate;
+
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId) {
@@ -15,6 +23,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         {name: 'Sum', value: "sum"},
         {name: 'CTR', value: "ctr"},
         {name: 'CPC', value: "cpc"},
+        {name: 'CPS', value: "cps"},
         {name: 'CPA', value: "cpa"},
         {name: 'Avg', value: "avg"},
         {name: 'Count', value: "count"},
@@ -76,6 +85,14 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     ];
     $scope.isEditPreviewColumn = false;
 
+    $scope.formats = [
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "None", value: ''}
+    ];
 
     $('.dropdown-menu input').click(function (e) {
         e.stopPropagation();
@@ -90,6 +107,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     });
 
     $scope.selectDataSource = function (dataSourceName, widget) {
+        console.log(dataSourceName)
         if (!dataSourceName) {
             return;
         }
@@ -135,14 +153,22 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         if (widget.columns) {
             widget.columns = widget.columns;
             if (widget.dataSetId) {
-                $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
+                    url = "admin/csv/getData?";
+                }
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     $scope.collectionFields = response.columnDefs;
                 });
             }
         } else {
             if (widget.dataSetId) {
-                $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
+                    url = "admin/csv/getData?";
+                }
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     widget.columns = response.columnDefs;
                     $scope.collectionFields = response.columnDefs;
@@ -158,7 +184,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         if (!dataSet) {
             return;
         }
-        $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData?connectionUrl=' + dataSet.dataSourceId.connectionString + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
+        var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+        if (dataSet.dataSourceId.dataSourceType == "csv") {
+            url = "admin/csv/getData?";
+        }
+        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             angular.forEach(response.columnDefs, function (value, key) {
                 widget.columns.push({fieldName: value.fieldName, displayName: value.displayName,
@@ -264,6 +294,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
     };
 
     $scope.save = function (widget) {
+        console.log(widget.content);
+        
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -309,19 +341,74 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
             tableFooter: widget.tableFooter,
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
-            dateDuration: widget.dateDuration
+            dateDuration: widget.dateDuration,
+            content: widget.content
         };
-        widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+            $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
+        //widget.chartType = "";
         $scope.previewChartType = null;
     };
 
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
         $scope.previewChartType = null;
-        $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, productId: $stateParams.productId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
 });
-    
+
+app.filter('xAxis', [function () {
+        return function (chartXAxis) {
+            var xAxis = ['', 'x-1']
+            return xAxis[chartXAxis];
+        };
+    }]);
+app.filter('yAxis', [function () {
+        return function (chartYAxis) {
+            var yAxis = ['', 'y-1', 'y-2']
+            return yAxis[chartYAxis];
+        };
+    }]);
+app.filter('hideColumn', [function () {
+        return function (chartYAxis) {
+            var hideColumn = ['No', 'Yes']
+            return hideColumn[chartYAxis];
+        };
+    }]);  
+//app.directive("textEditor", function () {
+//    return{
+//        restrict: 'A',
+//
+//        link: function (scope, element, attr) {
+//            CKEDITOR.editorConfig = function (config) {
+//                config.language = 'es';
+//                config.uiColor = '#F7B42C';
+//                config.height = 300;
+//                config.toolbarCanCollapse = true;
+//
+//            };
+//            CKEDITOR.replace(element[0]);
+//        }
+//    };
+//});
+app.directive('ckEditor', function() {
+  return {
+    require: '?ngModel',
+    link: function(scope, elm, attr, ngModel) {
+      var ck = CKEDITOR.replace(elm[0]);
+
+      if (!ngModel) return;
+
+      ck.on('pasteState', function() {
+        scope.$apply(function() {
+          ngModel.$setViewValue(ck.getData());
+        });
+      });
+
+      ngModel.$render = function(value) {
+        ck.setData(ngModel.$viewValue);
+      };
+    }
+  };
+});

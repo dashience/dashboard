@@ -16,6 +16,9 @@
         z-index: 10000;
     }
 
+    .product-icon {
+        width:110px;
+    }
 
 </style>
 
@@ -66,15 +69,21 @@
         </div>
         <form ng-hide="hideLocation" role="search" class="navbar-form-custom" method="post" action="#">
             <div class="form-group">
-                <!--<input type="text" placeholder="Dealer Name" class="form-control" name="search">-->
-                <ui-select ng-model="selectDealer.selected" on-select="getDealerId(selectDealer.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                    <ui-select-match placeholder="Select Location...">{{$select.selected.dealerName}}</ui-select-match>
-                    <ui-select-choices repeat="dealer in dealers | filter: $select.search">
-                        <span ng-bind-html="dealer.dealerName | highlight: $select.search"></span>
-                        <!--<small ng-bind-html="country.code | highlight: $select.search"></small>-->
+                <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
+                    <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
+                    <ui-select-choices repeat="account in accounts | filter: $select.search">
+                        <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
                     </ui-select-choices>
                 </ui-select>
             </div>
+            <!--            <div class="form-group">
+                            <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
+                                <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
+                                <ui-select-choices repeat="account in accounts | filter: $select.search">
+                                    <span ng-bind-html="account.accountName | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>-->
 
         </form>
         <div class="mobile-menu">
@@ -83,13 +92,17 @@
             </button>
             <div class="collapse mobile-navbar" id="mobile-collapse">
                 <ul class="nav navbar-nav">
-                        <!--<a class="" href="login.html">Logout</a>-->
                     <li><a href="admin/user/logout">Logout</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="navbar-right">
+            <ul class="nav navbar-nav navbar-left">
+                <li>
+                    <span class="text-uppercase">{{userName}} / {{agencyId.agencyName}}</span>
+                </li>
+            </ul>
             <ul class="nav navbar-nav navbar-left">
                 <li>
                     <a class="pull-right" id="daterange-btn">
@@ -109,64 +122,92 @@
 
                     <div class="dropdown-menu hdropdown bigmenu animated flipInX">
                         <div class="col-lg-12 row">
-                            <div ng-repeat="product in products | orderBy:'productOrder'">
+                            <div ng-repeat="product in products| orderBy:'productOrder'">
                                 <ul class="col-lg-3 icon-dash"  ng-if="product.showProduct == 1">
                                     <li class="product-dashboard-icon">
-                                        <a class="active" ng-click="setParamsProduct(); hideLocationBox('dashboard')" 
-                                           data-ui-sref="index.dashboard.widget({locationId: locationId, productId: product.id?product.id:2, tabId: tabId, startDate: startDate, endDate: endDate})">
-                                            <i class="{{product.icon}}"></i> <h5>{{product.productName}}</h5>
+                                        <a class="active" ng-click="setParamsProduct()" 
+                                           data-ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, productId: product.id, tabId: tabId, startDate: startDate, endDate: endDate})">
+                                            <img class="product-icon img-responsive" ng-src="{{product.icon}}"/> 
+                                            <!--<h5>{{product.productName}}</h5>-->
                                             <!--<i class="fa fa-fighter-jet" aria-hidden="true"></i> <h5>{{product.productName}}</h5>-->
                                         </a>
                                     </li>
                                 </ul>
                             </div>
-                            <div>
-                                <ul class="col-lg-3 icon-dash">
-                                    <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('franchiseMarketing')">
-                                        <a data-ui-sref="index.franchiseMarketing({locationId: locationId, startDate: startDate, endDate: endDate})"><i class="pe-7s-graph2 text-info"></i> <h5>Franchise Marketing</h5></a>
-                                    </li>
-                                </ul>
-                            </div>                         
-                            
-                            
+
+                            <!--                            <div>
+                                                            <ul class="col-lg-3 icon-dash">
+                                                                <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('franchiseMarketing')">
+                                                                    <a data-ui-sref="index.franchiseMarketing({locationId: locationId, startDate: startDate, endDate: endDate})"><i class="pe-7s-graph2 text-info"></i> <h5>Franchise Marketing</h5></a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>-->
+
                             <div class="clear">
-                                <div>
-                                <ul class="col-lg-3 icon-dash">                                    
-                                    <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('dataSource')">
-                                        <a data-ui-sref="index.dataSource({locationId: locationId, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-database text-warning"></i> <h5>Data Source</h5>
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div ng-if="permission.createDataSource === true;">
+                                    <ul class="col-lg-3 icon-dash">                                    
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.dataSource({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-database text-warning"></i> <h5>Data Source</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <div>
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParamsDate(); hideLocationBox('dataSet')">
-                                        <a data-ui-sref="index.dataSet({locationId: locationId, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-dashcube text-success"></i> <h5>Data Sets</h5>
-                                        </a>
-                                    </li>
-                                </ul>
-                                    </div>
+                                <div ng-if="permission.createDataSet === true;">
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.dataSet({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-dashcube text-success"></i> <h5>Data Sets</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div ng-if="isAdmin === 'admin'">
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.agency({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-cog text-warning"></i> <h5>Agency</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div ng-if="permission.createAccount === true;">
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.account({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-cog text-warning"></i> <h5>Account</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>  
+                                <div ng-if="permission.createUser === true;">
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.user({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-users text-info"></i> <h5>Users</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>                                                              
                             </div>
-<!--                            <div>
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParamsDate()">
-                                        <a data-ui-sref="index.report.reports({locationId: locationId, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i> <h5> Reports</h5>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParamsDate()">
-                                        <a data-ui-sref="index.schedulerIndex.scheduler({locationId: locationId, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-clock-o text-danger" aria-hidden="true"></i> <h5> Scheduler</h5>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>-->
+                            <!--                            <div>
+                                                            <ul class="col-lg-3 icon-dash"> 
+                                                                <li class="product-dashboard-icon" ng-click="setParamsDate()">
+                                                                    <a data-ui-sref="index.report.reports({locationId: locationId, startDate: startDate, endDate: endDate})">
+                                                                        <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i> <h5> Reports</h5>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <div>
+                                                            <ul class="col-lg-3 icon-dash"> 
+                                                                <li class="product-dashboard-icon" ng-click="setParamsDate()">
+                                                                    <a data-ui-sref="index.schedulerIndex.scheduler({locationId: locationId, startDate: startDate, endDate: endDate})">
+                                                                        <i class="fa fa-clock-o text-danger" aria-hidden="true"></i> <h5> Scheduler</h5>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>-->
                         </div>
                     </div>
                 </li>

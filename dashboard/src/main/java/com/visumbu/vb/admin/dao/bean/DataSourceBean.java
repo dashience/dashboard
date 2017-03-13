@@ -5,6 +5,8 @@
  */
 package com.visumbu.vb.admin.dao.bean;
 
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.VbUser;
 import javax.persistence.Column;
 import javax.persistence.Lob;
 import javax.validation.constraints.Size;
@@ -23,6 +25,8 @@ public class DataSourceBean {
     private String dataSourceType;
     private String sourceFile;
     private String sourceFileName;
+    private VbUser userId;
+    private Agency agencyId;
 
     public String getSourceFileName() {
         return sourceFileName;
@@ -96,12 +100,24 @@ public class DataSourceBean {
         this.sourceFile = sourceFile;
     }
 
-    @Override
-    public String toString() {
-        return "DataSourceBean{" + "id=" + id + ", name=" + name + ", connectionString=" + connectionString + ", userName=" + userName + ", password=" + password + ", sqlDriver=" + sqlDriver + ", dataSourceType=" + dataSourceType + ", sourceFile=" + sourceFile + '}';
+    public VbUser getUserId() {
+        return userId;
+    }
+
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
+    }
+
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
     }
     
-   
-    
-    
+    @Override
+    public String toString() {
+        return "DataSourceBean{" + "id=" + id + ", name=" + name + ", connectionString=" + connectionString + ", userName=" + userName + ", password=" + password + ", sqlDriver=" + sqlDriver + ", dataSourceType=" + dataSourceType + ", sourceFile=" + sourceFile + ", sourceFileName=" + sourceFileName + ", userId=" + userId + ", agencyId=" + agencyId + '}';
+    }
 }

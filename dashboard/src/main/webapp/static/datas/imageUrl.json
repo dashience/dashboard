@@ -40,5 +40,12 @@
         "type": "ticker",
         "name": "Tickers",
         "icon": "fa-check"
+    },
+    {
+        "id": 9,
+        "url": "static/img/table.png",
+        "type": "text",
+        "name": "Text",
+        "icon": "fa-file-text-o"
     }
 ]

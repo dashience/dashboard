@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -33,25 +35,54 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Table(name = "vb_user")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "VbUser.findAll", query = "SELECT v FROM VbUser v"),
-    @NamedQuery(name = "VbUser.findById", query = "SELECT v FROM VbUser v WHERE v.id = :id"),
-    @NamedQuery(name = "VbUser.findByCreatedTime", query = "SELECT v FROM VbUser v WHERE v.createdTime = :createdTime"),
-    @NamedQuery(name = "VbUser.findByDisableNotification", query = "SELECT v FROM VbUser v WHERE v.disableNotification = :disableNotification"),
-    @NamedQuery(name = "VbUser.findByEmail", query = "SELECT v FROM VbUser v WHERE v.email = :email"),
-    @NamedQuery(name = "VbUser.findByEmailSignature", query = "SELECT v FROM VbUser v WHERE v.emailSignature = :emailSignature"),
-    @NamedQuery(name = "VbUser.findByFailedLoginCount", query = "SELECT v FROM VbUser v WHERE v.failedLoginCount = :failedLoginCount"),
-    @NamedQuery(name = "VbUser.findByFirstName", query = "SELECT v FROM VbUser v WHERE v.firstName = :firstName"),
-    @NamedQuery(name = "VbUser.findByGender", query = "SELECT v FROM VbUser v WHERE v.gender = :gender"),
-    @NamedQuery(name = "VbUser.findByIsAdmin", query = "SELECT v FROM VbUser v WHERE v.isAdmin = :isAdmin"),
-    @NamedQuery(name = "VbUser.findByLastLoginTime", query = "SELECT v FROM VbUser v WHERE v.lastLoginTime = :lastLoginTime"),
-    @NamedQuery(name = "VbUser.findByLastName", query = "SELECT v FROM VbUser v WHERE v.lastName = :lastName"),
-    @NamedQuery(name = "VbUser.findByPassword", query = "SELECT v FROM VbUser v WHERE v.password = :password"),
-    @NamedQuery(name = "VbUser.findByPrimaryPhone", query = "SELECT v FROM VbUser v WHERE v.primaryPhone = :primaryPhone"),
-    @NamedQuery(name = "VbUser.findBySecondaryPhone", query = "SELECT v FROM VbUser v WHERE v.secondaryPhone = :secondaryPhone"),
-    @NamedQuery(name = "VbUser.findByStatus", query = "SELECT v FROM VbUser v WHERE v.status = :status"),
-    @NamedQuery(name = "VbUser.findByTheme", query = "SELECT v FROM VbUser v WHERE v.theme = :theme"),
+    @NamedQuery(name = "VbUser.findAll", query = "SELECT v FROM VbUser v")
+    ,
+    @NamedQuery(name = "VbUser.findById", query = "SELECT v FROM VbUser v WHERE v.id = :id")
+    ,
+    @NamedQuery(name = "VbUser.findByCreatedTime", query = "SELECT v FROM VbUser v WHERE v.createdTime = :createdTime")
+    ,
+    @NamedQuery(name = "VbUser.findByDisableNotification", query = "SELECT v FROM VbUser v WHERE v.disableNotification = :disableNotification")
+    ,
+    @NamedQuery(name = "VbUser.findByEmail", query = "SELECT v FROM VbUser v WHERE v.email = :email")
+    ,
+    @NamedQuery(name = "VbUser.findByEmailSignature", query = "SELECT v FROM VbUser v WHERE v.emailSignature = :emailSignature")
+    ,
+    @NamedQuery(name = "VbUser.findByFailedLoginCount", query = "SELECT v FROM VbUser v WHERE v.failedLoginCount = :failedLoginCount")
+    ,
+    @NamedQuery(name = "VbUser.findByFirstName", query = "SELECT v FROM VbUser v WHERE v.firstName = :firstName")
+    ,
+    @NamedQuery(name = "VbUser.findByGender", query = "SELECT v FROM VbUser v WHERE v.gender = :gender")
+    ,
+    @NamedQuery(name = "VbUser.findByIsAdmin", query = "SELECT v FROM VbUser v WHERE v.isAdmin = :isAdmin")
+    ,
+    @NamedQuery(name = "VbUser.findByLastLoginTime", query = "SELECT v FROM VbUser v WHERE v.lastLoginTime = :lastLoginTime")
+    ,
+    @NamedQuery(name = "VbUser.findByLastName", query = "SELECT v FROM VbUser v WHERE v.lastName = :lastName")
+    ,
+    @NamedQuery(name = "VbUser.findByPassword", query = "SELECT v FROM VbUser v WHERE v.password = :password")
+    ,
+    @NamedQuery(name = "VbUser.findByPrimaryPhone", query = "SELECT v FROM VbUser v WHERE v.primaryPhone = :primaryPhone")
+    ,
+    @NamedQuery(name = "VbUser.findBySecondaryPhone", query = "SELECT v FROM VbUser v WHERE v.secondaryPhone = :secondaryPhone")
+    ,
+    @NamedQuery(name = "VbUser.findByStatus", query = "SELECT v FROM VbUser v WHERE v.status = :status")
+    ,
+    @NamedQuery(name = "VbUser.findByTheme", query = "SELECT v FROM VbUser v WHERE v.theme = :theme")
+    ,
     @NamedQuery(name = "VbUser.findByUserName", query = "SELECT v FROM VbUser v WHERE v.userName = :userName")})
 public class VbUser implements Serializable {
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<AgencyUser> agencyUserCollection;
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<UserPermission> userPermissionCollection;
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<UserAccount> userAccountCollection;
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<AccountUser> accountUserCollection;
 
     @OneToMany(mappedBy = "userId")
     private Collection<DataSet> dataSetCollection;
@@ -124,6 +155,9 @@ public class VbUser implements Serializable {
     @Size(max = 255)
     @Column(name = "user_ref_id")
     private String userRefId;
+    @JoinColumn(name = "agency_id", referencedColumnName = "id")
+    @ManyToOne
+    private Agency agencyId;
 
     public VbUser() {
     }
@@ -276,6 +310,14 @@ public class VbUser implements Serializable {
         this.userRefId = userRefId;
     }
 
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -369,6 +411,46 @@ public class VbUser implements Serializable {
 
     public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
         this.dataSourceCollection = dataSourceCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AccountUser> getAccountUserCollection() {
+        return accountUserCollection;
+    }
+
+    public void setAccountUserCollection(Collection<AccountUser> accountUserCollection) {
+        this.accountUserCollection = accountUserCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<UserAccount> getUserAccountCollection() {
+        return userAccountCollection;
+    }
+
+    public void setUserAccountCollection(Collection<UserAccount> userAccountCollection) {
+        this.userAccountCollection = userAccountCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<UserPermission> getUserPermissionCollection() {
+        return userPermissionCollection;
+    }
+
+    public void setUserPermissionCollection(Collection<UserPermission> userPermissionCollection) {
+        this.userPermissionCollection = userPermissionCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyUser> getAgencyUserCollection() {
+        return agencyUserCollection;
+    }
+
+    public void setAgencyUserCollection(Collection<AgencyUser> agencyUserCollection) {
+        this.agencyUserCollection = agencyUserCollection;
     }
 
 }

@@ -9,7 +9,14 @@ import com.visumbu.vb.admin.dao.DealerDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AccountUser;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencyLicence;
+import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Dealer;
+import com.visumbu.vb.model.Property;
+import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.VbUtils;
 import java.util.Collection;
@@ -30,7 +37,7 @@ public class UserService {
 
     @Autowired
     private UserDao userDao;
-    
+
     @Autowired
     private DealerDao dealerDao;
 
@@ -76,14 +83,6 @@ public class UserService {
         return null;
     }
 
-    public SecurityAuthBean getPermissions(LoginUserBean userBean) {
-        return VbUtils.getAuthData(userBean.getUsername(), userBean.getPassword());
-    }
-
-    public SecurityAuthBean getPermissions(String accessToken, String userGuid) {
-        return VbUtils.getAuthDataByGuid(accessToken, userGuid);
-    }
-
     public LoginUserBean authenicate(LoginUserBean userBean) {
         List<VbUser> users = userDao.findByUserName(userBean.getUsername());
         LoginUserBean loginUserBean = null;
@@ -93,10 +92,13 @@ public class UserService {
                 user.setFailedLoginCount(0);
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
+                System.out.println(loginUserBean);
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
-                user.setFailedLoginCount(user.getFailedLoginCount() + 1);
-                loginUserBean = toLoginUserBean(user);
+                if (user != null) {
+                    user.setFailedLoginCount(user.getFailedLoginCount() + 1);
+                    loginUserBean = toLoginUserBean(user);
+                }
                 loginUserBean.setAuthenticated(Boolean.FALSE);
                 loginUserBean.setErrorMessage("Invalid Username or Password");
             }
@@ -111,6 +113,8 @@ public class UserService {
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
+        userBean.setAgencyId(teUser.getAgencyId());
+//        userBean.setPassword(teUser.getPassword());
         userBean.setFailLoginCount(teUser.getFailedLoginCount());
         userBean.setIsAdmin(teUser.getIsAdmin() != null && teUser.getIsAdmin() == true ? "admin" : "");
         return userBean;
@@ -123,13 +127,12 @@ public class UserService {
     public List<Dealer> getAllowedDealerByGroupId(String groupId) {
         return dealerDao.getAllowedDealerByGroupId(groupId);
     }
-    
-    
+
     public List<Dealer> getAllowedDealerByGroupName(String groupName) {
         return dealerDao.getAllowedDealerByGroupName(groupName);
     }
 
-    public List <Dealer> getAllowedDealerByOemRegionId(String oemRegionId) {
+    public List<Dealer> getAllowedDealerByOemRegionId(String oemRegionId) {
         return dealerDao.getAllowedDealerByOemRegionId(oemRegionId);
     }
 
@@ -142,14 +145,149 @@ public class UserService {
         String userName = authData.getUserName();
         List<VbUser> users = userDao.findByUserName(userName);
         VbUser user = null;
-        if(users != null && !users.isEmpty()) {
+        if (users != null && !users.isEmpty()) {
             user = users.get(0);
         }
-        if(user == null) {
+        if (user == null) {
             System.out.println("Creating user " + userName);
             user = userDao.createNewUser(userId, userName, authData.getFullName());
             userDao.initUser(user);
         }
         return user;
     }
+
+    public Account createAccount(Account account) {
+        return (Account) userDao.create(account);
+    }
+
+    public Account updateAccount(Account account) {
+        return (Account) userDao.update(account);
+    }
+
+    public List<Account> getAccount() {
+//        List<Account> account = userDao.read(Account.class);
+        return userDao.getAccount();
+    }
+
+    public Account getAccountId(Integer id) {
+        return (Account) userDao.read(Account.class, id);
+    }
+
+    public Account deleteAccount(Integer accountId) {
+        ///Account account = getAccountId(accountId);
+        return userDao.deleteAccount(accountId);
+    }
+
+    public Property createProperty(Property property) {
+        return (Property) userDao.create(property);
+    }
+
+    public Property updateProperty(Property property) {
+        return (Property) userDao.update(property);
+    }
+
+    public List<Property> getProperty() {
+        List<Property> property = userDao.read(Property.class);
+        return property;
+    }
+
+    public List<Property> getPropertyById(Integer accountId) {
+        return userDao.getPropertyById(accountId);
+    }
+
+    public Property getPropertyId(Integer id) {
+        return (Property) userDao.read(Property.class, id);
+    }
+
+    public Property deleteProperty(Integer propertyId) {
+        return userDao.deleteProperty(propertyId);
+    }
+
+    public UserAccount createUserAccount(UserAccount userAccount) {
+        return (UserAccount) userDao.create(userAccount);
+    }
+
+    public UserAccount updateUserAccount(UserAccount userAccount) {
+        return (UserAccount) userDao.update(userAccount);
+    }
+
+    public List<UserAccount> getUserAccount() {
+        List<UserAccount> userAccount = userDao.read(UserAccount.class);
+        return userAccount;
+    }
+
+    public UserAccount getUserAccountId(Integer id) {
+        return (UserAccount) userDao.read(UserAccount.class, id);
+    }
+
+    public UserAccount deleteUserAccount(Integer userAccountId) {
+        return userDao.deleteUserAccount(userAccountId);
+    }
+
+    public List getUserAccountById(Integer accountId) {
+        return userDao.getUserAccountById(accountId);
+    }
+
+    public Agency createAgency(Agency agency) {
+        return (Agency) userDao.create(agency);
+    }
+
+    public Agency updateAgency(Agency agency) {
+        return (Agency) userDao.update(agency);
+    }
+
+    public List<Agency> getAgency() {
+//        List<Agency> agency = userDao.read(Agency.class);
+        return userDao.getActiveAgency();
+    }
+
+    public Agency deleteAgency(Integer agencyId) {
+        return userDao.deleteAgency(agencyId);
+    }
+
+    public AgencyLicence createAgencyLicence(AgencyLicence agencyLicence) {
+        return (AgencyLicence) userDao.create(agencyLicence);
+    }
+
+    public AgencyLicence updateAgencyLicence(AgencyLicence agencyLicence) {
+        return (AgencyLicence) userDao.update(agencyLicence);
+    }
+
+    public List<AgencyLicence> getAgencyLicence() {
+        List<AgencyLicence> agencyLicence = userDao.read(AgencyLicence.class);
+        return agencyLicence;
+    }
+
+    public List getAgencyLicenceById(Integer agencyId) {
+        return userDao.getAgencyLicenceById(agencyId);
+    }
+
+    public Agency deleteAgencyLicence(Integer agencyLicenceId) {
+        return userDao.deleteAgencyLicence(agencyLicenceId);
+    }
+
+    public List getAgencyUserById(Integer agencyUserId) {
+        return userDao.getAgencyUserById(agencyUserId);
+    }
+
+    public List<Account> getAccount(Agency agency) {
+        return userDao.getAccountByAgency(agency);
+    }
+
+    public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
+        return (AgencyProduct) userDao.create(agencyProduct);
+    }
+
+    public AgencyProduct updateAgencyProduct(AgencyProduct agencyProduct) {
+        return (AgencyProduct) userDao.update(agencyProduct);
+    }
+
+    public List<AgencyProduct> getAgencyProductById(Integer agencyProductId) {
+        return userDao.getAgencyProductById(agencyProductId);
+    }
+
+    public String productUpdateOrder(Integer agencyProductId, String productOrder) {
+        return userDao.productUpdateOrder(agencyProductId, productOrder);
+    }
+
 }

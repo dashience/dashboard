@@ -43,6 +43,15 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSource.findByDataSourceType", query = "SELECT d FROM DataSource d WHERE d.dataSourceType = :dataSourceType")})
 public class DataSource implements Serializable {
 
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "source_file")
+    private String sourceFile;
+    @OneToMany(mappedBy = "dataSourceId")
+    private Collection<TabWidget> tabWidgetCollection;
+    @OneToMany(mappedBy = "dataSourceId")
+    private Collection<DataSet> dataSetCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,6 +83,9 @@ public class DataSource implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
+    @JoinColumn(name = "agency_id", referencedColumnName = "id")
+    @ManyToOne
+    private Agency agencyId;
 
     public DataSource() {
     }
@@ -138,6 +150,15 @@ public class DataSource implements Serializable {
         this.dataSourceType = dataSourceType;
     }
 
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
+    }
+    
+    
 //    public String getSourceFile() {
 //        return sourceFile;
 //    }
@@ -177,6 +198,34 @@ public class DataSource implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.DataSource[ id=" + id + " ]";
+    }
+
+    public String getSourceFile() {
+        return sourceFile;
+    }
+
+    public void setSourceFile(String sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<TabWidget> getTabWidgetCollection() {
+        return tabWidgetCollection;
+    }
+
+    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
+        this.tabWidgetCollection = tabWidgetCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DataSet> getDataSetCollection() {
+        return dataSetCollection;
+    }
+
+    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
+        this.dataSetCollection = dataSetCollection;
     }
     
 }

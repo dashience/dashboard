@@ -1,4 +1,11 @@
-app.controller('DataSetController', function ($scope, $http) {
+app.controller('DataSetController', function ($scope, $http, $stateParams) {
+    
+    $scope.accountID = $stateParams.accountId;
+    $scope.accountName = $stateParams.accountName;
+    
+    $scope.startDate = $stateParams.startDate;
+    $scope.endDate = $stateParams.endDate
+    
     function getItems() {
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = response;
@@ -14,6 +21,8 @@ app.controller('DataSetController', function ($scope, $http) {
             getItems();
         });
         $scope.dataSet = "";
+        $scope.showPreviewChart = false;
+        $scope.previewData = null;
     };
 
     $scope.editDataSet = function (dataSet) {
@@ -29,15 +38,17 @@ app.controller('DataSetController', function ($scope, $http) {
 
     $scope.resetPreview = function (dataSet) {
         $scope.previewData = null;
-        console.log(dataSet);
     };
     $scope.previewDataSet = function (dataSet) {
+        $scope.showPreviewChart = true;
         $scope.previewData = dataSet;
         console.log(dataSet);
     };
 
     $scope.clearDataSet = function (dataSet) {
         $scope.dataSet = "";
+        $scope.showPreviewChart = false;
+        $scope.previewData = null;
     };
 
     $scope.deleteDataSet = function (dataSet, index) {
@@ -49,15 +60,9 @@ app.controller('DataSetController', function ($scope, $http) {
     $scope.selectedRow = null;
     $scope.setClickedRow = function (index) {
         $scope.selectedRow = index;
-    }
-
-
-    //$(function () {
-//        var editor = ace.edit("editor");
-//        editor.setTheme("ace/theme/monokai");
-//        editor.getSession().setMode("ace/mode/sql");
-
-    // });
+        $scope.showPreviewChart = false;
+        $scope.previewData = null;
+    };
 });
 app.directive('previewTable', function ($http, $filter, $stateParams) {
     return{
@@ -72,12 +77,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<table ng-if="ajaxLoadingCompleted" class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
-                '<th class="text-capitalize info table-bg" ng-repeat="col in tableColumns">' +
+                '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
                 '{{col.displayName}}' +
                 '</th>' +
                 '</tr></thead>' +
                 '<tbody ng-repeat="tableRow in tableRows">' +
-                '<tr class="text-capitalize text-info info">' +
+                '<tr class="text-capitalize">' +
                 '<td ng-repeat="col in tableColumns">' +
                 '<div>{{tableRow[col.fieldName]}}</div>' +
                 '</td>' +
@@ -86,9 +91,16 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
-            console.log(dataSourcePath)
-            console.log(dataSourcePath.dataSourceId.userName)
-            $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData?connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&driver=" + dataSourcePath.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+            console.log(dataSourcePath);
+            console.log(dataSourcePath.dataSourceId.userName);
+            console.log(dataSourcePath.dataSourceId.connectionString);
+            console.log(dataSourcePath.dataSourceId.sqlDriver);
+            console.log(dataSourcePath.dataSourceId.password);
+            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            if (dataSourcePath.dataSourceId.dataSourceType == "csv") {
+                url = "admin/csv/getData?";
+            }
+            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&driver=" + dataSourcePath.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;

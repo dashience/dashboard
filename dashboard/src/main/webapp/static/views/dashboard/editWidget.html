@@ -21,7 +21,7 @@
         <div class="col-lg-5">
             <div class="hpanel">
                 <div class="panel-heading">
-                    <div class="panel-tools"> <a class="showhide"><i class="fa fa-chevron-up"></i></a> <a class="closebox"><i class="fa fa-times"></i></a> </div>
+                    <div class="panel-tools"> </div>
                     Edit Widget </div>
                 <div class="panel-body">
                     <form method="get" class="form-horizontal">
@@ -40,7 +40,7 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({accountId: accountID, accountName: accountName, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
                             </div>
                         </div>
                         <div class="form-group">
@@ -50,7 +50,7 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({accountId: accountID, accountName: accountName, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
                             </div>
                         </div>                        
                         <div class="form-group">
@@ -91,28 +91,17 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group btn-preview">
-                    <div class="col-sm-8">
-                        <button data-dismiss="modal" class="btn btn-default" ng-click="closeWidget(widget); showFieldTable = false; showPreviewChart = false; showAddButton = false;"><span class="fa fa-times"></span> Cancel</button>
-                        <button data-dismiss="modal" class="btn btn-info" ng-click="save(widget); showFieldTable = false; showPreviewChart = false; showAddButton = false;"><span class="fa fa-save"></span> Save</button>
-                        <button class="btn btn-success" ng-click="showPreviewType(widget); showPreviewChart = !showPreviewChart">
-                            <i class="fa" ng-class="{'fa-angle-down': !showPreviewChart, 'fa-angle-up': showPreviewChart}"></i> Preview
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </div>            
         </div>
         <div class="col-lg-7">
             <div class="hpanel">
                 <div class="panel-heading">
-                    <div class="panel-tools"> <a class="showhide"><i class="fa fa-chevron-up"></i></a> <a class="closebox"><i class="fa fa-times"></i></a> </div>
+                    <div class="panel-tools"> </div>
                     Table Widget </div>
                 <div class="panel-body">
                     <div class="box">
                         <div class="box-body table-responsive no-padding">
-                            <table class="table table-bordered table-hover">
+                            <table  ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) !== 'text'" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <td>Field Name</td>
@@ -190,7 +179,10 @@
                                         <td data-as-sortable-item-handle ng-if="advanceMenu == true">
                                             <div ng-hide="currentColumn.isEdit"> {{currentColumn.displayFormat}}</div>
                                             <div ng-show="currentColumn.isEdit">
-                                                <input type="text" class="form-control" ng-model="currentColumn.displayFormat">
+                                                <select ng-model="currentColumn.displayFormat" class="form-control">
+                                                    <option ng-repeat="format in formats" value="{{format.value}}">{{format.name}}</option>
+                                                </select>
+                                                <!--<input type="text" class="form-control" ng-model="currentColumn.displayFormat">-->
                                             </div>
                                         </td>
                                         <td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker' && advanceMenu == true">
@@ -224,9 +216,23 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                            </table>                           
+                            </table> 
+                            <div ng-if="(widget.widgetChartType ? widget.widgetChartType : widget.chartType) === 'text'">
+                                <textarea ck-Editor ng-model="widget.content" rows="10" cols="99"></textarea>
+                            </div>                            
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group btn-preview">
+                <div class="col-sm-8">
+                    <button data-dismiss="modal" class="btn btn-default" ng-click="closeWidget(widget); showFieldTable = false; showPreviewChart = false; showAddButton = false;"><span class="fa fa-times"></span> Cancel</button>
+                    <button data-dismiss="modal" class="btn btn-info" ng-click="save(widget); showFieldTable = false; showPreviewChart = false; showAddButton = false;"><span class="fa fa-save"></span> Save</button>
+                    <button class="btn btn-success" ng-click="showPreviewType(widget); showPreviewChart = !showPreviewChart">
+                        <i class="fa" ng-class="{'fa-angle-down': !showPreviewChart, 'fa-angle-up': showPreviewChart}"></i> Preview
+                    </button>
                 </div>
             </div>
         </div>
@@ -255,6 +261,9 @@
                 </div>
                 <div class="box-body chart-responsive" ng-if="previewChartType === 'table'"  style="overflow: auto;">
                     <div dynamic-Table dynamic-Table-Source="{{previewChartUrl}}" widget-Id="{{previewColumn.id}}" widget-Obj="{{widget}}" widget-Columns="{{previewColumn.columns}}"></div>
+                </div>
+                <div class="box-body chart-responsive" ng-if="previewChartType === 'text'"  style="overflow: auto;">
+                    <span ng-bind-html="widget.content"></span>
                 </div>
             </div>
         </div>

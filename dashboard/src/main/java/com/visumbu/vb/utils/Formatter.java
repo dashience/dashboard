@@ -19,9 +19,10 @@ public class Formatter {
         String jFormat = format;
         String prefix = "";
         String sufix = "";
-
+        Integer multiplier = 1;
         if (jFormat.indexOf("%") >= 0) {
             sufix = "%";
+            multiplier = 100;
             jFormat = jFormat.replace("%", "");
         }
         if (jFormat.indexOf('$') >= 0) {
@@ -32,7 +33,7 @@ public class Formatter {
             jFormat = jFormat + "f";
         }
         if (jFormat != null && !jFormat.isEmpty()) {
-            returnValue = prefix + String.format("%" + jFormat, ApiUtils.toDouble(value)) + sufix;
+            returnValue = prefix + String.format("%" + jFormat, multiplier * ApiUtils.toDouble(value)) + sufix;
         }
         return returnValue;
     }

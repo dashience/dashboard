@@ -3813,9 +3813,9 @@ body.modal-open {
     min-width:700px;
 }
 
-.product-dashboard-icon {
+/*.product-dashboard-icon {
     float:left;
-}
+}*/
 
 .dropdown-menu.hdropdown li {
     background: none !important;
@@ -3916,15 +3916,6 @@ textarea.form-control {
     height:465px;
     overflow: auto;
 }
-/*
-.table-fixed thead {
-  width: 97%;
-}
-.table-fixed tbody {
-  height: 230px;
-  overflow-y: auto;
-  width: 100%;
-}*/
 
 .circle-data-set {
     margin-top:20px;
@@ -3959,22 +3950,6 @@ textarea.form-control {
     display: none !important;
 }
 
-.table-fixed thead {
-    /*width: 97%;*/
-}
-.table-fixed tbody {
-    height: 230px;
-    overflow-y: auto;
-    /*width: 100%;*/
-}
-.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-    /*display: block;*/
-}
-.table-fixed tbody td, .table-fixed thead > tr> th {
-    /*float: left;*/
-    /*border-bottom-width: 0;*/
-}
-
 .clear {
     clear: both;
     margin-top:10px;
@@ -4002,4 +3977,13 @@ input[type="radio"], input[type="checkbox"] {
     border: 1px solid #ddd;
     padding: 5px;
     overflow: hidden;
+    background-color: #ffffff;
+}
+.selectedTableRow {
+    background-color:#e2f9d4;
+    color:#121111;
+    font-weight:bold;
+}
+.right-group {
+    padding-left: 23px !important;
 }
