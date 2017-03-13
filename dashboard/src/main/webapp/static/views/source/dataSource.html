@@ -36,79 +36,33 @@
     .table-fixed tr td {
         cursor:pointer;
     }
+     .agency-bt {
+        margin-bottom: 10px;
+    }
+   
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }
 </style>
 <section class="content">
     <div class="row">
-        <div class="col-lg-12">
-            <section class="content-header">
-                <h1 class="data-title font-bold">Data Source</h1>
-            </section>
+               
+         <div class="normalheader transition animated fadeIn">
+            <div class="hpanel">
+                <div class="header-title">
+                    <h2 class="agency-bt font-bold m-b-xs ng-binding">
+                        Data Source
+                    </h2>               
+                </div>
+            </div>
         </div>
+        
         <div class="row">
             <div class="col-lg-12">
-                <div class="col-md-8">
-                    <div>
-                        <table class="table table-responsive table-fixed">
-                            <thead>
-                                <tr>
-                                    <th class="col-xs-2">Name</th>
-                                    <th class="col-xs-2">Type</th>
-                                    <th class="col-xs-3">Connection String</th>
-                                    <th class="col-xs-2">Driver</th>
-                                    <th class="col-xs-2">User Name</th>
-                                    <th class="col-xs-1"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="dataSource in dataSources" ng-click="highlightDataSource($index)" ng-class="{'selectedTableRow':$index == selectedRow}">
-                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.name ? dataSource.name:'-'}}</td>
-                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.dataSourceType ? dataSource.dataSourceType : '-'}}</td>
-                                    <td class="col-xs-3" ng-click="editDataSource(dataSource)">{{dataSource.connectionString?dataSource.connectionString:'-'}}</td>
-                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.sqlDriver?dataSource.sqlDriver:'-'}}</td>
-                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.userName?dataSource.userName:'-'}}</td>
-                                    <td class="col-xs-1">
-                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSource{{dataSource.id}}"><i class="fa fa-trash-o"></i></button>
-                                        <div class="modal hmodal-success" id="deleteDataSource{{dataSource.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="color-line"></div>
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        <h4 class="modal-title">Delete</h4>
-                                                        <small class="font-bold"></small>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form class="form-horizontal" role="form">
-                                                            <div class="form-group">
-                                                                <div class="col-sm-12  col-md-12">
-                                                                    <span>Want to delete ?</span>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <div class="col-sm-12">
-                                                            <button type="button" class="btn btn-primary btn-xs " 
-                                                                    ng-click="deleteDataSource(dataSource, $index)" 
-                                                                    data-dismiss="modal">
-                                                                <span class="fa fa-trash"></span> Yes
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger btn-xs " 
-                                                                    data-dismiss="modal">
-                                                                <span class="fa fa-times"></span> No
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                
+                 <div class="hpanel">
                 <div class="col-md-4">
+                    <div class="panel-body">
                     <form class="col-md-12 form-horizontal">
                         <div class="form-group">
                             <label>Name</label>
@@ -171,6 +125,76 @@
                         </div>
                     </form>
                 </div>
+            </div>
+              </div>  
+                
+                 <div class="hpanel">
+                
+                <div class="col-md-8">
+                    <div class="panel-body">
+                        <table class="table table-responsive table-fixed">
+                            <thead>
+                                <tr>
+                                    <th class="col-xs-2">Name</th>
+                                    <th class="col-xs-2">Type</th>
+                                    <th class="col-xs-3">Connection String</th>
+                                    <th class="col-xs-2">Driver</th>
+                                    <th class="col-xs-2">User Name</th>
+                                    <th class="col-xs-1"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="dataSource in dataSources" ng-click="highlightDataSource($index)" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.name ? dataSource.name:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.dataSourceType ? dataSource.dataSourceType : '-'}}</td>
+                                    <td class="col-xs-3" ng-click="editDataSource(dataSource)">{{dataSource.connectionString?dataSource.connectionString:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.sqlDriver?dataSource.sqlDriver:'-'}}</td>
+                                    <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.userName?dataSource.userName:'-'}}</td>
+                                    <td class="col-xs-1">
+                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSource{{dataSource.id}}"><i class="fa fa-trash-o"></i></button>
+                                        <div class="modal hmodal-success" id="deleteDataSource{{dataSource.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="color-line"></div>
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title">Delete</h4>
+                                                        <small class="font-bold"></small>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form class="form-horizontal" role="form">
+                                                            <div class="form-group">
+                                                                <div class="col-sm-12  col-md-12">
+                                                                    <span>Want to delete ?</span>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <div class="col-sm-12">
+                                                            <button type="button" class="btn btn-primary btn-xs " 
+                                                                    ng-click="deleteDataSource(dataSource, $index)" 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-trash"></span> Yes
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-xs " 
+                                                                    data-dismiss="modal">
+                                                                <span class="fa fa-times"></span> No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                 </div>
+                
+                
             </div>
         </div>
     </div>

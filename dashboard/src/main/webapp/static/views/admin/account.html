@@ -126,337 +126,364 @@
     .account-new{
         margin-bottom: 10px;
     }
+
+    .agency-bt {
+        margin-bottom: 10px;
+    }
+    .nav-tabs-custom {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }
+
 </style>
 <section class="content">
     <div class="row">
-        <div class="col-lg-12">
-            <section class="content-header">
-                <h1 class="text-capitalize">Accounts</h1>        
-            </section>
+        <div class="normalheader transition animated fadeIn">
+            <div class="hpanel">
+                <div class="header-title">
+                    <h2 class="agency-bt font-bold m-b-xs ng-binding">
+                        Accounts
+                    </h2>               
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 data-search">
-            <input type="text" class="form-control" ng-model="searchAccount" placeholder="Search...">
+
+        <div class="nav-tabs-custom col-md-12">
+            <ul class="nav nav-tabs">
+                <li ng-class="{ active: isSet(1) }">
+                    <a href ng-click="setTab(1)"> Details</a>
+                </li>
+                <li ng-class="{ active: isSet(2) }">
+                    <a href ng-click="setTab(2)"> Property
+                    </a>
+                </li>
+                <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
+                    <a href ng-click="setTab(3)"> User
+                    </a>
+                </li>
+            </ul>
         </div>
+
+
+
         <div class="row">
             <div class="col-lg-12">
-                <div class="col-md-6">
-                    <div>
-                        <table class="table table-fixed">
-                            <thead>
-                                <tr>
-                                    <th class="col-xs-5">Name</th>
-                                    <th class="col-xs-6">Geo Location</th>
-                                    <th class="col-xs-1"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="account in accounts| filter: searchAccount" ng-class="{'selectedTableRow':$index == selectedRow}">
-                                    <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
-                                        {{account.accountName}}
-                                    </td>
-                                    <td class="col-xs-6" ng-click="editAccount(account, $index); accountData()">
-                                        {{account.geoLocation?account.geoLocation:'-'}}
-                                    </td>
-                                    <td class="col-xs-1s">
-                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccount{{account.id}}"><i class="fa fa-trash-o"></i></button>
-                                        <div class="modal hmodal-success" id="deleteAccount{{account.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="color-line"></div>
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        <h4 class="modal-title">Delete</h4>
-                                                        <small class="font-bold"></small>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form class="form-horizontal" role="form">
-                                                            <div class="form-group">
-                                                                <div class="col-sm-12  col-md-12">
-                                                                    <span>Want to delete ?</span>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <div class="col-sm-12">
-                                                            <button type="button" class="btn btn-primary btn-xs " 
-                                                                    ng-click="deleteAccount(account, $index)" 
-                                                                    data-dismiss="modal">
-                                                                <span class="fa fa-trash"></span> Yes
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger btn-xs " 
-                                                                    data-dismiss="modal">
-                                                                <span class="fa fa-times"></span> No
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>  
 
-                <div class="col-md-6">
-                    <div class="nav-tabs-custom">
-                        <ul class="nav nav-tabs">
-                            <li ng-class="{ active: isSet(1) }">
-                                <a href ng-click="setTab(1)"> Details</a>
-                            </li>
-                            <li ng-class="{ active: isSet(2) }">
-                                <a href ng-click="setTab(2)"> Property
-                                </a>
-                            </li>
-                            <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
-                                <a href ng-click="setTab(3)"> User
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
 
-                    <div class="row">
-                        <div class="tab-content">
-                            <div ng-show="isSet(1)">
-                                <section class="content">
+                <div class="hpanel">
+
+                    <div class="col-md-6">
+
+
+                        <div class="panel-body">
+
+                            <div class="tab-content">
+                                <div ng-show="isSet(1)">
+
                                     <div class="pull-right account-new">
                                         <button class="btn btn-success" ng-click="addAccount()">New</button>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <form class="form-horizontal">
-                                                <div class="form-group">
-                                                    <label class="col-sm-2">Name</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control" ng-model="account.accountName" placeholder="Name">
-                                                    </div>
-                                                </div>
 
-                                                <div class="form-group">
-                                                    <label class="col-sm-2">Geo Location</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control" ng-model="account.geoLocation" placeholder="Geo">
-                                                    </div>
+                                    <div class="col-md-12">
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <div>
+                                                    <input type="text" class="form-control" ng-model="account.accountName" placeholder="Name">
                                                 </div>
+                                            </div>
 
-                                                <div class="form-group">
-                                                    <label class="col-sm-2">Description</label>
-                                                    <div class="col-sm-10">
-                                                        <textarea class="form-control" ng-model="account.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
-                                                    </div>
+                                            <div class="form-group">
+                                                <label>Geo Location</label>
+                                                <div>
+                                                    <input type="text" class="form-control" ng-model="account.geoLocation" placeholder="Geo">
                                                 </div>
-                                                <div class="pull-right">
-                                                    <button class="btn btn-info" ng-click="saveAccount(account)">Save</button>
-                                                    <button class="btn btn-warning" ng-click="clearAccount(account)">Cancel</button>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <div>
+                                                    <textarea class="form-control" ng-model="account.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
                                                 </div>
-                                            </form>
-                                        </div>
+                                            </div>
+                                            <div class="form-group pull-right">
+                                                <button class="btn btn-info" ng-click="saveAccount(account)">Save</button>
+                                                <button class="btn btn-warning" ng-click="clearAccount(account)">Cancel</button>
+                                            </div>
+                                        </form>
                                     </div>
-                                </section>
-                            </div>
-                            <div ng-show="isSet(2)">
-                                <section class="content">
-                                    <div class="row">
-                                        <div class="row">
-                                            <div class="col-lg-12" ng-hide="showEditPage">
-                                                <table class="table table-fixed">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="col-xs-5">Name</th>
-                                                            <!--<th class="col-xs-4">Account Name</th>-->
-                                                            <th class="col-xs-6">Value</th>
-                                                            <th class="col-xs-1">
-                                                                <button class="btn btn-success btn-xs" ng-click="addProperty()"><i class="fa fa-plus"></i></button>
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody style="height:420px">
-                                                        <tr ng-repeat="property in properties" ng-class="{'selectedTableRow':$index == selectedRows}" ng-click="setPropertyRow($index)">
-                                                            <td class="col-xs-5" ng-click="editProperty(property)">
-                                                                {{property.propertyName}}
-                                                            </td>
-                                                            <!--                                                            <td class="col-xs-4" ng-click="editProperty(property)">
-                                                                                                                            {{property.accountId.accountName}}
-                                                                                                                        </td>-->
-                                                            <td class="col-xs-6" ng-click="editProperty(property)">
-                                                                {{property.propertyValue}}
-                                                            </td>
-                                                            <td class="col-xs-1">
-                                                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteProperty{{property.id}}"><i class="fa fa-trash-o"></i></button>
-                                                                <div class="modal hmodal-success" id="deleteProperty{{property.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="color-line"></div>
-                                                                            <div class="modal-header">
-                                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                                <h4 class="modal-title">Delete</h4>
-                                                                                <small class="font-bold"></small>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <form class="form-horizontal" role="form">
-                                                                                    <div class="form-group">
-                                                                                        <div class="col-sm-12  col-md-12">
-                                                                                            <span>Want to delete ?</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <div class="col-sm-12">
-                                                                                    <button type="button" class="btn btn-primary btn-xs " 
-                                                                                            ng-click="deleteProperty(property, $index)" 
-                                                                                            data-dismiss="modal">
-                                                                                        <span class="fa fa-trash"></span> Yes
-                                                                                    </button>
-                                                                                    <button type="button" class="btn btn-danger btn-xs " 
-                                                                                            data-dismiss="modal">
-                                                                                        <span class="fa fa-times"></span> No
-                                                                                    </button>
+
+
+                                </div>
+                                <div ng-show="isSet(2)">
+
+                                    <div class="col-lg-12" ng-hide="showEditPage">
+                                        <table class="table table-fixed">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-xs-5">Name</th>
+                                                    <!--<th class="col-xs-4">Account Name</th>-->
+                                                    <th class="col-xs-6">Value</th>
+                                                    <th class="col-xs-1">
+                                                        <button class="btn btn-success btn-xs" ng-click="addProperty()"><i class="fa fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="property in properties" ng-class="{'selectedTableRow':$index == selectedRows}" ng-click="setPropertyRow($index)">
+                                                    <td class="col-xs-5" ng-click="editProperty(property)">
+                                                        {{property.propertyName}}
+                                                    </td>
+                                                    <!--                                                            <td class="col-xs-4" ng-click="editProperty(property)">
+                                                                                                                    {{property.accountId.accountName}}
+                                                                                                                </td>-->
+                                                    <td class="col-xs-6" ng-click="editProperty(property)">
+                                                        {{property.propertyValue}}
+                                                    </td>
+                                                    <td class="col-xs-1">
+                                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteProperty{{property.id}}"><i class="fa fa-trash-o"></i></button>
+                                                        <div class="modal hmodal-success" id="deleteProperty{{property.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="color-line"></div>
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <h4 class="modal-title">Delete</h4>
+                                                                        <small class="font-bold"></small>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form class="form-horizontal" role="form">
+                                                                            <div class="form-group">
+                                                                                <div class="col-sm-12  col-md-12">
+                                                                                    <span>Want to delete ?</span>
                                                                                 </div>
                                                                             </div>
+                                                                        </form>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <div class="col-sm-12">
+                                                                            <button type="button" class="btn btn-primary btn-xs " 
+                                                                                    ng-click="deleteProperty(property, $index)" 
+                                                                                    data-dismiss="modal">
+                                                                                <span class="fa fa-trash"></span> Yes
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-danger btn-xs " 
+                                                                                    data-dismiss="modal">
+                                                                                <span class="fa fa-times"></span> No
+                                                                            </button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div ng-show="showEditPage" class="col-md-12">
-                                                <form class="form-horizontal">
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2">Name</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control" ng-model="property.propertyName" placeholder="Name">
+                                                            </div>
                                                         </div>
-
-                                                        <!--                                                        <label class="col-sm-2">Account Name</label>
-                                                                                                                <div class="col-sm-4">
-                                                                                                                    <input type="text" class="form-control" ng-model="property.accountId" placeholder="Name">
-                                                                                                                    <select class="form-control" 
-                                                                                                                            ng-options="account.accountName for account in accounts track by account.id" 
-                                                                                                                            ng-model="property.accountId">
-                                                                                                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                                                                                    </select>
-                                                                                                                </div>-->
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2">Value</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control" ng-model="property.propertyValue" placeholder="Value">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                        <label class="col-sm-2">Remark</label>
-                                                        <div class="col-sm-10">
-                                                            <textarea class="form-control" ng-model="property.propertyRemark" placeholder="Remark" rows="1" style="min-height: 100px;"></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="pull-right">
-                                                        <button class="btn btn-info" ng-click="saveProperty(property)">Save</button>
-                                                        <button class="btn btn-warning" ng-click="clearProperty(property)">Cancel</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </section>
-                            </div>
-                            <div ng-show="isSet(3)">
-                                <section class="content">
-                                    <div class="row">
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <table class="table table-fixed">
-                                                    <thead>
-                                                        <tr>
-                                                            <!--<th class="col-xs-4">Account Name</th>-->
-                                                            <th class="col-xs-6">User Name</th>
-                                                            <th class="col-xs-4">Status</th>
-                                                            <th class="col-xs-2">
-                                                                <button class="btn btn-success btn-xs" ng-click="addAccountUser()"><i class="fa fa-plus"></i></button>
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody style="height:420px">
-                                                        <tr ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
-                                                            <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
-                                                                                                                            {{accountUser.accountId.accountName}}
-                                                                                                                        </td>-->
-                                                            <td class="col-xs-6 account-select2" ng-click="editAccountUser(accountUser)">
-                                                                <div ng-hide="accountUser.isEdit">
-                                                                    {{accountUser.userId.userName}}
-                                                                </div>
-                                                                <div ng-show="accountUser.isEdit">
-                                                                    <ui-select ng-model="accountUser.userId" theme="select2" ng-disabled="disabled">
-                                                                        <ui-select-match placeholder="Select User...">{{$select.selected.userName}}</ui-select-match>
-                                                                        <ui-select-choices repeat="user in users | filter: $select.search">
-                                                                            <span ng-bind-html="user.userName | highlight: $select.search"></span>
-                                                                        </ui-select-choices>
-                                                                    </ui-select>
-                                                                </div>
-                                                            </td>
-                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
-                                                                <label class="switch_wrap col-sm-10" for="field{{accountUser.id}}">
-                                                                    <input id="field{{accountUser.id}}" type="checkbox" ng-model="accountUser.status" ng-change="saveStatus(accountUser)" value="1" />
-                                                                    <div class="switch switch-mini"><span class="bullet"></span></div>
-                                                                </label>
-                                                                <!--<i class="fa" ng-class="{'fa-times': !accountUser.status, 'text-danger':!accountUser.status, 'fa-circle': accountUser.status, 'text-success':accountUser.status}"></i>-->
-                                                            </td>
-                                                            <td class="col-xs-2">
-                                                                <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser); accountUser.isEdit = false;"><i class="fa fa-save"></i></button>
-                                                                <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="removeAccountUser($index)"><i class="fa fa-times"></i></button>
-                                                                <button ng-hide="accountUser.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccountUser{{accountUser.id}}"><i class="fa fa-trash-o"></i></button>
-                                                                <div class="modal hmodal-success" id="deleteAccountUser{{accountUser.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                                                    <div class="modal-dialog">
-                                                                        <div class="modal-content">
-                                                                            <div class="color-line"></div>
-                                                                            <div class="modal-header">
-                                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                                <h4 class="modal-title">Delete</h4>
-                                                                                <small class="font-bold"></small>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <form class="form-horizontal" role="form">
-                                                                                    <div class="form-group">
-                                                                                        <div class="col-sm-12  col-md-12">
-                                                                                            <span>Want to delete ?</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <div class="col-sm-12">
-                                                                                    <button type="button" class="btn btn-primary btn-xs " 
-                                                                                            ng-click="deleteAccountUser(accountUser, $index)" 
-                                                                                            data-dismiss="modal">
-                                                                                        <span class="fa fa-trash"></span> Yes
-                                                                                    </button>
-                                                                                    <button type="button" class="btn btn-danger btn-xs " 
-                                                                                            data-dismiss="modal">
-                                                                                        <span class="fa fa-times"></span> No
-                                                                                    </button>
+                                    <div ng-show="showEditPage" class="col-md-12">
+                                        <form class="form-horizontal">
+                                            <div class="form-group">
+                                                <label>Name</label>
+                                                <div>
+                                                    <input type="text" class="form-control" ng-model="property.propertyName" placeholder="Name">
+                                                </div>
+
+                                                <!--                                                        <label class="col-sm-2">Account Name</label>
+                                                                                                        <div class="col-sm-4">
+                                                                                                            <input type="text" class="form-control" ng-model="property.accountId" placeholder="Name">
+                                                                                                            <select class="form-control" 
+                                                                                                                    ng-options="account.accountName for account in accounts track by account.id" 
+                                                                                                                    ng-model="property.accountId">
+                                                                                                                <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                                                                                            </select>
+                                                                                                        </div>-->
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Value</label>
+                                                <div>
+                                                    <input type="text" class="form-control" ng-model="property.propertyValue" placeholder="Value">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Remark</label>
+                                                <div>
+                                                    <textarea class="form-control" ng-model="property.propertyRemark" placeholder="Remark" rows="1" style="min-height: 100px;"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group pull-right">
+                                                <button class="btn btn-info" ng-click="saveProperty(property)">Save</button>
+                                                <button class="btn btn-warning" ng-click="clearProperty(property)">Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                                <div ng-show="isSet(3)">
+
+                                    <div class="col-lg-12">
+                                        <table class="table table-fixed">
+                                            <thead>
+                                                <tr>
+                                                    <!--<th class="col-xs-4">Account Name</th>-->
+                                                    <th class="col-xs-6">User Name</th>
+                                                    <th class="col-xs-4">Status</th>
+                                                    <th class="col-xs-2">
+                                                        <button class="btn btn-success btn-xs" ng-click="addAccountUser()"><i class="fa fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="height:420px">
+                                                <tr ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
+                                                    <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
+                                                                                                                    {{accountUser.accountId.accountName}}
+                                                                                                                </td>-->
+                                                    <td class="col-xs-6 account-select2" ng-click="editAccountUser(accountUser)">
+                                                        <div ng-hide="accountUser.isEdit">
+                                                            {{accountUser.userId.userName}}
+                                                        </div>
+                                                        <div ng-show="accountUser.isEdit">
+                                                            <ui-select ng-model="accountUser.userId" theme="select2" ng-disabled="disabled">
+                                                                <ui-select-match placeholder="Select User...">{{$select.selected.userName}}</ui-select-match>
+                                                                <ui-select-choices repeat="user in users | filter: $select.search">
+                                                                    <span ng-bind-html="user.userName | highlight: $select.search"></span>
+                                                                </ui-select-choices>
+                                                            </ui-select>
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
+                                                        <label class="switch_wrap col-sm-10" for="field{{accountUser.id}}">
+                                                            <input id="field{{accountUser.id}}" type="checkbox" ng-model="accountUser.status" ng-change="saveStatus(accountUser)" value="1" />
+                                                            <div class="switch switch-mini"><span class="bullet"></span></div>
+                                                        </label>
+                                                        <!--<i class="fa" ng-class="{'fa-times': !accountUser.status, 'text-danger':!accountUser.status, 'fa-circle': accountUser.status, 'text-success':accountUser.status}"></i>-->
+                                                    </td>
+                                                    <td class="col-xs-2">
+                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser); accountUser.isEdit = false;"><i class="fa fa-save"></i></button>
+                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="removeAccountUser($index)"><i class="fa fa-times"></i></button>
+                                                        <button ng-hide="accountUser.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccountUser{{accountUser.id}}"><i class="fa fa-trash-o"></i></button>
+                                                        <div class="modal hmodal-success" id="deleteAccountUser{{accountUser.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <div class="color-line"></div>
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <h4 class="modal-title">Delete</h4>
+                                                                        <small class="font-bold"></small>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form class="form-horizontal" role="form">
+                                                                            <div class="form-group">
+                                                                                <div class="col-sm-12  col-md-12">
+                                                                                    <span>Want to delete ?</span>
                                                                                 </div>
                                                                             </div>
+                                                                        </form>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <div class="col-sm-12">
+                                                                            <button type="button" class="btn btn-primary btn-xs " 
+                                                                                    ng-click="deleteAccountUser(accountUser, $index)" 
+                                                                                    data-dismiss="modal">
+                                                                                <span class="fa fa-trash"></span> Yes
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-danger btn-xs " 
+                                                                                    data-dismiss="modal">
+                                                                                <span class="fa fa-times"></span> No
+                                                                            </button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </section>
+
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
+
+
+
+                <div class="hpanel">
+                    <div class="col-md-6">
+
+                        <div class="panel-body">
+                            <div class="data-search">
+                                <input type="text" class="form-control" ng-model="searchAccount" placeholder="Search...">
+                            </div>
+                            <table class="table table-fixed">
+                                <thead>
+                                    <tr>
+                                        <th class="col-xs-5">Name</th>
+                                        <th class="col-xs-6">Geo Location</th>
+                                        <th class="col-xs-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="account in accounts| filter: searchAccount" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                        <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
+                                            {{account.accountName}}
+                                        </td>
+                                        <td class="col-xs-6" ng-click="editAccount(account, $index); accountData()">
+                                            {{account.geoLocation?account.geoLocation:'-'}}
+                                        </td>
+                                        <td class="col-xs-1s">
+                                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccount{{account.id}}"><i class="fa fa-trash-o"></i></button>
+                                            <div class="modal hmodal-success" id="deleteAccount{{account.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="color-line"></div>
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            <h4 class="modal-title">Delete</h4>
+                                                            <small class="font-bold"></small>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" role="form">
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-12  col-md-12">
+                                                                        <span>Want to delete ?</span>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-primary btn-xs " 
+                                                                        ng-click="deleteAccount(account, $index)" 
+                                                                        data-dismiss="modal">
+                                                                    <span class="fa fa-trash"></span> Yes
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger btn-xs " 
+                                                                        data-dismiss="modal">
+                                                                    <span class="fa fa-times"></span> No
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>  
+                </div> 
+
+
             </div>
         </div>                
     </div>
