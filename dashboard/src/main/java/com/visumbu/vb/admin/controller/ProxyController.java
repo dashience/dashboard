@@ -271,7 +271,6 @@ public class ProxyController {
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
-
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);

@@ -1592,9 +1592,11 @@ public class CustomReportDesigner {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
                     PdfPTable pdfTable = dynamicPdfTable(tabWidget);
+                    document.add(new Phrase("\n"));
                     document.add(pdfTable);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("text")) {
-                    PdfPTable pdfTable = generateTextPdfTable(tabWidget);
+                    PdfPTable pdfTable = generateTextPdfTable(tabWidget);                
+                    document.add(new Phrase("\n"));
                     document.add(pdfTable);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
 
@@ -1620,12 +1622,14 @@ public class CustomReportDesigner {
                         chartCell.setBorderColor(widgetBorderColor);
                         chartCell.setPadding(10);
                         table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
                         document.add(table);
                     } else {
                         PdfPCell chartCell = new PdfPCell();
                         chartCell.setBorderColor(widgetBorderColor);
                         chartCell.setPadding(10);
                         table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
                         document.add(table);
                     }
                 } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
@@ -1655,6 +1659,14 @@ public class CustomReportDesigner {
                         chartCell.setBorderColor(widgetBorderColor);
                         chartCell.setPadding(10);
                         table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    } else {
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
                         document.add(table);
                     }
 
@@ -1682,14 +1694,21 @@ public class CustomReportDesigner {
                         chartCell.setBorderColor(widgetBorderColor);
                         chartCell.setPadding(5);
                         table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    } else {
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
                         document.add(table);
                     }
                 } else if (tabWidget.getChartType().equalsIgnoreCase("areaChart")) {
+                    document.add(new Phrase("\n"));
                     document.add(multiAxisAreaChart(writer, tabWidget));
                 }
                 // System.out.println("Chart Type ===> " + tabWidget.getChartType());
-
-                document.add(new Phrase("\n"));
             }
             document.close();
             out.flush();
@@ -2165,6 +2184,9 @@ public class CustomReportDesigner {
             List<WidgetColumn> columns = tabWidget.getColumns();
 
             List<Map<String, Object>> originalData = tabWidget.getData();
+            if (originalData == null || originalData.isEmpty()) {
+                return null;
+            }
             List<Map<String, Object>> data = new ArrayList<>(originalData);
 
             List<Map<String, Object>> tempData = tabWidget.getData();
@@ -2496,20 +2518,20 @@ public class CustomReportDesigner {
 //        final String category4 = "Category 4";
 
         // create the dataset...
+        DecimalFormat df = new DecimalFormat(".##");
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
             for (Iterator<String> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
                 String axis = iterator1.next();
-                System.out.println(ApiUtils.toDouble(dataMap.get(axis) + "") + "---" + axis + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble(dataMap.get(axis) + ""), axis, dataMap.get(xAxis) + "");
+                System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis)) + "") + "---" + axis + "----" + dataMap.get(xAxis) + "");
+                dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis)) + ""), axis, dataMap.get(xAxis) + "");
             }
 //            for (Iterator<String> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
 //                String axis = iterator1.next();
 //                System.out.println(null + "---" + axis + "----" + dataMap.get(xAxis) + "");
 //                dataset.addValue(null, axis, dataMap.get(xAxis) + "");
 //            }
-
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
@@ -2550,6 +2572,7 @@ public class CustomReportDesigner {
 //        final String category4 = "Category 4";
 
         // create the dataset...
+        DecimalFormat df = new DecimalFormat(".##");
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
@@ -2570,8 +2593,9 @@ public class CustomReportDesigner {
 
             for (Iterator<String> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
                 String axis = iterator1.next();
-                System.out.println(null + "---" + axis + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble(dataMap.get(axis) + ""), axis, dataMap.get(xAxis) + "");
+                System.out.println(dataMap.get(axis)+" ");
+                System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis)) + "")+ "---" + axis + "----" + dataMap.get(xAxis) + "");
+                dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis)) + ""), axis, dataMap.get(xAxis) + "");
             }
         }
 
