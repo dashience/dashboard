@@ -26,7 +26,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $scope.selectDealer = {};
-//    $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=jdbc:mysql://localhost:3306/marketing_data&startDate=09/07/2016&endDate=09/30/2016&username=root&password=root&port=3306&schema=deeta_dashboard&query=select location id, location dealerName from (select distinct location_1 location from Data) a').success(function (response) {
+   // $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=jdbc:mysql://localhost:3306/marketing_data&startDate=09/07/2016&endDate=09/30/2016&username=root&password=root&port=3306&schema=deeta_dashboard&query=select location id, location dealerName from (select distinct location_1 location from Data) a').success(function (response) {
     $http.get('admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&connectionUrl=jdbc:mysql://localhost:3306/skyzone&startDate=09/07/2016&endDate=09/30/2016&username=root&password=root&port=3306&schema=deeta_dashboard&query=select location id, location dealerName from (select distinct location_1 location from Data) a').success(function (response) {
         $scope.dealers = response.data;
         $stateParams.locationId = $stateParams.locationId ? $stateParams.locationId : response.data[0].id;
