@@ -10,7 +10,6 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -149,7 +148,7 @@ public class ProxyController {
                     }
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                         System.out.println("DS TYPE ==>  CSV");
-                        url = "/admin/csv/getData";
+                        url = "admin/csv/getData";
                     }
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -233,8 +232,7 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
-                    url = "../VizBoard/admin/csv/getData";
+                    url = "admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -264,8 +262,8 @@ public class ProxyController {
         }
         try {
             if (exportType.equalsIgnoreCase("pdf")) {
-               response.setContentType("application/x-msdownload");
-               response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);
@@ -273,7 +271,6 @@ public class ProxyController {
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
-
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
