@@ -159,7 +159,7 @@ public class ProxyController {
                     String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
                     System.out.println("UR:" + url);
                     if (url.startsWith("../")) {
-                        url = url.replaceAll("\\.\\./", localUrl);
+                      url = url.replaceAll("\\.\\./", localUrl);
                     }
                     System.out.println("url: " + url);
                     System.out.println("valuemap: " + valueMap);
@@ -196,7 +196,7 @@ public class ProxyController {
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
-        System.out.println("EXport type ==> " + exportType);
+        System.out.println("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
         }
@@ -275,6 +275,11 @@ public class ProxyController {
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
             }
+//                response.setContentType("application/vnd.ms-excel");
+//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.xlsx");
+//                OutputStream out = response.getOutputStream();
+//                CustomReportDesigner crd = new CustomReportDesigner();
+//                crd.dynamicXlsDownload(tabWidgets, out);
         } catch (Exception e) {
             e.printStackTrace();
         }
