@@ -100,50 +100,246 @@
     .switch_wrap .switch .bullet::after {
         margin-left: 2px;
     }
+    .scheduler-checkBox-label{
+        display: block;
+        padding-left: 15px;
+        text-indent: -15px;
+        cursor: pointer;
+    }
+    .scheduler-checkBox{
+        width: 13px;
+        height: 13px;
+        padding: 0;
+        margin:0;
+        vertical-align: bottom;
+        position: relative;
+        top: -1px;
+        *overflow: hidden;
+    }
+    .close {
+        float: right;
+        font-size: 21px;
+        font-weight: bold;
+        line-height: 1;
+        color: #000;
+        text-shadow: 0 1px 0 #fff;
+        filter: alpha(opacity=20);
+        opacity: .2;
+        margin-top: 0px;
+        margin-right: 0px;
+    }
+    .custom-daterange-box{
+        display: flex;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+    .custom-daterange-box-icon{
+        margin-left: 48px;
+    }
+    .scheduler-list-style{
+        height: 180px;
+        overflow: auto;
+    }
 </style>
 <section class="content">
     <div class="pull-right-container pull-right">
         <div class="btn-group"> 
-            <a ui-sref="index.schedulerIndex.scheduler({locationId: locationId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
+            <a ui-sref="index.schedulerIndex.scheduler({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+        <div class="btn-group"> 
+            <button class="btn btn-success btn-sm" ng-click="addNewScheduler()">New</button>
         </div>
     </div>
-    
+
     <div class="row">        
         <div class="col-lg-12 data-table-set">
             <form class="form-horizontal">
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Schedule Name</label>
+                    <label class="col-sm-2">Schedule Name</label>
                     <div class="col-sm-10">
                         <input type="text" placeholder="Schedule Name" ng-model="scheduler.schedulerName" class="form-control">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Start Date</label>
-                    <div class="col-sm-10">
-                        <input type="text" placeholder="Start Date" ng-model="scheduler.startDate" class="form-control">
+                    <label class="col-sm-2">Start Date</label>
+                    <div class="col-sm-4">
+                        <input type="text" jqdatepicker placeholder="Start Date" ng-model="scheduler.startDate" class="form-control">
+                    </div>
+
+                    <label class="col-sm-2">End Date</label>
+                    <div class="col-sm-4">
+                        <input type="text" jqdatepicker placeholder="End Date" ng-model="scheduler.endDate" class="form-control">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">End Date</label>
-                    <div class="col-sm-10">
-                        <input type="text" placeholder="End Date" ng-model="scheduler.endDate" class="form-control">
+                    <label class="col-sm-2">Repeat</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" ng-options="schedulerRepeat for schedulerRepeat in schedulerRepeats" ng-model="scheduler.schedulerRepeatType"></select>
+                    </div>
+                    <label class="col-sm-1" ng-if="scheduler.schedulerRepeatType === 'Weekly'">Select Week</label>
+                    <div class="col-sm-2" ng-if="scheduler.schedulerRepeatType === 'Weekly'">
+                        <select class="form-control" ng-options="week for week in weeks" ng-model="scheduler.schedulerWeekly"></select>
+                    </div>
+                    <label class="col-sm-2" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">Time</label>
+                    <div class="col-sm-1" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
+                        <input type="text" jqdatepicker-Time placeholder="Time" ng-model="scheduler.schedulerTime" class="form-control">
+                    </div>
+                    <label class="col-sm-2" ng-if="scheduler.schedulerRepeatType === 'Monthly'">Select Date And Time</label>
+                    <div class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Monthly'">
+                        <input type="text" jqdatetimepicker placeholder="Select Date And Time" ng-model="scheduler.schedulerMonthly" class="form-control">
+                    </div>
+                    <label class="col-sm-2" ng-if="scheduler.schedulerRepeatType === 'Yearly'">Select Month, Date And Time</label>
+                    <div class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
+                        <input type="text" jqdatetimepicker placeholder="Select Month, Date And Time" ng-model="scheduler.schedulerYearly" class="form-control">
+                    </div>
+                    <label class="col-sm-2" ng-if="scheduler.schedulerRepeatType === 'Year Of Week'">Year Of Week</label>
+                    <div class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Year Of Week'">
+                        <ui-select ng-model="scheduler.schedulerYearOfWeek" theme="select2" ng-disabled="disabled" style="width:65px">
+                            <ui-select-match placeholder="Select Year Of Week...">{{$select.selected}}</ui-select-match>
+                            <ui-select-choices repeat="totalYearOfWeek in totalYearOfWeeks | filter: $select.search">
+                                <span ng-bind-html="totalYearOfWeek | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
                     </div>
                 </div>
-
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">Schedule Start/Stop</label>
-                    <label class="switch_wrap col-sm-10" for="field">
-                        <input id="field" type="checkbox" ng-model="scheduler.startStop" value="1" />
-                        <div class="switch switch-mini"><span class="bullet"></span></div>
-                    </label>
+                    <label class="col-sm-2">Report</label>
+                    <div class="col-sm-4">
+                        <ui-select ng-model="scheduler.reportId" theme="select2" ng-disabled="disabled" style="min-width: 463px;">
+                            <ui-select-match placeholder="Select Report..." style="height: 40px; padding: 2px 0 0 8px;">
+                                <img ng-if="$select.selected.logo" style="width: 40px" ng-src="{{ $select.selected.logo}}" />
+                                <img ng-if="!$select.selected.logo" style="width: 40px" ng-src="static/img/logos/emptyLogo.jpg" />
+                                {{$select.selected.reportTitle}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="report in reports | filter: $select.search">                                
+                                <img ng-if="report.logo" style="width: 40px" ng-src="{{ report.logo}}" />
+                                <img ng-if="!report.logo" style="width: 40px" ng-src="static/img/logos/emptyLogo.jpg" />
+                                <div ng-bind-html="report.reportTitle | highlight: $select.search" style="display: inline">
+                                </div>                                
+                                <small><span style="display: list-item;">Description : {{report.description| limitTo: 25}}{{report.description.length > 25 ? '...' : ''}}</span></small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <label class="col-sm-2">Account</label>
+                    <div class="col-sm-4">
+                        <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled">
+                            <ui-select-match placeholder="Select Year Account...">{{$select.selected.accountName}}</ui-select-match>
+                            <ui-select-choices repeat="account in accounts | filter: $select.search">
+                                <span ng-bind-html="account.accountName | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
                 </div>
-                
+                <div class="form-group">
+                    <label class="col-sm-2">Date Range</label>
+                    <div class="col-sm-1">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
+                                <span class="caret"></span></button>
+                            <ul class="dropdown-menu scheduler-list-style">
+                                <li ng-click="selectDuration('None', null)"><a>None</a></li>
+                                <li ng-click="selectDuration('Today', null)"><a>Today</a></li>
+                                <li ng-click="selectDuration('Yesterday', null)"><a>Yesterday</a></li>
+                                <li ng-click="selectDuration('This Week', null)"><a>This Week</a></li>
+                                <li ng-click="selectDuration('Last Week', null)"><a>Last Week</a></li>
+                                <li ng-click="selectDuration('This Month', null)"><a>This Month</a></li>
+                                <li ng-click="selectDuration('Last Month', null)"><a>Last Month</a></li>
+                                <li ng-click="selectDuration('This Year', null)"><a>This Year</a></li>
+                                <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>
+                                <li ng-click="selectDuration('Last N Days', scheduler)">
+                                    <a>Last <input type="text"
+                                                   ng-model="scheduler.lastNdays" 
+                                                   ng-change="selectDuration('Last N Days', scheduler)" 
+                                                   class="form-control" 
+                                                   ng-model-options="{debounce: 500}"
+                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                        Days
+                                    </a>
+                                </li>
+                                <li ng-click="selectDuration('Last N Weeks', scheduler)">
+                                    <a>Last <input type="text" 
+                                                   ng-model="scheduler.lastNweeks" 
+                                                   ng-change="selectDuration('Last N Weeks', scheduler)"
+                                                   class="form-control" 
+                                                   ng-model-options="{debounce: 500}"
+                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                        Weeks
+                                    </a>
+                                </li>
+                                <li ng-click="selectDuration('Last N Months', scheduler)">
+                                    <a>Last <input type="text" 
+                                                   ng-model="scheduler.lastNmonths" 
+                                                   ng-change="selectDuration('Last N Months', scheduler)"
+                                                   class="form-control" 
+                                                   ng-model-options="{debounce: 500}"
+                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                        Months
+                                    </a>
+                                </li>
+                                <li ng-click="selectDuration('Last N Years', scheduler)">
+                                    <a>Last <input type="text" 
+                                                   ng-model="scheduler.lastNyears" 
+                                                   ng-change="selectDuration('Last N Years', scheduler)"
+                                                   class="form-control" 
+                                                   ng-model-options="{debounce: 500}"
+                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                        Years
+                                    </a>
+                                </li>
+                                <li ng-click="selectDuration('Custom')"><a>Custom</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <label class="col-sm-2" ng-show="scheduler.dateRangeName === 'Custom'">Custom Range</label>
+                    <div class="col-sm-2"   ng-show="scheduler.dateRangeName === 'Custom'">
+                        <a class="pull-right custom-daterange-box" id="customDateRange">
+                            <span class="date-border">
+                                {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
+                            </span>
+                        </a> 
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2">Email Ids</label>
+                    <div class="col-sm-4">
+                        <ui-select multiple tagging tagging-label="true" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" theme="bootstrap" ng-disabled="disabled">
+                            <ui-select-match placeholder="Email Ids...">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="account in accounts | filter:$select.search">
+                                {{account.agencyId.email}}
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2">Type</label>
+                    <div class="col-sm-10">
+                        <div class="col-sm-2"><p><label class="scheduler-checkBox-label"><input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" /> <span>PDF</span></label></p></div>
+                        <div class="col-sm-2"><p><label class="scheduler-checkBox-label"><input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'ppt'" ng-true-value="'ppt'" ng-model="scheduler.schedulerType" /> <span>PPT</span></label></p></div>
+                        <div class="col-sm-2"><p><label class="scheduler-checkBox-label"><input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'xls'" ng-true-value="'xls'" ng-model="scheduler.schedulerType" /> <span>XLS</span></label></p></div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <div class="col-sm-12">
                         <button class="btn btn-success btn-sm" ng-click="saveScheduler(scheduler)"> Save</button>
-                        <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({locationId: locationId, startDate: startDate, endDate: endDate})"> Cancel</button>
+                        <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})"> Cancel</button>
                     </div>
                 </div>
             </form>            

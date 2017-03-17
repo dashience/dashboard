@@ -3786,7 +3786,7 @@ button.close {
 
 .panel-tools {
     margin-top: -8px;
-    z-index: 999;
+    /*z-index: 999;*/
     margin-right: 10px;
 }
 
@@ -3946,9 +3946,9 @@ textarea.form-control {
     margin-bottom:20px;
 }
 
-.daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
+/*.daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
     display: none !important;
-}
+}*/
 
 .clear {
     clear: both;
