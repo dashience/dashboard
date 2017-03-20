@@ -30,7 +30,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
             id: dataSet.id,
             name: dataSet.name,
             query: dataSet.query,
-            dataSourceId: dataSet.dataSourceId
+            dataSourceId: dataSet.dataSourceId,
+            agencyId: dataSet.agencyId.id,
+            userId: dataSet.userId.id
         };
         $scope.dataSet = data;
     };

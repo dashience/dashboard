@@ -25,6 +25,9 @@
 padding-top: 20px;
 text-transform: capitalize;
     }
+    .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
+    display: none !important;
+}
 
 </style>
 
@@ -154,7 +157,8 @@ text-transform: capitalize;
                                     <ul class="col-lg-3 icon-dash">                                    
                                         <li class="product-dashboard-icon" ng-click="setParams()">
                                             <a data-ui-sref="index.dataSource({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                                <i class="fa fa-database text-warning"></i> <h5>Data Source</h5>
+                                                <img src="static/img/logos/data-source.png" width="117">
+                                                <!--<i class="fa fa-database text-warning"></i> <h5>Data Source</h5>-->
                                             </a>
                                         </li>
                                     </ul>
@@ -196,24 +200,24 @@ text-transform: capitalize;
                                     </ul>
                                 </div>                                                              
                             </div>
-                            <!--                            <div>
-                                                            <ul class="col-lg-3 icon-dash"> 
-                                                                <li class="product-dashboard-icon" ng-click="setParamsDate()">
-                                                                    <a data-ui-sref="index.report.reports({locationId: locationId, startDate: startDate, endDate: endDate})">
-                                                                        <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i> <h5> Reports</h5>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                        <div>
-                                                            <ul class="col-lg-3 icon-dash"> 
-                                                                <li class="product-dashboard-icon" ng-click="setParamsDate()">
-                                                                    <a data-ui-sref="index.schedulerIndex.scheduler({locationId: locationId, startDate: startDate, endDate: endDate})">
-                                                                        <i class="fa fa-clock-o text-danger" aria-hidden="true"></i> <h5> Scheduler</h5>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>-->
+                            <div>
+                                <ul class="col-lg-3 icon-dash"> 
+                                    <li class="product-dashboard-icon" ng-click="setParams()">
+                                        <a data-ui-sref="index.report.reports({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i> <h5> Reports</h5>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>                                                    
+                            <div>
+                                <ul class="col-lg-3 icon-dash"> 
+                                    <li class="product-dashboard-icon" ng-click="setParams()">
+                                        <a data-ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <i class="fa fa-clock-o text-danger" aria-hidden="true"></i> <h5> Scheduler</h5>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </li>

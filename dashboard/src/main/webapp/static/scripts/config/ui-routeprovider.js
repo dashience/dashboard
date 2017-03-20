@@ -25,24 +25,24 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/reports/reportIndex.html",
                 controller: 'ReportIndexController'
             })
-            .state("index.report.template", {
-                url: "/template/::accountId/:accountName/:reportId?:startDate/:endDate",
-                templateUrl: "static/views/reports/reportTemplate.html",
-                controller: 'TemplateController',
-                activetab: 'template'
-            })
             .state("index.report.reports", {
-                url: "/report/:accountId/:accountName?:startDate/:endDate",
+                url: "/report?:startDate/:endDate",
                 templateUrl: "static/views/reports/reports.html",
                 controller: 'ReportController',
                 activetab: 'report'
             })
             .state("index.report.newOrEdit", {
-                url: "/newOrEdit/:accountId/:accountNamed/:reportId?:startDate/:endDate",
+                url: "/newOrEdit/:reportId?:startDate/:endDate",
                 templateUrl: "static/views/reports/newOrEditReports.html",
                 controller: 'NewOrEditReportController',
                 activetab: 'report'
             })
+//            .state("index.report.template", {
+//                url: "/template/:accountId/:accountName/:reportId?:startDate/:endDate",
+//                templateUrl: "static/views/reports/reportTemplate.html",
+//                controller: 'TemplateController',
+//                activetab: 'template'
+//            })
             .state("index.dataSource", {
                 url: "/dataSource/:accountId/:accountName?:startDate/:endDate",
                 templateUrl: "static/views/source/dataSource.html",
@@ -64,9 +64,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 //                controller: 'SchedulerController'
             })
             .state("index.schedulerIndex.scheduler", {
-                url: "/scheduler/:accountId/:accountName?:startDate/:endDate",
+                url: "/scheduler?:startDate/:endDate",
                 templateUrl: "static/views/scheduler/scheduler.html",
                 controller: 'SchedulerController'
+            })
+            .state("index.schedulerIndex.editOrNewScheduler", {
+                url: "/editOrNewScheduler/:schedulerId?:startDate/:endDate",
+                templateUrl: "static/views/scheduler/newOrEditScheduler.html",
+                controller: 'NewOrEditSchedulerController'
             })
             .state("index.user", {
                 url: "/user/:accountId/:accountName?:startDate/:endDate",
@@ -83,11 +88,6 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/admin/agency.html",
                 controller: 'AgencyController'
             });
-//            .state("index.schedulerIndex.editOrNewScheduler", {
-//                url: "/editOrNewScheduler/:locationId?:startDate/:endDate",
-//                templateUrl: "static/views/scheduler/newOrEditScheduler.html",
-//                controller: 'NewOrEditSchedulerController'
-//            });
 
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('index.dashboard');

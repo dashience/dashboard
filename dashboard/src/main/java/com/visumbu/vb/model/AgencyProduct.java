@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +18,12 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 /**
@@ -37,6 +41,12 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "AgencyProduct.findByProductOrder", query = "SELECT a FROM AgencyProduct a WHERE a.productOrder = :productOrder")})
 public class AgencyProduct implements Serializable {
 
+    @Type(type = "org.hibernate.type.StringClobType")
+    @Column(name = "icon")
+    private String icon;
+    @OneToMany(mappedBy = "agencyProductId")
+    private Collection<DashboardTabs> dashboardTabsCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,9 +56,6 @@ public class AgencyProduct implements Serializable {
     @Size(max = 4096)
     @Column(name = "product_name")
     private String productName;
-    @Type(type = "org.hibernate.type.StringClobType")
-    @Column(name = "icon")
-    private String icon;
     @Column(name = "show_product")
     private Boolean showProduct;
     @Column(name = "product_order")
@@ -137,5 +144,16 @@ public class AgencyProduct implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.AgencyProduct[ id=" + id + " ]";
     }
-    
+
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTabs> getDashboardTabsCollection() {
+        return dashboardTabsCollection;
+    }
+
+    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
+        this.dashboardTabsCollection = dashboardTabsCollection;
+    }  
+
 }

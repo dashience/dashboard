@@ -1,6 +1,6 @@
 app.controller("DataSourceController", function ($scope, $stateParams, $http) {
-//    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
-    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}];
+    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
+//    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}, {type: "https", name: "HTTPS"}, {type: "xls", name: "XLS"}];
     
     function getItems() {
         $http.get('admin/ui/dataSource').success(function (response) {
@@ -55,7 +55,9 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
             userName: dataSource.userName,
             dataSourceType: dataSource.dataSourceType,
             sourceFile: dataSource.sourceFile ? dataSource.sourceFile : $scope.fileReader,
-            sourceFileName: $scope.sourceFileName
+            sourceFileName: $scope.sourceFileName,
+            agencyId: dataSource.agencyId,
+            userId: dataSource.userId
         };
         $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
             getItems();
@@ -78,7 +80,9 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http) {
             userName: dataSource.userName,
             password: dataSource.password,
             dataSourceType: dataSource.dataSourceType,
-            sourceFile: dataSource.sourceFile
+            sourceFile: dataSource.sourceFile,
+            agencyId: dataSource.agencyId.id,
+            userId: dataSource.userId.id
         };
         $scope.dataSource = data;
     };
