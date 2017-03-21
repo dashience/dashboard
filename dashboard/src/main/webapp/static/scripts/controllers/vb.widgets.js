@@ -67,7 +67,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get("admin/ui/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
     });
-    
+
     $http.get('admin/ui/report').success(function (response) {
         $scope.reportList = response;
     });
