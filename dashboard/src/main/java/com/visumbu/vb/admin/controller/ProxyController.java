@@ -267,7 +267,6 @@ public class ProxyController {
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);
-
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
@@ -275,11 +274,11 @@ public class ProxyController {
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
             }
-//                response.setContentType("application/vnd.ms-excel");
-//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.xlsx");
-//                OutputStream out = response.getOutputStream();
-//                CustomReportDesigner crd = new CustomReportDesigner();
-//                crd.dynamicXlsDownload(tabWidgets, out);
+                response.setContentType("application/vnd.ms-excel");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.xlsx");
+                OutputStream out = response.getOutputStream();
+                CustomReportDesigner crd = new CustomReportDesigner();
+                crd.dynamicXlsDownload(tabWidgets, out);
         } catch (Exception e) {
             e.printStackTrace();
         }

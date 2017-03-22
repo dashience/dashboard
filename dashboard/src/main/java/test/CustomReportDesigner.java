@@ -46,9 +46,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -221,6 +225,44 @@ public class CustomReportDesigner {
         return value;
     }
 
+    enum DAY {
+        Monday("Monday", 2), Tuesday("Tuesday", 3), Wednesday("Wednesday", 4), Thursday("Thursday", 5), Friday("Friday", 6), Saturday("Saturday", 7), Sunday("Sunday", 1);
+        private String m_name;
+        private int m_weight;
+
+        DAY(String name, int weight) {
+            m_name = name;
+            m_weight = weight;
+        }
+
+        public int getWeight() {
+            return this.m_weight;
+        }
+    }
+
+    DateFormat primaryFormat = new SimpleDateFormat("h:mm a");
+    DateFormat secondaryFormat = new SimpleDateFormat("H:mm");
+
+    public int timeInMillis(String time) throws ParseException {
+        System.out.println("time: " + time);
+        return timeInMillis(time, primaryFormat);
+    }
+
+    private int timeInMillis(String time, DateFormat format) throws ParseException {
+        // you may need more advanced logic here when parsing the time if some times have am/pm and others don't.
+        try {
+            Date date = format.parse(time);
+            System.out.println("Date: " + date);
+            return (int) date.getTime();
+        } catch (ParseException e) {
+            if (format != secondaryFormat) {
+                return timeInMillis(time, secondaryFormat);
+            } else {
+                throw e;
+            }
+        }
+    }
+
     private List<Map<String, Object>> sortData(List<Map<String, Object>> data, List<SortType> sortType) {
         System.out.println("SortData method");
 //        if (1 == 1) {
@@ -230,10 +272,101 @@ public class CustomReportDesigner {
         Collections.sort(data, (Map<String, Object> o1, Map<String, Object> o2) -> {
             for (Iterator<SortType> iterator = sortType.iterator(); iterator.hasNext();) {
                 SortType sortType1 = iterator.next();
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
                 int order = 1;
+                System.out.println("sort Order: " + sortType1.getSortOrder());
+                System.out.println("sort type: " + sortType1.getFieldType());
+                String day1 = o1.get(sortType1.getFieldName()) + "";
+                String day2 = o2.get(sortType1.getFieldName()) + "";
+                System.out.println("day1: " + day1);
+                System.out.println("day2: " + day2);
+                System.out.println("day1 length: " + day1.length());
+
+                if (day1.length() >= 6) {
+                    System.out.println("Days ------>");
+                    if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
+                        DAY dayOne = DAY.valueOf(day1);
+                        System.out.println("dayOne: " + dayOne);
+                        DAY dayTwo = DAY.valueOf(day2);
+                        System.out.println("dayTwo: " + dayTwo);
+                        return dayOne.getWeight() - dayTwo.getWeight();
+                    } else {
+                        continue;
+                    }
+                }
+                if (day1.length() == 4 || day1.length() == 5) {
+                    System.out.println("Time ------>");
+                    if ((day1.substring(day1.length() - 2, day1.length()).equalsIgnoreCase("pm") || day1.substring(day1.length() - 2, day1.length()).equalsIgnoreCase("am")) && (day2.substring(day2.length() - 2, day2.length()).equalsIgnoreCase("pm") || day2.substring(day2.length() - 2, day2.length()).equalsIgnoreCase("am"))) {
+                        try {
+                            StringBuilder time1, time2;
+                            if (day1.length() == 5 && day2.length() == 5) {
+                                System.out.println("if ---> 1");
+                                time1 = new StringBuilder(day1);
+                                time2 = new StringBuilder(day2);
+                                if (time1.substring(0, 2).equalsIgnoreCase("10")) {
+                                    time1.replace(1, 2, "0:00");
+                                } else if (time1.substring(0, 2).equalsIgnoreCase("11")) {
+                                    time1.replace(1, 2, "1:00");
+                                } else {
+                                    time1.replace(1, 2, ":00");
+                                }
+                                if (time2.substring(0, 2).equalsIgnoreCase("10")) {
+                                    time2.replace(1, 2, "0:00");
+                                } else if (time2.substring(0, 2).equalsIgnoreCase("11")) {
+                                    time2.replace(1, 2, "1:00");
+                                } else {
+                                    time2.replace(1, 2, ":00");
+                                }
+                                return timeInMillis(time1.toString()) - timeInMillis(time2.toString());
+                            } else if (day1.length() == 5 && day2.length() == 4) {
+                                System.out.println("if ---> 2");
+                                time1 = new StringBuilder(day1);
+                                time2 = new StringBuilder(day2);
+                                if (time1.substring(0, 2).equalsIgnoreCase("10")) {
+                                    time1.replace(1, 2, "0:00");
+                                } else if (time1.substring(0, 2).equalsIgnoreCase("11")) {
+                                    time1.replace(1, 2, "1:00");
+                                } else {
+                                    time1.replace(1, 2, ":00");
+                                }
+                                time2.replace(1, 1, ":00");
+                                return timeInMillis(time1.toString()) - timeInMillis(time2.toString());
+                            } else if (day1.length() == 4 && day2.length() == 5) {
+                                System.out.println("if ---> 3");
+                                time1 = new StringBuilder(day1);
+                                time2 = new StringBuilder(day2);
+                                if (time2.substring(0, 2).equalsIgnoreCase("10")) {
+                                    time2.replace(1, 2, "0:00");
+                                } else if (time2.substring(0, 2).equalsIgnoreCase("11")) {
+                                    time2.replace(1, 2, "1:00");
+                                } else {
+                                    time2.replace(1, 2, ":00");
+                                }
+                                time1.replace(1, 1, ":00");
+                                return timeInMillis(time1.toString()) - timeInMillis(time2.toString());
+                            } else if (day1.length() == 4 && day2.length() == 4) {
+                                System.out.println("if ---> 4");
+                                time1 = new StringBuilder(day1);
+                                time2 = new StringBuilder(day2);
+                                time1.replace(1, 1, ":00");
+                                time2.replace(1, 1, ":00");
+                                return timeInMillis(time1.toString()) - timeInMillis(time2.toString());
+                            } else {
+                                continue;
+                            }
+                        } catch (ParseException ex) {
+                            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+
                 if (sortType1.getSortOrder().equalsIgnoreCase("desc")) {
                     order = -1;
                 }
+
                 if (sortType1.getFieldType().equalsIgnoreCase("number")) {
                     Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
                     Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
@@ -1292,7 +1425,7 @@ public class CustomReportDesigner {
                         //creating a slide with title and content layout
                         XSLFSlide slide = ppt.createSlide();
 
-                         //selection of title place holder
+                        //selection of title place holder
                         XSLFTextBox txt = slide.createTextBox();
                         txt.setText(tabWidget.getWidgetTitle());
                         txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
@@ -1307,7 +1440,7 @@ public class CustomReportDesigner {
                         run.setFontColor(tableTitleFontColor);
 
                         ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
-                        ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, 640 , 480);
+                        ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, 640, 480);
                         XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
                         //creating a slide with given picture on it
                         XSLFPictureShape pic = slide.createPicture(idx);
@@ -1315,19 +1448,19 @@ public class CustomReportDesigner {
                         chart_out.close();
                     }
                 } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
-                   
+
                     JFreeChart barChart = multiAxisBarJFreeChart(tabWidget);
                     float quality = 1;
 
                     //creating a slide with title and content layout
                     XSLFSlide slide = ppt.createSlide();
 
-                     //selection of title place holder
+                    //selection of title place holder
                     XSLFTextBox txt = slide.createTextBox();
                     txt.setText(tabWidget.getWidgetTitle());
                     txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
                     txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
-                    
+
                     XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
                     tp.setTextAlign(TextAlign.LEFT);
                     XSLFTextRun run = tp.getTextRuns().get(0);
@@ -1358,14 +1491,14 @@ public class CustomReportDesigner {
                     txt.setText(tabWidget.getWidgetTitle());
                     txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
                     txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
-                    
+
                     XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
                     tp.setTextAlign(TextAlign.LEFT);
                     XSLFTextRun run = tp.getTextRuns().get(0);
                     run.setBold(true);
                     run.setFontSize(13.0);
                     run.setFontColor(tableTitleFontColor);
-                    
+
                     ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
                     ChartUtilities.writeChartAsJPEG(chart_out, quality, lineChart, 640, 480);
                     org.apache.poi.sl.usermodel.PictureData.PictureType test;
