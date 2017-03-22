@@ -202,7 +202,6 @@ public class Agency implements Serializable {
         this.accountCollection = accountCollection;
     }
 
-
     @XmlTransient
     @JsonIgnore
     public Collection<AgencyProduct> getAgencyProductCollection() {
@@ -241,7 +240,7 @@ public class Agency implements Serializable {
 
     public void setReportCollection(Collection<Report> reportCollection) {
         this.reportCollection = reportCollection;
-    }   
+    }
 
     @XmlTransient
     @JsonIgnore

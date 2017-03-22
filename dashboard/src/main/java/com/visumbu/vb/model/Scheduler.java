@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +18,12 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -49,8 +53,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Scheduler.findByLastNdays", query = "SELECT s FROM Scheduler s WHERE s.lastNdays = :lastNdays")
     , @NamedQuery(name = "Scheduler.findByLastNmonths", query = "SELECT s FROM Scheduler s WHERE s.lastNmonths = :lastNmonths")
     , @NamedQuery(name = "Scheduler.findByLastNweeks", query = "SELECT s FROM Scheduler s WHERE s.lastNweeks = :lastNweeks")
-    , @NamedQuery(name = "Scheduler.findByLastNyears", query = "SELECT s FROM Scheduler s WHERE s.lastNyears = :lastNyears")})
+    , @NamedQuery(name = "Scheduler.findByLastNyears", query = "SELECT s FROM Scheduler s WHERE s.lastNyears = :lastNyears")
+    , @NamedQuery(name = "Scheduler.findByIsAccountEmail", query = "SELECT s FROM Scheduler s WHERE s.isAccountEmail = :isAccountEmail")})
 public class Scheduler implements Serializable {
+
+    @OneToMany(mappedBy = "schedulerId")
+    private Collection<SchedulerHistory> schedulerHistoryCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -111,9 +119,11 @@ public class Scheduler implements Serializable {
     @Column(name = "last_nyears")
     private Integer lastNyears;
     @Lob
-    @Size(max = 65535)
+    @Size(max = 16777215)
     @Column(name = "scheduler_email")
     private String schedulerEmail;
+    @Column(name = "is_account_email")
+    private Boolean isAccountEmail;
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     @ManyToOne
     private Report reportId;
@@ -299,6 +309,14 @@ public class Scheduler implements Serializable {
         this.schedulerEmail = schedulerEmail;
     }
 
+    public Boolean getIsAccountEmail() {
+        return isAccountEmail;
+    }
+
+    public void setIsAccountEmail(Boolean isAccountEmail) {
+        this.isAccountEmail = isAccountEmail;
+    }
+
     public Report getReportId() {
         return reportId;
     }
@@ -346,6 +364,16 @@ public class Scheduler implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.Scheduler[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<SchedulerHistory> getSchedulerHistoryCollection() {
+        return schedulerHistoryCollection;
+    }
+
+    public void setSchedulerHistoryCollection(Collection<SchedulerHistory> schedulerHistoryCollection) {
+        this.schedulerHistoryCollection = schedulerHistoryCollection;
     }
     
 }

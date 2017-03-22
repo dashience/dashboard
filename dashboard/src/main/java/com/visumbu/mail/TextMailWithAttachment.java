@@ -4,6 +4,9 @@
  */
 package com.visumbu.mail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +25,37 @@ public class TextMailWithAttachment {
     public TextMailWithAttachment(MailProperties props) {
         this.props = props;
     }
+    
+    public static void main(String argv[]) {
+        MailProperties mailProps = new  MailProperties();
+        TextMailWithAttachment sender = new TextMailWithAttachment(mailProps);
+        String[] attachments =  {"/tmp/downloadedFile.pdf"};
+        sender.sendMail("sam@digitalanalystteam.com", "Test", "Test MEssage", Arrays.asList(attachments));
+    }
 
+    public String sendMail(String to, String subject, String message, List<String> attachments) {
+        
+        List<MailAttachment> mailAttachments = new ArrayList<>();
+        for (Iterator<String> iterator = attachments.iterator(); iterator.hasNext();) {
+            String attachment = iterator.next();
+            MailAttachment mailAttachment = new MailAttachment();
+            mailAttachment.setAttachDescription("");
+            mailAttachment.setAttachmentPath(attachment);
+            mailAttachments.add(mailAttachment);
+        }
+        this.props.setHostName("gator3272.hostgator.com");
+        this.props.setPort(587);
+        this.props.setAuthUser("jp@digitalanalystteam.com");
+        this.props.setAuthPasswd("d@tjp527");
+        this.props.setFrom("jp@digitalanalystteam.com");
+        this.props.setHtmlMessage(message);
+        this.props.setTxtMessage(message);
+        this.props.setSubject(subject);
+        this.props.setTo(to);
+        this.props.setAttachment(mailAttachments);
+        return sendMail();
+    }
+    
     public String sendMail() {
         try {
             // Create the email message

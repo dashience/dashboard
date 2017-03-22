@@ -322,8 +322,8 @@
                     <div class="col-sm-4">
                         <ui-select multiple tagging tagging-label="true" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" theme="bootstrap" ng-disabled="disabled">
                             <ui-select-match placeholder="Email Ids...">{{$item}}</ui-select-match>
-                            <ui-select-choices repeat="account in accounts | filter:$select.search">
-                                {{account.agencyId.email}}
+                            <ui-select-choices repeat="emailAccount in emailAccounts track by emailAccount | filter:$select.search">
+                                {{emailAccounts}}
                             </ui-select-choices>
                         </ui-select>
                     </div>

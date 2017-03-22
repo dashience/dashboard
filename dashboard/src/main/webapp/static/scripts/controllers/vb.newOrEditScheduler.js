@@ -9,8 +9,14 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     $http.get("admin/ui/report").success(function (response) {
         $scope.reports = response;
     });
+    $scope.accounts = []
     $http.get('admin/user/account').success(function (response) {
+        $scope.emailAccounts = [];
         $scope.accounts = response;
+        angular.forEach($scope.accounts, function(val, key){
+            $scope.emailAccounts.push(val.agencyId.email)
+            console.log($scope.emailAccounts)
+        })
     });
     $scope.scheduler = {};
     $http.get("admin/scheduler/scheduler/" + $stateParams.schedulerId).success(function (response) {
@@ -19,6 +25,12 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                 accountId: {id: $stateParams.accountId, accountName: $stateParams.accountName}
             }
             return;
+        }
+        var email;
+        if (response.schedulerEmail == null || "") {
+            email = response.schedulerEmail = []
+        } else {
+            email = response.schedulerEmail.split(',');
         }
         $scope.schedulers = response;
         $scope.scheduler = {
@@ -34,7 +46,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             schedulerYearOfWeek: response.schedulerYearOfWeek,
             reportId: response.reportId,
             schedulerType: response.schedulerType,
-            schedulerEmail: response.schedulerEmail.split(','),
+            schedulerEmail: email,
             dateRangeName: response.dateRangeName,
             accountId: response.accountId,
             lastNdays: response.lastNdays,

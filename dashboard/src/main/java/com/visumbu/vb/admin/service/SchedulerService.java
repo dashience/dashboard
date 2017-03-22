@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.SchedulerDao;
 import com.visumbu.vb.model.Scheduler;
+import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,10 @@ public class SchedulerService {
 
     public Scheduler deleteScheduler(Integer schedulerId) {
        return schedulerDao.deleteScheduler(schedulerId);
+    }
+    
+    public SchedulerHistory createSchedulerHistory(SchedulerHistory schedulerHistory) {
+        return (SchedulerHistory) schedulerDao.create(schedulerHistory);
     }
     
 }

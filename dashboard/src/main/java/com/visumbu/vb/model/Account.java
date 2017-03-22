@@ -54,6 +54,9 @@ public class Account implements Serializable {
     @Size(max = 255)
     @Column(name = "geo_location")
     private String geoLocation;
+    @Size(max = 255)
+    @Column(name = "email_id")
+    private String emailId;
     @Lob
     @Size(max = 65535)
     @Column(name = "description")
@@ -108,6 +111,15 @@ public class Account implements Serializable {
     public void setAgencyId(Agency agencyId) {
         this.agencyId = agencyId;
     }
+
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+    
 
     @Override
     public int hashCode() {

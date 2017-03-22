@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.VbUser;
+import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.hibernate.Query;
@@ -39,6 +40,26 @@ public class SchedulerDao extends BaseDao {
         query.setParameter("schedulerId", schedulerId);
         query.executeUpdate();
         return null;
+    }
+
+    public List<Scheduler> getScheduledTasks(String intervalName) {
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("schedulerRepeatType", intervalName);
+        return query.list();
+    }
+
+    public List<Scheduler> getDailyTasks(Integer hour, Date today) {
+        
+        String scheduledHour = hour +":00";
+        if(hour < 10) {
+            scheduledHour = "0"+hour + ":00";
+        }
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("schedulerRepeatType", "Daily");
+        query.setParameter("hour", scheduledHour);
+        return query.list();
     }
 
 }
