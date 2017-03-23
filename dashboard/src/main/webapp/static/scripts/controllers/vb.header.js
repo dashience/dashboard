@@ -31,16 +31,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //
 //    });
 
-    $http.get('admin/ui/userAccountByUser').success(function (response) {
+    $http.get('admin/ui/userAccountByUser').success(function (response) {        
+        if(!response[0]){
+            return;
+        }
         $scope.accounts = response;
         $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
         $scope.name = $filter('filter')($scope.accounts, {id: $stateParams.accountId})[0];
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        if (!$scope.name.userId.agencyId) {
+        if (!$scope.name.userId.agencyId) {alert(3)
             $scope.loadNewUrl()
             //$state.go("index.dashboard")
-            return
+            return;
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
     });
