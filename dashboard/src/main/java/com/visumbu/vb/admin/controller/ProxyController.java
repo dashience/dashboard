@@ -162,7 +162,7 @@ public class ProxyController {
                     String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
                     System.out.println("UR:" + url);
                     if (url.startsWith("../")) {
-                        url = url.replaceAll("\\.\\./", localUrl);
+                      url = url.replaceAll("\\.\\./", localUrl);
                     }
                     System.out.println("url: " + url);
                     System.out.println("valuemap: " + valueMap);
@@ -304,7 +304,7 @@ public class ProxyController {
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
-        System.out.println("EXport type ==> " + exportType);
+        System.out.println("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
         }
@@ -349,7 +349,7 @@ public class ProxyController {
                 Integer port = request.getServerPort();
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-                System.out.println("UR:" + url);
+                System.out.println("URL:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
@@ -375,7 +375,6 @@ public class ProxyController {
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);
-
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
