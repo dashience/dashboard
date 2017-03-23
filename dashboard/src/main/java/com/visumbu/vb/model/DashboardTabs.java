@@ -77,6 +77,9 @@ public class DashboardTabs implements Serializable {
     @JoinColumn(name = "dashboard_id", referencedColumnName = "id")
     @ManyToOne
     private Dashboard dashboardId;
+    @JoinColumn(name = "agency_product_id", referencedColumnName = "id")
+    @ManyToOne
+    private AgencyProduct agencyProductId;
 
     public DashboardTabs() {
     }
@@ -158,6 +161,15 @@ public class DashboardTabs implements Serializable {
     public void setDashboardId(Dashboard dashboardId) {
         this.dashboardId = dashboardId;
     }
+
+    public AgencyProduct getAgencyProductId() {
+        return agencyProductId;
+    }
+
+    public void setAgencyProductId(AgencyProduct agencyProductId) {
+        this.agencyProductId = agencyProductId;
+    }    
+    
 
     @Override
     public int hashCode() {

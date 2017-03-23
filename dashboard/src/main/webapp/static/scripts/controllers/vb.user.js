@@ -1,4 +1,5 @@
-app.controller('UserController', function ($scope, $http) {
+app.controller('UserController', function ($scope, $http, localStorageService) {
+    $scope.permission = localStorageService.get("permission");
     $scope.users = [];
 
     //Tabs
@@ -15,7 +16,7 @@ app.controller('UserController', function ($scope, $http) {
     function getUser() {
         $http.get('admin/ui/user').success(function (response) {
             $scope.users = response;
-            $scope.editUser(response[0], 0);
+            //$scope.editUser(response[0], 0);
         });
 
         $http.get('admin/user/account').success(function (response) {
@@ -47,7 +48,7 @@ app.controller('UserController', function ($scope, $http) {
     };
 
     $scope.addUser = function () {
-        $scope.user = " ";
+        $scope.user = '';
     };
 
     $scope.selectedUser = null;
@@ -82,9 +83,9 @@ app.controller('UserController', function ($scope, $http) {
             $scope.userPermissions = response;
             $http.get('admin/ui/permission').success(function (response1) {
                 $scope.permissions = response1;
-                angular.forEach($scope.permissions, function(permission){
+                angular.forEach($scope.permissions, function (permission) {
                     $scope.hasPermission(permission);
-                })
+                });
             });
         });
     }
@@ -92,13 +93,14 @@ app.controller('UserController', function ($scope, $http) {
     $scope.hasPermission = function (permission) {
         for (var i = 0; i < $scope.userPermissions.length; i++) {
             if ($scope.userPermissions[i].permissionId.permissionName === permission.permissionName) {
-                permission.status = ($scope.userPermissions[i].status === 1 || $scope.userPermissions[i].status === true)? 1 : 0;
-                return ($scope.userPermissions[i].status === 1 || $scope.userPermissions[i].status === true)? true : false;
+                permission.status = ($scope.userPermissions[i].status === 1 || $scope.userPermissions[i].status === true) ? 1 : 0;
+                return ($scope.userPermissions[i].status === 1 || $scope.userPermissions[i].status === true) ? true : false;
             }
         }
         permission.status = 0;
         return false;
     };
+    
     $scope.hasData = function (permissionName) {
         for (var i = 0; i < $scope.userPermissions.length; i++) {
             if ($scope.userPermissions[i].permissionId.permissionName === permissionName) {
@@ -141,7 +143,8 @@ app.controller('UserController', function ($scope, $http) {
 
     $scope.testClick = function (permission) {
         $scope.saveUserPermission(permission);
-    }
+    };
+    
     $scope.saveUserPermission = function (permission) {
         var userPermissionId = $scope.hasData(permission.permissionName).id;
 

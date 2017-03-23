@@ -13,7 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -38,13 +40,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class Account implements Serializable {
 
     @OneToMany(mappedBy = "accountId")
-    private Collection<UserAccount> userAccountCollection;
-
-    @OneToMany(mappedBy = "accountId")
-    private Collection<Property> propertyCollection;
-
-    @OneToMany(mappedBy = "accountId")
-    private Collection<AccountUser> accountUserCollection;
+    private Collection<Scheduler> schedulerCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -58,10 +54,16 @@ public class Account implements Serializable {
     @Size(max = 255)
     @Column(name = "geo_location")
     private String geoLocation;
+    @Size(max = 255)
+    @Column(name = "email_id")
+    private String emailId;
     @Lob
     @Size(max = 65535)
     @Column(name = "description")
     private String description;
+    @JoinColumn(name = "agency_id", referencedColumnName = "id")
+    @ManyToOne
+    private Agency agencyId;
 
     public Account() {
     }
@@ -102,6 +104,23 @@ public class Account implements Serializable {
         this.description = description;
     }
 
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
+    }
+
+    public String getEmailId() {
+        return emailId;
+    }
+
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -129,32 +148,12 @@ public class Account implements Serializable {
 
     @XmlTransient
     @JsonIgnore
-    public Collection<AccountUser> getAccountUserCollection() {
-        return accountUserCollection;
+    public Collection<Scheduler> getSchedulerCollection() {
+        return schedulerCollection;
     }
 
-    public void setAccountUserCollection(Collection<AccountUser> accountUserCollection) {
-        this.accountUserCollection = accountUserCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Property> getPropertyCollection() {
-        return propertyCollection;
-    }
-
-    public void setPropertyCollection(Collection<Property> propertyCollection) {
-        this.propertyCollection = propertyCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<UserAccount> getUserAccountCollection() {
-        return userAccountCollection;
-    }
-
-    public void setUserAccountCollection(Collection<UserAccount> userAccountCollection) {
-        this.userAccountCollection = userAccountCollection;
+    public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
+        this.schedulerCollection = schedulerCollection;
     }
     
 }

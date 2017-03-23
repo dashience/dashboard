@@ -13,8 +13,10 @@ import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
+import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
+import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.VbUtils;
 import java.util.Collection;
@@ -81,14 +83,6 @@ public class UserService {
         return null;
     }
 
-    public SecurityAuthBean getPermissions(LoginUserBean userBean) {
-        return VbUtils.getAuthData(userBean.getUsername(), userBean.getPassword());
-    }
-
-    public SecurityAuthBean getPermissions(String accessToken, String userGuid) {
-        return VbUtils.getAuthDataByGuid(accessToken, userGuid);
-    }
-
     public LoginUserBean authenicate(LoginUserBean userBean) {
         List<VbUser> users = userDao.findByUserName(userBean.getUsername());
         LoginUserBean loginUserBean = null;
@@ -101,8 +95,10 @@ public class UserService {
                 System.out.println(loginUserBean);
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
-                user.setFailedLoginCount(user.getFailedLoginCount() + 1);
-                loginUserBean = toLoginUserBean(user);
+                if (user != null) {
+                    user.setFailedLoginCount(user.getFailedLoginCount() + 1);
+                    loginUserBean = toLoginUserBean(user);
+                }
                 loginUserBean.setAuthenticated(Boolean.FALSE);
                 loginUserBean.setErrorMessage("Invalid Username or Password");
             }
@@ -117,6 +113,7 @@ public class UserService {
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
+        userBean.setAgencyId(teUser.getAgencyId());
 //        userBean.setPassword(teUser.getPassword());
         userBean.setFailLoginCount(teUser.getFailedLoginCount());
         userBean.setIsAdmin(teUser.getIsAdmin() != null && teUser.getIsAdmin() == true ? "admin" : "");
@@ -168,8 +165,8 @@ public class UserService {
     }
 
     public List<Account> getAccount() {
-        List<Account> account = userDao.read(Account.class);
-        return account;
+//        List<Account> account = userDao.read(Account.class);
+        return userDao.getAccount();
     }
 
     public Account getAccountId(Integer id) {
@@ -193,7 +190,7 @@ public class UserService {
         List<Property> property = userDao.read(Property.class);
         return property;
     }
-    
+
     public List<Property> getPropertyById(Integer accountId) {
         return userDao.getPropertyById(accountId);
     }
@@ -205,30 +202,30 @@ public class UserService {
     public Property deleteProperty(Integer propertyId) {
         return userDao.deleteProperty(propertyId);
     }
-    
-    public AccountUser createAccountUser(AccountUser accountUser) {
-        return (AccountUser) userDao.create(accountUser);
+
+    public UserAccount createUserAccount(UserAccount userAccount) {
+        return (UserAccount) userDao.create(userAccount);
     }
 
-    public AccountUser updateAccountUser(AccountUser accountUser) {
-        return (AccountUser) userDao.update(accountUser);
+    public UserAccount updateUserAccount(UserAccount userAccount) {
+        return (UserAccount) userDao.update(userAccount);
     }
 
-    public List<AccountUser> getAccountUser() {
-        List<AccountUser> accountUser = userDao.read(AccountUser.class);
-        return accountUser;
+    public List<UserAccount> getUserAccount() {
+        List<UserAccount> userAccount = userDao.read(UserAccount.class);
+        return userAccount;
     }
 
-    public AccountUser getAccountUserId(Integer id) {
-        return (AccountUser) userDao.read(AccountUser.class, id);
+    public UserAccount getUserAccountId(Integer id) {
+        return (UserAccount) userDao.read(UserAccount.class, id);
     }
 
-    public AccountUser deleteAccountUser(Integer accountUserId) {
-        return userDao.deleteAccountUser(accountUserId);
-    }    
+    public UserAccount deleteUserAccount(Integer userAccountId) {
+        return userDao.deleteUserAccount(userAccountId);
+    }
 
-    public List getAccountUserById(Integer accountId) {
-        return userDao.getAccountUserById(accountId);
+    public List getUserAccountById(Integer accountId) {
+        return userDao.getUserAccountById(accountId);
     }
 
     public Agency createAgency(Agency agency) {
@@ -240,8 +237,8 @@ public class UserService {
     }
 
     public List<Agency> getAgency() {
-        List<Agency> agency = userDao.read(Agency.class);
-        return agency;
+//        List<Agency> agency = userDao.read(Agency.class);
+        return userDao.getActiveAgency();
     }
 
     public Agency deleteAgency(Integer agencyId) {
@@ -249,7 +246,7 @@ public class UserService {
     }
 
     public AgencyLicence createAgencyLicence(AgencyLicence agencyLicence) {
-       return (AgencyLicence) userDao.create(agencyLicence);
+        return (AgencyLicence) userDao.create(agencyLicence);
     }
 
     public AgencyLicence updateAgencyLicence(AgencyLicence agencyLicence) {
@@ -260,13 +257,37 @@ public class UserService {
         List<AgencyLicence> agencyLicence = userDao.read(AgencyLicence.class);
         return agencyLicence;
     }
-    
+
     public List getAgencyLicenceById(Integer agencyId) {
         return userDao.getAgencyLicenceById(agencyId);
     }
 
     public Agency deleteAgencyLicence(Integer agencyLicenceId) {
         return userDao.deleteAgencyLicence(agencyLicenceId);
+    }
+
+    public List getAgencyUserById(Integer agencyUserId) {
+        return userDao.getAgencyUserById(agencyUserId);
+    }
+
+    public List<Account> getAccount(Agency agency) {
+        return userDao.getAccountByAgency(agency);
+    }
+
+    public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
+        return (AgencyProduct) userDao.create(agencyProduct);
+    }
+
+    public AgencyProduct updateAgencyProduct(AgencyProduct agencyProduct) {
+        return (AgencyProduct) userDao.update(agencyProduct);
+    }
+
+    public List<AgencyProduct> getAgencyProductById(Integer agencyProductId) {
+        return userDao.getAgencyProductById(agencyProductId);
+    }
+
+    public String productUpdateOrder(Integer agencyProductId, String productOrder) {
+        return userDao.productUpdateOrder(agencyProductId, productOrder);
     }
 
 }

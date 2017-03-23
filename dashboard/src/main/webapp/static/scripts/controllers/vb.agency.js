@@ -14,7 +14,7 @@ app.controller('AgencyController', function ($scope, $http) {
     function getAgency() {
         $http.get('admin/user/agency').success(function (response) {
             $scope.agencies = response;
-            $scope.editAgency(response[0], 0);
+          //  $scope.editAgency(response[0], 0);
         });
     }
     getAgency();
@@ -46,7 +46,7 @@ app.controller('AgencyController', function ($scope, $http) {
             logo: $scope.agency.logo
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
-            //getAgency();
+            getAgency();
         });
         $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
     };
@@ -73,6 +73,8 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agencies.splice(index, 1);
         });
     };
+
+    $scope.agencyProducts = [];
     function getAgencyLicence(agency) {
         $http.get('admin/user/agencyLicence/' + agency.id).success(function (response) {
             $scope.agencyLicence = {}
@@ -81,7 +83,15 @@ app.controller('AgencyController', function ($scope, $http) {
             angular.forEach(response, function (value, key) {
                 $scope.agencyLicence = {id: value.id, maxNoTab: value.maxNoTab, maxNoUser: value.maxNoUser, maxNoClient: value.maxNoClient, maxNoAccount: value.maxNoAccount, expiryDate: value.expiryDate, maxNoWidgetPerTab: value.maxNoWidgetPerTab}
                 console.log($scope.agencyLicence)
-            })
+            });
+        });
+
+        $http.get('admin/user/agencyUser/' + agency.id).success(function (response) {
+            $scope.agencyUsers = response;
+        });
+
+        $http.get('admin/user/agencyProduct/' + agency.id).success(function (response) {
+            $scope.agencyProducts = response;
         });
     }
 
@@ -101,6 +111,95 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agencyLicences = response;
         });
     };
+
+    $scope.addAgencyUser = function () {
+        $scope.agencyUser = "";
+        $scope.showAgencyUserForm = true;
+    };
+
+    $scope.saveAgencyUser = function (agencyUser) {
+        var agencyUserData = {
+            id: agencyUser.id,
+            firstName: agencyUser.firstName,
+            lastName: agencyUser.lastName,
+            userName: agencyUser.userName,
+            email: agencyUser.email,
+            password: agencyUser.password,
+            primaryPhone: agencyUser.primaryPhone,
+            secondaryPhone: agencyUser.secondaryPhone,
+            agencyId: $scope.agencyLicenceId.id,
+        };
+
+        $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
+            getAgencyLicence($scope.agencyLicenceId);
+        });
+        $scope.agencyUser = "";
+        $scope.showAgencyUserForm = false;
+    };
+
+    $scope.clearAgencyUser = function () {
+        $scope.showAgencyUserForm = false;
+        $scope.agencyUser = "";
+    };
+
+    $scope.addAgencyProduct = function () {
+        $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+        $scope.showAgencyProductForm = true;
+    }
+
+    $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+    $scope.productIcon = function (event) {
+        var files = event.target.files;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var reader = new FileReader();
+            reader.onload = $scope.imageLoadingIcon;
+            reader.readAsDataURL(file);
+        }
+    };
+    $scope.imageLoadingIcon = function (e) {
+        $scope.$apply(function () {
+            $scope.agencyProduct.icon = e.target.result;
+        });
+    };
+    $scope.saveAgencyProduct = function (agencyProduct) {
+        var agencyProductId = $scope.agencyLicenceId;
+        console.log(agencyProductId)
+        if ($scope.agencyProduct.icon === "static/img/logos/deeta-logo.png") {
+            $scope.agencyProduct.icon = "";
+        }
+        var data = {
+            id: agencyProduct.id,
+            productName: agencyProduct.productName,
+            icon: $scope.agencyProduct.icon,
+            agencyId: $scope.agencyLicenceId.id,
+            showProduct: agencyProduct.showProduct
+        };
+        $http({method: agencyProduct.id ? 'PUT' : 'POST', url: 'admin/user/agencyProduct', data: data}).success(function (response) {
+            getAgencyLicence(agencyProductId);
+            $scope.showAgencyProductForm = false;
+        });
+        $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+    };
+    $scope.clearAgencyProduct = function () {
+        $scope.showAgencyProductForm = false;
+        $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+    };
+    $scope.changeOrder = function (s) {
+        var agencyProductId = $scope.agencyLicenceId;
+//        console.log(s)
+//if()
+        var order = s.map(function (value, key) {
+            if (value) {
+                return value.id;
+            }
+        }).join(',');
+        console.log(order)
+        
+//        if (order) {
+//            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
+//        }
+    };
 });
 app.directive("datePicker", function () {
     return {
@@ -109,6 +208,15 @@ app.directive("datePicker", function () {
             el.datepicker({
                 dateFormat: 'yy-mm-dd'
             });
+        }
+    };
+});
+app.directive('customOnChange', function () {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var onChangeFunc = scope.$eval(attrs.customOnChange);
+            element.bind('change', onChangeFunc);
         }
     };
 });

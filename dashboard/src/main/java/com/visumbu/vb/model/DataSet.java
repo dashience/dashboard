@@ -54,6 +54,9 @@ public class DataSet implements Serializable {
     @Size(max = 65535)
     @Column(name = "query")
     private String query;
+    @JoinColumn(name = "agency_id", referencedColumnName = "id")
+    @ManyToOne
+    private Agency agencyId;
     @JoinColumn(name = "data_source_id", referencedColumnName = "id")
     @ManyToOne
     private DataSource dataSourceId;
@@ -90,6 +93,14 @@ public class DataSet implements Serializable {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
     }
 
     public DataSource getDataSourceId() {

@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -18,11 +19,14 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 /**
@@ -50,6 +54,14 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "Report.findByIcon", query = "SELECT r FROM Report r WHERE r.icon = :icon")
     , @NamedQuery(name = "Report.findByDescription", query = "SELECT r FROM Report r WHERE r.description = :description")})
 public class Report implements Serializable {
+
+    @Type(type = "org.hibernate.type.StringClobType")
+    @Column(name = "logo")
+    private String logo;
+    @OneToMany(mappedBy = "reportId")
+    private Collection<Scheduler> schedulerCollection;
+    @OneToMany(mappedBy = "reportId")
+    private Collection<ReportWidget> reportWidgetCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -101,9 +113,9 @@ public class Report implements Serializable {
     @Size(max = 4096)
     @Column(name = "description")
     private String description;
-    @Type(type = "org.hibernate.type.StringClobType")
-    @Column(name = "logo")
-    private String logo;
+    @JoinColumn(name = "agency_id", referencedColumnName = "id")
+    @ManyToOne
+    private Agency agencyId;
     @JoinColumn(name = "report_type_id", referencedColumnName = "id")
     @ManyToOne
     private ReportType reportTypeId;
@@ -270,6 +282,14 @@ public class Report implements Serializable {
         this.createdBy = createdBy;
     }
 
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -293,6 +313,26 @@ public class Report implements Serializable {
     @Override
     public String toString() {
         return "Report{" + "id=" + id + ", reportName=" + reportName + ", reportTitle=" + reportTitle + ", createdTime=" + createdTime + ", status=" + status + ", datasource=" + datasource + ", dataset=" + dataset + ", dimension=" + dimension + ", filter=" + filter + ", sort=" + sort + ", displayColumns=" + displayColumns + ", displayOrder=" + displayOrder + ", remarks=" + remarks + ", defaultCount=" + defaultCount + ", icon=" + icon + ", description=" + description + ", logo=" + logo + ", reportTypeId=" + reportTypeId + ", createdBy=" + createdBy + '}';
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<ReportWidget> getReportWidgetCollection() {
+        return reportWidgetCollection;
+    }
+
+    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
+        this.reportWidgetCollection = reportWidgetCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Scheduler> getSchedulerCollection() {
+        return schedulerCollection;
+    }
+
+    public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
+        this.schedulerCollection = schedulerCollection;
     }
 
 }

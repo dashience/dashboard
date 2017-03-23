@@ -75,7 +75,7 @@ public class PPTTableTesting {
         }
 
 
-        FileOutputStream out = new FileOutputStream("/home/deldot/Pictures/ppt/table.pptx");
+        FileOutputStream out = new FileOutputStream("/tmp/table.pptx");
         ppt.write(out);
         out.close();
         

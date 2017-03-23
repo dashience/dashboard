@@ -16,69 +16,143 @@ import org.apache.commons.beanutils.PropertyUtils;
  */
 public class Permission {
 
-    private Boolean allowCreateWidget;
-    private Boolean allowDeleteWidget;
-    private Boolean allowCreateTab;
-    private Boolean allowCreateReport;
-    private Boolean allowDeleteReport;
-    private Boolean allowDownloadReport;
-    private Boolean allowScheduleReport;
+    private Boolean createUser;
+    private Boolean createAccount;
+    private Boolean createDataSource;
+    private Boolean createDataSet;
+    private Boolean grantPermission;
+    private Boolean assignAccount;
+    private Boolean addTab;
+    private Boolean deleteTab;
+    private Boolean addWidget;
+    private Boolean deleteWidget;
+    private Boolean createReport;
+    private Boolean deleteReport;
+    private Boolean downloadReport;
+    private Boolean scheduleReport;
+    private Boolean viewAgency;
 
-    public Boolean getAllowCreateWidget() {
-        return allowCreateWidget;
+    public Boolean getViewAgency() {
+        return viewAgency;
     }
 
-    public void setAllowCreateWidget(Boolean allowCreateWidget) {
-        this.allowCreateWidget = allowCreateWidget;
+    public void setViewAgency(Boolean viewAgency) {
+        this.viewAgency = viewAgency;
+    }
+    
+    public Boolean getCreateUser() {
+        return createUser;
     }
 
-    public Boolean getAllowDeleteWidget() {
-        return allowDeleteWidget;
+    public void setCreateUser(Boolean createUser) {
+        this.createUser = createUser;
     }
 
-    public void setAllowDeleteWidget(Boolean allowDeleteWidget) {
-        this.allowDeleteWidget = allowDeleteWidget;
+    public Boolean getCreateAccount() {
+        return createAccount;
     }
 
-    public Boolean getAllowCreateTab() {
-        return allowCreateTab;
+    public void setCreateAccount(Boolean createAccount) {
+        this.createAccount = createAccount;
     }
 
-    public void setAllowCreateTab(Boolean allowCreateTab) {
-        this.allowCreateTab = allowCreateTab;
+    public Boolean getCreateDataSource() {
+        return createDataSource;
     }
 
-    public Boolean getAllowCreateReport() {
-        return allowCreateReport;
+    public void setCreateDataSource(Boolean createDataSource) {
+        this.createDataSource = createDataSource;
     }
 
-    public void setAllowCreateReport(Boolean allowCreateReport) {
-        this.allowCreateReport = allowCreateReport;
+    public Boolean getCreateDataSet() {
+        return createDataSet;
     }
 
-    public Boolean getAllowDeleteReport() {
-        return allowDeleteReport;
+    public void setCreateDataSet(Boolean createDataSet) {
+        this.createDataSet = createDataSet;
     }
 
-    public void setAllowDeleteReport(Boolean allowDeleteReport) {
-        this.allowDeleteReport = allowDeleteReport;
+    public Boolean getGrantPermission() {
+        return grantPermission;
     }
 
-    public Boolean getAllowDownloadReport() {
-        return allowDownloadReport;
+    public void setGrantPermission(Boolean grantPermission) {
+        this.grantPermission = grantPermission;
     }
 
-    public void setAllowDownloadReport(Boolean allowDownloadReport) {
-        this.allowDownloadReport = allowDownloadReport;
+    public Boolean getAssignAccount() {
+        return assignAccount;
     }
 
-    public Boolean getAllowScheduleReport() {
-        return allowScheduleReport;
+    public void setAssignAccount(Boolean assignAccount) {
+        this.assignAccount = assignAccount;
     }
 
-    public void setAllowScheduleReport(Boolean allowScheduleReport) {
-        this.allowScheduleReport = allowScheduleReport;
+    public Boolean getAddTab() {
+        return addTab;
     }
+
+    public void setAddTab(Boolean addTab) {
+        this.addTab = addTab;
+    }
+
+    public Boolean getDeleteTab() {
+        return deleteTab;
+    }
+
+    public void setDeleteTab(Boolean deleteTab) {
+        this.deleteTab = deleteTab;
+    }
+
+    public Boolean getAddWidget() {
+        return addWidget;
+    }
+
+    public void setAddWidget(Boolean addWidget) {
+        this.addWidget = addWidget;
+    }
+
+    public Boolean getDeleteWidget() {
+        return deleteWidget;
+    }
+
+    public void setDeleteWidget(Boolean deleteWidget) {
+        this.deleteWidget = deleteWidget;
+    }
+
+    public Boolean getCreateReport() {
+        return createReport;
+    }
+
+    public void setCreateReport(Boolean createReport) {
+        this.createReport = createReport;
+    }
+
+    public Boolean getDeleteReport() {
+        return deleteReport;
+    }
+
+    public void setDeleteReport(Boolean deleteReport) {
+        this.deleteReport = deleteReport;
+    }
+
+    public Boolean getDownloadReport() {
+        return downloadReport;
+    }
+
+    public void setDownloadReport(Boolean downloadReport) {
+        this.downloadReport = downloadReport;
+    }
+
+    public Boolean getScheduleReport() {
+        return scheduleReport;
+    }
+
+    public void setScheduleReport(Boolean scheduleReport) {
+        this.scheduleReport = scheduleReport;
+    }
+    
+    
     
     public String setPermission(String permissionName, Boolean permission) {
         try {
@@ -93,13 +167,7 @@ public class Permission {
     
     public static Permission getDefaultPermission() {
         Permission permission = new Permission();
-        permission.setAllowCreateReport(Boolean.TRUE);
-        permission.setAllowCreateTab(Boolean.TRUE);
-        permission.setAllowCreateWidget(Boolean.TRUE);
-        permission.setAllowDeleteReport(Boolean.TRUE);
-        permission.setAllowDeleteWidget(Boolean.TRUE);
-        permission.setAllowDownloadReport(Boolean.TRUE);
-        permission.setAllowScheduleReport(Boolean.TRUE);
+        
         return permission;
     }
 }

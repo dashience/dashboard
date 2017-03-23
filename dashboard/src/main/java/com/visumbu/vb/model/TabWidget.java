@@ -73,6 +73,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByDatasource", query = "SELECT t FROM TabWidget t WHERE t.datasource = :datasource")})
 public class TabWidget implements Serializable {
 
+   @OneToMany(mappedBy = "widgetId")
+    private Collection<ReportWidget> reportWidgetCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -466,7 +469,7 @@ public class TabWidget implements Serializable {
     public void setCreatedBy(VbUser createdBy) {
         this.createdBy = createdBy;
     }
-    
+
     public DataSet getDataSetId() {
         return dataSetId;
     }
@@ -506,7 +509,7 @@ public class TabWidget implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
-    
+
 
     @Override
     public int hashCode() {
@@ -531,6 +534,16 @@ public class TabWidget implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.TabWidget[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<ReportWidget> getReportWidgetCollection() {
+        return reportWidgetCollection;
+    }
+
+    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
+        this.reportWidgetCollection = reportWidgetCollection;
     }
     
 }

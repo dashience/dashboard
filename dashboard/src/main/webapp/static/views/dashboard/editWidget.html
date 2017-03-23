@@ -39,8 +39,8 @@
                                         ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                 </select>
                             </div>
-                            <div class="col-md-2">
-                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                            <div class="col-md-2" ng-if="permission.createDataSource === true;">
+                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({accountId: accountID, accountName: accountName, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
                             </div>
                         </div>
                         <div class="form-group">
@@ -49,8 +49,8 @@
                                 <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
                                 </select>
                             </div>
-                            <div class="col-md-2">
-                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                            <div class="col-md-2" ng-if="permission.createDataSet === true;">
+                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({accountId: accountID, accountName: accountName, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
                             </div>
                         </div>                        
                         <div class="form-group">

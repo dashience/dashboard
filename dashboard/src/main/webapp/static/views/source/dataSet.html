@@ -22,128 +22,160 @@
     .table-fixed tr td {
         cursor:pointer;
     }
+    .agency-bt {
+        margin-bottom: 10px;
+    }
+
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }
 </style>
 <section class="content">
     <div class="row">
-        <div class="col-lg-12">
-            <section class="content-header">
-                <h1 class="data-title font-bold">Data Set</h1>
-            </section>
+
+        <div class="normalheader transition animated fadeIn">
+            <div class="hpanel">
+                <div class="header-title">
+                    <h2 class="agency-bt font-bold m-b-xs ng-binding">
+                        Data Set
+                    </h2>               
+                </div>
+            </div>
         </div>
-        <div class="col-md-4 data-search">
-            <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
-        </div>
-        <div class="col-md-2 data-search">
-            <select class="form-control" 
-                    ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
-                    placeholder="Data Source" 
-                    ng-model="dataSourceId">
-                <option value="" selected="selected" ng-disabled="true">Search Data Source...</option>
-            </select>
-        </div>
+
+
+
+
         <div class="row">
             <div class="col-lg-12">
-                <div class="col-md-6">
-                    <div>
-                        <table class="table table-fixed">
-                            <thead>
-                                <tr>
-                                    <th class="col-xs-5">Data Source</th>
-                                    <th class="col-xs-6">Name</th>
-                                    <th class="col-xs-1"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="dataSet in dataSets| filter: dataSourceId.name | filter: searchDataSource" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
-                                    <td class="col-xs-5" ng-click="editDataSet(dataSet)">
-                                        {{dataSet.dataSourceId.name}}
-                                    </td>
-                                    <td class="col-xs-6" ng-click="editDataSet(dataSet)">
-                                        {{dataSet.name?dataSet.name:'-'}}
-                                    </td>
-                                    <td class="col-md-1">
-                                        <!--<button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = true"><i class="fa fa-pencil"></i></button>-->
-                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSet{{dataSet.id}}"><i class="fa fa-trash-o"></i></button>
-                                        <div class="modal hmodal-success" id="deleteDataSet{{dataSet.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="color-line"></div>
-                                                    <div class="modal-header">
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        <h4 class="modal-title">Delete</h4>
-                                                        <small class="font-bold"></small>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form class="form-horizontal" role="form">
-                                                            <div class="form-group">
-                                                                <div class="col-sm-12  col-md-12">
-                                                                    <span>Want to delete ?</span>
+
+                <div class="hpanel">
+
+                    <div class="col-md-6">
+                        <div class="panel-body">
+                            <form class="col-md-12 form-horizontal">
+                                <div class="form-group">
+                                    <label>Data Source</label>
+                                    <select class="form-control" 
+                                            ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
+                                            placeholder="Data Source" 
+                                            ng-value="dataSource.connectionString"
+                                            ng-model="dataSet.dataSourceId">
+                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input class="form-control" type="text" ng-model="dataSet.name" placeholder="Name">
+                                </div>
+                                <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
+                                    <label>Query</label>
+                                    <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
+                                </div>
+                                <div class="form-group pull-right">
+                                    <button class="btn btn-success" data-toggle="modal" data-target="#dataSetPreview" ng-click="previewDataSet(dataSet)">Preview</button>
+                                    <button class="btn btn-info" ng-click="saveDataSet(dataSet)">Save</button>
+                                    <button class="btn btn-warning" ng-click="clearDataSet(dataSet)">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="hpanel">
+                    <div class="col-md-6">
+
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8 data-search">
+                                    <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
+                                </div>
+                                <div class="col-md-4 data-search">
+                                    <select class="form-control" 
+                                            ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
+                                            placeholder="Data Source" 
+                                            ng-model="dataSourceId">
+                                        <option value="" selected="selected" ng-disabled="true">Search Data Source...</option>
+                                    </select>
+                                </div></div>
+                            <table class="table table-fixed">
+                                <thead>
+                                    <tr>
+                                        <th class="col-xs-5">Data Source</th>
+                                        <th class="col-xs-6">Name</th>
+                                        <th class="col-xs-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dataSet in dataSets| filter: dataSourceId.name | filter: searchDataSource" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
+                                        <td class="col-xs-5" ng-click="editDataSet(dataSet)">
+                                            {{dataSet.dataSourceId.name}}
+                                        </td>
+                                        <td class="col-xs-6" ng-click="editDataSet(dataSet)">
+                                            {{dataSet.name?dataSet.name:'-'}}
+                                        </td>
+                                        <td class="col-md-1">
+                                            <!--<button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = true"><i class="fa fa-pencil"></i></button>-->
+                                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSet{{dataSet.id}}"><i class="fa fa-trash-o"></i></button>
+                                            <div class="modal hmodal-success" id="deleteDataSet{{dataSet.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="color-line"></div>
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            <h4 class="modal-title">Delete</h4>
+                                                            <small class="font-bold"></small>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" role="form">
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-12  col-md-12">
+                                                                        <span>Want to delete ?</span>
+                                                                    </div>
                                                                 </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-primary btn-xs " 
+                                                                        ng-click="deleteDataSet(dataSet, $index)" 
+                                                                        data-dismiss="modal">
+                                                                    <span class="fa fa-trash"></span> Yes
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger btn-xs " 
+                                                                        data-dismiss="modal">
+                                                                    <span class="fa fa-times"></span> No
+                                                                </button>
                                                             </div>
-                                                        </form>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <div class="col-sm-12">
-                                                            <button type="button" class="btn btn-primary btn-xs " 
-                                                                    ng-click="deleteDataSet(dataSet, $index)" 
-                                                                    data-dismiss="modal">
-                                                                <span class="fa fa-trash"></span> Yes
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger btn-xs " 
-                                                                    data-dismiss="modal">
-                                                                <span class="fa fa-times"></span> No
-                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <form class="col-md-12 form-horizontal">
-                        <div class="form-group">
-                            <label>Data Source</label>
-                            <select class="form-control" 
-                                    ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
-                                    placeholder="Data Source" 
-                                    ng-value="dataSource.connectionString"
-                                    ng-model="dataSet.dataSourceId">
-                                <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input class="form-control" type="text" ng-model="dataSet.name" placeholder="Name">
-                        </div>
-                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
-                            <label>Query</label>
-                            <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
-                        </div>
-                        <div class="form-group pull-right">
-                            <button class="btn btn-success" data-toggle="modal" data-target="#dataSetPreview" ng-click="previewDataSet(dataSet)">Preview</button>
-                            <button class="btn btn-info" ng-click="saveDataSet(dataSet)">Save</button>
-                            <button class="btn btn-warning" ng-click="clearDataSet(dataSet)">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+
+
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <section class="content">
-                    <div ng-show="showPreviewChart" class="box-body popup-head" ng-if="previewData">
-                        <div class="row">
-                            <div id="changes-height" class="table-responsive">
-                                <div preview-Table path="{{previewData}}"></div>
+                <div class="hpanel">
+                    <div class="panel-body">
+                        <div ng-show="showPreviewChart" class="box-body popup-head" ng-if="previewData">
+                            <div class="row">
+                                <div id="changes-height" class="table-responsive">
+                                    <div preview-Table path="{{previewData}}"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
     </div>

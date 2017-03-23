@@ -1,6 +1,8 @@
 app.controller('DataSetController', function ($scope, $http, $stateParams) {
     
-    $scope.locationID = $stateParams.locationId;
+    $scope.accountID = $stateParams.accountId;
+    $scope.accountName = $stateParams.accountName;
+    
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate
     
@@ -28,7 +30,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
             id: dataSet.id,
             name: dataSet.name,
             query: dataSet.query,
-            dataSourceId: dataSet.dataSourceId
+            dataSourceId: dataSet.dataSourceId,
+            agencyId: dataSet.agencyId.id,
+            userId: dataSet.userId.id
         };
         $scope.dataSet = data;
     };

@@ -33,6 +33,10 @@
     <class>com.visumbu.vb.model.AgencyUser</class>
     <class>com.visumbu.vb.model.Agency</class>
     <class>com.visumbu.vb.model.AgencyLicence</class>
+    <class>com.visumbu.vb.model.AgencyProduct</class>
+    <class>com.visumbu.vb.model.ReportWidget</class>
+    <class>com.visumbu.vb.model.Scheduler</class>
+    <class>com.visumbu.vb.model.SchedulerHistory</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

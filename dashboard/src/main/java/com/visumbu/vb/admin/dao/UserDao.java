@@ -7,12 +7,13 @@ package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
-import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import java.lang.reflect.InvocationTargetException;
@@ -36,12 +37,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDao extends BaseDao {
 
     public List<VbUser> read() {
-        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where status is null or status != 'Deleted'");
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where (agencyId.status is null or agencyId.status != 'Deleted') and (status is null or status != 'Deleted')");
         return query.list();
     }
 
     public List<VbUser> findByUserName(String username) {
-        Query query = sessionFactory.getCurrentSession().getNamedQuery("VbUser.findByUserName");
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("userName", username);
+        List<VbUser> users = query.list();
+        if (!users.isEmpty()) {
+            return users;
+        }
+
+        query = sessionFactory.getCurrentSession().createQuery("from VbUser where (agencyId is null or agencyId.status is null or agencyId.status != 'Deleted') and (status is null or status != 'Deleted') and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("userName", username);
         return query.list();
     }
@@ -152,8 +160,8 @@ public class UserDao extends BaseDao {
     }
 
     public Account deleteAccount(Integer accountId) {
-        String queryAccountUser = "delete AccountUser d where d.accountId.id = :accountId";
-        Query querySession = sessionFactory.getCurrentSession().createQuery(queryAccountUser);
+        String queryUserAccount = "delete UserAccount d where d.accountId.id = :accountId";
+        Query querySession = sessionFactory.getCurrentSession().createQuery(queryUserAccount);
         querySession.setParameter("accountId", accountId);
         querySession.executeUpdate();
 
@@ -170,11 +178,6 @@ public class UserDao extends BaseDao {
     }
 
     public Property deleteProperty(Integer propertyId) {
-//        String queryStr = "delete from AccountUser d where d.propertyId.id = :propertyId";
-//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-//        query.setParameter("propertyId", propertyId);
-//        query.executeUpdate();
-
         String queryString = "delete Property d where d.id = :propertyId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
         querySess.setParameter("propertyId", propertyId);
@@ -182,10 +185,10 @@ public class UserDao extends BaseDao {
         return null;
     }
 
-    public AccountUser deleteAccountUser(Integer accountUserId) {
-        String queryString = "delete AccountUser d where d.id = :accountUserId";
+    public UserAccount deleteUserAccount(Integer userAccountId) {
+        String queryString = "delete UserAccount d where d.id = :userAccountId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
-        querySess.setParameter("accountUserId", accountUserId);
+        querySess.setParameter("userAccountId", userAccountId);
         querySess.executeUpdate();
         return null;
     }
@@ -197,28 +200,39 @@ public class UserDao extends BaseDao {
         return query.list();
     }
 
-    public List getAccountUserById(Integer accountId) {
-        String queryStr = "select d from AccountUser d where d.accountId.id = :accountId";
+    public List getUserAccountById(Integer accountId) {
+        String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.accountId.id = :accountId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("accountId", accountId);
         return query.list();
     }
 
+    public List getActiveAgency() {
+        String queryStr = "select d from Agency d where d.status is null or d.status != 'Deleted'";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("accountId", accountId);
+        return query.list();
+    }
+
     public Agency deleteAgency(Integer agencyId) {
-        String queryStr = "delete from AgencyLicence d where d.agencyId.id = :agencyId";
+        String queryStr = "update Agency d set status = 'Deleted' where d.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", agencyId);
         query.executeUpdate();
-
-        String queryString = "delete Agency d where d.id = :agencyId";
-        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
-        querySess.setParameter("agencyId", agencyId);
-        querySess.executeUpdate();
+//        String queryStr = "delete from AgencyLicence d where d.agencyId.id = :agencyId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("agencyId", agencyId);
+//        query.executeUpdate();
+//
+//        String queryString = "delete Agency d where d.id = :agencyId";
+//        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+//        querySess.setParameter("agencyId", agencyId);
+//        querySess.executeUpdate();
         return null;
     }
-    
+
     public List getAgencyLicenceById(Integer agencyId) {
-        String queryStr = "select d from AgencyLicence d where d.agencyId.id = :agencyId";
+        String queryStr = "select d from AgencyLicence d where (d.agencyId.status is null or d.agencyId.status != 'Deleted') and d.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", agencyId);
         return query.list();
@@ -232,5 +246,55 @@ public class UserDao extends BaseDao {
         return null;
     }
 
+//    public List getAgencyUserById(Integer agencyUserId) {
+//        String queryStr = "select d from VbUser d where d.agencyId.id = :agencyUserId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("agencyUserId", agencyUserId);
+//        return query.list();
+//    }
+    public List getAgencyUserById(Integer agencyUserId) {
+        String queryStr = "select d from VbUser d where (d.status is null or d.status != 'Deleted') and (d.agencyId.status is null or d.agencyId.status != 'Deleted') and d.agencyId.id = :agencyUserId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyUserId", agencyUserId);
+        return query.list();
+    }
+
+    public List<Account> getAccount() {
+        String queryStr = "select a from Account a where (a.agencyId.status is null or a.agencyId.status != 'Deleted')";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("agencyId", agency.getId());
+        return query.list();
+    }
+
+    public List<Account> getAccountByAgency(Agency agency) {
+        String queryStr = "select a from Account a where (a.agencyId.status is null or a.agencyId.status != 'Deleted') and a.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", agency.getId());
+        return query.list();
+    }
+
+    public List<AgencyProduct> getAgencyProductById(Integer agencyProductId) {
+        String queryStr = "select a from AgencyProduct a where a.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", agencyProductId);
+        return query.list();
+    }
+
+    public AgencyProduct getAgencyProductOrderId(Integer agencyProductId) {
+        AgencyProduct agencyProduct = (AgencyProduct) sessionFactory.getCurrentSession().get(AgencyProduct.class, agencyProductId);
+        return agencyProduct;
+    }
+
+    public String productUpdateOrder(Integer agencyProductId, String productOrder) {
+        System.out.println(productOrder);
+        String[] productOrderArray = productOrder.split(",");
+        for (int i = 0; i < productOrderArray.length; i++) {
+            Integer productId = Integer.parseInt(productOrderArray[i]);
+            AgencyProduct agencyProduct = getAgencyProductOrderId(productId);
+            agencyProduct.setProductOrder(i);
+            update(agencyProduct);
+        }
+        return null;
+    }
 
 }

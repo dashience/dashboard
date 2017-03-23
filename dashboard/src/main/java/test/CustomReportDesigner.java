@@ -274,6 +274,7 @@ public class CustomReportDesigner {
         Collections.sort(data, (Map<String, Object> o1, Map<String, Object> o2) -> {
             for (Iterator<SortType> iterator = sortType.iterator(); iterator.hasNext();) {
                 SortType sortType1 = iterator.next();
+                // TODO: Should remove and fix with correct logic  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
                 int order = 1;
@@ -377,11 +378,11 @@ public class CustomReportDesigner {
                         continue;
                     }
                 }
-
+                // TODO : REMOVE TILL THIS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                
                 if (sortType1.getSortOrder().equalsIgnoreCase("desc")) {
                     order = -1;
                 }
-
                 if (sortType1.getFieldType().equalsIgnoreCase("number")) {
                     Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
                     Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
@@ -437,7 +438,6 @@ public class CustomReportDesigner {
         List<Map<String, Object>> groupedData = new ArrayList<>();
         String groupingField = currentFields.get(0);
         Map<String, List<Map<String, Object>>> currentListGrouped = groupBy(actualList, groupingField);
-        //groupByFields.remove(0);
         for (Map.Entry<String, List<Map<String, Object>>> entrySet : currentListGrouped.entrySet()) {
             String key = entrySet.getKey();
             List<Map<String, Object>> value = entrySet.getValue();

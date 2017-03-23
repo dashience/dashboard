@@ -1,7 +1,7 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
     $scope.permission = localStorageService.get("permission");
-
-    $scope.locationID = $stateParams.locationId;
+    $scope.accountID = $stateParams.accountId;
+    $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
@@ -17,17 +17,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $window.open(url);
     };
 
+    function getWidgetItem() {      //Default Loading Items
+        if (!$stateParams.tabId) {
+            $stateParams.tabId = 0;
+        }
+        $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+            $scope.widgets = response;
+        });
+    }
+    getWidgetItem();
+
     $scope.addWidget = function (newWidget) {       //Add Widget
         var data = {
             width: newWidget, 'minHeight': 25, columns: [], chartType: ""
         };
         $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            //$scope.widgets.unshift({id: response.id, width: newWidget, 'minHeight': 25, columns: [], tableFooter: 1, zeroSuppression: 1});
-            //$scope.newWidgetId = response.id;
-
             $state.go("index.editWidget", {
-                locationId: $stateParams.locationId,
                 productId: $stateParams.productId,
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
                 tabId: $stateParams.tabId,
                 widgetId: response.id,
                 startDate: $stateParams.startDate,
@@ -37,13 +45,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.removeBackDrop = function () {
-        alert(1)
         $('body').removeClass().removeAttr('style');
         $('.modal-backdrop').remove();
-
-        $state.go('index.dataSource', {locationId: $stateParams.locationId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-        alert(2)
-    }
+        $state.go('index.dataSource', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+    };
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
@@ -51,22 +56,32 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
 
-    function getWidgetItem() {      //Default Loading Items
-        if (!$stateParams.tabId) {
-            $stateParams.tabId = 1;
-        }
-        $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            $scope.widgets = response;
-        });
-    }
-    getWidgetItem();
-
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();
     };
     $scope.moveWidget = function (list, from, to) {
         list.splice(to, 0, list.splice(from, 1)[0]);
         return list;
+    };
+
+    $http.get("admin/ui/reportWidget").success(function (response) {
+        $scope.reportWidgets = response;
+    });
+
+    $http.get('admin/ui/report').success(function (response) {
+        $scope.reportList = response;
+    });
+
+    $scope.addWidgetToReport = function (widget) {
+        var data = {};
+        data.widgetId = widget.id;
+        data.reportId = widget.reportWidget.id;
+        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/reportWidget', data: data}).success(function (response) {
+        });
+    };
+
+    $scope.goReport = function () {
+        $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
 
     $scope.onDropComplete = function (index, widget, evt) {
@@ -103,6 +118,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             makeUnselectable(child);
             child = child.nextSibling;
         }
+    }
+
+    $scope.selectReport = function (reportWidget) {
+        console.log(reportWidget)
+        $scope.reportLogo = reportWidget.logo;
+        $scope.reportDescription = reportWidget.description;
     }
 });
 
@@ -320,7 +341,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             var aggreagtionList = [];
             var sortFields = [];
             for (var i = 0; i < scope.columns.length; i++) {
-                console.log(scope.columns[i]);
                 if (scope.columns[i].groupPriority) {
                     groupByFields.push(scope.columns[i].fieldName);
                 }
@@ -333,7 +353,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             }
             var fullAggreagtionList = aggreagtionList;
             var tableDataSource = JSON.parse(scope.dynamicTableSource)
-            console.log(tableDataSource)
             var data = {
                 url: '../dbApi/admin/dataSet/getData',
                 connectionUrl: tableDataSource.dataSourceId.connectionString,
@@ -345,7 +364,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 port: 3306,
                 schema: 'vb'
             }
-            console.log(data);
 
             var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             if (tableDataSource.dataSourceId.dataSourceType == "csv") {
@@ -391,7 +409,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                     }
                 }
                 //alert("CAlling");
-                console.log(pdfData);
                 scope.pdfFunction({test: pdfData});
             });
 
@@ -408,14 +425,10 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 }
                 var sortFields = [];
                 sortFields.push({fieldName: col.fieldName, sortOrder: col.sortOrder, fieldType: col.fieldType});
-                console.log(sortFields);
                 var responseData = scope.orignalData;
                 // scope.orignalData = response.data;
                 responseData = scope.orderData(responseData, sortFields);
                 var widgetData = JSON.parse(scope.widgetObj);
-                console.log("WidgetObj");
-                console.log(widgetData);
-                console.log(scope.widgetColumns);
                 if (widgetData.maxRecord > 0) {
                     responseData = responseData.slice(0, widgetData.maxRecord);
                 }

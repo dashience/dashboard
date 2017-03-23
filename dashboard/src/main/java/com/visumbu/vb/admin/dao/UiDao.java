@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
@@ -45,13 +46,27 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<DashboardTabs> getDashboardTabs(Integer dbId) {
-        String queryStr = "select d from DashboardTabs d where (d.status is null or d.status != 'Deleted') and d.dashboardId.id = :dashboardId order by tabOrder";
+    public List<UserAccount> getUserAccountByUser(VbUser user) {
+        System.out.println(user);
+        String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("dashboardId", dbId);
+        query.setParameter("userId", user.getId());
         return query.list();
     }
 
+    public List<DashboardTabs> getAgencyProductTab(Integer agencyProductId) {
+        String queryStr = "select d from DashboardTabs d where (d.status is null or d.status != 'Deleted') and d.agencyProductId.id = :agencyProductId order by tabOrder";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyProductId", agencyProductId);
+        return query.list();
+    }
+
+//    public List<DashboardTabs> getDashboardTabs(Integer dbId) {
+//        String queryStr = "select d from DashboardTabs d where (d.status is null or d.status != 'Deleted') and d.dashboardId.id = :dashboardId order by tabOrder";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("dashboardId", dbId);
+//        return query.list();
+//    }
     public List<DashboardTabs> getDashboardTabsByProduct(Integer productId, Integer userId) {
         String queryStr = "SELECT d FROM DashboardTabs d WHERE (d.status is null or d.status != 'Deleted') and d.dashboardId.productId.id = :productId and d.dashboardId.userId.id = :userId order by tabOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -105,6 +120,10 @@ public class UiDao extends BaseDao {
         return (Dashboard) sessionFactory.getCurrentSession().get(Dashboard.class, dashboardId);
     }
 
+    public AgencyProduct getAgencyProductById(Integer agencyProductId) {
+        return (AgencyProduct) sessionFactory.getCurrentSession().get(AgencyProduct.class, agencyProductId);
+    }
+
     private List<WidgetColumn> getColumns(TabWidget widget) {
         String queryStr = "select d from WidgetColumn d where d.widgetId = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -135,6 +154,11 @@ public class UiDao extends BaseDao {
     }
 
     public TabWidget deleteTabWidget(Integer id) {
+        String queryReport = "delete from ReportWidget d where d.widgetId.id = :widgetId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryReport);
+        querySess.setParameter("widgetId", id);
+        querySess.executeUpdate();
+        
         String queryStr = "delete from WidgetColumn d where d.widgetId.id = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("widgetId", id);
@@ -212,33 +236,26 @@ public class UiDao extends BaseDao {
     }
 
     public List<ReportWidget> getReportWidget(Integer reportId) {
-        String queryStr = "select d from ReportWidget d where d.reportId.id = :reportId order by widgetOrder";
+        String queryStr = "select d from ReportWidget d where d.reportId.id = :reportId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("reportId", reportId);
 
-        List<ReportWidget> reportWidgets = query.list();
-        for (Iterator<ReportWidget> iterator = reportWidgets.iterator(); iterator.hasNext();) {
-            ReportWidget widget = iterator.next();
+        List<ReportWidget> tabWidgets = query.list();
+        for (Iterator<ReportWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
+            TabWidget widget = iterator.next().getWidgetId();
             widget.setColumns(getColumns(widget));
         }
-
-        return reportWidgets;
+        return tabWidgets;
     }
 
-    private List<ReportColumn> getColumns(ReportWidget widget) {
-        String queryStr = "select d from ReportColumn d where d.reportId = :reportId";
+    private List<WidgetColumn> getColumns(ReportWidget widget) {
+        String queryStr = "select d from WidgetColumn d where d.widgetId = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("reportId", widget);
-
+        query.setParameter("widgetId", widget);
         return query.list();
     }
 
     public ReportWidget deleteReportWidget(Integer id) {
-        String queryStr = "delete from ReportColumn d where d.reportId.id = :reportId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("reportId", id);
-        query.executeUpdate();
-
         delete(getReportWidgetById(id));
         return null;
     }
@@ -270,7 +287,7 @@ public class UiDao extends BaseDao {
         for (int i = 0; i < reportOrderArray.length; i++) {
             Integer reportWidgetId = Integer.parseInt(reportOrderArray[i]);
             ReportWidget reportWidget = getReportWidgetById(reportWidgetId);
-            reportWidget.setWidgetOrder(i);
+            // reportWidget.setWidgetOrder(i);
             update(reportWidget);
         }
         return null;
@@ -381,7 +398,7 @@ public class UiDao extends BaseDao {
 //        return query.list();
 //    }
     public List getUserPermission(Integer userId) {
-        String queryStr = "select d from UserPermission d where d.userId.id = :userId";
+        String queryStr = "select d from UserPermission d where (d.userId.status is null or d.userId.status != 'Deleted') and d.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", userId);
         return query.list();
@@ -393,5 +410,43 @@ public class UiDao extends BaseDao {
         querySess.setParameter("userPermissionId", userPermissionId);
         querySess.executeUpdate();
         return null;
+    }
+
+    public List<VbUser> getUsersByAgencyUser(VbUser user) {
+        String queryStr = "select d from VbUser d where (d.agencyId.status is null or d.agencyId.status != 'Deleted') and d.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", user.getAgencyId().getId());
+        return query.list();
+    }
+
+    public VbUser deleteUser(Integer id) {
+        String queryString = "update VbUser d set status = 'Deleted' where d.id = :userId";
+        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+        querySess.setParameter("userId", id);
+        querySess.executeUpdate();
+        return null;
+    }
+
+    public List<DataSet> getDataSetByUser(VbUser user) {
+        String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", user.getId());
+        query.setParameter("agencyId", user.getAgencyId());
+        return query.list();
+    }
+
+    public List<DataSource> getDataSourceByUser(VbUser user) {
+        String queryStr = "select d from DataSource d where d.userId.id = :userId and d.agencyId = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", user.getId());
+        query.setParameter("agencyId", user.getAgencyId());
+        return query.list();
+    }
+
+    public List<Report> getAgencyReport(VbUser user) {
+        String queryStr = "select d from Report d where d.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", user.getAgencyId().getId());
+        return query.list();
     }
 }
