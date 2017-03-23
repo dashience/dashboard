@@ -118,13 +118,22 @@
         -ms-user-select: none;
         user-select: none;
     }
+    .text-widget{
+        margin: 0 0 10px;
+        word-wrap: break-word;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
         <div class="btn-group">
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
         </div>
+        <div class="btn-group">
         <a class="refresh" ng-click="downloadPdf()"><i class="fa fa-download"></i> PDF</a>
+        </div>
+        <div class="btn-group">
+            <a class="refresh" ng-click="downloadPpt()"><i class="fa fa-download"></i> PPT</a>
+        </div>
         <div class="btn-group dropdown">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
                 <button type="button" class="btn btn-block btn-info"><i class="fa fa-plus-circle"></i> Add Widget</button>
@@ -238,7 +247,9 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'text'">
                         <div class="col-md-12">
-                           <span ng-bind-html="widget.content"></span>
+                            <div class="text-widget">
+                                <span ng-bind-html="widget.content"></span>
+                            </div>
                         </div>
                     </div>
                 </div>

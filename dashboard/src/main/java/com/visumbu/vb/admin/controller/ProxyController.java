@@ -148,7 +148,8 @@ public class ProxyController {
                     }
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                         System.out.println("DS TYPE ==>  CSV");
-                        url = "../Vizboard/admin/csv/getData";
+                        url = "admin/csv/getData";
+              //          url = "../Vizboard/admin/csv/getData";
                     }
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -232,7 +233,8 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../Vizboard/admin/csv/getData";
+                    url = "admin/csv/getData";
+  //                  url = "../Vizboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -241,7 +243,7 @@ public class ProxyController {
                 Integer port = request.getServerPort();
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-                System.out.println("UR:" + url);
+                System.out.println("URL:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
@@ -274,11 +276,11 @@ public class ProxyController {
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
             }
-                response.setContentType("application/vnd.ms-excel");
-                response.setHeader("Content-disposition", "attachment; filename=richanalytics.xlsx");
-                OutputStream out = response.getOutputStream();
-                CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicXlsDownload(tabWidgets, out);
+//                response.setContentType("application/vnd.ms-excel");
+//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.xlsx");
+//                OutputStream out = response.getOutputStream();
+//                CustomReportDesigner crd = new CustomReportDesigner();
+//                crd.dynamicXlsDownload(tabWidgets, out);
         } catch (Exception e) {
             e.printStackTrace();
         }
