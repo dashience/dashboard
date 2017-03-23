@@ -98,6 +98,10 @@
     .lay-wid {
         text-align:left;
     }
+    
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }
 
 </style>
 
@@ -131,8 +135,12 @@
     </div> 
 </div>
 <div class="row"> 
+    <div class="content hpanel">
     <div class="col-md-12">
-        <div class="col-md-3">
+        
+            <div class="panel-body">
+               
+        <div class="col-md-2">
             <div ng-hide="editReport">
                 <img style="height: 100px;" class="img-responsive img-thumbnail" ng-src="{{uploadLogo}}"/>
             </div>
@@ -143,31 +151,39 @@
                 <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
             </div>
         </div>
-        <div class="col-sm-9">
-            <label class="col-sm-2">Report Title</label>
-            <div ng-hide="editReport" class="form-group col-sm-10">
-                {{reportTitle}}
-            </div>
+        <div class="col-md-9">
+            <div class="form-group col-sm-10">
+                <label class="col-sm-2">Report Title</label>
+                 <div ng-hide="editReport">
+                    {{reportTitle}}
+                </div>
+            
             <div ng-show="editReport" class="form-group col-sm-10">
                 <input type="text" ng-model="reportTitle" class="form-control" placeholder="Title">
             </div>
+            </div>
+            <div class="form-group col-sm-10">
             <label class="col-sm-2">Description</label>
             <div ng-hide="editReport" class="form-group col-sm-10" style="word-break: break-all;">
                 {{description?description:"-"}}
             </div> 
             <div ng-show="editReport" class="form-group col-sm-10">
                 <textarea placeholder="Description" ng-model="description" class="form-control" style="min-height: 100px;"></textarea>
-            </div>                
-        </div>
-        <div class="row col-sm-12">
-            <div ng-hide="editReport">
-                <button class="btn btn-default pull-right" ng-click="editReport = true;">Edit</button>
             </div>
-            <div ng-show="editReport">
-                <button class="btn btn-info pull-right" ng-click="saveReportData(); editReport = false;">Save</button>
             </div>
         </div>
+       
+            <div ng-hide="editReport" class="pull-right">
+                <button class="btn btn-block btn-success" ng-click="editReport = true;">Edit</button>
+            </div>
+            <div ng-show="editReport" class="pull-right">
+                <button class="btn btn-info" ng-click="saveReportData(); editReport = false;">Save</button>
+            </div>
+        
+               
     </div>
+</div>
+</div>
 </div>
 <div class="row">
     <div ng-repeat="reportWidget in reportWidgets">

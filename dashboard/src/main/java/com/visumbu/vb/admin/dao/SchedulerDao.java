@@ -55,9 +55,26 @@ public class SchedulerDao extends BaseDao {
         if(hour < 10) {
             scheduledHour = "0"+hour + ":00";
         }
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour";
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerTime = :hour";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Daily");
+        query.setParameter("startDate", today);
+        query.setParameter("hour", scheduledHour);
+        return query.list();
+    }
+    
+    public List<Scheduler> getWeeklyTasks(Integer hour, String weekDay, Date today) {
+        
+        String scheduledHour = hour +":00";
+        if(hour < 10) {
+            scheduledHour = "0"+hour + ":00";
+        }       
+        
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerWeekly = :schedulerWeekly and d.schedulerTime = :hour";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("schedulerRepeatType", "Weekly");
+        query.setParameter("startDate", today);
+        query.setParameter("schedulerWeekly", weekDay);
         query.setParameter("hour", scheduledHour);
         return query.list();
     }

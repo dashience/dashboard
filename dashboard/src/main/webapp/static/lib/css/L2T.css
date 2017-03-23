@@ -1762,7 +1762,7 @@ body {
     background-color: none;
     border: none;
     box-shadow: none;
-    margin-bottom: 15px;
+    /*    margin-bottom: 15px;*/
 }
 .panel-tools {
     display: inline-block;
@@ -3987,3 +3987,9 @@ input[type="radio"], input[type="checkbox"] {
 .right-group {
     padding-left: 23px !important;
 }
+
+.btn-warning {
+    background-color: #777 !important;
+    border-color: #777 !important;
+}
+

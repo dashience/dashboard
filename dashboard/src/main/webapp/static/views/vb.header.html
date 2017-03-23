@@ -19,9 +19,15 @@
     .product-icon {
         width:110px;
     }
+
+    .admin-fnt {
+        font-size: 12px;
+        padding-top: 20px;
+        text-transform: capitalize;
+    }
     .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
-    display: none !important;
-}
+        display: none !important;
+    }
 
 </style>
 
@@ -101,9 +107,9 @@
         </div>
 
         <div class="navbar-right">
-            <ul class="nav navbar-nav navbar-left">
-                <li>
-                    <span class="text-uppercase">{{userName}} / {{agencyId.agencyName}}</span>
+            <ul class="nav navbar-nav no-borders">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown"> <span class="admin-fnt">{{userName}} / {{agencyId.agencyName}}</span></a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-left">

@@ -9,15 +9,43 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     $http.get("admin/ui/report").success(function (response) {
         $scope.reports = response;
     });
-    $scope.accounts = []
+    $scope.accounts = [];
+
+
+    var unique = function (origArr) {
+        var newArr = [],
+                origLen = origArr.length,
+                found, x, y;
+
+        for (x = 0; x < origLen; x++) {
+            found = undefined;
+            for (y = 0; y < newArr.length; y++) {
+                if (origArr[x] === newArr[y]) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                newArr.push(origArr[x]);
+            }
+        }
+        return newArr;
+    }
+
+
     $http.get('admin/user/account').success(function (response) {
         $scope.emailAccounts = [];
         $scope.accounts = response;
-        angular.forEach($scope.accounts, function(val, key){
+        angular.forEach($scope.accounts, function (val, key) {
             $scope.emailAccounts.push(val.agencyId.email)
-            console.log($scope.emailAccounts)
-        })
+            $scope.accountEmails = unique($scope.emailAccounts);
+        });
     });
+    
+    function dateFormat(date){
+        return $filter('date')(date,'MM/dd/yyyy')
+    }
+    
     $scope.scheduler = {};
     $http.get("admin/scheduler/scheduler/" + $stateParams.schedulerId).success(function (response) {
         if (!response) {
@@ -36,8 +64,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         $scope.scheduler = {
             id: response.id,
             schedulerName: response.schedulerName,
-            startDate: response.startDate,
-            endDate: response.endDate,
+            startDate:  dateFormat(response.startDate),
+            endDate: dateFormat(response.endDate),
             schedulerRepeatType: response.schedulerRepeatType,
             schedulerWeekly: response.schedulerWeekly,
             schedulerTime: response.schedulerTime,
@@ -54,7 +82,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             lastNmonths: response.lastNmonths,
             lastNyears: response.lastNyears,
             customStartDate: response.customStartDate,
-            customEndDate: response.customEndDate
+            customEndDate: response.customEndDate,
+            isAccountEmail: response.isAccountEmail
         };
     });
 
@@ -147,18 +176,18 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                 return value;
             }
         }).join(',');
-
-        scheduler.customStartDate = $scope.customStartDate;
-        scheduler.customEndDate = $scope.customEndDate;
+        if (scheduler.dateRangeName === 'Custom') {
+            scheduler.customStartDate = $scope.customStartDate;
+            scheduler.customEndDate = $scope.customEndDate;
+        }
+        else{
+            scheduler.customStartDate = "";
+            scheduler.customEndDate = "";
+        }
         scheduler.schedulerEmail = emails;
-        console.log($scope.customStartDate);
-        console.log($scope.customEndDate);
-        console.log(scheduler)
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });
         $scope.scheduler = "";
-//        var today = new Date();
-//        today.toLocaleFormat('%d-%b-%Y');
     };
 
 

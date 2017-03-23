@@ -109,13 +109,27 @@
         top: -1px;
         *overflow: hidden;
     }
+    .agency-bt {
+        margin-bottom: 10px;
+    }
+    .nav-tabs-custom {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }
+    .add-group {
+        margin-right:0px;
+        padding:10px 0px;
+    }
 </style>
 
 <section class="content">
-    <div class="pull-right-container pull-right row">
-        <div class="btn-group">
+    <div class="pull-right add-group">
+       
             <span ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> Add Reports</button></span>
-        </div>
+        
     </div>
 
     <table class="table table-bordered table-hover table-responsive">
