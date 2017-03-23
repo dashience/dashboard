@@ -55,7 +55,7 @@ public class UiService {
 
     @Autowired
     private UiDao uiDao;
-   
+
     @Autowired
     private UserDao userDao;
 
@@ -140,7 +140,7 @@ public class UiService {
     public Dashboard getDashboardById(Integer dashboardId) {
         return uiDao.getDashboardById(dashboardId);
     }
-    
+
     public AgencyProduct getAgencyProductById(Integer agencyProductId) {
         return uiDao.getAgencyProductById(agencyProductId);
     }
@@ -248,8 +248,8 @@ public class UiService {
         return uiDao.readReportType(reportTypeId);
     }
 
-    public Report addReport(Report report, Integer reportTypeId) {
-        return uiDao.addReport(report, reportTypeId);
+    public Report addReport(Report report) {
+        return (Report) uiDao.create(report);
     }
 
     public Report updateReport(Report report) {
@@ -269,60 +269,79 @@ public class UiService {
         return report;
     }
 
-    public ReportWidget createReportWidget(Integer reportId, ReportWidget reportWidget) {
-        reportWidget.setReportId(uiDao.getReportById(reportId));
-        if (reportWidget.getId() != null) {
-            ReportWidget reportWidgetDb = uiDao.getReportWidgetById(reportWidget.getId());
-            if (reportWidget.getWidgetTitle() != null) {
-                reportWidgetDb.setWidgetTitle(reportWidget.getWidgetTitle());
-            }
-            if (reportWidget.getDirectUrl() != null) {
-                reportWidgetDb.setDirectUrl(reportWidget.getDirectUrl());
-            }
-            if (reportWidget.getChartType() != null) {
-                reportWidgetDb.setChartType(reportWidget.getChartType());
-            }
-            return (ReportWidget) uiDao.update(reportWidgetDb);
+    public List getAgencyReport(VbUser user) {
+        if (user.getAgencyId() == null) {
+            List<Report> report = uiDao.read(Report.class);
+            return report;
         }
+        return uiDao.getAgencyReport(user);
+    }
+
+    public ReportWidget createReportWidget(ReportWidget reportWidget) {
         return (ReportWidget) uiDao.create(reportWidget);
     }
 
-    public ReportWidget saveReportWidget(Integer reportId, ReportWidgetBean reportWidgetBean) {
-        ReportWidget reportWidget = null;
-        if (reportWidgetBean.getId() != null) {
-            reportWidget = uiDao.getReportWidgetById(reportWidgetBean.getId());
-
-        } else {
-            reportWidget = new ReportWidget();
-        }
-        reportWidget.setChartType(reportWidgetBean.getChartType());
-        reportWidget.setDirectUrl(reportWidgetBean.getDirectUrl());
-        reportWidget.setWidgetTitle(reportWidgetBean.getWidgetTitle());
-        reportWidget.setProductName(reportWidgetBean.getProductName());
-        reportWidget.setProductDisplayName(reportWidgetBean.getProductDisplayName());
-        ReportWidget savedReportWidget = uiDao.saveReportWidget(reportWidget);
-        List<ReportColumnBean> reportColumns = reportWidgetBean.getReportColumns();
-        uiDao.deleteReportColumns(reportWidget.getId());
-        for (Iterator<ReportColumnBean> iterator = reportColumns.iterator(); iterator.hasNext();) {
-            ReportColumnBean reportColumnBean = iterator.next();
-            ReportColumn reportColumn = new ReportColumn();
-            reportColumn.setFieldName(reportColumnBean.getFieldName());
-            reportColumn.setDisplayFormat(reportColumnBean.getDisplayFormat());
-            reportColumn.setDisplayName(reportColumnBean.getDisplayName());
-            reportColumn.setSortOrder(reportColumnBean.getSortOrder());
-            reportColumn.setGroupPriority(reportColumnBean.getGroupPriority());
-            reportColumn.setAgregationFunction(reportColumnBean.getAgregationFunction());
-            reportColumn.setxAxis(reportColumnBean.getxAxis());
-            reportColumn.setyAxis(reportColumnBean.getyAxis());
-            reportColumn.setWidth(reportColumnBean.getWidth());
-            reportColumn.setAlignment(reportColumnBean.getAlignment());
-            reportColumn.setReportId(savedReportWidget);
-            uiDao.saveOrUpdate(reportColumn);
-        }
-        return savedReportWidget;
+    public ReportWidget updateReportWidget(ReportWidget reportWidget) {
+        return (ReportWidget) uiDao.update(reportWidget);
     }
 
-    public List getReportWidget(Integer reportId) {
+//    public ReportWidget createReportWidget(Integer reportId, ReportWidget reportWidget) {
+//        reportWidget.setReportId(uiDao.getReportById(reportId));
+//        if (reportWidget.getId() != null) {
+//            ReportWidget reportWidgetDb = uiDao.getReportWidgetById(reportWidget.getId());
+//            if (reportWidget.getWidgetTitle() != null) {
+//                reportWidgetDb.setWidgetTitle(reportWidget.getWidgetTitle());
+//            }
+//            if (reportWidget.getDirectUrl() != null) {
+//                reportWidgetDb.setDirectUrl(reportWidget.getDirectUrl());
+//            }
+//            if (reportWidget.getChartType() != null) {
+//                reportWidgetDb.setChartType(reportWidget.getChartType());
+//            }
+//            return (ReportWidget) uiDao.update(reportWidgetDb);
+//        }
+//        return (ReportWidget) uiDao.create(reportWidget);
+//    }
+//    public ReportWidget saveReportWidget(Integer reportId, ReportWidgetBean reportWidgetBean) {
+//        ReportWidget reportWidget = null;
+//        if (reportWidgetBean.getId() != null) {
+//            reportWidget = uiDao.getReportWidgetById(reportWidgetBean.getId());
+//
+//        } else {
+//            reportWidget = new ReportWidget();
+//        }
+//        reportWidget.setChartType(reportWidgetBean.getChartType());
+//        reportWidget.setDirectUrl(reportWidgetBean.getDirectUrl());
+//        reportWidget.setWidgetTitle(reportWidgetBean.getWidgetTitle());
+//        reportWidget.setProductName(reportWidgetBean.getProductName());
+//        reportWidget.setProductDisplayName(reportWidgetBean.getProductDisplayName());
+//        ReportWidget savedReportWidget = uiDao.saveReportWidget(reportWidget);
+//        List<ReportColumnBean> reportColumns = reportWidgetBean.getReportColumns();
+//        uiDao.deleteReportColumns(reportWidget.getId());
+//        for (Iterator<ReportColumnBean> iterator = reportColumns.iterator(); iterator.hasNext();) {
+//            ReportColumnBean reportColumnBean = iterator.next();
+//            ReportColumn reportColumn = new ReportColumn();
+//            reportColumn.setFieldName(reportColumnBean.getFieldName());
+//            reportColumn.setDisplayFormat(reportColumnBean.getDisplayFormat());
+//            reportColumn.setDisplayName(reportColumnBean.getDisplayName());
+//            reportColumn.setSortOrder(reportColumnBean.getSortOrder());
+//            reportColumn.setGroupPriority(reportColumnBean.getGroupPriority());
+//            reportColumn.setAgregationFunction(reportColumnBean.getAgregationFunction());
+//            reportColumn.setxAxis(reportColumnBean.getxAxis());
+//            reportColumn.setyAxis(reportColumnBean.getyAxis());
+//            reportColumn.setWidth(reportColumnBean.getWidth());
+//            reportColumn.setAlignment(reportColumnBean.getAlignment());
+//            reportColumn.setReportId(savedReportWidget);
+//            uiDao.saveOrUpdate(reportColumn);
+//        }
+//        return savedReportWidget;
+//    }
+    public List<ReportWidget> getReportWidget() {
+        List<ReportWidget> reportWidget = uiDao.read(ReportWidget.class);
+        return reportWidget;
+    }
+
+    public List<ReportWidget> getReportWidget(Integer reportId) {
         return uiDao.getReportWidget(reportId);
     }
 
@@ -363,7 +382,6 @@ public class UiService {
 //        List<DataSet> dataSet = uiDao.read(DataSet.class);
 //        return dataSet;
 //    }
-    
     public List<DataSet> getDataSetByUser(VbUser user) {
         return uiDao.getDataSetByUser(user);
     }
@@ -448,9 +466,9 @@ public class UiService {
         List<VbUser> vbUser = uiDao.read(VbUser.class);
         return vbUser;
     }
-    
+
     public List<VbUser> getAgencyUser(VbUser user) {
-        if(user.getAgencyId() == null) {
+        if (user.getAgencyId() == null) {
             return userDao.read();
         }
         return uiDao.getUsersByAgencyUser(user);
@@ -485,7 +503,7 @@ public class UiService {
         List<UserAccount> userAccount = uiDao.read(UserAccount.class);
         return userAccount;
     }
-    
+
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         return uiDao.getUserAccountByUser(user);
     }
@@ -507,7 +525,7 @@ public class UiService {
     }
 
     public UserPermission createUserPermission(UserPermission userPermission) {
-       return (UserPermission) uiDao.create(userPermission);
+        return (UserPermission) uiDao.create(userPermission);
     }
 
     public UserPermission updateUserPermission(UserPermission userPermission) {
@@ -525,5 +543,5 @@ public class UiService {
 
     public UserPermission deleteUserPermission(Integer userPermissionId) {
         return uiDao.deleteUserPermission(userPermissionId);
-    }    
+    }
 }

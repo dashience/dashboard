@@ -3,7 +3,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
     $scope.agencyId = $cookies.getObject("agencyId");
-    console.log($scope.agencyId)
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
@@ -33,21 +32,20 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //    });
 
     $http.get('admin/ui/userAccountByUser').success(function (response) {
-        console.log(response)
         $scope.accounts = response;
         $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
         $scope.name = $filter('filter')($scope.accounts, {id: $stateParams.accountId})[0];
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        console.log($scope.name.userId.agencyId)
-        if(!$scope.name.userId.agencyId){
+        if (!$scope.name.userId.agencyId) {
+            $scope.loadNewUrl()
+            //$state.go("index.dashboard")
             return
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
     });
 
     $scope.getAccountId = function (account) {
-        console.log(account)
         $stateParams.accountId = account.id;
         $scope.selectAccount.selected = {accountName: account.accountId.accountName};
         $stateParams.accountName = account.accountId.accountName;
@@ -67,8 +65,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
 
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
-
-            console.log($stateParams.productId);
 //        $state.go("index.dashboard", {productId: $stateParams.productId});
             try {
                 $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
@@ -106,7 +102,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 $state.go("index.report.newOrEdit", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
-                    productId: $stateParams.productId,
+                    reportId: $stateParams.reportId,
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
@@ -139,7 +135,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
-            } else if ($scope.getCurrentPage() === "user") {
+            }else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+                $state.go("index.schedulerIndex.editOrNewScheduler", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    schedulerId: $stateParams.schedulerId,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }  else if ($scope.getCurrentPage() === "user") {
                 $state.go("index.user", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
@@ -234,7 +238,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 endDate: $scope.endDate
             });
         } else if ($scope.getCurrentPage() === "franchiseMarketing") {
-            $scope.hideLocation = true;
             $state.go("index.franchiseMarketing", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
@@ -243,7 +246,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 endDate: $scope.endDate
             });
         } else if ($scope.getCurrentPage() === "dataSource") {
-            $scope.hideLocation = false;
             $state.go("index.dataSource", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
@@ -251,7 +253,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 endDate: $scope.endDate
             });
         } else if ($scope.getCurrentPage() === "dataSet") {
-            $scope.hideLocation = false;
             $state.go("index.dataSet", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
@@ -262,6 +263,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $state.go("index.schedulerIndex.scheduler", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
+                startDate: $scope.startDate,
+                endDate: $scope.endDate
+            });
+        }else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+            $state.go("index.report.newOrEdit", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                schedulerId: $stateParams.schedulerId,
                 startDate: $scope.startDate,
                 endDate: $scope.endDate
             });
@@ -312,6 +321,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         if (url.indexOf("dataSet") > 0) {
             return "dataSet";
+        }
+        if (url.indexOf("editOrNewScheduler") > 0) {
+            return "editOrNewScheduler";
         }
         if (url.indexOf("scheduler") > 0) {
             return "scheduler";

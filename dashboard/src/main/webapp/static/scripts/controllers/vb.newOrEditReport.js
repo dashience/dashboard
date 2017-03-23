@@ -1,6 +1,7 @@
 app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter) {
 
-    $scope.reportId = $stateParams.reportId;
+    $scope.accountId = $stateParams.accountId;
+    $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
 
@@ -74,9 +75,13 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
 
     $http.get('admin/ui/reportWidget/' + $stateParams.reportId + "?locationId=" + $stateParams.locationId).success(function (response) {
         $scope.reportWidgets = response;
+        angular.forEach(response, function (value, key) {
+            console.log(value.widgetId)
+        })
+        console.log($scope.reportWidgets)
     })
 
-    $scope.uploadLogo = "static/img/logos/digital1.png";       //Logo Upload
+    $scope.uploadLogo = "static/img/logos/deeta-logo.png";       //Logo Upload
     $scope.imageUpload = function (event) {
         var files = event.target.files;
         for (var i = 0; i < files.length; i++) {
@@ -92,16 +97,22 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $scope.uploadLogo = e.target.result;
         });
     };
-
+      
     $scope.saveReportData = function () {
+        if(0 == $stateParams.reportId){
+            $scope.selectReportId = "";
+        }else{
+            $scope.selectReportId = $stateParams.reportId;
+        }
         var data = {
-            id: $stateParams.reportId,
+            id: $scope.selectReportId,
             reportTitle: $scope.reportTitle,
             description: $scope.description,
             logo: $scope.uploadLogo   //window.btoa($scope.uploadLogo)
         };
-        console.log(data.logo);
-        $http({method: $stateParams.reportId ? 'PUT' : 'POST', url: 'admin/ui/report', data: data});
+        $http({method: $scope.selectReportId ? 'PUT' : 'POST', url: 'admin/ui/report', data: data}).success(function () {
+            $stateParams.reportId = $scope.reports[$scope.reports.length - 1].id;
+        });
     };
 
     $scope.addReportWidget = function (newWidget) {                                     //Add new Report Widget
@@ -118,11 +129,11 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $scope.reportWidgets.splice(index, 1);
         });
     };
-    
+
     $scope.deleteColumn = function (widgetColumns, index) {        //Delete Columns - Popup
         widgetColumns.splice(index, 1);
     };
-    
+
     $scope.dynamicLoadingUrl = function (reportWidget) {                                //Dynamic Url from columns Type data - Popup
         if (reportWidget.columns) {
             reportWidget.columns = reportWidget.columns;
@@ -177,9 +188,9 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         $scope.setPreviewColumn = reportWidget;
     };
     $scope.changeUrl = function (displayName, reportWidget) {                                       //Search dynamic Url  
-        angular.forEach($scope.productFields,function(value, key){
-            if(value.productDisplayName == displayName){
-               $scope.requiredUrl = value.url;
+        angular.forEach($scope.productFields, function (value, key) {
+            if (value.productDisplayName == displayName) {
+                $scope.requiredUrl = value.url;
             }
         });
         //var searchUrl = $filter('filter')($scope.productFields, {productDisplayName: url})[0];
@@ -247,6 +258,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             if (widgetOrder) {
                 $http({method: 'GET', url: 'admin/ui/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
             }
-        };
+        }
+        ;
     };
 });

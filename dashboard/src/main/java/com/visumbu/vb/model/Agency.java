@@ -44,6 +44,10 @@ public class Agency implements Serializable {
     @Column(name = "logo")
     private String logo;
     @OneToMany(mappedBy = "agencyId")
+    private Collection<Scheduler> schedulerCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<Report> reportCollection;
+    @OneToMany(mappedBy = "agencyId")
     private Collection<DataSet> dataSetCollection;
     @OneToMany(mappedBy = "agencyId")
     private Collection<DataSource> dataSourceCollection;
@@ -198,7 +202,6 @@ public class Agency implements Serializable {
         this.accountCollection = accountCollection;
     }
 
-
     @XmlTransient
     @JsonIgnore
     public Collection<AgencyProduct> getAgencyProductCollection() {
@@ -227,6 +230,26 @@ public class Agency implements Serializable {
 
     public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
         this.dataSourceCollection = dataSourceCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Report> getReportCollection() {
+        return reportCollection;
+    }
+
+    public void setReportCollection(Collection<Report> reportCollection) {
+        this.reportCollection = reportCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Scheduler> getSchedulerCollection() {
+        return schedulerCollection;
+    }
+
+    public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
+        this.schedulerCollection = schedulerCollection;
     }
 
 }

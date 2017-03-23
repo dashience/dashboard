@@ -85,7 +85,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
                 $scope.permissions = response1;
                 angular.forEach($scope.permissions, function (permission) {
                     $scope.hasPermission(permission);
-                })
+                });
             });
         });
     }
