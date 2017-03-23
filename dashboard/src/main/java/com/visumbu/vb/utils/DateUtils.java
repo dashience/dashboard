@@ -316,4 +316,12 @@ public class DateUtils {
         }
         return dates;
     }
+
+    public static Date getStartDateOfWeek(Date currentStart) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public static Date getNextWeek(Date weekStart) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

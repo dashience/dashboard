@@ -379,6 +379,25 @@
             <version>2.0.4</version>
         </dependency>
         
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20080701</version>
+            <type>jar</type>
+        </dependency>
+        
+        <!-- linked in code -->
+        <!-- https://mvnrepository.com/artifact/com.googlecode.linkedin-j/linkedin-j-core -->
+        <dependency>
+            <groupId>com.googlecode.linkedin-j</groupId>
+            <artifactId>linkedin-j-core</artifactId>
+            <version>1.0.416</version>
+        </dependency>
+        
+        <!-- liniked in code ends -->
+        
+        
     </dependencies>
 
     <build>

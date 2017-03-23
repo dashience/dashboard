@@ -40,9 +40,9 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")})
 public class Agency implements Serializable {
 
-    @Type(type = "org.hibernate.type.StringClobType")
+    @Lob()
     @Column(name = "logo")
-    private String logo;
+    private byte[] logo;
     @OneToMany(mappedBy = "agencyId")
     private Collection<DataSet> dataSetCollection;
     @OneToMany(mappedBy = "agencyId")
@@ -125,13 +125,6 @@ public class Agency implements Serializable {
         this.email = email;
     }
 
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
 
     @Override
     public int hashCode() {
@@ -227,6 +220,14 @@ public class Agency implements Serializable {
 
     public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
         this.dataSourceCollection = dataSourceCollection;
+    }
+
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
     }
 
 }

@@ -119,10 +119,20 @@
                                     <label>Password</label>
                                     <input type="text" class="form-control" ng-model="dataSource.password">
                                 </div>
+                                <input type="hidden" id="fbAccessToken" ng-model="dataSource.accessToken">
+                                <input type="hidden" id="fbOauthToken" ng-model="dataSource.oauthToken">
+                                <input type="hidden" id="dataSourceType" ng-model="dataSource.dataSourceType">
                                 <div class="form-group pull-right">
                                     <button class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
                                     <button class="btn btn-warning" ng-click="clearDataSource(dataSource)">Cancel</button>
+                                    <div class="btn btn-warning" 
+                                         ng-click="getDataSource(dataSource.dataSourceType)">
+                                        Authenticate 
+                                    </div>
+                                    <div class="btn btn-success" ng-click="getfacebookData()">Facebook Data</div>
+
                                 </div>
+                               
                             </form>
                         </div>
                     </div>

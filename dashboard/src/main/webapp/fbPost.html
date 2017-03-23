@@ -1,0 +1,45 @@
+<script>
+    function get(name) {
+//        var url=name.substr(name.lastIndexOf('/') + 1);
+        if (name = (new RegExp('[?&#]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
+            return decodeURIComponent(name[1]);
+    }
+    function getQueryVariable() {
+
+        var query = window.location.href.substring(1);
+
+//        http://localhost:8084/VizBoard/fbPost.html?code=AQCP-NgomRkLR1VH8-d2JtDAyJjo1pNO4FyvTRxHkSKnITmQpMsQQLem4q5lizCRTj8gjLNQUbNnR_BJTNeZEv4U1YanQk_DLkHwtoZctPbU4vYJZKoCGwMNEq81e8o6JAYVGpasI3hF4l3uf17IutthmL3P6Ok0A8tJjChYtqBbS8yKwnHLHf21e2wHcgxPr7dXDbVr-vtzTZ9AFLeIPXVLWEbkHKE-HmsdWrEcQWQDuobmhXnphjplhjRN4P3KdE0sI-GMTQ-FAfRw3oEc23sQnlzQgxoPlqlKPxw1TMC0F0WD7SafCLEwlHV7HJaTFvqmROPskeNZ6mV55J4vmS2q,_=_
+        var vars = query.split('#');
+//        alert(vars);
+//        alert("vars--->"+vars[1]);
+        if (typeof(vars[1])=="undefined")
+        {
+            var variable = "code";
+//            alert("1")
+            var splitSymbol = query.split("?");
+            alert(splitSymbol);
+            alert(splitSymbol[0]);
+            alert(splitSymbol[1]);
+            for (var i = 0; i < splitSymbol.length; i++) {
+                var pair = splitSymbol[i].split('=');
+                if (decodeURIComponent(pair[0]) == variable) {
+                    return decodeURIComponent(pair[1]);
+                }
+            }
+        } else {
+            var variable = "access_token";
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+                if (decodeURIComponent(pair[0]) == variable) {
+                    return decodeURIComponent(pair[1]);
+                }
+            }
+        }
+//        alert('Query variable %s not found', variable);
+    }
+//    alert(getQueryVariable());
+
+
+    window.opener.document.getElementById("fbAccessToken").value = get("code");
+    window.close();
+</script>

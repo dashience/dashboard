@@ -35,8 +35,12 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -55,9 +59,15 @@ public class UiService {
 
     @Autowired
     private UiDao uiDao;
-   
+
     @Autowired
     private UserDao userDao;
+
+    private static final long serialVersionUID = 1L;
+    private String code = "";
+    
+    public HttpServletRequest req;
+    public HttpServletResponse res;
 
     public List<Product> getProduct() {
         return uiDao.read(Product.class);
@@ -140,7 +150,7 @@ public class UiService {
     public Dashboard getDashboardById(Integer dashboardId) {
         return uiDao.getDashboardById(dashboardId);
     }
-    
+
     public AgencyProduct getAgencyProductById(Integer agencyProductId) {
         return uiDao.getAgencyProductById(agencyProductId);
     }
@@ -363,7 +373,6 @@ public class UiService {
 //        List<DataSet> dataSet = uiDao.read(DataSet.class);
 //        return dataSet;
 //    }
-    
     public List<DataSet> getDataSetByUser(VbUser user) {
         return uiDao.getDataSetByUser(user);
     }
@@ -431,6 +440,15 @@ public class UiService {
             if (dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
                 uiDao.create(dbDataSource);
             }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("facebook")) {
+                uiDao.create(dbDataSource);
+            }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("linkedin")) {
+                uiDao.create(dbDataSource);
+            }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("instagram")) {
+                uiDao.create(dbDataSource);
+            }
 
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
@@ -448,9 +466,9 @@ public class UiService {
         List<VbUser> vbUser = uiDao.read(VbUser.class);
         return vbUser;
     }
-    
+
     public List<VbUser> getAgencyUser(VbUser user) {
-        if(user.getAgencyId() == null) {
+        if (user.getAgencyId() == null) {
             return userDao.read();
         }
         return uiDao.getUsersByAgencyUser(user);
@@ -485,7 +503,7 @@ public class UiService {
         List<UserAccount> userAccount = uiDao.read(UserAccount.class);
         return userAccount;
     }
-    
+
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         return uiDao.getUserAccountByUser(user);
     }
@@ -507,7 +525,7 @@ public class UiService {
     }
 
     public UserPermission createUserPermission(UserPermission userPermission) {
-       return (UserPermission) uiDao.create(userPermission);
+        return (UserPermission) uiDao.create(userPermission);
     }
 
     public UserPermission updateUserPermission(UserPermission userPermission) {
@@ -525,5 +543,41 @@ public class UiService {
 
     public UserPermission deleteUserPermission(Integer userPermissionId) {
         return uiDao.deleteUserPermission(userPermissionId);
-    }    
+    }
+
+    public List getFacebookDataSource(){
+
+        try {
+
+            code = req.getParameter("code");
+            if (code == null || code.equals("")) {
+                throw new RuntimeException(
+                        "ERROR: Didn't get code parameter in callback.");
+            }
+            FBConnection fbConnection = new FBConnection();
+            String accessToken = fbConnection.getAccessToken(code);
+            
+            FBGraph fbGraph = new FBGraph(accessToken);
+            String graph = fbGraph.getFBGraph();
+            Map<String, String> fbProfileData = fbGraph.getGraphData(graph);
+            ServletOutputStream out = null;
+            try {
+                out = res.getOutputStream();
+            } catch (IOException ex) {
+                Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            out.println("<h1>Facebook Login using Java</h1>");
+            out.println("<h2>Application Main Menu</h2>");
+            out.println("<div>Welcome " + fbProfileData.get("first_name"));
+            out.println("<div>Your Email: " + fbProfileData.get("email"));
+            out.println("<div>You are " + fbProfileData.get("gender"));
+            
+            return null;
+            
+        } catch (IOException ex) {
+            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+
+    }
 }
