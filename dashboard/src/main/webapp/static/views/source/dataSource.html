@@ -63,10 +63,10 @@
                 <div class="hpanel">
                     <div class="col-md-4">
                         <div class="panel-body">
-                            <form class="col-md-12 form-horizontal">
+                            <form class="col-md-12 form-horizontal" name="dataSourceForm">
                                 <div class="form-group">
                                     <label>Name</label>
-                                    <input class="form-control" type="text" ng-model="dataSource.name" placeholder="Name">
+                                    <input class="form-control" type="text" ng-change="authenticateStatus(dataSource.name)" ng-model="dataSource.name" placeholder="Name">
                                 </div>
                                 <div class="form-group">
                                     <label>Type</label>
@@ -119,10 +119,19 @@
                                     <label>Password</label>
                                     <input type="text" class="form-control" ng-model="dataSource.password">
                                 </div>
+                                <input type="hidden" id="fbAccessToken" ng-model="dataSource.accessToken">
+                                <input type="hidden" id="fbOauthToken" ng-model="dataSource.oauthToken">
+                                <input type="hidden" id="dataSourceType" ng-model="dataSource.dataSourceType">
                                 <div class="form-group pull-right">
-                                    <button class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
+                                    <button class="btn btn-info" ng-click="saveDataSource(dataSource)" ng-if="!(dataSource.dataSourceType== 'facebook' || dataSource.dataSourceType == 'linkedin' || dataSource.dataSourceType == 'instagram')">Save</button>
                                     <button class="btn btn-warning" ng-click="clearDataSource(dataSource)">Cancel</button>
+                                    
+                                    <div class="btn btn-warning"  ng-disabled="authenticateFlag"
+                                         ng-click="getDataSource(dataSource)" ng-if="(dataSource.dataSourceType == 'facebook' || dataSource.dataSourceType === 'linkedin' || dataSource.dataSourceType === 'instagram')">
+                                        Authenticate & Save
+                                    </div>
                                 </div>
+
                             </form>
                         </div>
                     </div>
@@ -193,8 +202,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>

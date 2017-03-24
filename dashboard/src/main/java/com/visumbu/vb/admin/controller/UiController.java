@@ -42,6 +42,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+// linked in api imports
+import com.google.code.linkedinapi.client.LinkedInApiClient;
+import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
+import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
+import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
+import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
+import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
+import com.visumbu.vb.admin.service.FacebookService;
+import java.util.HashMap;
+
+import com.visumbu.vb.utils.Rest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author netphenix
@@ -55,6 +70,11 @@ public class UiController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FacebookService facebookService;
+
+    private Rest rest;
 
     @RequestMapping(value = "product", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -350,19 +370,18 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSource(HttpServletRequest request, HttpServletResponse response) {
-         VbUser user = userService.findByUsername(getUser(request));
+        VbUser user = userService.findByUsername(getUser(request));
         if (user == null) {
             return null;
         }
         return uiService.getDataSourceByUser(user);
     }
-    
+
 //    @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getDataSource(HttpServletRequest request, HttpServletResponse response) {
 //        return uiService.getDataSource();
 //    }
-
     @RequestMapping(value = "dataSource/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DataSource delete(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
@@ -398,7 +417,6 @@ public class UiController extends BaseController {
 //    List getDataSet(HttpServletRequest request, HttpServletResponse response) {
 //        return uiService.getDateSet();
 //    }
-       
 
     @RequestMapping(value = "dataSet/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
@@ -460,7 +478,7 @@ public class UiController extends BaseController {
     List getUserAccount(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getUserAccount();
     }
-    
+
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {
@@ -524,6 +542,142 @@ public class UiController extends BaseController {
         return uiService.deleteUserPermission(userPermissionId);
     }
 
+    /*
+        code for linkedin - sabari
+     */
+    @RequestMapping(value = "oauthCode/{accessToken}/{dataSourceType}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getOauthToken(HttpServletRequest request, HttpServletResponse response, @PathVariable String accessToken,@PathVariable String dataSourceType) throws IOException {
+
+//        String accessTokens="AQRK7cRTGPXWn-kHAxSr7dy-8cbhmYuuK3dPrNLbZn1GlMr2NkTnOWzW2W8JAN-UpkjrV2VdZB7JfYUm4DPsDh11hHL2QTOgvgySw7A5GLtUhsFrM3E";
+       
+        System.out.println("DataSourceType---->"+dataSourceType);
+        String oauth;
+        if(dataSourceType.equalsIgnoreCase("linkedin"))
+        {
+            String url = "https://www.linkedin.com/oauth/v2/accessToken?";
+            System.out.println("hurl======"+url);
+            String params = "grant_type=authorization_code&code=" + accessToken + "&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&client_id=81kqaac7cnusqy&client_secret=6SrcnKhiX4Yx0Ab4";
+            String oauthUrl = url + params;
+            System.out.println("oauthurl======");
+            System.out.println(url);
+            oauth = Rest.postRawForm(url, params);
+            System.out.println("oauth==>" + oauth);
+            return oauth;
+        }
+        else if(dataSourceType.equalsIgnoreCase("facebook"))
+        {
+            String url="https://graph.facebook.com/v2.8/oauth/access_token?";
+            String params="client_id=1631503257146893&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&client_secret=b6659b47ba7b2b11179247bb3cd84f70&code="+accessToken;
+            oauth=Rest.postRawForm(url, params);
+            String oauthUrl = url + params;
+            System.out.println("oauthurl======");
+            System.out.println(oauthUrl);
+            System.out.println("oauth==>"+oauth);
+            return oauth;    
+        }
+        return null;
+       
+    }
+
+    // get facebook datasource
+    @RequestMapping(value = "facebookDataSets", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getFacebookDataSets(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long accountId;
+        accountId = 10201209987716903L;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = new Date();
+//       String  stratDates=dateFormat.format(startDate);
+        facebookService.getAccountPerformance(accountId, startDate, startDate,"day");
+//        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
+        
+        return null;
+    }
+
+//    public LinkedInOAuthService oauthservice() {
+//        String linkedinKey = "81kqaac7cnusqy";    //add your LinkedIn key
+//        String linkedinSecret = "6SrcnKhiX4Yx0Ab4"; //add your LinkedIn Secret
+//
+//        LinkedInOAuthService oauthService;
+//
+//        System.out.println("Fetching request token from LinkedIn...");
+//
+//        oauthService = LinkedInOAuthServiceFactory.getInstance().createLinkedInOAuthService(linkedinKey, linkedinSecret);
+//        System.out.println("1111");
+//        System.out.println(oauthService.getClass().getName());
+//
+//        return oauthService;
+//
+//    }
+//    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    HashMap<String, Object> getLinkedInDataSource(HttpServletRequest request, HttpServletResponse response) {
+//
+//        LinkedInOAuthService oauthService;
+//        LinkedInRequestToken requestToken;
+//        String authUrl = null;
+//        String authToken, authTokenSecret;
+//
+//        oauthService = oauthservice();
+//        requestToken = oauthService.getOAuthRequestToken();
+//        authToken = requestToken.getToken();
+//        authTokenSecret = requestToken.getTokenSecret();
+//
+//        System.out.println("Request token " + requestToken);
+//        System.out.println("Auth token" + authToken);
+//        System.out.println("Auth token secret" + authTokenSecret);
+//
+//        authUrl = requestToken.getAuthorizationUrl();
+//        System.out.println("Copy below link in web browser to authorize. Copy the PIN obtained\n" + authUrl);
+//
+//        HashMap<String, Object> hm = new HashMap<String, Object>();
+//        hm.put("authToken", authToken);
+//        hm.put("authUrl", authUrl);
+//        hm.put("requestToken", requestToken);
+//        System.out.println(hm);
+//
+//        return hm;
+//    }
+    // to get linked in hash token
+//    @RequestMapping(value = "/linkedInAccessToken/{requestToken}/{linkedInCode}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    HashMap<String, Object> getlinkedInAccessToken(HttpServletRequest request, HttpServletResponse response, String linkedInCode, Object requestToken) {
+//
+//        String linkedinKey = "81kqaac7cnusqy";    //add your LinkedIn key
+//        String linkedinSecret = "6SrcnKhiX4Yx0Ab4"; //add your LinkedIn Secret
+//
+//        LinkedInOAuthService oauthService;
+////        LinkedInRequestToken requestToken;
+//        String authUrl = null;
+//        String authToken, authTokenSecret;
+//
+//        oauthService = oauthservice();
+////        requestToken = oauthService.getOAuthRequestToken();
+//
+//        //get auth token
+//        //create ObjectMapper instance
+//        ObjectMapper objectMapper = new ObjectMapper();
+//
+//        //convert json string to object
+//        LinkedInRequestToken reqToken;
+//        reqToken = objectMapper.convertValue(requestToken, LinkedInRequestToken.class);
+//
+//        LinkedInAccessToken accessToken = oauthService.getOAuthAccessToken(reqToken, linkedInCode);
+//        System.out.println("Access token : " + accessToken.getToken());
+//        System.out.println("Token secret : " + accessToken.getTokenSecret());
+//        String accessTokens = accessToken.getToken();
+//        String tokenSecret = accessToken.getTokenSecret();
+//        final LinkedInApiClientFactory factory = LinkedInApiClientFactory.newInstance(linkedinKey, linkedinSecret);
+//        final LinkedInApiClient client = factory.createLinkedInApiClient(accessToken);
+//
+//        HashMap<String, Object> hm = new HashMap<String, Object>();
+//        hm.put("accessToken", accessTokens);
+//        hm.put("tokenSecret", tokenSecret);
+//        System.out.println(hm);
+//
+//        return hm;
+//    }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {

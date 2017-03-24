@@ -27,6 +27,26 @@ public class DataSourceBean {
     private String sourceFileName;
     private VbUser userId;
     private Agency agencyId;
+    private String accessToken;
+    private String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+    
+    
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 
     public String getSourceFileName() {
         return sourceFileName;
@@ -115,9 +135,14 @@ public class DataSourceBean {
     public void setAgencyId(Agency agencyId) {
         this.agencyId = agencyId;
     }
-    
+
+
+
     @Override
     public String toString() {
-        return "DataSourceBean{" + "id=" + id + ", name=" + name + ", connectionString=" + connectionString + ", userName=" + userName + ", password=" + password + ", sqlDriver=" + sqlDriver + ", dataSourceType=" + dataSourceType + ", sourceFile=" + sourceFile + ", sourceFileName=" + sourceFileName + ", userId=" + userId + ", agencyId=" + agencyId + '}';
+        return "DataSourceBean{" + "id=" + id + ", name=" + name + ", connectionString=" + connectionString + ", userName=" + userName + ", password=" + password + ", sqlDriver=" + sqlDriver + ", dataSourceType=" + dataSourceType + ", sourceFile=" + sourceFile + ", sourceFileName=" + sourceFileName + ", userId=" + userId + ", agencyId=" + agencyId + ", accessToken=" + accessToken + ", code=" + code + '}';
     }
+    
+    
+    
 }
