@@ -1,6 +1,6 @@
 <script>
     function get(name) {
-        var dataSourceType = localStorage.getItem("dataSourceType");
+        var dataSourceType = localStorage.getItem("dataSourceType 
         if (dataSourceType == "facebook" || dataSourceType == "linkedin")
         {
             if (name = (new RegExp('[?&#]' + encodeURIComponent(name) + '=([^&]*)')).exec(location.search))
