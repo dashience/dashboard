@@ -63,12 +63,6 @@ public class UiService {
     @Autowired
     private UserDao userDao;
 
-    private static final long serialVersionUID = 1L;
-    private String code = "";
-    
-    public HttpServletRequest req;
-    public HttpServletResponse res;
-
     public List<Product> getProduct() {
         return uiDao.read(Product.class);
 //        List<Product> product = uiDao.read(Product.class);

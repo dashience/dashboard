@@ -8,28 +8,22 @@ package com.visumbu.vb.admin.controller;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
-import com.visumbu.vb.bean.ReportWidgetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Report;
-import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -43,14 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
-import com.google.code.linkedinapi.client.LinkedInApiClient;
-import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
-import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
-import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
-import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
-import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.visumbu.vb.admin.service.FacebookService;
-import java.util.HashMap;
 
 import com.visumbu.vb.utils.Rest;
 import java.text.DateFormat;
@@ -595,89 +582,6 @@ public class UiController extends BaseController {
         return null;
     }
 
-//    public LinkedInOAuthService oauthservice() {
-//        String linkedinKey = "81kqaac7cnusqy";    //add your LinkedIn key
-//        String linkedinSecret = "6SrcnKhiX4Yx0Ab4"; //add your LinkedIn Secret
-//
-//        LinkedInOAuthService oauthService;
-//
-//        System.out.println("Fetching request token from LinkedIn...");
-//
-//        oauthService = LinkedInOAuthServiceFactory.getInstance().createLinkedInOAuthService(linkedinKey, linkedinSecret);
-//        System.out.println("1111");
-//        System.out.println(oauthService.getClass().getName());
-//
-//        return oauthService;
-//
-//    }
-//    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    HashMap<String, Object> getLinkedInDataSource(HttpServletRequest request, HttpServletResponse response) {
-//
-//        LinkedInOAuthService oauthService;
-//        LinkedInRequestToken requestToken;
-//        String authUrl = null;
-//        String authToken, authTokenSecret;
-//
-//        oauthService = oauthservice();
-//        requestToken = oauthService.getOAuthRequestToken();
-//        authToken = requestToken.getToken();
-//        authTokenSecret = requestToken.getTokenSecret();
-//
-//        System.out.println("Request token " + requestToken);
-//        System.out.println("Auth token" + authToken);
-//        System.out.println("Auth token secret" + authTokenSecret);
-//
-//        authUrl = requestToken.getAuthorizationUrl();
-//        System.out.println("Copy below link in web browser to authorize. Copy the PIN obtained\n" + authUrl);
-//
-//        HashMap<String, Object> hm = new HashMap<String, Object>();
-//        hm.put("authToken", authToken);
-//        hm.put("authUrl", authUrl);
-//        hm.put("requestToken", requestToken);
-//        System.out.println(hm);
-//
-//        return hm;
-//    }
-    // to get linked in hash token
-//    @RequestMapping(value = "/linkedInAccessToken/{requestToken}/{linkedInCode}", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    HashMap<String, Object> getlinkedInAccessToken(HttpServletRequest request, HttpServletResponse response, String linkedInCode, Object requestToken) {
-//
-//        String linkedinKey = "81kqaac7cnusqy";    //add your LinkedIn key
-//        String linkedinSecret = "6SrcnKhiX4Yx0Ab4"; //add your LinkedIn Secret
-//
-//        LinkedInOAuthService oauthService;
-////        LinkedInRequestToken requestToken;
-//        String authUrl = null;
-//        String authToken, authTokenSecret;
-//
-//        oauthService = oauthservice();
-////        requestToken = oauthService.getOAuthRequestToken();
-//
-//        //get auth token
-//        //create ObjectMapper instance
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        //convert json string to object
-//        LinkedInRequestToken reqToken;
-//        reqToken = objectMapper.convertValue(requestToken, LinkedInRequestToken.class);
-//
-//        LinkedInAccessToken accessToken = oauthService.getOAuthAccessToken(reqToken, linkedInCode);
-//        System.out.println("Access token : " + accessToken.getToken());
-//        System.out.println("Token secret : " + accessToken.getTokenSecret());
-//        String accessTokens = accessToken.getToken();
-//        String tokenSecret = accessToken.getTokenSecret();
-//        final LinkedInApiClientFactory factory = LinkedInApiClientFactory.newInstance(linkedinKey, linkedinSecret);
-//        final LinkedInApiClient client = factory.createLinkedInApiClient(accessToken);
-//
-//        HashMap<String, Object> hm = new HashMap<String, Object>();
-//        hm.put("accessToken", accessTokens);
-//        hm.put("tokenSecret", tokenSecret);
-//        System.out.println(hm);
-//
-//        return hm;
-//    }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {
