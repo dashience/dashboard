@@ -193,7 +193,7 @@ public class UserDao extends BaseDao {
         return null;
     }
 
-    public List<Property> getPropertyById(Integer accountId) {
+    public List<Property> getPropertyByAccountId(Integer accountId) {
         String queryStr = "select d from Property d where d.accountId.id = :accountId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("accountId", accountId);

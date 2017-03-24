@@ -18,17 +18,17 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         {
             type: "facebook",
             name: "facebook",
-            url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:8084/VizBoard/fbPost.html'
+            url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:9090/VizBoard/fbPost.html'
         },
         {
             type: "linkedin",
             name: "linkedin",
-            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&state=123908353453&response_type=code'
+            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&state=123908353453&response_type=code'
         },
         {
             type: 'instagram',
             name: 'Instagram',
-            url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&response_type=token&scope=public_content'
+            url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
         }
     ];
 
@@ -111,21 +111,6 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
                 }
             }
         }
-        setTimeout(function () {
-            var accessToken = $('#fbAccessToken').val();
-            console.log(accessToken);
-            $http.get("admin/ui/oauthCode/" + accessToken + '/' + data).success(function (response) {
-                console.log("success");
-                console.log(response);
-                $scope.oauthToken = response.access_token;
-                $("#fbOauthToken").val(response.access_token);
-                $scope.saveDataSource(data);
-                console.log($scope.oauthToken);
-            }).error(function (response) {
-                console.log("error");
-                console.log(response);
-            });
-        }, 5000);
     };
 
     //get facebook datasets using datasource
