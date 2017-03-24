@@ -1,12 +1,13 @@
 app.controller("DataSourceController", function ($scope, $stateParams, $http, $rootScope) {
 //    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
+    $scope.authenticateFlag = true;
     $scope.dataSourceTypes = [
         {
-            type: "sql", 
+            type: "sql",
             name: "SQL"
         },
         {
-            type: "csv", 
+            type: "csv",
             name: "CSV"
         },
         {type: "https", name: "HTTPS"},
@@ -75,12 +76,27 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         }
     };
 
-    $scope.getDataSource = function (data) {
+    //for authentication button flag enable status
+    $scope.authenticateStatus = function (name)
+    {
+        console.log(name.length);
+        if (name.length != 0)
+        {
+            $scope.authenticateFlag = false;
+        } else {
+            $scope.authenticateFlag = true;
 
+        }
+    };
+
+    $scope.getDataSource = function (data) {
         console.log(data);
-        $("#dataSourceType").val(data);
-        $scope.dataSourceUrl = getDataSourceUrl(data);
-        window.open($scope.dataSourceUrl, "myWindow", 'width=800,height=600');
+        
+        $("#dataSourceType").val(data.dataSourceType);
+        localStorage.setItem("dataSourceType",$("#dataSourceType").val());
+        $scope.dataSourceUrl = getDataSourceUrl(data.dataSourceType);
+        console.log(data);
+        window.open($scope.dataSourceUrl, data.dataSourceType, "myWindow", 'width=800,height=600');
         console.log($scope.dataSourceUrl);
         function getDataSourceUrl(dataSourceType)
         {
@@ -88,7 +104,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             var url;
             for (var i = 0; i < $scope.dataSourceTypes.length; i++)
             {
-                if ($scope.dataSourceTypes[i].type === data)
+                if ($scope.dataSourceTypes[i].type === data.dataSourceType)
                 {
                     url = $scope.dataSourceTypes[i].url;
                     console.log(url);
@@ -96,27 +112,24 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
                 }
             }
         }
-
         setTimeout(function () {
             var accessToken = $('#fbAccessToken').val();
             console.log(accessToken);
-
             $http.get("admin/ui/oauthCode/" + accessToken + '/' + data).success(function (response) {
                 console.log("success");
                 console.log(response);
                 $scope.oauthToken = response.access_token;
                 $("#fbOauthToken").val(response.access_token);
+                $scope.saveDataSource(data);
                 console.log($scope.oauthToken);
             }).error(function (response) {
                 console.log("error");
                 console.log(response);
             });
-
-
         }, 5000);
     };
 
-    //get facebook dataasource
+    //get facebook datasets using datasource
     $scope.getfacebookData = function ()
     {
         $http.get("admin/ui/facebookDataSets").success(function (response) {
@@ -133,7 +146,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
 
         //for accesstoken
         console.log($('#fbAccessToken').val());
-        dataSource.connectionString = $('#fbAccessToken').val();
+        dataSource.code = $('#fbAccessToken').val();
         dataSource.oAuthToken = $('#fbOauthToken').val();
         console.log($('#fbOauthToken').val());
 
@@ -149,7 +162,8 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             dataSourceType: dataSource.dataSourceType,
             sourceFile: dataSource.sourceFile ? dataSource.sourceFile : $scope.fileReader,
             sourceFileName: $scope.sourceFileName,
-            accessToken: dataSource.oAuthToken ? dataSource.oAuthToken : ''
+            accessToken: dataSource.oAuthToken ? dataSource.oAuthToken : '',
+            code: dataSource.code ? dataSource.code : ''
         };
         console.log(data);
         $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
