@@ -78,5 +78,35 @@ public class SchedulerDao extends BaseDao {
         query.setParameter("hour", scheduledHour);
         return query.list();
     }
+    
+    public List<Scheduler> getMonthlyTasks(String currentDateHour, Date today) {
+//        String scheduledHour = hour +":00";
+//        if(hour < 10) {
+//            scheduledHour = "0"+hour + ":00";
+//        }  
+        
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerMonthly = :schedulerMonthly";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("schedulerRepeatType", "Monthly");
+        query.setParameter("startDate", today);
+        query.setParameter("schedulerMonthly", currentDateHour);
+//        query.setParameter("hour", scheduledHour);
+        return query.list();
+    }
+    
+    public List<Scheduler> getYearlyTasks(String currentDateHour, Date today) {
+//        String scheduledHour = hour +":00";
+//        if(hour < 10) {
+//            scheduledHour = "0"+hour + ":00";
+//        }  
+        
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerYearly = :schedulerYearly";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("schedulerRepeatType", "Yearly");
+        query.setParameter("startDate", today);
+        query.setParameter("schedulerMonthly", currentDateHour);
+//        query.setParameter("hour", scheduledHour);
+        return query.list();
+    }
 
 }
