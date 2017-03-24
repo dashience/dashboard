@@ -149,10 +149,100 @@ public class TimerService {
         }
     }
 
+    @Scheduled(cron = "*/30 * * * * *")
     public void executeMonthlyTask() {
+       // Integer hour = DateUtils.getCurrentHour();
+        Date today = new Date();
+        String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:mm");
+        System.out.println(currentDateHour);
+        List<Scheduler> scheduledTasks = schedulerDao.getMonthlyTasks(currentDateHour, today);
+        for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
+            Scheduler scheduler = iterator.next();
+            System.out.println("Inside for ---> Monthly ");
+            Date schedulerStartTime = new Date();
+            SchedulerHistory schedulerHistory = new SchedulerHistory();
+            Report report = scheduler.getReportId();
+            Integer schedulerId = scheduler.getId();
+            Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
+            String dealerId = scheduler.getAccountId().getId() + "";
+            String accountMailId = scheduler.getAccountId().getEmailId();
+            String exportType = scheduler.getSchedulerType();
+            schedulerHistory.setExecutionStartTime(schedulerStartTime);
+            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
+            Date startDate = DateUtils.getSixMonthsBack(today);
+            Date endDate = today;
+            schedulerHistory.setStartTime(startDate);
+            schedulerHistory.setEndTime(endDate);
+            String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
+            filename = filename.replaceAll(" ", "_");
+            String toAddress = accountMailId;
+            if (toAddress != null && !toAddress.isEmpty()) {
+                toAddress += "," + scheduler.getSchedulerEmail();
+            }
+            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
+            String message = "scheduler message";
+            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+            schedulerHistory.setFileName(filename);
+            schedulerHistory.setEmailId(toAddress);
+            schedulerHistory.setEmailSubject(subject);
+            schedulerHistory.setEmailMessage(message);
+
+            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
+            Date schedulerEndTime = new Date();
+            schedulerHistory.setExecutionEndTime(schedulerEndTime);
+            schedulerHistory.setSchedulerId(schedulerById);
+            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
+            //schedulerService.createSchedulerHistory(schedulerHistory);
+        }
     }
 
     public void executeYearlyTask() {
+//         Integer hour = DateUtils.getCurrentHour();
+        Date today = new Date();
+        String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:mm");
+        System.out.println(currentDateHour);
+        List<Scheduler> scheduledTasks = schedulerDao.getYearlyTasks(currentDateHour, today);
+        for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
+            Scheduler scheduler = iterator.next();
+            System.out.println("Inside for ---> Yearly ");
+            Date schedulerStartTime = new Date();
+            SchedulerHistory schedulerHistory = new SchedulerHistory();
+            Report report = scheduler.getReportId();
+            Integer schedulerId = scheduler.getId();
+            Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
+            String dealerId = scheduler.getAccountId().getId() + "";
+            String accountMailId = scheduler.getAccountId().getEmailId();
+            String exportType = scheduler.getSchedulerType();
+            schedulerHistory.setExecutionStartTime(schedulerStartTime);
+            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
+            Date startDate = DateUtils.getSixMonthsBack(today);
+            Date endDate = today;
+            schedulerHistory.setStartTime(startDate);
+            schedulerHistory.setEndTime(endDate);
+            String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
+            filename = filename.replaceAll(" ", "_");
+            String toAddress = accountMailId;
+            if (toAddress != null && !toAddress.isEmpty()) {
+                toAddress += "," + scheduler.getSchedulerEmail();
+            }
+            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
+            String message = "scheduler message";
+            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+            schedulerHistory.setFileName(filename);
+            schedulerHistory.setEmailId(toAddress);
+            schedulerHistory.setEmailSubject(subject);
+            schedulerHistory.setEmailMessage(message);
+
+            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
+            Date schedulerEndTime = new Date();
+            schedulerHistory.setExecutionEndTime(schedulerEndTime);
+            schedulerHistory.setSchedulerId(schedulerById);
+            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
+            //schedulerService.createSchedulerHistory(schedulerHistory);
+        }
+    }
+    
+    public void executeYearOfWeek(){
     }
 
     private Boolean downloadReportAndSend(Date startDate, Date endDate,
