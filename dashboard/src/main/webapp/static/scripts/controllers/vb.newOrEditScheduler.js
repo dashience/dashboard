@@ -41,11 +41,11 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $scope.accountEmails = unique($scope.emailAccounts);
         });
     });
-    
-    function dateFormat(date){
-        return $filter('date')(date,'MM/dd/yyyy')
+
+    function dateFormat(date) {
+        return $filter('date')(date, 'MM/dd/yyyy')
     }
-    
+
     $scope.scheduler = {};
     $http.get("admin/scheduler/scheduler/" + $stateParams.schedulerId).success(function (response) {
         if (!response) {
@@ -64,7 +64,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         $scope.scheduler = {
             id: response.id,
             schedulerName: response.schedulerName,
-            startDate:  dateFormat(response.startDate),
+            startDate: dateFormat(response.startDate),
             endDate: dateFormat(response.endDate),
             schedulerRepeatType: response.schedulerRepeatType,
             schedulerWeekly: response.schedulerWeekly,
@@ -169,6 +169,55 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         }
         if (scheduler.schedulerRepeatType === "Now") {
             scheduler.schedulerNow = new Date();
+            scheduler.schedulerTime = null;
+            scheduler.schedulerWeekly = null;
+            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        } else if (scheduler.schedulerRepeatType === "Once") {
+            scheduler.schedulerNow = null;
+            //scheduler.schedulerTime = scheduler.schedulerTime;
+            scheduler.schedulerWeekly = null;
+            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        } else if (scheduler.schedulerRepeatType === "Daily") {
+            scheduler.schedulerNow = null;
+            //scheduler.schedulerTime = scheduler.schedulerTime;
+            scheduler.schedulerWeekly = null;
+            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        } else if (scheduler.schedulerRepeatType === "Weekly") {
+            scheduler.schedulerNow = null;
+            //scheduler.schedulerTime = scheduler.schedulerTime;
+//            scheduler.schedulerWeekly= null;
+            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        } else if (scheduler.schedulerRepeatType === "Monthly") {
+            scheduler.schedulerNow = null;
+            scheduler.schedulerTime = null;
+            scheduler.schedulerWeekly = null;
+//            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        } else if (scheduler.schedulerRepeatType === "Yearly") {
+            scheduler.schedulerNow = null;
+            scheduler.schedulerTime = null;
+            scheduler.schedulerWeekly = null;
+            scheduler.schedulerMonthly = null;
+//            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        } else if (scheduler.schedulerRepeatType === "Year Of Week") {
+            scheduler.schedulerNow = null;
+            scheduler.schedulerTime = null;
+            scheduler.schedulerWeekly = null;
+            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+//            scheduler.schedulerYearOfWeek = null;
+        } else {
+            return null;
         }
 
         var emails = scheduler.schedulerEmail.map(function (value, key) {
@@ -179,11 +228,11 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         if (scheduler.dateRangeName === 'Custom') {
             scheduler.customStartDate = $scope.customStartDate;
             scheduler.customEndDate = $scope.customEndDate;
-        }
-        else{
+        } else {
             scheduler.customStartDate = "";
             scheduler.customEndDate = "";
         }
+
         scheduler.schedulerEmail = emails;
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });

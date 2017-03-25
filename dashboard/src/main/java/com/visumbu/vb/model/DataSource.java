@@ -43,6 +43,14 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSource.findByDataSourceType", query = "SELECT d FROM DataSource d WHERE d.dataSourceType = :dataSourceType")})
 public class DataSource implements Serializable {
 
+    @Size(max = 500)
+    @Column(name = "code")
+    private String code;
+
+    @Size(max = 500)
+    @Column(name = "access_token")
+    private String accessToken;
+
     @Lob
     @Size(max = 65535)
     @Column(name = "source_file")
@@ -226,6 +234,22 @@ public class DataSource implements Serializable {
 
     public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
         this.dataSetCollection = dataSetCollection;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
     
 }

@@ -8,28 +8,22 @@ package com.visumbu.vb.admin.controller;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
-import com.visumbu.vb.bean.ReportWidgetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Report;
-import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -41,6 +35,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+// linked in api imports
+import com.visumbu.vb.admin.service.FacebookService;
+
+import com.visumbu.vb.utils.Rest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -55,6 +57,11 @@ public class UiController extends BaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FacebookService facebookService;
+
+    private Rest rest;
 
     @RequestMapping(value = "product", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -350,19 +357,18 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSource(HttpServletRequest request, HttpServletResponse response) {
-         VbUser user = userService.findByUsername(getUser(request));
+        VbUser user = userService.findByUsername(getUser(request));
         if (user == null) {
             return null;
         }
         return uiService.getDataSourceByUser(user);
     }
-    
+
 //    @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getDataSource(HttpServletRequest request, HttpServletResponse response) {
 //        return uiService.getDataSource();
 //    }
-
     @RequestMapping(value = "dataSource/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DataSource delete(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
@@ -398,7 +404,6 @@ public class UiController extends BaseController {
 //    List getDataSet(HttpServletRequest request, HttpServletResponse response) {
 //        return uiService.getDateSet();
 //    }
-       
 
     @RequestMapping(value = "dataSet/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
@@ -460,7 +465,7 @@ public class UiController extends BaseController {
     List getUserAccount(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getUserAccount();
     }
-    
+
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {
@@ -522,6 +527,59 @@ public class UiController extends BaseController {
     public @ResponseBody
     UserPermission deleteUserPermission(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userPermissionId) {
         return uiService.deleteUserPermission(userPermissionId);
+    }
+
+    /*
+        code for linkedin - sabari
+     */
+    @RequestMapping(value = "oauthCode/{accessToken}/{dataSourceType}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getOauthToken(HttpServletRequest request, HttpServletResponse response, @PathVariable String accessToken,@PathVariable String dataSourceType) throws IOException {
+
+//        String accessTokens="AQRK7cRTGPXWn-kHAxSr7dy-8cbhmYuuK3dPrNLbZn1GlMr2NkTnOWzW2W8JAN-UpkjrV2VdZB7JfYUm4DPsDh11hHL2QTOgvgySw7A5GLtUhsFrM3E";
+       
+        System.out.println("DataSourceType---->"+dataSourceType);
+        String oauth;
+        if(dataSourceType.equalsIgnoreCase("linkedin"))
+        {
+            String url = "https://www.linkedin.com/oauth/v2/accessToken?";
+            System.out.println("hurl======"+url);
+            String params = "grant_type=authorization_code&code=" + accessToken + "&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&client_id=81kqaac7cnusqy&client_secret=6SrcnKhiX4Yx0Ab4";
+            String oauthUrl = url + params;
+            System.out.println("oauthurl======");
+            System.out.println(url);
+            oauth = Rest.postRawForm(url, params);
+            System.out.println("oauth==>" + oauth);
+            return oauth;
+        }
+        else if(dataSourceType.equalsIgnoreCase("facebook"))
+        {
+            String url="https://graph.facebook.com/v2.8/oauth/access_token?";
+            String params="client_id=1631503257146893&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&client_secret=b6659b47ba7b2b11179247bb3cd84f70&code="+accessToken;
+            oauth=Rest.postRawForm(url, params);
+            String oauthUrl = url + params;
+            System.out.println("oauthurl======");
+            System.out.println(oauthUrl);
+            System.out.println("oauth==>"+oauth);
+            return oauth;    
+        }
+        return null;
+       
+    }
+
+    // get facebook datasource
+    @RequestMapping(value = "facebookDataSets", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    String getFacebookDataSets(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long accountId;
+        accountId = 10201209987716903L;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = new Date();
+//       String  stratDates=dateFormat.format(startDate);
+        facebookService.getAccountPerformance(accountId, startDate, startDate,"day");
+//        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
+        
+        return null;
     }
 
     @ExceptionHandler

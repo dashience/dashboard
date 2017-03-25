@@ -191,8 +191,8 @@ public class UserService {
         return property;
     }
 
-    public List<Property> getPropertyById(Integer accountId) {
-        return userDao.getPropertyById(accountId);
+    public List<Property> getPropertyByAccountId(Integer accountId) {
+        return userDao.getPropertyByAccountId(accountId);
     }
 
     public Property getPropertyId(Integer id) {

@@ -35,8 +35,12 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -447,6 +451,15 @@ public class UiService {
                 uiDao.create(dbDataSource);
             }
             if (dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
+                uiDao.create(dbDataSource);
+            }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("facebook")) {
+                uiDao.create(dbDataSource);
+            }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("linkedin")) {
+                uiDao.create(dbDataSource);
+            }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("instagram")) {
                 uiDao.create(dbDataSource);
             }
 
