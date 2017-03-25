@@ -307,10 +307,9 @@ public class CustomReportDesigner {
                         DAY dayTwo = DAY.valueOf(day2);
                         System.out.println("dayTwo: " + dayTwo);
                         return dayOne.getWeight() - dayTwo.getWeight();
-                    } else {
-                        continue;
-                    }
+                    } 
                 }
+                
                 if (day1.length() == 4 || day1.length() == 5) {
                     System.out.println("Time ------>");
                     if ((day1.substring(day1.length() - 2, day1.length()).equalsIgnoreCase("pm") || day1.substring(day1.length() - 2, day1.length()).equalsIgnoreCase("am")) && (day2.substring(day2.length() - 2, day2.length()).equalsIgnoreCase("pm") || day2.substring(day2.length() - 2, day2.length()).equalsIgnoreCase("am"))) {

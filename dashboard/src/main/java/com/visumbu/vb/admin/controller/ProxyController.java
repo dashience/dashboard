@@ -245,7 +245,7 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
 //                    url = "../testing/admin/csv/getData";
-                    url = "../VizBoard/admin/csv/getData";
+                    url = "admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 System.out.println("AAAAAAAAAAA 1");
@@ -289,7 +289,6 @@ public class ProxyController {
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
-
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
@@ -361,7 +360,6 @@ public class ProxyController {
                 Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);
                 List dataList = (List) responseMap.get("data");
                 tabWidget.setData(dataList);
-
             } catch (ParseException ex) {
                 Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
