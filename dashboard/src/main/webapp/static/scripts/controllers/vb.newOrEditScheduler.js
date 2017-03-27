@@ -211,8 +211,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.schedulerYearOfWeek = null;
         } else if (scheduler.schedulerRepeatType === "Year Of Week") {
             scheduler.schedulerNow = null;
-            scheduler.schedulerTime = null;
-            scheduler.schedulerWeekly = null;
+//            scheduler.schedulerTime = null;
+//            scheduler.schedulerWeekly = null;
             scheduler.schedulerMonthly = null;
             scheduler.schedulerYearly = null;
 //            scheduler.schedulerYearOfWeek = null;
@@ -238,12 +238,6 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         });
         $scope.scheduler = "";
     };
-
-
-
-
-
-
 
     $(function () {
         //Initialize Select2 Elements

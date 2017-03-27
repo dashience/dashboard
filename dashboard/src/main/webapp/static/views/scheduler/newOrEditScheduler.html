@@ -106,14 +106,14 @@
 
                         <div class="col-md-4">
 
-                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Weekly'">Select Week</label>
-                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Weekly'">
+                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">Select Week</label>
+                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">
                                 <select class="form-control" ng-options="week for week in weeks" ng-model="scheduler.schedulerWeekly"></select>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">Time</label>
-                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
+                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">Time</label>
+                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">
                                 <input type="text" jqdatepicker-Time placeholder="Time" ng-model="scheduler.schedulerTime" class="form-control">
                             </div>
                         </div>
