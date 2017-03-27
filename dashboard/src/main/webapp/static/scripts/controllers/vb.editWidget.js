@@ -23,8 +23,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         {name: 'Sum', value: "sum"},
         {name: 'CTR', value: "ctr"},
         {name: 'CPC', value: "cpc"},
+        {name: 'CPCS', value: "cpcs"},
         {name: 'CPS', value: "cps"},
         {name: 'CPA', value: "cpa"},
+        {name: 'CPAS', value: "cpas"},
         {name: 'Avg', value: "avg"},
         {name: 'Count', value: "count"},
         {name: 'Min', value: "min"},
@@ -157,7 +159,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
                 if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getFbData?";
+                }
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&dataSetId=" + widget.dataSetId.id + "&accountId=" + $stateParams.accountId + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     $scope.collectionFields = response.columnDefs;
                 });
@@ -168,7 +173,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
                 if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getFbData?";
+                }
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&dataSetId=" + widget.dataSetId.id +"&accountId=" + $stateParams.accountId + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     widget.columns = response.columnDefs;
                     $scope.collectionFields = response.columnDefs;
@@ -188,7 +196,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, $t
         if (dataSet.dataSourceId.dataSourceType == "csv") {
             url = "admin/csv/getData?";
         }
-        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
+        if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
+            url = "admin/proxy/getFbData?";
+        }
+        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&dataSetId=" + dataSet.id + "&accountId=" + $stateParams.accountId + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             angular.forEach(response.columnDefs, function (value, key) {
                 widget.columns.push({fieldName: value.fieldName, displayName: value.displayName,

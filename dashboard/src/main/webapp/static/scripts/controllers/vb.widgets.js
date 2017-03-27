@@ -369,8 +369,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             if (tableDataSource.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
-
-            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
+            console.log(scope);
+            if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
+                url = "admin/proxy/getFbData?";
+            }
+            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&accountId=" + $stateParams.accountId + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 //$http.post("admin/proxy/getJson", data).success(function (response) {
 //            $http.get("admin/proxy/getJson?url=" + scope.dynamicTableUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
 
@@ -493,14 +496,16 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             listOfCalculatedFunction = [
                 {name: 'ctr', field1: 'data__clicks', field2: 'data__impressions'},
                 {name: 'cpa', field1: 'data__cost', field2: 'data__conversions'},
+                {name: 'cpas', field1: 'data__spend', field2: 'data__conversions'},
                 {name: 'cpc', field1: 'data__cost', field2: 'data__clicks'},
-                {name: 'cpr', field1: 'data__cost', field2: 'data__reactions'},
-                {name: 'ctl', field1: 'data__cost', field2: 'data__likes'},
-                {name: 'cplc', field1: 'data__cost', field2: 'data__link_clicks'},
-                {name: 'cpcomment', field1: 'data__cost', field2: 'data__comments'},
-                {name: 'cposte', field1: 'data__cost', field2: 'data__post_engagements'},
-                {name: 'cpagee', field1: 'data__cost', field2: 'data__page_engagements'},
-                {name: 'cpp', field1: 'data__cost', field2: 'data__posts'},
+                {name: 'cpcs', field1: 'data__spend', field2: 'data__clicks'},
+                {name: 'cpr', field1: 'data__spend', field2: 'data__actions_post_reaction'},
+                {name: 'ctl', field1: 'data__spend', field2: 'data__actions_like'},
+                {name: 'cplc', field1: 'data__spend', field2: 'data__actions_link_click'},
+                {name: 'cpcomment', field1: 'data__spend', field2: 'data__actions_comment'},
+                {name: 'cposte', field1: 'data__spend', field2: 'data__actions_post_engagement'},
+                {name: 'cpagee', field1: 'data__spend', field2: 'data__actions_page_engagement'},
+                {name: 'cpp', field1: 'data__spend', field2: 'data__actions_post'}
             ];
 
             function aggregate(list, aggreationList) {

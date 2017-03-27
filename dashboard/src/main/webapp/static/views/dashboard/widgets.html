@@ -118,7 +118,7 @@
         -ms-user-select: none;
         user-select: none;
     }
-
+    
     .report-bottomMenu{
         z-index: 9999;
         position: fixed;
@@ -215,6 +215,10 @@
     }
     .selected{
         background-color: #EBEEE1;
+    }
+    .text-widget{
+        margin: 0 0 10px;
+        word-wrap: break-word;
     }
 </style>
 <div class="row add-widget">
@@ -345,7 +349,9 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'text'">
                         <div class="col-md-12">
-                            <span ng-bind-html="widget.content"></span>
+                            <div class="text-widget">
+                                <span ng-bind-html="widget.content"></span>
+                            </div>
                         </div>
                     </div>
                 </div>

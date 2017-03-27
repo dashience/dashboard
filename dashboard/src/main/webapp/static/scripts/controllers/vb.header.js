@@ -36,9 +36,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             return;
         }
         $scope.accounts = response;
-        $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].id;
+        $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-        $scope.name = $filter('filter')($scope.accounts, {id: $stateParams.accountId})[0];
+        // $scope.name = $filter('filter')($scope.accounts, {id: response[0].id})[0];
+        angular.forEach($scope.accounts, function(value, key){
+            if(value.accountId.id == $stateParams.accountId) {
+                $scope.name = value;
+            }
+        });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         if (!$scope.name.userId.agencyId) {
             $scope.loadNewUrl()
@@ -49,7 +54,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     });
 
     $scope.getAccountId = function (account) {
-        $stateParams.accountId = account.id;
+        $stateParams.accountId = account.accountId.id;
         $scope.selectAccount.selected = {accountName: account.accountId.accountName};
         $stateParams.accountName = account.accountId.accountName;
     };

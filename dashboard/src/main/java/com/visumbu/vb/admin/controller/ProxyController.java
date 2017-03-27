@@ -6,19 +6,27 @@
 package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.DealerService;
+import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.UiService;
+import com.visumbu.vb.admin.service.UserService;
+import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.DataSet;
+import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,9 +61,73 @@ public class ProxyController {
 
     @Autowired
     private UiService uiService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private DealerService dealerService;
+
+    @Autowired
+    private FacebookService facebookService;
+
+    @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getFbData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSetId = request.getParameter("dataSetId");
+        String dataSetName = request.getParameter("dataSetName");
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                dataSetName = dataSet.getName();
+            }
+        }
+        String accountIdStr = request.getParameter("accountId");
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String facebookAccountId = "";
+        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+            Property property = iterator.next();
+            System.out.println("Property Name " + property.getPropertyName());
+            System.out.println("Property Value " +property.getPropertyValue());
+            if (property.getPropertyName().equalsIgnoreCase("facebookAccountId")) {
+                facebookAccountId = property.getPropertyValue();
+            }
+        }
+        Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
+        String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
+        List<Map<String, String>> data = facebookService.get(accessToken, dataSetName, facebookAccountIdInt, startDate, endDate, "daily");
+//        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
+//        Date endDate = new Date();
+//        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
+        Map returnMap = new HashMap();
+        List<ColumnDef> columnDefs = getColumnDef(data);
+        returnMap.put("columnDefs", columnDefs);
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", data);
+        return returnMap;
+    }
+
+    private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
+        List<ColumnDef> columnDefs = new ArrayList<>();
+        for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, String> mapData = iterator.next();
+            for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
+                String key = entrySet.getKey();
+                String value = entrySet.getValue();
+                columnDefs.add(new ColumnDef(key, "string", key));
+            }
+            return columnDefs;
+        }
+        return columnDefs;
+    }
 
     @RequestMapping(value = "getJson", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -152,7 +224,7 @@ public class ProxyController {
                     }
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                         System.out.println("DS TYPE ==>  CSV");
-                        url = "/admin/csv/getData";
+                        url = "admin/csv/getData";
                     }
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -194,7 +266,7 @@ public class ProxyController {
             }
         }
     }
-    
+
     @RequestMapping(value = "downloadReport/{reportId}", method = RequestMethod.GET)
     public @ResponseBody
     void downloadReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
@@ -220,7 +292,7 @@ public class ProxyController {
         }
 
         //List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
-        List<TabWidget> tabWidgets =new ArrayList<>();
+        List<TabWidget> tabWidgets = new ArrayList<>();
         Report report = uiService.getReportById(reportId);
         List<ReportWidget> reportWidgets = uiService.getReportWidget(reportId);
         for (Iterator<ReportWidget> iterator = reportWidgets.iterator(); iterator.hasNext();) {
@@ -228,7 +300,7 @@ public class ProxyController {
             TabWidget widget = reportWidget.getWidgetId();
             tabWidgets.add(widget);
         }
-        
+
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next();
             try {
@@ -281,8 +353,8 @@ public class ProxyController {
         }
         try {
             if (exportType.equalsIgnoreCase("pdf")) {
-               response.setContentType("application/x-msdownload");
-               response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);
@@ -305,7 +377,7 @@ public class ProxyController {
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
-        System.out.println("EXport type ==> " + exportType);
+        System.out.println("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
         }
@@ -341,8 +413,7 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
-                    url = "../VizBoard/admin/csv/getData";
+                    url = "admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -351,7 +422,7 @@ public class ProxyController {
                 Integer port = request.getServerPort();
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-                System.out.println("UR:" + url);
+                System.out.println("URL:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
@@ -372,16 +443,14 @@ public class ProxyController {
         }
         try {
             if (exportType.equalsIgnoreCase("pdf")) {
-               response.setContentType("application/x-msdownload");
-               response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);
-
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
-
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
