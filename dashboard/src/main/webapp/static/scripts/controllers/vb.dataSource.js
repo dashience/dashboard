@@ -115,11 +115,12 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         setTimeout(function () {
             var accessToken = $('#fbAccessToken').val();
             console.log(accessToken);
-            $http.get("admin/ui/oauthCode/" + accessToken + '/' + data).success(function (response) {
+            $http.get("admin/ui/oauthCode/" + accessToken + '/' + data.dataSourceType).success(function (response) {
                 console.log("success");
                 console.log(response);
                 $scope.oauthToken = response.access_token;
                 $("#fbOauthToken").val(response.access_token);
+                alert(response.access_token);
                 $scope.saveDataSource(data);
                 console.log($scope.oauthToken);
             }).error(function (response) {
@@ -146,8 +147,8 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
 
         //for accesstoken
         console.log($('#fbAccessToken').val());
-        dataSource.code = $('#fbAccessToken').val();
-        dataSource.oAuthToken = $('#fbOauthToken').val();
+        dataSource.code = $('#fbOauthToken').val();
+        dataSource.accessToken = $('#fbAccessToken').val();
         console.log($('#fbOauthToken').val());
 
 
@@ -162,7 +163,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             dataSourceType: dataSource.dataSourceType,
             sourceFile: dataSource.sourceFile ? dataSource.sourceFile : $scope.fileReader,
             sourceFileName: $scope.sourceFileName,
-            accessToken: dataSource.oAuthToken ? dataSource.oAuthToken : '',
+            accessToken: dataSource.accessToken ? dataSource.accessToken : '',
             code: dataSource.code ? dataSource.code : ''
         };
         console.log(data);

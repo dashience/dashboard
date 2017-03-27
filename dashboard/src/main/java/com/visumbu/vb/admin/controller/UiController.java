@@ -542,17 +542,7 @@ public class UiController extends BaseController {
             System.out.println("oauth==>" + oauth);
             return oauth;
         }
-        else if(dataSourceType.equalsIgnoreCase("facebook"))
-        {
-            String url="https://graph.facebook.com/v2.8/oauth/access_token?";
-            String params="client_id=1631503257146893&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&client_secret=b6659b47ba7b2b11179247bb3cd84f70&code="+accessToken;
-            oauth=Rest.postRawForm(url, params);
-            String oauthUrl = url + params;
-            System.out.println("oauthurl======");
-            System.out.println(oauthUrl);
-            System.out.println("oauth==>"+oauth);
-            return oauth;    
-        }
+
         return null;
        
     }
