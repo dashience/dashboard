@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Scheduler;
+import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
 import java.util.Date;
 import java.util.List;
@@ -96,9 +97,7 @@ public class SchedulerDao extends BaseDao {
     public List<Scheduler> getYearlyTasks(String currentDateHour, Date today) {
         System.out.println(currentDateHour);
         String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.schedulerYearly = :schedulerYearly";
-        System.out.println(queryStr);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        System.out.println(query);
         query.setParameter("schedulerRepeatType", "Yearly");
         // query.setParameter("startDate", today);
         query.setParameter("schedulerYearly", currentDateHour);
@@ -144,6 +143,14 @@ public class SchedulerDao extends BaseDao {
         query.setParameter("startDate", today);
         query.setParameter("hour", scheduledHour);
         System.out.println(query.list());
+        return query.list();
+    }
+
+    public List<SchedulerHistory> getSchedulerHistoryById(Integer schedulerId) {
+        String queryStr = "select d from SchedulerHistory d where d.schedulerId.id = :schedulerId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("schedulerId", schedulerId);
+        //query.executeUpdate();
         return query.list();
     }
 
