@@ -341,7 +341,7 @@ public class UiService {
         return reportWidget;
     }
 
-    public List getReportWidget(Integer reportId) {
+    public List<ReportWidget> getReportWidget(Integer reportId) {
         return uiDao.getReportWidget(reportId);
     }
 

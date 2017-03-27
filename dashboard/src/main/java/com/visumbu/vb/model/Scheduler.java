@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -49,7 +52,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Scheduler.findByLastNdays", query = "SELECT s FROM Scheduler s WHERE s.lastNdays = :lastNdays")
     , @NamedQuery(name = "Scheduler.findByLastNmonths", query = "SELECT s FROM Scheduler s WHERE s.lastNmonths = :lastNmonths")
     , @NamedQuery(name = "Scheduler.findByLastNweeks", query = "SELECT s FROM Scheduler s WHERE s.lastNweeks = :lastNweeks")
-    , @NamedQuery(name = "Scheduler.findByLastNyears", query = "SELECT s FROM Scheduler s WHERE s.lastNyears = :lastNyears")})
+    , @NamedQuery(name = "Scheduler.findByLastNyears", query = "SELECT s FROM Scheduler s WHERE s.lastNyears = :lastNyears")
+    , @NamedQuery(name = "Scheduler.findByIsAccountEmail", query = "SELECT s FROM Scheduler s WHERE s.isAccountEmail = :isAccountEmail")
+    , @NamedQuery(name = "Scheduler.findByStatus", query = "SELECT s FROM Scheduler s WHERE s.status = :status")})
 public class Scheduler implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -61,12 +66,12 @@ public class Scheduler implements Serializable {
     @Size(max = 255)
     @Column(name = "schedulerName")
     private String schedulerName;
-    @Size(max = 255)
     @Column(name = "start_date")
-    private String startDate;
-    @Size(max = 255)
+    @Temporal(TemporalType.DATE)
+    private Date startDate;
     @Column(name = "end_date")
-    private String endDate;
+    @Temporal(TemporalType.DATE)
+    private Date endDate;
     @Size(max = 255)
     @Column(name = "scheduler_weekly")
     private String schedulerWeekly;
@@ -111,9 +116,14 @@ public class Scheduler implements Serializable {
     @Column(name = "last_nyears")
     private Integer lastNyears;
     @Lob
-    @Size(max = 65535)
+    @Size(max = 16777215)
     @Column(name = "scheduler_email")
     private String schedulerEmail;
+    @Column(name = "is_account_email")
+    private Boolean isAccountEmail;
+    @Size(max = 45)
+    @Column(name = "status")
+    private String status;
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     @ManyToOne
     private Report reportId;
@@ -147,19 +157,19 @@ public class Scheduler implements Serializable {
         this.schedulerName = schedulerName;
     }
 
-    public String getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
@@ -297,6 +307,22 @@ public class Scheduler implements Serializable {
 
     public void setSchedulerEmail(String schedulerEmail) {
         this.schedulerEmail = schedulerEmail;
+    }
+
+    public Boolean getIsAccountEmail() {
+        return isAccountEmail;
+    }
+
+    public void setIsAccountEmail(Boolean isAccountEmail) {
+        this.isAccountEmail = isAccountEmail;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Report getReportId() {

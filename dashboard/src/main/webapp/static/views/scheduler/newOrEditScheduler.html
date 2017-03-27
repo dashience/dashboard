@@ -106,14 +106,14 @@
 
                         <div class="col-md-4">
 
-                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Weekly'">Select Week</label>
-                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Weekly'">
+                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">Select Week</label>
+                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">
                                 <select class="form-control" ng-options="week for week in weeks" ng-model="scheduler.schedulerWeekly"></select>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">Time</label>
-                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
+                            <label class="col-sm-4" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">Time</label>
+                            <div class="col-sm-8" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">
                                 <input type="text" jqdatepicker-Time placeholder="Time" ng-model="scheduler.schedulerTime" class="form-control">
                             </div>
                         </div>
@@ -163,13 +163,21 @@
                         </div>
                         <div class="col-md-4">
                             <label class="col-sm-4">Account</label>
-                            <div class="col-sm-8">
-                                <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:225px;">
+                            <div class="col-sm-4">
+                                <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">
                                     <ui-select-match placeholder="Select Year Account...">{{$select.selected.accountName}}</ui-select-match>
                                     <ui-select-choices repeat="account in accounts | filter: $select.search">
                                         <span ng-bind-html="account.accountName | highlight: $select.search"></span>
                                     </ui-select-choices>
                                 </ui-select>
+                            </div>
+                            <div class="col-sm-4">
+                                <p>
+                                    <label class="scheduler-checkBox-label">
+                                        <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.isAccountEmail == true;" ng-model="scheduler.isAccountEmail" ng-true-value="1" />
+                                        <span> Send to Account</span>
+                                    </label>
+                                </p>                              
                             </div>
                         </div>
 
@@ -251,10 +259,10 @@
                         <div class="col-md-4">
                             <label class="col-sm-4">Email Ids</label>
                             <div class="col-sm-8">
-                                <ui-select multiple tagging tagging-label="true" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                                <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
                                     <ui-select-match placeholder="Email Ids...">{{$item}}</ui-select-match>
-                                    <ui-select-choices repeat="account in accounts | filter:$select.search">
-                                        {{account.agencyId.email}}
+                                    <ui-select-choices repeat="accountEmail in accountEmails | filter:$select.search">
+                                        {{accountEmail}}
                                     </ui-select-choices>
                                 </ui-select>
                             </div>

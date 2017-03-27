@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.SchedulerService;
 import com.visumbu.vb.admin.service.UserService;
+import com.visumbu.vb.bean.SchedulerBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.VbUser;
@@ -40,18 +41,18 @@ public class SchedulerController extends BaseController{
     
     @RequestMapping(value = "scheduler", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    Scheduler createScheduler(HttpServletRequest request, HttpServletResponse response, @RequestBody Scheduler scheduler) {
+    Scheduler createScheduler(HttpServletRequest request, HttpServletResponse response, @RequestBody SchedulerBean schedulerBean) {
         VbUser user = userService.findByUsername(getUser(request));
-        scheduler.setAgencyId(user.getAgencyId());
-        return schedulerService.createScheduler(scheduler);
+        schedulerBean.setAgencyId(user.getAgencyId());
+        return schedulerService.createScheduler(schedulerBean);
     }
 
     @RequestMapping(value = "scheduler", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    Scheduler updateScheduler(HttpServletRequest request, HttpServletResponse response, @RequestBody Scheduler scheduler) {
+    Scheduler updateScheduler(HttpServletRequest request, HttpServletResponse response, @RequestBody SchedulerBean schedulerBean) {
         VbUser user = userService.findByUsername(getUser(request));
-        scheduler.setAgencyId(user.getAgencyId());
-        return schedulerService.updateScheduler(scheduler);
+        schedulerBean.setAgencyId(user.getAgencyId());
+        return schedulerService.updateScheduler(schedulerBean);
     }
     
     @RequestMapping(value = "scheduler", method = RequestMethod.GET, produces = "application/json")
