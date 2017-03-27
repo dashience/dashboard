@@ -1,11 +1,278 @@
 app.controller('DataSetController', function ($scope, $http, $stateParams) {
-    
+    $scope.dataSetFlag = false;
+    $scope.dataSetFlagValidation = function (dataSource)
+    {
+        if (dataSource == "adwords" || dataSource == "analytics" || dataSource == "facebook" || dataSource == "instagram")
+        {
+            $scope.dataSetFlag = true;
+        } else {
+            $scope.dataSetFlag = false;
+
+        }
+    };
+    $scope.dataSources = [
+        {
+            id: 0,
+            type: "adwords",
+            name: "Adwords",
+
+        },
+        {
+            id: 1,
+            type: "analytics",
+            name: "Analytics",
+
+        },
+        {
+            id: 2,
+            type: "facebook",
+            name: "Facebook",
+
+        },
+        {
+            id: 3,
+            type: "instagram",
+            name: "Instagram",
+
+        }
+    ];
+    $scope.reportPerformance = [
+        {
+            type: 'accountperformance',
+            name: 'accountperformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'hour of the day',
+                    name: 'hour of the day'
+                },
+                {
+                    type: 'day of the week',
+                    name: 'day of the week'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'network search partner',
+                    name: 'network search partner'
+                }
+            ]
+        },
+        {
+            type: 'campaignperformance',
+            name: 'campaignperformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                }
+            ]
+        },
+        {
+            type: 'adgroupperformance',
+            name: 'adgroupperformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                }
+            ]
+        },
+        {
+            type: 'keywordperformance',
+            name: 'keywordperformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                }
+            ]
+        },
+        {
+            type: 'adperformance',
+            name: 'adperformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                }
+            ]
+        }, {
+            type: 'geoperformance',
+            name: 'geoperformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                }
+            ]
+        }, {
+            type: 'videoperformance',
+            name: 'videoperformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                }
+            ]
+        }
+
+
+    ];
+
+    $scope.gettimeSegemens = function (reportPerformance)
+    {
+        var index = getIndex(reportPerformance);
+        $scope.timesegement = $scope.reportPerformance[index].timeSegments;
+        $scope.productsegment = $scope.reportPerformance[index].productSegments;
+        console.log($scope.timesegement);
+        function getIndex(data)
+        {
+            for (var i = 0; i < $scope.reportPerformance.length; i++)
+            {
+                if ($scope.reportPerformance[i].type == data)
+                {
+                    return i;
+                }
+            }
+        }
+
+    };
+
+
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
-    
+
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate
-    
+
     function getItems() {
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = response;
@@ -13,10 +280,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
     }
     getItems();
     $http.get('admin/ui/dataSource').success(function (response) {
-        $scope.dataSources = response;
+        // $scope.dataSources = response;
     });
 
-    $scope.saveDataSet = function (dataSet) {
+    $scope.saveDataSet = function (dataSet, reportPerformance, timeSegments, productSegments) {
+        console.log("reportPerformance= " + reportPerformance);
+        console.log("timeSegments= " + timeSegments);
+        console.log("productSegments= " + productSegments);
+        var dataSet = {
+            id: dataSet.id,
+            name: dataSet.name,
+            type: dataSet.type,
+            reportPerformance: reportPerformance ? reportPerformance : '',
+            timeSegment: timeSegments ? timeSegments : '',
+            productSegment: productSegments ? productSegments : ''
+        };
+        console.log(dataSet)
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });

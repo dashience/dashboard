@@ -38,6 +38,16 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSet.findByName", query = "SELECT d FROM DataSet d WHERE d.name = :name")})
 public class DataSet implements Serializable {
 
+    @Size(max = 500)
+    @Column(name = "report_performance")
+    private String reportPerformance;
+    @Size(max = 500)
+    @Column(name = "time_segment")
+    private String timeSegment;
+    @Size(max = 500)
+    @Column(name = "product_segment")
+    private String productSegment;
+
     @OneToMany(mappedBy = "dataSetId")
     private Collection<TabWidget> tabWidgetCollection;
 
@@ -152,6 +162,30 @@ public class DataSet implements Serializable {
 
     public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
         this.tabWidgetCollection = tabWidgetCollection;
+    }
+
+    public String getReportPerformance() {
+        return reportPerformance;
+    }
+
+    public void setReportPerformance(String reportPerformance) {
+        this.reportPerformance = reportPerformance;
+    }
+
+    public String getTimeSegment() {
+        return timeSegment;
+    }
+
+    public void setTimeSegment(String timeSegment) {
+        this.timeSegment = timeSegment;
+    }
+
+    public String getProductSegment() {
+        return productSegment;
+    }
+
+    public void setProductSegment(String productSegment) {
+        this.productSegment = productSegment;
     }
     
 }
