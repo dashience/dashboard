@@ -418,8 +418,8 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "property/{accountId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getPropertyById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId) {
-        return userService.getPropertyById(accountId);
+    List getPropertyByAccountId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId) {
+        return userService.getPropertyByAccountId(accountId);
     }
 
     @RequestMapping(value = "property/{propertyId}", method = RequestMethod.DELETE, produces = "application/json")

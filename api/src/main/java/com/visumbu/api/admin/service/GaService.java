@@ -560,10 +560,10 @@ public class GaService {
     public static void main(String[] args) {
         try {
             getGaGoals("43651400", "79919517");
-//            AnalyticsReporting service = initializeAnalyticsReporting();
-//
-//            GetReportsResponse response = getReport(service);
-//            printResponse(response);
+            AnalyticsReporting service = initializeAnalyticsReporting();
+
+            GetReportsResponse response = getReport(service);
+            printResponse(response);
         } catch (Exception e) {
             e.printStackTrace();
         }

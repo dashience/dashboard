@@ -7,23 +7,15 @@ package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.UiService;
-import com.visumbu.vb.admin.service.UserService;
-import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.CsvDataSet;
-import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -31,14 +23,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import test.CustomReportDesigner;
 
 /**
  *
@@ -60,7 +48,6 @@ public class CsvController {
         try {
             String connectionString = request.getParameter("connectionUrl");
             Map dataSet = CsvDataSet.CsvDataSet(connectionString);
-            System.out.println(dataSet);
             return dataSet;
         } catch (IOException ex) {
             Logger.getLogger(CsvController.class.getName()).log(Level.SEVERE, null, ex);

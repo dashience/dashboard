@@ -48,7 +48,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $('body').removeClass().removeAttr('style');
         $('.modal-backdrop').remove();
         $state.go('index.dataSource', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-    }
+    };
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
@@ -62,6 +62,26 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.moveWidget = function (list, from, to) {
         list.splice(to, 0, list.splice(from, 1)[0]);
         return list;
+    };
+
+    $http.get("admin/ui/reportWidget").success(function (response) {
+        $scope.reportWidgets = response;
+    });
+
+    $http.get('admin/ui/report').success(function (response) {
+        $scope.reportList = response;
+    });
+
+    $scope.addWidgetToReport = function (widget) {
+        var data = {};
+        data.widgetId = widget.id;
+        data.reportId = widget.reportWidget.id;
+        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/reportWidget', data: data}).success(function (response) {
+        });
+    };
+
+    $scope.goReport = function () {
+        $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
 
     $scope.onDropComplete = function (index, widget, evt) {
@@ -98,6 +118,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             makeUnselectable(child);
             child = child.nextSibling;
         }
+    }
+
+    $scope.selectReport = function (reportWidget) {
+        console.log(reportWidget)
+        $scope.reportLogo = reportWidget.logo;
+        $scope.reportDescription = reportWidget.description;
     }
 });
 
@@ -315,7 +341,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             var aggreagtionList = [];
             var sortFields = [];
             for (var i = 0; i < scope.columns.length; i++) {
-                console.log(scope.columns[i]);
                 if (scope.columns[i].groupPriority) {
                     groupByFields.push(scope.columns[i].fieldName);
                 }
@@ -328,7 +353,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             }
             var fullAggreagtionList = aggreagtionList;
             var tableDataSource = JSON.parse(scope.dynamicTableSource)
-            console.log(tableDataSource)
             var data = {
                 url: '../dbApi/admin/dataSet/getData',
                 connectionUrl: tableDataSource.dataSourceId.connectionString,
@@ -340,14 +364,16 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 port: 3306,
                 schema: 'vb'
             }
-            console.log(data);
 
             var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             if (tableDataSource.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
-
-            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
+            console.log(scope);
+            if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
+                url = "admin/proxy/getFbData?";
+            }
+            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&accountId=" + $stateParams.accountId + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 //$http.post("admin/proxy/getJson", data).success(function (response) {
 //            $http.get("admin/proxy/getJson?url=" + scope.dynamicTableUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
 
@@ -386,7 +412,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                     }
                 }
                 //alert("CAlling");
-                console.log(pdfData);
                 scope.pdfFunction({test: pdfData});
             });
 
@@ -403,14 +428,10 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 }
                 var sortFields = [];
                 sortFields.push({fieldName: col.fieldName, sortOrder: col.sortOrder, fieldType: col.fieldType});
-                console.log(sortFields);
                 var responseData = scope.orignalData;
                 // scope.orignalData = response.data;
                 responseData = scope.orderData(responseData, sortFields);
                 var widgetData = JSON.parse(scope.widgetObj);
-                console.log("WidgetObj");
-                console.log(widgetData);
-                console.log(scope.widgetColumns);
                 if (widgetData.maxRecord > 0) {
                     responseData = responseData.slice(0, widgetData.maxRecord);
                 }

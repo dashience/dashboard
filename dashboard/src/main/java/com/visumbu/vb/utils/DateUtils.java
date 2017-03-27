@@ -317,11 +317,35 @@ public class DateUtils {
         return dates;
     }
 
+    public static Integer getCurrentHour() {
+        Date date = new Date();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public static Integer getCurrentWeekDay() {
+        Date date = new Date();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public static String getDayOfWeek(Integer day) {
+        String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        return days[day - 1];
+    }
     public static Date getStartDateOfWeek(Date currentStart) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public static Date getNextWeek(Date weekStart) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    public static Integer getYearOfWeek() {
+        Date date = new Date();
+        Calendar calendar =  new GregorianCalendar();    
+        calendar.setTime(date);
+        return  calendar.get(Calendar.WEEK_OF_YEAR);
     }
 }

@@ -18,20 +18,19 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         {
             type: "facebook",
             name: "facebook",
-            url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:8084/VizBoard/fbPost.html'
+            url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:9090/VizBoard/fbPost.html'
         },
         {
             type: "linkedin",
             name: "linkedin",
-            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&state=123908353453&response_type=code'
+            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&state=123908353453&response_type=code'
         },
         {
             type: 'instagram',
             name: 'Instagram',
-            url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&response_type=token&scope=public_content'
+            url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
         }
     ];
-
 
     function getItems() {
         $http.get('admin/ui/dataSource').success(function (response) {
@@ -164,6 +163,8 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             sourceFile: dataSource.sourceFile ? dataSource.sourceFile : $scope.fileReader,
             sourceFileName: $scope.sourceFileName,
             accessToken: dataSource.accessToken ? dataSource.accessToken : '',
+            agencyId: dataSource.agencyId,
+            userId: dataSource.userId,
             code: dataSource.code ? dataSource.code : ''
         };
         console.log(data);
@@ -188,7 +189,9 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             userName: dataSource.userName,
             password: dataSource.password,
             dataSourceType: dataSource.dataSourceType,
-            sourceFile: dataSource.sourceFile
+            sourceFile: dataSource.sourceFile,
+            agencyId: dataSource.agencyId.id,
+            userId: dataSource.userId.id
         };
         $scope.dataSource = data;
     };
@@ -207,9 +210,4 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             $scope.dataSources.splice(index, 1);
         }
     };
-
-    /*
-     * code for facebook datasource
-     */
-
 });

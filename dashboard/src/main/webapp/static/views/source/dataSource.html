@@ -123,11 +123,11 @@
                                 <input type="text" id="fbOauthToken" ng-model="dataSource.oauthToken">
                                 <input type="text" id="dataSourceType" ng-model="dataSource.dataSourceType">
                                 <div class="form-group pull-right">
-                                    <button class="btn btn-info" ng-click="saveDataSource(dataSource)" ng-if="!(dataSource.dataSourceType== 'facebook' || dataSource.dataSourceType == 'linkedin' || dataSource.dataSourceType == 'instagram')">Save</button>
+                                    <button class="btn btn-info" ng-click="saveDataSource(dataSource)" ng-if="!(dataSource.dataSourceType == 'linkedin' || dataSource.dataSourceType == 'instagram')">Save</button>
                                     <button class="btn btn-warning" ng-click="clearDataSource(dataSource)">Cancel</button>
                                     
                                     <div class="btn btn-warning"  ng-disabled="authenticateFlag"
-                                         ng-click="getDataSource(dataSource)" ng-if="(dataSource.dataSourceType == 'facebook' || dataSource.dataSourceType === 'linkedin' || dataSource.dataSourceType === 'instagram')">
+                                         ng-click="getDataSource(dataSource)" ng-if="( dataSource.dataSourceType === 'linkedin' || dataSource.dataSourceType === 'instagram')">
                                         Authenticate & Save
                                     </div>
                                 </div>

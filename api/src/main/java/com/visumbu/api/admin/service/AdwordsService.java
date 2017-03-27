@@ -67,10 +67,14 @@ public class AdwordsService {
 
     private static final int PAGE_SIZE = 100;
     public static final String XML_FILE_DIR = "/tmp/";
-    private static String clientId = "162577857765-r9dvqjb6i7atjvjftdc8dq5pp80n8j2g.apps.googleusercontent.com";
-    private static String clientSecret = "UxF3VNJFWfNBEQ86reUTk09M";
-    private static String refreshToken = "1/75VMEAe7i9UOm69maPpsPMaYH1e58R1xUGlulN--3Pg";
-    private static String developerToken = "X4glgfA7zjlwzeL3jNQjkw";
+    //private static String clientId = "162577857765-r9dvqjb6i7atjvjftdc8dq5pp80n8j2g.apps.googleusercontent.com";
+    private static String clientId = "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com";
+    //private static String clientSecret = "UxF3VNJFWfNBEQ86reUTk09M";
+    private static String clientSecret = "xXIHWHPBQ9B9KpkFs_1tmniu";
+    //private static String refreshToken = "1/75VMEAe7i9UOm69maPpsPMaYH1e58R1xUGlulN--3Pg";
+    private static String refreshToken = "1/0u_BRufKySoAJwzSUaN6YDkpJiCTZ-swHBp-TMi_HYjPuJ9BIEFVAKhwewnySfK3";
+    //private static String developerToken = "X4glgfA7zjlwzeL3jNQjkw";
+    private static String developerToken = "e8OVurxJ9mIlIPxfe-eOlw";
 
     private AdWordsSession getSession(String accountId) {
         try {

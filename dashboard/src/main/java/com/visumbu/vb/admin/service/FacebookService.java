@@ -35,7 +35,7 @@ import org.json.simple.parser.ParseException;
 public class FacebookService {
 
 //    public final String ACCESS_TOKEN = ExampleConfig.ACCESS_TOKEN;
-    public final String ACCESS_TOKEN ="EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
+    public String ACCESS_TOKEN ="EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
     public final String APP_SECRET ="b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
 //    public final String APP_SECRET = ExampleConfig.APP_SECRET;
@@ -43,12 +43,42 @@ public class FacebookService {
     public final String BASE_URL_FEED = "https://graph.facebook.com/v2.8/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
 
+    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Date startDate, Date endDate, String aggregation) {
+            this.ACCESS_TOKEN = accessToken;
+        if(dataSet.equalsIgnoreCase("accountPerformance")) {
+            return getAccountPerformance(accountId, startDate, endDate, aggregation);
+        }
+        if(dataSet.equalsIgnoreCase("campaignPerformance")) {
+            return getCampaignPerformance(accountId, startDate, endDate);
+        }
+        if(dataSet.equalsIgnoreCase("adPerformance")) {
+            return getAdPerformance(accountId, startDate, endDate);
+        }
+        if(dataSet.equalsIgnoreCase("devicePerformance")) {
+            return getDevicePerformance(accountId, startDate, endDate);
+        }
+        if(dataSet.equalsIgnoreCase("agePerformance")) {
+            return getAgePerformance(accountId, startDate, endDate);
+        }
+        if(dataSet.equalsIgnoreCase("genderPerformance")) {
+            return getGenderPerformance(accountId, startDate, endDate);
+        }
+        if(dataSet.equalsIgnoreCase("postPerformance")) {
+            return getPostPerformance(accountId, startDate, endDate);
+        }
+        if(dataSet.equalsIgnoreCase("postSummary")) {
+            return getPostSummary(accountId, startDate, endDate);
+        }
+        
+        return null;
+    }
+    
     public String getFbPublishedPosts(Long accountId) {
         String url = BASE_URL + accountId + "/insights?fields=adset_name%2Cclicks%2Cimpressions&date_preset=today&access_token=" + ACCESS_TOKEN;
         return Rest.getData(url);
     }
 
-    public Object getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, String>> getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -67,7 +97,7 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List dataValueList = new ArrayList();
+            List<Map<String, String>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -92,7 +122,7 @@ public class FacebookService {
         return null;
     }
 
-    public Object getCampaignPerformance(Long accountId, Date startDate, Date endDate) {
+    public List<Map<String, String>> getCampaignPerformance(Long accountId, Date startDate, Date endDate) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -106,7 +136,7 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List dataValueList = new ArrayList();
+            List<Map<String, String>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -132,7 +162,7 @@ public class FacebookService {
         return null;
     }
 
-    public Object getAdPerformance(Long accountId, Date startDate, Date endDate) {
+    public List<Map<String, String>> getAdPerformance(Long accountId, Date startDate, Date endDate) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -146,7 +176,7 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List dataValueList = new ArrayList();
+            List<Map<String, String>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -171,7 +201,7 @@ public class FacebookService {
         return null;
     }
 
-    public Object getDevicePerformance(Long accountId,Date startDate, Date endDate) {
+    public List<Map<String, String>> getDevicePerformance(Long accountId,Date startDate, Date endDate) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -185,7 +215,7 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List dataValueList = new ArrayList();
+            List<Map<String, String>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -210,7 +240,7 @@ public class FacebookService {
         return null;
     }
 
-    public Object getAgePerformance(Long accountId,Date startDate, Date endDate) {
+    public List<Map<String, String>> getAgePerformance(Long accountId,Date startDate, Date endDate) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -224,7 +254,7 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List dataValueList = new ArrayList();
+            List<Map<String, String>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -249,7 +279,7 @@ public class FacebookService {
         return null;
     }
 
-    public Object getGenderPerformance(Long accountId, Date startDate, Date endDate) {
+    public List<Map<String, String>> getGenderPerformance(Long accountId, Date startDate, Date endDate) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -263,7 +293,7 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List dataValueList = new ArrayList();
+            List<Map<String, String>> dataValueList = new ArrayList<>();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -327,7 +357,7 @@ public class FacebookService {
         return null;
     }
 
-    private List getPostSummary(Long accountId, Date startDate, Date endDate) {
+    private List<Map<String, String>> getPostSummary(Long accountId, Date startDate, Date endDate) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -346,7 +376,7 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List dataValueList = new ArrayList();
+            List<Map<String, String>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 Map<String, String> dataList = getDataValue(data);

@@ -8,28 +8,22 @@ package com.visumbu.vb.admin.controller;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
-import com.visumbu.vb.bean.ReportWidgetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Report;
-import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -43,14 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
-import com.google.code.linkedinapi.client.LinkedInApiClient;
-import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
-import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
-import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
-import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
-import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
 import com.visumbu.vb.admin.service.FacebookService;
-import java.util.HashMap;
 
 import com.visumbu.vb.utils.Rest;
 import java.text.DateFormat;
@@ -160,7 +147,6 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
-        System.out.println(tabWidget);
         return uiService.saveTabWidget(tabId, tabWidget);
         //return null; //uiService.createTabWidget(tabId, tabWidget);
     }
@@ -203,98 +189,118 @@ public class UiController extends BaseController {
         return uiService.deleteWidgetColumn(id);
     }
 
-    @RequestMapping(value = "reportType", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    ReportType addReportType(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportType reportTypes) {
-        return uiService.addReportType(reportTypes);
-    }
-
-    @RequestMapping(value = "reportType", method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    ReportType update(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportType reportTypes) {
-        return uiService.updateReportType(reportTypes);
-    }
-
-    @RequestMapping(value = "reportTypes/{reportTypeId}", method = RequestMethod.DELETE, produces = "application/json")
-    public @ResponseBody
-    ReportType deleteReportType(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportTypeId) {
-        return uiService.deleteReportType(reportTypeId);
-    }
-
-    @RequestMapping(value = "reportTypes/{reportTypeId}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List getReportType(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportTypeId) {
-        return uiService.getReportType(reportTypeId);
-    }
-
+//    @RequestMapping(value = "reportType", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    ReportType addReportType(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportType reportTypes) {
+//        return uiService.addReportType(reportTypes);
+//    }
+//
+//    @RequestMapping(value = "reportType", method = RequestMethod.PUT, produces = "application/json")
+//    public @ResponseBody
+//    ReportType update(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportType reportTypes) {
+//        return uiService.updateReportType(reportTypes);
+//    }
+//
+//    @RequestMapping(value = "reportTypes/{reportTypeId}", method = RequestMethod.DELETE, produces = "application/json")
+//    public @ResponseBody
+//    ReportType deleteReportType(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportTypeId) {
+//        return uiService.deleteReportType(reportTypeId);
+//    }
+//
+//    @RequestMapping(value = "reportTypes/{reportTypeId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getReportType(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportTypeId) {
+//        return uiService.getReportType(reportTypeId);
+//    }
+//
     @RequestMapping(value = "report", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    Report addReport(HttpServletRequest request, HttpServletResponse response// , @RequestBody Report report
-    ) {
+    Report addReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
+        VbUser user = userService.findByUsername(getUser(request));
+        report.setAgencyId(user.getAgencyId());
+        return uiService.addReport(report);
+    }
+    
+    @RequestMapping(value = "report", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    Report updateReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
+        VbUser user = userService.findByUsername(getUser(request));
+        report.setAgencyId(user.getAgencyId());
+        return uiService.updateReport(report);
+    }
+    
+//    @RequestMapping(value = "report", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    Report addReport(HttpServletRequest request, HttpServletResponse response// , @RequestBody Report report
+//    ) {
+//
+//        try {
+//            //        Integer getReportTypeId = 1;
+////        System.out.println(report);
+//////        return uiService.addReport(report, getReportTypeId);
+////            StringBuilder sb = new StringBuilder();
+////            BufferedReader reader = request.getReader();
+////            String line = "";
+////            while((line = reader.readLine()) != null) {
+////                sb.append(reader.readLine());
+////            }
+////            String jsonString = sb.toString();
+////            System.out.println(jsonString);
+//        } catch (Exception ex) {
+//            Logger.getLogger(UiController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
-        try {
-            //        Integer getReportTypeId = 1;
-//        System.out.println(report);
-////        return uiService.addReport(report, getReportTypeId);
+//    @RequestMapping(value = "report", method = RequestMethod.PUT, produces = "application/json")
+//    public @ResponseBody
+//    Report update(HttpServletRequest request, HttpServletResponse response// @RequestBody Report report
+//    ) {
+//
+//        try {
+//            //        Integer getReportTypeId = 1;
+////        System.out.println(report);
+//////        return uiService.addReport(report, getReportTypeId);
 //            StringBuilder sb = new StringBuilder();
 //            BufferedReader reader = request.getReader();
 //            String line = "";
-//            while((line = reader.readLine()) != null) {
-//                sb.append(reader.readLine());
+//            while ((line = reader.readLine()) != null) {
+//                sb.append(line);
 //            }
 //            String jsonString = sb.toString();
+//            ObjectMapper mapper = new ObjectMapper();
+//            Report report = mapper.readValue(jsonString, Report.class);
 //            System.out.println(jsonString);
-        } catch (Exception ex) {
-            Logger.getLogger(UiController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "report", method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    Report update(HttpServletRequest request, HttpServletResponse response// @RequestBody Report report
-    ) {
-
-        try {
-            //        Integer getReportTypeId = 1;
-//        System.out.println(report);
-////        return uiService.addReport(report, getReportTypeId);
-            StringBuilder sb = new StringBuilder();
-            BufferedReader reader = request.getReader();
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            String jsonString = sb.toString();
-            ObjectMapper mapper = new ObjectMapper();
-            Report report = mapper.readValue(jsonString, Report.class);
-            System.out.println(jsonString);
-            return uiService.updateReport(report);
-        } catch (Exception ex) {
-            Logger.getLogger(UiController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-
-    }
-
-    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-        String widgetOrder = request.getParameter("widgetOrder");
-        uiService.updateReportOrder(reportId, widgetOrder);
-        return null;
-    }
-
-    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
-    public @ResponseBody
-    Report deleteReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-        return uiService.deleteReport(reportId);
-    }
-
+//            return uiService.updateReport(report);
+//        } catch (Exception ex) {
+//            Logger.getLogger(UiController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//
+//    }
+//
+//    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+//        String widgetOrder = request.getParameter("widgetOrder");
+//        uiService.updateReportOrder(reportId, widgetOrder);
+//        return null;
+//    }
+//
+//    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
+//    public @ResponseBody
+//    Report deleteReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+//        return uiService.deleteReport(reportId);
+//    }
+//
     @RequestMapping(value = "report", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReport(HttpServletRequest request, HttpServletResponse response) {
-        return uiService.getReport();
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getAgencyReport(user);
     }
 
     @RequestMapping(value = "report/{reportId}", method = RequestMethod.GET, produces = "application/json")
@@ -302,21 +308,25 @@ public class UiController extends BaseController {
     Report getReportById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
         return uiService.getReportById(reportId);
     }
-
-    @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.POST, produces = "application/json")
+//
+    @RequestMapping(value = "reportWidget", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    ReportWidget createReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId, @RequestBody ReportWidget reportWidget) {
-        return uiService.createReportWidget(reportId, reportWidget);
+    ReportWidget createReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
+        return uiService.createReportWidget(reportWidget);
     }
-
-    @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.PUT, produces = "application/json")
+//
+    @RequestMapping(value = "reportWidget", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    ReportWidget updateReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId, @RequestBody ReportWidgetBean reportWidgetBean) {
-        System.out.println(reportWidgetBean);
-        return uiService.saveReportWidget(reportId, reportWidgetBean);
-        //return null; //uiService.createTabWidget(tabId, tabWidget);
+    ReportWidget updateReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
+        return uiService.updateReportWidget(reportWidget);
     }
-
+//
+    @RequestMapping(value = "reportWidget", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getReportWidget(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getReportWidget();
+    }
+//    
     @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
@@ -513,7 +523,7 @@ public class UiController extends BaseController {
         return uiService.getUserPermissionById(userId);
     }
 
-    @RequestMapping(value = "userAccount/{userPermissionId}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "userPermission/{userPermissionId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     UserPermission deleteUserPermission(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userPermissionId) {
         return uiService.deleteUserPermission(userPermissionId);
@@ -542,7 +552,17 @@ public class UiController extends BaseController {
             System.out.println("oauth==>" + oauth);
             return oauth;
         }
-
+        else if(dataSourceType.equalsIgnoreCase("facebook"))
+        {
+            String url="https://graph.facebook.com/v2.8/oauth/access_token?";
+            String params="client_id=1631503257146893&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&client_secret=b6659b47ba7b2b11179247bb3cd84f70&code="+accessToken;
+            oauth=Rest.postRawForm(url, params);
+            String oauthUrl = url + params;
+            System.out.println("oauthurl======");
+            System.out.println(oauthUrl);
+            System.out.println("oauth==>"+oauth);
+            return oauth;    
+        }
         return null;
        
     }
@@ -562,89 +582,6 @@ public class UiController extends BaseController {
         return null;
     }
 
-//    public LinkedInOAuthService oauthservice() {
-//        String linkedinKey = "81kqaac7cnusqy";    //add your LinkedIn key
-//        String linkedinSecret = "6SrcnKhiX4Yx0Ab4"; //add your LinkedIn Secret
-//
-//        LinkedInOAuthService oauthService;
-//
-//        System.out.println("Fetching request token from LinkedIn...");
-//
-//        oauthService = LinkedInOAuthServiceFactory.getInstance().createLinkedInOAuthService(linkedinKey, linkedinSecret);
-//        System.out.println("1111");
-//        System.out.println(oauthService.getClass().getName());
-//
-//        return oauthService;
-//
-//    }
-//    @RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    HashMap<String, Object> getLinkedInDataSource(HttpServletRequest request, HttpServletResponse response) {
-//
-//        LinkedInOAuthService oauthService;
-//        LinkedInRequestToken requestToken;
-//        String authUrl = null;
-//        String authToken, authTokenSecret;
-//
-//        oauthService = oauthservice();
-//        requestToken = oauthService.getOAuthRequestToken();
-//        authToken = requestToken.getToken();
-//        authTokenSecret = requestToken.getTokenSecret();
-//
-//        System.out.println("Request token " + requestToken);
-//        System.out.println("Auth token" + authToken);
-//        System.out.println("Auth token secret" + authTokenSecret);
-//
-//        authUrl = requestToken.getAuthorizationUrl();
-//        System.out.println("Copy below link in web browser to authorize. Copy the PIN obtained\n" + authUrl);
-//
-//        HashMap<String, Object> hm = new HashMap<String, Object>();
-//        hm.put("authToken", authToken);
-//        hm.put("authUrl", authUrl);
-//        hm.put("requestToken", requestToken);
-//        System.out.println(hm);
-//
-//        return hm;
-//    }
-    // to get linked in hash token
-//    @RequestMapping(value = "/linkedInAccessToken/{requestToken}/{linkedInCode}", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    HashMap<String, Object> getlinkedInAccessToken(HttpServletRequest request, HttpServletResponse response, String linkedInCode, Object requestToken) {
-//
-//        String linkedinKey = "81kqaac7cnusqy";    //add your LinkedIn key
-//        String linkedinSecret = "6SrcnKhiX4Yx0Ab4"; //add your LinkedIn Secret
-//
-//        LinkedInOAuthService oauthService;
-////        LinkedInRequestToken requestToken;
-//        String authUrl = null;
-//        String authToken, authTokenSecret;
-//
-//        oauthService = oauthservice();
-////        requestToken = oauthService.getOAuthRequestToken();
-//
-//        //get auth token
-//        //create ObjectMapper instance
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        //convert json string to object
-//        LinkedInRequestToken reqToken;
-//        reqToken = objectMapper.convertValue(requestToken, LinkedInRequestToken.class);
-//
-//        LinkedInAccessToken accessToken = oauthService.getOAuthAccessToken(reqToken, linkedInCode);
-//        System.out.println("Access token : " + accessToken.getToken());
-//        System.out.println("Token secret : " + accessToken.getTokenSecret());
-//        String accessTokens = accessToken.getToken();
-//        String tokenSecret = accessToken.getTokenSecret();
-//        final LinkedInApiClientFactory factory = LinkedInApiClientFactory.newInstance(linkedinKey, linkedinSecret);
-//        final LinkedInApiClient client = factory.createLinkedInApiClient(accessToken);
-//
-//        HashMap<String, Object> hm = new HashMap<String, Object>();
-//        hm.put("accessToken", accessTokens);
-//        hm.put("tokenSecret", tokenSecret);
-//        System.out.println(hm);
-//
-//        return hm;
-//    }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {
