@@ -87,7 +87,7 @@ public class TimerService {
         }
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
         Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();
@@ -95,7 +95,7 @@ public class TimerService {
         executeTasks(scheduledTasks);
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeWeeklyTask() {
         Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();
@@ -104,7 +104,7 @@ public class TimerService {
         executeTasks(scheduledTasks);
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeMonthlyTask() {
         Date today = new Date();
         String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:mm");
@@ -112,14 +112,16 @@ public class TimerService {
         executeTasks(scheduledTasks);
     }
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeYearlyTask() {
 //         Integer hour = DateUtils.getCurrentHour();
+System.out.println("Yearly Tasks");
         Date today = new Date();
         String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:00");
         System.out.println(currentDateHour);
         List<Scheduler> scheduledTasks = schedulerDao.getYearlyTasks(currentDateHour, today);
-        executeTasks(scheduledTasks);
+        System.out.println(scheduledTasks);
+//        executeTasks(scheduledTasks);
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
@@ -133,7 +135,7 @@ public class TimerService {
 
     }
 
-    @Scheduled(cron = "*/10 * * * * *")
+//    @Scheduled(cron = "*/10 * * * * *")
     public void executeOnce() {
         Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();

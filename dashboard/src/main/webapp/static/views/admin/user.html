@@ -1,4 +1,26 @@
 <style> 
+    /*    .table-fixed thead {
+            width: 100%;
+            border-bottom: none;
+        }
+        .table-fixed tbody {
+            height: 430px;
+            overflow-y: auto !important;
+            width: 100%;
+        }
+        .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+            display: block;
+            overflow: hidden;
+        }
+        .table-fixed tbody td, .table-fixed thead > tr> th {
+            float: left;
+            border-bottom-width: 0;
+        }
+    
+        .table-fixed tbody {
+            height:50vh;
+            min-height:50vh;
+        }*/
     .table-fixed thead {
         width: 100%;
         border-bottom: none;
@@ -10,16 +32,14 @@
     }
     .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
         display: block;
-        /*overflow: hidden;*/
+        overflow: hidden;
     }
     .table-fixed tbody td, .table-fixed thead > tr> th {
         float: left;
         border-bottom-width: 0;
     }
-
-    .table-fixed tbody {
-        height:50vh;
-        min-height:50vh;
+    .table-fixed tr td {
+        cursor:pointer;
     }
 
     .license {
@@ -36,7 +56,10 @@
     .hpanel .panel-body {
         border: 1px solid #e4e5e7;
     }
-
+    
+    .modal-backdrop{
+        /*display:none;*/
+    }
 </style>
 <section class="content">
     <div class="row">
@@ -170,12 +193,12 @@
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <div class="col-sm-12">
-                                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                                        <button type="button" class="btn btn-primary btn-xs" 
                                                                                 ng-click="deleteUserAccount(userAccount, $index)" 
                                                                                 data-dismiss="modal">
                                                                             <span class="fa fa-trash"></span> Yes
                                                                         </button>
-                                                                        <button type="button" class="btn btn-danger btn-xs " 
+                                                                        <button type="button" class="btn btn-danger btn-xs" 
                                                                                 data-dismiss="modal">
                                                                             <span class="fa fa-times"></span> No
                                                                         </button>
@@ -234,24 +257,45 @@
                 <div class="col-md-8">
                     <div class="hpanel">
                         <div class="panel-body">
+                            <div class="col-sm-12">
+                                <div class="data-search col-sm-8">
+                                    <input type="text" class="form-control" ng-model="searchUser" placeholder="Search...">
+                                </div>
+                                <div class="col-sm-4">
+                                    <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchuserDetails(agencyName)" style="min-width:225px;">
+                                        <ui-select-match placeholder="Select AgencyName...">
+                                            {{$select.selected}}
+                                        </ui-select-match>
+                                        <ui-select-choices repeat="agency in userAgency | filter: $select.search">                                
+                                            <div ng-bind-html="agency | highlight: $select.search" style="display: inline">
+                                            </div>                                
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>
                             <table class="table table-responsive table-fixed">
                                 <thead>
                                     <tr>
-                                        <th class="col-xs-3">First Name</th>
+                                        <th class="col-xs-2">First Name</th>
                                         <th class="col-xs-2">Last Name</th>
+                                        <th class="col-xs-2">Agency Name</th>
                                         <th class="col-xs-2">User Name</th>
                                         <th class="col-xs-2">Email</th>
-                                        <th class="col-xs-2">Primary Phone</th>
+                                        <!--                                        <th class="col-xs-2">Primary Phone</th>-->
                                         <th class="col-xs-1"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="user in users" ng-class="{'selectedTableRow':$index == selectedUser}">
-                                        <td class="col-xs-3" ng-click="editUser(user, $index)">{{user.firstName? user.firstName:'-'}}</td>
+                                    <!--<tr ng-show="user.users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>-->
+                                    <tr data-dir-paginate="user in users|filter: searchUser|filter:agencyListName|itemsPerPage:5:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">
+
+                                        <!--<tr dir-paginate="user in users | itemsPerPage:2" ng-class="{'selectedTableRow':$index == selectedUser}">-->
+                                        <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.firstName? user.firstName:'-'}}</td>
                                         <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.lastName? user.lastName : '-'}}</td>
+                                        <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.agencyId.agencyName?user.agencyId.agencyName:'-'}}</td>
                                         <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.userName?user.userName:'-'}}</td>
                                         <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.email?user.email:'-'}}</td>
-                                        <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.primaryPhone?user.primaryPhone:'-'}}</td>
+                                        <!--<td class="col-xs-2" ng-click="editUser(user, $index)">{{user.primaryPhone?user.primaryPhone:'-'}}</td>-->
                                         <td class="col-xs-1">
                                             <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUser{{user.id}}"><i class="fa fa-trash"></i></button>
                                             <div class="modal hmodal-success" id="deleteUser{{user.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -290,30 +334,15 @@
                                             </div>
                                         </td>
                                     </tr>
+
                                 </tbody>
                             </table>
-                            <ul class="pagination" ng-if="1 < pages.length || !autoHide">
-                                <li ng-if="boundaryLinks" ng-class="{ disabled : pagination.current == 1 }">
-                                    <a href="" ng-click="setCurrent(1)">&laquo;</a>
-                                </li>
-                                <li ng-if="directionLinks" ng-class="{ disabled : pagination.current == 1 }">
-                                    <a href="" ng-click="setCurrent(pagination.current - 1)">&lsaquo;</a>
-                                </li>
-                                <li ng-repeat="pageNumber in pages track by tracker(pageNumber, $index)" ng-class="{ active : pagination.current == pageNumber, disabled : pageNumber == '...' }">
-                                    <a href="" ng-click="setCurrent(pageNumber)">{{ pageNumber}}</a>
-                                </li>
+                            <!--<dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" max-size="10" template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>-->
+                            <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
 
-                                <li ng-if="directionLinks" ng-class="{ disabled : pagination.current == pagination.last }">
-                                    <a href="" ng-click="setCurrent(pagination.current + 1)">&rsaquo;</a>
-                                </li>
-                                <li ng-if="boundaryLinks"  ng-class="{ disabled : pagination.current == pagination.last }">
-                                    <a href="" ng-click="setCurrent(pagination.last)">&raquo;</a>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

@@ -9,6 +9,7 @@ import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -80,12 +81,13 @@ public class SchedulerDao extends BaseDao {
 
     public List<Scheduler> getMonthlyTasks(String currentDateHour, Date today) {
         System.out.println("Query: ");
+        Calendar now = Calendar.getInstance();
         System.out.println(currentDateHour);
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.schedulerMonthly = :schedulerMonthly";
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = 'Yearly' "
+                + "and dayofmonth(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) =" + now.get(Calendar.DAY_OF_MONTH)
+                + "and hour(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + now.get(Calendar.HOUR_OF_DAY);
         System.out.println(queryStr);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("schedulerRepeatType", "Monthly");
-        query.setParameter("schedulerMonthly", currentDateHour);
         System.out.println(query.list());
 //        query.setParameter("hour", scheduledHour);
         return query.list();
@@ -93,13 +95,19 @@ public class SchedulerDao extends BaseDao {
 
     public List<Scheduler> getYearlyTasks(String currentDateHour, Date today) {
         System.out.println(currentDateHour);
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.schedulerYearly = :schedulerYearly";
+        try{
+        Calendar now = Calendar.getInstance();
+        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = 'Yearly' "
+                + "and month(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + (now.get(Calendar.MONTH) + 1)
+                + "and dayofmonth(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) =" + now.get(Calendar.DAY_OF_MONTH)
+                + "and hour(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + now.get(Calendar.HOUR_OF_DAY);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("schedulerRepeatType", "Yearly");
-        query.setParameter("schedulerYearly", currentDateHour);
-//        query.setParameter("hour", scheduledHour);
         System.out.println(query.list());
         return query.list();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<Scheduler> getYearOfWeekTasks(Integer hour, String weekDay, Integer currentYearOfWeekCount, Date today) {

@@ -13,9 +13,35 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         return $scope.tab === tabNum;
     };
 
+var unique = function (origArr) {
+        var newArr = [],
+                origLen = origArr.length,
+                found, x, y;
+
+        for (x = 0; x < origLen; x++) {
+            found = undefined;
+            for (y = 0; y < newArr.length; y++) {
+                if (origArr[x] === newArr[y]) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                newArr.push(origArr[x]);
+            }
+        }
+        return newArr;
+    }
     function getUser() {
         $http.get('admin/ui/user').success(function (response) {
+            $scope.userAgencyDetails = [];
             $scope.users = response;
+                      
+            angular.forEach($scope.users, function (val, key) {
+            $scope.userAgencyDetails.push(val.agencyId.agencyName)
+            $scope.userAgency = unique($scope.userAgencyDetails);
+            console.log($scope.userAgency)
+        });
             //$scope.editUser(response[0], 0);
         });
 
@@ -25,7 +51,9 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
     }
 
     getUser();
-
+    $scope.searchuserDetails=function(agencyUserName){
+        $scope.agencyListName=agencyUserName;
+    }
     $scope.saveUser = function (user) {
         var userData = {
             id: user.id,
