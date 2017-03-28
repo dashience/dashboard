@@ -55,6 +55,8 @@
                         <div class="panel-body">
                             <form class="col-md-12 form-horizontal">
                                 <div class="form-group">
+                                    <label>Name</label>
+                                    <input class="form-control" type="text" ng-model="dataSet.name" placeholder="Name">
                                     <label>Data Source</label>
                                     <select class="form-control" 
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
@@ -65,7 +67,7 @@
                                     </select>
                                     
                                     <div ng-show="dataSetFlag">
-                                    <label>Report Performance</label>
+                                    <label>Report</label>
                                     <select class="form-control" ng-model="reportPerformances" ng-change="gettimeSegemens(reportPerformances)">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="reportPerformances in reportPerformance track by $index"  value="{{reportPerformances.type}}">{{reportPerformances.name}}</option>
@@ -85,10 +87,7 @@
                                     </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input class="form-control" type="text" ng-model="dataSet.name" placeholder="Name">
-                                </div>
+                                
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
                                     <label>Query</label>
                                     <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>

@@ -2,12 +2,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
     $scope.dataSetFlag = false;
     $scope.dataSetFlagValidation = function (dataSource)
     {
-        if (dataSource == "adwords" || dataSource == "analytics" || dataSource == "facebook" || dataSource == "instagram")
+        if (dataSource === "adwords" || dataSource === "analytics" || dataSource === "facebook" || dataSource === "instagram")
         {
             $scope.dataSetFlag = true;
         } else {
             $scope.dataSetFlag = false;
-
         }
     };
     
