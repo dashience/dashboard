@@ -462,6 +462,12 @@ public class UiService {
             if (dbDataSource.getDataSourceType().equalsIgnoreCase("instagram")) {
                 uiDao.create(dbDataSource);
             }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("adwords")) {
+                uiDao.create(dbDataSource);
+            }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("analytics")) {
+                uiDao.create(dbDataSource);
+            }
 
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
