@@ -70,16 +70,26 @@ public class ProxyController {
     @Autowired
     private FacebookService facebookService;
 
+    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSourceType = request.getParameter("dataSource");
+        if(dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
+            return getFbData(request, response);
+        }
+        return null;
+    }
+    
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getFbData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
-        String dataSetName = request.getParameter("dataSetName");
+        String dataSetReportName = request.getParameter("dataSetReportName");
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
             if (dataSet != null) {
-                dataSetName = dataSet.getName();
+                dataSetReportName = dataSet.getReportName();
             }
         }
         String accountIdStr = request.getParameter("accountId");
@@ -101,7 +111,7 @@ public class ProxyController {
         }
         Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
         String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
-        List<Map<String, String>> data = facebookService.get(accessToken, dataSetName, facebookAccountIdInt, startDate, endDate, "daily");
+        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, startDate, endDate, "daily");
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");

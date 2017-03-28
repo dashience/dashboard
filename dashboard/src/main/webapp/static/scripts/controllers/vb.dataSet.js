@@ -9,11 +9,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
             $scope.dataSetFlag = false;
         }
     };
-    
+
     $scope.reportPerformance = [
         {
-            type: 'accountperformance',
-            name: 'accountperformance',
+            type: 'accountPerformance',
+            name: 'accountPerformance',
             timeSegments: [
                 {
                     type: 'day',
@@ -56,8 +56,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
             ]
         },
         {
-            type: 'campaignperformance',
-            name: 'campaignperformance',
+            type: 'campaignPerformance',
+            name: 'campaignPerformance',
             timeSegments: [
                 {
                     type: 'day',
@@ -88,8 +88,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
             ]
         },
         {
-            type: 'adgroupperformance',
-            name: 'adgroupperformance',
+            type: 'adgroupPerformance',
+            name: 'adgroupPerformance',
             timeSegments: [
                 {
                     type: 'day',
@@ -120,8 +120,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
             ]
         },
         {
-            type: 'keywordperformance',
-            name: 'keywordperformance',
+            type: 'keywordPerformance',
+            name: 'keywordPerformance',
             timeSegments: [
                 {
                     type: 'day',
@@ -152,8 +152,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
             ]
         },
         {
-            type: 'adperformance',
-            name: 'adperformance',
+            type: 'adPerformance',
+            name: 'adPerformance',
             timeSegments: [
                 {
                     type: 'day',
@@ -183,8 +183,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 }
             ]
         }, {
-            type: 'geoperformance',
-            name: 'geoperformance',
+            type: 'geoPerformance',
+            name: 'geoPerformance',
             timeSegments: [
                 {
                     type: 'day',
@@ -214,8 +214,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 }
             ]
         }, {
-            type: 'videoperformance',
-            name: 'videoperformance',
+            type: 'videoPerformance',
+            name: 'videoPerformance',
             timeSegments: [
                 {
                     type: 'day',
@@ -249,12 +249,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
 
     ];
 
-    $scope.gettimeSegemens = function (reportPerformance)
+    $scope.getTimeSegemens = function ()
     {
-        var index = getIndex(reportPerformance);
-        $scope.timesegement = $scope.reportPerformance[index].timeSegments;
-        $scope.productsegment = $scope.reportPerformance[index].productSegments;
-        console.log($scope.timesegement);
+        var index = getIndex($scope.dataSet.reportName);
+        $scope.timeSegment = $scope.reportPerformance[index].timeSegments;
+        $scope.productSegment = $scope.reportPerformance[index].productSegments;
+        console.log($scope.timeSegment);
         function getIndex(data)
         {
             for (var i = 0; i < $scope.reportPerformance.length; i++)
@@ -282,18 +282,18 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
     }
     getItems();
     $http.get('admin/ui/dataSource').success(function (response) {
-         $scope.dataSources = response;
-         console.log($scope.dataSources);
+        $scope.dataSources = response;
+        console.log($scope.dataSources);
     });
 
-    $scope.saveDataSet = function (dataSet, reportPerformance, timeSegments, productSegments) {
+    $scope.saveDataSet = function (dataSet, reportName, timeSegments, productSegments) {
         var dataSet = {
             dataSourceId: dataSet.dataSourceId.id,
-            name: dataSet.name ? dataSet.name :'',
-            query:dataSet.query ? dataSet.query :'',
-            reportPerformance: reportPerformance ? reportPerformance : '',
+            name: dataSet.name ? dataSet.name : '',
+            query: dataSet.query ? dataSet.query : '',
+            reportName: reportName ? reportName : '',
             timeSegment: timeSegments ? timeSegments : '',
-            productSegment: productSegments ? productSegments : ''
+            productSegment: productSegments ? productSegments : '',
         };
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
@@ -383,7 +383,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             if (dataSourcePath.dataSourceId.dataSourceType == "facebook") {
                 url = "admin/proxy/getFbData?";
             }
-            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&accountId=" + $stateParams.accountId + "&dataSetName=" + dataSourcePath.name + "&driver=" + dataSourcePath.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&accountId=" + $stateParams.accountId + "&dataSetName=" + dataSourcePath.name + "&driver=" + dataSourcePath.dataSourceId.dataSourceType + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;

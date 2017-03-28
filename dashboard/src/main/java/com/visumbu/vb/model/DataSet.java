@@ -39,8 +39,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class DataSet implements Serializable {
 
     @Size(max = 500)
-    @Column(name = "report_performance")
-    private String reportPerformance;
+    @Column(name = "report_name")
+    private String reportName;
     @Size(max = 500)
     @Column(name = "time_segment")
     private String timeSegment;
@@ -164,14 +164,14 @@ public class DataSet implements Serializable {
         this.tabWidgetCollection = tabWidgetCollection;
     }
 
-    public String getReportPerformance() {
-        return reportPerformance;
+    public String getReportName() {
+        return reportName;
     }
 
-    public void setReportPerformance(String reportPerformance) {
-        this.reportPerformance = reportPerformance;
+    public void setReportName(String reportName) {
+        this.reportName = reportName;
     }
-
+    
     public String getTimeSegment() {
         return timeSegment;
     }
