@@ -70,18 +70,20 @@
                                     <label>Report</label>
                                     <select class="form-control" ng-model="dataSet.reportName" ng-change="getTimeSegemens()">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                        <option ng-repeat="reportPerformances in reportPerformance track by $index"  value="{{reportPerformances.type}}">{{reportPerformances.name}}</option>
+                                        <option ng-repeat="reportPerformances in reportPerformance track by $index"  value="{{reportPerformances.type}}">
+                                            {{reportPerformances.name}}</option>
                                     </select>
                                     
                                     <label>Time Segments</label>
-                                    
+                                   
                                     <select class="form-control" ng-model="dataSet.timeSegment">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="timeSegments in timeSegment"  value="{{timeSegments.type}}">
                                             {{timeSegments.name}}</option>
                                     </select>
-                                    <label ng-if="dataSet.dataSourceId.type!='instagram'">Product Segments</label>
-                                    <select class="form-control" ng-model="dataSet.productSegment" ng-if="dataSet.dataSourceId.type!='instagram'">
+                                    <label ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram')">Product Segments</label>
+                                    
+                                    <select class="form-control" ng-model="dataSet.productSegment" ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram')">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="productSegments in productSegment"  value="{{productSegments.type}}">{{productSegments.name}}</option>
                                     </select>
