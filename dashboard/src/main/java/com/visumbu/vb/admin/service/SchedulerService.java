@@ -130,5 +130,9 @@ public class SchedulerService {
         
         return (Scheduler) schedulerDao.update(scheduler);
     }
+
+    public List<SchedulerHistory> getSchedulerHistoryById(Integer schedulerId) {
+        return schedulerDao.getSchedulerHistoryById(schedulerId);
+    }
     
 }
