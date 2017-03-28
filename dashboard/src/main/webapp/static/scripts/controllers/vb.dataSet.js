@@ -1,14 +1,57 @@
-app.controller('DataSetController', function ($scope, $http, $stateParams) {
+app.controller('DataSetController', function ($scope, $http, $stateParams, $filter) {
     $scope.dataSetFlag = false;
     $scope.dataSetFlagValidation = function (dataSource)
     {
-        if (dataSource === "adwords" || dataSource === "analytics" || dataSource === "facebook" || dataSource === "instagram" || dataSource === "linkedin" )
+        if (dataSource === "adwords" || dataSource === "analytics" || dataSource === "facebook" || dataSource === "instagram" || dataSource === "linkedin")
         {
+            if (dataSource == "instagram")
+            {
+                $scope.report = $scope.instagramPerformance;
+
+            } else {
+                $scope.report = $scope.reportPerformance;
+            }
+//            console.log(filterdata);
             $scope.dataSetFlag = true;
         } else {
             $scope.dataSetFlag = false;
         }
     };
+
+    $scope.instagramPerformance = [
+        {
+            type: 'instagramPerformance',
+            name: 'instagramPerformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
+        }
+    ];
 
     $scope.reportPerformance = [
         {
@@ -30,14 +73,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'year',
                     name: 'year'
-                },
-                {
-                    type: 'hour of the day',
-                    name: 'hour of the day'
-                },
-                {
-                    type: 'day of the week',
-                    name: 'day of the week'
                 }
             ],
             productSegments: [
@@ -247,19 +282,32 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
         }
 
 
+
     ];
 
     $scope.getTimeSegemens = function ()
     {
-        var index = getIndex($scope.dataSet.reportName);
-        $scope.timeSegment = $scope.reportPerformance[index].timeSegments;
-        $scope.productSegment = $scope.reportPerformance[index].productSegments;
-        console.log($scope.timeSegment);
-        function getIndex(data)
+//        alert($scope.dataSet.reportName);
+        if ($scope.dataSet.reportName == "instagramPerformance")
         {
-            for (var i = 0; i < $scope.reportPerformance.length; i++)
+            var index = getIndex($scope.dataSet.reportName, $scope.instagramPerformance);
+//            $scope.reportName=$scope.instagramPerformance;
+            $scope.timeSegment = $scope.instagramPerformance[index].timeSegments;
+            $scope.productSegment = $scope.instagramPerformance[index].productSegments;
+
+        } else {
+            var index = getIndex($scope.dataSet.reportName, $scope.reportPerformance);
+//            $scope.reportName=$scope.reportPerformance;
+            $scope.timeSegment = $scope.reportPerformance[index].timeSegments;
+            $scope.productSegment = $scope.reportPerformance[index].productSegments;
+        }
+
+//        console.log($scope.timeSegment);
+        function getIndex(data, object)
+        {
+            for (var i = 0; i < object.length; i++)
             {
-                if ($scope.reportPerformance[i].type == data)
+                if (object[i].type == data)
                 {
                     return i;
                 }
@@ -298,25 +346,31 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
     };
 
     $scope.editDataSet = function (dataSet) {
-        console.log(dataSet.dataSourceId.dataSourceType);
-        
+        console.log(dataSet);
+
         var data = {
             id: dataSet.id,
             name: dataSet.name,
             query: dataSet.query,
-            reportName:dataSet.reportName,
-            timeSegment:dataSet.timeSegment,
-            productSegment:dataSet.productSegment,
+            reportName: dataSet.reportName,
+            timeSegment: dataSet.timeSegment,
+            productSegment: dataSet.productSegment,
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
             userId: dataSet.userId.id
         };
         $scope.dataSet = data;
-        
-        
+        console.log($scope.dataSet);
         if (dataSet.dataSourceId.dataSourceType === "adwords" || dataSet.dataSourceId.dataSourceType === "analytics" || dataSet.dataSourceId.dataSourceType === "facebook" || dataSet.dataSourceId.dataSourceType === "instagram")
         {
-            $scope.getTimeSegemens(); 
+            if (dataSet.dataSourceId.dataSourceType === "instagram")
+            {
+                $scope.report=$scope.instagramPerformance;
+            } else {
+
+                $scope.report = $scope.reportPerformance;
+            }
+            $scope.getTimeSegemens();
             $scope.dataSetFlag = true;
         } else {
             $scope.dataSetFlag = false;

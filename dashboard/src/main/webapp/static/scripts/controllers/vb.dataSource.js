@@ -29,6 +29,14 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             type: 'instagram',
             name: 'Instagram',
             url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
+        },
+        {
+            type: 'adwords',
+            name: 'Adwords'   
+        },
+        {
+            type: 'analytics',
+            name: 'Analytics'   
         }
     ];
 
