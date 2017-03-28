@@ -2,7 +2,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
     $scope.dataSetFlag = false;
     $scope.dataSetFlagValidation = function (dataSource)
     {
-        if (dataSource === "adwords" || dataSource === "analytics" || dataSource === "facebook" || dataSource === "instagram")
+        if (dataSource === "adwords" || dataSource === "analytics" || dataSource === "facebook" || dataSource === "instagram" || dataSource === "linkedin" )
         {
             $scope.dataSetFlag = true;
         } else {
@@ -298,15 +298,30 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
     };
 
     $scope.editDataSet = function (dataSet) {
+        console.log(dataSet.dataSourceId.dataSourceType);
+        
         var data = {
             id: dataSet.id,
             name: dataSet.name,
             query: dataSet.query,
+            reportName:dataSet.reportName,
+            timeSegment:dataSet.timeSegment,
+            productSegment:dataSet.productSegment,
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
             userId: dataSet.userId.id
         };
         $scope.dataSet = data;
+        
+        
+        if (dataSet.dataSourceId.dataSourceType === "adwords" || dataSet.dataSourceId.dataSourceType === "analytics" || dataSet.dataSourceId.dataSourceType === "facebook" || dataSet.dataSourceId.dataSourceType === "instagram")
+        {
+            $scope.getTimeSegemens(); 
+            $scope.dataSetFlag = true;
+        } else {
+            $scope.dataSetFlag = false;
+        }
+//        console.log(data);
     };
 
 
