@@ -75,13 +75,13 @@
                                     
                                     <label>Time Segments</label>
                                     
-                                    <select class="form-control" ng-model="dataSet.timeSegments">
+                                    <select class="form-control" ng-model="dataSet.timeSegment">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="timeSegments in timeSegment"  value="{{timeSegments.type}}">
                                             {{timeSegments.name}}</option>
                                     </select>
                                     <label ng-if="dataSet.dataSourceId.type!='instagram'">Product Segments</label>
-                                    <select class="form-control" ng-model="dataSet.productSegments" ng-if="dataSet.dataSourceId.type!='instagram'">
+                                    <select class="form-control" ng-model="dataSet.productSegment" ng-if="dataSet.dataSourceId.type!='instagram'">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="productSegments in productSegment"  value="{{productSegments.type}}">{{productSegments.name}}</option>
                                     </select>
@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="form-group pull-right">
                                     <button class="btn btn-success" data-toggle="modal" data-target="#dataSetPreview" ng-click="previewDataSet(dataSet)">Preview</button>
-                                    <button class="btn btn-info" ng-click="saveDataSet(dataSet)">Save</button>
+                                    <button class="btn btn-info" ng-click="saveDataSet()">Save</button>
                                     <button class="btn btn-warning" ng-click="clearDataSet(dataSet)">Cancel</button>
                                 </div>
                             </form>

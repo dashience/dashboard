@@ -286,15 +286,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
         console.log($scope.dataSources);
     });
 
-    $scope.saveDataSet = function (dataSet, reportName, timeSegments, productSegments) {
-        var dataSet = {
-            dataSourceId: dataSet.dataSourceId.id,
-            name: dataSet.name ? dataSet.name : '',
-            query: dataSet.query ? dataSet.query : '',
-            reportName: reportName ? reportName : '',
-            timeSegment: timeSegments ? timeSegments : '',
-            productSegment: productSegments ? productSegments : '',
-        };
+    $scope.saveDataSet = function () {
+        var dataSet = $scope.dataSet;
+        dataSet.dataSourceId = dataSet.dataSourceId.id;
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });
