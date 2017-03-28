@@ -10,32 +10,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
 
         }
     };
-    $scope.dataSources = [
-        {
-            id: 0,
-            type: "adwords",
-            name: "Adwords",
-
-        },
-        {
-            id: 1,
-            type: "analytics",
-            name: "Analytics",
-
-        },
-        {
-            id: 2,
-            type: "facebook",
-            name: "Facebook",
-
-        },
-        {
-            id: 3,
-            type: "instagram",
-            name: "Instagram",
-
-        }
-    ];
+    
     $scope.reportPerformance = [
         {
             type: 'accountperformance',
@@ -280,22 +255,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
     }
     getItems();
     $http.get('admin/ui/dataSource').success(function (response) {
-        // $scope.dataSources = response;
+         $scope.dataSources = response;
+         console.log($scope.dataSources);
     });
 
     $scope.saveDataSet = function (dataSet, reportPerformance, timeSegments, productSegments) {
-        console.log("reportPerformance= " + reportPerformance);
-        console.log("timeSegments= " + timeSegments);
-        console.log("productSegments= " + productSegments);
         var dataSet = {
-            id: dataSet.id,
-            name: dataSet.name,
-            type: dataSet.type,
+            dataSourceId: dataSet.dataSourceId.id,
+            name: dataSet.name ? dataSet.name :'',
+            query:dataSet.query ? dataSet.query :'',
             reportPerformance: reportPerformance ? reportPerformance : '',
             timeSegment: timeSegments ? timeSegments : '',
             productSegment: productSegments ? productSegments : ''
         };
-        console.log(dataSet)
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });

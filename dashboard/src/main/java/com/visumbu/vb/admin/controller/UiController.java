@@ -358,6 +358,7 @@ public class UiController extends BaseController {
     public @ResponseBody
     List getDataSource(HttpServletRequest request, HttpServletResponse response) {
         VbUser user = userService.findByUsername(getUser(request));
+        System.out.println("users =======================>"+user);
         if (user == null) {
             return null;
         }

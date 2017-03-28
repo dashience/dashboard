@@ -60,7 +60,7 @@
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
                                             placeholder="Data Source" 
                                             ng-value="dataSource.connectionString"
-                                            ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.type)">
+                                            ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType)">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     </select>
                                     
@@ -70,7 +70,7 @@
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="reportPerformances in reportPerformance track by $index"  value="{{reportPerformances.type}}">{{reportPerformances.name}}</option>
                                     </select>
-                                    {{reportPerformances}}
+                                    
                                     <label>Time Segments</label>
                                     
                                     <select class="form-control" ng-model="timesegements">
