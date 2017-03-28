@@ -375,9 +375,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 url = "admin/csv/getData?";
             }
             if (dataSourcePath.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getFbData?";
+                url = "admin/proxy/getData?";
             }
-            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&accountId=" + $stateParams.accountId + "&dataSetReportName=" + dataSourcePath.reportName + "&driver=" + dataSourcePath.dataSourceId.dataSourceType + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&accountId=" + $stateParams.accountId + "&dataSetReportName=" + dataSourcePath.reportName + "&driver=" + dataSourcePath.dataSourceId.dataSourceType + "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;
