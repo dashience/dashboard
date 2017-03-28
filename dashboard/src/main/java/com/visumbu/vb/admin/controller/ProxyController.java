@@ -432,6 +432,7 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
+//                    url = "../testing/admin/csv/getData";
                     url = "admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
