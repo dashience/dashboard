@@ -30,10 +30,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,9 +69,12 @@ public class ProxyController {
     @Autowired
     private FacebookService facebookService;
 
+   final static Logger log = Logger.getLogger(ProxyController.class);
+
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getFbData(HttpServletRequest request, HttpServletResponse response) {
+        log.debug("Start Function of getFbData");
         String dataSetId = request.getParameter("dataSetId");
         String dataSetName = request.getParameter("dataSetName");
         if (dataSetId != null) {
@@ -93,8 +95,8 @@ public class ProxyController {
         String facebookAccountId = "";
         for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
             Property property = iterator.next();
-            System.out.println("Property Name " + property.getPropertyName());
-            System.out.println("Property Value " +property.getPropertyValue());
+            log.debug("Property Name " + property.getPropertyName());
+            log.debug("Property Value " + property.getPropertyValue());
             if (property.getPropertyName().equalsIgnoreCase("facebookAccountId")) {
                 facebookAccountId = property.getPropertyValue();
             }
@@ -112,10 +114,12 @@ public class ProxyController {
             return returnMap;
         }
         returnMap.put("data", data);
+        log.debug("End Function of getFbData");
         return returnMap;
     }
 
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
+        log.debug("Start Function of getColumnDef");
         List<ColumnDef> columnDefs = new ArrayList<>();
         for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, String> mapData = iterator.next();
@@ -126,15 +130,17 @@ public class ProxyController {
             }
             return columnDefs;
         }
+        log.debug("End Function of getColumnDef");
         return columnDefs;
     }
 
     @RequestMapping(value = "getJson", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getJson(HttpServletRequest request, HttpServletResponse response) {
+        log.debug("Start Function of getJson");
         String url = request.getParameter("url");
         String query = request.getParameter("query");
-        System.out.println("QUERY FROM BROWSER " + query);
+        log.debug("QUERY FROM BROWSER " + query);
         String dealerId = request.getParameter("dealerId");
         Map<String, String> dealerAccountDetails = dealerService.getDealerAccountDetails(dealerId);
         Integer port = request.getServerPort();
@@ -163,14 +169,17 @@ public class ProxyController {
             String data = Rest.getData(url, valueMap);
             return data;
         } catch (Exception ex) {
-            Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Exception in getJson Function: " + ex);
+//            Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        log.debug("End Function of getJson");
         return null;
     }
 
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public @ResponseBody
     void get(HttpServletRequest request, HttpServletResponse response) {
+        log.debug("Start Function of get");
         String url = request.getParameter("url");
         Map<String, String[]> parameterMap = request.getParameterMap();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
@@ -182,14 +191,17 @@ public class ProxyController {
                 String data = Rest.getData(url, valueMap);
                 response.getOutputStream().write(data.getBytes());
             } catch (IOException ex) {
-                Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("IOException in get Function :" + ex);
+                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        log.debug("End Function of get Function");
     }
 
     @RequestMapping(value = "testXls/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void xlsDownload(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
+        log.debug("Start Function of xlsDownload");
         OutputStream out = null;
         try {
             String dealerId = request.getParameter("dealerId");
@@ -215,7 +227,7 @@ public class ProxyController {
                         continue;
                     }
                     String url = tabWidget.getDirectUrl();
-                    System.out.println("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
+                    log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                         url = "../dbApi/admin/dataSet/getData";
                         valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
@@ -223,7 +235,7 @@ public class ProxyController {
                         valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                     }
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                        System.out.println("DS TYPE ==>  CSV");
+                        log.debug("DS TYPE ==>  CSV");
                         url = "admin/csv/getData";
                     }
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -233,12 +245,12 @@ public class ProxyController {
                     Integer port = request.getServerPort();
 
                     String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-                    System.out.println("UR:" + url);
+                    log.debug("UR:" + url);
                     if (url.startsWith("../")) {
                         url = url.replaceAll("\\.\\./", localUrl);
                     }
-                    System.out.println("url: " + url);
-                    System.out.println("valuemap: " + valueMap);
+                    log.debug("url: " + url);
+                    log.debug("valuemap: " + valueMap);
                     String data = Rest.getData(url, valueMap);
                     JSONParser parser = new JSONParser();
                     Object jsonObj = parser.parse(data);
@@ -247,9 +259,11 @@ public class ProxyController {
                     tabWidget.setData(dataList);
 
                 } catch (ParseException ex) {
-                    Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                    log.error("Parse Exception in xlsDownload Function : " + ex);
+                    // Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                    log.error("UnsupportedEncodingException in xlsDownload Function: " + ex);
+                    //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             out = response.getOutputStream();
@@ -257,12 +271,14 @@ public class ProxyController {
             CustomReportDesigner crd = new CustomReportDesigner();
             // crd.dynamicXlsDownload(tabWidgets, out);
         } catch (IOException ex) {
-            Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("IOException in xlsDownload Function: " + ex);
+            //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();
             } catch (IOException ex) {
-                Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("Finally catches IOException in xlsDownload Function: " + ex);
+                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -270,13 +286,14 @@ public class ProxyController {
     @RequestMapping(value = "downloadReport/{reportId}", method = RequestMethod.GET)
     public @ResponseBody
     void downloadReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+        log.debug("Start Function of downloadReport");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
-        System.out.println("EXport type ==> " + exportType);
+        log.debug("EXport type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
         }
-        System.out.println(" ===> " + exportType);
+        log.debug(" ===> " + exportType);
         Map<String, String> dealerAccountDetails = dealerService.getDealerAccountDetails(dealerId);
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (Map.Entry<String, String> entrySet : dealerAccountDetails.entrySet()) {
@@ -308,7 +325,7 @@ public class ProxyController {
                     continue;
                 }
                 String url = tabWidget.getDirectUrl();
-                System.out.println("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
+                log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
@@ -316,28 +333,21 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    System.out.println("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
+                    log.debug("DS TYPE ==>  CSV");
                     url = "admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-                System.out.println("AAAAAAAAAAA 1");
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                System.out.println("AAAAAAAAAAA 2");
                 valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
-                System.out.println("AAAAAAAAAAA 3");
                 Integer port = request.getServerPort();
-                System.out.println("AAAAAAAAAAA 4");
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-                System.out.println("AAAAAAAAAAA 5");
-                System.out.println("UR:" + url);
+                log.debug("UR:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
-                System.out.println("AAAAAAAAAAA 6");
-                System.out.println("url: " + url);
-                System.out.println("valuemap: " + valueMap);
+                log.debug("url: " + url);
+                log.debug("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
@@ -346,9 +356,11 @@ public class ProxyController {
                 tabWidget.setData(dataList);
 
             } catch (ParseException ex) {
-                Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("ParseException in downloadReport Function: " + ex);
+                // Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("UnsupportedEncodingException in downloadReport Function: " + ex);
+                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         try {
@@ -366,21 +378,23 @@ public class ProxyController {
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            log.error("IOException in downloadReport Function: " + ex);
         }
+        log.debug("End Function of downloadReport");
     }
 
     @RequestMapping(value = "download/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
+         log.debug("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
-        System.out.println("Export type ==> " + exportType);
+        log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
         }
-        System.out.println(" ===> " + exportType);
+        log.debug(" ===> " + exportType);
         Map<String, String> dealerAccountDetails = dealerService.getDealerAccountDetails(dealerId);
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (Map.Entry<String, String> entrySet : dealerAccountDetails.entrySet()) {
@@ -403,7 +417,7 @@ public class ProxyController {
                     continue;
                 }
                 String url = tabWidget.getDirectUrl();
-                System.out.println("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
+                log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
@@ -411,7 +425,7 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    System.out.println("DS TYPE ==>  CSV");
+                    log.debug("DS TYPE ==>  CSV");
                     url = "admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -421,12 +435,12 @@ public class ProxyController {
                 Integer port = request.getServerPort();
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-                System.out.println("URL:" + url);
+                log.debug("URL:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
-                System.out.println("url: " + url);
-                System.out.println("valuemap: " + valueMap);
+                log.debug("url: " + url);
+                log.debug("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
@@ -434,9 +448,11 @@ public class ProxyController {
                 List dataList = (List) responseMap.get("data");
                 tabWidget.setData(dataList);
             } catch (ParseException ex) {
-                Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("ParseException in download function: "+ex);
+                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
-                Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("UnsupportedEncodingException in download function: "+ex);
+                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         try {
@@ -453,9 +469,10 @@ public class ProxyController {
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPptTable(tabWidgets, out);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            log.error("IOException in download Function: " + ex);
         }
+        log.debug("End Function of download");
     }
 
     public static void main(String argv[]) {
@@ -464,7 +481,7 @@ public class ProxyController {
         if (url.startsWith("../")) {
             url = url.replaceAll("\\.\\./", localUrl);
         }
-        System.out.println(url);
+        log.debug(url);
     }
 
     @ExceptionHandler
