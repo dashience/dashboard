@@ -49,6 +49,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'network search partner',
                     name: 'network search partner'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
                 }
             ]
         },
@@ -77,6 +81,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'device',
                     name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
                 }
             ]
         },
@@ -105,6 +113,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'device',
                     name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
                 }
             ]
         },
@@ -133,6 +145,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'device',
                     name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
                 }
             ]
         },
@@ -161,6 +177,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'device',
                     name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
                 }
             ]
         }, {
@@ -188,6 +208,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'device',
                     name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
                 }
             ]
         }, {
@@ -215,6 +239,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams) {
                 {
                     type: 'device',
                     name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
                 }
             ]
         }

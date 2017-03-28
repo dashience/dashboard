@@ -358,7 +358,6 @@ public class UiController extends BaseController {
     public @ResponseBody
     List getDataSource(HttpServletRequest request, HttpServletResponse response) {
         VbUser user = userService.findByUsername(getUser(request));
-        System.out.println("users =======================>"+user);
         if (user == null) {
             return null;
         }
@@ -537,9 +536,6 @@ public class UiController extends BaseController {
     public @ResponseBody
     String getOauthToken(HttpServletRequest request, HttpServletResponse response, @PathVariable String accessToken,@PathVariable String dataSourceType) throws IOException {
 
-//        String accessTokens="AQRK7cRTGPXWn-kHAxSr7dy-8cbhmYuuK3dPrNLbZn1GlMr2NkTnOWzW2W8JAN-UpkjrV2VdZB7JfYUm4DPsDh11hHL2QTOgvgySw7A5GLtUhsFrM3E";
-       
-        System.out.println("DataSourceType---->"+dataSourceType);
         String oauth;
         if(dataSourceType.equalsIgnoreCase("linkedin"))
         {

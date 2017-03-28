@@ -23,7 +23,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         {
             type: "linkedin",
             name: "linkedin",
-            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&state=123908353453&response_type=code'
+            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&state=123908353453&response_type=code'
         },
         {
             type: 'instagram',
