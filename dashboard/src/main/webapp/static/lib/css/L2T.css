@@ -3888,6 +3888,7 @@ tfoot tr td {
 
 .hover-delete {
     margin-top: 8px;
+    z-index: 99;
 }
 
 .text .font-bold {
@@ -3922,20 +3923,68 @@ textarea.form-control {
 }
 
 .fa-link {
-    font-size: 22px;
+    font-size: 16px;
     color: #cdcdcd;
-    width: 40px;
-    height: 37px;
-    border: 1px solid #e4e5e7;
     vertical-align: middle;
     border-radius: 3px;
-    padding-left: 8px;
-    padding-top: 6px;
-    cursor:pointer;
+    cursor: pointer;
+}
+
+.form-group, .panel-heading {
+    overflow: hidden;
+}
+
+.title-ew {
+    color: rgb(132, 140, 99);
+}
+
+.preview-table {
+    background:#fff;
+}
+
+.panel-head {
+    color: rgb(132, 140, 99);
+    padding: 10px;
+    background: #fff;
+    clear:both;
+    position: relative;
+}
+
+.panel-head a {
+    color: rgb(132, 140, 99);
+    font-weight: 600;
+    font-size: 18px;
+    padding: 5px 4px;
+    transition: all .3s;
 }
 
 .da-source {
     margin-bottom:10px;
+}
+
+.tbl-preview tbody {
+    /*     height:200px;
+        overflow: auto;*/
+}
+
+.input-group label {
+    font-size:10px;
+}
+
+.scheduler-list-style .input-group {
+    padding-bottom: 3px;
+}
+
+.form-control-btn {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin-bottom: 4px;
+    border-radius: 3px;
+}
+
+.list-button .dropdown-menu {
+    height:200px;
+    overflow: auto;
 }
 
 .max-record {

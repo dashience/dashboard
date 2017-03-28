@@ -43,7 +43,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         });
     };
-
     $scope.removeBackDrop = function () {
         $('body').removeClass().removeAttr('style');
         $('.modal-backdrop').remove();
@@ -824,6 +823,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         link: function (scope, element, attr) {
             scope.loadingTicker = true;
             var tickerName = [];
+            console.log(JSON.parse(scope.tickerColumns))
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
@@ -898,8 +898,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
             lineChartSource: '@',
             widgetId: '@',
             setLineChartFn: '&',
-            control: "=",
-            collection: '@',
+//            control: "=",
+//            collection: '@',
             widgetColumns: '@',
             lineChartId: '@'
         },
@@ -919,7 +919,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
             var startDate = "";
             var endDate = "";
             var sortFields = [];
-
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 console.log(value)
                 if (!labels["format"]) {
@@ -1118,12 +1117,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                                         }
                                     }
                                 },
-                                y2: {
-                                    show: true,
-                                    tick: {
-                                        format: d3.format(".2f")
-                                    }
-                                }
+                                y2: y2
                             },
                             grid: {
                                 x: {
@@ -1167,6 +1161,10 @@ app.directive('barChartDirective', function ($http, $stateParams) {
             var axes = {};
             var startDate = "";
             var endDate = "";
+//            scope.$watch("barChartSource", function (newValue, oldValue) {
+//                //draw chart using values and append to element[0]
+//            });
+
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1324,6 +1322,11 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                 if (!labels["format"]) {
                     labels = {format: {}};
                 }
+                
+                if(!value){
+                    return;
+                }
+                
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
@@ -1799,3 +1802,4 @@ app.service('stats', function ($filter) {
 
     return service;
 });
+
