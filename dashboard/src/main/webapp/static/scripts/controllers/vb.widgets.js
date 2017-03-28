@@ -365,13 +365,15 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 schema: 'vb'
             }
 
-            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            var url = "admin/proxy/getData?";
+            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
+                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            }
             if (tableDataSource.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
-            console.log(scope);
             if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getFbData?";
+                url = "admin/proxy/getData?";
             }
             $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&accountId=" + $stateParams.accountId + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 //$http.post("admin/proxy/getJson", data).success(function (response) {
@@ -712,7 +714,7 @@ app.directive('dynamictable', function ($http, uiGridConstants, uiGridGroupingCo
                 if (value.agregationFunction == "ctr") {
                     columnDef.aggregationType = stats.aggregator.ctrFooter,
                             columnDef.treeAggregation = {type: uiGridGroupingConstants.aggregation.CUSTOM},
-                            columnDef.customTreeAggregationFn = stats.aggregator.ctr,
+                    columnDef.customTreeAggregationFn = stats.aggregator.ctr,
                             columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.SUM,
                             columnDef.cellFilter = 'gridDisplayFormat:"dsaf"',
                             columnDef.cellTooltip = true,
@@ -854,11 +856,16 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var tickerDataSource = JSON.parse(scope.tickerSource);
             console.log(JSON.parse(scope.tickerSource))
 
-            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            var url = "admin/proxy/getData?";
+            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
+                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            }
             if (tickerDataSource.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
-
+            if (tickerDataSource.dataSourceId.dataSourceType == "facebook") {
+                url = "admin/proxy/getData?";
+            }
             $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString + "&driver=" + tickerDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tickerDataSource.dataSourceId.userName + '&password=' + tickerDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
 //            $http.get("admin/proxy/getJson?url=" + scope.tickerUrl + "&widgetId=" + scope.tickerId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                 scope.tickers = [];
@@ -1067,9 +1074,16 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
 //            }
             var lineChartDataSource = JSON.parse(scope.lineChartSource);
             if (scope.lineChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+
+                var url = "admin/proxy/getData?";
+                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (lineChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
+                }
+                if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
                 }
                 $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + lineChartDataSource.dataSourceId.userName + '&password=' + lineChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
 //                $http.get("admin/proxy/getJson?url=" + scope.lineChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
@@ -1229,9 +1243,16 @@ app.directive('barChartDirective', function ($http, $stateParams) {
             }
             var barChartDataSource = JSON.parse(scope.barChartSource);
             if (scope.barChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+
+                var url = "admin/proxy/getData?";
+                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (barChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
+                }
+                if (barChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
                 }
                 $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString + "&driver=" + barChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + barChartDataSource.dataSourceId.userName + '&password=' + barChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
 //                $http.get("admin/proxy/getJson?url=" + scope.barChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
@@ -1382,9 +1403,15 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
             }
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                var url = "admin/proxy/getData?";
+                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (pieChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
+                }
+                if (pieChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
                 }
                 $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString + "&driver=" + pieChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + pieChartDataSource.dataSourceId.userName + '&password=' + pieChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
 //                $http.get("admin/proxy/getJson?url=" + scope.pieChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
@@ -1545,9 +1572,15 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
             var areaChartDataSource = JSON.parse(scope.areaChartSource);
             console.log(areaChartDataSource)
             if (scope.areaChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                var url = "admin/proxy/getData?";
+                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (areaChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
+                }
+                if (areaChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
                 }
                 $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString + "&driver=" + areaChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + areaChartDataSource.dataSourceId.userName + '&password=' + areaChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
 //                $http.get("admin/proxy/getJson?url=" + scope.areaChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {

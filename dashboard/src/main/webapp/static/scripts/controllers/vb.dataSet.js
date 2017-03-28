@@ -385,14 +385,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             console.log(dataSourcePath.dataSourceId.connectionString);
             console.log(dataSourcePath.dataSourceId.sqlDriver);
             console.log(dataSourcePath.dataSourceId.password);
-            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            var url = "admin/proxy/getData?";
+            if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
+                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            }
             if (dataSourcePath.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
             if (dataSourcePath.dataSourceId.dataSourceType == "facebook") {
                 url = "admin/proxy/getData?";
             }
-            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&accountId=" + $stateParams.accountId + "&dataSetReportName=" + dataSourcePath.reportName + "&driver=" + dataSourcePath.dataSourceId.dataSourceType + "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&accountId=" + $stateParams.accountId + "&dataSetReportName=" + dataSourcePath.reportName + "&timeSegment=" + dataSourcePath.timeSegment + "&driver=" + dataSourcePath.dataSourceId.dataSourceType + "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;

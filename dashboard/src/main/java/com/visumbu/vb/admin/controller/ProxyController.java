@@ -74,19 +74,25 @@ public class ProxyController {
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
         String dataSourceType = request.getParameter("dataSourceType");
-        if(dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
+        String dataSetId = request.getParameter("dataSetId");
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            dataSourceType = dataSet.getDataSourceId().getDataSourceType();
+        }
+        if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             return getFbData(request, response);
         }
         return null;
     }
-    
+
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getFbData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
-        if(timeSegment == null) {
+        if (timeSegment == null) {
             timeSegment = "daily";
         }
         if (dataSetId != null) {
@@ -94,6 +100,7 @@ public class ProxyController {
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
             if (dataSet != null) {
                 dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
             }
         }
         String accountIdStr = request.getParameter("accountId");
@@ -107,8 +114,6 @@ public class ProxyController {
         String facebookAccountId = "";
         for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
             Property property = iterator.next();
-            System.out.println("Property Name " + property.getPropertyName());
-            System.out.println("Property Value " +property.getPropertyValue());
             if (property.getPropertyName().equalsIgnoreCase("facebookAccountId")) {
                 facebookAccountId = property.getPropertyValue();
             }

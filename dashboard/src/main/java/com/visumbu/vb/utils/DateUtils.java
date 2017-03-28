@@ -24,6 +24,26 @@ import org.joda.time.LocalDate;
  */
 public class DateUtils {
 
+    
+    public static String toAdWordsDate(Date date) {
+        String format = "YYYYMMdd";
+        return dateToString(date, format);
+    }
+
+    public static String getAdWordsStartDate(Date startDate) {
+        if (startDate == null) {
+            return "7DaysAgo";
+        }
+        return toAdWordsDate(startDate);
+    }
+
+    public static String getAdWordsEndDate(Date endDate) {
+        if (endDate == null) {
+            return "today";
+        }
+        return toAdWordsDate(endDate);
+    }
+    
     public static Date get30DaysBack() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
         Calendar cal = Calendar.getInstance();
