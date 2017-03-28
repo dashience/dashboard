@@ -482,6 +482,7 @@ public class UiService {
 
     public List<VbUser> getAgencyUser(VbUser user) {
         if (user.getAgencyId() == null) {
+            System.out.print("Agence Id Null");
             return userDao.read();
         }
         return uiDao.getUsersByAgencyUser(user);

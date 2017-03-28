@@ -2,31 +2,50 @@
     #editor {
         height: 300px;
     }
-
     .table-fixed thead {
         width: 100%;
         border-bottom: none;
     }
-    .table-fixed tbody {        
-        height: 480px;
+    .table-fixed tbody {
+        height: 430px;
         overflow-y: auto !important;
         width: 100%;
     }
     .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
         display: block;
-        /*overflow: hidden;*/
-    }
-    .table-fixed tr{
-        cursor: pointer;
+        overflow: hidden;
     }
     .table-fixed tbody td, .table-fixed thead > tr> th {
         float: left;
         border-bottom-width: 0;
-    }    
-    .table-fixed tbody {
-        height:50vh;
-        min-height:50vh;
     }
+    .table-fixed tr td {
+        cursor:pointer;
+    }
+    /*    .table-fixed thead {
+            width: 100%;
+            border-bottom: none;
+        }
+        .table-fixed tbody {        
+            height: 480px;
+            overflow-y: auto !important;
+            width: 100%;
+        }
+        .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+            display: block;
+            overflow: hidden;
+        }
+        .table-fixed tr{
+            cursor: pointer;
+        }
+        .table-fixed tbody td, .table-fixed thead > tr> th {
+            float: left;
+            border-bottom-width: 0;
+        }    
+        .table-fixed tbody {
+            height:50vh;
+            min-height:50vh;
+        }*/
 
     .license {
         height:63vh;
@@ -343,7 +362,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="account in accounts| filter: searchAccount" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <tr data-dir-paginate="account in accounts| filter: searchAccount|itemsPerPage:1:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                         <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
                                             {{account.accountName}}
                                         </td>
@@ -390,6 +409,7 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
                         </div>
                     </div>  
                 </div> 
