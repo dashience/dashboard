@@ -259,7 +259,7 @@
         <div ng-if="widget.chartType == 'ticker'">
             <div class="col-sm-{{2 * widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                <div class="hpanel" ng-drag="true" ng-drag-data="widget">
-                    <div class="panel-tools hover-delete">
+                    <div class="panel-tools">
                         <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
                         <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
                         <div id="delete{{widget.id}}" class="modal">
