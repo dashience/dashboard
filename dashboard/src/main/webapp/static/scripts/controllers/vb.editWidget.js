@@ -607,7 +607,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             previewColumns: '@',
             previewWidget: '@',
             previewWidgetTable: '@',
-            previewTableList: '@'
         },
         template: "<div class='panel-head'>" +
                 //Panel Tools
@@ -627,9 +626,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<button class='btn btn-info' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-list'></i> List" +
                 "</button>" +
                 //list columns
-
                 "<ul class='dropdown-menu list-unstyled'>" +
-                "<li ng-repeat='column in listColumns'>" +
+                "<li ng-repeat='column in tableList'>" +
                 "<button class='btn btn-link dropdown-item' ng-click='addList(column)'>" +
                 "{{column.displayName}}" +
                 "</button>" +
@@ -799,6 +797,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
 
             $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 scope.tableData = response.data;
+                scope.tableList = response.columnDefs;
+                console.log(response)
             })
             scope.deleteColumn = function ($index) {
                 scope.previewTableHeaderName.splice($index, 1);
