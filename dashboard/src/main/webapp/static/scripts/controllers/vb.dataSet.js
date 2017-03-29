@@ -343,6 +343,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
+        $scope.dataSetFlag=false;
     };
 
     $scope.editDataSet = function (dataSet) {
