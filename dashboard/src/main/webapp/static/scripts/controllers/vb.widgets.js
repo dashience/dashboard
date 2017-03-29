@@ -690,11 +690,11 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         link: function (scope, element, attr) {
             scope.loadingTicker = true;
             var tickerName = [];
-            console.log(JSON.parse(scope.tickerColumns))
+//            console.log(JSON.parse(scope.tickerColumns))
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
-                console.log("------------------------------->")
-                console.log(value)
-                console.log("------------------------------->")
+//                console.log("------------------------------->")
+//                console.log(value)
+//                console.log("------------------------------->")
                 if(!value){
                     return;
                 }
@@ -702,24 +702,24 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             });
 
             var format = function (column, value) {
-                 console.log("Test")
+//                 console.log("Test")
                 if (!value) {
                     return "-";
-                 console.log("Test")
+//                 console.log("Test")
                 }
                 if (column.displayFormat) {
-                    console.log("Test 1")
+//                    console.log("Test 1")
                     if (Number.isNaN(value)) {
                         return "-";
-                        console.log("Test 2")
+//                        console.log("Test 2")
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
-                        console.log("Test 3")
+//                        console.log("Test 3")
                         return d3.format(column.displayFormat)(value / 100);
                     }
-                    console.log("Test 4")
-                    console.log(column.displayFormat)
-                    console.log(d3.format(column.displayFormat)(value))
+//                    console.log("Test 4")
+//                    console.log(column.displayFormat)
+//                    console.log(d3.format(column.displayFormat)(value))
                     return d3.format(column.displayFormat)(value);
                 }
                 return value;
@@ -728,7 +728,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
-            console.log(JSON.parse(scope.tickerSource))
+//            console.log(JSON.parse(scope.tickerSource))
 
             var url = "admin/proxy/getData?";
             if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
@@ -752,9 +752,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         return;
                     }
                     angular.forEach(tickerName, function (value, key) {
-                        console.log("=========================>")
-                        console.log(value)
-                        console.log("=========================>")
+//                        console.log("=========================>")
+//                        console.log(value)
+//                        console.log("=========================>")
                         var tickerData = response.data;
                         var loopCount = 0;
                         data = [value.fieldName];
@@ -766,8 +766,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         var total = 0;
                         for (var i = 0; i < setData.length; i++) {
                             total += parseFloat(setData[i]);
-                        }console.log(value)
-                        console.log(total)
+                        }
+//                        console.log(value)
+//                        console.log(total)
                         scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
                     });
                 }
