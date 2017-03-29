@@ -648,146 +648,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
     };
 });
 
-app.directive('dynamictable', function ($http, uiGridConstants, uiGridGroupingConstants, $timeout, $stateParams, stats) {
-    return{
-        restrict: 'A',
-        scope: {
-            dynamicTableUrl: '@',
-            widgetId: '@',
-            widgetColumns: '@',
-            setTableFn: '&'
-        },
-        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
-                '<div id="grid1" class="grid full-height" ng-if="ajaxLoadingCompleted" ui-grid="gridOptions" ui-grid-grouping></div>',
-        link: function (scope, element, attr) {
-            scope.loadingTable = true;
-            scope.gridOptions = {
-                enableColumnMenus: false,
-                enableGridMenu: false,
-                enableRowSelection: false,
-                enableGroupHeaderSelection: false,
-                enableRowHeaderSelection: false,
-                enableSorting: true,
-                multiSelect: false,
-                enableColumnResize: true,
-                showColumnFooter: true,
-                cellTooltip: true,
-                enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
-                enableVerticalScrollbar: uiGridConstants.scrollbars.NEVER,
-            };
-            var startDate = "";
-            var endDate = "";
-            var columnDefs = [];
-            angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
-
-                columnDef = {
-                    field: value.fieldName,
-                    displayName: value.displayName,
-//                        cellClass: 'space-numbers',
-                    //width: "100%",
-                    cellTooltip: true,
-                    headerTooltip: true
-                }
-                if (value.width) {
-                    columnDef.width = value.width + "%";
-                }
-                var cellFormat = "";
-                if (value.displayFormat) {
-                    cellFormat = value.displayFormat;
-                }
-                var cellAlignment = "";
-                var cellWrapText = "";
-                if (value.alignment === 'left') {
-                    cellAlignment = 'text-left';
-                } else if (value.alignment === 'right') {
-                    cellAlignment = 'text-right';
-                } else {
-                    cellAlignment = 'text-center';
-                }
-                if (value.wrapText) {
-                    cellWrapText = "wrap";
-                }
-                columnDef.cellTemplate = '<div  class="ui-grid-cell-contents ' + cellAlignment + " " + cellWrapText + '"><span>{{COL_FIELD | gridDisplayFormat : "' + cellFormat + '"}}</span></div>';
-                columnDef.footerCellTemplate = '<div class="' + cellAlignment + '" >{{col.getAggregationValue() | gridDisplayFormat:"' + cellFormat + '"}}</div>';
-
-                if (value.agregationFunction == "ctr") {
-                    columnDef.aggregationType = stats.aggregator.ctrFooter,
-                            columnDef.treeAggregation = {type: uiGridGroupingConstants.aggregation.CUSTOM},
-                    columnDef.customTreeAggregationFn = stats.aggregator.ctr,
-                            columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.SUM,
-                            columnDef.cellFilter = 'gridDisplayFormat:"dsaf"',
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "sum") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.SUM,
-                            columnDef.cellFilter = 'gridDisplayFormat:"dsaf"',
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "count") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.COUNT,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "max") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.MAX,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "avg") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.AVG,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "min") {
-
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.MIN,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.groupPriority) {
-                    columnDef.grouping = {groupPriority: value.groupPriority};
-                }
-                columnDefs.push(columnDef);
-            });
-
-            $http.get("admin/proxy/getJson?url=" + scope.dynamicTableUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
-                scope.ajaxLoadingCompleted = true;
-                scope.loadingTable = false;
-                scope.gridOptions = {
-                    enableColumnMenus: false,
-                    enableGridMenu: false,
-                    enableRowSelection: false,
-                    enableGroupHeaderSelection: false,
-                    enableRowHeaderSelection: false,
-                    enableSorting: true,
-                    enableGroup: false,
-                    multiSelect: false,
-                    enableColumnResize: true,
-                    data: response.data,
-                    columnDefs: columnDefs,
-                    showColumnFooter: true,
-                    enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
-                    enableVerticalScrollbar: uiGridConstants.scrollbars.NEVER
-
-                };
-                function lineage() {
-                    return this.name + ' of ' + this.parent;
-                }
-
-                function setHeight(extra) {
-                    scope.height = ((scope.gridOptions.data.length * 30) + 30);
-                    if (extra) {
-                        scope.height += extra;
-                    }
-                    scope.api.grid.gridHeight = scope.height;
-                }
-            });
-        }
-    };
-});
-
 app.directive('tickerDirective', function ($http, $stateParams) {
     return{
         restrict: 'AE',
@@ -832,20 +692,34 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var tickerName = [];
             console.log(JSON.parse(scope.tickerColumns))
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
+                console.log("------------------------------->")
+                console.log(value)
+                console.log("------------------------------->")
+                if(!value){
+                    return;
+                }
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
 
             var format = function (column, value) {
+                 console.log("Test")
                 if (!value) {
                     return "-";
+                 console.log("Test")
                 }
                 if (column.displayFormat) {
+                    console.log("Test 1")
                     if (Number.isNaN(value)) {
                         return "-";
+                        console.log("Test 2")
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
+                        console.log("Test 3")
                         return d3.format(column.displayFormat)(value / 100);
                     }
+                    console.log("Test 4")
+                    console.log(column.displayFormat)
+                    console.log(d3.format(column.displayFormat)(value))
                     return d3.format(column.displayFormat)(value);
                 }
                 return value;
@@ -878,6 +752,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         return;
                     }
                     angular.forEach(tickerName, function (value, key) {
+                        console.log("=========================>")
+                        console.log(value)
+                        console.log("=========================>")
                         var tickerData = response.data;
                         var loopCount = 0;
                         data = [value.fieldName];
@@ -889,7 +766,8 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         var total = 0;
                         for (var i = 0; i < setData.length; i++) {
                             total += parseFloat(setData[i]);
-                        }
+                        }console.log(value)
+                        console.log(total)
                         scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
                     });
                 }
@@ -1253,13 +1131,11 @@ app.directive('barChartDirective', function ($http, $stateParams) {
                     url = "admin/proxy/getData?";
                 }
                 $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString + "&driver=" + barChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + barChartDataSource.dataSourceId.userName + '&password=' + barChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
-//                $http.get("admin/proxy/getJson?url=" + scope.barChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                     scope.loadingBar = false;
                     if (response.data.length === 0) {
                         scope.barEmptyMessage = "No Data Found";
                         scope.hideEmptyBar = true;
                     } else {
-//                        scope.xAxis = [];
                         var loopCount = 0;
                         var chartData = response.data;
                         chartData = sortResults(chartData, sortField, sortOrder);

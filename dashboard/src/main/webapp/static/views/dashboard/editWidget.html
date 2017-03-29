@@ -303,7 +303,7 @@
                     <!--<div class="panel-tools">-->
 
                     <div ng-hide='editPreviewTitle'> 
-                        <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle}}</a>
+                        <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a>
                     </div> 
                     <div class="col-sm-10" ng-show='editPreviewTitle'>                           
                         <input  class='form-control' type='text' ng-model='widget.widgetTitle'>
@@ -344,13 +344,18 @@
                         <div class="form-group">
                             <div class="col-md-12" ng-if="editChartType != 'pie'">
                                 <label>Select X-Axis</label>
-                                <label  ng-if="editChartType == 'pie'">Select Axis</label>
-                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" class="form-control" ng-model="xColumn" ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" ng-change="selectX1Axis(widget, xColumn)">
+                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                        class="form-control" ng-model="xColumn" 
+                                        ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                        ng-change="selectX1Axis(widget, xColumn)">
                                 </select>
                             </div>
-                            <div class="col-md-12" ng-if="editChartType == 'pie'">
+                            <div class="col-md-12" ng-show="editChartType == 'pie'">
                                 <label>Select Axis</label>
-                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" class="form-control" ng-model="selectPieChartAxis" ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" ng-change="selectPieAxis(widget, selectPieChartAxis)">
+                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                        class="form-control" ng-model="selectPieChartAxis" 
+                                        ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                        ng-change="selectPieAxis(widget, selectPieChartAxis)">
                                 </select>
                             </div>
                         </div>
@@ -366,7 +371,7 @@
                                 </ui-select>
                             </div>
                         </div>
-
+                        
                         <div class="form-group" ng-if="editChartType != 'pie'">
                             <div class="col-md-12">
                                 <label>Select Y2-Axis</label>
@@ -378,12 +383,55 @@
                                 </ui-select>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                 <label>Format</label>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <div class="col-sm-6">{{currentXColumn.displayName}}</div>
+                                        <div class="col-sm-6">
+                                            <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='xAxisDisplayFormat' 
+                                                    class='form-control'
+                                                    ng-change="xaxisFormat(widget, xAxisDisplayFormat)"
+                                                    ng-options="format.name for format in formats track by format.value">
+                                            </select>
+                                        </div>
+                                    </li>
+                                </ul>
+                                 <ul class="list-unstyled">
+                                     <li ng-repeat = "y1Item in y1Column">
+                                         <div class="col-sm-6">{{y1Item.displayName}}</div>
+                                         <div class="col-sm-6">
+                                              <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='displayFormat' 
+                                                    class='form-control'
+                                                    ng-change="xaxisFormat(widget, displayFormat)"
+                                                    ng-options="format.name for format in formats track by format.value">
+                                            </select>
+                                         </div>
+                                     </li>
+                                 </ul>
+                                 <ul class="list-unstyled">
+                                     <li ng-repeat = "y2list in y2Column">
+                                         <div class="col-sm-6">{{y2list.displayName}}</div>
+                                         <div class="col-sm-6">
+                                              <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='displayFormat' 
+                                                    class='form-control'
+                                                    ng-change="xaxisFormat(widget, displayFormat)"
+                                                    ng-options="format.name for format in formats track by format.value">
+                                            </select>
+                                         </div>
+                                     </li>
+                                 </ul>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="col-md-4" ng-show="editChartType == 'ticker'">
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label>Ticker Items</label>
-                                <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" on-select="tickerTop(widget, tickerItem)" on-remove="removedColumns(widget,$item, tickerItem)">
+                                <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" on-select="ticker(widget, tickerItem)" on-remove="removedColumns(widget,$item,tickerItem)">
                                     <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
                                     <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
                                         {{currentColumn.displayName}}
@@ -402,12 +450,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="tickerData in tickerItem">
-                                            <td>{{tickerData.displayName}}</td>
+                                        <tr ng-repeat="tickerItem in widget.columns">
+                                            <td>{{tickerItem.displayName}}</td>
                                             <td>
-                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerData.displayFormat' 
+                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' 
                                                         class='form-control'
-                                                        ng-options="format.name for format in formats track by format.value">
+                                                        ng-change="tickerFormat(widget, tickerItem)"
+                                                        ng-options="format for format in formats">
                                                 </select>
                                             </td>
                                         </tr>
