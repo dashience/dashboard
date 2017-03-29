@@ -222,8 +222,8 @@
         height: 180px;
         overflow: auto;
     }
-    .open > .dropdown-menu {
-        display: contents !important;
+    .ui-select-bootstrap > .ui-select-choices, .ui-select-bootstrap > .ui-select-no-choice {
+        display: contents;
     }
 </style>
 
@@ -291,99 +291,11 @@
                                 <label>Zero Suppression</label>
                             </div>
                         </div>
-                    </div>
-                    <!--                    <div class="col-lg-5">
-                                            <label class="label-control">Date Range</label>
-                                            <div>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
-                                                        <span class="caret"></span></button>
-                                                    <ul class="dropdown-menu scheduler-list-style">
-                                                        <li ng-click="selectDuration('None', null)"><a>None</a></li>
-                                                        <li ng-click="selectDuration('Today', null)"><a>Today</a></li>
-                                                        <li ng-click="selectDuration('Yesterday', null)"><a>Yesterday</a></li>
-                                                        <li ng-click="selectDuration('This Week', null)"><a>This Week</a></li>
-                                                        <li ng-click="selectDuration('Last Week', null)"><a>Last Week</a></li>
-                                                        <li ng-click="selectDuration('This Month', null)"><a>This Month</a></li>
-                                                        <li ng-click="selectDuration('Last Month', null)"><a>Last Month</a></li>
-                                                        <li ng-click="selectDuration('This Year', null)"><a>This Year</a></li>
-                                                        <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>
-                                                        <li ng-click="selectDuration('Last N Days', scheduler)">
-                                                            <a>Last <input type="text"
-                                                                           ng-model="scheduler.lastNdays" 
-                                                                           ng-change="selectDuration('Last N Days', scheduler)" 
-                                                                           class="form-control" 
-                                                                           ng-model-options="{debounce: 500}"
-                                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                                Days
-                                                            </a>
-                                                        </li>
-                                                        <li ng-click="selectDuration('Last N Weeks', scheduler)">
-                                                            <a>Last <input type="text" 
-                                                                           ng-model="scheduler.lastNweeks" 
-                                                                           ng-change="selectDuration('Last N Weeks', scheduler)"
-                                                                           class="form-control" 
-                                                                           ng-model-options="{debounce: 500}"
-                                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                                Weeks
-                                                            </a>
-                                                        </li>
-                                                        <li ng-click="selectDuration('Last N Months', scheduler)">
-                                                            <a>Last <input type="text" 
-                                                                           ng-model="scheduler.lastNmonths" 
-                                                                           ng-change="selectDuration('Last N Months', scheduler)"
-                                                                           class="form-control" 
-                                                                           ng-model-options="{debounce: 500}"
-                                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                                Months
-                                                            </a>
-                                                        </li>
-                                                        <li ng-click="selectDuration('Last N Years', scheduler)">
-                                                            <a>Last <input type="text" 
-                                                                           ng-model="scheduler.lastNyears" 
-                                                                           ng-change="selectDuration('Last N Years', scheduler)"
-                                                                           class="form-control" 
-                                                                           ng-model-options="{debounce: 500}"
-                                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                                Years
-                                                            </a>
-                                                        </li>
-                                                        <li ng-click="selectDuration('Custom')"><a>Custom</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <label class="label-control" ng-show="scheduler.dateRangeName === 'Custom'">Custom Range</label>
-                                            <div   ng-show="scheduler.dateRangeName === 'Custom'">
-                                                <a class="pull-right custom-daterange-box" id="customDateRange">
-                                                    <span class="date-border">
-                                                        {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                                                        <i class="custom-daterange-box-icon fa fa-caret-down"></i>
-                                                    </span>
-                                                </a> 
-                                            </div>
-                                        </div>-->
-
+                    </div> 
                 </div>
             </div>
         </div>
     </div>
-
-    <!--    <div class="row" ng-if="!editChartType">
-            <div class="col-lg-12">
-                <div class="col-md-12">
-                    <div class="col-sm-12">
-                        <div class="hpanel hgreen border-table"> 
-                            <div class="panel-body">
-                                <label>{{widget.widgetTitle}}</label>
-                                <center>
-                                    <img src="static/img/groupedbarchart.png" alt=""/>
-                                </center>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>-->
     <div class="row" ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
         <div class="col-lg-12 table-deeta" >
             <div class="hpanel hgreen border-table"> 
@@ -391,7 +303,7 @@
                     <!--<div class="panel-tools">-->
 
                     <div ng-hide='editPreviewTitle'> 
-                        <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle}}</a>
+                        <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a>
                     </div> 
                     <div class="col-sm-10" ng-show='editPreviewTitle'>                           
                         <input  class='form-control' type='text' ng-model='widget.widgetTitle'>
@@ -432,30 +344,26 @@
                         <div class="form-group">
                             <div class="col-md-12" ng-if="editChartType != 'pie'">
                                 <label>Select X-Axis</label>
-                                <label  ng-if="editChartType == 'pie'">Select Axis</label>
-                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" class="form-control" ng-model="xColumn" ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" ng-change="selectX1Axis(widget, xColumn)">
+                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                        class="form-control" ng-model="xColumn" 
+                                        ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                        ng-change="selectX1Axis(widget, xColumn)">
                                 </select>
                             </div>
-                            <div class="col-md-12" ng-if="editChartType != 'pie'">
-                                <label>Select X-Axis</label>
-                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" class="form-control" ng-model="selectPieChartAxis" ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" ng-change="selectX1Axis(widget, selectPieChartAxis)">
+                            <div class="col-md-12" ng-show="editChartType == 'pie'">
+                                <label>Select Axis</label>
+                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                        class="form-control" ng-model="selectPieChartAxis" 
+                                        ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                        ng-change="selectPieAxis(widget, selectPieChartAxis)">
                                 </select>
                             </div>
                         </div>
-                        
-<!--                        <div class="col-md-12" ng-if="editChartType == 'pie'">
-                            <label>Select </label>
-                            <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
-                                    class="form-control" ng-model="pieChartItem" 
-                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
-                                    ng-change="selectAxis(widget, pieChartItem)">
-                            </select>
-                        </div>-->
 
                         <div class="form-group" ng-if="editChartType != 'pie'">
                             <div class="col-md-12">
                                 <label>Select Y1-Axis</label>
-                                <ui-select multiple ng-model="y1Column" theme="bootstrap" ng-disabled="xColumn?false:true" on-select="selectY1Axis(widget, y1Column, y1Column)" on-remove="removed(widget,$item)">
+                                <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column, y1Column)" on-remove="removed(widget,$item, y1Column)">
                                     <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
                                     <ui-select-choices repeat="y1axis in collectionFields  | filter:$select.search">
                                         {{y1axis.displayName}}
@@ -463,11 +371,11 @@
                                 </ui-select>
                             </div>
                         </div>
-
+                        
                         <div class="form-group" ng-if="editChartType != 'pie'">
                             <div class="col-md-12">
                                 <label>Select Y2-Axis</label>
-                                <ui-select multiple ng-model="y2Column" theme="bootstrap" ng-disabled="xColumn?false:true" on-select="selectY2Axis(widget, y2Column, y2Column)" on-remove="removed(widget,$item)">
+                                <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column, y2Column)" on-remove="removed(widget,$item, y2Column)">
                                     <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
                                     <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
                                         {{y2axis.displayName}}
@@ -476,33 +384,54 @@
                             </div>
                         </div>
 
-<!--                        <div class="form-group">
+                        <div class="form-group">
                             <div class="col-md-12">
-                                <label>Format & Sorting</label>
+                                 <label>Format</label>
                                 <ul class="list-unstyled">
                                     <li>
-                                        {{xColumn.displayName}} 
-                                        <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='xColumn.displayFormat' 
-                                                class='form-control' ng-change="xaxisFormat(widget, xColumn)"
-                                                ng-options="format.name for format in formats track by format.value">
-                                        </select>
-                                        {{xColumn.displayFormat}}
+                                        <div class="col-sm-6">{{currentXColumn.displayName}}</div>
+                                        <div class="col-sm-6">
+                                            <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='xAxisDisplayFormat' 
+                                                    class='form-control'
+                                                    ng-change="xaxisFormat(widget, xAxisDisplayFormat)"
+                                                    ng-options="format.name for format in formats track by format.value">
+                                            </select>
+                                        </div>
                                     </li>
                                 </ul>
-
+                                 <ul class="list-unstyled">
+                                     <li ng-repeat = "y1Item in y1Column">
+                                         <div class="col-sm-6">{{y1Item.displayName}}</div>
+                                         <div class="col-sm-6">
+                                              <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='displayFormat' 
+                                                    class='form-control'
+                                                    ng-change="xaxisFormat(widget, displayFormat)"
+                                                    ng-options="format.name for format in formats track by format.value">
+                                            </select>
+                                         </div>
+                                     </li>
+                                 </ul>
+                                 <ul class="list-unstyled">
+                                     <li ng-repeat = "y2list in y2Column">
+                                         <div class="col-sm-6">{{y2list.displayName}}</div>
+                                         <div class="col-sm-6">
+                                              <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='displayFormat' 
+                                                    class='form-control'
+                                                    ng-change="xaxisFormat(widget, displayFormat)"
+                                                    ng-options="format.name for format in formats track by format.value">
+                                            </select>
+                                         </div>
+                                     </li>
+                                 </ul>
                             </div>
-                        </div>-->
+                        </div>
+
                     </div>
-                    <!--                    <div class="col-md-4" ng-if="editChartType == 'pie'">
-                                            <div class="form-group">
-                                                
-                                            </div>
-                                        </div>-->
                     <div class="col-md-4" ng-show="editChartType == 'ticker'">
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label>Ticker Items</label>
-                                <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" on-select="tickerTop(widget, tickerItem)" on-remove="removedColumns(widget,$item, tickerItem)">
+                                <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" on-select="ticker(widget, tickerItem)" on-remove="removedColumns(widget,$item,tickerItem)">
                                     <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
                                     <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
                                         {{currentColumn.displayName}}
@@ -521,12 +450,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="tickerData in tickerItem">
-                                            <td>{{tickerData.displayName}}</td>
+                                        <tr ng-repeat="tickerItem in widget.columns">
+                                            <td>{{tickerItem.displayName}}</td>
                                             <td>
-                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerData.displayFormat' 
+                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' 
                                                         class='form-control'
-                                                        ng-options="format.name for format in formats track by format.value">
+                                                        ng-change="tickerFormat(widget, tickerItem)"
+                                                        ng-options="format for format in formats">
                                                 </select>
                                             </td>
                                         </tr>
@@ -590,62 +520,6 @@
             </div>
         </div>
     </div>
-    <!--    <div class="row" ng-if="editChartType === 'ticker'">
-            <div class="col-sm-12">
-                <div class="hpanel hgreen border-table">
-                    <div class="panel-heading">
-                        <div ng-hide='editPreviewTitle'> 
-                            <span><a ng-click='editPreviewTitle = true'>{{widget.widgetTitle}}</a></span>
-                        </div> 
-                        <div ng-show='editPreviewTitle'>
-                            <div class='col-sm-8'>
-                                <input  class='form-control' type='text' ng-model='widget.widgetTitle'>
-                            </div> 
-                            <div class='col-sm-4'>
-                                <a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>
-                                <a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="col-md-8">
-                        <div>
-                            <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
-                        </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label>Top</label>
-                                    <select class="form-control" ng-model="displayNameTop" ng-options="currentColumn.displayName for currentColumn in widget.columns track by currentColumn.id" ng-change="tickerTop(widget, displayNameTop)">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label>Left</label>
-                                    <select class="form-control" ng-model="displayNameLeft" ng-options="currentColumn.displayName for currentColumn in widget.columns track by currentColumn.id" ng-change="tickerLeft(widget, displayNameLeft)">
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label>Right</label>
-                                    <select class="form-control" ng-model="displayNameRight" ng-options="currentColumn.displayName for currentColumn in widget.columns track by currentColumn.id" ng-change="tickerRight(widget, displayNameRight)">
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='panel-footer'>
-                        <div>
-                            <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                            <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>-->
 </div>
 
 
