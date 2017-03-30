@@ -1548,7 +1548,7 @@ body {
     position: absolute;
     left:0;
     right:0;
-/*    bottom:0px;*/
+    /*    bottom:0px;*/
 }
 @media (max-width: 768px) {
     .content {
@@ -1767,9 +1767,10 @@ body {
 .panel-tools {
     display: inline-block;
     float: right;
-    margin-top: 0;
+    margin-top: 8px !important;
     padding: 0;
     position: relative;
+    z-index: 999;
 }
 .hpanel .alert {
     margin-bottom: 0;
@@ -3885,12 +3886,10 @@ tfoot tr td {
     font-size: 14px;
     font-weight: 600;
 }
-
-.hover-delete {
+/*.hover-delete {
     margin-top: 8px;
     z-index: 99;
-}
-
+}*/
 .text .font-bold {
     margin: 0px auto 20px;
     padding: 0;
@@ -4043,5 +4042,5 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 table td[class*="col-"], table th[class*="col-"] {
-        word-wrap: break-word;
+    word-wrap: break-word;
 }
