@@ -11,9 +11,8 @@
         overflow-y: auto !important;
         width: 100%;
     }
-    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+   .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
         display: block;
-        overflow: hidden;
     }
     .table-fixed tbody td, .table-fixed thead > tr> th {
         float: left;
@@ -22,31 +21,6 @@
     .table-fixed tr td {
         cursor:pointer;
     }
-    /*    .table-fixed thead {
-            width: 100%;
-            border-bottom: none;
-        }
-        .table-fixed tbody {        
-            height: 480px;
-            overflow-y: auto !important;
-            width: 100%;
-        }
-        .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-            display: block;
-            overflow: hidden;
-        }
-        .table-fixed tr{
-            cursor: pointer;
-        }
-        .table-fixed tbody td, .table-fixed thead > tr> th {
-            float: left;
-            border-bottom-width: 0;
-        }    
-        .table-fixed tbody {
-            height:50vh;
-            min-height:50vh;
-        }*/
-
     .license {
         height:63vh;
         min-height:63vh;
@@ -266,7 +240,7 @@
                                                     </th>
                                                 </tr>
                                             </thead>
-                                            <tbody style="height:420px">
+                                            <tbody>
                                                 <tr ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
                                                     <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
                                                                                                                     {{accountUser.accountId.accountName}}

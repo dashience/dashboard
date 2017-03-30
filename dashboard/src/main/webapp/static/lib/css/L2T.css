@@ -2768,12 +2768,22 @@ h6 {
 .pagination > .active > span:hover,
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
-    background-color: #3498db;
-    border-color: #258cd1;
+    background-color: #62cb31;
+    border-color: #62cb31;
     color: #fff;
     cursor: default;
     z-index: 2;
 }
+
+.pagination > li > a, .pagination > li > span {
+    color:#777;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #62cb31 !important;
+    border-color: #62cb31 !important;
+}
+
 .hbreadcrumb a.active {
     color: #9d9fa2;
 }
@@ -3900,8 +3910,12 @@ tfoot tr td {
     margin-top:3px;
 }
 
-.table {
+.table-reports {
     background:#fff;
+}
+
+.upload-logo {
+    width:150px;
 }
 
 .data-title {
@@ -3927,10 +3941,6 @@ textarea.form-control {
     vertical-align: middle;
     border-radius: 3px;
     cursor: pointer;
-}
-
-.form-group, .panel-heading {
-    overflow: hidden;
 }
 
 .title-ew {
@@ -4013,8 +4023,16 @@ textarea.form-control {
     vertical-align:middle;
 }
 
-input[type="radio"], input[type="checkbox"] {
+input[type="radio"] {
     margin: 2px 0 0 !important;
+}
+
+input[type="checkbox"] {
+    margin: 4px 0 0 !important;
+}
+
+.btn {
+    margin-right:3px;
 }
 
 .radio, .checkbox {
@@ -4044,3 +4062,8 @@ input[type="radio"], input[type="checkbox"] {
 table td[class*="col-"], table th[class*="col-"] {
     word-wrap: break-word;
 }
+
+.table-scheduler {
+    background:#fff;
+}
+

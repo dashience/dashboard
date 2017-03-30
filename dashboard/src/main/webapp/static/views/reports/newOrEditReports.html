@@ -142,11 +142,11 @@
                
         <div class="col-md-2">
             <div ng-hide="editReport">
-                <img style="height: 100px;" class="img-responsive img-thumbnail" ng-src="{{uploadLogo}}"/>
+                <img class="img-responsive img-thumbnail upload-logo" ng-src="{{uploadLogo}}"/>
             </div>
             <div  ng-show="editReport" class="image-upload">
                 <label for="file-input">
-                    <img class="img-responsive img-thumbnail" ng-src="{{uploadLogo}}"/>
+                    <img class="img-responsive img-thumbnail upload-logo" ng-src="{{uploadLogo}}"/>
                 </label>
                 <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
             </div>
@@ -154,7 +154,7 @@
         <div class="col-md-9">
             <div class="form-group col-sm-10">
                 <label class="col-sm-2">Report Title</label>
-                 <div ng-hide="editReport">
+                 <div ng-hide="editReport" class="form-group col-sm-10">
                     {{reportTitle}}
                 </div>
             

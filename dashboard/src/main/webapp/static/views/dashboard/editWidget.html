@@ -26,7 +26,7 @@
         margin-top: 0px;
         margin-right: 0px;
     }
-    
+
     .preview-table-settings:hover .button{
         opacity: 1;
     }
@@ -55,7 +55,7 @@
         text-decoration: none;
     }
 
-    
+
     .scheduler-checkBox-label{
         display: block;
         padding-left: 15px;
@@ -106,12 +106,21 @@
         margin-left: 48px;
     }
     .scheduler-list-style{
-        height: 180px;
+        height: auto;
         overflow: auto;
     }
     .ui-select-bootstrap > .ui-select-choices, .ui-select-bootstrap > .ui-select-no-choice {
         display: contents;
     }
+
+    
+    
+    .search-check {
+        
+        vertical-align: middle;
+       
+    }
+
 </style>
 
 <div class="content animate-panel" ng-repeat="widget in editWidgetData">
@@ -266,7 +275,7 @@
                                 </ui-select>
                             </div>
                         </div>
-                        
+
                         <div class="form-group" ng-if="editChartType != 'pie'">
                             <div class="col-md-12">
                                 <label>Select Y2-Axis</label>
@@ -281,8 +290,8 @@
 
                         <div class="form-group">
                             <div class="col-md-12">
-                                 <label>Format</label>                                 
-                                 <table class="table table-bordered">
+                                <label>Format</label>                                 
+                                <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <td>Name</td>
