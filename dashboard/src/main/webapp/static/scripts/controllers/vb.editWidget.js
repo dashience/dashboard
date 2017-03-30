@@ -248,7 +248,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&dataSetId=" + dataSet.id + "&accountId=" + $stateParams.accountId + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             angular.forEach(response.columnDefs, function (value, key) {
-                widget.columns.push({fieldName: value.fieldName, displayName: value.displayName,
+                widget.columns.push({fieldName: value.fieldName, displayName: value.displayName, xAxis: value.xAxis, yAxis: value.yAxis,
                     agregationFunction: value.agregationFunction, displayFormat: value.displayFormat, fieldType: value.type,
                     groupPriority: value.groupPriority, sortOrder: value.sortOrder, sortPriority: value.sortPriority});
 
@@ -377,6 +377,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.selectY1Axis = function (widget, y1data) {
+        console.log(y1data)
         $scope.editChartType = null;
         angular.forEach(y1data, function (value, key) {
             if (!value) {
@@ -456,18 +457,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }
     };
 
-    $scope.removedByColumn = function (widget, column, yAxisItems) {
+    $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
-        angular.forEach(yAxisItems, function (value, key) {
-            if (value.yAxis == 1) {
-                yAxisItems.removeItem = column.fieldName;
-                $scope.selectY1Axis(widget, yAxisItems);
-            }
-            if (value.yAxis == 2) {
-                yAxisItems.removeItem = column.fieldName;
-                $scope.selectY2Axis(widget, yAxisItems);
-            }
-        })
+        yAxisItems.removeItem = column.fieldName;
+        $scope.selectY1Axis(widget, yAxisItems);
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    };
+    $scope.removedByY2Column = function (widget, column, yAxisItems) {
+        $scope.editChartType = null;
+        yAxisItems.removeItem = column.fieldName;
+        $scope.selectY2Axis(widget, yAxisItems);
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
