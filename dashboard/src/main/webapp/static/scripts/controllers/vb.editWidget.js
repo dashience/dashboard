@@ -304,7 +304,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         selectedItems(selectedItem);
     };
 
-    $scope.objectHeader = [];
     $scope.previewChart = function (chartType, widget) {
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType;    //Selected Chart type - Bind chart-type to showPreview()
@@ -315,7 +314,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.selectPieChartX = function (widget, column) {
-        console.log(column)
         $scope.editChartType = null;
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
@@ -335,6 +333,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
+
     $scope.selectPieChartY = function (widget, column) {
         $scope.editChartType = null;
         var exists = false;
@@ -377,7 +376,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.selectY1Axis = function (widget, y1data) {
-        console.log(y1data)
         $scope.editChartType = null;
         angular.forEach(y1data, function (value, key) {
             if (!value) {
@@ -401,6 +399,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 }
             }
         });
+
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -437,7 +436,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }, 50);
     };
     $scope.setChartFormat = function (widget, column) {
-        console.log(column)
         if (widget.chartType != 'pie') {
             if (column.yAxis == 1) {
                 $scope.selectY1Axis(widget, column);
@@ -459,8 +457,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
-        yAxisItems.removeItem = column.fieldName;
-        $scope.selectY1Axis(widget, yAxisItems);
+        if (yAxisItems.length > 0) {
+            yAxisItems.removeItem = column.fieldName;
+            $scope.selectY1Axis(widget, yAxisItems);
+        } else {
+            angular.forEach(widget.columns, function (val, key) {
+                if (val.fieldName == column.fieldName) {
+                    val.yAxis = null;
+                }
+            });
+        }
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -468,8 +474,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.removedByY2Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
-        yAxisItems.removeItem = column.fieldName;
-        $scope.selectY2Axis(widget, yAxisItems);
+        if (yAxisItems.length > 0) {
+            yAxisItems.removeItem = column.fieldName;
+            $scope.selectY2Axis(widget, yAxisItems);
+        } else {
+            angular.forEach(widget.columns, function (val, key) {
+                if (val.fieldName == column.fieldName) {
+                    val.yAxis = null;
+                }
+            });
+        }
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)

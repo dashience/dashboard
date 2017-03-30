@@ -95,22 +95,13 @@
             </ul>
         </div>
 
-
-
         <div class="row">
             <div class="col-lg-12">
-
-
                 <div class="col-md-6">
-
                     <div class="hpanel">
-
-
                         <div class="panel-body">
-
                             <div class="tab-content">
                                 <div ng-show="isSet(1)" class="license">
-
                                     <div class="pull-right account-new">
                                         <button class="btn btn-success" ng-click="addAccount()">New</button>
                                     </div>
@@ -362,7 +353,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-dir-paginate="account in accounts| filter: searchAccount|itemsPerPage:1:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <tr data-dir-paginate="account in accounts| filter: searchAccount|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                         <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
                                             {{account.accountName}}
                                         </td>

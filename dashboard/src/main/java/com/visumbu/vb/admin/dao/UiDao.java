@@ -413,7 +413,7 @@ public class UiDao extends BaseDao {
     }
 
     public List<VbUser> getUsersByAgencyUser(VbUser user) {
-        String queryStr = "select d from VbUser d where (d.agencyId.status is null or d.agencyId.status != 'Deleted') and d.agencyId.id = :agencyId";
+        String queryStr = "select d from VbUser d where (d.agencyId.status is null or d.agencyId.status != 'Deleted') and (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", user.getAgencyId().getId());
         return query.list();

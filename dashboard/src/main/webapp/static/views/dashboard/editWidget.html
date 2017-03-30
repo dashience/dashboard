@@ -373,7 +373,7 @@
             <div class="hpanel hgreen border-table">
                 <div class="panel-heading">
                     <div ng-hide='editPreviewTitle'> 
-                        <span><a ng-click='editPreviewTitle = true'>{{widget.widgetTitle}}</a></span>
+                        <span><a ng-click='editPreviewTitle = true'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a></span>
                     </div> 
                     <div ng-show='editPreviewTitle'>
                         <div class='col-sm-8'>

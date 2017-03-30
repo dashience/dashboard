@@ -182,15 +182,13 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-show="showPreviewChart" ng-if="previewData">
             <div class="col-md-12">
                 <div class="hpanel">
                     <div class="panel-body">
-                        <div ng-show="showPreviewChart" class="box-body popup-head" ng-if="previewData">
+                        <div class="box-body popup-head">
                             <div class="row">
                                 <div id="changes-height" class="table-responsive">
                                     <div preview-Table path="{{previewData}}"></div>

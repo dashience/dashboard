@@ -1,7 +1,9 @@
 app.controller('AccountController', function ($scope, $http, $state, $stateParams, localStorageService) {
     $scope.permission = localStorageService.get("permission");
     $scope.$state = $state;
-
+    $scope.accounts = [];
+    $scope.properties = [];
+    $scope.accountUsers = [];
 //Tabs
     $scope.tab = 1;
 
@@ -13,23 +15,20 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         return $scope.tab === tabNum;
     };
 
-    $scope.accountUsers = []
     function getAccountProperty(account) {
         $http.get('admin/user/property/' + account.id).success(function (response) {
             $scope.properties = response;
+            console.log(response)
         });
-//        $http.get('admin/user/accountUser/' + account.id).success(function (response) {
-//            $scope.accountUsers = response;
-//        });
+        
         $http.get('admin/user/userAccount/' + account.id).success(function (response) {
             $scope.accountUsers = response;
+            console.log(response)
         });
     }
     $http.get('admin/ui/user').success(function (response) {
         $scope.users = response;
     });
-
-    $scope.accounts = [];
 
     $scope.addAccount = function () {
         $scope.account = "";
@@ -75,8 +74,6 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         });
     };
 
-
-    $scope.properties = [];
     $scope.addProperty = function () {
         $scope.property = "";
         $scope.showEditPage = true;
@@ -130,8 +127,6 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         });
     };
 
-
-    $scope.accountUsers = []
     $scope.addAccountUser = function () {
         $scope.accountUsers.push({isEdit: true});
     };
@@ -185,11 +180,11 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             $scope.accountUsers.splice(index, 1);
         });
     };
-    
+
     $scope.removeAccountUser = function (index) {
         $scope.accountUsers.splice(index, 1);
     };
-    
+
     $scope.clearAccountUser = function (accountUser) {
         $scope.accountUser = "";
         $scope.showAccountUserEditPage = false;

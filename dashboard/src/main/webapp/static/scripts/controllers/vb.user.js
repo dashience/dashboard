@@ -13,7 +13,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         return $scope.tab === tabNum;
     };
 
-var unique = function (origArr) {
+    var unique = function (origArr) {
         var newArr = [],
                 origLen = origArr.length,
                 found, x, y;
@@ -36,13 +36,11 @@ var unique = function (origArr) {
         $http.get('admin/ui/user').success(function (response) {
             $scope.userAgencyDetails = [];
             $scope.users = response;
-                      
+
             angular.forEach($scope.users, function (val, key) {
-            $scope.userAgencyDetails.push(val.agencyId.agencyName)
-            $scope.userAgency = unique($scope.userAgencyDetails);
-            console.log($scope.userAgency)
-        });
-            //$scope.editUser(response[0], 0);
+                $scope.userAgencyDetails.push(val.agencyId.agencyName)
+                $scope.userAgency = unique($scope.userAgencyDetails);
+            });
         });
 
         $http.get('admin/user/account').success(function (response) {
@@ -51,8 +49,8 @@ var unique = function (origArr) {
     }
 
     getUser();
-    $scope.searchuserDetails=function(agencyUserName){
-        $scope.agencyListName=agencyUserName;
+    $scope.searchuserDetails = function (agencyUserName) {
+        $scope.agencyListName = agencyUserName;
     }
     $scope.saveUser = function (user) {
         var userData = {
@@ -128,7 +126,7 @@ var unique = function (origArr) {
         permission.status = 0;
         return false;
     };
-    
+
     $scope.hasData = function (permissionName) {
         for (var i = 0; i < $scope.userPermissions.length; i++) {
             if ($scope.userPermissions[i].permissionId.permissionName === permissionName) {
@@ -165,14 +163,18 @@ var unique = function (origArr) {
                 $scope.userAccounts.splice(index, 1);
             });
         } else {
-            $scope.userAccounts.splice(index, 1);
+        $scope.userAccounts.splice(index, 1);
         }
     };
+    
+    $scope.removeUserAccount = function(index){
+        $scope.userAccounts.splice(index, 1);
+    }
 
     $scope.testClick = function (permission) {
         $scope.saveUserPermission(permission);
     };
-    
+
     $scope.saveUserPermission = function (permission) {
         var userPermissionId = $scope.hasData(permission.permissionName).id;
 
