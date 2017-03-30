@@ -118,7 +118,7 @@
         -ms-user-select: none;
         user-select: none;
     }
-    
+
     .report-bottomMenu{
         z-index: 9999;
         position: fixed;
@@ -233,10 +233,10 @@
             <a class="refresh" ng-click="downloadPpt()"><i class="fa fa-download"></i> PPT</a>
         </div>
         <div class="btn-group dropdown" ng-if="permission.addWidget === true;">
-            <a class="dropdown-toggle" type="button" data-toggle="dropdown">
-                <button type="button" class="btn btn-block btn-info"><i class="fa fa-plus-circle"></i> Add Widget</button>
+            <a class="dropdown-toggle">
+                <button type="button" class="btn btn-block btn-info" ng-click="addWidget()"><i class="fa fa-plus-circle"></i> Add Widget</button>
             </a>
-            <div class="dropdown-menu dropdown-content">
+<!--            <div class="dropdown-menu dropdown-content">
                 <span class="lay-wid">Select the Layout</span>
                 <a href="" class="dropdown-item" ng-click="addWidget('2')">
                     <div class="col-md-2 btn-apps wid firstrow"><i class="fa fa-line-chart"></i></div>
@@ -250,15 +250,15 @@
                 <a href="" class="dropdown-item" ng-click="addWidget('6')">
                     <div class="col-md-10 btn-apps wid thirdrow"><i class="fa fa-table"></i></div>
                 </a>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
 <div>
     <div ng-repeat="widget in widgets">
         <div ng-if="widget.chartType == 'ticker'">
-            <div class="col-sm-{{2 * widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
-               <div class="hpanel" ng-drag="true" ng-drag-data="widget">
+            <div class="col-sm-{{widget.width?widget.width:4}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
+                <div class="hpanel" ng-drag="true" ng-drag-data="widget">
                     <div class="panel-tools hover-delete">
                         <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
                         <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
@@ -279,14 +279,15 @@
                                 </div>
                             </div>
                         </div>
+                        <a ng-click="expandWidget(widget)"><i class="fa fa-angle-right"></i></a>
                     </div>
-                   <div ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+                    <div ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
                 </div>
             </div>
         </div>
 
         <div ng-if="widget.chartType != 'ticker'">
-            <div class="col-md-{{2 *widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
+            <div class="col-md-{{widget.width?widget.width:12}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget"> 
                     <div class="panel-heading">
                         <div class="panel-tools">
@@ -311,6 +312,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <a class="edit" ng-click="expandWidget(widget)"><i class="fa fa-angle-left"></i></a>
                             </div>
                         </div>
 
