@@ -120,12 +120,11 @@
 
                                 </div>
                                 <div ng-show="isSetUser(2)" class="license">
-
                                     <table class="table table-responsive table-fixed">
                                         <thead>
                                             <tr>
-                                                <th class="col-xs-11">Account Name</th>                                                
-                                                <th class="col-xs-1">
+                                                <th class="col-xs-9">Account Name</th>                                                
+                                                <th class="col-xs-3">
                                                     <button class="btn btn-success btn-xs" ng-click="addUserAccount()"><i class="fa fa-plus"></i></button>
                                                 </th>
                                             </tr>
@@ -181,42 +180,6 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-<!--                                                    <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount); userAccount.isEdit = false;"><i class="fa fa-save"></i></button>
-                                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash"></i></button>
-                                                    <div class="modal hmodal-success" id="deleteUserAccount{{userAccount.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="color-line"></div>
-                                                                <div class="modal-header">
-                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                    <h4 class="modal-title">Delete</h4>
-                                                                    <small class="font-bold"></small>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <form class="form-horizontal" role="form">
-                                                                        <div class="form-group">
-                                                                            <div class="col-sm-12  col-md-12">
-                                                                                <span>Want to delete ?</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <div class="col-sm-12">
-                                                                        <button type="button" class="btn btn-primary btn-xs" 
-                                                                                ng-click="deleteUserAccount(userAccount, $index)" 
-                                                                                data-dismiss="modal">
-                                                                            <span class="fa fa-trash"></span> Yes
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-danger btn-xs" 
-                                                                                data-dismiss="modal">
-                                                                            <span class="fa fa-times"></span> No
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>-->
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -245,10 +208,6 @@
                                                                    ng-false-value="0"/>
                                                             <span></span>
                                                         </label>
-                                                        <!--                                                          <label class="switch_wrap col-sm-10">
-                                                                                                                        <input type="checkbox" ng-model="userPermission.status" ng-checked="hasPermission(permission.permissionName)" ng-change="saveUserPermission(permission, userPermission)" value="1" />
-                                                                                                                        <div class="switch switch-mini"><span class="bullet"></span></div>
-                                                                                                                    </label>-->
                                                     </div>
                                                 </div> 
                                             </div>
@@ -273,7 +232,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchuserDetails(agencyName)" style="min-width:225px;">
-                                        <ui-select-match placeholder="Select AgencyName...">
+                                        <ui-select-match placeholder="Search Agency Name...">
                                             {{$select.selected}}
                                         </ui-select-match>
                                         <ui-select-choices repeat="agency in userAgency | filter: $select.search">                                

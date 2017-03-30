@@ -1548,7 +1548,7 @@ body {
     position: absolute;
     left:0;
     right:0;
-    /*    bottom:0px;*/
+/*        bottom:0px;*/
 }
 @media (max-width: 768px) {
     .content {
@@ -1720,6 +1720,9 @@ body {
     font-size: 18px;
     padding: 5px 4px;
     transition: all .3s;
+    clear: both;
+    position: relative;
+    min-height: 45px;
     border: 1px solid transparent;
 }
 .hpanel .hbuilt.panel-heading {
@@ -1767,7 +1770,6 @@ body {
 .panel-tools {
     display: inline-block;
     float: right;
-    margin-top: 8px !important;
     padding: 0;
     position: relative;
     z-index: 999;
@@ -3796,7 +3798,7 @@ button.close {
 }
 
 .panel-tools {
-    margin-top: -8px;
+/*    margin-top: -8px;*/
     /*z-index: 999;*/
     margin-right: 10px;
 }
@@ -4067,3 +4069,8 @@ table td[class*="col-"], table th[class*="col-"] {
     background:#fff;
 }
 
+.ns-popover-tooltip-theme.ns-popover-left-align .ns-popover-tooltip {
+    margin-left: 0;
+    height: 260px;
+    overflow-y: auto;
+}

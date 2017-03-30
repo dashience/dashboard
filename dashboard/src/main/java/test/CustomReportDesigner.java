@@ -379,7 +379,7 @@ public class CustomReportDesigner {
                     }
                 }
                 // TODO : REMOVE TILL THIS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                
+
                 if (sortType1.getSortOrder().equalsIgnoreCase("desc")) {
                     order = -1;
                 }
@@ -893,7 +893,7 @@ public class CustomReportDesigner {
                     dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
                 }
             }
-        } else { 
+        } else {
             generateGroupedRows(groupedData, tabWidget, tbl);
         }
         if (tabWidget.getTableFooter() != null && tabWidget.getTableFooter()) {
@@ -982,8 +982,13 @@ public class CustomReportDesigner {
         Color tableHeaderColor = new Color(241, 241, 241);
         Color tableFooterColor = new Color(241, 241, 241);
 
-         XSLFTextBox txt = slide.createTextBox();
-        txt.setText(tabWidget.getWidgetTitle());
+        XSLFTextBox txt = slide.createTextBox();
+        if (tabWidget.getWidgetTitle() != null) {
+            txt.setText(tabWidget.getWidgetTitle());
+        } else {
+            txt.setText("");
+        }
+
         txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
         txt.setAnchor(new java.awt.Rectangle(25, 30, 300, 50));
 
@@ -1003,14 +1008,13 @@ public class CustomReportDesigner {
         pd.setTextAlign(TextParagraph.TextAlign.LEFT);
         XSLFTextRun rd = pd.addNewTextRun();
         if (tabWidget.getContent() != null) {
-           System.out.println(tabWidget.getContent());
+            System.out.println(tabWidget.getContent());
             org.jsoup.nodes.Document doc = Jsoup.parse(tabWidget.getContent());
-           rd.setText(doc.body().text());
+            rd.setText(doc.body().text());
 //            XSLFTextBox text = slide.createTextBox();
 //            text.setText(html);
 //            slide.addShape(text);
-        }
-        else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
+        } else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
             rd.setText("");
         }
         rd.setBold(false);
@@ -1445,7 +1449,12 @@ public class CustomReportDesigner {
 
                         //selection of title place holder
                         XSLFTextBox txt = slide.createTextBox();
-                        txt.setText(tabWidget.getWidgetTitle());
+                        if (tabWidget.getWidgetTitle() != null) {
+                            txt.setText(tabWidget.getWidgetTitle());
+                        } else {
+                            txt.setText("");
+                        }
+
                         txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
                         txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
 
@@ -1475,7 +1484,12 @@ public class CustomReportDesigner {
 
                     //selection of title place holder
                     XSLFTextBox txt = slide.createTextBox();
-                    txt.setText(tabWidget.getWidgetTitle());
+                    if (tabWidget.getWidgetTitle() != null) {
+                        txt.setText(tabWidget.getWidgetTitle());
+                    } else {
+                        txt.setText("");
+                    }
+
                     txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
                     txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
 
@@ -1506,7 +1520,12 @@ public class CustomReportDesigner {
 
                     //selection of title place holder
                     XSLFTextBox txt = slide.createTextBox();
-                    txt.setText(tabWidget.getWidgetTitle());
+                    if (tabWidget.getWidgetTitle() != null) {
+                        txt.setText(tabWidget.getWidgetTitle());
+                    } else {
+                        txt.setText("");
+                    }
+
                     txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
                     txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
 
@@ -2558,8 +2577,8 @@ public class CustomReportDesigner {
             Map<String, Object> dataMap = iterator.next();
             for (Iterator<FirstAxis> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
                 FirstAxis axis = iterator1.next();
-                System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
@@ -2600,8 +2619,8 @@ public class CustomReportDesigner {
             for (Iterator<SecondAxis> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
                 SecondAxis axis = iterator1.next();
                 System.out.println(dataMap.get(axis) + " ");
-                System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
         }
         return dataset;
@@ -2827,7 +2846,7 @@ public class CustomReportDesigner {
         plot.setOutlineVisible(false);
         int i = 0;
         for (Iterator<String> iterator = legends.iterator(); iterator.hasNext();) {
-            if (i > 4) {
+            if (i > 3) {
                 i = 1;
             }
             String legend = iterator.next();
@@ -2886,7 +2905,8 @@ public class CustomReportDesigner {
         int i = 0;
         System.out.println("legends : " + legends);
         for (Iterator<String> iterator = legends.iterator(); iterator.hasNext();) {
-            if (i > 4) {
+            System.out.println("i : " + i);
+            if (i > 3) {
                 i = 1;
             }
             String legend = iterator.next();
@@ -2920,9 +2940,9 @@ public class CustomReportDesigner {
 
         List<WidgetColumn> columns = tabWidget.getColumns();
         List data = (List) groupedData.get("data");
-        System.out.println("Data Size --- >" +data.size());
+        System.out.println("Data Size --- >" + data.size());
         int count = 0;
-         XSLFTableRow dataRow = null;
+        XSLFTableRow dataRow = null;
         for (Iterator iterator = data.iterator(); iterator.hasNext();) {
             Map mapData = (Map) iterator.next();
             System.out.println("For loop --->");
@@ -2958,7 +2978,7 @@ public class CustomReportDesigner {
                 if (data.size() > 1) {
                     System.out.println("Else GroupField ---->");
                     count = 2;
-                   dataRow = tbl.addRow();
+                    dataRow = tbl.addRow();
                     XSLFTableCell dataCell = dataRow.addCell();
                     XSLFTextParagraph pd = dataCell.addNewTextParagraph();
                     pd.setTextAlign(TextParagraph.TextAlign.LEFT);
@@ -3046,7 +3066,7 @@ public class CustomReportDesigner {
                 }
             }
             if (mapData.get("data") != null) {
-                generateGroupedRows( mapData, tabWidget, tbl);
+                generateGroupedRows(mapData, tabWidget, tbl);
             }
         }
     }

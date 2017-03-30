@@ -140,7 +140,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             status: accountUser.status
         };
         if (accountUser.id) {
-            $http({method: 'PUT', url: 'admin/user/accountUser', data: data}).success(function (response) {
+            $http({method: 'PUT', url: 'admin/user/userAccount', data: data}).success(function (response) {
             });
         }
     };

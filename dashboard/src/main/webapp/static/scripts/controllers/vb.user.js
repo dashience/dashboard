@@ -61,7 +61,8 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             email: user.email,
             password: user.password,
             primaryPhone: user.primaryPhone,
-            secondaryPhone: user.secondaryPhone
+            secondaryPhone: user.secondaryPhone,
+            agencyId: user.agencyId.id
         };
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: userData}).success(function (response) {
             getUser();
@@ -79,7 +80,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
 
     $scope.selectedUser = null;
     $scope.editUser = function (user, index) {
-        userAccount(user);
+        getUserAccount(user);
         $scope.userId = user;
         var data = {
             id: user.id,
@@ -89,7 +90,8 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             email: user.email,
             password: user.password,
             primaryPhone: user.primaryPhone,
-            secondaryPhone: user.secondaryPhone
+            secondaryPhone: user.secondaryPhone,
+            agencyId: user.agencyId
         };
         $scope.user = data;
         $scope.selectedUser = index;
@@ -101,7 +103,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         });
     };
 
-    function userAccount(user) {
+    function getUserAccount(user) {
         $http.get('admin/ui/userAccount/' + user.id).success(function (response) {
             $scope.userAccounts = response;
         });
@@ -153,18 +155,22 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             userId: currentUserId.id
         };
         $http({method: userAccount.id ? 'PUT' : 'POST', url: 'admin/ui/userAccount', data: data}).success(function (response) {
+            getUserAccount(currentUserId)
+           //$scope.userAccounts = response.id;
 //            userAccount(currentUserId);
         });
     };
 
     $scope.deleteUserAccount = function (userAccount, index) {
-        if (userAccount.id) {
+        //if (userAccount.id) {
             $http({method: 'DELETE', url: 'admin/ui/userAccount/' + userAccount.id}).success(function (response) {
+                
                 $scope.userAccounts.splice(index, 1);
+                //$scope.userAccounts = response;
             });
-        } else {
-        $scope.userAccounts.splice(index, 1);
-        }
+       // } else {
+        //$scope.userAccounts.splice(index, 1);
+        //}
     };
     
     $scope.removeUserAccount = function(index){
@@ -186,7 +192,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             status: permission.status ? 1 : 0
         };
         $http({method: userPermissionId ? 'PUT' : 'POST', url: 'admin/ui/userPermission', data: data}).success(function (response) {
-            userAccount(currentUserId);
+            getUserAccount(currentUserId);
         });
     };
 });

@@ -113,19 +113,25 @@
         display: contents;
     }
 
-    
-    
+
+
     .search-check {
-        
+
         vertical-align: middle;
-       
+
     }
 
 </style>
 
 <div class="content animate-panel" ng-repeat="widget in editWidgetData">
     <div class="hpanel">
-        <div class="panel-heading">Select the Elements</div>
+        <div class="panel-heading">
+            Select the Elements
+
+            <div class="pull-right">
+                <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
+            </div>
+        </div>
         <div class="panel-body">
             <div class="col-lg-4">
                 <div class="col-md-12">

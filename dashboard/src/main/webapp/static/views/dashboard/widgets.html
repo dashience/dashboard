@@ -123,7 +123,7 @@
         z-index: 9999;
         position: fixed;
         border: 1px solid #ccc;
-        background-color: #EBEEE1;
+        background-color: #FFF;
         font-size: 12px;
         width: 300px;
         height: 466px;
@@ -180,7 +180,6 @@
     .report-body-imgs.in{
         border-radius: 50%;
         width: 74px;
-        height: 74px;
     }
     .report-body-imgs{
         border: 0 none;
@@ -197,11 +196,12 @@
         max-width: 62%;
     }
     .report-desc-list{
-        background: #FCFBF6 none repeat scroll 0 0;
+        
         color: #000000;
-        border-radius: 12px;
+        border-radius:5px;
         clear: both;
         display: block;
+        border: 1px solid #ddd;
         float: left;
         font-size: 13px;
         padding: 8px 16px;
@@ -357,7 +357,7 @@
 
             <div class="report-bottomMenu pull-right" ng-show="showReportList[widget.id]">
                 <div class="report-menuHeader">
-                    <div class="pull-left">
+                    <div class="col-md-10">
                         <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
                         <h1 class="report-header-title">Add {{widget.widgetTitle}} To Report</h1>
                     </div>
