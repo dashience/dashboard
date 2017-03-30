@@ -258,7 +258,7 @@
                         <div class="form-group" ng-if="editChartType != 'pie'">
                             <div class="col-md-12">
                                 <label>Select Y1-Axis</label>
-                                <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByColumn(widget,$item, y1Column)">
+                                <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByY1Column(widget,$item, y1Column)">
                                     <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
                                     <ui-select-choices repeat="y1axis in collectionFields  | filter:$select.search">
                                         {{y1axis.displayName}}
@@ -270,7 +270,7 @@
                         <div class="form-group" ng-if="editChartType != 'pie'">
                             <div class="col-md-12">
                                 <label>Select Y2-Axis</label>
-                                <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByColumn(widget,$item, y2Column)">
+                                <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
                                     <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
                                     <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
                                         {{y2axis.displayName}}
