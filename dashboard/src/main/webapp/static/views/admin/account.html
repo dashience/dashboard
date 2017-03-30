@@ -362,7 +362,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr data-dir-paginate="account in accounts| filter: searchAccount|itemsPerPage:1:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <tr data-dir-paginate="account in accounts| filter: searchAccount|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                         <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
                                             {{account.accountName}}
                                         </td>

@@ -163,9 +163,11 @@ var unique = function (origArr) {
         if (userAccount.id) {
             $http({method: 'DELETE', url: 'admin/ui/userAccount/' + userAccount.id}).success(function (response) {
                 $scope.userAccounts.splice(index, 1);
+//                $('.modal-backdrop').remove();
             });
         } else {
             $scope.userAccounts.splice(index, 1);
+//            $('.modal-backdrop').remove();
         }
     };
 

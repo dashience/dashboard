@@ -11,7 +11,7 @@ app.controller("SchedulerController", function ($scope, $http, $stateParams) {
             $scope.schedulers.splice(index, 1);
         });
     };
-    $scope.schedularHistoryData = false;
+    $scope.schedularHistoryData = true;
     $scope.showSchedulerHistory = function (scheduler) {
         console.log(scheduler);
         $http({method: 'GET', url: 'admin/scheduler/schedulerHistory/' + scheduler.id}).success(function (response) {
@@ -19,7 +19,7 @@ app.controller("SchedulerController", function ($scope, $http, $stateParams) {
             $scope.schedularHistoryDetails = response;
             if (!$.trim(response)) {
                 $scope.schedularData = "History Not Found";
-                $scope.schedularHistoryData = true;
+                $scope.schedularHistoryData = false;
             }
         });
     };
@@ -27,7 +27,7 @@ app.controller("SchedulerController", function ($scope, $http, $stateParams) {
     $scope.tableRowIndexExpandedCurr = "";
     $scope.tableRowIndexExpandedPrev = "";
     $scope.storeIdExpanded = "";
-
+    $scope.storeDataModel=[];
     $scope.dayDataCollapseFn = function () {
         $scope.dayDataCollapse = [];
         for (var i = 0; i < $scope.storeDataModel.storedata.length; i += 1) {

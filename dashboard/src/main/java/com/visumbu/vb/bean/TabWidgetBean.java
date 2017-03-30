@@ -56,6 +56,7 @@ public class TabWidgetBean {
     private Integer dataSetId;
     private Integer dataSourceId;
     private String content;
+    private Date createdTime;
     private List<WidgetColumnBean> widgetColumns;
 
     public Integer getId() {
@@ -337,6 +338,14 @@ public class TabWidgetBean {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 
     @Override

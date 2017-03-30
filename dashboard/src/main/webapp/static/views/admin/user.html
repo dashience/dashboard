@@ -60,6 +60,9 @@
     .modal-backdrop{
         /*display:none;*/
     }
+    .ui-select-choices{
+        position: relative;
+    }
 </style>
 <section class="content">
     <div class="row">
@@ -162,9 +165,9 @@
                                                 <td class="col-xs-9">
                                                     <div ng-hide="userAccount.isEdit">{{userAccount.accountId.accountName}}</div>
                                                     <div ng-show="userAccount.isEdit">
-                                                        <ui-select ng-model="userAccount.accountId" theme="select2" ng-disabled="disabled">
+                                                        <ui-select ng-model="userAccount.accountId" theme="bootstrap" ng-disabled="disabled">
                                                             <ui-select-match placeholder="Select User...">{{$select.selected.accountName}}</ui-select-match>
-                                                            <ui-select-choices repeat="account in accounts | filter: $select.search">
+                                                            <ui-select-choices  repeat="account in accounts | filter: $select.search" >
                                                                 <span ng-bind-html="account.accountName | highlight: $select.search"></span>
                                                             </ui-select-choices>
                                                         </ui-select>

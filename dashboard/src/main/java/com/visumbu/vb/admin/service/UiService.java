@@ -186,7 +186,7 @@ public class UiService {
         } else {
             dataSet = new DataSet();
         }
-
+        tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setChartType(tabWidgetBean.getChartType());
         tabWidget.setDirectUrl(tabWidgetBean.getDirectUrl());
         tabWidget.setWidgetTitle(tabWidgetBean.getWidgetTitle());
@@ -203,6 +203,7 @@ public class UiService {
         tabWidget.setDataSetId(dataSet);
         tabWidget.setDataSourceId(dataSource);
         tabWidget.setContent(tabWidgetBean.getContent());
+        tabWidget.setCreatedTime(tabWidgetBean.getCreatedTime());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
         uiDao.deleteWidgetColumns(tabWidget.getId());
