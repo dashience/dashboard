@@ -688,30 +688,30 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<div class='ns-popover-tooltip'>" +
                 "<form class='form-inline'>" +
                 "<ul class='scheduler-list-style'>" +
-                "<li class='input-group col-sm-10'> <label>Aggregation function</label>" +
+                "<li class='input-group col-sm-12'> <label>Aggregation function</label>" +
                 "<select class='form-control' ng-model='collectionField.agregationFunction'>" +
                 "<option ng-repeat='selectAggregation in selectAggregations'" +
                 "value='{{selectAggregation.value}}'>" +
                 "{{selectAggregation.name}}</option></select></li>" +
-                "<li class='input-group col-sm-10'><label>Group priority</label><select ng-model='collectionField.groupPriority' class='form-control'>" +
+                "<li class='input-group col-sm-12'><label>Group priority</label><select ng-model='collectionField.groupPriority' class='form-control'>" +
                 "<option ng-repeat='selectGroupPriority in selectGroupPriorities' value='{{selectGroupPriority.value}}'>" +
                 "{{selectGroupPriority.num}}</option></select></li>" +
-                "<li class='input-group col-sm-10'><label>Sort</label><select ng-model='collectionField.sortPriority' class='form-control'>" +
+                "<li class='input-group col-sm-12'><label>Sort</label><select ng-model='collectionField.sortPriority' class='form-control'>" +
                 "<option ng-repeat='sort in sorting' value='{{sort.value}}'>" +
                 "{{sort.name}}</option></select></li>" +
-                "<li class='input-group col-sm-10'><label>Format</label><select ng-model='collectionField.displayFormat' class='form-control'>" +
+                "<li class='input-group col-sm-12'><label>Format</label><select ng-model='collectionField.displayFormat' class='form-control'>" +
                 "<option ng-repeat='format in formats' value='{{format.value}}'>" +
                 "{{format.name}}</option></select></li>" +
-                "<li class='input-group col-sm-10'><label>Alignment</label><select ng-model='collectionField.alignment' class='form-control'>" +
+                "<li class='input-group col-sm-12'><label>Alignment</label><select ng-model='collectionField.alignment' class='form-control'>" +
                 "<option ng-repeat='alignment in alignments' value='{{alignment.name}}'>" +
                 "{{alignment.name}}</option></select></li>" +
-                "<li class='input-group col-sm-10'><label>ColumnHide</label><select ng-model='collectionField.columnHide' class='form-control'>" +
+                "<li class='input-group col-sm-12'><label>ColumnHide</label><select ng-model='collectionField.columnHide' class='form-control'>" +
                 "<option ng-repeat='hideOption in hideOptions' value='{{hideOption.value}}'>" +
                 "{{hideOption.name}}</option></select></li>" +
-                "<li><input type='checkbox' ng-model='collectionField.search'><label>Search</label></li>" +
+                "<li><input type='checkbox' class='search-check' ng-model='collectionField.search'><label class='search-label'>Search</label></li>" +
 //                        "<li><a class='btn' ng-click='deleteColumn($index)'>Delete</a></li>" +
                 "</ul>" +
-                "<button class='btn btn-primary btn-sm' ng-click='hidePopover()'>Close</button>&nbsp;" +
+                "<button class='btn btn-info btn-sm' ng-click='hidePopover()'>Close</button>&nbsp;" +
                 "<button class='btn btn-warning btn-sm' ng-click='deleteColumn($index)'>Delete</button>" +
                 "</form>" +
                 "</div>" +
