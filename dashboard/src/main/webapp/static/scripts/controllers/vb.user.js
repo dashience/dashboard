@@ -199,3 +199,18 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         });
     };
 });
+app.directive("showPassword", function () {
+    return {
+        restrict: "EA",
+        link: function (scope, element, attrs) {
+            element.on('click', function () {
+                var inputType = angular.element(angular.element(element[0]).parent().siblings()[0]).attr("type");
+                if (inputType != null && inputType.toLowerCase() == "password") {
+                    angular.element(angular.element(element[0]).parent().siblings()[0]).attr("type", "text");
+                } else {
+                    angular.element(angular.element(element[0]).parent().siblings()[0]).attr("type", "password");
+                }
+            })
+        }
+    }
+});
