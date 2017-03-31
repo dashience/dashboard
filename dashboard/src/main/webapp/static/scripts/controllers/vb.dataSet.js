@@ -1,4 +1,4 @@
-app.controller('DataSetController', function ($scope, $http, $stateParams, $filter) {
+app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout) {
     $scope.dataSetFlag = false;
     $scope.dataSetFlagValidation = function (dataSource)
     {
@@ -366,7 +366,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             if (dataSet.dataSourceId.dataSourceType === "instagram")
             {
-                $scope.report=$scope.instagramPerformance;
+                $scope.report = $scope.instagramPerformance;
             } else {
 
                 $scope.report = $scope.reportPerformance;
@@ -385,6 +385,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.previewDataSet = function (dataSet) {
         $scope.showPreviewChart = true;
         $scope.previewData = dataSet;
+    };
+
+    $scope.refreshDataSet = function (dataSet) {
+        console.log(dataSet.query)
+        $scope.showPreviewChart = true;
+        $scope.previewData = null;
+        $timeout(function () {
+            $scope.previewData = dataSet;
+        }, 50);
     };
 
     $scope.clearDataSet = function (dataSet) {
@@ -450,7 +459,25 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             if (dataSourcePath.dataSourceId.dataSourceType == "facebook") {
                 url = "admin/proxy/getData?";
             }
-            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString + "&accountId=" + $stateParams.accountId + "&dataSetReportName=" + dataSourcePath.reportName + "&timeSegment=" + dataSourcePath.timeSegment + "&driver=" + dataSourcePath.dataSourceId.dataSourceType + "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSourcePath.dataSourceId.userName + '&password=' + dataSourcePath.dataSourceId.password + '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+
+            var dataSourcePassword;
+            if (dataSourcePath.dataSourceId.password) {
+                dataSourcePassword = dataSourcePath.dataSourceId.password;
+            } else {
+                dataSourcePassword = '';
+            }
+            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
+                    "&accountId=" + $stateParams.accountId +
+                    "&dataSetReportName=" + dataSourcePath.reportName +
+                    "&timeSegment=" + dataSourcePath.timeSegment +
+                    "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
+                    "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
+                    "&location=" + $stateParams.locationId +
+                    "&startDate=" + $stateParams.startDate +
+                    "&endDate=" + $stateParams.endDate +
+                    '&username=' + dataSourcePath.dataSourceId.userName +
+                    '&password=' + dataSourcePassword +
+                    '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;
