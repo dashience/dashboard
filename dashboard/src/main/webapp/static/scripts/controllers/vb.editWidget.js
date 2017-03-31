@@ -227,7 +227,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&dataSetId=" + widget.dataSetId.id + "&accountId=" + $stateParams.accountId + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&dataSetId=" + widget.dataSetId.id + "&accountId=" + $stateParams.accountId + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     widget.columns = response.columnDefs;
                     $scope.collectionFields = response.columnDefs;
@@ -255,7 +255,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         if (dataSet.dataSourceId.dataSourceType == "facebook") {
             url = "admin/proxy/getData?";
         }
-        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&dataSetId=" + dataSet.id + "&accountId=" + $stateParams.accountId + "&driver=" + dataSet.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
+        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&dataSetId=" + dataSet.id + "&accountId=" + $stateParams.accountId + "&driver=" + dataSet.dataSourceId.sqlDriver + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             angular.forEach(response.columnDefs, function (value, key) {
                 widget.columns.push({fieldName: value.fieldName, displayName: value.displayName, xAxis: value.xAxis, yAxis: value.yAxis,
@@ -826,7 +826,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
                 url = "admin/proxy/getData?";
             }
-            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
+            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
                 console.log(response)
