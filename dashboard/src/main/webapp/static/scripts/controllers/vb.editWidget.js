@@ -1,12 +1,12 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
-    $scope.accountID = $stateParams.accountId;
+    $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
-    $scope.productID = $stateParams.productId;
-    $scope.widgetTabId = $stateParams.tabId;
-    $scope.widgetStartDate = $stateParams.startDate;
-    $scope.widgetEndDate = $stateParams.endDate;
+    $scope.productId = $stateParams.productId;
+    $scope.tabId = $stateParams.tabId;
+    $scope.startDate = $stateParams.startDate;
+    $scope.endDate = $stateParams.endDate;
 
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
