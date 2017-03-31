@@ -74,7 +74,7 @@ public class ProxyController {
 
     @Autowired
     private AdwordsService adwordsService;
-    
+
     @Autowired
     private GaService gaService;
 
@@ -97,7 +97,48 @@ public class ProxyController {
         if (dataSourceType.equalsIgnoreCase("analytics")) {
             return getAnalyticsData(request, response);
         }
+        if (dataSourceType.equalsIgnoreCase("https")) {
+            getHttpsData(request, response);
+        }
         return null;
+    }
+
+    public void getHttpsData(HttpServletRequest request, HttpServletResponse response) {
+        String url = request.getParameter("url");
+        String dataSetId = request.getParameter("dataSetId");
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                if (url == null) {
+                    url = dataSet.getQuery();
+                }
+            }
+        }
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        String accountIdStr = request.getParameter("accountId");
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
+            String key = entrySet.getKey();
+            String[] value = entrySet.getValue();
+            valueMap.put(key, Arrays.asList(value));
+        }
+        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+            Property property = iterator.next();
+            List<String> valueList = new ArrayList();
+            valueList.add(property.getPropertyValue());
+            valueMap.put(property.getPropertyName(), valueList);
+        }
+        
+        String data = Rest.getData(url, valueMap);
+        try {
+            response.getOutputStream().write(data.getBytes());
+        } catch (IOException ex) {
+            Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private Object getAnalyticsData(HttpServletRequest request, HttpServletResponse response) {
@@ -141,7 +182,7 @@ public class ProxyController {
         returnMap.put("data", data);
         return returnMap;
     }
-    
+
     private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
