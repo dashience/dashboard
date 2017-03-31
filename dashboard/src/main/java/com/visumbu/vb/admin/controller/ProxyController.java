@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.admin.controller;
 
+import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.UiService;
@@ -70,6 +71,9 @@ public class ProxyController {
     @Autowired
     private FacebookService facebookService;
 
+    @Autowired
+    private AdwordsService adwordsService;
+
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
@@ -83,7 +87,51 @@ public class ProxyController {
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             return getFbData(request, response);
         }
+        if (dataSourceType.equalsIgnoreCase("adwords")) {
+            return getAdwordsData(request, response);
+        }
         return null;
+    }
+
+    private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSetId = request.getParameter("dataSetId");
+        String dataSetReportName = request.getParameter("dataSetReportName");
+        String timeSegment = request.getParameter("timeSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+        String productSegment = request.getParameter("productSegment");
+        if (productSegment == null) {
+            productSegment = "daily";
+        }
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+                productSegment = dataSet.getProductSegment();
+            }
+        }
+        String accountIdStr = request.getParameter("accountId");
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
+        List<Map<String, String>> data = adwordsService.get(dataSetReportName, adwordsAccountId, startDate, endDate, timeSegment, productSegment);
+        System.out.println(data);
+        Map returnMap = new HashMap();
+        List<ColumnDef> columnDefs = getColumnDef(data);
+        returnMap.put("columnDefs", columnDefs);
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", data);
+        return returnMap;
     }
 
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
@@ -111,19 +159,9 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String facebookAccountId = "";
-        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
-            Property property = iterator.next();
-            if (property.getPropertyName().equalsIgnoreCase("facebookAccountId")) {
-                facebookAccountId = property.getPropertyValue();
-            }
-        }
+        String facebookAccountId = getAccountId(accountProperty, "facebookAccountId");
         Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
         String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
-        System.out.println("Report Name ---- " + dataSetReportName);
-        System.out.println("Account Id ---- " + facebookAccountIdInt);
-        System.out.println("Time segment ---- " + timeSegment);
-        System.out.println("Start Date ---- " + startDate);
         List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, startDate, endDate, timeSegment);
         System.out.println(data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
@@ -137,6 +175,17 @@ public class ProxyController {
         }
         returnMap.put("data", data);
         return returnMap;
+    }
+
+    private String getAccountId(List<Property> accountProperty, String propertyName) {
+        String propertyAccountId = null;
+        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+            Property property = iterator.next();
+            if (property.getPropertyName().equalsIgnoreCase(propertyName)) {
+                propertyAccountId = property.getPropertyValue();
+            }
+        }
+        return propertyAccountId;
     }
 
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
