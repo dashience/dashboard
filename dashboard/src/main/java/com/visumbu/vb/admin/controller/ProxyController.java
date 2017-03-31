@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.controller;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
+import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
@@ -73,6 +74,9 @@ public class ProxyController {
 
     @Autowired
     private AdwordsService adwordsService;
+    
+    @Autowired
+    private GaService gaService;
 
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -90,9 +94,54 @@ public class ProxyController {
         if (dataSourceType.equalsIgnoreCase("adwords")) {
             return getAdwordsData(request, response);
         }
+        if (dataSourceType.equalsIgnoreCase("analytics")) {
+            return getAnalyticsData(request, response);
+        }
         return null;
     }
 
+    private Object getAnalyticsData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSetId = request.getParameter("dataSetId");
+        String dataSetReportName = request.getParameter("dataSetReportName");
+        String timeSegment = request.getParameter("timeSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+        String productSegment = request.getParameter("productSegment");
+        if (productSegment == null) {
+            productSegment = "daily";
+        }
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+                productSegment = dataSet.getProductSegment();
+            }
+        }
+        String accountIdStr = request.getParameter("accountId");
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String gaAccountId = getAccountId(accountProperty, "gaAccountId");
+        String gaProfileId = getAccountId(accountProperty, "gaProfileId");
+        List<Map<String, String>> data = gaService.get(dataSetReportName, gaAccountId, gaProfileId, startDate, endDate);
+        System.out.println(data);
+        Map returnMap = new HashMap();
+        List<ColumnDef> columnDefs = getColumnDef(data);
+        returnMap.put("columnDefs", columnDefs);
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", data);
+        return returnMap;
+    }
+    
     private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
