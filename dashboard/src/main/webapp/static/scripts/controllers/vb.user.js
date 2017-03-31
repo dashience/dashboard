@@ -36,8 +36,11 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         $http.get('admin/ui/user').success(function (response) {
             $scope.userAgencyDetails = [];
             $scope.users = response;
-
             angular.forEach($scope.users, function (val, key) {
+                console.log(val)
+                if(!val.agencyId){
+                    return;
+                }
                 $scope.userAgencyDetails.push(val.agencyId.agencyName)
                 $scope.userAgency = unique($scope.userAgencyDetails);
             });
@@ -53,18 +56,18 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         $scope.agencyListName = agencyUserName;
     }
     $scope.saveUser = function (user) {
-        var userData = {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            userName: user.userName,
-            email: user.email,
-            password: user.password,
-            primaryPhone: user.primaryPhone,
-            secondaryPhone: user.secondaryPhone,
-            agencyId: user.agencyId.id
-        };
-        $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: userData}).success(function (response) {
+//        var userData = {
+//            id: user.id,
+//            firstName: user.firstName,
+//            lastName: user.lastName,
+//            userName: user.userName,
+//            email: user.email,
+//            password: user.password,
+//            primaryPhone: user.primaryPhone,
+//            secondaryPhone: user.secondaryPhone,
+//            agencyId: user.agencyId.id?user.agencyId.id:''
+//        };
+        $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
             getUser();
         });
         $scope.user = "";

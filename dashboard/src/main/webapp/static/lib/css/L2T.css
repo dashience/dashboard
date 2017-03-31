@@ -1548,7 +1548,7 @@ body {
     position: absolute;
     left:0;
     right:0;
-/*        bottom:0px;*/
+    /*        bottom:0px;*/
 }
 @media (max-width: 768px) {
     .content {
@@ -3798,7 +3798,7 @@ button.close {
 }
 
 .panel-tools {
-/*    margin-top: -8px;*/
+    /*    margin-top: -8px;*/
     /*z-index: 999;*/
     margin-right: 10px;
 }
@@ -4073,4 +4073,7 @@ table td[class*="col-"], table th[class*="col-"] {
     margin-left: 0;
     height: 260px;
     overflow-y: auto;
+}
+.accountUser-Table{
+    clear: both;
 }

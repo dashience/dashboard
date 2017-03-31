@@ -124,13 +124,9 @@
 
                             <div class="tab-content">
                                 <div ng-show="isSetAgency(1)" class="license">
-
-
-
                                     <div class="col-md-12">
                                         <form class="form-horizontal">
-                                            <div class="form-group">                                                    
-
+                                            <div class="form-group">
                                                 <div class="row col-md-4 image-upload">
                                                     <label for="file-input">
                                                         <img class="img-responsive img-thumbnail" ng-src="{{agency.logo}}"/>
@@ -141,7 +137,6 @@
                                                 <div class="pull-right account-new">
                                                     <button class="btn btn-success" ng-click="addAgency()">New</button>
                                                 </div>
-
                                             </div>
                                             <div class="form-group"> 
                                                 <label>Agency Name</label>
@@ -169,13 +164,8 @@
                                             </div>
                                         </form>
                                     </div>
-
-
                                 </div>
                                 <div ng-show="isSetAgency(2)" class="license">
-
-
-
                                     <div class="col-md-12">
                                         <form class="form-horizontal">
                                             <div class="form-group">
@@ -219,14 +209,10 @@
                                                 <!--<button class="btn btn-warning" ng-click="clearAgencyLicence(agencyLicence)">Cancel</button>-->
                                             </div>
                                         </form>
-                                    </div>                                           
-
-
-
+                                    </div> 
                                 </div>
                                 <div ng-show="isSetAgency(3)" class="license">
                                     <section ng-hide="showAgencyUserForm">
-
                                         <div class="col-md-12">
                                             <table class="table table-responsive table-fixed">
                                                 <thead>
@@ -240,7 +226,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr ng-repeat="agencyUser in agencyUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
+                                                    <tr class="accountUser-Table" ng-repeat="agencyUser in agencyUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
                                                         <td class="col-xs-6">{{agencyUser.userName}}</td>
                                                         <td class="col-xs-4">{{agencyUser.email}}</td>
                                                         <td class="col-xs-2"></td>
@@ -248,13 +234,8 @@
                                                 </tbody>
                                             </table>                                                
                                         </div>
-
                                     </section>
-
                                     <section ng-show="showAgencyUserForm" class="license">
-
-
-
                                         <div class="col-md-12">
                                             <form class="form-horizontal">
                                                 <div class="form-group">
@@ -291,9 +272,6 @@
                                                 </div>
                                             </form>
                                         </div>
-
-
-
                                     </section>
                                 </div>
                                 <div ng-show="isSetAgency(4)" class="license">
@@ -312,7 +290,7 @@
                                                     </tr>
                                                 </thead>                                           
                                                 <tbody data-as-sortable="changeOrder(agencyProducts)" data-ng-model="agencyProducts" ng-submit="changeOrder(agencyProducts)" unselectable="on" class="unselectable" style="height:420px">
-                                                    <tr ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAgencyProduct}" ng-click="setAgencyUserRow(agencyProduct, $index)" data-as-sortable-item>
+                                                    <tr class="accountUser-Table" ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAgencyProduct}" ng-click="setAgencyUserRow(agencyProduct, $index)" data-as-sortable-item>
                                                         <td data-as-sortable-item-handle class="col-xs-4">
                                                             <div class="image-upload">
                                                                 <label for="file-input">
@@ -326,15 +304,8 @@
                                                 </tbody>
                                             </table>                                                
                                         </div>
-
                                     </section>
-
                                     <section ng-show="showAgencyProductForm" class="license">
-
-
-
-
-
                                         <div class="col-md-12">
                                             <form class="form-horizontal">
                                                 <div class="form-group">                                                    
@@ -373,14 +344,9 @@
                                                 </div>
                                             </form>
                                         </div>
-
-
-
-
                                     </section>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -415,7 +381,7 @@
                                 </thead>
                                 <tbody>
 
-                                    <tr data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:5:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <tr class="accountUser-Table" data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:5:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                         <!--<tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">-->
                                         <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
                                             {{agency.agencyName}}

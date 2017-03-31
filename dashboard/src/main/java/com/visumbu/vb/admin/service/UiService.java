@@ -140,6 +140,9 @@ public class UiService {
     public List<TabWidget> getTabWidget(Integer tabId) {
         return uiDao.getTabWidget(tabId);
     }
+    public List<TabWidget> getReportWidgetByWidgetId(Integer widgetId) {
+        return uiDao.getReportWidgetByWidgetId(widgetId);
+    }
 
     public Dashboard getDashboardById(Integer dashboardId) {
         return uiDao.getDashboardById(dashboardId);
@@ -265,7 +268,8 @@ public class UiService {
     }
 
     public Report deleteReport(Integer reportId) {
-        return (Report) uiDao.delete(reportId);
+        return uiDao.deleteReport(reportId);
+        //return (Report) uiDao.delete(reportId);
     }
 
     public List getReport() {

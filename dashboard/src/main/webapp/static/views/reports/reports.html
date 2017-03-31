@@ -152,7 +152,7 @@
                 <!--<td><img class="img-responsive img-thumbnail" src="{{report.logo}}"/></td>-->
                 <td>
                     <button class="btn btn-info btn-xs"><i class="fa fa-download"></i></button>
-                    <button class="btn btn-info btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>
+                    <button class="btn btn-primary btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>
 
                     <div class="report-bottomMenu pull-right" ng-show="showSchedulerList[report.id]">
                         <div class="report-menuHeader">
@@ -249,6 +249,7 @@
                             </form>
                         </div> 
                     </div>
+                    <button class="btn btn-default btn-xs" ng-click="deleteReport(report, $index)"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         </tbody>

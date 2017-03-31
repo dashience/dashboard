@@ -42,15 +42,21 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
         scheduler.reportId = report.id;
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });
-       // $scope.scheduler = "";
+        // $scope.scheduler = "";
     };
-    
-    $scope.goScheduler = function(){
+
+    $scope.deleteReport = function (report, index) {
+        $http({method: 'DELETE', url: 'admin/ui/report/' + report.id}).success(function (response) {
+            $scope.reports.splice(index, 1);
+        });
+    }
+
+    $scope.goScheduler = function () {
         $state.go("index.schedulerIndex.scheduler", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
+            accountId: $stateParams.accountId,
+            accountName: $stateParams.accountName,
+            startDate: $stateParams.startDate,
+            endDate: $stateParams.endDate
+        });
     };
 });

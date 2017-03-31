@@ -37,7 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDao extends BaseDao {
 
     public List<VbUser> read() {
-        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where (agencyId.status is null or agencyId.status != 'Deleted') and (status is null or status != 'Deleted')");
+//        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where (agencyId.status is null or agencyId.status != 'Deleted') and (status is null or status != 'Deleted')");
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where status is null or status != 'Deleted'");
         return query.list();
     }
 

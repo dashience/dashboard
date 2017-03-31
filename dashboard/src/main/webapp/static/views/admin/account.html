@@ -11,7 +11,7 @@
         overflow-y: auto !important;
         width: 100%;
     }
-   .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
         display: block;
     }
     .table-fixed tbody td, .table-fixed thead > tr> th {
@@ -38,7 +38,7 @@
     }
     .hpanel .panel-body {
         border: 1px solid #e4e5e7;
-    }
+    }    
 
 </style>
 <section class="content">
@@ -232,7 +232,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
+                                                <tr class="accountUser-Table" ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
                                                     <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
                                                                                                                     {{accountUser.accountId.accountName}}
                                                                                                                 </td>-->
@@ -251,8 +251,8 @@
                                                     </td>
                                                     <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
                                                         <div class="checkbox checkbox-slider--b">
-                                                            <label class="col-sm-4" for="field{{accountUser.id}}">
-                                                                <input id="field{{accountUser.id}}" type="checkbox" ng-model="accountUser.status" ng-change="saveStatus(accountUser)" value="1" />
+                                                            <label class="col-sm-4" for="field{{$index + 1}}">
+                                                                <input id="field{{$index + 1}}" type="checkbox" ng-model="accountUser.status" ng-change="saveStatus(accountUser)" value="1" />
                                                                 <span></span>
                                                             </label>
                                                         </div>

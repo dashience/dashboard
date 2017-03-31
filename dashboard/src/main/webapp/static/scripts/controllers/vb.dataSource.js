@@ -32,11 +32,11 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         },
         {
             type: 'adwords',
-            name: 'Adwords'   
+            name: 'Adwords'
         },
         {
             type: 'analytics',
-            name: 'Analytics'   
+            name: 'Analytics'
         }
     ];
 
@@ -98,9 +98,9 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
 
     $scope.getDataSource = function (data) {
         console.log(data);
-        
+
         $("#dataSourceType").val(data.dataSourceType);
-        localStorage.setItem("dataSourceType",$("#dataSourceType").val());
+        localStorage.setItem("dataSourceType", $("#dataSourceType").val());
         $scope.dataSourceUrl = getDataSourceUrl(data.dataSourceType);
         console.log(data);
         window.open($scope.dataSourceUrl, data.dataSourceType, "myWindow", 'width=800,height=600');
@@ -169,7 +169,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             userName: dataSource.userName,
             dataSourceType: dataSource.dataSourceType,
             sourceFile: dataSource.sourceFile ? dataSource.sourceFile : $scope.fileReader,
-            sourceFileName: $scope.sourceFileName,
+            //sourceFileName: $scope.sourceFileName,
             accessToken: dataSource.accessToken ? dataSource.accessToken : '',
             agencyId: dataSource.agencyId,
             userId: dataSource.userId,
@@ -181,6 +181,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         });
         $scope.dataSource = "";
         $scope.sourceFileName = "";
+        $scope.selectedRow = null;
     };
 
     $scope.selectedRow = null;
@@ -207,6 +208,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
     $scope.clearDataSource = function (dataSource) {
         $scope.dataSource = "";
         $scope.sourceFileName = "";
+        $scope.selectedRow = null;
     };
 
     $scope.deleteDataSource = function (dataSource, index) {
