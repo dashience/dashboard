@@ -568,7 +568,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             dateDuration: widget.dateDuration,
             content: widget.content
         };
-
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });

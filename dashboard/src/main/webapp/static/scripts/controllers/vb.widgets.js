@@ -26,47 +26,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
     getWidgetItem();
-    $scope.expandWidget = function (widget) {
-        if (widget.chartType == 'ticker') {
-            if (widget.width == 4) {
-                widget.width = widget.width + 2;
-            }
-            else if (widget.width == 6) {
-                widget.width = widget.width + 6;
-            } 
-            else {
-                widget.width = widget.width = 4;
-            }
-        }
-        if (widget.chartType !='ticker') {
-            if (widget.width == 12) {
-                widget.width = widget.width - 6;
-            }
-            else if (widget.width == 6) {
-                widget.width = widget.width -2;
-            } 
-            else {
-                widget.width = widget.width = 12;
-            }
-        }
-        var data = {
-            id: widget.id,
-            chartType: $scope.editChartType ? $scope.editChartType : widget.chartType,
-            widgetTitle: widget.widgetTitle,
-            widgetColumns: widget.columns,
-            dataSourceId: widget.dataSourceId.id,
-            dataSetId: widget.dataSetId.id,
-            tableFooter: widget.tableFooter,
-            zeroSuppression: widget.zeroSuppression,
-            maxRecord: widget.maxRecord,
-            dateDuration: widget.dateDuration,
-            content: widget.content,
-            width:widget.width
-        };
-         $http({method:widget.width?'PUT':'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-             
-         })
-    }
     $scope.addWidget = function (newWidget) {       //Add Widget
         var data = {
             width: newWidget, 'minHeight': 25, columns: [], chartType: ""
@@ -1382,7 +1341,7 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                     labels["format"][displayName] = function (value) {
                         return value;
                     };
-                }               
+                }
                 if (value.sortOrder) {
                     sortField = value.fieldName;
                     sortOrder = value.sortOrder;

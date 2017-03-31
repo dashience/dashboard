@@ -440,7 +440,7 @@
                                 </thead>
                                 <tbody>
                                     
-                                    <tr data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:5:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <tr data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                         <!--<tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">-->
                                         <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
                                             {{agency.agencyName}}
@@ -488,7 +488,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
+                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" max-size="10" data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
                         </div>
                     </div>
                 </div>  

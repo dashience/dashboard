@@ -409,7 +409,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
+                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" max-size="10" data-pagination-id="myPagedItems"  data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
                         </div>
                     </div>  
                 </div> 
