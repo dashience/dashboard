@@ -81,9 +81,9 @@
                                         <option ng-repeat="timeSegments in timeSegment"  value="{{timeSegments.type}}">
                                             {{timeSegments.name}}</option>
                                     </select>
-                                    <label ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram')">Product Segments</label>
+                                    <label ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram' || dataSet.dataSourceId.dataSourceType=='adwords' || dataSet.dataSourceId.dataSourceType=='analytics')">Product Segments</label>
                                     
-                                    <select class="form-control" ng-model="dataSet.productSegment" ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram')">
+                                    <select class="form-control" ng-model="dataSet.productSegment" ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram' || dataSet.dataSourceId.dataSourceType=='adwords' || dataSet.dataSourceId.dataSourceType=='analytics')">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="productSegments in productSegment"  value="{{productSegments.type}}">{{productSegments.name}}</option>
                                     </select>
