@@ -1,7 +1,7 @@
 app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter) {
-
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
+    $scope.reportId = $stateParams.reportId;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
 
@@ -62,8 +62,11 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         {name: 'No', value: "no"}
     ];
 
-    $http.get("admin/ui/report/" + $stateParams.reportId + "?locationId=" + $stateParams.locationId).success(function (response) {
+    $http.get("admin/ui/report/" + $stateParams.reportId + "?locationId=" + $stateParams.accountId).success(function (response) {
         $scope.reports = response;
+        if (!response) {
+            $scope.editReport = true;
+        }
         $scope.reportTitle = response.reportTitle;
         $scope.description = response.description;
         $scope.reportTitle = response.reportTitle;
@@ -73,7 +76,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         })
     });
 
-    $http.get('admin/ui/reportWidget/' + $stateParams.reportId + "?locationId=" + $stateParams.locationId).success(function (response) {
+    $http.get('admin/ui/reportWidget/' + $stateParams.reportId + "?locationId=" + $stateParams.accountId).success(function (response) {
         $scope.reportWidgets = response;
         angular.forEach(response, function (value, key) {
             console.log(value.widgetId)
@@ -97,11 +100,11 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $scope.uploadLogo = e.target.result;
         });
     };
-      
+
     $scope.saveReportData = function () {
-        if(0 == $stateParams.reportId){
+        if (0 == $stateParams.reportId) {
             $scope.selectReportId = "";
-        }else{
+        } else {
             $scope.selectReportId = $stateParams.reportId;
         }
         var data = {
@@ -115,14 +118,14 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         });
     };
 
-    $scope.addReportWidget = function (newWidget) {                                     //Add new Report Widget
-        var data = {
-            width: newWidget, 'minHeight': 25, columns: []
-        };
-        $http({method: 'POST', url: 'admin/ui/reportWidget/' + $stateParams.reportId, data: data}).success(function (response) {
-            $scope.reportWidgets.push({id: response.id, width: newWidget, 'minHeight': 25, columns: []});
-        });
-    };
+//    $scope.addReportWidget = function (newWidget) {                                     //Add new Report Widget
+//        var data = {
+//            width: newWidget, 'minHeight': 25, columns: []
+//        };
+//        $http({method: 'POST', url: 'admin/ui/reportWidget/' + $stateParams.reportId, data: data}).success(function (response) {
+//            $scope.reportWidgets.push({id: response.id, width: newWidget, 'minHeight': 25, columns: []});
+//        });
+//    };
 
     $scope.deleteReportWidget = function (reportWidget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/reportWidget/' + reportWidget.id}).success(function (response) {

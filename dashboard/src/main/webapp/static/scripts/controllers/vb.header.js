@@ -31,16 +31,16 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //
 //    });
 
-    $http.get('admin/ui/userAccountByUser').success(function (response) {        
-        if(!response[0]){
+    $http.get('admin/ui/userAccountByUser').success(function (response) {
+        if (!response[0]) {
             return;
         }
         $scope.accounts = response;
         $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
         // $scope.name = $filter('filter')($scope.accounts, {id: response[0].id})[0];
-        angular.forEach($scope.accounts, function(value, key){
-            if(value.accountId.id == $stateParams.accountId) {
+        angular.forEach($scope.accounts, function (value, key) {
+            if (value.accountId.id == $stateParams.accountId) {
                 $scope.name = value;
             }
         });
@@ -114,15 +114,26 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
-            } else if ($scope.getCurrentPage() === "franchiseMarketing") {
-                $state.go("index.franchiseMarketing", {
+            } else if ($scope.getCurrentPage() === "updateReportWidget") {
+                $state.go("index.widgetEditByReport", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
-                    productId: $stateParams.productId,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                    reportId: $stateParams.reportId,
+                    reportWidgetId: $stateParams.reportWidgetId,
+                    startDate: $scope.startDate,
+                    endDate: $scope.endDate
                 });
-            } else if ($scope.getCurrentPage() === "dataSource") {
+            }
+//            else if ($scope.getCurrentPage() === "franchiseMarketing") {
+//                $state.go("index.franchiseMarketing", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+//                    productId: $stateParams.productId,
+//                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+//                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+//                });
+//            } 
+            else if ($scope.getCurrentPage() === "dataSource") {
                 $state.go("index.dataSource", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
@@ -143,7 +154,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
-            }else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+            } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
                 $state.go("index.schedulerIndex.editOrNewScheduler", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
@@ -151,7 +162,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
-            }  else if ($scope.getCurrentPage() === "user") {
+            } else if ($scope.getCurrentPage() === "user") {
                 $state.go("index.user", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
@@ -241,19 +252,30 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $state.go("index.report.newOrEdit", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                productId: $stateParams.productId,
+                reportId: $stateParams.reportId,
                 startDate: $scope.startDate,
                 endDate: $scope.endDate
             });
-        } else if ($scope.getCurrentPage() === "franchiseMarketing") {
-            $state.go("index.franchiseMarketing", {
+        } else if ($scope.getCurrentPage() === "updateReportWidget") {
+            $state.go("index.widgetEditByReport", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                productId: $stateParams.productId,
+                reportId: $stateParams.reportId,
+                reportWidgetId: $stateParams.reportWidgetId,
                 startDate: $scope.startDate,
                 endDate: $scope.endDate
             });
-        } else if ($scope.getCurrentPage() === "dataSource") {
+        }
+//        else if ($scope.getCurrentPage() === "franchiseMarketing") {
+//            $state.go("index.franchiseMarketing", {
+//                accountId: $stateParams.accountId,
+//                accountName: $stateParams.accountName,
+//                productId: $stateParams.productId,
+//                startDate: $scope.startDate,
+//                endDate: $scope.endDate
+//            });
+//        }
+        else if ($scope.getCurrentPage() === "dataSource") {
             $state.go("index.dataSource", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
@@ -274,7 +296,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $scope.startDate,
                 endDate: $scope.endDate
             });
-        }else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+        } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.report.newOrEdit", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
@@ -321,9 +343,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("report") > 0) {
             return "reports";
         }
-        if (url.indexOf("franchiseMarketing") > 0) {
-            return "franchiseMarketing";
+        if (url.indexOf("updateReportWidget") > 0) {
+            return "updateReportWidget";
         }
+//        if (url.indexOf("franchiseMarketing") > 0) {
+//            return "franchiseMarketing";
+//        }
         if (url.indexOf("dataSource") > 0) {
             return "dataSource";
         }

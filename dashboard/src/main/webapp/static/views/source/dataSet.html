@@ -49,9 +49,9 @@
         <div class="row">
             <div class="col-lg-12">
 
-                <div class="hpanel">
+                <div class="col-md-6">
 
-                    <div class="col-md-6">
+                    <div class="hpanel">
                         <div class="panel-body">
                             <form class="col-md-12 form-horizontal">
                                 <div class="form-group">
@@ -65,31 +65,31 @@
                                             ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType)">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     </select>
-                                    
+
                                     <div ng-show="dataSetFlag">
-                                    <label>Report</label>
-                                    <select class="form-control" ng-model="dataSet.reportName" ng-change="getTimeSegemens()">
-                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                        <option ng-repeat="reportPerformances in report track by $index"  value="{{reportPerformances.type}}">
-                                            {{reportPerformances.name}}</option>
-                                    </select>
-                                    
-                                    <label>Time Segments</label>
-                                   
-                                    <select class="form-control" ng-model="dataSet.timeSegment">
-                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                        <option ng-repeat="timeSegments in timeSegment"  value="{{timeSegments.type}}">
-                                            {{timeSegments.name}}</option>
-                                    </select>
-                                    <label ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram')">Product Segments</label>
-                                    
-                                    <select class="form-control" ng-model="dataSet.productSegment" ng-if="!(dataSet.dataSourceId.dataSourceType=='facebook' || dataSet.dataSourceId.dataSourceType=='instagram')">
-                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                        <option ng-repeat="productSegments in productSegment"  value="{{productSegments.type}}">{{productSegments.name}}</option>
-                                    </select>
+                                        <label>Report</label>
+                                        <select class="form-control" ng-model="dataSet.reportName" ng-change="getTimeSegemens()">
+                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                            <option ng-repeat="reportPerformances in report track by $index"  value="{{reportPerformances.type}}">
+                                                {{reportPerformances.name}}</option>
+                                        </select>
+
+                                        <label>Time Segments</label>
+
+                                        <select class="form-control" ng-model="dataSet.timeSegment">
+                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                            <option ng-repeat="timeSegments in timeSegment"  value="{{timeSegments.type}}">
+                                                {{timeSegments.name}}</option>
+                                        </select>
+                                        <label ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram')">Product Segments</label>
+
+                                        <select class="form-control" ng-model="dataSet.productSegment" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram')">
+                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                            <option ng-repeat="productSegments in productSegment"  value="{{productSegments.type}}">{{productSegments.name}}</option>
+                                        </select>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
                                     <label>Query</label>
                                     <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
@@ -105,9 +105,9 @@
                 </div>
 
 
-                <div class="hpanel">
-                    <div class="col-md-6">
 
+                <div class="col-md-6">
+                    <div class="hpanel">
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-8 data-search">
@@ -118,7 +118,7 @@
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
                                             placeholder="Data Source" 
                                             ng-model="dataSourceId">
-                                        
+
                                         <option value="" selected="selected" ng-disabled="true">Search Data Source...</option>
                                     </select>
                                 </div></div>
@@ -182,15 +182,13 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
-        <div class="row">
+        <div class="row" ng-show="showPreviewChart" ng-if="previewData">
             <div class="col-md-12">
                 <div class="hpanel">
                     <div class="panel-body">
-                        <div ng-show="showPreviewChart" class="box-body popup-head" ng-if="previewData">
+                        <div class="box-body popup-head">
                             <div class="row">
                                 <div id="changes-height" class="table-responsive">
                                     <div preview-Table path="{{previewData}}"></div>

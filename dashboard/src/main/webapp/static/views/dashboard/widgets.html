@@ -123,7 +123,7 @@
         z-index: 9999;
         position: fixed;
         border: 1px solid #ccc;
-        background-color: #EBEEE1;
+        background-color: #FFF;
         font-size: 12px;
         width: 300px;
         height: 466px;
@@ -180,7 +180,6 @@
     .report-body-imgs.in{
         border-radius: 50%;
         width: 74px;
-        height: 74px;
     }
     .report-body-imgs{
         border: 0 none;
@@ -197,11 +196,12 @@
         max-width: 62%;
     }
     .report-desc-list{
-        background: #FCFBF6 none repeat scroll 0 0;
+        
         color: #000000;
-        border-radius: 12px;
+        border-radius:5px;
         clear: both;
         display: block;
+        border: 1px solid #ddd;
         float: left;
         font-size: 13px;
         padding: 8px 16px;
@@ -259,7 +259,7 @@
         <div ng-if="widget.chartType == 'ticker'">
             <div class="col-sm-{{2 * widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                <div class="hpanel" ng-drag="true" ng-drag-data="widget">
-                    <div class="panel-tools hover-delete">
+                    <div class="panel-tools">
                         <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
                         <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
                         <div id="delete{{widget.id}}" class="modal">
@@ -357,7 +357,7 @@
 
             <div class="report-bottomMenu pull-right" ng-show="showReportList[widget.id]">
                 <div class="report-menuHeader">
-                    <div class="pull-left">
+                    <div class="col-md-10">
                         <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
                         <h1 class="report-header-title">Add {{widget.widgetTitle}} To Report</h1>
                     </div>

@@ -3,7 +3,7 @@
         z-index: 9999;
         position: fixed;
         border: 1px solid #ccc;
-        background-color: #EBEEE1;
+        background-color: #fff;
         font-size: 12px;
         width: 400px;
         height: 466px;
@@ -52,7 +52,7 @@
     .report-body-content{
         padding: 16px;
         overflow: auto;
-        height: 360px;
+        height: 308px;
     }
     .report-body-img{
         float: left;
@@ -127,12 +127,12 @@
 
 <section class="content">
     <div class="pull-right add-group">
-       
-            <span ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> Add Reports</button></span>
-        
+
+        <span ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> Add Reports</button></span>
+
     </div>
 
-    <table class="table table-bordered table-hover table-responsive">
+    <table class="table table-bordered table-hover table-responsive table-reports">
         <thead>
             <tr>
                 <th>S.No</th>
@@ -152,11 +152,11 @@
                 <!--<td><img class="img-responsive img-thumbnail" src="{{report.logo}}"/></td>-->
                 <td>
                     <button class="btn btn-info btn-xs"><i class="fa fa-download"></i></button>
-                    <button class="btn btn-info btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>
+                    <button class="btn btn-primary btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>
 
                     <div class="report-bottomMenu pull-right" ng-show="showSchedulerList[report.id]">
                         <div class="report-menuHeader">
-                            <div class="pull-left">
+                            <div class="col-md-10">
                                 <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
                                 <h1 class="report-header-title">Schedule {{report.reportTitle}}</h1>
                             </div>
@@ -249,6 +249,7 @@
                             </form>
                         </div> 
                     </div>
+                    <button class="btn btn-default btn-xs" ng-click="deleteReport(report, $index)"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         </tbody>
