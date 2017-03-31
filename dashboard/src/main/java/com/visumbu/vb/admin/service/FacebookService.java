@@ -45,6 +45,9 @@ public class FacebookService {
 
     public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Date startDate, Date endDate, String aggregation) {
         this.ACCESS_TOKEN = accessToken;
+        if (aggregation == null) {
+            aggregation = "";
+        }
         if (dataSet.equalsIgnoreCase("accountPerformance")) {
             return getAccountPerformance(accountId, startDate, endDate, aggregation);
         }
