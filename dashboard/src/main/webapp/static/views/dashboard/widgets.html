@@ -257,7 +257,7 @@
 <div>
     <div ng-repeat="widget in widgets">
         <div ng-if="widget.chartType == 'ticker'">
-            <div class="col-sm-{{widget.width?widget.width:4}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
+            <div class="col-sm-{{2*widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel" ng-drag="true" ng-drag-data="widget">
                     <div class="panel-tools hover-delete">
                         <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
@@ -287,7 +287,7 @@
         </div>
 
         <div ng-if="widget.chartType != 'ticker'">
-            <div class="col-md-{{widget.width?widget.width:12}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
+            <div class="col-md-{{2*widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget"> 
                     <div class="panel-heading">
                         <div class="panel-tools">
