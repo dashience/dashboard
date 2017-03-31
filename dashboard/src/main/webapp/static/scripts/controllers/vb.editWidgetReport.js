@@ -1,23 +1,27 @@
-app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
+app.controller('WidgetEditReportController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
-    $scope.accountID = $stateParams.accountId;
+    $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
-    $scope.productID = $stateParams.productId;
-    $scope.widgetTabId = $stateParams.tabId;
-    $scope.widgetStartDate = $stateParams.startDate;
-    $scope.widgetEndDate = $stateParams.endDate;
+    $scope.startDate = $stateParams.startDate;
+    $scope.endDate = $stateParams.endDate;
+    $scope.widgets = [];
 
-    $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+    $http.get("admin/ui/reportWidgetByWidgetId/" + $stateParams.reportWidgetId).success(function (response) {
+        $scope.editWidgetData = response;
         $scope.widgets = response;
-        if ($stateParams.widgetId) {
-            $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
-            angular.forEach($scope.editWidgetData, function (value, key) {
-                $scope.editWidget(value)
-            })
-        }
+//                    .push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
+        angular.forEach(response, function (value, key) {
+            $scope.editWidget(value)
+        })
     });
 
+//    function getWidgetItem() {      //Default Loading Items
+//       
+//        $http.get("admin/ui/reportWidgetByWidgetId/" + $stateParams.reportWidgetId).success(function (response) {
+//            $scope.widgets = response;
+//        });
+//    }
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},
@@ -128,16 +132,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         });
     };
 
-    $scope.widgets = [];
-    function getWidgetItem() {      //Default Loading Items
-        if (!$stateParams.tabId) {
-            $stateParams.tabId = 1;
-        }
-        $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            $scope.widgets = response;
-        });
-    }
-    getWidgetItem();
     $scope.collectionField = {};
     $scope.dispName = function (currentColumn) {
         $scope.filterName = $filter('filter')($scope.collectionFields, {fieldName: currentColumn.fieldName})[0];
@@ -533,7 +527,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }, 50);
     };
 
-    $scope.save = function (widget) {
+    $scope.saveReportWidget = function (widget) {
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -582,47 +576,24 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             dateDuration: widget.dateDuration,
             content: widget.content
         };
-
-        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+            $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
     };
 
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
-        $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-    }
-    ;
-}
-);
-
-app.filter('xAxis', [function () {
-        return function (chartXAxis) {
-            var xAxis = ['', 'x-1']
-            return xAxis[chartXAxis];
-        };
-    }]);
-app.filter('yAxis', [function () {
-        return function (chartYAxis) {
-            var yAxis = ['', 'y-1', 'y-2']
-            return yAxis[chartYAxis];
-        };
-    }]);
-app.filter('hideColumn', [function () {
-        return function (chartYAxis) {
-            var hideColumn = ['No', 'Yes']
-            return hideColumn[chartYAxis];
-        };
-    }]);
-
-app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
+        $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+    };
+});
+app.directive('reportWidgetTable', function ($http, $stateParams, $state) {
     return{
         restrict: 'AE',
         scope: {
-            previewUrls: '@',
-            previewColumns: '@',
-            previewWidget: '@',
-            previewWidgetTable: '@',
+            reportUrls: '@',
+            reportColumns: '@',
+            reportWidget: '@',
+            reportTable: '@',
         },
         template: "<div class='panel-head'>" +
                 //Panel Tools
@@ -737,11 +708,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "</div>" +
                 "</div>",
         link: function (scope, attrs) {
-            scope.previewTableHeaderName = JSON.parse(scope.previewColumns);
+            scope.previewTableHeaderName = JSON.parse(scope.reportColumns);
             scope.listColumns = [];
-            scope.listColumns = JSON.parse(scope.previewColumns);
-            scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle ? JSON.parse(scope.previewWidget).widgetTitle : "Widget Title";
-            var widget = JSON.parse(scope.previewWidget);
+            scope.listColumns = JSON.parse(scope.reportColumns);
+            scope.previewWidgetTitle = JSON.parse(scope.reportWidget).widgetTitle ? JSON.parse(scope.reportWidget).widgetTitle : "Widget Title";
+            var widget = JSON.parse(scope.reportWidget);
             scope.selectAggregations = [
                 {name: 'None', value: ""},
                 {name: 'Sum', value: "sum"},
@@ -793,7 +764,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 list.isEdit = true;
                 scope.previewTableHeaderName.push(list);
             };
-            var tableDataSource = JSON.parse(scope.previewUrls)
+            var tableDataSource = JSON.parse(scope.reportUrls)
             var data = {
                 url: '../dbApi/admin/dataSet/getData',
                 connectionUrl: tableDataSource.dataSourceId.connectionString,
@@ -820,6 +791,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 scope.previewTableHeaderName.splice($index, 1);
             }
             scope.save = function (column) {
+                console.log(scope.reportTable)
                 var widgetColumnsData = [];
                 angular.forEach(scope.previewTableHeaderName, function (value, key) {
                     var hideColumn = value.columnHide;
@@ -865,41 +837,20 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                     widgetColumns: widgetColumnsData,
                     dataSourceId: widget.dataSourceId.id,
                     dataSetId: widget.dataSetId.id,
-                    tableFooter: JSON.parse(scope.previewWidgetTable).tableFooter,
-                    zeroSuppression: JSON.parse(scope.previewWidgetTable).zeroSuppression,
-                    maxRecord: JSON.parse(scope.previewWidgetTable).maxRecord,
+                    tableFooter: JSON.parse(scope.reportTable).tableFooter,
+                    zeroSuppression: JSON.parse(scope.reportTable).zeroSuppression,
+                    maxRecord: JSON.parse(scope.reportTable).maxRecord,
                     dateDuration: widget.dateDuration,
                     content: widget.content
                 };
 
-                $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+                $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+                    $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
                 });
             };
             scope.closeWidget = function () {
                 widget = "";
-                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-            };
-        }
-    };
-});
-app.directive('ckEditor', function () {
-    return {
-        require: '?ngModel',
-        link: function (scope, elm, attr, ngModel) {
-            var ck = CKEDITOR.replace(elm[0]);
-
-            if (!ngModel)
-                return;
-
-            ck.on('pasteState', function () {
-                scope.$apply(function () {
-                    ngModel.$setViewValue(ck.getData());
-                });
-            });
-
-            ngModel.$render = function (value) {
-                ck.setData(ngModel.$viewValue);
+                $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
             };
         }
     };

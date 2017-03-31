@@ -8,7 +8,7 @@ Slider B
 .checkbox-slider--b input[type="checkbox"] {
   display: block;
   position: absolute;
-  top: 0;
+  top: 0px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -31,13 +31,14 @@ Slider B
 .checkbox-slider--b input + span:before {
   position: absolute;
   left: 0px;
+  top:0px;
   display: inline-block;
 }
 .checkbox-slider--b input + span > h4 {
   display: inline;
 }
 .checkbox-slider--b input + span {
-  padding-left: 40px;
+/*  padding-left: 40px;*/
 }
 .checkbox-slider--b input + span:before {
   content: "";
@@ -52,7 +53,7 @@ Slider B
   height: 20px;
   position: absolute;
   left: 0px;
-  top: 0;
+  top: 0px;
   display: block;
   background: #FFF;
   transition: margin-left 0.1s ease-in-out;
@@ -68,7 +69,7 @@ Slider B
   transition: background 0.2s ease-in;
 }
 .checkbox-slider--b input + span {
-  padding-left: 40px;
+/*  padding-left: 40px;*/
 }
 .checkbox-slider--b input + span:before {
   border-radius: 20px;

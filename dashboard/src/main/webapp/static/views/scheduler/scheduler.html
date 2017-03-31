@@ -1,7 +1,7 @@
 <section class="content">
     <div class="row">        
         <div class="col-lg-12 data-table-set">
-            <table class="table table-bordered table-responsive">
+            <table class="table table-bordered table-responsive table-scheduler">
                 <thead>
                     <tr>
                         <th>S.No</th>
@@ -25,7 +25,7 @@
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.startDate| date: 'MM/dd/yyyy'}}</td>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.endDate| date: 'MM/dd/yyyy'}} Last Execution Status</td>
                         <td>
-                            <div class="checkbox checkbox-slider--b">
+                            <div class="checkbox checkbox-slider--b schedule-on">
                                 <label class="" for="field{{$index + 1}}">
                                     <input id="field{{$index + 1}}" type="checkbox" ng-model="scheduler.startStop"/>
                                     <span></span>

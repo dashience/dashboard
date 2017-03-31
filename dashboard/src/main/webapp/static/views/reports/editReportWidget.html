@@ -6,11 +6,6 @@
         -moz-user-select: -moz-none;
         -khtml-user-select: none;
         -webkit-user-select: none;
-
-        /*
-          Introduced in IE 10.
-          See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-        */
         -ms-user-select: none;
         user-select: none;
     }
@@ -31,16 +26,12 @@
         opacity: 1;
     }
     .ns-popover-tooltip > li {
-        /*        display:block;*/
         padding: 3px 20px;
         clear: both;
         font-weight: normal;
-        /*line-height: 1.42857143;*/
         color: #333;
         white-space: nowrap;
-
     }
-
     .col-md-2{
         margin-top: 20px !important;
     }
@@ -54,8 +45,6 @@
     .ns-popover-tooltip a {
         text-decoration: none;
     }
-
-
     .scheduler-checkBox-label{
         display: block;
         padding-left: 15px;
@@ -112,15 +101,11 @@
     .ui-select-bootstrap > .ui-select-choices, .ui-select-bootstrap > .ui-select-no-choice {
         display: contents;
     }
-
-
-
     .search-check {
 
         vertical-align: middle;
 
     }
-
 </style>
 
 <div class="content animate-panel" ng-repeat="widget in editWidgetData">
@@ -139,7 +124,7 @@
                     <div class="input-group m-b">
                         <span class="input-group-addon">
                             <div ng-if="permission.createDataSource === true;"> 
-                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>                            
                         </span>
                         <select class="form-control m-b" ng-model="widget.dataSourceId"
@@ -155,7 +140,7 @@
                     <div class="input-group m-b">
                         <span class="input-group-addon">                                
                             <div ng-if="permission.createDataSet === true;">
-                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>
                         </span>
                         <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
@@ -363,7 +348,7 @@
                 <div class='panel-footer'>
                     <div>
                         <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                        <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
+                        <button class='btn btn-info' ng-click='saveReportWidget(widget)'><span class='fa fa-save'></span> Save</button>
                     </div>
                 </div>
             </div>
@@ -371,14 +356,13 @@
 
     </div>
     <div class="row" ng-if="editChartType === 'table'">
-        <div class="col-lg-12">
+        <div class="col-lg-12"><pre>{{widget}}</pre>
             <div class="hpanel border-table preview-table">
-                <div widget-Preview-Table 
-                     preview-Table-List='{{collectionFields}}'
-                     preview-Urls='{{previewChartUrl}}' 
-                     preview-Columns='{{widget.columns}}' 
-                     preview-Widget="{{previewColumn}}" 
-                     preview-Widget-Table="{{widget}}">
+                <div report-Widget-Table 
+                     report-Urls='{{previewChartUrl}}' 
+                     report-Columns='{{widget.columns}}' 
+                     report-Widget="{{previewColumn}}" 
+                     report-Table="{{widget}}">
                 </div>
             </div>
         </div>
@@ -408,13 +392,10 @@
                 <div class='panel-footer'>
                     <div>
                         <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                        <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
+                        <button class='btn btn-info' ng-click='saveReportWidget(widget)'><span class='fa fa-save'></span> Save</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-

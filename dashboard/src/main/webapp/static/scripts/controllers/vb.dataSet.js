@@ -343,6 +343,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
+        $scope.dataSetFlag = false;
     };
 
     $scope.editDataSet = function (dataSet) {
@@ -375,7 +376,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             $scope.dataSetFlag = false;
         }
-//        console.log(data);
     };
 
 
@@ -385,13 +385,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.previewDataSet = function (dataSet) {
         $scope.showPreviewChart = true;
         $scope.previewData = dataSet;
-        console.log(dataSet);
     };
 
     $scope.clearDataSet = function (dataSet) {
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
+        $scope.selectedRow = null;
+        $scope.dataSetFlag = false;
     };
 
     $scope.deleteDataSet = function (dataSet, index) {

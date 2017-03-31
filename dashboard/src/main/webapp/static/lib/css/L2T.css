@@ -1548,7 +1548,7 @@ body {
     position: absolute;
     left:0;
     right:0;
-    /*    bottom:0px;*/
+    /*        bottom:0px;*/
 }
 @media (max-width: 768px) {
     .content {
@@ -1720,6 +1720,9 @@ body {
     font-size: 18px;
     padding: 5px 4px;
     transition: all .3s;
+    clear: both;
+    position: relative;
+    min-height: 45px;
     border: 1px solid transparent;
 }
 .hpanel .hbuilt.panel-heading {
@@ -1767,7 +1770,6 @@ body {
 .panel-tools {
     display: inline-block;
     float: right;
-    margin-top: 8px !important;
     padding: 0;
     position: relative;
     z-index: 999;
@@ -2768,12 +2770,22 @@ h6 {
 .pagination > .active > span:hover,
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
-    background-color: #3498db;
-    border-color: #258cd1;
+    background-color: #62cb31;
+    border-color: #62cb31;
     color: #fff;
     cursor: default;
     z-index: 2;
 }
+
+.pagination > li > a, .pagination > li > span {
+    color:#777;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #62cb31 !important;
+    border-color: #62cb31 !important;
+}
+
 .hbreadcrumb a.active {
     color: #9d9fa2;
 }
@@ -3786,7 +3798,7 @@ button.close {
 }
 
 .panel-tools {
-    margin-top: -8px;
+    /*    margin-top: -8px;*/
     /*z-index: 999;*/
     margin-right: 10px;
 }
@@ -3900,8 +3912,12 @@ tfoot tr td {
     margin-top:3px;
 }
 
-.table {
+.table-reports {
     background:#fff;
+}
+
+.upload-logo {
+    width:150px;
 }
 
 .data-title {
@@ -3927,10 +3943,6 @@ textarea.form-control {
     vertical-align: middle;
     border-radius: 3px;
     cursor: pointer;
-}
-
-.form-group, .panel-heading {
-    overflow: hidden;
 }
 
 .title-ew {
@@ -4013,8 +4025,16 @@ textarea.form-control {
     vertical-align:middle;
 }
 
-input[type="radio"], input[type="checkbox"] {
+input[type="radio"] {
     margin: 2px 0 0 !important;
+}
+
+input[type="checkbox"] {
+    margin: 4px 0 0 !important;
+}
+
+.btn {
+    margin-right:3px;
 }
 
 .radio, .checkbox {
@@ -4043,4 +4063,17 @@ input[type="radio"], input[type="checkbox"] {
 
 table td[class*="col-"], table th[class*="col-"] {
     word-wrap: break-word;
+}
+
+.table-scheduler {
+    background:#fff;
+}
+
+.ns-popover-tooltip-theme.ns-popover-left-align .ns-popover-tooltip {
+    margin-left: 0;
+    height: 260px;
+    overflow-y: auto;
+}
+.accountUser-Table{
+    clear: both;
 }
