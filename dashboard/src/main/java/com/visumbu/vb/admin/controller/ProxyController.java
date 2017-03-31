@@ -120,7 +120,12 @@ public class ProxyController {
         }
         Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
         String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
+        System.out.println("Report Name ---- " + dataSetReportName);
+        System.out.println("Account Id ---- " + facebookAccountIdInt);
+        System.out.println("Time segment ---- " + timeSegment);
+        System.out.println("Start Date ---- " + startDate);
         List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, startDate, endDate, timeSegment);
+        System.out.println(data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
