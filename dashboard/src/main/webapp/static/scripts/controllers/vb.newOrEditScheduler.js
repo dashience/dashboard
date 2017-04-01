@@ -56,7 +56,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         }
         var email;
         if (response.schedulerEmail == null || "") {
-            email = response.schedulerEmail = []
+            email = ''
         } else {
             email = response.schedulerEmail.split(',');
         }
@@ -83,7 +83,9 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             lastNyears: response.lastNyears,
             customStartDate: response.customStartDate,
             customEndDate: response.customEndDate,
-            isAccountEmail: response.isAccountEmail
+            isAccountEmail: response.isAccountEmail,
+            lastExecutionStatus: response.lastExecutionStatus,
+            status: response.status
         };
     });
 
@@ -234,6 +236,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         }
 
         scheduler.schedulerEmail = emails;
+        console.log(scheduler)
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });
         $scope.scheduler = "";

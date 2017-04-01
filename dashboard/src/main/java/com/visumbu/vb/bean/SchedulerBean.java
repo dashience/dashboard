@@ -38,6 +38,7 @@ public class SchedulerBean {
     private String schedulerEmail;
     private Boolean isAccountEmail;
     private String status;
+    private String lastExecutionStatus;
     private Report reportId;
     private Agency agencyId;
     private Account accountId;
@@ -226,6 +227,14 @@ public class SchedulerBean {
         this.status = status;
     }
 
+    public String getLastExecutionStatus() {
+        return lastExecutionStatus;
+    }
+
+    public void setLastExecutionStatus(String lastExecutionStatus) {
+        this.lastExecutionStatus = lastExecutionStatus;
+    }
+
     public Report getReportId() {
         return reportId;
     }
@@ -252,7 +261,7 @@ public class SchedulerBean {
 
     @Override
     public String toString() {
-        return "SchedulerBean{" + "schedulerName=" + schedulerName + ", startDate=" + startDate + ", endDate=" + endDate + ", schedulerWeekly=" + schedulerWeekly + ", schedulerTime=" + schedulerTime + ", schedulerMonthly=" + schedulerMonthly + ", schedulerYearOfWeek=" + schedulerYearOfWeek + ", schedulerRepeatType=" + schedulerRepeatType + ", schedulerNow=" + schedulerNow + ", schedulerYearly=" + schedulerYearly + ", schedulerStatus=" + schedulerStatus + ", schedulerType=" + schedulerType + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", schedulerEmail=" + schedulerEmail + ", isAccountEmail=" + isAccountEmail + ", status=" + status + ", reportId=" + reportId + ", agencyId=" + agencyId + ", accountId=" + accountId + '}';
+        return "SchedulerBean{" + "id=" + id + ", schedulerName=" + schedulerName + ", startDate=" + startDate + ", endDate=" + endDate + ", schedulerWeekly=" + schedulerWeekly + ", schedulerTime=" + schedulerTime + ", schedulerMonthly=" + schedulerMonthly + ", schedulerYearOfWeek=" + schedulerYearOfWeek + ", schedulerRepeatType=" + schedulerRepeatType + ", schedulerNow=" + schedulerNow + ", schedulerYearly=" + schedulerYearly + ", schedulerStatus=" + schedulerStatus + ", schedulerType=" + schedulerType + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", schedulerEmail=" + schedulerEmail + ", isAccountEmail=" + isAccountEmail + ", status=" + status + ", lastExecutionStatus=" + lastExecutionStatus + ", reportId=" + reportId + ", agencyId=" + agencyId + ", accountId=" + accountId + '}';
     }
-
+   
 }

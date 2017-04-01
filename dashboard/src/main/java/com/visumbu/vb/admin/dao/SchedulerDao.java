@@ -57,7 +57,7 @@ public class SchedulerDao extends BaseDao {
         if (hour < 10) {
             scheduledHour = "0" + hour + ":00";
         }
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour";
+        String queryStr = "select d from Scheduler d where d.status == 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Daily");
         query.setParameter("hour", scheduledHour);
@@ -71,7 +71,7 @@ public class SchedulerDao extends BaseDao {
             scheduledHour = "0" + hour + ":00";
         }
 
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.schedulerWeekly = :schedulerWeekly and d.schedulerTime = :hour";
+        String queryStr = "select d from Scheduler d where d.status == 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerWeekly = :schedulerWeekly and d.schedulerTime = :hour";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Weekly");
         query.setParameter("schedulerWeekly", weekDay);
@@ -83,7 +83,7 @@ public class SchedulerDao extends BaseDao {
         System.out.println("Query: ");
         Calendar now = Calendar.getInstance();
         System.out.println(currentDateHour);
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = 'Yearly' "
+        String queryStr = "select d from Scheduler d where d.status == 'Active' and d.schedulerRepeatType = 'Yearly' "
                 + "and dayofmonth(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) =" + now.get(Calendar.DAY_OF_MONTH)
                 + "and hour(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + now.get(Calendar.HOUR_OF_DAY);
         System.out.println(queryStr);
@@ -95,16 +95,16 @@ public class SchedulerDao extends BaseDao {
 
     public List<Scheduler> getYearlyTasks(String currentDateHour, Date today) {
         System.out.println(currentDateHour);
-        try{
-        Calendar now = Calendar.getInstance();
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = 'Yearly' "
-                + "and month(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + (now.get(Calendar.MONTH) + 1)
-                + "and dayofmonth(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) =" + now.get(Calendar.DAY_OF_MONTH)
-                + "and hour(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + now.get(Calendar.HOUR_OF_DAY);
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        System.out.println(query.list());
-        return query.list();
-        }catch(Exception e) {
+        try {
+            Calendar now = Calendar.getInstance();
+            String queryStr = "select d from Scheduler d where d.status == 'Active' and d.schedulerRepeatType = 'Yearly' "
+                    + "and month(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + (now.get(Calendar.MONTH) + 1)
+                    + "and dayofmonth(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) =" + now.get(Calendar.DAY_OF_MONTH)
+                    + "and hour(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + now.get(Calendar.HOUR_OF_DAY);
+            Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+            System.out.println(query.list());
+            return query.list();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -119,7 +119,7 @@ public class SchedulerDao extends BaseDao {
         }
         System.out.println(scheduledHour);
 
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType "
+        String queryStr = "select d from Scheduler d where d.status == 'Active' and d.schedulerRepeatType = :schedulerRepeatType "
                 + "and d.schedulerWeekly = :weekly and d.schedulerYearOfWeek = :yearOfWeek and d.schedulerTime = :hour";
         System.out.println(queryStr);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -140,7 +140,7 @@ public class SchedulerDao extends BaseDao {
         if (hour < 10) {
             scheduledHour = "0" + hour + ":00";
         }
-        String queryStr = "select d from Scheduler d where d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerTime = :hour";
+        String queryStr = "select d from Scheduler d where d.status == 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerTime = :hour";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Once");
         query.setParameter("startDate", today);
@@ -155,6 +155,21 @@ public class SchedulerDao extends BaseDao {
         query.setParameter("schedulerId", schedulerId);
         //query.executeUpdate();
         return query.list();
+    }
+
+    public Scheduler updateSchedulerEnableDisable(Scheduler scheduler) {
+        String queryStr;
+        Integer schedulerId = scheduler.getId();
+        Boolean activeStatus = Boolean.parseBoolean(scheduler.getStatus());
+        if (activeStatus == true) {
+            queryStr = "update Scheduler d set status = 'Active' where d.id = :schedulerId";
+        } else {
+            queryStr = "update Scheduler d set status = 'InActive' where d.id = :schedulerId";
+        }        
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("schedulerId", schedulerId);
+        query.executeUpdate();
+        return null;
     }
 
 }
