@@ -88,9 +88,16 @@
                                                 <label>Email</label>
                                                 <input type="email" class="form-control" ng-model="user.email" placeholder="Email">
                                             </div>
-                                            <div class="form-group">
-                                                <label>Password</label>
-                                                <input type="password" class="form-control" ng-model="user.password" placeholder="Password">
+                                            <div class="form-group">                                                
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control  brdr-right" ng-model="user.password"
+                                                           tabindex="2" id="password" name="password" placeholder="Password" required>
+                                                    <span class="input-group-addon white-back brdr-left">
+                                                        <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
+                                                    </span>
+                                                </div>
+<!--                                                <label>Password</label>
+                                                <input type="password" class="form-control" ng-model="user.password" placeholder="Password">-->
                                             </div>
                                             <div class="form-group">
                                                 <label>Primary Phone</label>

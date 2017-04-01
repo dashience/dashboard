@@ -139,7 +139,7 @@
                     <div class="input-group m-b">
                         <span class="input-group-addon">
                             <div ng-if="permission.createDataSource === true;"> 
-                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>                            
                         </span>
                         <select class="form-control m-b" ng-model="widget.dataSourceId"
@@ -155,7 +155,7 @@
                     <div class="input-group m-b">
                         <span class="input-group-addon">                                
                             <div ng-if="permission.createDataSet === true;">
-                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({locationId: locationID, startDate: widgetStartDate, endDate: widgetEndDate})" class="fa fa-link"></i>
+                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>
                         </span>
                         <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
