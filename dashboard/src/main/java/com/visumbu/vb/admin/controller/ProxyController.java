@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.AdwordsService;
+import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
@@ -77,6 +78,9 @@ public class ProxyController {
 
     @Autowired
     private GaService gaService;
+    
+    @Autowired
+    private BingService bingService;
 
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -96,6 +100,9 @@ public class ProxyController {
         }
         if (dataSourceType.equalsIgnoreCase("analytics")) {
             return getAnalyticsData(request, response);
+        }
+        if (dataSourceType.equalsIgnoreCase("bing")) {
+            return getBingData(request, response);
         }
         if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
@@ -140,6 +147,44 @@ public class ProxyController {
             Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    private Object getBingData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSetId = request.getParameter("dataSetId");
+        String dataSetReportName = request.getParameter("dataSetReportName");
+        String timeSegment = request.getParameter("timeSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+        String accountIdStr = request.getParameter("accountId");
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String bingAccountId = getAccountId(accountProperty, "bingAccountId");
+        Long bingAccountIdLong = Long.parseLong(bingAccountId);
+        List<Map<String, String>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate, endDate, timeSegment);
+        System.out.println(data);
+        Map returnMap = new HashMap();
+        List<ColumnDef> columnDefs = getColumnDef(data);
+        returnMap.put("columnDefs", columnDefs);
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", data);
+        return returnMap;
+    }
+
 
     private Object getAnalyticsData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
