@@ -141,7 +141,6 @@ public class ProxyController {
         try {
             response.getOutputStream().write(data.getBytes());
         } catch (IOException ex) {
-            Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
