@@ -84,10 +84,10 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         console.log($scope.reportWidgets)
     });
     
-    $scope.downloadReportPdf = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
+    $scope.downloadReportPdf = function (report) {
+        var url = "admin/proxy/downloadReport/" + $stateParams.reportId + "?dealerId=" + $stateParams.accountId + "&location=" + $stateParams.accountId + "&accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
-    };
+    }
 
     $scope.uploadLogo = "static/img/logos/deeta-logo.png";       //Logo Upload
     $scope.imageUpload = function (event) {

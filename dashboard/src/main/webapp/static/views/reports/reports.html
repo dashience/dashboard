@@ -128,7 +128,7 @@
 <section class="content">
     <div class="pull-right add-group">
 
-        <span ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> Add Reports</button></span>
+        <span ng-if="permission.createReport === true;" ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> Add Reports</button></span>
 
     </div>
 
@@ -145,15 +145,16 @@
         </thead>
         <tbody>
             <tr ng-repeat="report in reports">
-                <td ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})">{{$index + 1}}</td>
-                <td ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})">{{report.reportTitle}}</td>
+                <td>{{$index + 1}}</td>
+                <td>{{report.reportTitle}}</td>
                 <!--<td ui-sref="index.report.newOrEdit({locationId: locationId, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})">{{report.time}}</td>-->
-                <td ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})">{{report.agencyId.agencyName}}</td>
+                <td>{{report.agencyId.agencyName}}</td>
                 <!--<td><img class="img-responsive img-thumbnail" src="{{report.logo}}"/></td>-->
                 <td>
-                    <button class="btn btn-info btn-xs"><i class="fa fa-download"></i></button>
+                    <button ng-if="permission.createReport === true;" class="btn btn-default btn-xs" ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></button>
+                    <button ng-if="permission.downloadReport === true;" class="btn btn-info btn-xs" ng-click="downloadReportPdf(report)"><i class="fa fa-download"></i></button>
                     <button class="btn btn-primary btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>
-
+                    <!--<button ng-if="permission.scheduleReport == true;" class="btn btn-primary btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>-->
                     <div class="report-bottomMenu pull-right" ng-show="showSchedulerList[report.id]">
                         <div class="report-menuHeader">
                             <div class="col-md-10">
@@ -249,7 +250,7 @@
                             </form>
                         </div> 
                     </div>
-                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteReport{{report.id}}"><i class="fa fa-trash"></i></button>
+                    <button ng-if="permission.deleteReport === true;" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteReport{{report.id}}"><i class="fa fa-trash"></i></button>
                     <div class="modal hmodal-success" id="deleteReport{{report.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">

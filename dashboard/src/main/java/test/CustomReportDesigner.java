@@ -1891,6 +1891,7 @@ public class CustomReportDesigner {
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
                     xAxisDisplay = column.getDisplayName();
+                    System.out.println("XAxisDisplay: "+xAxisDisplay);
                 }
             }
 
@@ -1984,8 +1985,10 @@ public class CustomReportDesigner {
             final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
             renderer2.setSeriesPaint(0, new Color(98, 203, 49));
             renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+            renderer2.setSeriesPaint(2, new Color(98, 203, 49));
             plot.setRenderer(0, renderer2);
             plot.setRenderer(1, renderer2);
+            plot.setRenderer(2, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             // OPTIONAL CUSTOMISATION COMPLETED.
 
@@ -2308,6 +2311,7 @@ public class CustomReportDesigner {
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
                     xAxisDisplay = column.getDisplayName();
+                    System.out.println("XAxisDisplay: "+xAxisDisplay);
                 }
             }
 
@@ -2403,9 +2407,11 @@ public class CustomReportDesigner {
             final BarRenderer renderer2 = new BarRenderer();
             renderer2.setSeriesPaint(0, new Color(98, 203, 49));
             renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+            renderer2.setSeriesPaint(2, new Color(98, 203, 49));
             renderer2.setShadowVisible(false);
             plot.setRenderer(0, renderer2);
             plot.setRenderer(1, renderer2);
+            plot.setRenderer(2, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 
             // OPTIONAL CUSTOMISATION COMPLETED.

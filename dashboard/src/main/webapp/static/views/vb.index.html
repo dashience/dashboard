@@ -6,11 +6,12 @@
 </aside>
 <div id="wrapper">
     <div ui-view=""></div>
+    <footer class="main-footer footer">
+        <span ng-include="'static/views/vb.footer.html'"></span>
+    </footer>
 </div>
 
-<footer class="main-footer footer">
-    <span ng-include="'static/views/vb.footer.html'"></span>
-</footer>
+
 
 <!--<header>
     <div ng-include="'static/views/vb.header.html'"></div>

@@ -165,7 +165,8 @@ public class SchedulerDao extends BaseDao {
             queryStr = "update Scheduler d set status = 'Active' where d.id = :schedulerId";
         } else {
             queryStr = "update Scheduler d set status = 'InActive' where d.id = :schedulerId";
-        }        
+        }   
+        System.out.println(queryStr);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerId", schedulerId);
         query.executeUpdate();

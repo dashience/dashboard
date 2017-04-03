@@ -45,11 +45,6 @@
                 min-height:50vh;*/
     }
 
-    .license {
-        height:63vh;
-        min-height:63vh;
-    }
-
     .agencyImg-size{
         max-width: 30px !important;
     }
@@ -290,16 +285,57 @@
                                                     </tr>
                                                 </thead>                                           
                                                 <tbody data-as-sortable="changeOrder(agencyProducts)" data-ng-model="agencyProducts" ng-submit="changeOrder(agencyProducts)" unselectable="on" class="unselectable" style="height:420px">
-                                                    <tr class="accountUser-Table" ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAgencyProduct}" ng-click="setAgencyUserRow(agencyProduct, $index)" data-as-sortable-item>
-                                                        <td data-as-sortable-item-handle class="col-xs-4">
+                                                    <tr class="accountUser-Table" ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAgencyProduct}" ng-click="setAgencyProductRow(agencyProduct, $index)" data-as-sortable-item>
+                                                        <td ng-click="editAgencyProduct(agencyProduct)" data-as-sortable-item-handle class="col-xs-4">
                                                             <div class="image-upload">
                                                                 <label for="file-input">
                                                                     <img class="agencyImg-size img-responsive img-thumbnail" ng-src="{{agencyProduct.icon}}"/>
                                                                 </label>
                                                             </div>
                                                         </td>
-                                                        <td data-as-sortable-item-handle class="col-xs-6">{{agencyProduct.productName}}</td>
-                                                        <td data-as-sortable-item-handle class="col-xs-2"></td>
+                                                        <td ng-click="editAgencyProduct(agencyProduct)" data-as-sortable-item-handle class="col-xs-6">
+                                                            {{agencyProduct.productName}}
+                                                        </td>
+                                                        <td data-as-sortable-item-handle class="col-xs-2">
+                                                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgencyProduct{{agencyProduct.id}}">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+
+                                                            <div class="modal hmodal-success" id="deleteAgencyProduct{{agencyProduct.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="color-line"></div>
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                            <h4 class="modal-title">Delete</h4>
+                                                                            <small class="font-bold"></small>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <form class="form-horizontal" role="form">
+                                                                                <div class="form-group">
+                                                                                    <div class="col-sm-12  col-md-12">
+                                                                                        <span>Want to delete ?</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <div class="col-sm-12">
+                                                                                <button type="button" class="btn btn-primary btn-xs " 
+                                                                                        ng-click="deleteAgencyProduct(agencyProduct, $index)" 
+                                                                                        data-dismiss="modal">
+                                                                                    <span class="fa fa-trash"></span> Yes
+                                                                                </button>
+                                                                                <button type="button" class="btn btn-danger btn-xs " 
+                                                                                        data-dismiss="modal">
+                                                                                    <span class="fa fa-times"></span> No
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>                                                
@@ -381,7 +417,7 @@
                                 </thead>
                                 <tbody>
 
-                                    <tr class="accountUser-Table" data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:5:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <tr class="accountUser-Table" data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                         <!--<tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">-->
                                         <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
                                             {{agency.agencyName}}
