@@ -18,10 +18,8 @@
     .table-fixed tr td {
         cursor:pointer;
     }
-
-    .license {
-        height:63vh;
-        min-height:63vh;
+    .form-horizontal .form-group {
+        margin:10px 0px 10px 0px;
     }
     .agency-bt {
         margin-bottom: 10px;
@@ -88,9 +86,16 @@
                                                 <label>Email</label>
                                                 <input type="email" class="form-control" ng-model="user.email" placeholder="Email">
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group">                                                
                                                 <label>Password</label>
-                                                <input type="password" class="form-control" ng-model="user.password" placeholder="Password">
+                                                <div class="input-group">
+                                                    <input type="password" class="form-control" ng-model="user.password" id="password" name="password" placeholder="Password">
+                                                    <span class="input-group-addon">
+                                                        <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
+                                                    </span>
+                                                </div>
+                                                <!--                                                <label>Password</label>
+                                                                                                <input type="password" class="form-control" ng-model="user.password" placeholder="Password">-->
                                             </div>
                                             <div class="form-group">
                                                 <label>Primary Phone</label>
@@ -134,42 +139,42 @@
                                                 </td>                                                
                                                 <td class="col-xs-3">
                                                     <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount); userAccount.isEdit = false;"><i class="fa fa-save"></i></button>
-                                                        <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="removeUserAccount($index)"><i class="fa fa-times"></i></button>
-                                                        <button ng-hide="userAccount.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash-o"></i></button>
-                                                        <div class="modal hmodal-success" id="deleteUserAccount{{userAccount.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                                            <div class="modal-dialog">
-                                                                <div class="modal-content">
-                                                                    <div class="color-line"></div>
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                        <h4 class="modal-title">Delete</h4>
-                                                                        <small class="font-bold"></small>
-                                                                    </div>
-                                                                    <div class="modal-body">
-                                                                        <form class="form-horizontal" role="form">
-                                                                            <div class="form-group">
-                                                                                <div class="col-sm-12  col-md-12">
-                                                                                    <span>Want to delete ?</span>
-                                                                                </div>
+                                                    <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="removeUserAccount($index)"><i class="fa fa-times"></i></button>
+                                                    <button ng-hide="userAccount.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash-o"></i></button>
+                                                    <div class="modal hmodal-success" id="deleteUserAccount{{userAccount.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="color-line"></div>
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title">Delete</h4>
+                                                                    <small class="font-bold"></small>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="form-horizontal" role="form">
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-12  col-md-12">
+                                                                                <span>Want to delete ?</span>
                                                                             </div>
-                                                                        </form>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <div class="col-sm-12">
-                                                                            <button type="button" class="btn btn-primary btn-xs " 
-                                                                                    ng-click="deleteUserAccount(userAccount, $index)" 
-                                                                                    data-dismiss="modal">
-                                                                                <span class="fa fa-trash"></span> Yes
-                                                                            </button>
-                                                                            <button type="button" class="btn btn-danger btn-xs " 
-                                                                                    data-dismiss="modal">
-                                                                                <span class="fa fa-times"></span> No
-                                                                            </button>
                                                                         </div>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <div class="col-sm-12">
+                                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                                                ng-click="deleteUserAccount(userAccount, $index)" 
+                                                                                data-dismiss="modal">
+                                                                            <span class="fa fa-trash"></span> Yes
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-danger btn-xs " 
+                                                                                data-dismiss="modal">
+                                                                            <span class="fa fa-times"></span> No
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -186,9 +191,8 @@
                                                     <div class="checkbox checkbox-slider--b">
                                                         <label class="col-sm-4" for="field{{$index + 1}}">
                                                             <input id="field{{$index + 1}}" type="checkbox"
-                                                                   ng-model="permission.status" 
-                                                                   ng-change="saveUserPermission(permission)"          
-                                                                   ng-click="testClick(permission)"
+                                                                   ng-model="permission.status"          
+                                                                   ng-click="setUserPermission(permission)"
                                                                    ng-true-value="1"
                                                                    ng-false-value="0"/>
                                                             <span></span>
@@ -242,7 +246,7 @@
                                 <tbody>
                                     <!--<tr ng-show="user.users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>-->
                                     <tr class="accountUser-Table" data-dir-paginate="user in users|filter: searchUser|filter:agencyListName|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">
-                                    <!--<tr class="accountUser-Table" data-dir-paginate="user in users|filter: searchUser|filter:agencyListName.agencyName|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">-->
+                                        <!--<tr class="accountUser-Table" data-dir-paginate="user in users|filter: searchUser|filter:agencyListName.agencyName|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">-->
 
                                         <!--<tr dir-paginate="user in users | itemsPerPage:2" ng-class="{'selectedTableRow':$index == selectedUser}">-->
                                         <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.firstName? user.firstName:'-'}}</td>

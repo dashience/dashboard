@@ -203,17 +203,24 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
     };
     $scope.selectedAgencyProduct = null;
-    $scope.setAgencyUserRow = function (agencyProduct, index) {
+    $scope.deleteAgencyProduct = function (agencyProduct, index) {
+        $http({method: 'Delete', url: 'admin/user/agencyProduct/' + agencyProduct.id}).success(function (response) {
+            $scope.agencyProducts.splice(index, 1);
+        });
+    }
+    $scope.setAgencyProductRow = function (agencyProduct, index) {
+        $scope.selectedAgencyProduct = index;
+    }
+    $scope.editAgencyProduct = function (agencyProduct) {
         var data = {
             id: agencyProduct.id,
             productName: agencyProduct.productName,
             icon: agencyProduct.icon,
             agencyId: $scope.agencyLicenceId.id,
             showProduct: agencyProduct.showProduct
-        }
+        };
         $scope.agencyProduct = data;
-        $scope.selectedAgencyProduct = index;
-        $scope.showAgencyProductForm = true;     
+        $scope.showAgencyProductForm = true;
     }
     $scope.changeOrder = function (s) {
         var agencyProductId = $scope.agencyLicenceId;

@@ -346,9 +346,9 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    log.debug("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
-                    url = "../dashboard/admin/csv/getData";
+                    System.out.println("DS TYPE ==>  CSV");
+                    url = "../testing/admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -437,10 +437,9 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    log.debug("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
-                    url = "../dashboard/admin/csv/getData";
-//                    url = "admin/csv/getData";
+                    System.out.println("DS TYPE ==>  CSV");
+                    url = "../testing/admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -468,19 +467,19 @@ public class ProxyController {
             }
         }
         try {
-//            if (exportType.equalsIgnoreCase("pdf")) {
-//                response.setContentType("application/x-msdownload");
-//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+            if (exportType.equalsIgnoreCase("pdf")) {
+                response.setContentType("application/x-msdownload");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);
-//            } else if (exportType.equalsIgnoreCase("ppt")) {
-//                response.setContentType("application/vnd.ms-powerpoint");
-//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
-//                OutputStream out = response.getOutputStream();
-//                CustomReportDesigner crd = new CustomReportDesigner();
-//                crd.dynamicPptTable(tabWidgets, out);
-//            }
+            } else if (exportType.equalsIgnoreCase("ppt")) {
+                response.setContentType("application/vnd.ms-powerpoint");
+                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
+                OutputStream out = response.getOutputStream();
+                CustomReportDesigner crd = new CustomReportDesigner();
+                crd.dynamicPptTable(tabWidgets, out);
+            }
         } catch (IOException ex) {
             log.error("IOException in download Function: " + ex);
         }

@@ -1,4 +1,5 @@
-app.controller("SchedulerController", function ($scope, $http, $stateParams) {
+app.controller("SchedulerController", function ($scope, $http, localStorageService, $stateParams) {
+    $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -11,18 +12,26 @@ app.controller("SchedulerController", function ($scope, $http, $stateParams) {
             $scope.schedulers.splice(index, 1);
         });
     };
-    $scope.schedularHistoryData = false;
+//    $scope.schedularHistoryData = false;
     $scope.showSchedulerHistory = function (scheduler) {
-        console.log(scheduler);
+        $scope.schedularHistoryDetails = [];
         $http({method: 'GET', url: 'admin/scheduler/schedulerHistory/' + scheduler.id}).success(function (response) {
-
+//            if (!response) {
+//                $scope.schedularData = "History Not Found";
+//                $scope.schedularHistoryData = true;
+//            } else {
             $scope.schedularHistoryDetails = response;
-            if (!$.trim(response)) {
-                $scope.schedularData = "History Not Found";
-                $scope.schedularHistoryData = true;
-            }
+//            }
         });
     };
+
+    $scope.saveSchedulerStatus = function (scheduler) {
+        console.log(scheduler)
+        $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/schedulerStatus/enableOrDisable', data: scheduler}).success(function (response) {
+            console.log(response)
+        });
+    }
+
     $scope.tableRowExpanded = false;
     $scope.tableRowIndexExpandedCurr = "";
     $scope.tableRowIndexExpandedPrev = "";
@@ -30,11 +39,10 @@ app.controller("SchedulerController", function ($scope, $http, $stateParams) {
 
     $scope.dayDataCollapseFn = function () {
         $scope.dayDataCollapse = [];
-        for (var i = 0; i < $scope.storeDataModel.storedata.length; i += 1) {
+        for (var i = 0; i < $scope.schedularHistoryDetails.length; i += 1) {
             $scope.dayDataCollapse.push(false);
         }
     };
-
 
     $scope.selectTableRow = function (index, storeId) {
         if (typeof $scope.dayDataCollapse === 'undefined') {
@@ -63,12 +71,4 @@ app.controller("SchedulerController", function ($scope, $http, $stateParams) {
         }
 
     };
-
-    //    $scope.schedulers = [
-//        {name: "Test 1", startDate: "22-7-2016", endDate: "22-7-2016"},
-//        {name: "Test 2", startDate: "22-7-2016", endDate: "22-7-2016"},
-//        {name: "Test 3", startDate: "22-7-2016", endDate: "22-7-2016"},
-//        {name: "Test 4", startDate: "22-7-2016", endDate: "22-7-2016"},
-//        {name: "Test 5", startDate: "22-7-2016", endDate: "22-7-2016"},
-//        {name: "Test 6", startDate: "22-7-2016", endDate: "22-7-2016"}];    
 });

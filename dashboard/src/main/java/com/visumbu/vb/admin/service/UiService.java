@@ -205,6 +205,7 @@ public class UiService {
         tabWidget.setDataset(tabWidgetBean.getDataset());
         tabWidget.setDataSetId(dataSet);
         tabWidget.setDataSourceId(dataSource);
+        tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setContent(tabWidgetBean.getContent());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();

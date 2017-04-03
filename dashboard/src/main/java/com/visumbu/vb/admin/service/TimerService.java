@@ -34,7 +34,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @EnableScheduling
-@Service("cronService")
+@Service("timeService")
 public class TimerService {
 
     @Autowired
@@ -46,7 +46,7 @@ public class TimerService {
     @Autowired
     private SchedulerDao schedulerDao;
 
-    private void executeTasks(List<Scheduler> scheduledTasks) {
+    public void executeTasks(List<Scheduler> scheduledTasks) {System.out.println("Test 2");
         Date today = new Date();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
             Date schedulerStartTime = new Date();
@@ -56,7 +56,7 @@ public class TimerService {
             Integer schedulerId = scheduler.getId();
             Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
             String dealerId = scheduler.getAccountId().getId() + "";
-            String accountMailId = scheduler.getAccountId().getEmailId();
+            String accountMailId = scheduler.getSchedulerEmail();//getAccountId().getEmailId();
             String exportType = scheduler.getSchedulerType();
             schedulerHistory.setExecutionStartTime(schedulerStartTime);
             String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
@@ -67,6 +67,8 @@ public class TimerService {
             String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
             filename = filename.replaceAll(" ", "_");
             String toAddress = accountMailId;
+            System.out.println("TO Address============================================>");
+            System.out.println(toAddress);
             if (toAddress != null && !toAddress.isEmpty()) {
                 toAddress += "," + scheduler.getSchedulerEmail();
             }
@@ -77,7 +79,8 @@ public class TimerService {
             schedulerHistory.setEmailId(toAddress);
             schedulerHistory.setEmailSubject(subject);
             schedulerHistory.setEmailMessage(message);
-
+            scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
+            schedulerDao.update(scheduler);
             schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
             Date schedulerEndTime = new Date();
             schedulerHistory.setExecutionEndTime(schedulerEndTime);
@@ -153,7 +156,8 @@ System.out.println("Yearly Tasks");
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-            String urlStr = "http://localhost:8080/VizBoard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
+            String urlStr = "http://localhost:8082/testing/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
+//            String urlStr = "http://localhost:8080/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
             System.out.println(urlStr);
             URL website = new URL(urlStr);
 

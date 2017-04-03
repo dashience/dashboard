@@ -290,4 +290,8 @@ public class UserService {
         return userDao.productUpdateOrder(agencyProductId, productOrder);
     }
 
+    public AgencyProduct deleteAgencyProductId(Integer agencyProductId) {
+        return userDao.deleteAgencyProduct(agencyProductId);
+    }
+
 }

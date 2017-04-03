@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
 import org.apache.commons.lang.WordUtils;
@@ -1540,6 +1541,43 @@ public class CustomReportDesigner {
                     pic.setAnchor(new java.awt.Rectangle(30, 55, 640, 480));
                     chart_out.close();
 
+                } else if (tabWidget.getChartType().equalsIgnoreCase("area")) {
+
+                    JFreeChart areaChart = multiAxisAreaJFreeChart(tabWidget);
+                    float quality = 1;
+
+                    //creating a slide with title and content layout
+                    XSLFSlide slide = ppt.createSlide();
+
+                    //selection of title place holder
+                    XSLFTextBox txt = slide.createTextBox();
+                    if (tabWidget.getWidgetTitle() != null) {
+                        txt.setText(tabWidget.getWidgetTitle());
+                    } else {
+                        txt.setText("");
+                    }
+
+                    txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
+                    txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
+
+                    XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
+                    tp.setTextAlign(TextAlign.LEFT);
+                    XSLFTextRun run = tp.getTextRuns().get(0);
+
+                    run.setBold(true);
+                    run.setFontSize(13.0);
+                    run.setFontColor(tableTitleFontColor);
+
+                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out, quality, areaChart, 640, 480);
+
+                    XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
+
+                    //creating a slide with given picture on it
+                    XSLFPictureShape pic = slide.createPicture(idx);
+                    pic.setAnchor(new java.awt.Rectangle(30, 55, 640, 480));
+                    chart_out.close();
+
                 } else if (tabWidget.getChartType().equalsIgnoreCase("line")) {
                     JFreeChart lineChart = multiAxisLineJFreeChart(tabWidget);
                     float quality = 1;
@@ -1844,9 +1882,44 @@ public class CustomReportDesigner {
                         document.add(new Phrase("\n"));
                         document.add(table);
                     }
-                } else if (tabWidget.getChartType().equalsIgnoreCase("areaChart")) {
-                    document.add(new Phrase("\n"));
-                    document.add(multiAxisAreaChart(writer, tabWidget));
+                } else if (tabWidget.getChartType().equalsIgnoreCase("area")) {
+                    //document.add(multiAxisBarChart(writer, tabWidget));
+                    PdfPTable table = new PdfPTable(1);
+                    PdfPCell cell;
+                    table.setWidthPercentage(95f);
+                    pdfFontTitle.setSize(14);
+                    pdfFontTitle.setStyle(Font.BOLD);
+                    pdfFontTitle.setColor(tableTitleFontColor);
+                    cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+                    cell.setFixedHeight(30);
+                    cell.setBorderColor(widgetBorderColor);
+                    cell.setBackgroundColor(widgetTitleColor);
+                    cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                    cell.setColspan(1);
+                    cell.setPaddingTop(5);
+                    cell.setPaddingLeft(10);
+                    table.addCell(cell);
+                    System.out.println("Area Writer: " + writer);
+                    System.out.println("Area Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("Area Tab Widget DataSource: " + tabWidget.getDatasource());
+
+                    Image areaChart = multiAxisAreaChart(writer, tabWidget);
+                    if (areaChart != null) {
+                        PdfPCell chartCell = new PdfPCell(areaChart);
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    } else {
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    }
+
                 }
                 // System.out.println("Chart Type ===> " + tabWidget.getChartType());
             }
@@ -1942,6 +2015,7 @@ public class CustomReportDesigner {
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
                     xAxisDisplay = column.getDisplayName();
+                    System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
             }
 
@@ -1954,6 +2028,13 @@ public class CustomReportDesigner {
 
 //            final CategoryDataset dataset1 = createDataset3();
 //            final CategoryDataset dataset2 = createDataset4();
+            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+            long firstAxisCount = firstAxiss.count();
+
+            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+            long secondAxisCount = secondAxiss.count();
+
+            long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
             final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
@@ -1988,8 +2069,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_LEFT);
                             r.setBasePositiveItemLabelPosition(position);
                             if (r != null) {
-                                final LegendItem item = r.getLegendItem(0, 0);
-                                result.add(item);
+                                for (long i = 0; i < firstAxisCount; i++) {
+                                    final LegendItem item = r.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2007,8 +2090,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_RIGHT);
                             renderer2.setBasePositiveItemLabelPosition(position);
                             if (renderer2 != null) {
-                                final LegendItem item = renderer2.getLegendItem(1, 1);
-                                result.add(item);
+                                for (long i = firstAxisCount; i < totalCount; i++) {
+                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2034,10 +2119,20 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
-            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
-            plot.setRenderer(0, renderer2);
-            plot.setRenderer(1, renderer2);
+            Paint[] paint = new Paint[]{
+                new Color(98, 203, 49),
+                new Color(85, 85, 85),
+                new Color(161, 225, 132),
+                new Color(102, 102, 102)
+            };
+            int j = 0;
+            for (long i = 0; i < totalCount; i++) {
+                if (i == 4) {
+                    j = 0;
+                }
+                renderer2.setSeriesPaint((int) i, paint[j++]);
+                plot.setRenderer((int) i, renderer2);
+            }
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             // OPTIONAL CUSTOMISATION COMPLETED.
 
@@ -2106,7 +2201,13 @@ public class CustomReportDesigner {
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
             data = data.subList(0, tabWidget.getMaxRecord());
         }
+        Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+        long firstAxisCount = firstAxiss.count();
 
+        Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+        long secondAxisCount = secondAxiss.count();
+
+        long totalCount = firstAxisCount + secondAxisCount;
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
         final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
         final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
@@ -2137,8 +2238,10 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_LEFT);
                         r.setBasePositiveItemLabelPosition(position);
                         if (r != null) {
-                            final LegendItem item = r.getLegendItem(0, 0);
-                            result.add(item);
+                            for (long i = 0; i < firstAxisCount; i++) {
+                                final LegendItem item = r.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2156,8 +2259,10 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_RIGHT);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
-                            result.add(item);
+                            for (long i = firstAxisCount; i < totalCount; i++) {
+                                final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2179,10 +2284,20 @@ public class CustomReportDesigner {
         plot.setRangeAxis(1, axis2);
         plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
-        renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-        renderer2.setSeriesPaint(1, new Color(85, 85, 85));
-        plot.setRenderer(0, renderer2);
-        plot.setRenderer(1, renderer2);
+        Paint[] paint = new Paint[]{
+            new Color(98, 203, 49),
+            new Color(85, 85, 85),
+            new Color(161, 225, 132),
+            new Color(102, 102, 102)
+        };
+        int j = 0;
+        for (long i = 0; i < totalCount; i++) {
+            if (i == 4) {
+                j = 0;
+            }
+            renderer2.setSeriesPaint((int) i, paint[j++]);
+            plot.setRenderer((int) i, renderer2);
+        }
         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
         plot.setDrawingSupplier(new ChartDrawingSupplier());
         System.out.println("End function of multiAxisLineJFreeChart");
@@ -2201,6 +2316,7 @@ public class CustomReportDesigner {
             List<FirstAxis> firstAxis = new ArrayList<>();
             List<SecondAxis> secondAxis = new ArrayList<>();
             String xAxis = null;
+            String xAxisDisplay = null;
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
@@ -2218,6 +2334,7 @@ public class CustomReportDesigner {
                 }
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
+                    xAxisDisplay = column.getDisplayName();
                 }
             }
 
@@ -2230,9 +2347,18 @@ public class CustomReportDesigner {
 
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
-            final CategoryAxis domainAxis = new CategoryAxis(xAxis);
+            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
             final NumberAxis rangeAxis = new NumberAxis();
             final AreaRenderer renderer1 = new AreaRenderer();
+
+            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+            long firstAxisCount = firstAxiss.count();
+
+            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+            long secondAxisCount = secondAxiss.count();
+
+            long totalCount = firstAxisCount + secondAxisCount;
+
             final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
 
                 /**
@@ -2256,8 +2382,10 @@ public class CustomReportDesigner {
                             r.setBasePositiveItemLabelPosition(position);
 
                             if (r != null) {
-                                final LegendItem item = r.getLegendItem(0, 0);
-                                result.add(item);
+                                for (long i = 0; i < firstAxisCount; i++) {
+                                    final LegendItem item = r.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2274,8 +2402,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_RIGHT);
                             renderer2.setBasePositiveItemLabelPosition(position);
                             if (renderer2 != null) {
-                                final LegendItem item = renderer2.getLegendItem(1, 1);
-                                result.add(item);
+                                for (long i = firstAxisCount; i < totalCount; i++) {
+                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2297,10 +2427,24 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final AreaRenderer renderer2 = new AreaRenderer();
-            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
-            plot.setRenderer(0, renderer2);
-            plot.setRenderer(1, renderer2);
+            Paint[] paint = new Paint[]{
+                new Color(98, 203, 49),
+                new Color(85, 85, 85),
+                new Color(161, 225, 132),
+                new Color(102, 102, 102)
+            };
+            int j = 0;
+            for (long i = 0; i < totalCount; i++) {
+                if (i == 4) {
+                    j = 0;
+                }
+                renderer2.setSeriesPaint((int) i, paint[j++]);
+                plot.setRenderer((int) i, renderer2);
+            }
+//            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
+//            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+//            plot.setRenderer(0, renderer2);
+//            plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             // OPTIONAL CUSTOMISATION COMPLETED.
 
@@ -2366,6 +2510,7 @@ public class CustomReportDesigner {
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
                     xAxisDisplay = column.getDisplayName();
+                    System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
             }
 
@@ -2379,6 +2524,13 @@ public class CustomReportDesigner {
 
 //            final CategoryDataset dataset1 = createDataset3();
 //            final CategoryDataset dataset2 = createDataset4();
+            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+            long firstAxisCount = firstAxiss.count();
+
+            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+            long secondAxisCount = secondAxiss.count();
+
+            long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
 
@@ -2413,8 +2565,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_CENTER);
                             r.setBasePositiveItemLabelPosition(position);
                             if (r != null) {
-                                final LegendItem item = r.getLegendItem(0, 0);
-                                result.add(item);
+                                for (long i = 0; i < firstAxisCount; i++) {
+                                    final LegendItem item = r.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2433,8 +2587,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_CENTER);
                             renderer2.setBasePositiveItemLabelPosition(position);
                             if (renderer2 != null) {
-                                final LegendItem item = renderer2.getLegendItem(1, 1);
-                                result.add(item);
+                                for (long i = firstAxisCount; i < totalCount; i++) {
+                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2458,11 +2614,21 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final BarRenderer renderer2 = new BarRenderer();
-            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
             renderer2.setShadowVisible(false);
-            plot.setRenderer(0, renderer2);
-            plot.setRenderer(1, renderer2);
+            Paint[] paint = new Paint[]{
+                new Color(98, 203, 49),
+                new Color(85, 85, 85),
+                new Color(161, 225, 132),
+                new Color(102, 102, 102)
+            };
+            int j = 0;
+            for (long i = 0; i < totalCount; i++) {
+                if (i == 4) {
+                    j = 0;
+                }
+                renderer2.setSeriesPaint((int) i, paint[j++]);
+                plot.setRenderer((int) i, renderer2);
+            }
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 
             // OPTIONAL CUSTOMISATION COMPLETED.
@@ -2488,6 +2654,159 @@ public class CustomReportDesigner {
         }
         System.out.println("End function of multiAxisBarChart");
         return null;
+    }
+
+    public JFreeChart multiAxisAreaJFreeChart(TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisAreaJFreeChart");
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+
+        List<Map<String, Object>> originalData = tabWidget.getData();
+        List<Map<String, Object>> data = new ArrayList<>(originalData);
+
+        List<Map<String, Object>> tempData = tabWidget.getData();
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+        List<FirstAxis> firstAxis = new ArrayList<>();
+        List<SecondAxis> secondAxis = new ArrayList<>();
+        String xAxis = null;
+        String xAxisDisplay = null;
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null) {
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+            if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
+                firstAxis.add(new FirstAxis(column.getFieldName(), column.getDisplayName()));
+            }
+            if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) > 1) {
+                secondAxis.add(new SecondAxis(column.getFieldName(), column.getDisplayName()));
+            }
+            if (column.getxAxis() != null) {
+                xAxis = column.getFieldName();
+                xAxisDisplay = column.getDisplayName();
+            }
+        }
+
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+
+        Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+        long firstAxisCount = firstAxiss.count();
+
+        Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+        long secondAxisCount = secondAxiss.count();
+
+        long totalCount = firstAxisCount + secondAxisCount;
+        final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
+        final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+
+        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        final NumberAxis rangeAxis = new NumberAxis();
+        final BarRenderer renderer1 = new BarRenderer();
+        final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
+
+            /**
+             * Override the getLegendItems() method to handle special case.
+             *
+             * @return the legend items.
+             */
+            public LegendItemCollection getLegendItems() {
+
+                final LegendItemCollection result = new LegendItemCollection();
+                if (firstAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset data = getDataset();
+                    if (data != null) {
+                        final CategoryItemRenderer r = getRenderer();
+                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        r.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_CENTER);
+                        r.setBasePositiveItemLabelPosition(position);
+                        if (r != null) {
+                            for (long i = 0; i < firstAxisCount; i++) {
+                                final LegendItem item = r.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
+                        }
+                    }
+                }
+
+                // the JDK 1.2.2 compiler complained about the name of this
+                // variable 
+                if (secondAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset dset2 = getDataset(1);
+                    if (dset2 != null) {
+                        System.out.println("dset2");
+                        final CategoryItemRenderer renderer2 = getRenderer(1);
+                        renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        renderer2.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_CENTER);
+                        renderer2.setBasePositiveItemLabelPosition(position);
+                        if (renderer2 != null) {
+                            for (long i = firstAxisCount; i < totalCount; i++) {
+                                final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+
+        };
+        plot.setRangeGridlinesVisible(true);
+        plot.setDomainGridlinesVisible(true);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        final JFreeChart chart = new JFreeChart(plot);
+        CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
+        axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+        chart.setBackgroundPaint(Color.white);
+
+        plot.setBackgroundPaint(Color.white);
+        plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+        plot.setDataset(1, dataset2);
+        plot.mapDatasetToRangeAxis(1, 1);
+        //final ValueAxis axis2 = new NumberAxis("Secondary");
+        final ValueAxis axis2 = new NumberAxis();
+        plot.setRangeAxis(1, axis2);
+        plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        final AreaRenderer renderer2 = new AreaRenderer();
+        Paint[] paint = new Paint[]{
+            new Color(98, 203, 49),
+            new Color(85, 85, 85),
+            new Color(161, 225, 132),
+            new Color(102, 102, 102)
+        };
+        int j = 0;
+        for (long i = 0; i < totalCount; i++) {
+            if (i == 4) {
+                j = 0;
+            }
+            renderer2.setSeriesPaint((int) i, paint[j++]);
+            plot.setRenderer((int) i, renderer2);
+        }
+        plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+
+        // OPTIONAL CUSTOMISATION COMPLETED.
+        plot.setDrawingSupplier(new ChartDrawingSupplier());
+        System.out.println("End function of multiAxisAreaJFreeChart");
+
+        return chart;
+
     }
 
     public JFreeChart multiAxisBarJFreeChart(TabWidget tabWidget) {
@@ -2535,6 +2854,13 @@ public class CustomReportDesigner {
             data = data.subList(0, tabWidget.getMaxRecord());
         }
 
+        Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+        long firstAxisCount = firstAxiss.count();
+
+        Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+        long secondAxisCount = secondAxiss.count();
+
+        long totalCount = firstAxisCount + secondAxisCount;
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
         final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
 
@@ -2562,8 +2888,10 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_CENTER);
                         r.setBasePositiveItemLabelPosition(position);
                         if (r != null) {
-                            final LegendItem item = r.getLegendItem(0, 0);
-                            result.add(item);
+                            for (long i = 0; i < firstAxisCount; i++) {
+                                final LegendItem item = r.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2582,9 +2910,10 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_CENTER);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
-                            System.out.println("Item:" + item);
-                            result.add(item);
+                            for (long i = firstAxisCount; i < totalCount; i++) {
+                                final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2609,11 +2938,21 @@ public class CustomReportDesigner {
         plot.setRangeAxis(1, axis2);
         plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         final BarRenderer renderer2 = new BarRenderer();
-        renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-        renderer2.setSeriesPaint(1, new Color(85, 85, 85));
         renderer2.setShadowVisible(false);
-        plot.setRenderer(0, renderer2);
-        plot.setRenderer(1, renderer2);
+        Paint[] paint = new Paint[]{
+            new Color(98, 203, 49),
+            new Color(85, 85, 85),
+            new Color(161, 225, 132),
+            new Color(102, 102, 102)
+        };
+        int j = 0;
+        for (long i = 0; i < totalCount; i++) {
+            if (i == 4) {
+                j = 0;
+            }
+            renderer2.setSeriesPaint((int) i, paint[j++]);
+            plot.setRenderer((int) i, renderer2);
+        }
         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 
         // OPTIONAL CUSTOMISATION COMPLETED.
@@ -2634,13 +2973,36 @@ public class CustomReportDesigner {
 
         // create the dataset...
         DecimalFormat df = new DecimalFormat(".##");
+        String value;
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
             for (Iterator<FirstAxis> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
                 FirstAxis axis = iterator1.next();
-                System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                System.out.println("---->");
+                System.out.println("-----> " + dataMap.get(axis.getFieldName()));
+                if (dataMap.get(axis.getFieldName()) == null) {
+                    value = "0.00";
+                    String data1 = value.getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                } else {
+                    String data1 = dataMap.get(axis.getFieldName()).getClass().getSimpleName();
+                    System.out.println("******");
+                    System.out.println("Type: " + data1);
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    } else {
+                        System.out.println("else");
+                        System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                }
             }
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
@@ -2652,7 +3014,7 @@ public class CustomReportDesigner {
                 dataset.addValue(null, axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
         }
-        System.out.println("Start function of createDataset1");
+        System.out.println("End function of createDataset1");
         return dataset;
     }
 
@@ -2665,12 +3027,13 @@ public class CustomReportDesigner {
         System.out.println("Start function of createDataset2");
         // create the dataset...
         DecimalFormat df = new DecimalFormat(".##");
+        String value;
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
             for (Iterator<FirstAxis> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
                 FirstAxis axis = iterator1.next();
-                System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                System.out.println(null + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
                 dataset.addValue(null, axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
 
@@ -2680,6 +3043,24 @@ public class CustomReportDesigner {
 
             for (Iterator<SecondAxis> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
                 SecondAxis axis = iterator1.next();
+                if (dataMap.get(axis.getFieldName()) == null) {
+                    value = "0.00";
+                    String data1 = value.getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                } else {
+                    String data1 = dataMap.get(axis.getFieldName()).getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    } else {
+                        System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                }
             }
         }
         System.out.println("End function of createDataset2");
