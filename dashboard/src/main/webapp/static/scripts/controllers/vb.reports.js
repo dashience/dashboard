@@ -8,6 +8,15 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     $scope.accountName = $stateParams.accountName;
     $scope.reportWidgets = [];
 
+    if ($scope.permission.scheduleReport === true) {
+        $scope.showSchedulerReport = true;
+        console.log($scope.showSchedulerReport)
+        console.log($scope.showSchedulerReport)
+    } else {
+        $scope.showSchedulerReport = false;
+        console.log($scope.showSchedulerReport)
+    }
+
     $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
     $scope.weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
