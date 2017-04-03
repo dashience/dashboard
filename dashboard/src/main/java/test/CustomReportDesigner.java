@@ -37,13 +37,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.geom.Rectangle2D;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
@@ -57,42 +52,34 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Stream;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import org.apache.commons.lang.WordUtils;
-import org.apache.poi.POIXMLDocumentPart.RelationPart;
-import org.apache.poi.hslf.usermodel.*;
+import org.apache.log4j.Logger;
 import org.apache.poi.sl.usermodel.Insets2D;
-import org.apache.poi.sl.usermodel.PictureData;
-import org.apache.poi.sl.usermodel.SlideShow;
 import org.apache.poi.sl.usermodel.TableCell;
 import org.apache.poi.sl.usermodel.TextParagraph;
 import org.apache.poi.sl.usermodel.TextParagraph.TextAlign;
 import org.apache.poi.sl.usermodel.TextShape;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.util.IOUtils;
-import org.apache.poi.xslf.usermodel.SlideLayout;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFPictureData;
 import org.apache.poi.xslf.usermodel.XSLFPictureShape;
-import org.apache.poi.xslf.usermodel.XSLFRelation;
-import org.apache.poi.xslf.usermodel.XSLFShape;
 
 import org.apache.poi.xslf.usermodel.XSLFSlide;
-import org.apache.poi.xslf.usermodel.XSLFSlideLayout;
-import org.apache.poi.xslf.usermodel.XSLFSlideMaster;
 import org.apache.poi.xslf.usermodel.XSLFTable;
 import org.apache.poi.xslf.usermodel.XSLFTableCell;
 import org.apache.poi.xslf.usermodel.XSLFTableRow;
 import org.apache.poi.xslf.usermodel.XSLFTextBox;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextRun;
-import org.apache.poi.xslf.usermodel.XSLFTextShape;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
@@ -122,10 +109,6 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jsoup.Jsoup;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTBlip;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTBlipFillProperties;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTRelativeRect;
-import org.openxmlformats.schemas.drawingml.x2006.main.CTTableCell;
 
 /**
  *
@@ -151,6 +134,8 @@ public class CustomReportDesigner {
     private static final float widgetHeight = 300;
     private static final ReportHeader reportHeader = new L2TReportHeader();
 
+    final static Logger log = Logger.getLogger(CustomReportDesigner.class);
+
     static {
         FontFactory.register(FONT, "proxima_nova_rgregular");
         calcualtedFunctions.add(new CalcualtedFunction("ctr", "data__clicks", "data__impressions"));
@@ -171,25 +156,30 @@ public class CustomReportDesigner {
     Font pdfFontHeader = FontFactory.getFont("proxima_nova_rgregular", "Cp1253", true);
 
     private Boolean isZeroRow(Map<String, Object> mapData, List<WidgetColumn> columns) {
+        System.out.println("Start Function of isZeroRow");
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
             if (ApiUtils.toDouble(mapData.get(column.getFieldName()) + "") != 0) {
                 return false;
             }
         }
+        System.out.println("End Function of isZeroRow");
         return true;
     }
 
     private Double sum(List<Map<String, Object>> data, String fieldName) {
+        System.out.println("Start Function of sum");
         Double sum = 0.0;
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
             sum += ApiUtils.toDouble(mapData.get(fieldName) + "");
         }
+        System.out.println("End Function of sum");
         return sum;
     }
 
     private Double min(List<Map<String, Object>> data, String fieldName) {
+        System.out.println("Start Function of min");
         Double min = null;
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
@@ -197,10 +187,12 @@ public class CustomReportDesigner {
                 min = ApiUtils.toDouble(mapData.get(fieldName) + "");
             }
         }
+        System.out.println("End Function of min");
         return min;
     }
 
     private Double calulatedMetric(List<Map<String, Object>> data, CalcualtedFunction calcualtedFunction) {
+        System.out.println("Start Function of calulatedMetric");
         String name = calcualtedFunction.getName();
         String field1 = calcualtedFunction.getField1();
         String field2 = calcualtedFunction.getField2();
@@ -209,10 +201,13 @@ public class CustomReportDesigner {
         if (sum1 != 0 && sum2 != 0) {
             return sum1 / sum2;
         }
+        System.out.println("End Function of calulatedMetric");
         return 0.0;
     }
 
     private Double max(List<Map<String, Object>> data, String fieldName) {
+        System.out.println("Start Function of max");
+
         Double max = null;
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
@@ -220,10 +215,13 @@ public class CustomReportDesigner {
                 max = ApiUtils.toDouble(mapData.get(fieldName) + "");
             }
         }
+        System.out.println("End Function of max");
         return max;
     }
 
     private String format(WidgetColumn column, String value) {
+        System.out.println("Start Function of format");
+        System.out.println("End Function of format");
         return value;
     }
 
@@ -252,12 +250,15 @@ public class CustomReportDesigner {
 
     private int timeInMillis(String time, DateFormat format) throws ParseException {
         // you may need more advanced logic here when parsing the time if some times have am/pm and others don't.
+        System.out.println("Start Function of timeInMillis");
         try {
             Date date = format.parse(time);
             System.out.println("Date: " + date);
+            System.out.println("End Function of timeInMillis");
             return (int) date.getTime();
         } catch (ParseException e) {
             if (format != secondaryFormat) {
+                System.out.println("End Function of timeInMillis");
                 return timeInMillis(time, secondaryFormat);
             } else {
                 throw e;
@@ -266,11 +267,7 @@ public class CustomReportDesigner {
     }
 
     private List<Map<String, Object>> sortData(List<Map<String, Object>> data, List<SortType> sortType) {
-        System.out.println("SortData method");
-//        if (1 == 1) {
-//            System.out.println("Data"+data);
-//            return data;
-//        }
+        System.out.println("Start Function of sortData");
         Collections.sort(data, (Map<String, Object> o1, Map<String, Object> o2) -> {
             for (Iterator<SortType> iterator = sortType.iterator(); iterator.hasNext();) {
                 SortType sortType1 = iterator.next();
@@ -279,7 +276,7 @@ public class CustomReportDesigner {
 
                 int order = 1;
                 System.out.println("sort Order: " + sortType1.getSortOrder());
-                System.out.println("sort type: " + sortType1.getFieldType());
+                System.out.println("Field type: " + sortType1.getFieldType());
                 String day1 = o1.get(sortType1.getFieldName()) + "";
                 String day2 = o2.get(sortType1.getFieldName()) + "";
                 System.out.println("day1: " + day1);
@@ -294,7 +291,8 @@ public class CustomReportDesigner {
                             Date date2 = sdf.parse(day2);
                             return date1.compareTo(date2);
                         } catch (ParseException ex) {
-                            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                            log.error("Parse Exception in  sortData function:  " + ex);
+                            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
@@ -307,10 +305,9 @@ public class CustomReportDesigner {
                         DAY dayTwo = DAY.valueOf(day2);
                         System.out.println("dayTwo: " + dayTwo);
                         return dayOne.getWeight() - dayTwo.getWeight();
-                    } else {
-                        continue;
                     }
                 }
+
                 if (day1.length() == 4 || day1.length() == 5) {
                     System.out.println("Time ------>");
                     if ((day1.substring(day1.length() - 2, day1.length()).equalsIgnoreCase("pm") || day1.substring(day1.length() - 2, day1.length()).equalsIgnoreCase("am")) && (day2.substring(day2.length() - 2, day2.length()).equalsIgnoreCase("pm") || day2.substring(day2.length() - 2, day2.length()).equalsIgnoreCase("am"))) {
@@ -372,7 +369,8 @@ public class CustomReportDesigner {
                                 continue;
                             }
                         } catch (ParseException ex) {
-                            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                            log.error("Parse Exception in  sortData function:  " + ex);
+                            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } else {
                         continue;
@@ -410,10 +408,12 @@ public class CustomReportDesigner {
 //                return 0;
 //            }
 //        });
+        System.out.println("End function of sortData");
         return data;
     }
 
     private Map<String, List<Map<String, Object>>> groupBy(List<Map<String, Object>> data, String groupField) {
+        System.out.println("Start function of groupBy");
         Map<String, List<Map<String, Object>>> returnMap = new HashMap<>();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
@@ -426,10 +426,12 @@ public class CustomReportDesigner {
             groupDataList.add(dataMap);
             returnMap.put(fieldValue, groupDataList);
         }
+        System.out.println("End function of groupBy");
         return returnMap;
     }
 
     private List groupData(List<Map<String, Object>> data, List<String> groupByFields, List<Aggregation> aggreagtionList) {
+        System.out.println("Start function of groupData");
         List<String> currentFields = groupByFields;
         if (groupByFields.size() == 0) {
             return data;
@@ -450,10 +452,13 @@ public class CustomReportDesigner {
             dataToPush.put("data", groupData(value, groupByFields.subList(1, groupByFields.size()), aggreagtionList));
             groupedData.add(dataToPush);
         }
+        System.out.println("End function of groupData");
         return groupedData;
     }
 
     private Map<String, Object> aggregateData(List<Map<String, Object>> data, List<Aggregation> aggreagtionList) {
+        System.out.println("Start function of aggregateData");
+
         Map<String, Object> returnMap = new HashMap<>();
         for (Iterator<Aggregation> iterator = aggreagtionList.iterator(); iterator.hasNext();) {
             Aggregation aggregation = iterator.next();
@@ -480,10 +485,13 @@ public class CustomReportDesigner {
             }
         }
         System.out.println("Aggregation data: " + returnMap);
+        System.out.println("End function of aggregateData");
         return returnMap;
     }
 
     public PdfPTable generateTextPdfTable(TabWidget tabWidget) {
+        System.out.println("Start function of generateTextPdfTable");
+
         try {
             BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
@@ -530,15 +538,17 @@ public class CustomReportDesigner {
                 table.addCell(dataCell);
                 table.setWidthPercentage(95f);
             }
-
             return table;
         } catch (IOException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("IO Exception in  sortData function:  " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("End function of generateTextPdfTable");
         return null;
     }
 
     public PdfPTable dynamicPdfTable(TabWidget tabWidget) throws DocumentException {
+        System.out.println("Start function of dynamicPdfTable");
 //        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
@@ -636,12 +646,14 @@ public class CustomReportDesigner {
         }
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size " + data.size());
         // System.out.println(groupedMapData.get("_groupFields"));
+        System.out.println("End function of dynamicPdfTable");
 
         return generateTable(groupedMapData, tabWidget);
 
     }
 
     private void generateGroupedRows(Map groupedData, TabWidget tabWidget, PdfPTable table) {
+        System.out.println("Start function of generateGroupedRows");
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
         List<WidgetColumn> columns = tabWidget.getColumns();
         List data = (List) groupedData.get("data");
@@ -691,9 +703,11 @@ public class CustomReportDesigner {
                 generateGroupedRows(mapData, tabWidget, table);
             }
         }
+        System.out.println("End function of generateGroupedRows");
     }
 
     public XSLFTable staticPptTable(XSLFSlide slide) {
+        System.out.println("Start function of staticPptTable");
         XSLFTable tbl = slide.createTable();
         tbl.setAnchor(new java.awt.Rectangle(30, 30, 450, 300));
         int numColumns = 3;
@@ -736,11 +750,12 @@ public class CustomReportDesigner {
             }
 
         }
+        System.out.println("End function of staticPptTable");
         return tbl;
     }
 
     private XSLFTable generateTableForPpt(Map groupedData, TabWidget tabWidget, XSLFSlide slide) {
-
+        System.out.println("Start function of generateTableForPpt");
         //       BaseColor textHighlightColor = new BaseColor(242, 156, 33);
         Color tableTitleFontColor = new Color(132, 140, 99);
         Color widgetBorderColor = new Color(204, 204, 204);
@@ -971,10 +986,14 @@ public class CustomReportDesigner {
                 }
             }
         }
+        System.out.println("End function of generateTableForPpt");
+
         return tbl;
     }
 
     public XSLFSlide generateTextPptTable(TabWidget tabWidget, XSLFSlide slide) {
+        System.out.println("Start function of generateTextPptTable");
+
         Color tableTitleFontColor = new Color(132, 140, 99);
         Color widgetBorderColor = new Color(204, 204, 204);
         Color widgetTitleColor = Color.WHITE;
@@ -1027,10 +1046,12 @@ public class CustomReportDesigner {
         dataCell.setBorderColor(TableCell.BorderEdge.left, widgetBorderColor);
         dataCell.setBorderColor(TableCell.BorderEdge.top, widgetBorderColor);
         tbl.setColumnWidth(0, 650);
+        System.out.println("End function of generateTextPptTable");
         return slide;
     }
 
     public XSLFTable dynamicPptTable(TabWidget tabWidget, XSLFSlide slide) {
+        System.out.println("Start function of dynamicPptTable");
 //        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
@@ -1089,10 +1110,12 @@ public class CustomReportDesigner {
             groupedMapData.putAll(aggregateData(data, aggreagtionList));
             groupedMapData.put("data", data);
         }
+        System.out.println("End function of dynamicPptTable");
         return generateTableForPpt(groupedMapData, tabWidget, slide);
     }
 
     private Integer countColumns(List<WidgetColumn> columns) {
+        System.out.println("Start function of countColumns");
         Integer count = 0;
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
@@ -1100,10 +1123,13 @@ public class CustomReportDesigner {
                 count++;
             }
         }
+        System.out.println("End function of countColumns");
+
         return count;
     }
 
     private PdfPTable generateTable(Map groupedData, TabWidget tabWidget) {
+        System.out.println("Start function of generateTable");
 
         //       BaseColor textHighlightColor = new BaseColor(242, 156, 33);
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
@@ -1241,10 +1267,12 @@ public class CustomReportDesigner {
                 }
             }
         }
+        System.out.println("End function of generateTable");
         return table;
     }
 
     public void addReportHeader(Document document) {
+        System.out.println("Start function of addReportHeader");
         try {
             // 236, 255, 224
             BaseColor backgroundColor = new BaseColor(241, 243, 246);
@@ -1391,12 +1419,15 @@ public class CustomReportDesigner {
 
             document.add(table);
         } catch (DocumentException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("Document Exception in addReportHeader function:  " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("End function of addReportHeader");
+
     }
 
     public void dynamicPptTable(List<TabWidget> tabWidgets, OutputStream out) throws IOException {
-
+        System.out.println("Start function of dynamicPptTable");
         //creating a presentation
         XMLSlideShow ppt = new XMLSlideShow();
 
@@ -1421,7 +1452,6 @@ public class CustomReportDesigner {
                     slide = generateTextPptTable(tabWidget, slide);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
                     System.out.println("Pie");
-
                     JFreeChart pieChart = generatePieJFreeChart(tabWidget);
                     if (pieChart == null) {
                         //creating a slide with title and content layout
@@ -1511,6 +1541,43 @@ public class CustomReportDesigner {
                     pic.setAnchor(new java.awt.Rectangle(30, 55, 640, 480));
                     chart_out.close();
 
+                } else if (tabWidget.getChartType().equalsIgnoreCase("area")) {
+
+                    JFreeChart areaChart = multiAxisAreaJFreeChart(tabWidget);
+                    float quality = 1;
+
+                    //creating a slide with title and content layout
+                    XSLFSlide slide = ppt.createSlide();
+
+                    //selection of title place holder
+                    XSLFTextBox txt = slide.createTextBox();
+                    if (tabWidget.getWidgetTitle() != null) {
+                        txt.setText(tabWidget.getWidgetTitle());
+                    } else {
+                        txt.setText("");
+                    }
+
+                    txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
+                    txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
+
+                    XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
+                    tp.setTextAlign(TextAlign.LEFT);
+                    XSLFTextRun run = tp.getTextRuns().get(0);
+
+                    run.setBold(true);
+                    run.setFontSize(13.0);
+                    run.setFontColor(tableTitleFontColor);
+
+                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out, quality, areaChart, 640, 480);
+
+                    XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
+
+                    //creating a slide with given picture on it
+                    XSLFPictureShape pic = slide.createPicture(idx);
+                    pic.setAnchor(new java.awt.Rectangle(30, 55, 640, 480));
+                    chart_out.close();
+
                 } else if (tabWidget.getChartType().equalsIgnoreCase("line")) {
                     JFreeChart lineChart = multiAxisLineJFreeChart(tabWidget);
                     float quality = 1;
@@ -1549,19 +1616,27 @@ public class CustomReportDesigner {
             // out = new FileOutputStream("/home/deldot/Pictures/ppt/ppttable.pptx");
             ppt.write(out);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("FileNotFoundException in dynamicPptTable function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("IOException in dynamicPptTable function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         } catch (BadElementException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("BadElementException in dynamicPptTable function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             out.close();
             ppt.close();
+            System.out.println("End function of dynamicPptTable");
+
         }
     }
 
+//    public XSSFTable dynamicXlsTable(TabWiget tabWiget, ){
+//        return "";
+//    }
     public void dynamicXlsDownload(List<TabWidget> tabWidgets, OutputStream out) {
-
+        System.out.println("Start function of dynamicXlsDownload");
         try {
             JFreeChart pieChart = null;
             JFreeChart lineChart = null;
@@ -1646,14 +1721,18 @@ public class CustomReportDesigner {
             out.flush();
             out.close();
         } catch (IOException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("IOException in dynamicXlsDownload Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         } catch (BadElementException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("BadElementException in dynamicXlsDownload Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("End function of dynamicXlsDownload");
     }
 
     public JFreeChart getSampleJFreeChart() {
-        System.out.println("JfreeChart");
+        System.out.println("Start function of getSampleJFreeChart");
+
         DefaultCategoryDataset line_chart_dataset = new DefaultCategoryDataset();
         line_chart_dataset.addValue(15, "schools", "1970");
         line_chart_dataset.addValue(30, "schools", "1980");
@@ -1667,10 +1746,12 @@ public class CustomReportDesigner {
                 "Schools Count",
                 line_chart_dataset, PlotOrientation.VERTICAL,
                 true, true, false);
+        System.out.println("End function of getSampleJFreeChart");
         return lineChartObject;
     }
 
     public void dynamicPdfTable(List<TabWidget> tabWidgets, OutputStream out) {
+        System.out.println("Start function of dynamicPdfTable");
         try {
             PdfWriter writer = null;
             Document document = new Document(pageSize, 36, 36, 72, 72);
@@ -1801,9 +1882,44 @@ public class CustomReportDesigner {
                         document.add(new Phrase("\n"));
                         document.add(table);
                     }
-                } else if (tabWidget.getChartType().equalsIgnoreCase("areaChart")) {
-                    document.add(new Phrase("\n"));
-                    document.add(multiAxisAreaChart(writer, tabWidget));
+                } else if (tabWidget.getChartType().equalsIgnoreCase("area")) {
+                    //document.add(multiAxisBarChart(writer, tabWidget));
+                    PdfPTable table = new PdfPTable(1);
+                    PdfPCell cell;
+                    table.setWidthPercentage(95f);
+                    pdfFontTitle.setSize(14);
+                    pdfFontTitle.setStyle(Font.BOLD);
+                    pdfFontTitle.setColor(tableTitleFontColor);
+                    cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+                    cell.setFixedHeight(30);
+                    cell.setBorderColor(widgetBorderColor);
+                    cell.setBackgroundColor(widgetTitleColor);
+                    cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                    cell.setColspan(1);
+                    cell.setPaddingTop(5);
+                    cell.setPaddingLeft(10);
+                    table.addCell(cell);
+                    System.out.println("Area Writer: " + writer);
+                    System.out.println("Area Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("Area Tab Widget DataSource: " + tabWidget.getDatasource());
+
+                    Image areaChart = multiAxisAreaChart(writer, tabWidget);
+                    if (areaChart != null) {
+                        PdfPCell chartCell = new PdfPCell(areaChart);
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    } else {
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    }
+
                 }
                 // System.out.println("Chart Type ===> " + tabWidget.getChartType());
             }
@@ -1811,13 +1927,17 @@ public class CustomReportDesigner {
             out.flush();
             out.close();
         } catch (DocumentException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("DocumentException in dynamicPdfTable Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("IOException in dynamicPdfTable Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("End function of dynamicPdfTable");
     }
 
     public static Image generateLineChart(PdfWriter writer, TabWidget tabWidget) throws BadElementException {
+        System.out.println("Start function of generateLineChart");
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 
         JFreeChart chart = ChartFactory.createBarChart(
@@ -1851,10 +1971,14 @@ public class CustomReportDesigner {
 
         // contentByte.addTemplate(templatePie, 30, 30);
         Image img = Image.getInstance(templatePie);
+        System.out.println("End function of generateLineChart");
+
         return img;
     }
 
     public Image multiAxisLineChart(PdfWriter writer, TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisLineChart");
+
         try {
 
             List<WidgetColumn> columns = tabWidget.getColumns();
@@ -1891,7 +2015,7 @@ public class CustomReportDesigner {
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
                     xAxisDisplay = column.getDisplayName();
-                    System.out.println("XAxisDisplay: "+xAxisDisplay);
+                    System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
             }
 
@@ -1904,6 +2028,13 @@ public class CustomReportDesigner {
 
 //            final CategoryDataset dataset1 = createDataset3();
 //            final CategoryDataset dataset2 = createDataset4();
+            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+            long firstAxisCount = firstAxiss.count();
+
+            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+            long secondAxisCount = secondAxiss.count();
+
+            long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
             final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
@@ -1938,8 +2069,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_LEFT);
                             r.setBasePositiveItemLabelPosition(position);
                             if (r != null) {
-                                final LegendItem item = r.getLegendItem(0, 0);
-                                result.add(item);
+                                for (long i = 0; i < firstAxisCount; i++) {
+                                    final LegendItem item = r.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -1948,6 +2081,7 @@ public class CustomReportDesigner {
                     if (secondAxis.isEmpty()) {
                     } else {
                         final CategoryDataset dset2 = getDataset(1);
+                        System.out.println(dset2);
                         if (dset2 != null) {
                             final CategoryItemRenderer renderer2 = getRenderer(1);
                             renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
@@ -1956,8 +2090,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_RIGHT);
                             renderer2.setBasePositiveItemLabelPosition(position);
                             if (renderer2 != null) {
-                                final LegendItem item = renderer2.getLegendItem(1, 1);
-                                result.add(item);
+                                for (long i = firstAxisCount; i < totalCount; i++) {
+                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -1983,12 +2119,20 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
-            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
-            renderer2.setSeriesPaint(2, new Color(98, 203, 49));
-            plot.setRenderer(0, renderer2);
-            plot.setRenderer(1, renderer2);
-            plot.setRenderer(2, renderer2);
+            Paint[] paint = new Paint[]{
+                new Color(98, 203, 49),
+                new Color(85, 85, 85),
+                new Color(161, 225, 132),
+                new Color(102, 102, 102)
+            };
+            int j = 0;
+            for (long i = 0; i < totalCount; i++) {
+                if (i == 4) {
+                    j = 0;
+                }
+                renderer2.setSeriesPaint((int) i, paint[j++]);
+                plot.setRenderer((int) i, renderer2);
+            }
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             // OPTIONAL CUSTOMISATION COMPLETED.
 
@@ -2010,12 +2154,15 @@ public class CustomReportDesigner {
             Image img = Image.getInstance(templatePie);
             return img;
         } catch (BadElementException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("BadElementException in multiAxisLineChart Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("End function of multiAxisLineChart");
         return null;
     }
 
     public JFreeChart multiAxisLineJFreeChart(TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisLineJFreeChart");
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originalData = tabWidget.getData();
         List<Map<String, Object>> tempData = tabWidget.getData();
@@ -2054,7 +2201,13 @@ public class CustomReportDesigner {
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
             data = data.subList(0, tabWidget.getMaxRecord());
         }
+        Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+        long firstAxisCount = firstAxiss.count();
 
+        Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+        long secondAxisCount = secondAxiss.count();
+
+        long totalCount = firstAxisCount + secondAxisCount;
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
         final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
         final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
@@ -2085,8 +2238,10 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_LEFT);
                         r.setBasePositiveItemLabelPosition(position);
                         if (r != null) {
-                            final LegendItem item = r.getLegendItem(0, 0);
-                            result.add(item);
+                            for (long i = 0; i < firstAxisCount; i++) {
+                                final LegendItem item = r.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2104,8 +2259,10 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_RIGHT);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
-                            result.add(item);
+                            for (long i = firstAxisCount; i < totalCount; i++) {
+                                final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2127,18 +2284,29 @@ public class CustomReportDesigner {
         plot.setRangeAxis(1, axis2);
         plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
-        renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-        renderer2.setSeriesPaint(1, new Color(85, 85, 85));
-        plot.setRenderer(0, renderer2);
-        plot.setRenderer(1, renderer2);
+        Paint[] paint = new Paint[]{
+            new Color(98, 203, 49),
+            new Color(85, 85, 85),
+            new Color(161, 225, 132),
+            new Color(102, 102, 102)
+        };
+        int j = 0;
+        for (long i = 0; i < totalCount; i++) {
+            if (i == 4) {
+                j = 0;
+            }
+            renderer2.setSeriesPaint((int) i, paint[j++]);
+            plot.setRenderer((int) i, renderer2);
+        }
         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
         plot.setDrawingSupplier(new ChartDrawingSupplier());
+        System.out.println("End function of multiAxisLineJFreeChart");
         return chart;
     }
 
     public Image multiAxisAreaChart(PdfWriter writer, TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisAreaChart");
         try {
-
             List<WidgetColumn> columns = tabWidget.getColumns();
 
             List<Map<String, Object>> originalData = tabWidget.getData();
@@ -2148,6 +2316,7 @@ public class CustomReportDesigner {
             List<FirstAxis> firstAxis = new ArrayList<>();
             List<SecondAxis> secondAxis = new ArrayList<>();
             String xAxis = null;
+            String xAxisDisplay = null;
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
@@ -2165,6 +2334,7 @@ public class CustomReportDesigner {
                 }
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
+                    xAxisDisplay = column.getDisplayName();
                 }
             }
 
@@ -2177,9 +2347,18 @@ public class CustomReportDesigner {
 
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
-            final CategoryAxis domainAxis = new CategoryAxis(xAxis);
+            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
             final NumberAxis rangeAxis = new NumberAxis();
             final AreaRenderer renderer1 = new AreaRenderer();
+
+            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+            long firstAxisCount = firstAxiss.count();
+
+            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+            long secondAxisCount = secondAxiss.count();
+
+            long totalCount = firstAxisCount + secondAxisCount;
+
             final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
 
                 /**
@@ -2203,8 +2382,10 @@ public class CustomReportDesigner {
                             r.setBasePositiveItemLabelPosition(position);
 
                             if (r != null) {
-                                final LegendItem item = r.getLegendItem(0, 0);
-                                result.add(item);
+                                for (long i = 0; i < firstAxisCount; i++) {
+                                    final LegendItem item = r.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2221,8 +2402,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_RIGHT);
                             renderer2.setBasePositiveItemLabelPosition(position);
                             if (renderer2 != null) {
-                                final LegendItem item = renderer2.getLegendItem(0, 0);
-                                result.add(item);
+                                for (long i = firstAxisCount; i < totalCount; i++) {
+                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2244,10 +2427,24 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final AreaRenderer renderer2 = new AreaRenderer();
-            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
-            plot.setRenderer(0, renderer2);
-            plot.setRenderer(1, renderer2);
+            Paint[] paint = new Paint[]{
+                new Color(98, 203, 49),
+                new Color(85, 85, 85),
+                new Color(161, 225, 132),
+                new Color(102, 102, 102)
+            };
+            int j = 0;
+            for (long i = 0; i < totalCount; i++) {
+                if (i == 4) {
+                    j = 0;
+                }
+                renderer2.setSeriesPaint((int) i, paint[j++]);
+                plot.setRenderer((int) i, renderer2);
+            }
+//            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
+//            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
+//            plot.setRenderer(0, renderer2);
+//            plot.setRenderer(1, renderer2);
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
             // OPTIONAL CUSTOMISATION COMPLETED.
 
@@ -2269,14 +2466,16 @@ public class CustomReportDesigner {
             Image img = Image.getInstance(templatePie);
             return img;
         } catch (BadElementException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("BadElementException in multiAxisAreaChart Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("End function of multiAxisAreaChart");
         return null;
     }
 
     public Image multiAxisBarChart(PdfWriter writer, TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisBarChart");
         try {
-
             List<WidgetColumn> columns = tabWidget.getColumns();
 
             List<Map<String, Object>> originalData = tabWidget.getData();
@@ -2311,7 +2510,7 @@ public class CustomReportDesigner {
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
                     xAxisDisplay = column.getDisplayName();
-                    System.out.println("XAxisDisplay: "+xAxisDisplay);
+                    System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
             }
 
@@ -2325,6 +2524,13 @@ public class CustomReportDesigner {
 
 //            final CategoryDataset dataset1 = createDataset3();
 //            final CategoryDataset dataset2 = createDataset4();
+            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+            long firstAxisCount = firstAxiss.count();
+
+            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+            long secondAxisCount = secondAxiss.count();
+
+            long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
             final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
 
@@ -2359,8 +2565,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_CENTER);
                             r.setBasePositiveItemLabelPosition(position);
                             if (r != null) {
-                                final LegendItem item = r.getLegendItem(0, 0);
-                                result.add(item);
+                                for (long i = 0; i < firstAxisCount; i++) {
+                                    final LegendItem item = r.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2379,9 +2587,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_CENTER);
                             renderer2.setBasePositiveItemLabelPosition(position);
                             if (renderer2 != null) {
-                                final LegendItem item = renderer2.getLegendItem(1, 1);
-                                System.out.println("Item:" + item);
-                                result.add(item);
+                                for (long i = firstAxisCount; i < totalCount; i++) {
+                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
                             }
                         }
                     }
@@ -2405,13 +2614,21 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             final BarRenderer renderer2 = new BarRenderer();
-            renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-            renderer2.setSeriesPaint(1, new Color(85, 85, 85));
-            renderer2.setSeriesPaint(2, new Color(98, 203, 49));
             renderer2.setShadowVisible(false);
-            plot.setRenderer(0, renderer2);
-            plot.setRenderer(1, renderer2);
-            plot.setRenderer(2, renderer2);
+            Paint[] paint = new Paint[]{
+                new Color(98, 203, 49),
+                new Color(85, 85, 85),
+                new Color(161, 225, 132),
+                new Color(102, 102, 102)
+            };
+            int j = 0;
+            for (long i = 0; i < totalCount; i++) {
+                if (i == 4) {
+                    j = 0;
+                }
+                renderer2.setSeriesPaint((int) i, paint[j++]);
+                plot.setRenderer((int) i, renderer2);
+            }
             plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 
             // OPTIONAL CUSTOMISATION COMPLETED.
@@ -2432,12 +2649,15 @@ public class CustomReportDesigner {
             Image img = Image.getInstance(templatePie);
             return img;
         } catch (BadElementException ex) {
-            Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+            log.error("BadElementException in multiAxisBarChart Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("End function of multiAxisBarChart");
         return null;
     }
 
-    public JFreeChart multiAxisBarJFreeChart(TabWidget tabWidget) {
+    public JFreeChart multiAxisAreaJFreeChart(TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisAreaJFreeChart");
 
         List<WidgetColumn> columns = tabWidget.getColumns();
 
@@ -2481,6 +2701,13 @@ public class CustomReportDesigner {
             data = data.subList(0, tabWidget.getMaxRecord());
         }
 
+        Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+        long firstAxisCount = firstAxiss.count();
+
+        Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+        long secondAxisCount = secondAxiss.count();
+
+        long totalCount = firstAxisCount + secondAxisCount;
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
         final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
 
@@ -2508,8 +2735,10 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_CENTER);
                         r.setBasePositiveItemLabelPosition(position);
                         if (r != null) {
-                            final LegendItem item = r.getLegendItem(0, 0);
-                            result.add(item);
+                            for (long i = 0; i < firstAxisCount; i++) {
+                                final LegendItem item = r.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2528,9 +2757,163 @@ public class CustomReportDesigner {
                                 TextAnchor.BASELINE_CENTER);
                         renderer2.setBasePositiveItemLabelPosition(position);
                         if (renderer2 != null) {
-                            final LegendItem item = renderer2.getLegendItem(1, 1);
-                            System.out.println("Item:" + item);
-                            result.add(item);
+                            for (long i = firstAxisCount; i < totalCount; i++) {
+                                final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+
+        };
+        plot.setRangeGridlinesVisible(true);
+        plot.setDomainGridlinesVisible(true);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        final JFreeChart chart = new JFreeChart(plot);
+        CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
+        axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+        chart.setBackgroundPaint(Color.white);
+
+        plot.setBackgroundPaint(Color.white);
+        plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+        plot.setDataset(1, dataset2);
+        plot.mapDatasetToRangeAxis(1, 1);
+        //final ValueAxis axis2 = new NumberAxis("Secondary");
+        final ValueAxis axis2 = new NumberAxis();
+        plot.setRangeAxis(1, axis2);
+        plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        final AreaRenderer renderer2 = new AreaRenderer();
+        Paint[] paint = new Paint[]{
+            new Color(98, 203, 49),
+            new Color(85, 85, 85),
+            new Color(161, 225, 132),
+            new Color(102, 102, 102)
+        };
+        int j = 0;
+        for (long i = 0; i < totalCount; i++) {
+            if (i == 4) {
+                j = 0;
+            }
+            renderer2.setSeriesPaint((int) i, paint[j++]);
+            plot.setRenderer((int) i, renderer2);
+        }
+        plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+
+        // OPTIONAL CUSTOMISATION COMPLETED.
+        plot.setDrawingSupplier(new ChartDrawingSupplier());
+        System.out.println("End function of multiAxisAreaJFreeChart");
+
+        return chart;
+
+    }
+
+    public JFreeChart multiAxisBarJFreeChart(TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisBarJFreeChart");
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+
+        List<Map<String, Object>> originalData = tabWidget.getData();
+        List<Map<String, Object>> data = new ArrayList<>(originalData);
+
+        List<Map<String, Object>> tempData = tabWidget.getData();
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+        List<FirstAxis> firstAxis = new ArrayList<>();
+        List<SecondAxis> secondAxis = new ArrayList<>();
+        String xAxis = null;
+        String xAxisDisplay = null;
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null) {
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+            if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
+                firstAxis.add(new FirstAxis(column.getFieldName(), column.getDisplayName()));
+            }
+            if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) > 1) {
+                secondAxis.add(new SecondAxis(column.getFieldName(), column.getDisplayName()));
+            }
+            if (column.getxAxis() != null) {
+                xAxis = column.getFieldName();
+                xAxisDisplay = column.getDisplayName();
+            }
+        }
+
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+
+        Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+        long firstAxisCount = firstAxiss.count();
+
+        Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+        long secondAxisCount = secondAxiss.count();
+
+        long totalCount = firstAxisCount + secondAxisCount;
+        final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
+        final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+
+        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        final NumberAxis rangeAxis = new NumberAxis();
+        final BarRenderer renderer1 = new BarRenderer();
+        final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
+
+            /**
+             * Override the getLegendItems() method to handle special case.
+             *
+             * @return the legend items.
+             */
+            public LegendItemCollection getLegendItems() {
+
+                final LegendItemCollection result = new LegendItemCollection();
+                if (firstAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset data = getDataset();
+                    if (data != null) {
+                        final CategoryItemRenderer r = getRenderer();
+                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        r.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_CENTER);
+                        r.setBasePositiveItemLabelPosition(position);
+                        if (r != null) {
+                            for (long i = 0; i < firstAxisCount; i++) {
+                                final LegendItem item = r.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
+                        }
+                    }
+                }
+
+                // the JDK 1.2.2 compiler complained about the name of this
+                // variable 
+                if (secondAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset dset2 = getDataset(1);
+                    if (dset2 != null) {
+                        System.out.println("dset2");
+                        final CategoryItemRenderer renderer2 = getRenderer(1);
+                        renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        renderer2.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_CENTER);
+                        renderer2.setBasePositiveItemLabelPosition(position);
+                        if (renderer2 != null) {
+                            for (long i = firstAxisCount; i < totalCount; i++) {
+                                final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
                         }
                     }
                 }
@@ -2555,15 +2938,26 @@ public class CustomReportDesigner {
         plot.setRangeAxis(1, axis2);
         plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         final BarRenderer renderer2 = new BarRenderer();
-        renderer2.setSeriesPaint(0, new Color(98, 203, 49));
-        renderer2.setSeriesPaint(1, new Color(85, 85, 85));
         renderer2.setShadowVisible(false);
-        plot.setRenderer(0, renderer2);
-        plot.setRenderer(1, renderer2);
+        Paint[] paint = new Paint[]{
+            new Color(98, 203, 49),
+            new Color(85, 85, 85),
+            new Color(161, 225, 132),
+            new Color(102, 102, 102)
+        };
+        int j = 0;
+        for (long i = 0; i < totalCount; i++) {
+            if (i == 4) {
+                j = 0;
+            }
+            renderer2.setSeriesPaint((int) i, paint[j++]);
+            plot.setRenderer((int) i, renderer2);
+        }
         plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
 
         // OPTIONAL CUSTOMISATION COMPLETED.
         plot.setDrawingSupplier(new ChartDrawingSupplier());
+        System.out.println("End function of multiAxisBarJFreeChart");
 
         return chart;
 
@@ -2575,16 +2969,40 @@ public class CustomReportDesigner {
      * @return The dataset.
      */
     private CategoryDataset createDataset1(List<Map<String, Object>> data, List<FirstAxis> firstAxis, List<SecondAxis> secondAxis, String xAxis) {
+        System.out.println("Start function of createDataset1");
 
         // create the dataset...
         DecimalFormat df = new DecimalFormat(".##");
+        String value;
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
             for (Iterator<FirstAxis> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
                 FirstAxis axis = iterator1.next();
-                System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                System.out.println("---->");
+                System.out.println("-----> " + dataMap.get(axis.getFieldName()));
+                if (dataMap.get(axis.getFieldName()) == null) {
+                    value = "0.00";
+                    String data1 = value.getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                } else {
+                    String data1 = dataMap.get(axis.getFieldName()).getClass().getSimpleName();
+                    System.out.println("******");
+                    System.out.println("Type: " + data1);
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    } else {
+                        System.out.println("else");
+                        System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                }
             }
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
@@ -2596,7 +3014,7 @@ public class CustomReportDesigner {
                 dataset.addValue(null, axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
         }
-
+        System.out.println("End function of createDataset1");
         return dataset;
     }
 
@@ -2606,15 +3024,16 @@ public class CustomReportDesigner {
      * @return The dataset.
      */
     private CategoryDataset createDataset2(List<Map<String, Object>> data, List<SecondAxis> secondAxis, List<FirstAxis> firstAxis, String xAxis) {
-
+        System.out.println("Start function of createDataset2");
         // create the dataset...
         DecimalFormat df = new DecimalFormat(".##");
+        String value;
         final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
             for (Iterator<FirstAxis> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
                 FirstAxis axis = iterator1.next();
-                System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                System.out.println(null + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
                 dataset.addValue(null, axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
 
@@ -2624,11 +3043,27 @@ public class CustomReportDesigner {
 
             for (Iterator<SecondAxis> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
                 SecondAxis axis = iterator1.next();
-                System.out.println(dataMap.get(axis) + " ");
-                System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
-                dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                if (dataMap.get(axis.getFieldName()) == null) {
+                    value = "0.00";
+                    String data1 = value.getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                } else {
+                    String data1 = dataMap.get(axis.getFieldName()).getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    } else {
+                        System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                }
             }
         }
+        System.out.println("End function of createDataset2");
         return dataset;
     }
 
@@ -2767,6 +3202,7 @@ public class CustomReportDesigner {
     }
 
     public static Image generateBarChart(PdfWriter writer, TabWidget tabWidget) throws BadElementException {
+        System.out.println("Start function of generateBarChart");
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 
         JFreeChart chart = ChartFactory.createBarChart(
@@ -2801,10 +3237,12 @@ public class CustomReportDesigner {
 
         // contentByte.addTemplate(templatePie, 30, 30);
         Image img = Image.getInstance(templatePie);
+        System.out.println("End action of generateBarChart");
         return img;
     }
 
     public JFreeChart generatePieJFreeChart(TabWidget tabWidget) throws BadElementException {
+        System.out.println("End function of generatePieJFreeChart");
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originaldata = tabWidget.getData();
         List<Map<String, Object>> data;
@@ -2858,10 +3296,12 @@ public class CustomReportDesigner {
             String legend = iterator.next();
             plot.setSectionPaint(legend, paintSequence[i++]);
         }
+        System.out.println("End function of generatePieJFreeChart");
         return chart;
     }
 
     public static Image generatePieChart(PdfWriter writer, TabWidget tabWidget) throws BadElementException {
+        System.out.println("Start function of generatePieChart");
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originaldata = tabWidget.getData();
 
@@ -2932,11 +3372,12 @@ public class CustomReportDesigner {
         graphics2dBar.dispose();
         //contentByte.addTemplate(templateBar, 30, 30);
         Image img = Image.getInstance(templateBar);
+        System.out.println("End function of generatePieChart");
         return img;
     }
 
     private void generateGroupedRows(Map groupedData, TabWidget tabWidget, XSLFTable tbl) {
-
+        System.out.println("Start function of generateGroupedRows - PPT");
         Color tableTitleFontColor = new Color(132, 140, 99);
         Color widgetBorderColor = new Color(204, 204, 204);
         Color widgetTitleColor = Color.WHITE;
@@ -2946,12 +3387,10 @@ public class CustomReportDesigner {
 
         List<WidgetColumn> columns = tabWidget.getColumns();
         List data = (List) groupedData.get("data");
-        System.out.println("Data Size --- >" + data.size());
         int count = 0;
         XSLFTableRow dataRow = null;
         for (Iterator iterator = data.iterator(); iterator.hasNext();) {
             Map mapData = (Map) iterator.next();
-            System.out.println("For loop --->");
             if (mapData.get(mapData.get("_groupField")) != null) {
                 count = 1;
                 String groupValue = mapData.get(mapData.get("_groupField")) + "";
@@ -3075,6 +3514,7 @@ public class CustomReportDesigner {
                 generateGroupedRows(mapData, tabWidget, tbl);
             }
         }
+        System.out.println("End function of generateGroupedRows - PPT");
     }
 
     public static class CustomRenderer extends BarRenderer {
@@ -3304,6 +3744,8 @@ public class CustomReportDesigner {
 
         @Override
         public void onEndPage(PdfWriter writer, Document document) {
+            System.out.println("Start function of onEndPage");
+
             //            ColumnText ct = new ColumnText(writer.getDirectContent());
 //            ct.setSimpleColumn(new Rectangle(36, 832, 559, 810));
 //            for (Element e : header) {
@@ -3320,6 +3762,7 @@ public class CustomReportDesigner {
             //cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
             //table.addCell(cell);
             table.writeSelectedRows(0, -1, 36, 64, writer.getDirectContent());
+            System.out.println("End function of onEndPage");
 
         }
     }
@@ -3338,6 +3781,8 @@ public class CustomReportDesigner {
 
         @Override
         public void onEndPage(PdfWriter writer, Document document) {
+            System.out.println("Start function of onEndPage - 2");
+
             try {
                 //            ColumnText ct = new ColumnText(writer.getDirectContent());
 //            ct.setSimpleColumn(new Rectangle(36, 832, 559, 810));
@@ -3356,10 +3801,13 @@ public class CustomReportDesigner {
                     footer.writeSelectedRows(0, -1, 36, 64, writer.getDirectContent());
                 }
             } catch (BadElementException ex) {
-                Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("BadElementException in onEndPage Function: " + ex);
+                //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException | DocumentException ex) {
-                Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                log.error("Exception in onEndPage Function: " + ex);
+                //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
             }
+            System.out.println("End function of onEndPage - 2");
         }
     }
 }

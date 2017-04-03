@@ -143,6 +143,7 @@ Slider B-flat
 .checkbox-slider--b-flat input + span:before {
   position: absolute;
   left: 0px;
+  top:0px;
   display: inline-block;
 }
 .checkbox-slider--b-flat input + span > h4 {
