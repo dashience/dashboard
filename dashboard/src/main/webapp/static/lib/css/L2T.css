@@ -1501,7 +1501,7 @@ html {
 }
 body {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #fff;
+    background-color: #f5f5f5;
     font-size: 13px;
     color: #333;
     margin: 0;
@@ -1546,9 +1546,9 @@ body {
     border-top: 1px solid #e4e5e7;
     transition: all 0.4s ease 0s;
     position: absolute;
-    /*bottom: 0;*/
-    left: 0;
-    right: 0;
+    left:0;
+    right:0;
+    /*        bottom:0px;*/
 }
 @media (max-width: 768px) {
     .content {
@@ -1720,6 +1720,9 @@ body {
     font-size: 18px;
     padding: 5px 4px;
     transition: all .3s;
+    clear: both;
+    position: relative;
+    min-height: 45px;
     border: 1px solid transparent;
 }
 .hpanel .hbuilt.panel-heading {
@@ -1762,14 +1765,14 @@ body {
     background-color: none;
     border: none;
     box-shadow: none;
-    /*    margin-bottom: 15px;*/
+    margin-bottom: 15px;
 }
 .panel-tools {
     display: inline-block;
     float: right;
-    margin-top: 0;
     padding: 0;
     position: relative;
+    z-index: 999;
 }
 .hpanel .alert {
     margin-bottom: 0;
@@ -2767,12 +2770,22 @@ h6 {
 .pagination > .active > span:hover,
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
-    background-color: #3498db;
-    border-color: #258cd1;
+    background-color: #62cb31;
+    border-color: #62cb31;
     color: #fff;
     cursor: default;
     z-index: 2;
 }
+
+.pagination > li > a, .pagination > li > span {
+    color:#777;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #62cb31 !important;
+    border-color: #62cb31 !important;
+}
+
 .hbreadcrumb a.active {
     color: #9d9fa2;
 }
@@ -3785,7 +3798,7 @@ button.close {
 }
 
 .panel-tools {
-    margin-top: -8px;
+    /*    margin-top: -8px;*/
     /*z-index: 999;*/
     margin-right: 10px;
 }
@@ -3885,11 +3898,10 @@ tfoot tr td {
     font-size: 14px;
     font-weight: 600;
 }
-
-.hover-delete {
+/*.hover-delete {
     margin-top: 8px;
-}
-
+    z-index: 99;
+}*/
 .text .font-bold {
     margin: 0px auto 20px;
     padding: 0;
@@ -3900,8 +3912,12 @@ tfoot tr td {
     margin-top:3px;
 }
 
-.table {
+.table-reports {
     background:#fff;
+}
+
+.upload-logo {
+    width:150px;
 }
 
 .data-title {
@@ -3922,20 +3938,64 @@ textarea.form-control {
 }
 
 .fa-link {
-    font-size: 22px;
+    font-size: 16px;
     color: #cdcdcd;
-    width: 40px;
-    height: 37px;
-    border: 1px solid #e4e5e7;
     vertical-align: middle;
     border-radius: 3px;
-    padding-left: 8px;
-    padding-top: 6px;
-    cursor:pointer;
+    cursor: pointer;
+}
+
+.title-ew {
+    color: rgb(132, 140, 99);
+}
+
+.preview-table {
+    background:#fff;
+}
+
+.panel-head {
+    color: rgb(132, 140, 99);
+    padding: 10px;
+    background: #fff;
+    clear:both;
+    position: relative;
+}
+
+.panel-head a {
+    color: rgb(132, 140, 99);
+    font-weight: 600;
+    font-size: 18px;
+    padding: 5px 4px;
+    transition: all .3s;
 }
 
 .da-source {
     margin-bottom:10px;
+}
+
+.tbl-preview tbody {
+    /*     height:200px;
+        overflow: auto;*/
+}
+
+.input-group label {
+    font-size:10px;
+}
+
+.scheduler-list-style .input-group {
+    padding-bottom: 3px;
+}
+
+.form-control-btn {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    margin-bottom: 4px;
+    border-radius: 3px;
+}
+
+.list-button .dropdown-menu {
+    height:200px;
+    overflow: auto;
 }
 
 .max-record {
@@ -3965,8 +4025,16 @@ textarea.form-control {
     vertical-align:middle;
 }
 
-input[type="radio"], input[type="checkbox"] {
+input[type="radio"] {
     margin: 2px 0 0 !important;
+}
+
+input[type="checkbox"] {
+    margin: 4px 0 0 !important;
+}
+
+.btn {
+    margin-right:3px;
 }
 
 .radio, .checkbox {
@@ -3993,3 +4061,19 @@ input[type="radio"], input[type="checkbox"] {
     border-color: #777 !important;
 }
 
+table td[class*="col-"], table th[class*="col-"] {
+    word-wrap: break-word;
+}
+
+.table-scheduler {
+    background:#fff;
+}
+
+.ns-popover-tooltip-theme.ns-popover-left-align .ns-popover-tooltip {
+    margin-left: 0;
+    height: 260px;
+    overflow-y: auto;
+}
+.accountUser-Table{
+    clear: both;
+}

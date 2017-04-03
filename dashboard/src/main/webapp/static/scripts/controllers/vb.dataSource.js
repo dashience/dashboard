@@ -23,12 +23,20 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         {
             type: "linkedin",
             name: "linkedin",
-            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&state=123908353453&response_type=code'
+            url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&state=123908353453&response_type=code'
         },
         {
             type: 'instagram',
             name: 'Instagram',
             url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
+        },
+        {
+            type: 'adwords',
+            name: 'Adwords'
+        },
+        {
+            type: 'analytics',
+            name: 'Analytics'
         }
     ];
 
@@ -90,9 +98,9 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
 
     $scope.getDataSource = function (data) {
         console.log(data);
-        
+
         $("#dataSourceType").val(data.dataSourceType);
-        localStorage.setItem("dataSourceType",$("#dataSourceType").val());
+        localStorage.setItem("dataSourceType", $("#dataSourceType").val());
         $scope.dataSourceUrl = getDataSourceUrl(data.dataSourceType);
         console.log(data);
         window.open($scope.dataSourceUrl, data.dataSourceType, "myWindow", 'width=800,height=600');
@@ -111,6 +119,22 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
                 }
             }
         }
+        setTimeout(function () {
+            var accessToken = $('#fbAccessToken').val();
+            console.log(accessToken);
+            $http.get("admin/ui/oauthCode/" + accessToken + '/' + data.dataSourceType).success(function (response) {
+                console.log("success");
+                console.log(response);
+                $scope.oauthToken = response.access_token;
+                $("#fbOauthToken").val(response.access_token);
+                alert(response.access_token);
+                $scope.saveDataSource(data);
+                console.log($scope.oauthToken);
+            }).error(function (response) {
+                console.log("error");
+                console.log(response);
+            });
+        }, 5000);
     };
 
     //get facebook datasets using datasource
@@ -130,8 +154,8 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
 
         //for accesstoken
         console.log($('#fbAccessToken').val());
-        dataSource.code = $('#fbAccessToken').val();
-        dataSource.oAuthToken = $('#fbOauthToken').val();
+        dataSource.code = $('#fbOauthToken').val();
+        dataSource.accessToken = $('#fbAccessToken').val();
         console.log($('#fbOauthToken').val());
 
 
@@ -145,10 +169,10 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
             userName: dataSource.userName,
             dataSourceType: dataSource.dataSourceType,
             sourceFile: dataSource.sourceFile ? dataSource.sourceFile : $scope.fileReader,
-            sourceFileName: $scope.sourceFileName,
+            //sourceFileName: $scope.sourceFileName,
+            accessToken: dataSource.accessToken ? dataSource.accessToken : '',
             agencyId: dataSource.agencyId,
             userId: dataSource.userId,
-            accessToken: dataSource.oAuthToken ? dataSource.oAuthToken : '',
             code: dataSource.code ? dataSource.code : ''
         };
         console.log(data);
@@ -157,6 +181,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
         });
         $scope.dataSource = "";
         $scope.sourceFileName = "";
+        $scope.selectedRow = null;
     };
 
     $scope.selectedRow = null;
@@ -183,6 +208,7 @@ app.controller("DataSourceController", function ($scope, $stateParams, $http, $r
     $scope.clearDataSource = function (dataSource) {
         $scope.dataSource = "";
         $scope.sourceFileName = "";
+        $scope.selectedRow = null;
     };
 
     $scope.deleteDataSource = function (dataSource, index) {

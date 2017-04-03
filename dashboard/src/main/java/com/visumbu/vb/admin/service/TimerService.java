@@ -46,203 +46,104 @@ public class TimerService {
     @Autowired
     private SchedulerDao schedulerDao;
 
-    // @Scheduled(cron = "*/30 * * * * *")
+    private void executeTasks(List<Scheduler> scheduledTasks) {
+        Date today = new Date();
+        for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
+            Date schedulerStartTime = new Date();
+            SchedulerHistory schedulerHistory = new SchedulerHistory();
+            Scheduler scheduler = iterator.next();
+            Report report = scheduler.getReportId();
+            Integer schedulerId = scheduler.getId();
+            Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
+            String dealerId = scheduler.getAccountId().getId() + "";
+            String accountMailId = scheduler.getAccountId().getEmailId();
+            String exportType = scheduler.getSchedulerType();
+            schedulerHistory.setExecutionStartTime(schedulerStartTime);
+            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
+            Date startDate = DateUtils.getSixMonthsBack(today);
+            Date endDate = today;
+            schedulerHistory.setStartTime(startDate);
+            schedulerHistory.setEndTime(endDate);
+            String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
+            filename = filename.replaceAll(" ", "_");
+            String toAddress = accountMailId;
+            if (toAddress != null && !toAddress.isEmpty()) {
+                toAddress += "," + scheduler.getSchedulerEmail();
+            }
+            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
+            String message = "scheduler message";
+            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+            schedulerHistory.setFileName(filename);
+            schedulerHistory.setEmailId(toAddress);
+            schedulerHistory.setEmailSubject(subject);
+            schedulerHistory.setEmailMessage(message);
+
+            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
+            Date schedulerEndTime = new Date();
+            schedulerHistory.setExecutionEndTime(schedulerEndTime);
+            schedulerHistory.setSchedulerId(schedulerById);
+            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
+            //schedulerService.createSchedulerHistory(schedulerHistory);
+        }
+    }
+
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
         Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();
-
         List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today); //schedulerDao.getScheduledTasks("Daily");
-        System.out.println("TOTAL TASKS " + scheduledTasks.size());
-        for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
-            System.out.println("Inside for --- ");
-            Date schedulerStartTime = new Date();
-            SchedulerHistory schedulerHistory = new SchedulerHistory();
-            Scheduler scheduler = iterator.next();
-            Report report = scheduler.getReportId();
-            Integer schedulerId = scheduler.getId();
-            Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
-            String dealerId = scheduler.getAccountId().getId() + "";
-            String accountMailId = scheduler.getAccountId().getEmailId();
-            String exportType = scheduler.getSchedulerType();
-            schedulerHistory.setExecutionStartTime(schedulerStartTime);
-            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
-            Date startDate = DateUtils.getSixMonthsBack(today);
-            Date endDate = today;
-            schedulerHistory.setStartTime(startDate);
-            schedulerHistory.setEndTime(endDate);
-            String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
-            filename = filename.replaceAll(" ", "_");
-            String toAddress = accountMailId;
-            if (toAddress != null && !toAddress.isEmpty()) {
-                toAddress += "," + scheduler.getSchedulerEmail();
-            }
-            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
-            String message = "scheduler message";
-            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-            schedulerHistory.setFileName(filename);
-            schedulerHistory.setEmailId(toAddress);
-            schedulerHistory.setEmailSubject(subject);
-            schedulerHistory.setEmailMessage(message);
-
-            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-            Date schedulerEndTime = new Date();
-            schedulerHistory.setExecutionEndTime(schedulerEndTime);
-            schedulerHistory.setSchedulerId(schedulerById);
-            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-            //schedulerService.createSchedulerHistory(schedulerHistory);
-
-        }
-        System.out.println(new Date());
-        System.out.println(userDao.getActiveAgency());
+        executeTasks(scheduledTasks);
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeWeeklyTask() {
-        System.out.println("Test Weekly");
-        System.out.println("Test Weekly1");
         Integer hour = DateUtils.getCurrentHour();
-        System.out.println("Test Weekly2");
-        System.out.println("Test Weekly3");
         Date today = new Date();
-        System.out.println("Test Weekly4");
         String weekDayToday = DateUtils.getDayOfWeek(DateUtils.getCurrentWeekDay());
         List<Scheduler> scheduledTasks = schedulerDao.getWeeklyTasks(hour, weekDayToday, today);
-        System.out.println("Size " + scheduledTasks.size());
-        for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
-            Scheduler scheduler = iterator.next();
-            System.out.println("Inside for --- ");
-            Date schedulerStartTime = new Date();
-            SchedulerHistory schedulerHistory = new SchedulerHistory();
-//            Scheduler scheduler = iterator.next();
-            Report report = scheduler.getReportId();
-            Integer schedulerId = scheduler.getId();
-            Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
-            String dealerId = scheduler.getAccountId().getId() + "";
-            String accountMailId = scheduler.getAccountId().getEmailId();
-            String exportType = scheduler.getSchedulerType();
-            schedulerHistory.setExecutionStartTime(schedulerStartTime);
-            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
-            Date startDate = DateUtils.getSixMonthsBack(today);
-            Date endDate = today;
-            schedulerHistory.setStartTime(startDate);
-            schedulerHistory.setEndTime(endDate);
-            String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
-            filename = filename.replaceAll(" ", "_");
-            String toAddress = accountMailId;
-            if (toAddress != null && !toAddress.isEmpty()) {
-                toAddress += "," + scheduler.getSchedulerEmail();
-            }
-            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
-            String message = "scheduler message";
-            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-            schedulerHistory.setFileName(filename);
-            schedulerHistory.setEmailId(toAddress);
-            schedulerHistory.setEmailSubject(subject);
-            schedulerHistory.setEmailMessage(message);
-
-            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-            Date schedulerEndTime = new Date();
-            schedulerHistory.setExecutionEndTime(schedulerEndTime);
-            schedulerHistory.setSchedulerId(schedulerById);
-            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-            //schedulerService.createSchedulerHistory(schedulerHistory);
-        }
+        executeTasks(scheduledTasks);
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeMonthlyTask() {
-       // Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();
         String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:mm");
-        System.out.println(currentDateHour);
         List<Scheduler> scheduledTasks = schedulerDao.getMonthlyTasks(currentDateHour, today);
-        for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
-            Scheduler scheduler = iterator.next();
-            System.out.println("Inside for ---> Monthly ");
-            Date schedulerStartTime = new Date();
-            SchedulerHistory schedulerHistory = new SchedulerHistory();
-            Report report = scheduler.getReportId();
-            Integer schedulerId = scheduler.getId();
-            Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
-            String dealerId = scheduler.getAccountId().getId() + "";
-            String accountMailId = scheduler.getAccountId().getEmailId();
-            String exportType = scheduler.getSchedulerType();
-            schedulerHistory.setExecutionStartTime(schedulerStartTime);
-            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
-            Date startDate = DateUtils.getSixMonthsBack(today);
-            Date endDate = today;
-            schedulerHistory.setStartTime(startDate);
-            schedulerHistory.setEndTime(endDate);
-            String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
-            filename = filename.replaceAll(" ", "_");
-            String toAddress = accountMailId;
-            if (toAddress != null && !toAddress.isEmpty()) {
-                toAddress += "," + scheduler.getSchedulerEmail();
-            }
-            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
-            String message = "scheduler message";
-            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-            schedulerHistory.setFileName(filename);
-            schedulerHistory.setEmailId(toAddress);
-            schedulerHistory.setEmailSubject(subject);
-            schedulerHistory.setEmailMessage(message);
-
-            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-            Date schedulerEndTime = new Date();
-            schedulerHistory.setExecutionEndTime(schedulerEndTime);
-            schedulerHistory.setSchedulerId(schedulerById);
-            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-            //schedulerService.createSchedulerHistory(schedulerHistory);
-        }
+        executeTasks(scheduledTasks);
     }
 
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeYearlyTask() {
 //         Integer hour = DateUtils.getCurrentHour();
+System.out.println("Yearly Tasks");
         Date today = new Date();
-        String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:mm");
+        String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:00");
         System.out.println(currentDateHour);
         List<Scheduler> scheduledTasks = schedulerDao.getYearlyTasks(currentDateHour, today);
-        for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
-            Scheduler scheduler = iterator.next();
-            System.out.println("Inside for ---> Yearly ");
-            Date schedulerStartTime = new Date();
-            SchedulerHistory schedulerHistory = new SchedulerHistory();
-            Report report = scheduler.getReportId();
-            Integer schedulerId = scheduler.getId();
-            Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
-            String dealerId = scheduler.getAccountId().getId() + "";
-            String accountMailId = scheduler.getAccountId().getEmailId();
-            String exportType = scheduler.getSchedulerType();
-            schedulerHistory.setExecutionStartTime(schedulerStartTime);
-            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
-            Date startDate = DateUtils.getSixMonthsBack(today);
-            Date endDate = today;
-            schedulerHistory.setStartTime(startDate);
-            schedulerHistory.setEndTime(endDate);
-            String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
-            filename = filename.replaceAll(" ", "_");
-            String toAddress = accountMailId;
-            if (toAddress != null && !toAddress.isEmpty()) {
-                toAddress += "," + scheduler.getSchedulerEmail();
-            }
-            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
-            String message = "scheduler message";
-            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-            schedulerHistory.setFileName(filename);
-            schedulerHistory.setEmailId(toAddress);
-            schedulerHistory.setEmailSubject(subject);
-            schedulerHistory.setEmailMessage(message);
-
-            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-            Date schedulerEndTime = new Date();
-            schedulerHistory.setExecutionEndTime(schedulerEndTime);
-            schedulerHistory.setSchedulerId(schedulerById);
-            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-            //schedulerService.createSchedulerHistory(schedulerHistory);
-        }
+        System.out.println(scheduledTasks);
+//        executeTasks(scheduledTasks);
     }
-    
-    public void executeYearOfWeek(){
+
+    @Scheduled(cron = "0 0 */1 * * *")
+    public void executeYearOfWeek() {
+        Date today = new Date();
+        Integer hour = DateUtils.getCurrentHour();
+        Integer currentYearOfWeekCount = DateUtils.getYearOfWeek();
+        String weekDayToday = DateUtils.getDayOfWeek(DateUtils.getCurrentWeekDay());
+        List<Scheduler> scheduledTasks = schedulerDao.getYearOfWeekTasks(hour, weekDayToday, currentYearOfWeekCount, today);
+        executeTasks(scheduledTasks);
+
+    }
+
+//    @Scheduled(cron = "*/10 * * * * *")
+    public void executeOnce() {
+        Integer hour = DateUtils.getCurrentHour();
+        Date today = new Date();
+        System.out.println("Once");
+        List<Scheduler> scheduledTasks = schedulerDao.getOnce(hour, today);
+        System.out.println("Once 1");
+        executeTasks(scheduledTasks);
+
     }
 
     private Boolean downloadReportAndSend(Date startDate, Date endDate,
@@ -262,7 +163,8 @@ public class TimerService {
             MailProperties mailProps = new MailProperties();
             TextMailWithAttachment sender = new TextMailWithAttachment(mailProps);
             String[] attachments = {filename};
-            sender.sendMail("aruljose445@gmail.com", subject, message, Arrays.asList(attachments));
+            System.out.println("Sending mail to " + to);
+            sender.sendMail(to, subject, message, Arrays.asList(attachments));
         } catch (IOException ex) {
             Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
             return false;

@@ -24,6 +24,26 @@ import org.joda.time.LocalDate;
  */
 public class DateUtils {
 
+    
+    public static String toAdWordsDate(Date date) {
+        String format = "YYYYMMdd";
+        return dateToString(date, format);
+    }
+
+    public static String getAdWordsStartDate(Date startDate) {
+        if (startDate == null) {
+            return "7DaysAgo";
+        }
+        return toAdWordsDate(startDate);
+    }
+
+    public static String getAdWordsEndDate(Date endDate) {
+        if (endDate == null) {
+            return "today";
+        }
+        return toAdWordsDate(endDate);
+    }
+    
     public static Date get30DaysBack() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
         Calendar cal = Calendar.getInstance();
@@ -323,14 +343,14 @@ public class DateUtils {
         calendar.setTime(date);
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
-    
+
     public static Integer getCurrentWeekDay() {
         Date date = new Date();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
-    
+
     public static String getDayOfWeek(Integer day) {
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         return days[day - 1];
@@ -342,4 +362,30 @@ public class DateUtils {
     public static Date getNextWeek(Date weekStart) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    public static Integer getYearOfWeek() {
+        Date date = new Date();
+        Calendar calendar =  new GregorianCalendar();    
+        calendar.setTime(date);
+        return  calendar.get(Calendar.WEEK_OF_YEAR);
+    }
+
+     public static String getGaStartDate(Date startDate) {
+        if (startDate == null) {
+            return "7DaysAgo";
+        }
+        return toGaDate(startDate);
+    }
+
+    public static String getGaEndDate(Date endDate) {
+        if (endDate == null) {
+            return "today";
+        }
+        return toGaDate(endDate);
+    }
+    
+    public static String toGaDate(Date date) {
+        String format = "YYYY-MM-dd";
+        return dateToString(date, format);
+    }
+
 }

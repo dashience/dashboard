@@ -2,32 +2,25 @@
     #editor {
         height: 300px;
     }
-
     .table-fixed thead {
         width: 100%;
         border-bottom: none;
     }
-    .table-fixed tbody {        
-        height: 480px;
+    .table-fixed tbody {
+        height: 430px;
         overflow-y: auto !important;
         width: 100%;
     }
     .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
         display: block;
-        /*overflow: hidden;*/
-    }
-    .table-fixed tr{
-        cursor: pointer;
     }
     .table-fixed tbody td, .table-fixed thead > tr> th {
         float: left;
         border-bottom-width: 0;
-    }    
-    .table-fixed tbody {
-        height:50vh;
-        min-height:50vh;
     }
-
+    .table-fixed tr td {
+        cursor:pointer;
+    }
     .license {
         height:63vh;
         min-height:63vh;
@@ -45,7 +38,7 @@
     }
     .hpanel .panel-body {
         border: 1px solid #e4e5e7;
-    }
+    }    
 
 </style>
 <section class="content">
@@ -76,22 +69,13 @@
             </ul>
         </div>
 
-
-
         <div class="row">
             <div class="col-lg-12">
-
-
-                <div class="hpanel">
-
-                    <div class="col-md-6">
-
-
+                <div class="col-md-6">
+                    <div class="hpanel">
                         <div class="panel-body">
-
                             <div class="tab-content">
                                 <div ng-show="isSet(1)" class="license">
-
                                     <div class="pull-right account-new">
                                         <button class="btn btn-success" ng-click="addAccount()">New</button>
                                     </div>
@@ -130,7 +114,7 @@
                                 <div ng-show="isSet(2)" class="license">
 
                                     <div class="col-lg-12" ng-hide="showEditPage">
-                                        <table class="table table-fixed">
+                                        <table class="table table-responsive table-fixed">
                                             <thead>
                                                 <tr>
                                                     <th class="col-xs-5">Name</th>
@@ -236,7 +220,7 @@
                                 <div ng-show="isSet(3)" class="license">
 
                                     <div class="col-lg-12">
-                                        <table class="table table-fixed">
+                                        <table class="table table-responsive table-fixed">
                                             <thead>
                                                 <tr>
                                                     <!--<th class="col-xs-4">Account Name</th>-->
@@ -247,8 +231,8 @@
                                                     </th>
                                                 </tr>
                                             </thead>
-                                            <tbody style="height:420px">
-                                                <tr ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
+                                            <tbody>
+                                                <tr class="accountUser-Table" ng-repeat="accountUser in accountUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
                                                     <!--                                                            <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
                                                                                                                     {{accountUser.accountId.accountName}}
                                                                                                                 </td>-->
@@ -267,8 +251,8 @@
                                                     </td>
                                                     <td class="col-xs-4" ng-click="editAccountUser(accountUser)">
                                                         <div class="checkbox checkbox-slider--b">
-                                                            <label class="col-sm-4" for="field{{accountUser.id}}">
-                                                                <input id="field{{accountUser.id}}" type="checkbox" ng-model="accountUser.status" ng-change="saveStatus(accountUser)" value="1" />
+                                                            <label class="col-sm-4" for="field{{$index + 1}}">
+                                                                <input id="field{{$index + 1}}" type="checkbox" ng-model="accountUser.status" ng-change="saveStatus(accountUser)" value="1" />
                                                                 <span></span>
                                                             </label>
                                                         </div>
@@ -327,14 +311,14 @@
 
 
 
-                <div class="hpanel">
-                    <div class="col-md-6">
+                <div class="col-md-6">
+                    <div class="hpanel">
 
                         <div class="panel-body">
                             <div class="data-search">
                                 <input type="text" class="form-control" ng-model="searchAccount" placeholder="Search...">
                             </div>
-                            <table class="table table-fixed">
+                            <table class="table table-responsive table-fixed">
                                 <thead>
                                     <tr>
                                         <th class="col-xs-5">Name</th>
@@ -343,7 +327,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="account in accounts| filter: searchAccount" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                    <tr data-dir-paginate="account in accounts| filter: searchAccount|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                         <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
                                             {{account.accountName}}
                                         </td>
@@ -390,6 +374,7 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
                         </div>
                     </div>  
                 </div> 

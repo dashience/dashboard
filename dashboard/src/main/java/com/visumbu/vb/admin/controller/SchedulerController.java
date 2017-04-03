@@ -10,6 +10,7 @@ import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.SchedulerBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Scheduler;
+import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -69,6 +70,11 @@ public class SchedulerController extends BaseController{
     public @ResponseBody
     Scheduler getSchedulerById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer schedulerId) {
         return schedulerService.getSchedulerById(schedulerId);
+    }
+    @RequestMapping(value = "schedulerHistory/{schedulerId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getSchedulerHistoryById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer schedulerId) {
+        return schedulerService.getSchedulerHistoryById(schedulerId);
     }
     
 //    @RequestMapping(value = "schedulerByReport/{reportId}", method = RequestMethod.GET, produces = "application/json")

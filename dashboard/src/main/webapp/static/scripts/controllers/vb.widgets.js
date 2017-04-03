@@ -43,7 +43,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         });
     };
-
     $scope.removeBackDrop = function () {
         $('body').removeClass().removeAttr('style');
         $('.modal-backdrop').remove();
@@ -234,7 +233,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
-            console.log(scope.dynamicTableSource)
             scope.pdfFunction({test: "Test"});
             scope.totalShown = 0;
             scope.displayFooter = scope.tableFooter;
@@ -299,7 +297,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
             //scope.pageSize = 10;
             // console.log
             scope.columns = [];
-            console.log(JSON.parse(scope.widgetColumns))
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 scope.columns.push(value);
             });
@@ -365,13 +362,15 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 schema: 'vb'
             }
 
-            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            var url = "admin/proxy/getData?";
+            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
+                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            }
             if (tableDataSource.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
-            console.log(scope);
             if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getFbData?";
+                url = "admin/proxy/getData?";
             }
             $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&accountId=" + $stateParams.accountId + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 //$http.post("admin/proxy/getJson", data).success(function (response) {
@@ -554,14 +553,12 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push("-" + value.fieldName);
                         }
-                        console.log(fieldsOrder);
                     } else if (value.fieldType == "number") {
                         if (value.sortOrder == "asc") {
                             //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
 
                                 var parsedValue = parseFloat(a[value.fieldName]);
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -570,7 +567,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push(function (a) {
                                 var parsedValue = parseFloat(a[value.fieldName]);
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -579,13 +575,10 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                         }
                     } else if (value.fieldType == "date") {
                         if (value.sortOrder == "asc") {
-                            //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
 
                                 var parsedDate = new Date(a[value.fieldName]);
                                 var parsedValue = parsedDate.getTime() / 1000;
-                                console.log(parsedValue);
-                                console.log("TIME ---> " + parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -595,7 +588,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                             fieldsOrder.push(function (a) {
                                 var parsedDate = new Date(a[value.fieldName]);
                                 var parsedValue = parsedDate.getTime() / 1000;
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -604,11 +596,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                         }
                     } else {
                         if (value.sortOrder == "asc") {
-                            //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
-
                                 var parsedValue = parseFloat(a[value.fieldName]);
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return a[value.fieldName];
                                 }
@@ -643,146 +632,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 });
                 return data;
             };
-        }
-    };
-});
-
-app.directive('dynamictable', function ($http, uiGridConstants, uiGridGroupingConstants, $timeout, $stateParams, stats) {
-    return{
-        restrict: 'A',
-        scope: {
-            dynamicTableUrl: '@',
-            widgetId: '@',
-            widgetColumns: '@',
-            setTableFn: '&'
-        },
-        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
-                '<div id="grid1" class="grid full-height" ng-if="ajaxLoadingCompleted" ui-grid="gridOptions" ui-grid-grouping></div>',
-        link: function (scope, element, attr) {
-            scope.loadingTable = true;
-            scope.gridOptions = {
-                enableColumnMenus: false,
-                enableGridMenu: false,
-                enableRowSelection: false,
-                enableGroupHeaderSelection: false,
-                enableRowHeaderSelection: false,
-                enableSorting: true,
-                multiSelect: false,
-                enableColumnResize: true,
-                showColumnFooter: true,
-                cellTooltip: true,
-                enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
-                enableVerticalScrollbar: uiGridConstants.scrollbars.NEVER,
-            };
-            var startDate = "";
-            var endDate = "";
-            var columnDefs = [];
-            angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
-
-                columnDef = {
-                    field: value.fieldName,
-                    displayName: value.displayName,
-//                        cellClass: 'space-numbers',
-                    //width: "100%",
-                    cellTooltip: true,
-                    headerTooltip: true
-                }
-                if (value.width) {
-                    columnDef.width = value.width + "%";
-                }
-                var cellFormat = "";
-                if (value.displayFormat) {
-                    cellFormat = value.displayFormat;
-                }
-                var cellAlignment = "";
-                var cellWrapText = "";
-                if (value.alignment === 'left') {
-                    cellAlignment = 'text-left';
-                } else if (value.alignment === 'right') {
-                    cellAlignment = 'text-right';
-                } else {
-                    cellAlignment = 'text-center';
-                }
-                if (value.wrapText) {
-                    cellWrapText = "wrap";
-                }
-                columnDef.cellTemplate = '<div  class="ui-grid-cell-contents ' + cellAlignment + " " + cellWrapText + '"><span>{{COL_FIELD | gridDisplayFormat : "' + cellFormat + '"}}</span></div>';
-                columnDef.footerCellTemplate = '<div class="' + cellAlignment + '" >{{col.getAggregationValue() | gridDisplayFormat:"' + cellFormat + '"}}</div>';
-
-                if (value.agregationFunction == "ctr") {
-                    columnDef.aggregationType = stats.aggregator.ctrFooter,
-                            columnDef.treeAggregation = {type: uiGridGroupingConstants.aggregation.CUSTOM},
-                            columnDef.customTreeAggregationFn = stats.aggregator.ctr,
-                            columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.SUM,
-                            columnDef.cellFilter = 'gridDisplayFormat:"dsaf"',
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "sum") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.SUM,
-                            columnDef.cellFilter = 'gridDisplayFormat:"dsaf"',
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "count") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.COUNT,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "max") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.MAX,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "avg") {
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.AVG,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.agregationFunction == "min") {
-
-                    columnDef.treeAggregationType = uiGridGroupingConstants.aggregation.MIN,
-                            columnDef.cellTooltip = true,
-                            columnDef.headerTooltip = true
-                }
-                if (value.groupPriority) {
-                    columnDef.grouping = {groupPriority: value.groupPriority};
-                }
-                columnDefs.push(columnDef);
-            });
-
-            $http.get("admin/proxy/getJson?url=" + scope.dynamicTableUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
-                scope.ajaxLoadingCompleted = true;
-                scope.loadingTable = false;
-                scope.gridOptions = {
-                    enableColumnMenus: false,
-                    enableGridMenu: false,
-                    enableRowSelection: false,
-                    enableGroupHeaderSelection: false,
-                    enableRowHeaderSelection: false,
-                    enableSorting: true,
-                    enableGroup: false,
-                    multiSelect: false,
-                    enableColumnResize: true,
-                    data: response.data,
-                    columnDefs: columnDefs,
-                    showColumnFooter: true,
-                    enableHorizontalScrollbar: uiGridConstants.scrollbars.NEVER,
-                    enableVerticalScrollbar: uiGridConstants.scrollbars.NEVER
-
-                };
-                function lineage() {
-                    return this.name + ' of ' + this.parent;
-                }
-
-                function setHeight(extra) {
-                    scope.height = ((scope.gridOptions.data.length * 30) + 30);
-                    if (extra) {
-                        scope.height += extra;
-                    }
-                    scope.api.grid.gridHeight = scope.height;
-                }
-            });
         }
     };
 });
@@ -830,6 +679,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             scope.loadingTicker = true;
             var tickerName = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
+                if (!value) {
+                    return;
+                }
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
 
@@ -852,15 +704,17 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
-            console.log(JSON.parse(scope.tickerSource))
-
-            var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            var url = "admin/proxy/getData?";
+            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
+                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+            }
             if (tickerDataSource.dataSourceId.dataSourceType == "csv") {
                 url = "admin/csv/getData?";
             }
-
+            if (tickerDataSource.dataSourceId.dataSourceType == "facebook") {
+                url = "admin/proxy/getData?";
+            }
             $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString + "&driver=" + tickerDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tickerDataSource.dataSourceId.userName + '&password=' + tickerDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
-//            $http.get("admin/proxy/getJson?url=" + scope.tickerUrl + "&widgetId=" + scope.tickerId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                 scope.tickers = [];
                 scope.loadingTicker = false;
                 if (response.length === 0) {
@@ -903,8 +757,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
             lineChartSource: '@',
             widgetId: '@',
             setLineChartFn: '&',
-            control: "=",
-            collection: '@',
             widgetColumns: '@',
             lineChartId: '@'
         },
@@ -924,9 +776,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
             var startDate = "";
             var endDate = "";
             var sortFields = [];
-
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
-                console.log(value)
                 if (!labels["format"]) {
                     labels = {format: {}};
                 }
@@ -977,14 +827,12 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push("-" + value.fieldName);
                         }
-                        console.log(fieldsOrder);
                     } else if (value.fieldType == "number") {
                         if (value.sortOrder == "asc") {
                             //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
 
                                 var parsedValue = parseFloat(a[value.fieldName]);
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -993,7 +841,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push(function (a) {
                                 var parsedValue = parseFloat(a[value.fieldName]);
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -1007,8 +854,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
 
                                 var parsedDate = new Date(a[value.fieldName]);
                                 var parsedValue = parsedDate.getTime() / 1000;
-                                console.log(parsedValue);
-                                console.log("TIME ---> " + parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -1018,7 +863,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                             fieldsOrder.push(function (a) {
                                 var parsedDate = new Date(a[value.fieldName]);
                                 var parsedValue = parsedDate.getTime() / 1000;
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -1031,7 +875,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                             fieldsOrder.push(function (a) {
 
                                 var parsedValue = parseFloat(a[value.fieldName]);
-                                console.log(parsedValue);
                                 if (isNaN(parsedValue)) {
                                     return a[value.fieldName];
                                 }
@@ -1046,33 +889,20 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                 });
                 return $filter('orderBy')(list, fieldsOrder);
             }
-
-//            function sortResults(unsortedData, prop, asc) {
-//                sortedData = unsortedData.sort(function (a, b) {
-//                    if (asc) {
-//                        if (isNaN(a[prop])) {
-//                            return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
-//                        } else {
-//                            return (parseInt(a[prop]) > parseInt(b[prop])) ? 1 : ((parseInt(a[prop]) < parseInt(b[prop])) ? -1 : 0);
-//                        }
-//                    } else {
-//                        if (isNaN(a[prop])) {
-//                            return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
-//                        } else {
-//                            return (parseInt(b[prop]) > parseInt(a[prop])) ? 1 : ((parseInt(b[prop]) < parseInt(a[prop])) ? -1 : 0);
-//                        }
-//                    }
-//                });
-//                return sortedData;
-//            }
             var lineChartDataSource = JSON.parse(scope.lineChartSource);
             if (scope.lineChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+
+                var url = "admin/proxy/getData?";
+                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (lineChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
                 }
+                if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
+                }
                 $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + lineChartDataSource.dataSourceId.userName + '&password=' + lineChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
-//                $http.get("admin/proxy/getJson?url=" + scope.lineChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                     scope.loadingLine = false;
                     if (!response.data) {
                         return;
@@ -1081,7 +911,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         scope.lineEmptyMessage = "No Data Found";
                         scope.hideEmptyLine = true;
                     } else {
-                        //  scope.xAxis = [];
                         var loopCount = 0;
                         var chartData = response.data;
                         if (sortFields.length > 0) {
@@ -1123,12 +952,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                                         }
                                     }
                                 },
-                                y2: {
-                                    show: true,
-                                    tick: {
-                                        format: d3.format(".2f")
-                                    }
-                                }
+                                y2: y2
                             },
                             grid: {
                                 x: {
@@ -1172,6 +996,7 @@ app.directive('barChartDirective', function ($http, $stateParams) {
             var axes = {};
             var startDate = "";
             var endDate = "";
+
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1229,18 +1054,23 @@ app.directive('barChartDirective', function ($http, $stateParams) {
             }
             var barChartDataSource = JSON.parse(scope.barChartSource);
             if (scope.barChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+
+                var url = "admin/proxy/getData?";
+                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (barChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
                 }
+                if (barChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
+                }
                 $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString + "&driver=" + barChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + barChartDataSource.dataSourceId.userName + '&password=' + barChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
-//                $http.get("admin/proxy/getJson?url=" + scope.barChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                     scope.loadingBar = false;
                     if (response.data.length === 0) {
                         scope.barEmptyMessage = "No Data Found";
                         scope.hideEmptyBar = true;
                     } else {
-//                        scope.xAxis = [];
                         var loopCount = 0;
                         var chartData = response.data;
                         chartData = sortResults(chartData, sortField, sortOrder);
@@ -1329,6 +1159,11 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                 if (!labels["format"]) {
                     labels = {format: {}};
                 }
+
+                if (!value) {
+                    return;
+                }
+
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
@@ -1382,18 +1217,22 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
             }
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                var url = "admin/proxy/getData?";
+                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (pieChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
                 }
+                if (pieChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
+                }
                 $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString + "&driver=" + pieChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + pieChartDataSource.dataSourceId.userName + '&password=' + pieChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
-//                $http.get("admin/proxy/getJson?url=" + scope.pieChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                     scope.loadingPie = false;
                     if (response.data.length === 0) {
                         scope.pieEmptyMessage = "No Data Found";
                         scope.hideEmptyPie = true;
                     } else {
-//                        scope.xAxis = [];
                         var loopCount = 0;
                         var chartData = response.data;
                         chartData = sortResults(chartData, sortField, sortOrder);
@@ -1422,12 +1261,6 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
 
                         var chart = c3.generate({
                             bindto: element[0],
-//                        data: {
-//                            x: xAxis.fieldName,
-//                            columns: data,
-//                            labels: labels,
-//                            type: 'pie'
-//                        },
                             data: {
                                 json: [data],
                                 keys: {
@@ -1509,7 +1342,7 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                     labels["format"][displayName] = function (value) {
                         return value;
                     };
-                }
+                }               
                 if (value.sortOrder) {
                     sortField = value.fieldName;
                     sortOrder = value.sortOrder;
@@ -1519,6 +1352,10 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                 }
                 if (value.yAxis) {
                     yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
+                }
+                if (value.yAxis > 1) {
+                    y2 = {show: true, label: ''};
                 }
             });
             var xData = [];
@@ -1543,20 +1380,23 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                 return sortedData;
             }
             var areaChartDataSource = JSON.parse(scope.areaChartSource);
-            console.log(areaChartDataSource)
             if (scope.areaChartSource) {
-                var url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                var url = "admin/proxy/getData?";
+                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
                 if (areaChartDataSource.dataSourceId.dataSourceType == "csv") {
                     url = "admin/csv/getData?";
                 }
+                if (areaChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
+                }
                 $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString + "&driver=" + areaChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + areaChartDataSource.dataSourceId.userName + '&password=' + areaChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
-//                $http.get("admin/proxy/getJson?url=" + scope.areaChartUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
                     scope.loadingArea = false;
                     if (response.data.length === 0) {
                         scope.areaEmptyMessage = "No Data Found";
                         scope.hideEmptyArea = true;
                     } else {
-//                        scope.xAxis = [];
                         var loopCount = 0;
                         var chartData = response.data;
                         chartData = sortResults(chartData, sortField, sortOrder);
@@ -1596,7 +1436,7 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                                         }
                                     }
                                 },
-                                y2: {show: true}
+                                y2: y2
                             },
                             grid: {
                                 x: {
@@ -1804,3 +1644,4 @@ app.service('stats', function ($filter) {
 
     return service;
 });
+

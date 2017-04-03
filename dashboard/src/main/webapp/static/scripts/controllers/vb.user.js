@@ -13,10 +13,37 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         return $scope.tab === tabNum;
     };
 
+    var unique = function (origArr) {
+        var newArr = [],
+                origLen = origArr.length,
+                found, x, y;
+
+        for (x = 0; x < origLen; x++) {
+            found = undefined;
+            for (y = 0; y < newArr.length; y++) {
+                if (origArr[x] === newArr[y]) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                newArr.push(origArr[x]);
+            }
+        }
+        return newArr;
+    }
     function getUser() {
         $http.get('admin/ui/user').success(function (response) {
+            $scope.userAgencyDetails = [];
             $scope.users = response;
-            //$scope.editUser(response[0], 0);
+            angular.forEach($scope.users, function (val, key) {
+                console.log(val)
+                if(!val.agencyId){
+                    return;
+                }
+                $scope.userAgencyDetails.push(val.agencyId.agencyName)
+                $scope.userAgency = unique($scope.userAgencyDetails);
+            });
         });
 
         $http.get('admin/user/account').success(function (response) {
@@ -25,19 +52,22 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
     }
 
     getUser();
-
+    $scope.searchuserDetails = function (agencyUserName) {
+        $scope.agencyListName = agencyUserName;
+    }
     $scope.saveUser = function (user) {
-        var userData = {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            userName: user.userName,
-            email: user.email,
-            password: user.password,
-            primaryPhone: user.primaryPhone,
-            secondaryPhone: user.secondaryPhone
-        };
-        $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: userData}).success(function (response) {
+//        var userData = {
+//            id: user.id,
+//            firstName: user.firstName,
+//            lastName: user.lastName,
+//            userName: user.userName,
+//            email: user.email,
+//            password: user.password,
+//            primaryPhone: user.primaryPhone,
+//            secondaryPhone: user.secondaryPhone,
+//            agencyId: user.agencyId.id?user.agencyId.id:''
+//        };
+        $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
             getUser();
         });
         $scope.user = "";
@@ -53,7 +83,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
 
     $scope.selectedUser = null;
     $scope.editUser = function (user, index) {
-        userAccount(user);
+        getUserAccount(user);
         $scope.userId = user;
         var data = {
             id: user.id,
@@ -63,7 +93,8 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             email: user.email,
             password: user.password,
             primaryPhone: user.primaryPhone,
-            secondaryPhone: user.secondaryPhone
+            secondaryPhone: user.secondaryPhone,
+            agencyId: user.agencyId
         };
         $scope.user = data;
         $scope.selectedUser = index;
@@ -75,7 +106,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         });
     };
 
-    function userAccount(user) {
+    function getUserAccount(user) {
         $http.get('admin/ui/userAccount/' + user.id).success(function (response) {
             $scope.userAccounts = response;
         });
@@ -100,7 +131,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         permission.status = 0;
         return false;
     };
-    
+
     $scope.hasData = function (permissionName) {
         for (var i = 0; i < $scope.userPermissions.length; i++) {
             if ($scope.userPermissions[i].permissionId.permissionName === permissionName) {
@@ -127,24 +158,32 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             userId: currentUserId.id
         };
         $http({method: userAccount.id ? 'PUT' : 'POST', url: 'admin/ui/userAccount', data: data}).success(function (response) {
+            getUserAccount(currentUserId)
+           //$scope.userAccounts = response.id;
 //            userAccount(currentUserId);
         });
     };
 
     $scope.deleteUserAccount = function (userAccount, index) {
-        if (userAccount.id) {
+        //if (userAccount.id) {
             $http({method: 'DELETE', url: 'admin/ui/userAccount/' + userAccount.id}).success(function (response) {
+                
                 $scope.userAccounts.splice(index, 1);
+                //$scope.userAccounts = response;
             });
-        } else {
-            $scope.userAccounts.splice(index, 1);
-        }
+       // } else {
+        //$scope.userAccounts.splice(index, 1);
+        //}
     };
+    
+    $scope.removeUserAccount = function(index){
+        $scope.userAccounts.splice(index, 1);
+    }
 
     $scope.testClick = function (permission) {
         $scope.saveUserPermission(permission);
     };
-    
+
     $scope.saveUserPermission = function (permission) {
         var userPermissionId = $scope.hasData(permission.permissionName).id;
 
@@ -156,7 +195,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             status: permission.status ? 1 : 0
         };
         $http({method: userPermissionId ? 'PUT' : 'POST', url: 'admin/ui/userPermission', data: data}).success(function (response) {
-            userAccount(currentUserId);
+            getUserAccount(currentUserId);
         });
     };
 });

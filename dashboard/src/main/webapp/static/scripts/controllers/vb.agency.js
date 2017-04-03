@@ -1,4 +1,5 @@
 app.controller('AgencyController', function ($scope, $http) {
+
 //Tabs
     $scope.tab = 1;
     $scope.setTabAgency = function (newTab) {
@@ -14,7 +15,7 @@ app.controller('AgencyController', function ($scope, $http) {
     function getAgency() {
         $http.get('admin/user/agency').success(function (response) {
             $scope.agencies = response;
-          //  $scope.editAgency(response[0], 0);
+            //  $scope.editAgency(response[0], 0);
         });
     }
     getAgency();
@@ -73,7 +74,9 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agencies.splice(index, 1);
         });
     };
-
+    $scope.searchAgencyDetails = function (agencyList) {
+        $scope.searchAgencyItem = agencyList;
+    }
     $scope.agencyProducts = [];
     function getAgencyLicence(agency) {
         $http.get('admin/user/agencyLicence/' + agency.id).success(function (response) {
@@ -146,7 +149,21 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
         $scope.showAgencyProductForm = true;
     }
-
+    $scope.selectedRows = null;
+    $scope.setAccountUserRow = function (agencyProduct, index) {
+        console.log(index);
+        var data = {
+            id: agencyProduct.id,
+            productName: agencyProduct.productName,
+            icon: $scope.agencyProduct.icon,
+            agencyId: $scope.agencyLicenceId.id,
+            showProduct: agencyProduct.showProduct
+        }
+        $scope.agencyProduct = data;
+        $scope.selectedRows = index;
+        $scope.showAgencyProductForm = true;
+//        console.log($index.productName);
+    }
     $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
     $scope.productIcon = function (event) {
         var files = event.target.files;
@@ -185,6 +202,19 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.showAgencyProductForm = false;
         $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
     };
+    $scope.selectedAgencyProduct = null;
+    $scope.setAgencyUserRow = function (agencyProduct, index) {
+        var data = {
+            id: agencyProduct.id,
+            productName: agencyProduct.productName,
+            icon: agencyProduct.icon,
+            agencyId: $scope.agencyLicenceId.id,
+            showProduct: agencyProduct.showProduct
+        }
+        $scope.agencyProduct = data;
+        $scope.selectedAgencyProduct = index;
+        $scope.showAgencyProductForm = true;     
+    }
     $scope.changeOrder = function (s) {
         var agencyProductId = $scope.agencyLicenceId;
 //        console.log(s)
@@ -195,7 +225,7 @@ app.controller('AgencyController', function ($scope, $http) {
             }
         }).join(',');
         console.log(order)
-        
+
 //        if (order) {
 //            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
 //        }

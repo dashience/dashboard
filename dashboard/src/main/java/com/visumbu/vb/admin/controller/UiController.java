@@ -164,6 +164,13 @@ public class UiController extends BaseController {
     List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         return uiService.getTabWidget(tabId);
     }
+    
+    
+    @RequestMapping(value = "reportWidgetByWidgetId/{widgetId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getReportWidgetByWidgetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
+        return uiService.getReportWidgetByWidgetId(widgetId);
+    }
 
     @RequestMapping(value = "dbWidget/{widgetId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
@@ -307,6 +314,12 @@ public class UiController extends BaseController {
     public @ResponseBody
     Report getReportById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
         return uiService.getReportById(reportId);
+    }
+    
+    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    Report deleteReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+        return uiService.deleteReport(reportId);
     }
 //
     @RequestMapping(value = "reportWidget", method = RequestMethod.POST, produces = "application/json")
@@ -536,9 +549,6 @@ public class UiController extends BaseController {
     public @ResponseBody
     String getOauthToken(HttpServletRequest request, HttpServletResponse response, @PathVariable String accessToken,@PathVariable String dataSourceType) throws IOException {
 
-//        String accessTokens="AQRK7cRTGPXWn-kHAxSr7dy-8cbhmYuuK3dPrNLbZn1GlMr2NkTnOWzW2W8JAN-UpkjrV2VdZB7JfYUm4DPsDh11hHL2QTOgvgySw7A5GLtUhsFrM3E";
-       
-        System.out.println("DataSourceType---->"+dataSourceType);
         String oauth;
         if(dataSourceType.equalsIgnoreCase("linkedin"))
         {

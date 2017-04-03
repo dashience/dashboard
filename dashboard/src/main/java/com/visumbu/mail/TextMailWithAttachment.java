@@ -29,8 +29,8 @@ public class TextMailWithAttachment {
     public static void main(String argv[]) {
         MailProperties mailProps = new MailProperties();
         TextMailWithAttachment sender = new TextMailWithAttachment(mailProps);
-        String[] attachments = {"/tmp/downloadedFile.pdf"};
-        sender.sendMail("sam@digitalanalystteam.com", "Test", "Test MEssage", Arrays.asList(attachments));
+        String[] attachments = {"/tmp/test.pdf"};
+        sender.sendMail("sam@digitalanalystteam.com,aruljose445@gmail.com", "Test", "Test MEssage", Arrays.asList(attachments));
     }
 
     public String sendMail(String to, String subject, String message, List<String> attachments) {
@@ -67,7 +67,11 @@ public class TextMailWithAttachment {
             email.setFrom(props.getFrom());
             email.setSubject(props.getSubject());
             email.setMsg(props.getTxtMessage());
-            email.addTo(props.getTo());
+            String[] toAddressArr = props.getTo().split(",");
+            for (int i = 0; i < toAddressArr.length; i++) {
+                String to = toAddressArr[i];
+                email.addTo(to);
+            }
 
             // add attachments
             List<MailAttachment> attachFiles = props.getAttachment();

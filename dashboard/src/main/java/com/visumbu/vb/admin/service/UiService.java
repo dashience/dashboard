@@ -140,6 +140,9 @@ public class UiService {
     public List<TabWidget> getTabWidget(Integer tabId) {
         return uiDao.getTabWidget(tabId);
     }
+    public List<TabWidget> getReportWidgetByWidgetId(Integer widgetId) {
+        return uiDao.getReportWidgetByWidgetId(widgetId);
+    }
 
     public Dashboard getDashboardById(Integer dashboardId) {
         return uiDao.getDashboardById(dashboardId);
@@ -265,7 +268,8 @@ public class UiService {
     }
 
     public Report deleteReport(Integer reportId) {
-        return (Report) uiDao.delete(reportId);
+        return uiDao.deleteReport(reportId);
+        //return (Report) uiDao.delete(reportId);
     }
 
     public List getReport() {
@@ -462,6 +466,12 @@ public class UiService {
             if (dbDataSource.getDataSourceType().equalsIgnoreCase("instagram")) {
                 uiDao.create(dbDataSource);
             }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("adwords")) {
+                uiDao.create(dbDataSource);
+            }
+            if (dbDataSource.getDataSourceType().equalsIgnoreCase("analytics")) {
+                uiDao.create(dbDataSource);
+            }
 
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
@@ -482,6 +492,7 @@ public class UiService {
 
     public List<VbUser> getAgencyUser(VbUser user) {
         if (user.getAgencyId() == null) {
+            System.out.print("Agence Id Null");
             return userDao.read();
         }
         return uiDao.getUsersByAgencyUser(user);

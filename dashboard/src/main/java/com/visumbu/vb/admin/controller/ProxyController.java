@@ -68,20 +68,40 @@ public class ProxyController {
 
     @Autowired
     private FacebookService facebookService;
-
-   final static Logger log = Logger.getLogger(ProxyController.class);
+ final static Logger log = Logger.getLogger(ProxyController.class);
+    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
+        log.debug("Calling of getGenericData function in ProxyController class");
+        String dataSourceType = request.getParameter("dataSourceType");
+        String dataSetId = request.getParameter("dataSetId");
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            dataSourceType = dataSet.getDataSourceId().getDataSourceType();
+        }
+        if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
+            return getFbData(request, response);
+        }
+        return null;
+    }
 
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getFbData(HttpServletRequest request, HttpServletResponse response) {
-        log.debug("Start Function of getFbData");
+        log.debug("Calling of getFbData function in ProxyController class");
         String dataSetId = request.getParameter("dataSetId");
-        String dataSetName = request.getParameter("dataSetName");
+        String dataSetReportName = request.getParameter("dataSetReportName");
+        String timeSegment = request.getParameter("timeSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
             if (dataSet != null) {
-                dataSetName = dataSet.getName();
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
             }
         }
         String accountIdStr = request.getParameter("accountId");
@@ -95,15 +115,18 @@ public class ProxyController {
         String facebookAccountId = "";
         for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
             Property property = iterator.next();
-            log.debug("Property Name " + property.getPropertyName());
-            log.debug("Property Value " + property.getPropertyValue());
             if (property.getPropertyName().equalsIgnoreCase("facebookAccountId")) {
                 facebookAccountId = property.getPropertyValue();
             }
         }
         Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
         String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
-        List<Map<String, String>> data = facebookService.get(accessToken, dataSetName, facebookAccountIdInt, startDate, endDate, "daily");
+        log.debug("Report Name ---- " + dataSetReportName);
+        log.debug("Account Id ---- " + facebookAccountIdInt);
+        log.debug("Time segment ---- " + timeSegment);
+        log.debug("Start Date ---- " + startDate);
+        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, startDate, endDate, timeSegment);
+        log.debug(data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
@@ -114,12 +137,11 @@ public class ProxyController {
             return returnMap;
         }
         returnMap.put("data", data);
-        log.debug("End Function of getFbData");
         return returnMap;
     }
 
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
-        log.debug("Start Function of getColumnDef");
+        log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();
         for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, String> mapData = iterator.next();
@@ -130,14 +152,13 @@ public class ProxyController {
             }
             return columnDefs;
         }
-        log.debug("End Function of getColumnDef");
         return columnDefs;
     }
 
     @RequestMapping(value = "getJson", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getJson(HttpServletRequest request, HttpServletResponse response) {
-        log.debug("Start Function of getJson");
+        log.debug("Calling of getJson function in ProxyController class");
         String url = request.getParameter("url");
         String query = request.getParameter("query");
         log.debug("QUERY FROM BROWSER " + query);
@@ -170,16 +191,14 @@ public class ProxyController {
             return data;
         } catch (Exception ex) {
             log.error("Exception in getJson Function: " + ex);
-//            Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        log.debug("End Function of getJson");
         return null;
     }
 
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public @ResponseBody
     void get(HttpServletRequest request, HttpServletResponse response) {
-        log.debug("Start Function of get");
+        log.debug("Calling of get function in ProxyController class");
         String url = request.getParameter("url");
         Map<String, String[]> parameterMap = request.getParameterMap();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
@@ -192,16 +211,14 @@ public class ProxyController {
                 response.getOutputStream().write(data.getBytes());
             } catch (IOException ex) {
                 log.error("IOException in get Function :" + ex);
-                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        log.debug("End Function of get Function");
     }
 
     @RequestMapping(value = "testXls/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void xlsDownload(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-        log.debug("Start Function of xlsDownload");
+        log.debug("Calling of xlsDownload function in ProxyController class");
         OutputStream out = null;
         try {
             String dealerId = request.getParameter("dealerId");
@@ -260,10 +277,8 @@ public class ProxyController {
 
                 } catch (ParseException ex) {
                     log.error("Parse Exception in xlsDownload Function : " + ex);
-                    // Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedEncodingException ex) {
                     log.error("UnsupportedEncodingException in xlsDownload Function: " + ex);
-                    //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             out = response.getOutputStream();
@@ -272,13 +287,11 @@ public class ProxyController {
             // crd.dynamicXlsDownload(tabWidgets, out);
         } catch (IOException ex) {
             log.error("IOException in xlsDownload Function: " + ex);
-            //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();
             } catch (IOException ex) {
                 log.error("Finally catches IOException in xlsDownload Function: " + ex);
-                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -334,7 +347,8 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     log.debug("DS TYPE ==>  CSV");
-                    url = "admin/csv/getData";
+//                    url = "../testing/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -357,10 +371,8 @@ public class ProxyController {
 
             } catch (ParseException ex) {
                 log.error("ParseException in downloadReport Function: " + ex);
-                // Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
                 log.error("UnsupportedEncodingException in downloadReport Function: " + ex);
-                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         try {
@@ -426,7 +438,9 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     log.debug("DS TYPE ==>  CSV");
-                    url = "admin/csv/getData";
+//                    url = "../testing/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
+//                    url = "admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -449,26 +463,24 @@ public class ProxyController {
                 tabWidget.setData(dataList);
             } catch (ParseException ex) {
                 log.error("ParseException in download function: "+ex);
-                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
                 log.error("UnsupportedEncodingException in download function: "+ex);
-                //Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         try {
-            if (exportType.equalsIgnoreCase("pdf")) {
-                response.setContentType("application/x-msdownload");
-                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
+//            if (exportType.equalsIgnoreCase("pdf")) {
+//                response.setContentType("application/x-msdownload");
+//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
                 crd.dynamicPdfTable(tabWidgets, out);
-            } else if (exportType.equalsIgnoreCase("ppt")) {
-                response.setContentType("application/vnd.ms-powerpoint");
-                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
-                OutputStream out = response.getOutputStream();
-                CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicPptTable(tabWidgets, out);
-            }
+//            } else if (exportType.equalsIgnoreCase("ppt")) {
+//                response.setContentType("application/vnd.ms-powerpoint");
+//                response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
+//                OutputStream out = response.getOutputStream();
+//                CustomReportDesigner crd = new CustomReportDesigner();
+//                crd.dynamicPptTable(tabWidgets, out);
+//            }
         } catch (IOException ex) {
             log.error("IOException in download Function: " + ex);
         }

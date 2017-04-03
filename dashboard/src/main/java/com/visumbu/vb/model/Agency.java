@@ -136,7 +136,7 @@ public class Agency implements Serializable {
     public void setLogo(String logo) {
         this.logo = logo;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -251,5 +251,4 @@ public class Agency implements Serializable {
     public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
         this.schedulerCollection = schedulerCollection;
     }
-
 }
