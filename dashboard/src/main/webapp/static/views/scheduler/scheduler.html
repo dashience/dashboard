@@ -27,10 +27,10 @@
                         <td>
                             <div class="checkbox checkbox-slider--b schedule-on">
                                 <label class="" for="field{{$index + 1}}">
-                                    <input id="field{{$index + 1}}" type="checkbox" 
+                                    <input id="field{{$index + 1}}" type="checkbox"                                             
+                                           ng-click="saveSchedulerStatus(scheduler)"
                                            ng-checked="scheduler.status == 'Active'"
-                                           ng-model="scheduler.status" 
-                                           ng-change="saveSchedulerStatus(scheduler)"/>
+                                           ng-model="scheduler.status"/>
                                     <span></span>
                                 </label>
                             </div>

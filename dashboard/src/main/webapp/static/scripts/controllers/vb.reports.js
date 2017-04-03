@@ -1,11 +1,21 @@
-app.controller("ReportController", function ($scope, $http, $stateParams, $state) {
-
+app.controller("ReportController", function ($scope, $http, $stateParams, $state, localStorageService, $window) {
+    $scope.permission = localStorageService.get("permission");
+    console.log($scope.permission)
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.reportId = $stateParams.reportId;
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportWidgets = [];
+
+    if ($scope.permission.scheduleReport === true) {
+        $scope.showSchedulerReport = true;
+        console.log($scope.showSchedulerReport)
+        console.log($scope.showSchedulerReport)
+    } else {
+        $scope.showSchedulerReport = false;
+        console.log($scope.showSchedulerReport)
+    }
 
     $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
     $scope.weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -49,6 +59,11 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
         $http({method: 'DELETE', url: 'admin/ui/report/' + report.id}).success(function (response) {
             $scope.reports.splice(index, 1);
         });
+    }
+
+    $scope.downloadReportPdf = function (report) {
+        var url = "admin/proxy/downloadReport/" + report.id + "?dealerId=" + $stateParams.accountId + "&location=" + $stateParams.accountId + "&accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
+        $window.open(url);
     }
 
     $scope.goScheduler = function () {

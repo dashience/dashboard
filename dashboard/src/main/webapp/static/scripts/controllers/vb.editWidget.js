@@ -914,7 +914,9 @@ app.directive('ckEditor', function () {
     return {
         require: '?ngModel',
         link: function (scope, elm, attr, ngModel) {
-            var ck = CKEDITOR.replace(elm[0]);
+            var ck = CKEDITOR.replace(elm[0], {
+                removeButtons: 'About'
+            });
 
             if (!ngModel)
                 return;

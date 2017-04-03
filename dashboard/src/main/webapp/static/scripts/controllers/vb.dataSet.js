@@ -353,6 +353,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             id: dataSet.id,
             name: dataSet.name,
             query: dataSet.query,
+            url: dataSet.url,
             reportName: dataSet.reportName,
             timeSegment: dataSet.timeSegment,
             productSegment: dataSet.productSegment,
@@ -388,7 +389,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.refreshDataSet = function (dataSet) {
-        console.log(dataSet.query)
         $scope.showPreviewChart = true;
         $scope.previewData = null;
         $timeout(function () {

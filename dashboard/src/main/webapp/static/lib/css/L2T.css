@@ -1501,7 +1501,7 @@ html {
 }
 body {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    background-color: #f5f5f5;
+    background-color: #fff;
     font-size: 13px;
     color: #333;
     margin: 0;
@@ -1548,7 +1548,7 @@ body {
     position: absolute;
     left:0;
     right:0;
-    /*        bottom:0px;*/
+    bottom:0px;
 }
 @media (max-width: 768px) {
     .content {

@@ -113,7 +113,7 @@
         <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
     <div class="btn-group"> 
-        <a style="cursor: pointer;"><i class="fa fa-print"></i> Print</a> 
+        <a style="cursor: pointer;" ng-click="downloadReportPdf()"><i class="fa fa-file-pdf-o"></i> Pdf</a> 
         <!--<a style="cursor: pointer;" ng-click="downloadReportPdf()"><i class="fa fa-print"></i> Print</a>--> 
     </div>
 

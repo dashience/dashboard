@@ -275,7 +275,7 @@ public class UserDao extends BaseDao {
     }
 
     public List<AgencyProduct> getAgencyProductById(Integer agencyProductId) {
-        String queryStr = "select a from AgencyProduct a where a.agencyId.id = :agencyId";
+        String queryStr = "select a from AgencyProduct a where (a.status is null or a.status != 'Deleted') and a.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", agencyProductId);
         return query.list();
@@ -295,6 +295,14 @@ public class UserDao extends BaseDao {
             agencyProduct.setProductOrder(i);
             update(agencyProduct);
         }
+        return null;
+    }
+
+    public AgencyProduct deleteAgencyProduct(Integer agencyProductId) {
+        String queryStr = "update AgencyProduct d set status = 'Deleted' where d.id = :agencyProductId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyProductId", agencyProductId);
+        query.executeUpdate();
         return null;
     }
 

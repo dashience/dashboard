@@ -103,7 +103,10 @@ public class VbUtils {
         Permission permission = new Permission();
         for (Iterator<UserPermission> iterator = userPermissions.iterator(); iterator.hasNext();) {
             UserPermission userPermission = iterator.next();
-            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), Boolean.TRUE);
+            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), userPermission.getStatus());
+//            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), Boolean.TRUE);
+            System.out.println("========================================================================>");
+            System.out.println(user.getAgencyId());
         }
         if(user.getAgencyId() == null || (user.getIsAdmin() != null && user.getIsAdmin() )) {
             permission.setViewAgency(Boolean.TRUE);

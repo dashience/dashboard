@@ -209,7 +209,7 @@
                                     </li>
                                 </ul>
                             </div>                                                    
-                            <div>
+                            <div ng-if="permission.scheduleReport === true;">
                                 <ul class="col-lg-3 icon-dash"> 
                                     <li class="product-dashboard-icon" ng-click="setParams()">
                                         <a data-ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
