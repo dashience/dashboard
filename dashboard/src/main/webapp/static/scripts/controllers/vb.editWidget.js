@@ -209,7 +209,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 }
                 if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
-                }                
+                }
                 $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&dataSetId=" + widget.dataSetId.id + "&accountId=" + $stateParams.accountId + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     $scope.collectionFields = response.columnDefs;
@@ -579,6 +579,18 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             };
             widgetColumnsData.push(columnData);
         });
+//        var dataSourceType;
+//        var dataSetType;
+//        if (widget.chartType != 'text') {
+//            dataSourceType = widget.dataSourceId.id;
+//        } else {
+//            dataSourceType = ''
+//        }
+//        if (widget.chartType != 'text') {
+//            dataSetType = widget.dataSetId.id;
+//        } else {
+//            dataSetType = '';
+//        }
         var data = {
             id: widget.id,
             chartType: $scope.editChartType ? $scope.editChartType : widget.chartType,
