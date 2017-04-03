@@ -347,8 +347,8 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
-                    url = "../dashboard/admin/csv/getData";
+                    url = "../testing/admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -438,8 +438,8 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
-                    url = "../dashboard/admin/csv/getData";
+                    url = "../testing/admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
