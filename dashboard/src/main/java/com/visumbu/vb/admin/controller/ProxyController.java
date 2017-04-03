@@ -94,17 +94,13 @@ public class ProxyController {
         }
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             return getFbData(request, response);
-        }
-        if (dataSourceType.equalsIgnoreCase("adwords")) {
+        } else if (dataSourceType.equalsIgnoreCase("adwords")) {
             return getAdwordsData(request, response);
-        }
-        if (dataSourceType.equalsIgnoreCase("analytics")) {
+        } else if (dataSourceType.equalsIgnoreCase("analytics")) {
             return getAnalyticsData(request, response);
-        }
-        if (dataSourceType.equalsIgnoreCase("bing")) {
+        } else if (dataSourceType.equalsIgnoreCase("bing")) {
             return getBingData(request, response);
-        }
-        if (dataSourceType.equalsIgnoreCase("https")) {
+        } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         }
         return null;
