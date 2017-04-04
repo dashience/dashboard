@@ -15,7 +15,6 @@ app.controller('AgencyController', function ($scope, $http) {
     function getAgency() {
         $http.get('admin/user/agency').success(function (response) {
             $scope.agencies = response;
-            //  $scope.editAgency(response[0], 0);
         });
     }
     getAgency();
@@ -82,10 +81,8 @@ app.controller('AgencyController', function ($scope, $http) {
         $http.get('admin/user/agencyLicence/' + agency.id).success(function (response) {
             $scope.agencyLicence = {}
             $scope.agencyLicences = response;
-            console.log($scope.agencyLicences)
             angular.forEach(response, function (value, key) {
                 $scope.agencyLicence = {id: value.id, maxNoTab: value.maxNoTab, maxNoUser: value.maxNoUser, maxNoClient: value.maxNoClient, maxNoAccount: value.maxNoAccount, expiryDate: value.expiryDate, maxNoWidgetPerTab: value.maxNoWidgetPerTab}
-                console.log($scope.agencyLicence)
             });
         });
 
@@ -160,8 +157,8 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.agencyProduct = data;
         $scope.selectedRows = index;
         $scope.showAgencyProductForm = true;
-//        console.log($index.productName);
-    }
+    };
+    
     $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
     $scope.productIcon = function (event) {
         var files = event.target.files;
@@ -221,7 +218,10 @@ app.controller('AgencyController', function ($scope, $http) {
     }
     $scope.changeOrder = function (s) {
         var agencyProductId = $scope.agencyById;
-        console.log(s)
+        if(!agencyProductId){
+            return;
+        }
+        //console.log(s)
 //if()
         var order = s.map(function (value, key) {
             if (value) {
@@ -231,7 +231,7 @@ app.controller('AgencyController', function ($scope, $http) {
         console.log(order)
 
 //        if (order) {
-           // $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
+            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
 //        }
     };
 });

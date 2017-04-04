@@ -284,7 +284,7 @@
                                                         </th>
                                                     </tr>
                                                 </thead>                                           
-                                                <tbody data-as-sortable="changeOrder(agencyProducts)" data-ng-model="agencyProducts" ng-submit="changeOrder(agencyProducts)" unselectable="on" class="unselectable" style="height:420px">
+                                                <tbody data-as-sortable="" data-ng-model="agencyProducts" unselectable="on" ng-mouseleave="changeOrder(agencyProducts)" class="unselectable" style="height:420px">
                                                     <tr class="accountUser-Table" ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAgencyProduct}" ng-click="setAgencyProductRow(agencyProduct, $index)" data-as-sortable-item>
                                                         <td ng-click="editAgencyProduct(agencyProduct)" data-as-sortable-item-handle class="col-xs-4">
                                                             <div class="image-upload">
@@ -397,7 +397,7 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
-                                        <ui-select-match placeholder="Select AgencyName...">
+                                        <ui-select-match placeholder="Search Agency Name...">
                                             {{$select.selected.agencyName}}
                                         </ui-select-match>
                                         <ui-select-choices repeat="agency in agencies | filter: $select.search">                                

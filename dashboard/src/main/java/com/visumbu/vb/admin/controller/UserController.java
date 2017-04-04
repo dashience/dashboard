@@ -540,6 +540,7 @@ public class UserController extends BaseController {
     public @ResponseBody
     Object updateWidgetUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
         String productOrder = request.getParameter("productOrder");
+        System.out.println(productOrder);
         userService.productUpdateOrder(agencyProductId, productOrder);
         return null;
     }

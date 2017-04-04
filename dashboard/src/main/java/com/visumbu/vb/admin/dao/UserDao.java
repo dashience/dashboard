@@ -275,7 +275,7 @@ public class UserDao extends BaseDao {
     }
 
     public List<AgencyProduct> getAgencyProductById(Integer agencyProductId) {
-        String queryStr = "select a from AgencyProduct a where (a.status is null or a.status != 'Deleted') and a.agencyId.id = :agencyId";
+        String queryStr = "select a from AgencyProduct a where (a.status is null or a.status != 'Deleted') and a.agencyId.id = :agencyId order by productOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", agencyProductId);
         return query.list();

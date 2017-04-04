@@ -653,7 +653,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<div class='col-md-12'>" +
                 //Panel Title
                 "<div ng-hide='editPreviewTitle'>" +
-                "<a ng-click='editPreviewTitle = true'>{{previewWidgetTitle}}</a>" +
+                "<a ng-click='editPreviewTitle = true'>{{previewWidgetTitle?previewWidgetTitle:'Widget Title'}}</a>" +
                 "</div>" +
                 "<div ng-show='editPreviewTitle'>" +
                 "<div class='col-sm-8'><input class='form-control' type='text' ng-model='previewWidgetTitle'></div>" +
@@ -763,7 +763,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             scope.previewTableHeaderName = JSON.parse(scope.previewColumns);
             scope.listColumns = [];
             scope.listColumns = JSON.parse(scope.previewColumns);
-            scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle ? JSON.parse(scope.previewWidget).widgetTitle : "Widget Title";
+            scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
             var widget = JSON.parse(scope.previewWidget);
             scope.selectAggregations = [
                 {name: 'None', value: ""},
