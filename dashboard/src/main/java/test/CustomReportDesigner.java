@@ -75,9 +75,11 @@ import org.apache.poi.xslf.usermodel.XSLFTableRow;
 import org.apache.poi.xslf.usermodel.XSLFTextBox;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextRun;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -110,6 +112,9 @@ import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.util.SortOrder;
 import org.jsoup.Jsoup;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTable;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumn;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumns;
 
 /**
  *
@@ -1659,7 +1664,8 @@ public class CustomReportDesigner {
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
-
+                    XSSFTable table = sheet.createTable();
+                    //dynamicXlsTable(tabWidget, table);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
                     if (count == 0) {
                         addRow = 0;
@@ -1668,10 +1674,10 @@ public class CustomReportDesigner {
                         addRow = 30 + addRow;
                     }
                     pieChart = generatePieJFreeChart(tabWidget);
-                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
-                    ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, width, height);
-                    int my_picture_id = wb.addPicture(chart_out.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
-                    chart_out.close();
+                    ByteArrayOutputStream pieChartOut = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(pieChartOut, quality, pieChart, width, height);
+                    int my_picture_id = wb.addPicture(pieChartOut.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    pieChartOut.close();
                     ClientAnchor my_anchor = new XSSFClientAnchor();
                     my_anchor.setCol1(4);
                     my_anchor.setRow1(7 + addRow);
@@ -1685,10 +1691,10 @@ public class CustomReportDesigner {
                         addRow = 30 + addRow;
                     }
                     barChart = multiAxisBarJFreeChart(tabWidget);
-                    ByteArrayOutputStream chart_out1 = new ByteArrayOutputStream();
-                    ChartUtilities.writeChartAsJPEG(chart_out1, quality, barChart, width, height);
-                    int my_picture_id1 = wb.addPicture(chart_out1.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
-                    chart_out1.close();
+                    ByteArrayOutputStream barChartOut = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(barChartOut, quality, barChart, width, height);
+                    int my_picture_id1 = wb.addPicture(barChartOut.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    barChartOut.close();
                     ClientAnchor my_anchor1 = new XSSFClientAnchor();
                     my_anchor1.setCol1(4);
                     my_anchor1.setRow1(7 + addRow);
@@ -1703,10 +1709,10 @@ public class CustomReportDesigner {
                         addRow = 30 + addRow;
                     }
                     lineChart = multiAxisLineJFreeChart(tabWidget);
-                    ByteArrayOutputStream chart_out2 = new ByteArrayOutputStream();
-                    ChartUtilities.writeChartAsJPEG(chart_out2, quality, lineChart, width, height);
-                    int my_picture_id2 = wb.addPicture(chart_out2.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
-                    chart_out2.close();
+                    ByteArrayOutputStream lineChartOut = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(lineChartOut, quality, lineChart, width, height);
+                    int my_picture_id2 = wb.addPicture(lineChartOut.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    lineChartOut.close();
                     ClientAnchor my_anchor2 = new XSSFClientAnchor();
                     my_anchor2.setCol1(4);
                     my_anchor2.setRow1(7 + addRow);

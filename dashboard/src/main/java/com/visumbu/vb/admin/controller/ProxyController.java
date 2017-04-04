@@ -435,12 +435,14 @@ public class ProxyController {
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                     valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
+                    System.out.println("sql");
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
                     url = "../testing/admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
                 }
+                System.out.println("connectionurl: "+tabWidget.getDataSourceId().getConnectionString());
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
