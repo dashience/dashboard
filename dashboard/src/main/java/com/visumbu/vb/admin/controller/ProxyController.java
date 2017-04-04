@@ -169,15 +169,15 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String bingAccountId = getAccountId(accountProperty, "bingAccountId");
         Long bingAccountIdLong = Long.parseLong(bingAccountId);
-        List<Map<String, String>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate, endDate, timeSegment);
-        System.out.println(data);
         Map returnMap = new HashMap();
-        List<ColumnDef> columnDefs = getColumnDef(data);
-        returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
-        returnMap.put("data", data);
+//        List<Map<String, String>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate, endDate, timeSegment);
+//        System.out.println(data);
+//        List<ColumnDef> columnDefs = getColumnDef(data);
+//        returnMap.put("columnDefs", columnDefs);
+//        if (fieldsOnly != null) {
+//            return returnMap;
+//        }
+//        returnMap.put("data", data);
         return returnMap;
     }
 
@@ -531,8 +531,8 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../testing/admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../testing/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
@@ -622,8 +622,8 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../testing/admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../testing/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                 }
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));

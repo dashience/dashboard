@@ -279,16 +279,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.newWidgets = response;
     });
 
-    $scope.addWidget = function (newWidget) {       //Add Widget
-        var data = {
-            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
-        };
-        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            $scope.widgets.unshift({id: response.id, width: newWidget, 'minHeight': 25, columns: [], tableFooter: 1, zeroSuppression: 1});
-            $scope.newWidgetId = response.id;
-            $scope.openPopup(response);
-        });
-    };
+//    $scope.addWidget = function (newWidget) {       //Add Widget
+//        var data = {
+//            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
+//        };
+//        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+//            $scope.widgets.unshift({id: response.id, width: newWidget, 'minHeight': 25, columns: [], tableFooter: 1, zeroSuppression: 1});
+//            $scope.newWidgetId = response.id;
+//            $scope.openPopup(response);
+//        });
+//    };
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
@@ -602,7 +602,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
             dateDuration: widget.dateDuration,
-            content: widget.content
+            content: widget.content,
+            width: widget.width
         };
 
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -734,7 +735,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
 //                        "<li><a class='btn' ng-click='deleteColumn($index)'>Delete</a></li>" +
                 "</ul>" +
                 "<button class='btn btn-info btn-sm' ng-click='hidePopover()'>Close</button>&nbsp;" +
-                "<button class='btn btn-warning btn-sm' ng-click='deleteColumn($index)'>Delete</button>" +
+                "<button class='btn btn-warning btn-sm' ng-click='deleteColumn($index); hidePopover()'>Delete</button>" +
                 "</form>" +
                 "</div>" +
                 "</script>" +
@@ -896,7 +897,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                     zeroSuppression: JSON.parse(scope.previewWidgetTable).zeroSuppression,
                     maxRecord: JSON.parse(scope.previewWidgetTable).maxRecord,
                     dateDuration: widget.dateDuration,
-                    content: widget.content
+                    content: widget.content,
+                    width: widget.width
                 };
 
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {

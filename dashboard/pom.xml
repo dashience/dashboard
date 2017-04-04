@@ -69,11 +69,11 @@
             <version>1.7.25</version>
         </dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>com.microsoft.bingads</groupId>
             <artifactId>microsoft.bingads</artifactId>
             <version>10.4.10</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
