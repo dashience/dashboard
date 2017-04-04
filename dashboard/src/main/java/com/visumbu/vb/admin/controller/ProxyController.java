@@ -77,11 +77,12 @@ public class ProxyController {
 
     @Autowired
     private GaService gaService;
-    
+
     @Autowired
     private BingService bingService;
 
- final static Logger log = Logger.getLogger(ProxyController.class);
+    final static Logger log = Logger.getLogger(ProxyController.class);
+
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
@@ -136,14 +137,14 @@ public class ProxyController {
             valueList.add(property.getPropertyValue());
             valueMap.put(property.getPropertyName(), valueList);
         }
-        
+
         String data = Rest.getData(url, valueMap);
         try {
             response.getOutputStream().write(data.getBytes());
         } catch (IOException ex) {
         }
     }
-    
+
     private Object getBingData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
@@ -180,7 +181,6 @@ public class ProxyController {
 //        returnMap.put("data", data);
         return returnMap;
     }
-
 
     private Object getAnalyticsData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
@@ -521,22 +521,24 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = tabWidget.getDirectUrl();
+                String url = "admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                     valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
-                }
-                if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-//                    url = "../testing/admin/csv/getData";
                     url = "../dashboard/admin/csv/getData";
+                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
+                    url = "admin/proxy/getData?";
                 }
+                valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+                valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
                 Integer port = request.getServerPort();
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
@@ -583,7 +585,7 @@ public class ProxyController {
     @RequestMapping(value = "download/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-         log.debug("Start Function of download");
+        log.debug("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
         log.debug("Export type ==> " + exportType);
@@ -645,9 +647,9 @@ public class ProxyController {
                 List dataList = (List) responseMap.get("data");
                 tabWidget.setData(dataList);
             } catch (ParseException ex) {
-                log.error("ParseException in download function: "+ex);
+                log.error("ParseException in download function: " + ex);
             } catch (UnsupportedEncodingException ex) {
-                log.error("UnsupportedEncodingException in download function: "+ex);
+                log.error("UnsupportedEncodingException in download function: " + ex);
             }
         }
         try {
