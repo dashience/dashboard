@@ -5,8 +5,11 @@
  */
 package com.visumbu.vb.admin.controller;
 
+import com.visumbu.vb.admin.service.AdwordsService;
+import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
+import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
@@ -68,7 +71,18 @@ public class ProxyController {
 
     @Autowired
     private FacebookService facebookService;
- final static Logger log = Logger.getLogger(ProxyController.class);
+
+    @Autowired
+    private AdwordsService adwordsService;
+
+    @Autowired
+    private GaService gaService;
+
+    @Autowired
+    private BingService bingService;
+
+    final static Logger log = Logger.getLogger(ProxyController.class);
+
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
@@ -82,8 +96,173 @@ public class ProxyController {
         }
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             return getFbData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("adwords")) {
+            return getAdwordsData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("analytics")) {
+            return getAnalyticsData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("bing")) {
+            return getBingData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("https")) {
+            getHttpsData(request, response);
         }
         return null;
+    }
+
+    public void getHttpsData(HttpServletRequest request, HttpServletResponse response) {
+        String url = request.getParameter("url");
+        String dataSetId = request.getParameter("dataSetId");
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                if (url == null) {
+                    url = dataSet.getQuery();
+                }
+            }
+        }
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        String accountIdStr = request.getParameter("accountId");
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
+            String key = entrySet.getKey();
+            String[] value = entrySet.getValue();
+            valueMap.put(key, Arrays.asList(value));
+        }
+        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+            Property property = iterator.next();
+            List<String> valueList = new ArrayList();
+            valueList.add(property.getPropertyValue());
+            valueMap.put(property.getPropertyName(), valueList);
+        }
+
+        String data = Rest.getData(url, valueMap);
+        try {
+            response.getOutputStream().write(data.getBytes());
+        } catch (IOException ex) {
+        }
+    }
+
+    private Object getBingData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSetId = request.getParameter("dataSetId");
+        String dataSetReportName = request.getParameter("dataSetReportName");
+        String timeSegment = request.getParameter("timeSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+        String accountIdStr = request.getParameter("accountId");
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String bingAccountId = getAccountId(accountProperty, "bingAccountId");
+        Long bingAccountIdLong = Long.parseLong(bingAccountId);
+        Map returnMap = new HashMap();
+//        List<Map<String, String>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate, endDate, timeSegment);
+//        System.out.println(data);
+//        List<ColumnDef> columnDefs = getColumnDef(data);
+//        returnMap.put("columnDefs", columnDefs);
+//        if (fieldsOnly != null) {
+//            return returnMap;
+//        }
+//        returnMap.put("data", data);
+        return returnMap;
+    }
+
+    private Object getAnalyticsData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSetId = request.getParameter("dataSetId");
+        String dataSetReportName = request.getParameter("dataSetReportName");
+        String timeSegment = request.getParameter("timeSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+        String productSegment = request.getParameter("productSegment");
+        if (productSegment == null) {
+            productSegment = "daily";
+        }
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+                productSegment = dataSet.getProductSegment();
+            }
+        }
+        String accountIdStr = request.getParameter("accountId");
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String gaAccountId = getAccountId(accountProperty, "gaAccountId");
+        String gaProfileId = getAccountId(accountProperty, "gaProfileId");
+        List<Map<String, String>> data = gaService.get(dataSetReportName, gaAccountId, gaProfileId, startDate, endDate);
+        System.out.println(data);
+        Map returnMap = new HashMap();
+        List<ColumnDef> columnDefs = getColumnDef(data);
+        returnMap.put("columnDefs", columnDefs);
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", data);
+        return returnMap;
+    }
+
+    private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
+        String dataSetId = request.getParameter("dataSetId");
+        String dataSetReportName = request.getParameter("dataSetReportName");
+        String timeSegment = request.getParameter("timeSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+        String productSegment = request.getParameter("productSegment");
+        if (productSegment == null) {
+            productSegment = "daily";
+        }
+        if (dataSetId != null) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+                productSegment = dataSet.getProductSegment();
+            }
+        }
+        String accountIdStr = request.getParameter("accountId");
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
+        List<Map<String, String>> data = adwordsService.get(dataSetReportName, adwordsAccountId, startDate, endDate, timeSegment, productSegment);
+        System.out.println(data);
+        Map returnMap = new HashMap();
+        List<ColumnDef> columnDefs = getColumnDef(data);
+        returnMap.put("columnDefs", columnDefs);
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", data);
+        return returnMap;
     }
 
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
@@ -112,13 +291,7 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String facebookAccountId = "";
-        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
-            Property property = iterator.next();
-            if (property.getPropertyName().equalsIgnoreCase("facebookAccountId")) {
-                facebookAccountId = property.getPropertyValue();
-            }
-        }
+        String facebookAccountId = getAccountId(accountProperty, "facebookAccountId");
         Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
         String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
         log.debug("Report Name ---- " + dataSetReportName);
@@ -138,6 +311,17 @@ public class ProxyController {
         }
         returnMap.put("data", data);
         return returnMap;
+    }
+
+    private String getAccountId(List<Property> accountProperty, String propertyName) {
+        String propertyAccountId = null;
+        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+            Property property = iterator.next();
+            if (property.getPropertyName().equalsIgnoreCase(propertyName)) {
+                propertyAccountId = property.getPropertyValue();
+            }
+        }
+        return propertyAccountId;
     }
 
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
@@ -337,22 +521,24 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = tabWidget.getDirectUrl();
+                String url = "admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                     valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
-                }
-                if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../testing/admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
+                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
+                    url = "admin/proxy/getData?";
                 }
+                valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                 valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+                valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
                 Integer port = request.getServerPort();
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
@@ -399,7 +585,7 @@ public class ProxyController {
     @RequestMapping(value = "download/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-         log.debug("Start Function of download");
+        log.debug("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
         log.debug("Export type ==> " + exportType);
@@ -439,8 +625,8 @@ public class ProxyController {
                 }
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../testing/admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../testing/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                 }
                 System.out.println("connectionurl: "+tabWidget.getDataSourceId().getConnectionString());
                 valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -463,9 +649,9 @@ public class ProxyController {
                 List dataList = (List) responseMap.get("data");
                 tabWidget.setData(dataList);
             } catch (ParseException ex) {
-                log.error("ParseException in download function: "+ex);
+                log.error("ParseException in download function: " + ex);
             } catch (UnsupportedEncodingException ex) {
-                log.error("UnsupportedEncodingException in download function: "+ex);
+                log.error("UnsupportedEncodingException in download function: " + ex);
             }
         }
         try {

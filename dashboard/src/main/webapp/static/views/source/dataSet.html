@@ -61,24 +61,24 @@
 
                                     <div ng-show="dataSetFlag">
                                         <label>Report</label>
-                                        <select class="form-control" ng-model="dataSet.reportName" ng-change="getTimeSegemens()">
+                                        <select class="form-control" ng-model="dataSet.reportName" ng-change="getTimeSegemens(); refreshDataSet(dataSet)">
                                             <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                            <option ng-repeat="reportPerformances in report track by $index"  value="{{reportPerformances.type}}">
+                                            <option ng-repeat="reportPerformances in report track by $index" value="{{reportPerformances.type}}">
                                                 {{reportPerformances.name}}</option>
                                         </select>
 
                                         <label>Time Segments</label>
 
-                                        <select class="form-control" ng-model="dataSet.timeSegment">
+                                        <select class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
                                             <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                            <option ng-repeat="timeSegments in timeSegment"  value="{{timeSegments.type}}">
+                                            <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
                                                 {{timeSegments.name}}</option>
                                         </select>
                                         <label ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram')">Product Segments</label>
 
-                                        <select class="form-control" ng-model="dataSet.productSegment" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram')">
+                                        <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet)" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram')">
                                             <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                            <option ng-repeat="productSegments in productSegment"  value="{{productSegments.type}}">{{productSegments.name}}</option>
+                                            <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -87,6 +87,14 @@
                                     <label>Query</label>
                                     <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>
                                 </div>
+                                
+                                <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https'">
+                                    <label>File Url</label>
+                                    <div>
+                                        <input type="text" class="form-control" ng-model="dataSet.url">
+                                    </div>
+                                </div>
+                                
                                 <div class="form-group pull-right">
                                     <button class="btn btn-success" data-toggle="modal" data-target="#dataSetPreview" ng-click="previewDataSet(dataSet)">Preview</button>
                                     <button class="btn btn-info" ng-click="saveDataSet()">Save</button>

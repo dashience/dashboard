@@ -226,11 +226,20 @@
         <div class="btn-group">
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
         </div>
-        <div ng-if="permission.downloadReport === true;" class="btn-group">
-            <a class="refresh" ng-click="downloadPdf()"><i class="fa fa-download"></i> PDF</a>
-        </div>
-        <div ng-if="permission.downloadReport === true;" class="btn-group">
-            <a class="refresh" ng-click="downloadPpt()"><i class="fa fa-download"></i> PPT</a>
+        <div class="btn-group">
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Export
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li ng-if="permission.downloadReport === true;" class="btn-group">
+                        <a class="refresh" ng-click="downloadPdf()"><i class="fa fa-file-pdf-o"></i> Export PDF</a>
+                    </li>
+                    <li ng-if="permission.downloadReport === true;" class="btn-group">
+                        <a class="refresh" ng-click="downloadPpt()"><i class="fa fa-file-powerpoint-o"></i> Export PPT</a>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="btn-group dropdown" ng-if="permission.addWidget === true;">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
@@ -286,12 +295,12 @@
         </div>
 
         <div ng-if="widget.chartType != 'ticker'">
-            <div class="col-md-{{2 *widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
+            <div class="col-md-{{2 * widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget"> 
                     <div class="panel-heading">
                         <div class="panel-tools">
                             <div>  
-                                <a ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a> 
+                                <a ng-show="showCreateReport" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a> 
                                 <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
                                 <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
                                 <div id="delete{{widget.id}}" class="modal">

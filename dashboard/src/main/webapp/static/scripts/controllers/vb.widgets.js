@@ -7,6 +7,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
 
+    if ($scope.permission.createReport === true) {
+        $scope.showCreateReport = true;
+    } else {
+        $scope.showCreateReport = false;
+    }
+
     $scope.downloadPdf = function () {
         var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);

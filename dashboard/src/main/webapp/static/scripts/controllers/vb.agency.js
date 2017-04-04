@@ -54,7 +54,7 @@ app.controller('AgencyController', function ($scope, $http) {
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
         getAgencyLicence(agency)
-        $scope.agencyLicenceId = agency;
+        $scope.agencyById = agency;
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
@@ -99,10 +99,9 @@ app.controller('AgencyController', function ($scope, $http) {
     }
 
     $scope.saveAgencyLicence = function (agencyLicence) {
-        console.log($scope.agencyLicenceId)
         var data = {
             id: agencyLicence.id,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             maxNoTab: agencyLicence.maxNoTab,
             maxNoUser: agencyLicence.maxNoUser,
             maxNoClient: agencyLicence.maxNoClient,
@@ -130,11 +129,11 @@ app.controller('AgencyController', function ($scope, $http) {
             password: agencyUser.password,
             primaryPhone: agencyUser.primaryPhone,
             secondaryPhone: agencyUser.secondaryPhone,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
         };
 
         $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
-            getAgencyLicence($scope.agencyLicenceId);
+            getAgencyLicence($scope.agencyById);
         });
         $scope.agencyUser = "";
         $scope.showAgencyUserForm = false;
@@ -151,12 +150,11 @@ app.controller('AgencyController', function ($scope, $http) {
     }
     $scope.selectedRows = null;
     $scope.setAccountUserRow = function (agencyProduct, index) {
-        console.log(index);
         var data = {
             id: agencyProduct.id,
             productName: agencyProduct.productName,
             icon: $scope.agencyProduct.icon,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             showProduct: agencyProduct.showProduct
         }
         $scope.agencyProduct = data;
@@ -180,8 +178,7 @@ app.controller('AgencyController', function ($scope, $http) {
         });
     };
     $scope.saveAgencyProduct = function (agencyProduct) {
-        var agencyProductId = $scope.agencyLicenceId;
-        console.log(agencyProductId)
+        var agencyProductId = $scope.agencyById;
         if ($scope.agencyProduct.icon === "static/img/logos/deeta-logo.png") {
             $scope.agencyProduct.icon = "";
         }
@@ -189,7 +186,7 @@ app.controller('AgencyController', function ($scope, $http) {
             id: agencyProduct.id,
             productName: agencyProduct.productName,
             icon: $scope.agencyProduct.icon,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             showProduct: agencyProduct.showProduct
         };
         $http({method: agencyProduct.id ? 'PUT' : 'POST', url: 'admin/user/agencyProduct', data: data}).success(function (response) {
@@ -216,15 +213,15 @@ app.controller('AgencyController', function ($scope, $http) {
             id: agencyProduct.id,
             productName: agencyProduct.productName,
             icon: agencyProduct.icon,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             showProduct: agencyProduct.showProduct
         };
         $scope.agencyProduct = data;
         $scope.showAgencyProductForm = true;
     }
     $scope.changeOrder = function (s) {
-        var agencyProductId = $scope.agencyLicenceId;
-//        console.log(s)
+        var agencyProductId = $scope.agencyById;
+        console.log(s)
 //if()
         var order = s.map(function (value, key) {
             if (value) {
@@ -234,7 +231,7 @@ app.controller('AgencyController', function ($scope, $http) {
         console.log(order)
 
 //        if (order) {
-//            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
+           // $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
 //        }
     };
 });

@@ -83,7 +83,7 @@ public class VbUtils {
         }
         return null;
     }
-    
+
     private static Permission getPermissions(SecurityAuthBean authData) {
         List<SecurityAuthRoleBean> roles = authData.getRoles();
         Permission permission = new Permission();
@@ -97,18 +97,18 @@ public class VbUtils {
         }
         return permission;
     }
-    
+
     public static Permission getPermissions(VbUser user, List<UserPermission> userPermissions) {
-        
+
         Permission permission = new Permission();
         for (Iterator<UserPermission> iterator = userPermissions.iterator(); iterator.hasNext();) {
             UserPermission userPermission = iterator.next();
-            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), Boolean.TRUE);
+            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), userPermission.getStatus());
+//            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), Boolean.TRUE);
         }
-        if(user.getAgencyId() == null || (user.getIsAdmin() != null && user.getIsAdmin() )) {
-            System.out.println(user.getAgencyId());
+        if (user.getAgencyId() == null || (user.getIsAdmin() != null && user.getIsAdmin())) {
             permission.setViewAgency(Boolean.TRUE);
         }
         return permission;
-    }    
+    }
 }
