@@ -108,6 +108,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.util.SortOrder;
 import org.jsoup.Jsoup;
 
 /**
@@ -525,7 +526,7 @@ public class CustomReportDesigner {
                 dataCell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
                 dataCell.setPadding(5);
                 table.addCell(dataCell);
-                table.setWidthPercentage(95f);
+                table.setWidthPercentage(100f);
             } else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
                 PdfPCell dataCell = new PdfPCell(new Phrase(""));
                 dataCell.setHorizontalAlignment(1);
@@ -536,7 +537,7 @@ public class CustomReportDesigner {
                 dataCell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
                 dataCell.setPadding(5);
                 table.addCell(dataCell);
-                table.setWidthPercentage(95f);
+                table.setWidthPercentage(100f);
             }
             return table;
         } catch (IOException ex) {
@@ -572,7 +573,7 @@ public class CustomReportDesigner {
             cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
             cell.setPadding(10);
             table.addCell(cell);
-            table.setWidthPercentage(95f);
+            table.setWidthPercentage(100f);
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
                 pdfFontHeader.setSize(13);
@@ -1181,7 +1182,7 @@ public class CustomReportDesigner {
         cell.setPaddingTop(5);
         cell.setPaddingLeft(10);
         table.addCell(cell);
-        table.setWidthPercentage(95f);
+        table.setWidthPercentage(100f);
         if (groupFields != null && groupFields.size() > 0) {
             pdfFontHeader.setSize(13);
             pdfFontHeader.setColor(tableHeaderFontColor);
@@ -1314,15 +1315,14 @@ public class CustomReportDesigner {
 
             Paragraph reportTitle = new Paragraph("Month End Report".toUpperCase(), f);
             reportTitle.setAlignment(Paragraph.ALIGN_LEFT);
-            //reportTitle.setFirstLineIndent(25);
-            reportTitle.setIndentationLeft(25);
+            reportTitle.setIndentationLeft(0);
 
             LineSeparator dottedline = new LineSeparator();
             BaseColor dottedLineColor = new BaseColor(98, 203, 49);
 
             dottedline.setOffset(6);
             dottedline.setLineWidth(4);
-            dottedline.setPercentage(95);
+            dottedline.setPercentage(100);
             dottedline.setLineColor(dottedLineColor);
             dottedline.setAlignment(Element.ALIGN_TOP);
 //            reportTitle.add(dottedline);
@@ -1332,7 +1332,7 @@ public class CustomReportDesigner {
 
             PdfPTable table = new PdfPTable(headerCellCount);
             table.setWidths(new float[]{20, 20, 13, 1});
-            table.setWidthPercentage(95f);
+            table.setWidthPercentage(100f);
 
             Paragraph leftParagraph = new Paragraph("September 2016", pdfFontNormal);
             leftParagraph.add(new Phrase("\n"));
@@ -1632,9 +1632,6 @@ public class CustomReportDesigner {
         }
     }
 
-//    public XSSFTable dynamicXlsTable(TabWiget tabWiget, ){
-//        return "";
-//    }
     public void dynamicXlsDownload(List<TabWidget> tabWidgets, OutputStream out) {
         System.out.println("Start function of dynamicXlsDownload");
         try {
@@ -1780,7 +1777,7 @@ public class CustomReportDesigner {
 
                     PdfPTable table = new PdfPTable(1);
                     PdfPCell cell;
-                    table.setWidthPercentage(95f);
+                    table.setWidthPercentage(100f);
                     pdfFontTitle.setSize(14);
                     pdfFontTitle.setStyle(Font.BOLD);
                     pdfFontTitle.setColor(tableTitleFontColor);
@@ -1814,7 +1811,7 @@ public class CustomReportDesigner {
                     //document.add(multiAxisBarChart(writer, tabWidget));
                     PdfPTable table = new PdfPTable(1);
                     PdfPCell cell;
-                    table.setWidthPercentage(95f);
+                    table.setWidthPercentage(100f);
                     pdfFontTitle.setSize(14);
                     pdfFontTitle.setStyle(Font.BOLD);
                     pdfFontTitle.setColor(tableTitleFontColor);
@@ -1851,7 +1848,7 @@ public class CustomReportDesigner {
                 } else if (tabWidget.getChartType().equalsIgnoreCase("line")) {
                     PdfPTable table = new PdfPTable(1);
                     PdfPCell cell;
-                    table.setWidthPercentage(95f);
+                    table.setWidthPercentage(100f);
                     pdfFontTitle.setSize(14);
                     pdfFontTitle.setStyle(Font.BOLD);
                     cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
@@ -1886,7 +1883,7 @@ public class CustomReportDesigner {
                     //document.add(multiAxisBarChart(writer, tabWidget));
                     PdfPTable table = new PdfPTable(1);
                     PdfPCell cell;
-                    table.setWidthPercentage(95f);
+                    table.setWidthPercentage(100f);
                     pdfFontTitle.setSize(14);
                     pdfFontTitle.setStyle(Font.BOLD);
                     pdfFontTitle.setColor(tableTitleFontColor);
@@ -2521,7 +2518,8 @@ public class CustomReportDesigner {
             if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
                 data = data.subList(0, tabWidget.getMaxRecord());
             }
-
+            System.out.println("FirstAxis: " + firstAxis);
+            System.out.println("SecondAxis: " + secondAxis.size());
 //            final CategoryDataset dataset1 = createDataset3();
 //            final CategoryDataset dataset2 = createDataset4();
             Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
@@ -2532,8 +2530,11 @@ public class CustomReportDesigner {
 
             long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
-            final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
-
+            CategoryDataset dataset2 = null;
+            if (secondAxis.size() != 0) {
+                System.out.println("inside if...");
+                dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+            }
             System.out.println("Dataset1 bar data: " + data);
             System.out.println("Dataset1 bar first Axis: " + firstAxis);
             System.out.println("Dataset1 bar Second Axis: " + secondAxis);
@@ -2607,12 +2608,17 @@ public class CustomReportDesigner {
             axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
             chart.setBackgroundPaint(Color.white);
             plot.setBackgroundPaint(Color.white);
+            plot.setRowRenderingOrder(SortOrder.ASCENDING);
             plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
-            plot.setDataset(1, dataset2);
-            plot.mapDatasetToRangeAxis(1, 1);
-            final ValueAxis axis2 = new NumberAxis();
-            plot.setRangeAxis(1, axis2);
-            plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+            if (dataset2 != null) {
+                System.out.println("inside if dataset2...");
+                plot.setDataset(1, dataset2);
+                plot.mapDatasetToRangeAxis(1, 1);
+                final ValueAxis axis2 = new NumberAxis();
+                plot.setRangeAxis(1, axis2);
+                plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+            }
+
             final BarRenderer renderer2 = new BarRenderer();
             renderer2.setShadowVisible(false);
             Paint[] paint = new Paint[]{
@@ -3793,7 +3799,7 @@ public class CustomReportDesigner {
                 Rectangle rectangle = pageSize; // new Rectangle(10, 900, 100, 850);
                 Image img = Image.getInstance(CustomReportDesigner.class.getResource("") + "/../images/deeta-logo.png");
                 img.scaleToFit(90, 90);
-                img.setAbsolutePosition(62, rectangle.getTop() - 50);
+                img.setAbsolutePosition(38, rectangle.getTop() - 50);
                 img.setAlignment(Element.ALIGN_TOP);
                 writer.getDirectContent().addImage(img);
 
