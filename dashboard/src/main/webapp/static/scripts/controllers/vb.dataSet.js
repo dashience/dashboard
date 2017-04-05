@@ -775,8 +775,17 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     getItems();
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
-        console.log($scope.dataSources);
     });
+
+    $scope.selectXlsSheet = function (dataSource) {
+        if (dataSource.dataSourceType == 'xls') {
+            var url = "admin/proxy/getSheets?";
+            var dataSourceId = dataSource.id;
+            $http.get(url + "dataSourceId=" + dataSourceId).success(function (response) {
+                $scope.xlsSheetNames = response;
+            });
+        }
+    };
 
     $scope.saveDataSet = function () {
         var dataSet = $scope.dataSet;
@@ -791,8 +800,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.editDataSet = function (dataSet) {
-        console.log(dataSet);
-
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -804,9 +811,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
             userId: dataSet.userId.id
+
         };
         $scope.dataSet = data;
-        console.log($scope.dataSet);
+        var dataSource = dataSet.dataSourceId
+        var dataSourceType = dataSet.dataSourceId.dataSourceType;
+        if (dataSourceType == 'xls') {
+            $scope.selectXlsSheet(dataSource);
+        }
         if (dataSet.dataSourceId.dataSourceType === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
@@ -941,6 +953,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSourcePassword = '';
             }
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
+                    "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +

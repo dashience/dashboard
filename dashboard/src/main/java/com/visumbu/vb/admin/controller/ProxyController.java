@@ -108,7 +108,7 @@ public class ProxyController {
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("xls")) {
-            getXlsData(request, response);
+            return getXlsData(request, response);
         }
         return null;
     }
@@ -120,7 +120,12 @@ public class ProxyController {
         Integer dataSourceIdInt = Integer.parseInt(dataSourceId);
         DataSource dataSource = uiService.getDataSourceById(dataSourceIdInt);
         XlsDataSet xlsDs = new XlsDataSet();
-        return xlsDs.getSheetList(dataSource.getConnectionString());
+        if (dataSource.getConnectionString().endsWith("xls")) {
+            return xlsDs.getSheetListXls(dataSource.getConnectionString());
+        } else if (dataSource.getConnectionString().endsWith("xlsx")) {
+            return xlsDs.getSheetListXlsx(dataSource.getConnectionString());
+        }
+        return null;
     }
 
     public Object getXlsData(HttpServletRequest request, HttpServletResponse response) {
