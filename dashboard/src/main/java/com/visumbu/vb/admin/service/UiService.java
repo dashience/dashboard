@@ -502,4 +502,8 @@ public class UiService {
     public UserPermission deleteUserPermission(Integer userPermissionId) {
         return uiDao.deleteUserPermission(userPermissionId);
     }
+
+    public DataSource getDataSourceById(Integer dataSourceIdInt) {
+        return uiDao.getDataSourceById(dataSourceIdInt);
+    }
 }
