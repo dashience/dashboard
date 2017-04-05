@@ -95,6 +95,13 @@
                                     </div>
                                 </div>
                                 
+                                <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'xls'">
+                                    <label>XLS</label>
+                                    <div>
+                                        <select class="form-control" ng-model="dataSet.productSegment"></select>
+                                    </div>
+                                </div>
+                                
                                 <div class="form-group pull-right">
                                     <button class="btn btn-success" data-toggle="modal" data-target="#dataSetPreview" ng-click="previewDataSet(dataSet)">Preview</button>
                                     <button class="btn btn-info" ng-click="saveDataSet()">Save</button>

@@ -6,27 +6,25 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             $scope.report = $scope.adwordsPerformance;
             $scope.dataSetFlag = true;
-        }
-        if (dataSource === "analytics")
+        } else if (dataSource === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
-        }
-        if (dataSource === "facebook")
+        } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
-        }
-        if (dataSource === "instagram")
+        } else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
-        }
-        if (dataSource === "linkedin")
+        } else if (dataSource === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
             $scope.dataSetFlag = true;
+        } else {
+            $scope.dataSetFlag = false;
         }
     };
 

@@ -86,10 +86,22 @@
                                                accept=".csv" onchange="angular.element(this).scope().csvFileUpload(event)" />
                                     </div> 
                                 </div>-->
+                                <div class="form-group" ng-show="showCSVFileUploadss">
+                                    <div class="fileUpload btn btn-primary">
+                                        <label>Select</label>
+                                        <input class="upload" type="file"
+                                               file-model="myFile"
+                                               accept=".csv"
+                                               onchange="angular.element(this).scope().selectFileUploadName(event)">
+                                    </div>
+                                </div>
                                 <div class="form-group" ng-show="showXLSFileUpload">
                                     <div class="fileUpload btn btn-primary">
-                                        <label>Upload</label>
-                                        <input class="upload" type="file" file-model="myFile" onchange="angular.element(this).scope().csvFileUpload(event)">
+                                        <label>Select</label>
+                                        <input class="upload" type="file"
+                                               file-model="myFile"
+                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                               onchange="angular.element(this).scope().selectFileUploadName(event)">
                                     </div>
                                 </div>
 

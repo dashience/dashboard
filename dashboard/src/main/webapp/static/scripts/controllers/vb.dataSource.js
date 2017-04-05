@@ -47,25 +47,25 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         }
         getItems();
 
-        $scope.csvFileUpload = function (event) {
-            var files = event.target.files;
-            angular.forEach(files, function (value, key) {
-                $scope.sourceFileName = value.name;
-            });
-
-            if (files.length) {
-                var r = new FileReader();
-                r.onload = function (e) {
-                    var contents = e.target.result;
-                    $scope.$apply(function () {
-                        $scope.fileReader = contents;
-                    });
-                };
-                r.readAsText(files[0]);
-            }
-        };
+//        $scope.csvFileUpload = function (event) {
+//            var files = event.target.files;
+//            angular.forEach(files, function (value, key) {
+//                $scope.sourceFileName = value.name;
+//            });
+//
+//            if (files.length) {
+//                var r = new FileReader();
+//                r.onload = function (e) {
+//                    var contents = e.target.result;
+//                    $scope.$apply(function () {
+//                        $scope.fileReader = contents;
+//                    });
+//                };
+//                r.readAsText(files[0]);
+//            }
+//        };
         var sourceData;
-        $scope.xlsFileUpload = function (event) {
+        $scope.selectFileUploadName = function (event) {
             var files = event.target.files;
             angular.forEach(files, function (value, key) {
                 $scope.sourceFileName = value.name;
@@ -149,29 +149,29 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             });
         };
 
-        $scope.saveDataSource = function (dataSource) {alert('Test')
+        $scope.saveDataSource = function (dataSource) {
             console.log(dataSource)
-                dataSource.code = $('#fbOauthToken').val();
-                dataSource.accessToken = $('#fbAccessToken').val();
-                var data = {
-                    id: dataSource.id,
-                    connectionString: dataSource.connectionString,
-                    sqlDriver: dataSource.sqlDriver,
-                    name: dataSource.name,
-                    password: dataSource.password,
-                    userName: dataSource.userName,
-                    dataSourceType: dataSource.dataSourceType,
-                    sourceFile: dataSource.sourceFile,
-                    //sourceFileName: $scope.sourceFileName,
-                    accessToken: dataSource.accessToken ? dataSource.accessToken : '',
-                    agencyId: dataSource.agencyId,
-                    userId: dataSource.userId,
-                    code: dataSource.code ? dataSource.code : ''
-                };
-                console.log(data);
-                $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
-                    getItems();
-                });
+            dataSource.code = $('#fbOauthToken').val();
+            dataSource.accessToken = $('#fbAccessToken').val();
+            var data = {
+                id: dataSource.id,
+                connectionString: dataSource.connectionString,
+                sqlDriver: dataSource.sqlDriver,
+                name: dataSource.name,
+                password: dataSource.password,
+                userName: dataSource.userName,
+                dataSourceType: dataSource.dataSourceType,
+                sourceFile: dataSource.sourceFile,
+                //sourceFileName: $scope.sourceFileName,
+                accessToken: dataSource.accessToken ? dataSource.accessToken : '',
+                agencyId: dataSource.agencyId,
+                userId: dataSource.userId,
+                code: dataSource.code ? dataSource.code : ''
+            };
+            console.log(data);
+            $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
+                getItems();
+            });
             $scope.dataSource = "";
             $scope.sourceFileName = "";
             $scope.selectedRow = null;
@@ -216,15 +216,21 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         };
 
         $scope.showXLSFileUpload = false;
+        $scope.showCSVFileUpload = false;
         $scope.selectSourceType = function (source) {
             var dataSourceType = source.dataSourceType;
-            if (dataSourceType == 'xls' || dataSourceType == 'csv') {
+            if (dataSourceType == 'xls') {
                 $scope.showXLSFileUpload = true;
+                $scope.showCSVFileUpload = false;
+            } else if (dataSourceType == 'csv') {
+                $scope.showCSVFileUpload = true;
+                $scope.showXLSFileUpload = false;
             } else {
                 $scope.showXLSFileUpload = false;
+                $scope.showCSVFileUpload = false;
             }
         }
-        $scope.uploadFile = function (dataSource) {alert("Upload")
+        $scope.uploadFile = function (dataSource) {
             var file = $scope.myFile;
             $scope.sourceFileName = file.name;
             var uploadUrl = "admin/ui/fileUpload";
