@@ -1,4 +1,4 @@
-app.controller("DataSourceController", ['$scope', 'fileUpload', '$stateParams', '$http', '$rootScope', function ($scope, fileUpload, $stateParams, $http, $rootScope) {
+app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', function ($scope, $stateParams, $http, $rootScope) {
 //    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
         $scope.authenticateFlag = true;
         $scope.dataSourceTypes = [
@@ -150,7 +150,7 @@ app.controller("DataSourceController", ['$scope', 'fileUpload', '$stateParams', 
         };
 
         $scope.saveDataSource = function (dataSource) {
-            $scope.uploadFile()
+//            $scope.uploadFile()
             console.log(dataSource);
 
             //for accesstoken
@@ -232,30 +232,22 @@ app.controller("DataSourceController", ['$scope', 'fileUpload', '$stateParams', 
                 $scope.showXLSFileUpload = false;
             }
         }
-        $scope.uploadFile = function () {
-            var file = $scope.myFile;
+        $scope.uploadFile = function () {alert("test")
+            console.log($scope.myFile)
+            var file = event;//$scope.myFile;
             $scope.sourceFileName = file.name;
-            console.log('file is ');
-            console.dir(file);
             var uploadUrl = "admin/ui/fileUpload";
             uploadFileToUrl(file, uploadUrl);
-            $scope.myFile = ""
-            console.log($scope.myFile)
+            $scope.myFile = "";
         };
         function uploadFileToUrl(file, uploadUrl) {
             var fd = new FormData();
             fd.append('file', file);
-            $http.post(uploadUrl, fd, {
-                transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
+            $http.post(uploadUrl, fd, {transformRequest: angular.identity, headers: {'Content-Type': undefined}}).success(function (response) {
+                console.log(response)
+                $scope.sourceFileName = response.fileName;
             })
-                    .success(function (response) {
-                        console.log(response)
-                        $scope.sourceFileName = response.fileName;
-                    })
-                    .error(function () {
-                    });
-        };
+        }
     }]);
 app.directive('fileModel', ['$parse', function ($parse) {
         return {
