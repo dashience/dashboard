@@ -40,9 +40,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.visumbu.vb.admin.service.FacebookService;
 
 import com.visumbu.vb.utils.Rest;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  *
@@ -164,8 +173,7 @@ public class UiController extends BaseController {
     List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         return uiService.getTabWidget(tabId);
     }
-    
-    
+
     @RequestMapping(value = "reportWidgetByWidgetId/{widgetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReportWidgetByWidgetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
@@ -227,7 +235,7 @@ public class UiController extends BaseController {
         report.setAgencyId(user.getAgencyId());
         return uiService.addReport(report);
     }
-    
+
     @RequestMapping(value = "report", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     Report updateReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
@@ -235,7 +243,7 @@ public class UiController extends BaseController {
         report.setAgencyId(user.getAgencyId());
         return uiService.updateReport(report);
     }
-    
+
 //    @RequestMapping(value = "report", method = RequestMethod.POST, produces = "application/json")
 //    public @ResponseBody
 //    Report addReport(HttpServletRequest request, HttpServletResponse response// , @RequestBody Report report
@@ -258,7 +266,6 @@ public class UiController extends BaseController {
 //        }
 //        return null;
 //    }
-
 //    @RequestMapping(value = "report", method = RequestMethod.PUT, produces = "application/json")
 //    public @ResponseBody
 //    Report update(HttpServletRequest request, HttpServletResponse response// @RequestBody Report report
@@ -315,31 +322,35 @@ public class UiController extends BaseController {
     Report getReportById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
         return uiService.getReportById(reportId);
     }
-    
+
     @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     Report deleteReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
         return uiService.deleteReport(reportId);
     }
 //
+
     @RequestMapping(value = "reportWidget", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     ReportWidget createReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
         return uiService.createReportWidget(reportWidget);
     }
 //
+
     @RequestMapping(value = "reportWidget", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     ReportWidget updateReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
         return uiService.updateReportWidget(reportWidget);
     }
 //
+
     @RequestMapping(value = "reportWidget", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReportWidget(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getReportWidget();
     }
 //    
+
     @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
@@ -359,6 +370,33 @@ public class UiController extends BaseController {
         dataSource.setUserId(user);
         dataSource.setAgencyId(user.getAgencyId());
         return uiService.saveDataSource(dataSource);
+    }
+
+    @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
+    public @ResponseBody Object continueFileUpload(HttpServletRequest request, HttpServletResponse response) {
+        MultipartHttpServletRequest mRequest;
+        String returnFilename = null;
+        try {
+            mRequest = (MultipartHttpServletRequest) request;
+            mRequest.getParameterMap();
+
+            Iterator<String> itr = mRequest.getFileNames();
+            while (itr.hasNext()) {
+                MultipartFile mFile = mRequest.getFile(itr.next());
+                String fileName = mFile.getOriginalFilename();
+                System.out.println(fileName);
+                returnFilename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + new Date() + "-" + fileName;
+                java.nio.file.Path path = Paths.get(returnFilename);
+                Files.deleteIfExists(path);
+                InputStream in = mFile.getInputStream();
+                Files.copy(in, path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Map returnMap = new HashMap();
+        returnMap.put("filename", returnFilename);
+        return returnMap;
     }
 
     @RequestMapping(value = "dataSource", method = RequestMethod.PUT, produces = "application/json")
@@ -547,13 +585,12 @@ public class UiController extends BaseController {
      */
     @RequestMapping(value = "oauthCode/{accessToken}/{dataSourceType}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    String getOauthToken(HttpServletRequest request, HttpServletResponse response, @PathVariable String accessToken,@PathVariable String dataSourceType) throws IOException {
+    String getOauthToken(HttpServletRequest request, HttpServletResponse response, @PathVariable String accessToken, @PathVariable String dataSourceType) throws IOException {
 
         String oauth;
-        if(dataSourceType.equalsIgnoreCase("linkedin"))
-        {
+        if (dataSourceType.equalsIgnoreCase("linkedin")) {
             String url = "https://www.linkedin.com/oauth/v2/accessToken?";
-            System.out.println("hurl======"+url);
+            System.out.println("hurl======" + url);
             String params = "grant_type=authorization_code&code=" + accessToken + "&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&client_id=81kqaac7cnusqy&client_secret=6SrcnKhiX4Yx0Ab4";
             String oauthUrl = url + params;
             System.out.println("oauthurl======");
@@ -561,20 +598,18 @@ public class UiController extends BaseController {
             oauth = Rest.postRawForm(url, params);
             System.out.println("oauth==>" + oauth);
             return oauth;
-        }
-        else if(dataSourceType.equalsIgnoreCase("facebook"))
-        {
-            String url="https://graph.facebook.com/v2.8/oauth/access_token?";
-            String params="client_id=1631503257146893&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&client_secret=b6659b47ba7b2b11179247bb3cd84f70&code="+accessToken;
-            oauth=Rest.postRawForm(url, params);
+        } else if (dataSourceType.equalsIgnoreCase("facebook")) {
+            String url = "https://graph.facebook.com/v2.8/oauth/access_token?";
+            String params = "client_id=1631503257146893&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&client_secret=b6659b47ba7b2b11179247bb3cd84f70&code=" + accessToken;
+            oauth = Rest.postRawForm(url, params);
             String oauthUrl = url + params;
             System.out.println("oauthurl======");
             System.out.println(oauthUrl);
-            System.out.println("oauth==>"+oauth);
-            return oauth;    
+            System.out.println("oauth==>" + oauth);
+            return oauth;
         }
         return null;
-       
+
     }
 
     // get facebook datasource
@@ -586,9 +621,9 @@ public class UiController extends BaseController {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = new Date();
 //       String  stratDates=dateFormat.format(startDate);
-        facebookService.getAccountPerformance(accountId, startDate, startDate,"day");
+        facebookService.getAccountPerformance(accountId, startDate, startDate, "day");
 //        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
-        
+
         return null;
     }
 

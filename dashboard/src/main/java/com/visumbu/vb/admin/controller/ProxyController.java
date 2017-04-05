@@ -529,18 +529,25 @@ public class ProxyController {
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                     valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
                     url = "../testing/admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
                     url = "../testing/admin/proxy/getData?";
 //                    url = "admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
-                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+                System.out.println("===================================>");
+                System.out.println(tabWidget);
+                System.out.println("connectionUrl: " + tabWidget.getDataSourceId().getConnectionString());
+//                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+//                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+//                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
                 Integer port = request.getServerPort();
 
@@ -618,6 +625,7 @@ public class ProxyController {
                     continue;
                 }
                 String url = "../testing/admin/proxy/getData?";
+//                String url = "../dashboard/admin/proxy/getData?";
 //                String url = "admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -625,18 +633,27 @@ public class ProxyController {
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                     valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
                     url = "../testing/admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
 //                    url = "admin/proxy/getData?";
                     url = "../testing/admin/proxy/getData?";
+//                    url = "../dashboard/admin/proxy/getData?";
+
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
-                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+                System.out.println("===================================>");
+                System.out.println(tabWidget);
+                System.out.println("connectionUrl: " + tabWidget.getDataSourceId().getConnectionString());
+//                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+//                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+//                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                 Integer port = request.getServerPort();
@@ -649,6 +666,7 @@ public class ProxyController {
                 log.debug("url: " + url);
                 log.debug("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
+                System.out.println("Data -----> : " + data);
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
                 Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);
