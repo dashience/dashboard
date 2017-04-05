@@ -89,7 +89,7 @@
                                 <div class="form-group" ng-show="showXLSFileUpload">
                                     <div class="fileUpload btn btn-primary">
                                         <label>Upload</label>
-                                        <input class="upload" type="file" file-model="myFile" onchange="angular.element(this).scope().uploadFile()">
+                                        <input class="upload" type="file" file-model="myFile" onchange="angular.element(this).scope().csvFileUpload(event)">
                                     </div>
                                 </div>
 
@@ -114,7 +114,10 @@
                                 <input type="hidden" id="fbOauthToken" ng-model="dataSource.oauthToken">
                                 <input type="hidden" id="dataSourceType" ng-model="dataSource.dataSourceType">
                                 <div class="form-group pull-right">
-                                    <button class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
+                                    <button ng-if="!(dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls')" 
+                                            class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
+                                    <button ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'"
+                                            class="btn btn-info" ng-click="uploadFile(dataSource)">Save</button>
                                     <button class="btn btn-warning" ng-click="clearDataSource(dataSource)">Cancel</button>
                                 </div>
                             </form>
