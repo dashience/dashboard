@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -52,7 +53,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Stream;
+import static java.util.stream.Stream.builder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.lang.WordUtils;
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
@@ -112,9 +117,12 @@ import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.util.SortOrder;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Node;
+import org.jsoup.parser.Tag;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTable;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumn;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumns;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -518,9 +526,11 @@ public class CustomReportDesigner {
             pdfFont.setSize(12);
             pdfFont.setColor(tableHeaderFontColor);
             if (tabWidget.getContent() != null) {
-                String HTML = tabWidget.getContent();
+                String html = tabWidget.getContent();
+                System.out.println("with text content");
                 PdfPCell dataCell = new PdfPCell();
-                for (Element e : XMLWorkerHelper.parseToElementList(HTML, null)) {
+                System.out.println("hmtl -------> : " + html);
+                for (Element e : XMLWorkerHelper.parseToElementList(html, null)) {
                     dataCell.addElement(e);
                 }
                 dataCell.setHorizontalAlignment(1);
@@ -533,6 +543,7 @@ public class CustomReportDesigner {
                 table.addCell(dataCell);
                 table.setWidthPercentage(100f);
             } else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
+                System.out.println("without text content");
                 PdfPCell dataCell = new PdfPCell(new Phrase(""));
                 dataCell.setHorizontalAlignment(1);
                 dataCell.setColspan(1);
@@ -1033,12 +1044,13 @@ public class CustomReportDesigner {
         pd.setTextAlign(TextParagraph.TextAlign.LEFT);
         XSLFTextRun rd = pd.addNewTextRun();
         if (tabWidget.getContent() != null) {
-            System.out.println(tabWidget.getContent());
             org.jsoup.nodes.Document doc = Jsoup.parse(tabWidget.getContent());
-            rd.setText(doc.body().text());
-//            XSLFTextBox text = slide.createTextBox();
-//            text.setText(html);
-//            slide.addShape(text);
+            String text = doc.body().html().replaceAll("</p>", "</p>&&");
+            org.jsoup.nodes.Document doc1 = Jsoup.parse(text);
+            String text1 = doc1.body().text();
+            String finalText = text1.replaceAll("&& ", "\n");
+            String finalTextt = finalText.replaceAll("&&", "\n");
+            rd.setText(finalTextt);
         } else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
             rd.setText("");
         }
@@ -1277,7 +1289,7 @@ public class CustomReportDesigner {
         return table;
     }
 
-    public void addReportHeader(Document document) {
+    public void addReportHeader(Document document, String account) {
         System.out.println("Start function of addReportHeader");
         try {
             // 236, 255, 224
@@ -1346,7 +1358,7 @@ public class CustomReportDesigner {
             leftParagraph.add(new Paragraph("Budget ", pdfFontNormal));
             leftParagraph.add(new Paragraph("$1,500", pdfFontHighlight));
             leftParagraph.add(new Phrase("\n\n"));
-            leftParagraph.add(new Paragraph("PAUL WALKER", pdfFontBoldLarge));
+            leftParagraph.add(new Paragraph(account, pdfFontBoldLarge));
 
             Paragraph rightParagraph = new Paragraph("DIGITAL ADVISOR", pdfFontHighlight);
             rightParagraph.add(new Phrase("\n"));
@@ -1884,7 +1896,7 @@ public class CustomReportDesigner {
         return lineChartObject;
     }
 
-    public void dynamicPdfTable(List<TabWidget> tabWidgets, OutputStream out) {
+    public void dynamicPdfTable(List<TabWidget> tabWidgets, String account, OutputStream out) {
         System.out.println("Start function of dynamicPdfTable");
         try {
             PdfWriter writer = null;
@@ -1898,7 +1910,7 @@ public class CustomReportDesigner {
             PageNumeration pevent = new PageNumeration();
             writer.setPageEvent(pevent);
 
-            addReportHeader(document);
+            addReportHeader(document, account);
 
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();

@@ -15,6 +15,7 @@ import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DataSet;
+import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
@@ -36,6 +37,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -427,21 +430,28 @@ public class ProxyController {
                     if (tabWidget.getDataSourceId() == null) {
                         continue;
                     }
-                    String url = tabWidget.getDirectUrl();
+                    String url = "../testing/admin/proxy/getData?";
                     log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                         url = "../dbApi/admin/dataSet/getData";
                         valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                         valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                         valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
+                        valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                        valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+                    } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+                        System.out.println("DS TYPE ==>  CSV");
+                        url = "../testing/admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
+                        valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                        valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+                    } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
+                        url = "../testing/admin/proxy/getData?";
+//                    url = "admin/proxy/getData?";
                     }
-                    if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                        log.debug("DS TYPE ==>  CSV");
-                        url = "admin/csv/getData";
-                    }
-                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                    valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+                    valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
+//                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+                    valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                     Integer port = request.getServerPort();
 
@@ -508,6 +518,7 @@ public class ProxyController {
         //List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
         List<TabWidget> tabWidgets = new ArrayList<>();
         Report report = uiService.getReportById(reportId);
+        String account = null;
         List<ReportWidget> reportWidgets = uiService.getReportWidget(reportId);
         for (Iterator<ReportWidget> iterator = reportWidgets.iterator(); iterator.hasNext();) {
             ReportWidget reportWidget = iterator.next();
@@ -521,26 +532,34 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = "../testing/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+//                String url = "admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                     valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../dashboard/admin/csv/getData";
+                    url = "../testing/admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "../dashboard/admin/proxy/getData?";
+                    url = "../testing/admin/proxy/getData?";
+//                    url = "admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
-                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+//                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
                 Integer port = request.getServerPort();
-
+                
+                int id = Integer.parseInt(request.getParameter("accountId"));
+                account = userService.getAccountName(id);
+                
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
                 log.debug("UR:" + url);
                 if (url.startsWith("../")) {
@@ -567,7 +586,7 @@ public class ProxyController {
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicPdfTable(tabWidgets, out);
+                crd.dynamicPdfTable(tabWidgets,account, out);
 
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
@@ -608,33 +627,43 @@ public class ProxyController {
         }
 
         List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
+        String account = null;
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next();
             try {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = "../testing/admin/proxy/getData?";
+//                String url = "admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
                     valueMap.put("username", Arrays.asList(tabWidget.getDataSourceId().getUserName()));
                     valueMap.put("password", Arrays.asList(tabWidget.getDataSourceId().getPassword()));
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
-                    System.out.println("sql");
-                }else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../dashboard/admin/csv/getData";
+                    url = "../testing/admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
+                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "../dashboard/admin/proxy/getData?";
+//                    url = "admin/proxy/getData?";
+                    url = "../testing/admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
-                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-//                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
+//                          valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                 Integer port = request.getServerPort();
+
+                int id = Integer.parseInt(request.getParameter("accountId"));
+                account = userService.getAccountName(id);
+
+                System.out.println("account name :" + account);
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
                 log.debug("URL:" + url);
@@ -661,7 +690,7 @@ public class ProxyController {
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicPdfTable(tabWidgets, out);
+                crd.dynamicPdfTable(tabWidgets, account, out);
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");

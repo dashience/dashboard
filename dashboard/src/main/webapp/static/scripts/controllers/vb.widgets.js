@@ -14,12 +14,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.downloadPdf = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
     };
 
     $scope.downloadPpt = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
         $window.open(url);
     };
 
