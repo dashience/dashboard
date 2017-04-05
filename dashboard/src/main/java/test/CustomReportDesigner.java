@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -52,10 +53,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Stream;
+import static java.util.stream.Stream.builder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.commons.lang.WordUtils;
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
-import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 import org.apache.poi.sl.usermodel.Insets2D;
 import org.apache.poi.sl.usermodel.TableCell;
@@ -75,9 +80,11 @@ import org.apache.poi.xslf.usermodel.XSLFTableRow;
 import org.apache.poi.xslf.usermodel.XSLFTextBox;
 import org.apache.poi.xslf.usermodel.XSLFTextParagraph;
 import org.apache.poi.xslf.usermodel.XSLFTextRun;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -110,6 +117,12 @@ import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.util.SortOrder;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Node;
+import org.jsoup.parser.Tag;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTable;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumn;
+import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumns;
+import org.xml.sax.InputSource;
 
 /**
  *
@@ -513,9 +526,11 @@ public class CustomReportDesigner {
             pdfFont.setSize(12);
             pdfFont.setColor(tableHeaderFontColor);
             if (tabWidget.getContent() != null) {
-                String HTML = tabWidget.getContent();
+                String html = tabWidget.getContent();
+                System.out.println("with text content");
                 PdfPCell dataCell = new PdfPCell();
-                for (Element e : XMLWorkerHelper.parseToElementList(HTML, null)) {
+                System.out.println("hmtl -------> : " + html);
+                for (Element e : XMLWorkerHelper.parseToElementList(html, null)) {
                     dataCell.addElement(e);
                 }
                 dataCell.setHorizontalAlignment(1);
@@ -528,6 +543,7 @@ public class CustomReportDesigner {
                 table.addCell(dataCell);
                 table.setWidthPercentage(100f);
             } else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
+                System.out.println("without text content");
                 PdfPCell dataCell = new PdfPCell(new Phrase(""));
                 dataCell.setHorizontalAlignment(1);
                 dataCell.setColspan(1);
@@ -1028,12 +1044,13 @@ public class CustomReportDesigner {
         pd.setTextAlign(TextParagraph.TextAlign.LEFT);
         XSLFTextRun rd = pd.addNewTextRun();
         if (tabWidget.getContent() != null) {
-            System.out.println(tabWidget.getContent());
             org.jsoup.nodes.Document doc = Jsoup.parse(tabWidget.getContent());
-            rd.setText(doc.body().text());
-//            XSLFTextBox text = slide.createTextBox();
-//            text.setText(html);
-//            slide.addShape(text);
+            String text = doc.body().html().replaceAll("</p>", "</p>&&");
+            org.jsoup.nodes.Document doc1 = Jsoup.parse(text);
+            String text1 = doc1.body().text();
+            String finalText = text1.replaceAll("&& ", "\n");
+            String finalTextt = finalText.replaceAll("&&", "\n");
+            rd.setText(finalTextt);
         } else if (tabWidget.getContent() == null || tabWidget.getContent().isEmpty()) {
             rd.setText("");
         }
@@ -1272,7 +1289,7 @@ public class CustomReportDesigner {
         return table;
     }
 
-    public void addReportHeader(Document document) {
+    public void addReportHeader(Document document, String account) {
         System.out.println("Start function of addReportHeader");
         try {
             // 236, 255, 224
@@ -1341,7 +1358,7 @@ public class CustomReportDesigner {
             leftParagraph.add(new Paragraph("Budget ", pdfFontNormal));
             leftParagraph.add(new Paragraph("$1,500", pdfFontHighlight));
             leftParagraph.add(new Phrase("\n\n"));
-            leftParagraph.add(new Paragraph("PAUL WALKER", pdfFontBoldLarge));
+            leftParagraph.add(new Paragraph(account, pdfFontBoldLarge));
 
             Paragraph rightParagraph = new Paragraph("DIGITAL ADVISOR", pdfFontHighlight);
             rightParagraph.add(new Phrase("\n"));
@@ -1659,7 +1676,8 @@ public class CustomReportDesigner {
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
-
+                    //XSSFTable table = sheet.createTable();
+                    dynamicXlsTable(tabWidget, sheet);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("pie")) {
                     if (count == 0) {
                         addRow = 0;
@@ -1668,10 +1686,10 @@ public class CustomReportDesigner {
                         addRow = 30 + addRow;
                     }
                     pieChart = generatePieJFreeChart(tabWidget);
-                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
-                    ChartUtilities.writeChartAsJPEG(chart_out, quality, pieChart, width, height);
-                    int my_picture_id = wb.addPicture(chart_out.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
-                    chart_out.close();
+                    ByteArrayOutputStream pieChartOut = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(pieChartOut, quality, pieChart, width, height);
+                    int my_picture_id = wb.addPicture(pieChartOut.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    pieChartOut.close();
                     ClientAnchor my_anchor = new XSSFClientAnchor();
                     my_anchor.setCol1(4);
                     my_anchor.setRow1(7 + addRow);
@@ -1685,10 +1703,10 @@ public class CustomReportDesigner {
                         addRow = 30 + addRow;
                     }
                     barChart = multiAxisBarJFreeChart(tabWidget);
-                    ByteArrayOutputStream chart_out1 = new ByteArrayOutputStream();
-                    ChartUtilities.writeChartAsJPEG(chart_out1, quality, barChart, width, height);
-                    int my_picture_id1 = wb.addPicture(chart_out1.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
-                    chart_out1.close();
+                    ByteArrayOutputStream barChartOut = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(barChartOut, quality, barChart, width, height);
+                    int my_picture_id1 = wb.addPicture(barChartOut.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    barChartOut.close();
                     ClientAnchor my_anchor1 = new XSSFClientAnchor();
                     my_anchor1.setCol1(4);
                     my_anchor1.setRow1(7 + addRow);
@@ -1703,10 +1721,10 @@ public class CustomReportDesigner {
                         addRow = 30 + addRow;
                     }
                     lineChart = multiAxisLineJFreeChart(tabWidget);
-                    ByteArrayOutputStream chart_out2 = new ByteArrayOutputStream();
-                    ChartUtilities.writeChartAsJPEG(chart_out2, quality, lineChart, width, height);
-                    int my_picture_id2 = wb.addPicture(chart_out2.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
-                    chart_out2.close();
+                    ByteArrayOutputStream lineChartOut = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(lineChartOut, quality, lineChart, width, height);
+                    int my_picture_id2 = wb.addPicture(lineChartOut.toByteArray(), Workbook.PICTURE_TYPE_JPEG);
+                    lineChartOut.close();
                     ClientAnchor my_anchor2 = new XSSFClientAnchor();
                     my_anchor2.setCol1(4);
                     my_anchor2.setRow1(7 + addRow);
@@ -1725,6 +1743,137 @@ public class CustomReportDesigner {
             //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("End function of dynamicXlsDownload");
+    }
+
+    public XSSFTable dynamicXlsTable(TabWidget tabWidget, XSSFSheet sheet) {
+        System.out.println("Start function of dynamicPdfTable");
+//        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
+        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+        List<Map<String, Object>> originalData = tabWidget.getData();
+        List<Map<String, Object>> data = new ArrayList<>(originalData);
+        // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
+        List<Map<String, Object>> tempData = new ArrayList<>();
+        XSSFTable table = sheet.createTable();
+        if (data == null || data.isEmpty()) {
+            CTTable cttable = table.getCTTable();
+            CTTableColumns noOfcolumns = cttable.addNewTableColumns();
+            //PdfPTable table = new PdfPTable(columns.size());
+            noOfcolumns.setCount(columns.size());
+            CTTableColumn col;
+            XSSFRow row;
+            XSSFCell cell;
+            long noOfRow = 0;
+//            PdfPCell cell;
+//            pdfFontTitle.setSize(14);
+//            pdfFontTitle.setStyle(Font.BOLD);
+//            pdfFontTitle.setColor(tableTitleFontColor);
+//            cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+//            cell.setHorizontalAlignment(1);
+//            cell.setColspan(columns.size());
+//            cell.setBorderColor(widgetBorderColor);
+//            cell.setBackgroundColor(widgetTitleColor);
+//            cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+//            cell.setPadding(10);
+//            table.addCell(cell);
+//            table.setWidthPercentage(100f);
+            row = sheet.createRow(0);
+            col = noOfcolumns.addNewTableColumn();
+            col.setName("Column");
+            col.setId(1);
+            cell = row.createCell(0);
+            cell.setCellValue(tabWidget.getWidgetTitle());
+            //Create row
+            row = sheet.createRow(1);
+            col = noOfcolumns.addNewTableColumn();
+            col.setName("Column");
+            col.setId(2);
+            int noOfCell = 0;
+            for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+
+                WidgetColumn column = iterator.next();
+//                pdfFontHeader.setSize(13);
+//                pdfFontHeader.setColor(tableHeaderFontColor);
+
+//                PdfPCell dataCell = new PdfPCell(new Phrase(WordUtils.capitalize(column.getDisplayName()), pdfFontHeader));
+//                dataCell.setPadding(5);
+//                dataCell.setBorderColor(widgetBorderColor);
+//                dataCell.setBackgroundColor(tableHeaderColor);
+                cell = row.createCell(noOfCell++);
+                cell.setCellValue(WordUtils.capitalize(column.getDisplayName()));
+                if (column.getAlignment() != null) {
+                    //  cell.setHorizontalAlignment(column.getAlignment().equalsIgnoreCase("right") ? PdfPCell.ALIGN_RIGHT : column.getAlignment().equalsIgnoreCase("center") ? PdfPCell.ALIGN_CENTER : PdfPCell.ALIGN_LEFT);
+                }
+                // table.addCell(cell);
+            }
+            return table;
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****5 " + data.size());
+
+        if (tabWidget.getZeroSuppression() != null && tabWidget.getZeroSuppression()) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                if (!isZeroRow(dataMap, columns)) {
+                    tempData.add(dataMap);
+                }
+            }
+            // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****4 " + tempData.size());
+
+            data = tempData;
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****3 " + data.size());
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+        List<String> groupByFields = new ArrayList<>();
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null) {
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+            if (column.getGroupPriority() != null) {
+                groupByFields.add(column.getFieldName());
+            }
+        }
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+        Map groupedMapData = new HashMap();
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****1 " + data.size());
+
+        // System.out.prin`tln("Group by Fields --> " + groupByFields.size());
+        // System.out.println(groupByFields);
+        List<String> originalGroupByFields = new ArrayList<>(groupByFields);
+        if (groupByFields.size() > 0) {
+            List groupedData = groupData(data, groupByFields, aggreagtionList);
+
+            groupedMapData.putAll(aggregateData(data, aggreagtionList));
+            groupedMapData.put("_groupFields", originalGroupByFields);
+            groupedMapData.put("data", groupedData);
+        } else {
+            groupedMapData.putAll(aggregateData(data, aggreagtionList));
+            groupedMapData.put("data", data);
+        }
+        // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size " + data.size());
+        // System.out.println(groupedMapData.get("_groupFields"));
+        System.out.println("End function of dynamicPdfTable");
+
+        return generateTableForXls(groupedMapData, tabWidget);
+    }
+
+    private XSSFTable generateTableForXls(Map groupedMapData, TabWidget tabWidget) {
+        XSSFTable table = null;
+        return table;
     }
 
     public JFreeChart getSampleJFreeChart() {
@@ -1747,7 +1896,7 @@ public class CustomReportDesigner {
         return lineChartObject;
     }
 
-    public void dynamicPdfTable(List<TabWidget> tabWidgets, OutputStream out) {
+    public void dynamicPdfTable(List<TabWidget> tabWidgets, String account, OutputStream out) {
         System.out.println("Start function of dynamicPdfTable");
         try {
             PdfWriter writer = null;
@@ -1761,7 +1910,7 @@ public class CustomReportDesigner {
             PageNumeration pevent = new PageNumeration();
             writer.setPageEvent(pevent);
 
-            addReportHeader(document);
+            addReportHeader(document, account);
 
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();

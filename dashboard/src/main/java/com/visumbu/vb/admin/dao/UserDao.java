@@ -267,6 +267,14 @@ public class UserDao extends BaseDao {
         return query.list();
     }
 
+    public String getAccountName(Integer id) {
+        String queryStr = "select a.accountName FROM Account a Where a.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", id);
+        String accountName = (String) query.list().get(0);
+        return accountName;
+    }
+
     public List<Account> getAccountByAgency(Agency agency) {
         String queryStr = "select a from Account a where (a.agencyId.status is null or a.agencyId.status != 'Deleted') and a.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);

@@ -273,6 +273,10 @@ public class UserService {
     public List<Account> getAccount(Agency agency) {
         return userDao.getAccountByAgency(agency);
     }
+    
+    public String getAccountName(Integer id) {
+        return userDao.getAccountName(id);
+    }
 
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
         return (AgencyProduct) userDao.create(agencyProduct);

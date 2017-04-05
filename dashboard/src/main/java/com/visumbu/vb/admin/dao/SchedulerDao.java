@@ -83,7 +83,7 @@ public class SchedulerDao extends BaseDao {
         System.out.println("Query: ");
         Calendar now = Calendar.getInstance();
         System.out.println(currentDateHour);
-        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = 'Yearly' "
+        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = 'Monthly' "
                 + "and dayofmonth(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) =" + now.get(Calendar.DAY_OF_MONTH)
                 + "and hour(str_to_date(d.schedulerYearly, '%m/%d/%y %H')) = " + now.get(Calendar.HOUR_OF_DAY);
         System.out.println(queryStr);

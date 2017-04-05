@@ -442,7 +442,23 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&accountId=" + $stateParams.accountId + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
+
+                var dataSourcePassword;
+                if (tableDataSource.dataSourceId.password) {
+                    dataSourcePassword = tableDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + tableDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + tableDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + tableDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     //$http.post("admin/proxy/getJson", data).success(function (response) {
 //            $http.get("admin/proxy/getJson?url=" + scope.dynamicTableUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
 
@@ -787,7 +803,22 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             if (tickerDataSource.dataSourceId.dataSourceType == "facebook") {
                 url = "admin/proxy/getData?";
             }
-            $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString + "&driver=" + tickerDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tickerDataSource.dataSourceId.userName + '&password=' + tickerDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
+            var dataSourcePassword;
+            if (tickerDataSource.dataSourceId.password) {
+                dataSourcePassword = tickerDataSource.dataSourceId.password;
+            } else {
+                dataSourcePassword = '';
+            }
+            $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
+                    "&dataSetId=" + tickerDataSource.id +
+                    "&accountId=" + $stateParams.accountId +
+                    "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
+                    "&location=" + $stateParams.locationId +
+                    "&startDate=" + $stateParams.startDate +
+                    "&endDate=" + $stateParams.endDate +
+                    '&username=' + tickerDataSource.dataSourceId.userName +
+                    '&password=' + dataSourcePassword +
+                    '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                 scope.tickers = [];
                 scope.loadingTicker = false;
                 if (response.length === 0) {
@@ -976,7 +1007,22 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                     if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
                         url = "admin/proxy/getData?";
                     }
-                    $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + lineChartDataSource.dataSourceId.userName + '&password=' + lineChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
+                    var dataSourcePassword;
+                    if (lineChartDataSource.dataSourceId.password) {
+                        dataSourcePassword = lineChartDataSource.dataSourceId.password;
+                    } else {
+                        dataSourcePassword = '';
+                    }
+                    $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + 
+                            "&dataSetId=" + lineChartDataSource.id + 
+                            "&accountId=" + $stateParams.accountId + 
+                            "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + 
+                            "&location=" + $stateParams.locationId + 
+                            "&startDate=" + $stateParams.startDate + 
+                            "&endDate=" + $stateParams.endDate + 
+                            '&username=' + lineChartDataSource.dataSourceId.userName + 
+                            '&password=' + dataSourcePassword + 
+                            '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
                         scope.loadingLine = false;
                         if (!response.data) {
                             return;
@@ -1142,8 +1188,26 @@ app.directive('barChartDirective', function ($http, $stateParams) {
                 if (barChartDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString + "&driver=" + barChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + barChartDataSource.dataSourceId.userName + '&password=' + barChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
+                var dataSourcePassword;
+                    if (barChartDataSource.dataSourceId.password) {
+                        dataSourcePassword = barChartDataSource.dataSourceId.password;
+                    } else {
+                        dataSourcePassword = '';
+                    }
+                $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString + 
+                        "&dataSetId=" + barChartDataSource.id + 
+                        "&accountId=" + $stateParams.accountId + 
+                        "&driver=" + barChartDataSource.dataSourceId.sqlDriver + 
+                        "&location=" + $stateParams.locationId + 
+                        "&startDate=" + $stateParams.startDate + 
+                        "&endDate=" + $stateParams.endDate + 
+                        '&username=' + barChartDataSource.dataSourceId.userName + 
+                        '&password=' + dataSourcePassword + 
+                        '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                     scope.loadingBar = false;
+                    if (!response) {
+                        return;
+                    }
                     if (response.data.length === 0) {
                         scope.barEmptyMessage = "No Data Found";
                         scope.hideEmptyBar = true;
@@ -1304,8 +1368,26 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                 if (pieChartDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString + "&driver=" + pieChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + pieChartDataSource.dataSourceId.userName + '&password=' + pieChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
+                var dataSourcePassword;
+                    if (pieChartDataSource.dataSourceId.password) {
+                        dataSourcePassword = pieChartDataSource.dataSourceId.password;
+                    } else {
+                        dataSourcePassword = '';
+                    }
+                $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString + 
+                        "&dataSetId=" + pieChartDataSource.id + 
+                        "&accountId=" + $stateParams.accountId + 
+                        "&driver=" + pieChartDataSource.dataSourceId.sqlDriver + 
+                        "&location=" + $stateParams.locationId + 
+                        "&startDate=" + $stateParams.startDate + 
+                        "&endDate=" + $stateParams.endDate + 
+                        '&username=' + pieChartDataSource.dataSourceId.userName + 
+                        '&password=' + dataSourcePassword + 
+                        '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                     scope.loadingPie = false;
+                    if (!response) {
+                        return;
+                    }
                     if (response.data.length === 0) {
                         scope.pieEmptyMessage = "No Data Found";
                         scope.hideEmptyPie = true;
@@ -1468,7 +1550,22 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                 if (areaChartDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString + "&driver=" + areaChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + areaChartDataSource.dataSourceId.userName + '&password=' + areaChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
+                var dataSourcePassword;
+                    if (areaChartDataSource.dataSourceId.password) {
+                        dataSourcePassword = areaChartDataSource.dataSourceId.password;
+                    } else {
+                        dataSourcePassword = '';
+                    }
+                $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString + 
+                        "&dataSetId=" + areaChartDataSource.id + 
+                        "&accountId=" + $stateParams.accountId + 
+                        "&driver=" + areaChartDataSource.dataSourceId.sqlDriver + 
+                        "&location=" + $stateParams.locationId + 
+                        "&startDate=" + $stateParams.startDate + 
+                        "&endDate=" + $stateParams.endDate + 
+                        '&username=' + areaChartDataSource.dataSourceId.userName + 
+                        '&password=' + dataSourcePassword + 
+                        '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                     scope.loadingArea = false;
                     if (response.data.length === 0) {
                         scope.areaEmptyMessage = "No Data Found";
