@@ -22,6 +22,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -77,8 +78,22 @@ public class XlsDataSet {
         return returnMap;
     }
 
-    
-    
+    public Map<Integer, String> getSheetList(String filename) {
+        Map<Integer, String> returnMap = new HashMap<>();
+        try {
+            HSSFWorkbook workbook;
+            workbook = new HSSFWorkbook(new FileInputStream(filename));
+
+            for (int i = workbook.getNumberOfSheets() - 1; i >= 0; i--) {
+                HSSFSheet tmpSheet = workbook.getSheetAt(i);
+                returnMap.put(i, tmpSheet.getSheetName());
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(XlsDataSet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returnMap;
+    }
+
     public static Map XlsDataSet(String filename, Integer sheetNo) throws FileNotFoundException, IOException {
         Map returnMap = new HashMap();
 
@@ -126,6 +141,51 @@ public class XlsDataSet {
             e.printStackTrace();
         }
 
+        return returnMap;
+    }
+
+    public static Map XlsxDataSet(String filename, String sheetName) throws FileNotFoundException, IOException {
+        Map returnMap = new HashMap();
+
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(filename));
+            // Get first sheet from the workbook
+            XSSFSheet sheet = workbook.getSheet(sheetName);
+            Cell cell;
+            Row row;
+            // Iterate through each rows from first sheet
+            Iterator<Row> rowIterator = sheet.iterator();
+            List<ColumnDef> columnDefs = new ArrayList<>();
+            List<Map<String, String>> data = new ArrayList<>();
+            int rowCount = 0;
+            List<String> header = new ArrayList<>();
+            for (Iterator<Row> iterator = rowIterator; iterator.hasNext();) {
+                row = iterator.next();
+                Iterator<Cell> cellIterator = row.cellIterator();
+                int cellCount = 0;
+                for (Iterator<Cell> iterator1 = cellIterator; iterator1.hasNext();) {
+                    Cell currentCell = iterator1.next();
+                    if (rowCount == 0) {
+                        ColumnDef columnDef = new ColumnDef(currentCell.toString(), "string", currentCell.toString());
+                        columnDefs.add(columnDef);
+                        header.add(currentCell.toString());
+                    } else {
+                        Map<String, String> dataMap = new HashMap<>();
+                        dataMap.put(header.get(cellCount), currentCell.toString());
+                        data.add(dataMap);
+                    }
+                    cellCount++;
+                }
+                rowCount++;
+            }
+            returnMap.put("columnDefs", columnDefs);
+            returnMap.put("data", data);
+            System.out.println(returnMap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return returnMap;
     }
     
@@ -176,7 +236,7 @@ public class XlsDataSet {
 
     public static void main(String[] argv) {
         try {
-            XlsxDataSet("/tmp/test.xlsx", 0);
+            XlsDataSet("/tmp/test.xls", 0);
         } catch (IOException ex) {
             Logger.getLogger(XlsDataSet.class.getName()).log(Level.SEVERE, null, ex);
         }
