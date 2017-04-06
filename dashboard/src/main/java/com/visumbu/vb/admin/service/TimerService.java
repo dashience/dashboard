@@ -46,7 +46,8 @@ public class TimerService {
     @Autowired
     private SchedulerDao schedulerDao;
 
-    public void executeTasks(List<Scheduler> scheduledTasks) {System.out.println("Test 2");
+    public void executeTasks(List<Scheduler> scheduledTasks) {
+        System.out.println("Test 2");
         Date today = new Date();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
             Date schedulerStartTime = new Date();
@@ -56,7 +57,7 @@ public class TimerService {
             Integer schedulerId = scheduler.getId();
             Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
             String dealerId = scheduler.getAccountId().getId() + "";
-            String accountMailId = scheduler.getSchedulerEmail();//getAccountId().getEmailId();
+            String accountMailId = scheduler.getAccountId().getEmailId();
             String exportType = scheduler.getSchedulerType();
             schedulerHistory.setExecutionStartTime(schedulerStartTime);
             String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
@@ -67,11 +68,14 @@ public class TimerService {
             String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + ".pdf";
             filename = filename.replaceAll(" ", "_");
             String toAddress = accountMailId;
-            System.out.println("TO Address============================================>");
-            System.out.println(toAddress);
+
             if (toAddress != null && !toAddress.isEmpty()) {
                 toAddress += "," + scheduler.getSchedulerEmail();
+            } else {
+                toAddress = scheduler.getSchedulerEmail();
             }
+            System.out.println("TO Address============================================>");
+            System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = "scheduler message";
             Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
@@ -110,7 +114,7 @@ public class TimerService {
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeMonthlyTask() {
         Date today = new Date();
-        String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:mm");
+        String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:00");
         List<Scheduler> scheduledTasks = schedulerDao.getMonthlyTasks(currentDateHour, today);
         executeTasks(scheduledTasks);
     }
@@ -118,7 +122,7 @@ public class TimerService {
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeYearlyTask() {
 //         Integer hour = DateUtils.getCurrentHour();
-System.out.println("Yearly Tasks");
+        System.out.println("Yearly Tasks");
         Date today = new Date();
         String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:00");
         System.out.println(currentDateHour);

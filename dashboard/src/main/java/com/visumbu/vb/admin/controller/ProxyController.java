@@ -15,6 +15,7 @@ import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DataSet;
+import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
@@ -23,6 +24,7 @@ import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
+import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -34,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
@@ -107,6 +110,55 @@ public class ProxyController {
             return getBingData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("xls")) {
+            return getXlsData(request, response);
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "getSheets", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map<Integer, String> getXlsSheets(HttpServletRequest request, HttpServletResponse response) {
+        String dataSourceId = request.getParameter("dataSourceId");
+        Integer dataSourceIdInt = Integer.parseInt(dataSourceId);
+        DataSource dataSource = uiService.getDataSourceById(dataSourceIdInt);
+        XlsDataSet xlsDs = new XlsDataSet();
+        if (dataSource.getConnectionString().endsWith("xls")) {
+            return xlsDs.getSheetListXls(dataSource.getConnectionString());
+        } else if (dataSource.getConnectionString().endsWith("xlsx")) {
+            return xlsDs.getSheetListXlsx(dataSource.getConnectionString());
+        }
+        return null;
+    }
+
+    public Object getXlsData(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String dataSetId = request.getParameter("dataSetId");
+            String dataSetReportName = request.getParameter("dataSetReportName");
+            String connectionUrl = request.getParameter("connectionUrl");
+
+            if (dataSetId != null) {
+                Integer dataSetIdInt = Integer.parseInt(dataSetId);
+                DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+                if (dataSet != null) {
+                    dataSetReportName = dataSet.getReportName();
+                    connectionUrl = dataSet.getDataSourceId().getConnectionString();
+                }
+            }
+            String accountIdStr = request.getParameter("accountId");
+            Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+            Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+            String fieldsOnly = request.getParameter("fieldsOnly");
+
+            Integer accountId = Integer.parseInt(accountIdStr);
+            Account account = userService.getAccountId(accountId);
+            if (connectionUrl.endsWith("xlsx")) {
+                return XlsDataSet.XlsxDataSet(connectionUrl, dataSetReportName);
+            } else if (connectionUrl.endsWith("xls")) {
+                return XlsDataSet.XlsDataSet(connectionUrl, dataSetReportName);
+            }
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -431,6 +483,7 @@ public class ProxyController {
                         continue;
                     }
                     String url = "../testing/admin/proxy/getData?";
+//                    String url = "admin/proxy/getData?";
                     log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                         url = "../dbApi/admin/dataSet/getData";
@@ -553,6 +606,10 @@ public class ProxyController {
 //                    url = "admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
+
+//                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+//                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+
 //                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
                 Integer port = request.getServerPort();
@@ -634,7 +691,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../testing/admin/proxy/getData?";
+//                String url = "../testing/admin/proxy/getData?";
+                String url = "../dashboard/admin/proxy/getData?";
 //                String url = "admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -646,16 +704,17 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../testing/admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../testing/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
 //                    url = "admin/proxy/getData?";
-                    url = "../testing/admin/proxy/getData?";
-                } 
+//                    url = "../testing/admin/proxy/getData?";
+                    url = "../dashboard/admin/proxy/getData?";
+
+                }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
-//                          valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                 Integer port = request.getServerPort();
@@ -673,6 +732,7 @@ public class ProxyController {
                 log.debug("url: " + url);
                 log.debug("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
+                System.out.println("Data -----> : " + data);
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
                 Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);

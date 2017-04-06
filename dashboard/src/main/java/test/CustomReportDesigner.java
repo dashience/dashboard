@@ -815,12 +815,18 @@ public class CustomReportDesigner {
         //XSLFTableRow titleRow = tbl.addRow();
         //selection of title place holder
         XSLFTextBox txt = slide.createTextBox();
-        txt.setText(tabWidget.getWidgetTitle());
+
+        if (tabWidget.getWidgetTitle() != null) {
+            txt.setText(tabWidget.getWidgetTitle());
+        } else {
+            txt.setText("");
+        }
         txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
         txt.setAnchor(new java.awt.Rectangle(25, 30, 300, 50));
 
         XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
         tp.setTextAlign(TextAlign.LEFT);
+        System.out.println("tp :" + tp.getTextRuns().get(0));
         XSLFTextRun run = tp.getTextRuns().get(0);
 
         run.setBold(true);
@@ -1069,7 +1075,7 @@ public class CustomReportDesigner {
     }
 
     public XSLFTable dynamicPptTable(TabWidget tabWidget, XSLFSlide slide) {
-        System.out.println("Start function of dynamicPptTable");
+        System.out.println("Start function of dynamicPptTable - XSLFTable");
 //        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
@@ -1128,7 +1134,7 @@ public class CustomReportDesigner {
             groupedMapData.putAll(aggregateData(data, aggreagtionList));
             groupedMapData.put("data", data);
         }
-        System.out.println("End function of dynamicPptTable");
+        System.out.println("End function of dynamicPptTable - XSLFTable");
         return generateTableForPpt(groupedMapData, tabWidget, slide);
     }
 
@@ -1476,7 +1482,12 @@ public class CustomReportDesigner {
 
                         //selection of title place holder
                         XSLFTextBox txt = slide.createTextBox();
-                        txt.setText(tabWidget.getWidgetTitle());
+
+                        if (tabWidget.getWidgetTitle() != null) {
+                            txt.setText(tabWidget.getWidgetTitle());
+                        } else {
+                            txt.setText("");
+                        }
                         txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
                         txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
 
