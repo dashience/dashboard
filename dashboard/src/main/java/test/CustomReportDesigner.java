@@ -2230,9 +2230,11 @@ public class CustomReportDesigner {
 //            final CategoryDataset dataset2 = createDataset4();
             Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
             long firstAxisCount = firstAxiss.count();
+            System.out.println("firstAxisCount: " + firstAxisCount);
 
             Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
             long secondAxisCount = secondAxiss.count();
+            System.out.println("secondAxisCount: " + secondAxisCount);
 
             long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
@@ -2723,7 +2725,7 @@ public class CustomReportDesigner {
                     System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
             }
-
+            System.out.println("sortFields size: " + sortFields.size());
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
             }
