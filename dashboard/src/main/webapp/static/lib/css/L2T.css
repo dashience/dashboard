@@ -4046,6 +4046,7 @@ input[type="checkbox"] {
     padding: 5px;
     overflow: hidden;
     background-color: #ffffff;
+    height: 30px;
 }
 .selectedTableRow {
     background-color:#e2f9d4;

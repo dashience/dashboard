@@ -17,12 +17,12 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             },
             {
                 type: "facebook",
-                name: "facebook",
+                name: "Facebook",
                 url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:9090/VizBoard/fbPost.html'
             },
             {
                 type: "linkedin",
-                name: "linkedin",
+                name: "LinkedIn",
                 url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&state=123908353453&response_type=code'
             },
             {
@@ -32,11 +32,11 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             },
             {
                 type: 'adwords',
-                name: 'Adwords'
+                name: 'Google AdWords'
             },
             {
                 type: 'analytics',
-                name: 'Analytics'
+                name: 'Google Analytics'
             }
         ];
 

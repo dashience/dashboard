@@ -6,11 +6,13 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
-    $scope.setParamsProduct = function () {
-        $scope.startDate = $stateParams.startDate;
-        $scope.endDate = $stateParams.endDate;
+    $scope.setParamsProduct = function (product) {
+        $stateParams.productId = product.id;
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
+        $scope.tabId = $stateParams.tabId;
+        $scope.startDate = $stateParams.startDate;
+        $scope.endDate = $stateParams.endDate;
     };
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;

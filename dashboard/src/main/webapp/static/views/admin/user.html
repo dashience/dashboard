@@ -67,7 +67,6 @@
                         <div class="panel-body">
                             <div class="tab-content">
                                 <div ng-show="isSetUser(1)" class="license">
-
                                     <div class="col-md-12">
                                         <form class="form-horizontal">
                                             <div class="form-group">
@@ -130,7 +129,7 @@
                                                     <div ng-hide="userAccount.isEdit">{{userAccount.accountId.accountName}}</div>
                                                     <div ng-show="userAccount.isEdit">
                                                         <ui-select ng-model="userAccount.accountId" theme="select2" ng-disabled="disabled">
-                                                            <ui-select-match placeholder="Select User...">{{$select.selected.accountName}}</ui-select-match>
+                                                            <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
                                                             <ui-select-choices repeat="account in accounts | filter: $select.search">
                                                                 <span ng-bind-html="account.accountName | highlight: $select.search"></span>
                                                             </ui-select-choices>
