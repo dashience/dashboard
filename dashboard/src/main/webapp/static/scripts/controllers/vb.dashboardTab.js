@@ -8,13 +8,17 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     if ($stateParams.productId) {
         $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
+            var setTabId;
             if (!response) {
-                return;
+                setTabId = "";
             }
             if (!response[0]) {
-                return;
+                setTabId="";
+            }else{
+                setTabId = response[0].id;
             }
-            $stateParams.tabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
+            
+            $stateParams.tabId = setTabId;//response[0].id?response[0].id:"";
             $scope.loadTab = false;
             $scope.tabs = response;
             angular.forEach($scope.tabs, function (value, key) {

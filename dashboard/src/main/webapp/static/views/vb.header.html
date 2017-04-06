@@ -135,7 +135,7 @@
                             <div ng-repeat="product in products| orderBy:'productOrder'">
                                 <ul class="col-lg-3 icon-dash"  ng-if="product.showProduct == 1">
                                     <li class="product-dashboard-icon">
-                                        <a class="active" ng-click="setParamsProduct()" 
+                                        <a class="active" ng-click="setParamsProduct(product)" 
                                            data-ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, productId: product.id, tabId: tabId, startDate: startDate, endDate: endDate})">
                                             <img class="product-icon img-responsive" ng-src="{{product.icon}}"/> 
                                             <!--<h5>{{product.productName}}</h5>-->

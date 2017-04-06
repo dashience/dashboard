@@ -93,7 +93,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         ',.2%',
         ',.1f',
         ',.2f',
-        ''
+        'None'
     ];
 //        {name: "Currency", value: '$,.2f'},
 //        {name: "Integer", value: ',.0f'},
