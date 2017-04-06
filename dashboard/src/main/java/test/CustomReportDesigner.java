@@ -574,7 +574,25 @@ public class CustomReportDesigner {
         List<Map<String, Object>> data = new ArrayList<>(originalData);
         // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
         List<Map<String, Object>> tempData = new ArrayList<>();
-
+        System.out.println("columns size : " + columns.size());
+        System.out.println("widget title : " + tabWidget.getWidgetTitle());
+        if (columns.size() == 0) {
+            PdfPTable table = new PdfPTable(1);
+            PdfPCell cell;
+            pdfFontTitle.setSize(14);
+            pdfFontTitle.setStyle(Font.BOLD);
+            pdfFontTitle.setColor(tableTitleFontColor);
+            cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+            cell.setHorizontalAlignment(1);
+            cell.setColspan(1);
+            cell.setBorderColor(widgetBorderColor);
+            cell.setBackgroundColor(widgetTitleColor);
+            cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+            cell.setPadding(10);
+            table.addCell(cell);
+            table.setWidthPercentage(100f);
+            return table;
+        }
         if (data == null || data.isEmpty()) {
             PdfPTable table = new PdfPTable(columns.size());
             PdfPCell cell;
@@ -616,7 +634,6 @@ public class CustomReportDesigner {
                 }
             }
             // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****4 " + tempData.size());
-
             data = tempData;
         }
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****3 " + data.size());
@@ -815,12 +832,18 @@ public class CustomReportDesigner {
         //XSLFTableRow titleRow = tbl.addRow();
         //selection of title place holder
         XSLFTextBox txt = slide.createTextBox();
-        txt.setText(tabWidget.getWidgetTitle());
+
+        if (tabWidget.getWidgetTitle() != null) {
+            txt.setText(tabWidget.getWidgetTitle());
+        } else {
+            txt.setText("");
+        }
         txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
         txt.setAnchor(new java.awt.Rectangle(25, 30, 300, 50));
 
         XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
         tp.setTextAlign(TextAlign.LEFT);
+        System.out.println("tp :" + tp.getTextRuns().get(0));
         XSLFTextRun run = tp.getTextRuns().get(0);
 
         run.setBold(true);
@@ -1069,16 +1092,23 @@ public class CustomReportDesigner {
     }
 
     public XSLFTable dynamicPptTable(TabWidget tabWidget, XSLFSlide slide) {
-        System.out.println("Start function of dynamicPptTable");
+        System.out.println("Start function of dynamicPptTable - XSLFTable");
 //        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
-        BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
+        Color tableTitleFontColor = new Color(132, 140, 99);
+        Color widgetBorderColor = new Color(204, 204, 204);
+        Color widgetTitleColor = Color.WHITE;
+        Color tableHeaderFontColor = new Color(61, 70, 77);
+        Color tableHeaderColor = new Color(241, 241, 241);
+        Color tableFooterColor = new Color(241, 241, 241);
 
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originalData = tabWidget.getData();
         List<Map<String, Object>> data = new ArrayList<>(originalData);
         // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
         List<Map<String, Object>> tempData = new ArrayList<>();
-
+        if (columns.size() == 0) {
+            return null;
+        }
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****5 " + data.size());
         if (tabWidget.getZeroSuppression() != null && tabWidget.getZeroSuppression()) {
             for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
@@ -1128,7 +1158,7 @@ public class CustomReportDesigner {
             groupedMapData.putAll(aggregateData(data, aggreagtionList));
             groupedMapData.put("data", data);
         }
-        System.out.println("End function of dynamicPptTable");
+        System.out.println("End function of dynamicPptTable - XSLFTable");
         return generateTableForPpt(groupedMapData, tabWidget, slide);
     }
 
@@ -1462,7 +1492,26 @@ public class CustomReportDesigner {
                 TabWidget tabWidget = iterator.next();
                 if (tabWidget.getChartType().equalsIgnoreCase("table")) {
                     System.out.println("Table");
+
                     XSLFSlide slide = ppt.createSlide();
+                    XSLFTextBox txt = slide.createTextBox();
+
+                    if (tabWidget.getWidgetTitle() != null) {
+                        txt.setText(tabWidget.getWidgetTitle());
+                    } else {
+                        txt.setText("");
+                    }
+                    txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
+                    txt.setAnchor(new java.awt.Rectangle(25, 30, 300, 50));
+
+                    XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
+                    tp.setTextAlign(TextAlign.LEFT);
+                    System.out.println("tp :" + tp.getTextRuns().get(0));
+                    XSLFTextRun run = tp.getTextRuns().get(0);
+
+                    run.setBold(true);
+                    run.setFontSize(13.0);
+                    run.setFontColor(tableTitleFontColor);
                     XSLFTable table = dynamicPptTable(tabWidget, slide);
                 } else if (tabWidget.getChartType().equalsIgnoreCase("text")) {
                     XSLFSlide slide = ppt.createSlide();
@@ -1476,7 +1525,12 @@ public class CustomReportDesigner {
 
                         //selection of title place holder
                         XSLFTextBox txt = slide.createTextBox();
-                        txt.setText(tabWidget.getWidgetTitle());
+
+                        if (tabWidget.getWidgetTitle() != null) {
+                            txt.setText(tabWidget.getWidgetTitle());
+                        } else {
+                            txt.setText("");
+                        }
                         txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
                         txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
 
@@ -1746,7 +1800,7 @@ public class CustomReportDesigner {
     }
 
     public XSSFTable dynamicXlsTable(TabWidget tabWidget, XSSFSheet sheet) {
-        System.out.println("Start function of dynamicPdfTable");
+        System.out.println("Start function of dynamicXlsTable");
 //        BaseColor textHighlightColor = new BaseColor(242, 156, 33);
         BaseColor tableTitleFontColor = new BaseColor(132, 140, 99);
 
@@ -2257,13 +2311,16 @@ public class CustomReportDesigner {
 
             chart.setBackgroundPaint(Color.white);
             plot.setBackgroundPaint(Color.white);
+            plot.setRowRenderingOrder(SortOrder.ASCENDING);
             plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
-            plot.setDataset(1, dataset2);
-            plot.mapDatasetToRangeAxis(1, 1);
-            //final ValueAxis axis2 = new NumberAxis("Secondary");
-            final ValueAxis axis2 = new NumberAxis();
-            plot.setRangeAxis(1, axis2);
-            plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+            if (dataset2 != null) {
+                plot.setDataset(1, dataset2);
+                plot.mapDatasetToRangeAxis(1, 1);
+                // final ValueAxis axis2 = new NumberAxis("Secondary");
+                final ValueAxis axis2 = new NumberAxis();
+                plot.setRangeAxis(1, axis2);
+                plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+            }
             final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
             Paint[] paint = new Paint[]{
                 new Color(98, 203, 49),
@@ -2423,12 +2480,16 @@ public class CustomReportDesigner {
         axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         chart.setBackgroundPaint(Color.white);
         plot.setBackgroundPaint(Color.white);
+        plot.setRowRenderingOrder(SortOrder.ASCENDING);
         plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
-        plot.setDataset(1, dataset2);
-        plot.mapDatasetToRangeAxis(1, 1);
-        final ValueAxis axis2 = new NumberAxis();
-        plot.setRangeAxis(1, axis2);
-        plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        if (dataset2 != null) {
+            plot.setDataset(1, dataset2);
+            plot.mapDatasetToRangeAxis(1, 1);
+            // final ValueAxis axis2 = new NumberAxis("Secondary");
+            final ValueAxis axis2 = new NumberAxis();
+            plot.setRangeAxis(1, axis2);
+            plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        }
         final LineAndShapeRenderer renderer2 = new LineAndShapeRenderer();
         Paint[] paint = new Paint[]{
             new Color(98, 203, 49),
@@ -2560,18 +2621,21 @@ public class CustomReportDesigner {
             };
             plot.setRangeGridlinesVisible(true);
             plot.setDomainGridlinesVisible(true);
-            final JFreeChart chart = new JFreeChart(tabWidget.getWidgetTitle(), plot);
+            final JFreeChart chart = new JFreeChart(plot);
             CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
             axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
             chart.setBackgroundPaint(Color.white);
             plot.setBackgroundPaint(Color.white);
+            plot.setRowRenderingOrder(SortOrder.ASCENDING);
             plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
-            plot.setDataset(1, dataset2);
-            plot.mapDatasetToRangeAxis(1, 1);
-            // final ValueAxis axis2 = new NumberAxis("Secondary");
-            final ValueAxis axis2 = new NumberAxis();
-            plot.setRangeAxis(1, axis2);
-            plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+            if (dataset2 != null) {
+                plot.setDataset(1, dataset2);
+                plot.mapDatasetToRangeAxis(1, 1);
+                // final ValueAxis axis2 = new NumberAxis("Secondary");
+                final ValueAxis axis2 = new NumberAxis();
+                plot.setRangeAxis(1, axis2);
+                plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+            }
             final AreaRenderer renderer2 = new AreaRenderer();
             Paint[] paint = new Paint[]{
                 new Color(98, 203, 49),
@@ -2930,15 +2994,17 @@ public class CustomReportDesigner {
         CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
         axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         chart.setBackgroundPaint(Color.white);
-
         plot.setBackgroundPaint(Color.white);
+        plot.setRowRenderingOrder(SortOrder.ASCENDING);
         plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
-        plot.setDataset(1, dataset2);
-        plot.mapDatasetToRangeAxis(1, 1);
-        //final ValueAxis axis2 = new NumberAxis("Secondary");
-        final ValueAxis axis2 = new NumberAxis();
-        plot.setRangeAxis(1, axis2);
-        plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        if (dataset2 != null) {
+            System.out.println("inside if dataset2...");
+            plot.setDataset(1, dataset2);
+            plot.mapDatasetToRangeAxis(1, 1);
+            final ValueAxis axis2 = new NumberAxis();
+            plot.setRangeAxis(1, axis2);
+            plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        }
         final AreaRenderer renderer2 = new AreaRenderer();
         Paint[] paint = new Paint[]{
             new Color(98, 203, 49),
@@ -3083,15 +3149,17 @@ public class CustomReportDesigner {
         CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
         axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         chart.setBackgroundPaint(Color.white);
-
         plot.setBackgroundPaint(Color.white);
+        plot.setRowRenderingOrder(SortOrder.ASCENDING);
         plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
-        plot.setDataset(1, dataset2);
-        plot.mapDatasetToRangeAxis(1, 1);
-        //final ValueAxis axis2 = new NumberAxis("Secondary");
-        final ValueAxis axis2 = new NumberAxis();
-        plot.setRangeAxis(1, axis2);
-        plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        if (dataset2 != null) {
+            System.out.println("inside if dataset2...");
+            plot.setDataset(1, dataset2);
+            plot.mapDatasetToRangeAxis(1, 1);
+            final ValueAxis axis2 = new NumberAxis();
+            plot.setRangeAxis(1, axis2);
+            plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        }
         final BarRenderer renderer2 = new BarRenderer();
         renderer2.setShadowVisible(false);
         Paint[] paint = new Paint[]{
