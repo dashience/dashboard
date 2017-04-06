@@ -72,15 +72,30 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: "right", displayName: "Right"},
         {name: "center", displayName: "Center"}
     ];
+
+
     $scope.sorting = [
         {name: 'None', value: ''},
         {name: 'asc', value: 'asc'},
         {name: 'desc', value: 'desc'}
     ];
+
+    //$scope.sorting = ['None', 'asc', 'desc']
+//        {name: 'None', value: ''},
+//        {name: 'asc', value: 'asc'},
+//        {name: 'desc', value: 'desc'}
+//    ];
     $scope.tableWrapText = [
         {name: 'None', value: ''},
         {name: 'Yes', value: "yes"}
     ];
+
+    $scope.fieldTypes = ['none', 'string', 'number', 'date']
+//        {id: 0, name: 'None', value: ''},
+//        {id: 1, name: 'String', value: 'string'},
+//        {id: 2, name: 'Number', value: 'number'},
+//        {id: 3, name: 'Date', value: 'date'}
+//    ];
     $scope.hideOptions = [
         {name: 'Yes', value: 1},
         {name: 'No', value: ''}
@@ -88,13 +103,22 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.isEditPreviewColumn = false;
 
     $scope.formats = [
-        '$,.2f',
-        ',.0f',
-        ',.2%',
-        ',.1f',
-        ',.2f',
-        'None'
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "None", value: ''}
     ];
+
+//    $scope.formats = [
+//        '$,.2f',
+//        ',.0f',
+//        ',.2%',
+//        ',.1f',
+//        ',.2f',
+//        'None'
+//    ];
 //        {name: "Currency", value: '$,.2f'},
 //        {name: "Integer", value: ',.0f'},
 //        {name: "Percentage", value: ',.2%'},
@@ -594,7 +618,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (value.groupPriority > 0) {
                 hideColumn = 1;
             }
-
             var columnData = {
                 id: value.id,
                 fieldName: value.fieldName,
@@ -657,10 +680,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
         $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-    }
-    ;
-}
-);
+    };
+});
 
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
@@ -765,6 +786,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<li class='input-group col-sm-12'><label>Sort</label><select ng-model='collectionField.sortPriority' class='form-control'>" +
                 "<option ng-repeat='sort in sorting' value='{{sort.value}}'>" +
                 "{{sort.name}}</option></select></li>" +
+                "<li class='input-group col-sm-12'><label>Field Type</label>" +
+                "<select class='form-control' ng-model='collectionField.fieldType' ng-options='fieldType for fieldType in fieldTypes'>" +
+                "</select>" +
+                "</li>" +
                 "<li class='input-group col-sm-12'><label>Format</label><select ng-model='collectionField.displayFormat' class='form-control'>" +
                 "<option ng-repeat='format in formats' value='{{format.value}}'>" +
                 "{{format.name}}</option></select></li>" +
@@ -843,6 +868,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 {name: 'asc', value: 'asc'},
                 {name: 'desc', value: 'desc'}
             ];
+            scope.fieldTypes = ['none', 'string', 'number', 'date']
             scope.formats = [
                 {name: "Currency", value: '$,.2f'},
                 {name: "Integer", value: ',.0f'},

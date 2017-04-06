@@ -953,7 +953,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         }
                     } else if (value.fieldType == "date") {
                         if (value.sortOrder == "asc") {
-                            //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
 
                                 var parsedDate = new Date(a[value.fieldName]);
@@ -975,9 +974,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         }
                     } else {
                         if (value.sortOrder == "asc") {
-                            //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
-
                                 var parsedValue = parseFloat(a[value.fieldName]);
                                 if (isNaN(parsedValue)) {
                                     return a[value.fieldName];
@@ -993,102 +990,99 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                 });
                 return $filter('orderBy')(list, fieldsOrder);
             }
-            scope.refreshWidgetLineChart = function () {
-                var lineChartDataSource = JSON.parse(scope.lineChartSource);
-                if (scope.lineChartSource) {
+            var lineChartDataSource = JSON.parse(scope.lineChartSource);
+            if (scope.lineChartSource) {
 
-                    var url = "admin/proxy/getData?";
-                    if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
-                        url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                    }
-                    if (lineChartDataSource.dataSourceId.dataSourceType == "csv") {
-                        url = "admin/csv/getData?";
-                    }
-                    if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                        url = "admin/proxy/getData?";
-                    }
-                    var dataSourcePassword;
-                    if (lineChartDataSource.dataSourceId.password) {
-                        dataSourcePassword = lineChartDataSource.dataSourceId.password;
-                    } else {
-                        dataSourcePassword = '';
-                    }
-                    $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + 
-                            "&dataSetId=" + lineChartDataSource.id + 
-                            "&accountId=" + $stateParams.accountId + 
-                            "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + 
-                            "&location=" + $stateParams.locationId + 
-                            "&startDate=" + $stateParams.startDate + 
-                            "&endDate=" + $stateParams.endDate + 
-                            '&username=' + lineChartDataSource.dataSourceId.userName + 
-                            '&password=' + dataSourcePassword + 
-                            '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
-                        scope.loadingLine = false;
-                        if (!response.data) {
-                            return;
-                        }
-                        if (response.data.length === 0) {
-                            scope.lineEmptyMessage = "No Data Found";
-                            scope.hideEmptyLine = true;
-                        } else {
-                            var loopCount = 0;
-                            var chartData = response.data;
-                            if (sortFields.length > 0) {
-                                chartData = scope.orderData(chartData, sortFields);
-                            }
-                            xTicks = [xAxis.fieldName];
-                            xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
-                                return a[xAxis.fieldName];
-                            });
-                            columns.push(xTicks);
-
-                            angular.forEach(yAxis, function (value, key) {
-                                ySeriesData = chartData.map(function (a) {
-                                    return a[value.fieldName] || "0";
-                                });
-                                ySeriesData.unshift(value.displayName);
-                                columns.push(ySeriesData);
-                            });
-                            var chart = c3.generate({
-                                bindto: element[0],
-                                data: {
-                                    x: xAxis.fieldName,
-                                    columns: columns,
-                                    labels: labels,
-                                    axes: axes
-                                },
-                                color: {
-                                    pattern: ['#62cb31', '#555555']
-
-                                },
-                                tooltip: {show: false},
-                                axis: {
-                                    x: {
-                                        tick: {
-                                            format: function (x) {
-                                                return xData[x];
-                                            }
-                                        }
-                                    },
-                                    y2: y2
-                                },
-                                grid: {
-                                    x: {
-                                        show: true
-                                    },
-                                    y: {
-                                        show: true
-                                    }
-                                }
-                            });
-                        }
-                    });
+                var url = "admin/proxy/getData?";
+                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
+                if (lineChartDataSource.dataSourceId.dataSourceType == "csv") {
+                    url = "admin/csv/getData?";
+                }
+                if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
+                }
+                var dataSourcePassword;
+                if (lineChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = lineChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + lineChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + lineChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
+                    scope.loadingLine = false;
+                    if (!response.data) {
+                        return;
+                    }
+                    if (response.data.length === 0) {
+                        scope.lineEmptyMessage = "No Data Found";
+                        scope.hideEmptyLine = true;
+                    } else {
+                        var loopCount = 0;
+                        var chartData = response.data;
+                        if (sortFields.length > 0) {
+                            chartData = scope.orderData(chartData, sortFields);                            
+                        }
+                        xTicks = [xAxis.fieldName];
+                        xData = chartData.map(function (a) {
+                            xTicks.push(loopCount);
+                            loopCount++;
+                            return a[xAxis.fieldName];
+                        });
+                        columns.push(xTicks);
+
+                        angular.forEach(yAxis, function (value, key) {
+                            ySeriesData = chartData.map(function (a) {
+                                return a[value.fieldName] || "0";
+                            });
+                            ySeriesData.unshift(value.displayName);
+                            columns.push(ySeriesData);
+                        });
+                        var chart = c3.generate({
+                            bindto: element[0],
+                            data: {
+                                x: xAxis.fieldName,
+                                columns: columns,
+                                labels: labels,
+                                axes: axes
+                            },
+                            color: {
+                                pattern: ['#62cb31', '#555555']
+
+                            },
+                            tooltip: {show: false},
+                            axis: {
+                                x: {
+                                    tick: {
+                                        format: function (x) {
+                                            return xData[x];
+                                        }
+                                    }
+                                },
+                                y2: y2
+                            },
+                            grid: {
+                                x: {
+                                    show: true
+                                },
+                                y: {
+                                    show: true
+                                }
+                            }
+                        });
+                    }
+                });
             }
-            scope.setLineChartFn({lineChartFn: scope.refreshWidgetLineChart});
-            scope.refreshWidgetLineChart();
+
         }
     };
 });
@@ -1189,20 +1183,20 @@ app.directive('barChartDirective', function ($http, $stateParams) {
                     url = "admin/proxy/getData?";
                 }
                 var dataSourcePassword;
-                    if (barChartDataSource.dataSourceId.password) {
-                        dataSourcePassword = barChartDataSource.dataSourceId.password;
-                    } else {
-                        dataSourcePassword = '';
-                    }
-                $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString + 
-                        "&dataSetId=" + barChartDataSource.id + 
-                        "&accountId=" + $stateParams.accountId + 
-                        "&driver=" + barChartDataSource.dataSourceId.sqlDriver + 
-                        "&location=" + $stateParams.locationId + 
-                        "&startDate=" + $stateParams.startDate + 
-                        "&endDate=" + $stateParams.endDate + 
-                        '&username=' + barChartDataSource.dataSourceId.userName + 
-                        '&password=' + dataSourcePassword + 
+                if (barChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = barChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + barChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + barChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
                         '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                     scope.loadingBar = false;
                     if (!response) {
@@ -1369,20 +1363,20 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                     url = "admin/proxy/getData?";
                 }
                 var dataSourcePassword;
-                    if (pieChartDataSource.dataSourceId.password) {
-                        dataSourcePassword = pieChartDataSource.dataSourceId.password;
-                    } else {
-                        dataSourcePassword = '';
-                    }
-                $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString + 
-                        "&dataSetId=" + pieChartDataSource.id + 
-                        "&accountId=" + $stateParams.accountId + 
-                        "&driver=" + pieChartDataSource.dataSourceId.sqlDriver + 
-                        "&location=" + $stateParams.locationId + 
-                        "&startDate=" + $stateParams.startDate + 
-                        "&endDate=" + $stateParams.endDate + 
-                        '&username=' + pieChartDataSource.dataSourceId.userName + 
-                        '&password=' + dataSourcePassword + 
+                if (pieChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = pieChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + pieChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + pieChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
                         '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                     scope.loadingPie = false;
                     if (!response) {
@@ -1551,20 +1545,20 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                     url = "admin/proxy/getData?";
                 }
                 var dataSourcePassword;
-                    if (areaChartDataSource.dataSourceId.password) {
-                        dataSourcePassword = areaChartDataSource.dataSourceId.password;
-                    } else {
-                        dataSourcePassword = '';
-                    }
-                $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString + 
-                        "&dataSetId=" + areaChartDataSource.id + 
-                        "&accountId=" + $stateParams.accountId + 
-                        "&driver=" + areaChartDataSource.dataSourceId.sqlDriver + 
-                        "&location=" + $stateParams.locationId + 
-                        "&startDate=" + $stateParams.startDate + 
-                        "&endDate=" + $stateParams.endDate + 
-                        '&username=' + areaChartDataSource.dataSourceId.userName + 
-                        '&password=' + dataSourcePassword + 
+                if (areaChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = areaChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + areaChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + areaChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
                         '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                     scope.loadingArea = false;
                     if (response.data.length === 0) {

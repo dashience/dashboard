@@ -216,7 +216,7 @@
                     <!--</div>-->
                 </div>
                 <div class="panel-body">                    
-                    <div class="col-md-8">
+                    <div class="col-md-7">
                         <div ng-if="editChartType === 'ticker'">
                             <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                         </div>
@@ -241,7 +241,7 @@
                             </div>                            
                         </div> 
                     </div>
-                    <div class="col-md-4" ng-if="editChartType != 'ticker'">
+                    <div class="col-md-5" ng-if="editChartType != 'ticker'">
                         <div class="form-group">
                             <div class="col-md-12" ng-if="editChartType != 'pie'">
                                 <label>Select X-Axis</label>
@@ -301,16 +301,39 @@
                                         <tr>
                                             <td>Name</td>
                                             <td>Format</td>
+                                            <td>Sort</td>
+                                            <td>Field Type</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="columnList in widget.columns">
                                             <td>{{columnList.displayName}}</td>
                                             <td>
-                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' 
+                                                <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' 
+                                                                                                        class='form-control'
+                                                                                                        ng-change="setChartFormat(widget, columnList)"
+                                                                                                        ng-options="format for format in formats">
+                                                                                                </select>-->
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' ng-change="setChartFormat(widget, columnList)">
+                                                    <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' 
+                                                                                                        class='form-control'
+                                                                                                        ng-change="setChartFormat(widget, columnList)"
+                                                                                                        ng-options="sort for sort in sorting">
+                                                                                                </select>-->
+
+                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
+                                                    <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' 
                                                         class='form-control'
                                                         ng-change="setChartFormat(widget, columnList)"
-                                                        ng-options="format for format in formats">
+                                                        ng-options="fieldType for fieldType in fieldTypes">
                                                 </select>
                                             </td>
                                         </tr>
