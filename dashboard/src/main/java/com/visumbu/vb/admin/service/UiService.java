@@ -447,14 +447,14 @@ public class UiService {
         String returnMsg = null;
         Boolean isSuccess = null;
         HashMap returnMap = new HashMap();
-        List userDetails = userDao.findByUserName(vbUser.getUserName());
-        if (userDetails.isEmpty()) {
+        List findUser = userDao.findByUserName(vbUser.getUserName());
+        if (findUser.isEmpty()) {
             uiDao.create(vbUser);
             returnMsg = "Success";
             isSuccess = true;
 
         } else {
-            Iterator<VbUser> userList = userDao.findByUserName(vbUser.getUserName()).iterator();
+//            Iterator<VbUser> userList = userDao.findByUserName(vbUser.getUserName()).iterator();
             returnMsg = "User Already Exist";
             isSuccess = false;
         }
