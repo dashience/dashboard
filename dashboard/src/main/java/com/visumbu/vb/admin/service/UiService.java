@@ -472,7 +472,6 @@ public class UiService {
     }
 
     public VbUser deleteUser(Integer id) {
-        //VbUser vbUser = readUser(id);
         return uiDao.deleteUser(id);
     }
 
