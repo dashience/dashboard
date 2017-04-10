@@ -6,6 +6,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
+    $scope.moveWidget = function (drag) {
+        console.log(drag);
+    }
 
     $scope.downloadPdf = function () {
         var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
@@ -57,10 +60,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();
     };
-    $scope.moveWidget = function (list, from, to) {
-        list.splice(to, 0, list.splice(from, 1)[0]);
-        return list;
-    };
+    // 
 
     $http.get("admin/ui/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -81,8 +81,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.goReport = function () {
         $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
-
-    $scope.onDropComplete = function (index, widget, evt) {
+ 
+     $scope.onDropComplete = function (index, widget, evt) {
 
         if (widget !== "" && widget !== null) {
             var otherObj = $scope.widgets[index];
@@ -102,6 +102,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
+    $scope.onDragComplete=function(widget,evt){
+       console.log("drag success, data:", widget);
+    }
 
     function splitCamelCase(s) {
         return s.split(/(?=[A-Z])/).join(' ');
@@ -1643,4 +1646,3 @@ app.service('stats', function ($filter) {
 
     return service;
 });
-

@@ -1497,7 +1497,7 @@ html {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow-x: hidden!important;
+/*    overflow-x: hidden!important;*/
 }
 body {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1665,7 +1665,7 @@ body {
     -moz-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.55);
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.55);
 }
-/* Lists */
+ Lists 
 .list .list-item-container {
     float: left;
 }
@@ -1713,7 +1713,7 @@ body {
     line-height: 20px;
     margin: 0;
 }
-/* Panels */
+ Panels 
 .hpanel > .panel-heading {
     color: inherit;
     font-weight: 600;
@@ -1749,7 +1749,7 @@ body {
     background: #fff;
     border-bottom: 1px solid #e4e5e7;
     border-radius: 2px;
-    /*    padding: 20px;*/
+        padding: 20px;
     position: relative;
 }
 .hpanel.panel-group .panel-body:first-child {
@@ -1787,7 +1787,7 @@ body {
     font-size:12px;
 }
 .hpanel.hgreen .panel-body {
-    /*    border-top: 2px solid #62cb31;*/
+        border-top: 2px solid #62cb31;
 }
 .hpanel.hblue .panel-body {
     border-top: 2px solid #3498db;
@@ -2908,7 +2908,7 @@ h6 {
     cursor: pointer;
 }
 /* UI Sortable */
-.ui-sortable .panel-body {
+/*.ui-sortable .panel-body {
     cursor: move;
 }
 .ui-sortable-placeholder {
@@ -2918,7 +2918,7 @@ h6 {
 }
 .ibox.ui-sortable-placeholder {
     margin: 0px 0px 23px !important;
-}
+}*/
 /* Badge colors */
 .badge.badge-success {
     background-color: #62cb31;

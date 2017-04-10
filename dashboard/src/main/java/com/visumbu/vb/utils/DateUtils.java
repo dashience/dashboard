@@ -368,4 +368,24 @@ public class DateUtils {
         calendar.setTime(date);
         return  calendar.get(Calendar.WEEK_OF_YEAR);
     }
+
+     public static String getGaStartDate(Date startDate) {
+        if (startDate == null) {
+            return "7DaysAgo";
+        }
+        return toGaDate(startDate);
+    }
+
+    public static String getGaEndDate(Date endDate) {
+        if (endDate == null) {
+            return "today";
+        }
+        return toGaDate(endDate);
+    }
+    
+    public static String toGaDate(Date date) {
+        String format = "YYYY-MM-dd";
+        return dateToString(date, format);
+    }
+
 }
