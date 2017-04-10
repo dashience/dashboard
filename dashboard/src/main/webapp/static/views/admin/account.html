@@ -253,7 +253,7 @@
                                                         <!--<i class="fa" ng-class="{'fa-times': !accountUser.status, 'text-danger':!accountUser.status, 'fa-circle': accountUser.status, 'text-success':accountUser.status}"></i>-->
                                                     </td>
                                                     <td class="col-xs-2">
-                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser); accountUser.isEdit = false;"><i class="fa fa-save"></i></button>
+                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser)"><i class="fa fa-save"></i></button>
                                                         <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="removeAccountUser($index)"><i class="fa fa-times"></i></button>
                                                         <button ng-hide="accountUser.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccountUser{{accountUser.id}}"><i class="fa fa-trash-o"></i></button>
                                                         <div class="modal hmodal-success" id="deleteAccountUser{{accountUser.id}}" tabindex="-1" role="dialog"  aria-hidden="true">

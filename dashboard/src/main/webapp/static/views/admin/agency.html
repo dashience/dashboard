@@ -250,15 +250,15 @@
                                                     <input type="email" class="form-control" ng-model="agencyUser.email" placeholder="Email">
                                                 </div>
                                                 <div class="form-group">
-                                                     <label>Password</label>
-                                                <div class="input-group">
-                                                    <input type="password" class="form-control" ng-model="agencyUser.password" id="password" name="password" placeholder="Password">
-                                                    <span class="input-group-addon">
-                                                        <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
-                                                    </span>
-                                                </div>
-<!--                                                    <label>Password</label>
-                                                    <input type="password" class="form-control" ng-model="agencyUser.password" placeholder="Password">-->
+                                                    <label>Password</label>
+                                                    <div class="input-group">
+                                                        <input type="password" class="form-control" ng-model="agencyUser.password" id="password" name="password" placeholder="Password">
+                                                        <span class="input-group-addon">
+                                                            <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
+                                                        </span>
+                                                    </div>
+                                                    <!--                                                    <label>Password</label>
+                                                                                                        <input type="password" class="form-control" ng-model="agencyUser.password" placeholder="Password">-->
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Primary Phone</label>
@@ -359,12 +359,15 @@
                                                         </label>
                                                         <input id="file-input1" type="file" ng-model-instant onchange="angular.element(this).scope().productIcon(event)"/>
                                                     </div>
+
                                                     <div class="pull-right account-new">
                                                         <button class="btn btn-success" ng-click="addAgencyProduct()">New</button>
                                                     </div>
 
                                                 </div>
-
+                                                <div>
+                                                    <span class="text-danger">{{productIconEmptyMessage}}</span>
+                                                </div>
                                                 <div class="form-group">
                                                     <label>Product Name</label>
                                                     <div>
@@ -402,17 +405,17 @@
                                 <div class="data-search col-sm-12">
                                     <input type="text" class="form-control" ng-model="searchAgency" placeholder="Search...">
                                 </div>
-<!--                                <div class="col-sm-4">
-                                    <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
-                                        <ui-select-match placeholder="Search Agency Name...">
-                                            {{$select.selected.agencyName}}
-                                        </ui-select-match>
-                                        <ui-select-choices repeat="agency in agencies | filter: $select.search">                                
-                                            <div ng-bind-html="agency.agencyName | highlight: $select.search" style="display: inline">
-                                            </div>                                
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>-->
+                                <!--                                <div class="col-sm-4">
+                                                                    <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
+                                                                        <ui-select-match placeholder="Search Agency Name...">
+                                                                            {{$select.selected.agencyName}}
+                                                                        </ui-select-match>
+                                                                        <ui-select-choices repeat="agency in agencies | filter: $select.search">                                
+                                                                            <div ng-bind-html="agency.agencyName | highlight: $select.search" style="display: inline">
+                                                                            </div>                                
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+                                                                </div>-->
                             </div>
                             <table class="table table-responsive table-fixed">
                                 <thead>
