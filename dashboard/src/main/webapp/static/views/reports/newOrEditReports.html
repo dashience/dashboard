@@ -113,7 +113,8 @@
         <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
     </div>
     <div class="btn-group"> 
-        <a style="cursor: pointer;"><i class="fa fa-print"></i> Print</a> 
+        <a style="cursor: pointer;" ng-click="downloadReportPdf()"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+        <!--<a style="cursor: pointer;" ng-click="downloadReportPdf()"><i class="fa fa-print"></i> Print</a>--> 
     </div>
 
     <!--    <div class="btn-group dropdown">
@@ -205,7 +206,8 @@
                                         <span>Want to delete ? </span>
                                     </div>
                                     <div class="modal-footer">
-                                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal">Ok</button>
+                                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal">Yes</button>
+                                        <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
                                     </div>
                                 </div>
                             </div>

@@ -8,8 +8,9 @@
                         <th>Schedule Name</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>Next Execution Time</th>
-                        <th>Schedule Last Execution Status</th>
+                        <!--<th>Next Execution Time</th>-->
+                        <th>Last Execution Status</th>
+                        <th>Scheduler Type</th>
                         <th>Enable/Disable</th>
                         <th>
                             <button class="btn btn-success btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({accountId: accountId, accountName: accountName, schedulerId: 0, startDate: startDate, endDate: endDate})"><i class="fa fa-plus"></i></button>
@@ -17,24 +18,62 @@
                     </tr>
                 </thead>
                 <tbody ng-repeat="scheduler in schedulers" ng-switch on="dayDataCollapse[$index]">
-                    <tr >
+                    <tr>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{$index + 1}}</td>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.schedulerName}}</td>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.startDate| date: 'MM/dd/yyyy'}}</td>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.endDate| date: 'MM/dd/yyyy'}}</td>
-                        <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.startDate| date: 'MM/dd/yyyy'}}</td>
-                        <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.endDate| date: 'MM/dd/yyyy'}} Last Execution Status</td>
+                        <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.lastExecutionStatus}}</td>
+                        <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.schedulerRepeatType}}</td>
                         <td>
                             <div class="checkbox checkbox-slider--b schedule-on">
                                 <label class="" for="field{{$index + 1}}">
-                                    <input id="field{{$index + 1}}" type="checkbox" ng-model="scheduler.startStop"/>
+                                    <input id="field{{$index + 1}}" type="checkbox"                                             
+                                           ng-click="saveSchedulerStatus(scheduler)"
+                                           ng-checked="scheduler.status == 'Active'"
+                                           ng-model="scheduler.status"/>
                                     <span></span>
                                 </label>
                             </div>
                         </td>
                         <td>
                             <button class="btn btn-default btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({accountId: accountId, accountName: accountName, schedulerId: scheduler.id, startDate: startDate, endDate: endDate})"><span class="fa fa-pencil"></span></button>
-                            <button class="btn btn-default btn-xs" ng-click="deleteScheduler(scheduler, $index)"><span class="fa fa-trash"></span></button>
+                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteScheduler{{scheduler.id}}"><span class="fa fa-trash"></span></button>
+
+                            <div class="modal hmodal-success" id="deleteScheduler{{scheduler.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="color-line"></div>
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Delete</h4>
+                                            <small class="font-bold"></small>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="form-horizontal" role="form">
+                                                <div class="form-group">
+                                                    <div class="col-sm-12  col-md-12">
+                                                        <span>Want to delete ?</span>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="col-sm-12">
+                                                <button type="button" class="btn btn-primary btn-xs " 
+                                                        ng-click="deleteScheduler(scheduler, $index)" 
+                                                        data-dismiss="modal">
+                                                    <span class="fa fa-trash"></span> Yes
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-xs " 
+                                                        data-dismiss="modal">
+                                                    <span class="fa fa-times"></span> No
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <!--<tr  ng-show="showTableRow[scheduler.id]">-->
@@ -45,19 +84,16 @@
                                     <table class="table table-bordered text-center">
                                         <thead>
                                             <tr class="success">
-                                                <td colspan="2">schedulerName</td>
-                                                <td>StartDate</td>
-                                                <td>startTime</td>
-                                                <td>endTime</td>
+                                                <td colspan="2">scheduler Name</td>
+                                                <td>Start Date</td>
+                                                <td>Start Time</td>
+                                                <td>End Time</td>
                                                 <td>status</td>
-                                                <td colspan="2">FileName</td>
-                                            </tr>
-                                            <tr ng-hide="schedularHistoryData">
-                                                <td colspan="8">{{schedularData}}</td> 
-                                            </tr>
+                                                <td colspan="2">File Name</td>
+                                            </tr>                                            
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="history in schedularHistoryDetails" class="success" >
+                                            <tr ng-repeat="history in schedularHistoryDetails | limitTo:-10 | orderBy: '-executionStartTime'" class="success" >
                                                 <td colspan="2">{{history.schedulerName}}</td>
                                                 <td>{{history.startDate}}</td>
                                                 <td>{{history.executionStartTime}}</td>
@@ -65,6 +101,9 @@
                                                 <td>{{history.status}}</td>
                                                 <td colspan="2">{{history.fileName}}</td>
                                             </tr>
+                                            <!--                                            <tr>
+                                                                                            <td colspan="8">{{schedularData}}</td> 
+                                                                                        </tr>-->
                                         </tbody>
                                     </table>
                                 </div>

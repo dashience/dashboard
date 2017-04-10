@@ -111,6 +111,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             $scope.userAccounts = response;
         });
         $http.get('admin/ui/userPermission/' + user.id).success(function (response) {
+            console.log(response)
             $scope.userPermissions = response;
             $http.get('admin/ui/permission').success(function (response1) {
                 $scope.permissions = response1;
@@ -180,7 +181,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
         $scope.userAccounts.splice(index, 1);
     }
 
-    $scope.testClick = function (permission) {
+    $scope.setUserPermission = function (permission) {
         $scope.saveUserPermission(permission);
     };
 
@@ -192,8 +193,9 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             id: $scope.hasData(permission.permissionName).id,
             permissionId: permission.id,
             userId: currentUserId.id,
-            status: permission.status ? 1 : 0
+            status: permission.status
         };
+        console.log(data)
         $http({method: userPermissionId ? 'PUT' : 'POST', url: 'admin/ui/userPermission', data: data}).success(function (response) {
             getUserAccount(currentUserId);
         });

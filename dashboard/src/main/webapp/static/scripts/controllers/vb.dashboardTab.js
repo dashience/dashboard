@@ -3,26 +3,31 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
-    $scope.tabId = $stateParams.tabId;
+    //$scope.tabId = $stateParams.tabId;
     $scope.tabs = [];
 
     if ($stateParams.productId) {
         $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
+            var setTabId;
             if (!response) {
-                return;
+                setTabId = "";
             }
             if (!response[0]) {
-                return;
+                setTabId = "";
+            } else {
+                if ($stateParams.tabId == 0) {
+                    setTabId = response[0].id;
+                }else{
+                    setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0)
+                }
             }
-            $stateParams.tabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
             $scope.loadTab = false;
             $scope.tabs = response;
             angular.forEach($scope.tabs, function (value, key) {
                 $scope.dashboardName = value.agencyProductId.productName;
             });
-            $state.go("index.dashboard.widget", {locationId: $stateParams.locationId, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+            $state.go("index.dashboard.widget", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: setTabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
         });
-
     }
     $scope.toDate = function (strDate) {
         if (!strDate) {

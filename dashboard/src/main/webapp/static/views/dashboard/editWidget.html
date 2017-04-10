@@ -112,13 +112,8 @@
     .ui-select-bootstrap > .ui-select-choices, .ui-select-bootstrap > .ui-select-no-choice {
         display: contents;
     }
-
-
-
     .search-check {
-
         vertical-align: middle;
-
     }
 
 </style>
@@ -127,7 +122,6 @@
     <div class="hpanel">
         <div class="panel-heading">
             Select the Elements
-
             <div class="pull-right">
                 <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
             </div>
@@ -196,6 +190,80 @@
                     </div> 
                 </div>
             </div>
+            <div class="col-md-4">
+                <label>Date Range</label>
+                <div>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu scheduler-list-style">
+                            <li ng-click="selectWidgetDuration('None', widget)"><a>None</a></li>
+                            <li ng-click="selectWidgetDuration('Today', widget)"><a>Today</a></li>
+                            <li ng-click="selectWidgetDuration('Yesterday', widget)"><a>Yesterday</a></li>
+                            <li ng-click="selectWidgetDuration('This Week', widget)"><a>This Week</a></li>
+                            <li ng-click="selectWidgetDuration('Last Week', widget)"><a>Last Week</a></li>
+                            <li ng-click="selectWidgetDuration('This Month', widget)"><a>This Month</a></li>
+                            <li ng-click="selectWidgetDuration('Last Month', widget)"><a>Last Month</a></li>
+                            <li ng-click="selectWidgetDuration('This Year', widget)"><a>This Year</a></li>
+                            <li ng-click="selectWidgetDuration('Last Year', widget)"><a>Last Year</a></li>
+                            <li ng-click="selectWidgetDuration('Last N Days', widget)">
+                                <a>Last <input type="text"
+                                               ng-model="widget.lastNdays" 
+                                               ng-change="selectWidgetDuration('Last N Days', widget)" 
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Days
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Last N Weeks', widget)">
+                                <a>Last <input type="text" 
+                                               ng-model="widget.lastNweeks" 
+                                               ng-change="selectWidgetDuration('Last N Weeks', widget)"
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Weeks
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Last N Months', widget)">
+                                <a>Last <input type="text" 
+                                               ng-model="widget.lastNmonths" 
+                                               ng-change="selectWidgetDuration('Last N Months', widget)"
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Months
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Last N Years', widget)">
+                                <a>Last <input type="text" 
+                                               ng-model="widget.lastNyears" 
+                                               ng-change="selectWidgetDuration('Last N Years', widget)"
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Years
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Custom', widget)"><a>Custom</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-show="widget.dateRangeName === 'Custom'">
+                <div class="col-md-4">
+                    <label>Custom Range</label>
+                    <div>
+                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                            <span class="date-border">
+                                {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
+                            </span>
+                        </a> 
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row" ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
@@ -217,7 +285,7 @@
                     <!--</div>-->
                 </div>
                 <div class="panel-body">                    
-                    <div class="col-md-8">
+                    <div class="col-md-7">
                         <div ng-if="editChartType === 'ticker'">
                             <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                         </div>
@@ -242,7 +310,7 @@
                             </div>                            
                         </div> 
                     </div>
-                    <div class="col-md-4" ng-if="editChartType != 'ticker'">
+                    <div class="col-md-5" ng-if="editChartType != 'ticker'">
                         <div class="form-group">
                             <div class="col-md-12" ng-if="editChartType != 'pie'">
                                 <label>Select X-Axis</label>
@@ -297,21 +365,44 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label>Format</label>                                 
-                                <table class="table table-bordered">
+                                <table class="table table-bordered table-responsive">
                                     <thead>
                                         <tr>
                                             <td>Name</td>
                                             <td>Format</td>
+                                            <td>Sort</td>
+                                            <td>Field Type</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="columnList in widget.columns">
                                             <td>{{columnList.displayName}}</td>
                                             <td>
-                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' 
+                                                <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' 
+                                                                                                        class='form-control'
+                                                                                                        ng-change="setChartFormat(widget, columnList)"
+                                                                                                        ng-options="format for format in formats">
+                                                                                                </select>-->
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' ng-change="setChartFormat(widget, columnList)">
+                                                    <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' 
+                                                                                                        class='form-control'
+                                                                                                        ng-change="setChartFormat(widget, columnList)"
+                                                                                                        ng-options="sort for sort in sorting">
+                                                                                                </select>-->
+
+                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
+                                                    <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' 
                                                         class='form-control'
                                                         ng-change="setChartFormat(widget, columnList)"
-                                                        ng-options="format for format in formats">
+                                                        ng-options="fieldType for fieldType in fieldTypes">
                                                 </select>
                                             </td>
                                         </tr>

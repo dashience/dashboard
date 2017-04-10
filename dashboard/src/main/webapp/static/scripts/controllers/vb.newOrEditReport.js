@@ -1,4 +1,4 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;
@@ -82,7 +82,12 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             console.log(value.widgetId)
         })
         console.log($scope.reportWidgets)
-    })
+    });
+    
+    $scope.downloadReportPdf = function (report) {
+        var url = "admin/proxy/downloadReport/" + $stateParams.reportId + "?dealerId=" + $stateParams.accountId + "&location=" + $stateParams.accountId + "&accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
+        $window.open(url);
+    }
 
     $scope.uploadLogo = "static/img/logos/deeta-logo.png";       //Logo Upload
     $scope.imageUpload = function (event) {

@@ -6,17 +6,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
-    $scope.moveWidget = function (drag) {
-        console.log(drag);
+
+    if ($scope.permission.createReport === true) {
+        $scope.showCreateReport = true;
+    } else {
+        $scope.showCreateReport = false;
     }
 
     $scope.downloadPdf = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
     };
 
     $scope.downloadPpt = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
         $window.open(url);
     };
 
@@ -29,6 +32,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
     getWidgetItem();
+
     $scope.addWidget = function (newWidget) {       //Add Widget
         var data = {
             width: newWidget, 'minHeight': 25, columns: [], chartType: ""
@@ -60,7 +64,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();
     };
-    // 
+    $scope.moveWidget = function (list, from, to) {
+        list.splice(to, 0, list.splice(from, 1)[0]);
+        return list;
+    };
 
     $http.get("admin/ui/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -81,8 +88,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.goReport = function () {
         $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
- 
-     $scope.onDropComplete = function (index, widget, evt) {
+
+    $scope.onDropComplete = function (index, widget, evt) {
 
         if (widget !== "" && widget !== null) {
             var otherObj = $scope.widgets[index];
@@ -102,9 +109,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
-    $scope.onDragComplete=function(widget,evt){
-       console.log("drag success, data:", widget);
-    }
 
     function splitCamelCase(s) {
         return s.split(/(?=[A-Z])/).join(' ');
@@ -121,11 +125,88 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     }
 
+    $scope.showReportWidgetName = false;
     $scope.selectReport = function (reportWidget) {
+    $scope.showReportWidgetName = false;
+        $scope.reportWidgetTitle = []
         console.log(reportWidget)
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
+        $http.get("admin/ui/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
+            console.log(response)
+            if (response.length > 0) {
+                $scope.showReportWidgetName = true;
+                $scope.reportWidgetTitle = response;
+                $scope.showReportEmptyMessage = false;
+            } else {
+                $scope.showReportEmptyMessage = true;
+                $scope.reportEmptyMessage = "No Data Found"
+            }
+        })
     }
+
+//    $scope.setLineFn = function (lineFn) {
+//        $scope.directiveLineFn = lineFn;
+//    };
+//    $scope.setAreaFn = function (areaFn) {
+//        $scope.directiveAreaFn = areaFn;
+//    };
+//    $scope.setBarFn = function (barFn) {
+//        $scope.directiveBarFn = barFn;
+//    };
+//    $scope.setPieFn = function (pieFn) {
+//        $scope.directivePieFn = pieFn;
+//    };
+//    $scope.setTableFn = function (tableFn) {
+//        $scope.directiveTableFn = tableFn;
+//    };
+    $scope.expandWidget = function (widget) {
+        var expandchart = widget.chartType;
+        widget.chartType = null;
+        console.log($scope.expandChart)
+        //console.log(widget)
+        if (expandchart == 'ticker') {
+            if (widget.width == 4) {
+                widget.width = widget.width + 2;
+            } else if (widget.width == 6) {
+                widget.width = widget.width + 6;
+            } else {
+                widget.width = 4;
+            }
+        }
+        if (expandchart != 'ticker') {
+            if (widget.width == 12) {
+                widget.width = widget.width - 6;
+            } else if (widget.width == 6) {
+                widget.width = widget.width - 2;
+            } else {
+                widget.width = 12;
+            }
+        }
+
+        $timeout(function () {
+            widget.chartType = expandchart;
+            var data = {
+                id: widget.id,
+                chartType: widget.chartType,
+                widgetTitle: widget.widgetTitle,
+                widgetColumns: widget.columns,
+                dataSourceId: widget.dataSourceId.id,
+                dataSetId: widget.dataSetId.id,
+                tableFooter: widget.tableFooter,
+                zeroSuppression: widget.zeroSuppression,
+                maxRecord: widget.maxRecord,
+                dateDuration: widget.dateDuration,
+                content: widget.content,
+                width: widget.width
+            };
+
+            console.log(data);
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+            });
+        }, 50);
+
+    };
 });
 
 app.directive('dateRangePicker', function () {
@@ -153,6 +234,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
     return{
         restrict: 'A',
         scope: {
+            setTableChartFn: '&',
             dynamicTableSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -363,58 +445,77 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 port: 3306,
                 schema: 'vb'
             }
+            scope.refreshWidgetTable = function () {
+                var url = "admin/proxy/getData?";
+                if (tableDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
+                if (tableDataSource.dataSourceId.dataSourceType == "csv") {
+                    url = "admin/csv/getData?";
+                }
+                if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
+                    url = "admin/proxy/getData?";
+                }
 
-            var url = "admin/proxy/getData?";
-            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
-            if (tableDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
-            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&accountId=" + $stateParams.accountId + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
-                //$http.post("admin/proxy/getJson", data).success(function (response) {
+                var dataSourcePassword;
+                if (tableDataSource.dataSourceId.password) {
+                    dataSourcePassword = tableDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + tableDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + tableDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + tableDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
+                    //$http.post("admin/proxy/getJson", data).success(function (response) {
 //            $http.get("admin/proxy/getJson?url=" + scope.dynamicTableUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
 
-                scope.ajaxLoadingCompleted = true;
-                scope.loadingTable = false;
-                if (!response.data) {
-                    return;
-                }
-                var pdfData = {};
-                if (response.data.length === 0) {
-                    scope.tableEmptyMessage = "No Data Found";
-                    scope.hideEmptyTable = true;
-                    pdfData[scope.widgetId] = "No Data Found";
-                } else {
-                    var responseData = response.data;
-                    scope.orignalData = response.data;
-                    pdfData[scope.widgetId] = scope.orignalData;
-                    responseData = scope.orderData(responseData, sortFields);
-                    var widgetData = JSON.parse(scope.widgetObj);
-                    if (widgetData.maxRecord > 0) {
-                        responseData = responseData.slice(0, widgetData.maxRecord);
+                    scope.ajaxLoadingCompleted = true;
+                    scope.loadingTable = false;
+                    if (!response.data) {
+                        return;
                     }
-
-                    if (groupByFields && groupByFields.length > 0) {
-                        scope.groupingName = groupByFields;
-                        groupedData = scope.group(responseData, groupByFields, aggreagtionList);
-                        var dataToPush = {};
-                        dataToPush = angular.extend(dataToPush, aggregate(responseData, fullAggreagtionList));
-                        dataToPush.data = groupedData;
-                        scope.groupingData = dataToPush;
+                    var pdfData = {};
+                    if (response.data.length === 0) {
+                        scope.tableEmptyMessage = "No Data Found";
+                        scope.hideEmptyTable = true;
+                        pdfData[scope.widgetId] = "No Data Found";
                     } else {
-                        var dataToPush = {};
-                        dataToPush = angular.extend(dataToPush, aggregate(responseData, fullAggreagtionList));
-                        dataToPush.data = responseData;
-                        scope.groupingData = dataToPush;
+                        var responseData = response.data;
+                        scope.orignalData = response.data;
+                        pdfData[scope.widgetId] = scope.orignalData;
+                        responseData = scope.orderData(responseData, sortFields);
+                        var widgetData = JSON.parse(scope.widgetObj);
+                        if (widgetData.maxRecord > 0) {
+                            responseData = responseData.slice(0, widgetData.maxRecord);
+                        }
+
+                        if (groupByFields && groupByFields.length > 0) {
+                            scope.groupingName = groupByFields;
+                            groupedData = scope.group(responseData, groupByFields, aggreagtionList);
+                            var dataToPush = {};
+                            dataToPush = angular.extend(dataToPush, aggregate(responseData, fullAggreagtionList));
+                            dataToPush.data = groupedData;
+                            scope.groupingData = dataToPush;
+                        } else {
+                            var dataToPush = {};
+                            dataToPush = angular.extend(dataToPush, aggregate(responseData, fullAggreagtionList));
+                            dataToPush.data = responseData;
+                            scope.groupingData = dataToPush;
+                        }
                     }
-                }
-                //alert("CAlling");
-                scope.pdfFunction({test: pdfData});
-            });
+                    //alert("CAlling");
+                    scope.pdfFunction({test: pdfData});
+                });
+            };
+            scope.setTableChartFn({tableChartFn: scope.refreshWidgetTable});
+            scope.refreshWidgetTable();
 
             scope.initData = function (col) {
                 angular.forEach(scope.columns, function (value, key) {
@@ -716,7 +817,22 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             if (tickerDataSource.dataSourceId.dataSourceType == "facebook") {
                 url = "admin/proxy/getData?";
             }
-            $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString + "&driver=" + tickerDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tickerDataSource.dataSourceId.userName + '&password=' + tickerDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
+            var dataSourcePassword;
+            if (tickerDataSource.dataSourceId.password) {
+                dataSourcePassword = tickerDataSource.dataSourceId.password;
+            } else {
+                dataSourcePassword = '';
+            }
+            $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
+                    "&dataSetId=" + tickerDataSource.id +
+                    "&accountId=" + $stateParams.accountId +
+                    "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
+                    "&location=" + $stateParams.locationId +
+                    "&startDate=" + $stateParams.startDate +
+                    "&endDate=" + $stateParams.endDate +
+                    '&username=' + tickerDataSource.dataSourceId.userName +
+                    '&password=' + dataSourcePassword +
+                    '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                 scope.tickers = [];
                 scope.loadingTicker = false;
                 if (response.length === 0) {
@@ -756,9 +872,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
         template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyLine" class="text-center">{{lineEmptyMessage}}</div>',
         scope: {
+            setLineChartFn: '&',
             lineChartSource: '@',
             widgetId: '@',
-            setLineChartFn: '&',
             widgetColumns: '@',
             lineChartId: '@'
         },
@@ -851,7 +967,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         }
                     } else if (value.fieldType == "date") {
                         if (value.sortOrder == "asc") {
-                            //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
 
                                 var parsedDate = new Date(a[value.fieldName]);
@@ -873,9 +988,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         }
                     } else {
                         if (value.sortOrder == "asc") {
-                            //fieldsOrder.push(value.fieldname);
                             fieldsOrder.push(function (a) {
-
                                 var parsedValue = parseFloat(a[value.fieldName]);
                                 if (isNaN(parsedValue)) {
                                     return a[value.fieldName];
@@ -904,7 +1017,22 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                 if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString + "&driver=" + lineChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + lineChartDataSource.dataSourceId.userName + '&password=' + lineChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
+                var dataSourcePassword;
+                if (lineChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = lineChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + lineChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + lineChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
                     scope.loadingLine = false;
                     if (!response.data) {
                         return;
@@ -968,6 +1096,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                     }
                 });
             }
+
         }
     };
 });
@@ -978,9 +1107,9 @@ app.directive('barChartDirective', function ($http, $stateParams) {
         template: '<div ng-show="loadingBar" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyBar" class="text-center">{{barEmptyMessage}}</div>',
         scope: {
+            setBarChartFn: '&',
             barChartSource: '@',
             widgetId: '@',
-            setBarChartFn: '&',
             barChartId: '@',
             widgetColumns: '@'
         },
@@ -1067,8 +1196,26 @@ app.directive('barChartDirective', function ($http, $stateParams) {
                 if (barChartDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString + "&driver=" + barChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + barChartDataSource.dataSourceId.userName + '&password=' + barChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
+                var dataSourcePassword;
+                if (barChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = barChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + barChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + barChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                     scope.loadingBar = false;
+                    if (!response) {
+                        return;
+                    }
                     if (response.data.length === 0) {
                         scope.barEmptyMessage = "No Data Found";
                         scope.hideEmptyBar = true;
@@ -1137,10 +1284,10 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
         template: '<div ng-show="loadingPie" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyPie" class="text-center">{{pieEmptyMessage}}</div>',
         scope: {
+            setPieChartFn: '&',
             pieChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
-            setPieChartFn: '&',
             pieChartId: '@',
             loadingPie: '&'
         },
@@ -1229,8 +1376,26 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                 if (pieChartDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString + "&driver=" + pieChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + pieChartDataSource.dataSourceId.userName + '&password=' + pieChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
+                var dataSourcePassword;
+                if (pieChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = pieChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + pieChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + pieChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                     scope.loadingPie = false;
+                    if (!response) {
+                        return;
+                    }
                     if (response.data.length === 0) {
                         scope.pieEmptyMessage = "No Data Found";
                         scope.hideEmptyPie = true;
@@ -1393,7 +1558,22 @@ app.directive('areaChartDirective', function ($http, $stateParams) {
                 if (areaChartDataSource.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString + "&driver=" + areaChartDataSource.dataSourceId.sqlDriver + "&location=" + $stateParams.locationId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + areaChartDataSource.dataSourceId.userName + '&password=' + areaChartDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
+                var dataSourcePassword;
+                if (areaChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = areaChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + areaChartDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + areaChartDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                     scope.loadingArea = false;
                     if (response.data.length === 0) {
                         scope.areaEmptyMessage = "No Data Found";
@@ -1646,3 +1826,4 @@ app.service('stats', function ($filter) {
 
     return service;
 });
+

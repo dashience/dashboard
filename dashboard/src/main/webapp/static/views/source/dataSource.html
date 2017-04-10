@@ -56,11 +56,10 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-lg-12">
-                    <div class="col-md-4">                        
-                         <div class="hpanel">                        
+                <div class="col-md-4">                        
+                    <div class="hpanel">                        
                         <div class="panel-body">
                             <form class="col-md-12 form-horizontal" name="dataSourceForm">
                                 <div class="form-group">
@@ -69,7 +68,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Type</label>
-                                    <select class="form-control" ng-model="dataSource.dataSourceType">
+                                    <select class="form-control" ng-model="dataSource.dataSourceType" ng-change="selectSourceType(dataSource)">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                         <option ng-repeat="sourceType in dataSourceTypes"  value="{{sourceType.type}}">{{sourceType.name}}</option>
                                     </select>
@@ -78,34 +77,39 @@
                                     <label>Connection String</label>
                                     <input type="text" class="form-control" ng-model="dataSource.connectionString">
                                 </div>
-                                <div class="form-group" ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls' || dataSource.dataSourceType === 'https'">
-                                    <label ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'">File Upload</label>
-                                    <div class="fileUpload btn btn-primary" ng-if="dataSource.dataSourceType === 'csv'">
-                                        <span>Upload</span>
-                                        <input class="upload" type="file" 
-                                               accept=".csv" 
-                                               ID="fileSelect" runat="server"
-                                               ng-model-instant onchange="angular.element(this).scope().csvFileUpload(event)" />
-                                    </div>                            
 
-                                    <div class="fileUpload btn btn-primary" ng-if="dataSource.dataSourceType === 'xls'">
+<!--                                <div class="form-group" ng-if="dataSource.dataSourceType === 'csv'">
+                                    <label>File Upload</label>
+                                    <div class="fileUpload btn btn-primary">
                                         <span>Upload</span>
                                         <input class="upload" type="file" 
-                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
-                                               ID="fileSelect" runat="server"
-                                               ng-model-instant onchange="angular.element(this).scope().xlsFileUpload(event)" />
+                                               accept=".csv" onchange="angular.element(this).scope().csvFileUpload(event)" />
+                                    </div> 
+                                </div>-->
+                                <div class="form-group" ng-show="showCSVFileUpload">
+                                    <div class="fileUpload btn btn-primary">
+                                        <label>Select</label>
+                                        <input class="upload" type="file"
+                                               file-model="myFile"
+                                               accept=".csv"
+                                               onchange="angular.element(this).scope().selectFileUploadName(event)">
                                     </div>
+                                </div>
+                                <div class="form-group" ng-show="showXLSFileUpload">
+                                    <div class="fileUpload btn btn-primary">
+                                        <label>Select</label>
+                                        <input class="upload" type="file"
+                                               file-model="myFile"
+                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                               onchange="angular.element(this).scope().selectFileUploadName(event)">
+                                    </div>
+                                </div>
 
-                                    <div ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'">
+                                <div  class="form-group" ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'">
+                                    <div>
                                         <div class="upload-border">{{sourceFileName?sourceFileName:dataSource.connectionString}}</div>
                                     </div>
-
-                                    <label ng-if="dataSource.dataSourceType === 'https'">File Url</label>
-                                    <div ng-if="dataSource.dataSourceType === 'https'">
-                                        <input id="uploadFile" type="text" class="form-control" ng-model="dataSource.sourceFile">
-                                    </div>
-
-                                </div>                       
+                                </div>
                                 <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
                                     <label>Driver</label>
                                     <input type="text" class="form-control" ng-model="dataSource.sqlDriver">
@@ -122,7 +126,10 @@
                                 <input type="hidden" id="fbOauthToken" ng-model="dataSource.oauthToken">
                                 <input type="hidden" id="dataSourceType" ng-model="dataSource.dataSourceType">
                                 <div class="form-group pull-right">
-                                    <button class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
+                                    <button ng-if="!(dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls')" 
+                                            class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
+                                    <button ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'"
+                                            class="btn btn-info" ng-click="uploadFile(dataSource)">Save</button>
                                     <button class="btn btn-warning" ng-click="clearDataSource(dataSource)">Cancel</button>
                                 </div>
                             </form>
@@ -130,12 +137,12 @@
                     </div>
                 </div>  
 
-               
 
-                    <div class="col-md-8">
-                        
-                         <div class="hpanel">
-                        
+
+                <div class="col-md-8">
+
+                    <div class="hpanel">
+
                         <div class="panel-body">
                             <table class="table table-responsive table-fixed">
                                 <thead>

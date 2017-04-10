@@ -72,15 +72,30 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: "right", displayName: "Right"},
         {name: "center", displayName: "Center"}
     ];
+
+
     $scope.sorting = [
         {name: 'None', value: ''},
         {name: 'asc', value: 'asc'},
         {name: 'desc', value: 'desc'}
     ];
+
+    //$scope.sorting = ['None', 'asc', 'desc']
+//        {name: 'None', value: ''},
+//        {name: 'asc', value: 'asc'},
+//        {name: 'desc', value: 'desc'}
+//    ];
     $scope.tableWrapText = [
         {name: 'None', value: ''},
         {name: 'Yes', value: "yes"}
     ];
+
+    $scope.fieldTypes = ['none', 'string', 'number', 'date']
+//        {id: 0, name: 'None', value: ''},
+//        {id: 1, name: 'String', value: 'string'},
+//        {id: 2, name: 'Number', value: 'number'},
+//        {id: 3, name: 'Date', value: 'date'}
+//    ];
     $scope.hideOptions = [
         {name: 'Yes', value: 1},
         {name: 'No', value: ''}
@@ -88,27 +103,65 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.isEditPreviewColumn = false;
 
     $scope.formats = [
-        '$,.2f',
-        ',.0f',
-        ',.2%',
-        ',.1f',
-        ',.2f',
-        ''
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "None", value: ''}
     ];
-//        {name: "Currency", value: '$,.2f'},
-//        {name: "Integer", value: ',.0f'},
-//        {name: "Percentage", value: ',.2%'},
-//        {name: "Decimal1", value: ',.1f'},
-//        {name: "Decimal2", value: ',.2f'},
-//        {name: "None", value: ''}
-//
-//    $('.dropdown-menu input').click(function (e) {
-//        e.stopPropagation();
-//    });
 
-    $scope.dateDuration = function (widget, selectDateDuration) {
-        widget.duration = selectDateDuration.duration;
-    };
+    $scope.selectWidgetDuration = function (dateRangeName, widget) {
+        //scheduler.dateRangeName = dateRangeName;
+        console.log(dateRangeName)
+        if (dateRangeName == 'Last N Days') {
+            if (widget.lastNdays) {
+                widget.dateRangeName = "Last " + widget.lastNdays + " Days";
+            } else {
+                widget.dateRangeName = "Last 0 Days";
+            }
+            widget.lastNweeks = "";
+            widget.lastNmonths = "";
+            widget.lastNyears = "";
+        } else if (dateRangeName == 'Last N Weeks') {
+            if (widget.lastNweeks) {
+                widget.dateRangeName = "Last " + widget.lastNweeks + " Weeks";
+            } else {
+                widget.dateRangeName = "Last 0 Weeks";
+            }
+            widget.lastNdays = "";
+            widget.lastNmonths = "";
+            widget.lastNyears = "";
+        } else if (dateRangeName == 'Last N Months') {
+            if (widget.lastNmonths) {
+                widget.dateRangeName = "Last " + widget.lastNmonths + " Months";
+            } else {
+                widget.dateRangeName = "Last 0 Months";
+            }
+            widget.lastNdays = "";
+            widget.lastNweeks = "";
+            widget.lastNyears = "";
+        } else if (dateRangeName == 'Last N Years') {
+            if (widget.lastNyears) {
+                widget.dateRangeName = "Last " + widget.lastNyears + " Years";
+            } else {
+                widget.dateRangeName = "Last 0 Years";
+            }
+            widget.lastNdays = "";
+            widget.lastNweeks = "";
+            widget.lastNmonths = "";
+        } else {
+            widget.dateRangeName = dateRangeName;
+            widget.lastNdays = "";
+            widget.lastNweeks = "";
+            widget.lastNmonths = "";
+            widget.lastNyears = "";
+        }
+    }
+
+//    $scope.dateDuration = function (widget, selectDateDuration) {
+//        widget.duration = selectDateDuration.duration;
+//    };
 
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
@@ -197,6 +250,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.tableDef = function (widget) {      //Dynamic Url from columns Type data - Popup
+        var dataSourcePassword;
+        if (widget.dataSetId.dataSourceId.password) {
+            dataSourcePassword = widget.dataSetId.dataSourceId.password;
+        } else {
+            dataSourcePassword = '';
+        }
         if (widget.columns) {
             widget.columns = widget.columns;
             if (widget.dataSetId) {
@@ -209,8 +268,17 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 }
                 if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
-                }                
-                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&dataSetId=" + widget.dataSetId.id + "&accountId=" + $stateParams.accountId + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                }
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
+                        "&dataSetId=" + widget.dataSetId.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + widget.dataSetId.dataSourceId.sqlDriver +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + widget.dataSetId.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
+                        "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     $scope.collectionFields = response.columnDefs;
                 });
@@ -227,7 +295,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
                     url = "admin/proxy/getData?";
                 }
-                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString + "&dataSetId=" + widget.dataSetId.id + "&accountId=" + $stateParams.accountId + "&driver=" + widget.dataSetId.dataSourceId.sqlDriver + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + widget.dataSetId.dataSourceId.userName + '&password=' + widget.dataSetId.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) + "&fieldsOnly=true").success(function (response) {
+                $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
+                        "&dataSetId=" + widget.dataSetId.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + widget.dataSetId.dataSourceId.sqlDriver +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + widget.dataSetId.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
+                        "&fieldsOnly=true").success(function (response) {
                     $scope.collectionFields = [];
                     widget.columns = response.columnDefs;
                     $scope.collectionFields = response.columnDefs;
@@ -255,14 +332,30 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         if (dataSet.dataSourceId.dataSourceType == "facebook") {
             url = "admin/proxy/getData?";
         }
-        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString + "&dataSetId=" + dataSet.id + "&accountId=" + $stateParams.accountId + "&driver=" + dataSet.dataSourceId.sqlDriver + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + dataSet.dataSourceId.userName + '&password=' + dataSet.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) + "&fieldsOnly=true").success(function (response) {
+        var dataSourcePassword;
+        if (dataSet.dataSourceId.password) {
+            dataSourcePassword = dataSet.dataSourceId.password;
+        } else {
+            dataSourcePassword = '';
+        }
+        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
+                "&dataSetId=" + dataSet.id +
+                "&accountId=" + $stateParams.accountId +
+                "&driver=" + dataSet.dataSourceId.sqlDriver +
+                "&startDate=" + $stateParams.startDate +
+                "&endDate=" + $stateParams.endDate +
+                '&username=' + dataSet.dataSourceId.userName +
+                '&password=' + dataSourcePassword +
+                '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) +
+                "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
-            angular.forEach(response.columnDefs, function (value, key) {
-                widget.columns.push({fieldName: value.fieldName, displayName: value.displayName, xAxis: value.xAxis, yAxis: value.yAxis,
-                    agregationFunction: value.agregationFunction, displayFormat: value.displayFormat, fieldType: value.type,
-                    groupPriority: value.groupPriority, sortOrder: value.sortOrder, sortPriority: value.sortPriority});
-
-            });
+            widget.columns = response.columnDefs;
+//            angular.forEach(response.columnDefs, function (value, key) {
+//                widget.columns.push({fieldName: value.fieldName, displayName: value.displayName, xAxis: value.xAxis, yAxis: value.yAxis,
+//                    agregationFunction: value.agregationFunction, displayFormat: value.displayFormat, fieldType: value.type,
+//                    groupPriority: value.groupPriority, sortOrder: value.sortOrder, sortPriority: value.sortPriority});
+//
+//            });
             angular.forEach(response.columnDefs, function (value, key) {
                 $scope.collectionFields.push(value);
             });
@@ -279,16 +372,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.newWidgets = response;
     });
 
-    $scope.addWidget = function (newWidget) {       //Add Widget
-        var data = {
-            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
-        };
-        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            $scope.widgets.unshift({id: response.id, width: newWidget, 'minHeight': 25, columns: [], tableFooter: 1, zeroSuppression: 1});
-            $scope.newWidgetId = response.id;
-            $scope.openPopup(response);
-        });
-    };
+//    $scope.addWidget = function (newWidget) {       //Add Widget
+//        var data = {
+//            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
+//        };
+//        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+//            $scope.widgets.unshift({id: response.id, width: newWidget, 'minHeight': 25, columns: [], tableFooter: 1, zeroSuppression: 1});
+//            $scope.newWidgetId = response.id;
+//            $scope.openPopup(response);
+//        });
+//    };
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
@@ -324,6 +417,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.selectPieChartX = function (widget, column) {
+        if (!column) {
+            return;
+        }
         $scope.editChartType = null;
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
@@ -544,6 +640,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.save = function (widget) {
+        try {
+            $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+            $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+        } catch (e) {
+
+        }
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -551,7 +654,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (value.groupPriority > 0) {
                 hideColumn = 1;
             }
-
             var columnData = {
                 id: value.id,
                 fieldName: value.fieldName,
@@ -579,6 +681,18 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             };
             widgetColumnsData.push(columnData);
         });
+//        var dataSourceType;
+//        var dataSetType;
+//        if (widget.chartType != 'text') {
+//            dataSourceType = widget.dataSourceId.id;
+//        } else {
+//            dataSourceType = ''
+//        }
+//        if (widget.chartType != 'text') {
+//            dataSetType = widget.dataSetId.id;
+//        } else {
+//            dataSetType = '';
+//        }
         var data = {
             id: widget.id,
             chartType: $scope.editChartType ? $scope.editChartType : widget.chartType,
@@ -590,7 +704,15 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
             dateDuration: widget.dateDuration,
-            content: widget.content
+            content: widget.content,
+            width: widget.width,
+            dateRangeName: widget.dateRangeName,
+            lastNdays: widget.lastNdays,
+            lastNweeks: widget.lastNweeks,
+            lastNmonths: widget.lastNmonths,
+            lastNyears: widget.lastNyears,
+            customStartDate: $scope.customStartDate,//widget.customStartDate,
+            customEndDate: $scope.customEndDate//widget.customEndDate
         };
 
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -601,10 +723,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
         $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-    }
-    ;
-}
-);
+    };
+});
 
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
@@ -640,7 +760,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<div class='col-md-12'>" +
                 //Panel Title
                 "<div ng-hide='editPreviewTitle'>" +
-                "<a ng-click='editPreviewTitle = true'>{{previewWidgetTitle}}</a>" +
+                "<a ng-click='editPreviewTitle = true'>{{previewWidgetTitle?previewWidgetTitle:'Widget Title'}}</a>" +
                 "</div>" +
                 "<div ng-show='editPreviewTitle'>" +
                 "<div class='col-sm-8'><input class='form-control' type='text' ng-model='previewWidgetTitle'></div>" +
@@ -709,6 +829,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<li class='input-group col-sm-12'><label>Sort</label><select ng-model='collectionField.sortPriority' class='form-control'>" +
                 "<option ng-repeat='sort in sorting' value='{{sort.value}}'>" +
                 "{{sort.name}}</option></select></li>" +
+                "<li class='input-group col-sm-12'><label>Field Type</label>" +
+                "<select class='form-control' ng-model='collectionField.fieldType' ng-options='fieldType for fieldType in fieldTypes'>" +
+                "</select>" +
+                "</li>" +
                 "<li class='input-group col-sm-12'><label>Format</label><select ng-model='collectionField.displayFormat' class='form-control'>" +
                 "<option ng-repeat='format in formats' value='{{format.value}}'>" +
                 "{{format.name}}</option></select></li>" +
@@ -722,7 +846,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
 //                        "<li><a class='btn' ng-click='deleteColumn($index)'>Delete</a></li>" +
                 "</ul>" +
                 "<button class='btn btn-info btn-sm' ng-click='hidePopover()'>Close</button>&nbsp;" +
-                "<button class='btn btn-warning btn-sm' ng-click='deleteColumn($index)'>Delete</button>" +
+                "<button class='btn btn-warning btn-sm' ng-click='deleteColumn($index); hidePopover()'>Delete</button>" +
                 "</form>" +
                 "</div>" +
                 "</script>" +
@@ -750,7 +874,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             scope.previewTableHeaderName = JSON.parse(scope.previewColumns);
             scope.listColumns = [];
             scope.listColumns = JSON.parse(scope.previewColumns);
-            scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle ? JSON.parse(scope.previewWidget).widgetTitle : "Widget Title";
+            scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
             var widget = JSON.parse(scope.previewWidget);
             scope.selectAggregations = [
                 {name: 'None', value: ""},
@@ -787,6 +911,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 {name: 'asc', value: 'asc'},
                 {name: 'desc', value: 'desc'}
             ];
+            scope.fieldTypes = ['none', 'string', 'number', 'date']
             scope.formats = [
                 {name: "Currency", value: '$,.2f'},
                 {name: "Integer", value: ',.0f'},
@@ -826,7 +951,22 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
                 url = "admin/proxy/getData?";
             }
-            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString + "&dataSetId=" + tableDataSource.id + "&driver=" + tableDataSource.dataSourceId.sqlDriver + "&accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + '&username=' + tableDataSource.dataSourceId.userName + '&password=' + tableDataSource.dataSourceId.password + '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
+
+            var dataSourcePassword;
+            if (tableDataSource.dataSourceId.password) {
+                dataSourcePassword = tableDataSource.dataSourceId.password;
+            } else {
+                dataSourcePassword = '';
+            }
+            $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
+                    "&dataSetId=" + tableDataSource.id +
+                    "&driver=" + tableDataSource.dataSourceId.sqlDriver +
+                    "&accountId=" + $stateParams.accountId +
+                    "&startDate=" + $stateParams.startDate +
+                    "&endDate=" + $stateParams.endDate +
+                    '&username=' + tableDataSource.dataSourceId.userName +
+                    '&password=' + dataSourcePassword +
+                    '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
                 console.log(response)
@@ -835,6 +975,13 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 scope.previewTableHeaderName.splice($index, 1);
             }
             scope.save = function (column) {
+                try {
+                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                } catch (e) {
+
+                }
                 var widgetColumnsData = [];
                 angular.forEach(scope.previewTableHeaderName, function (value, key) {
                     var hideColumn = value.columnHide;
@@ -884,7 +1031,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                     zeroSuppression: JSON.parse(scope.previewWidgetTable).zeroSuppression,
                     maxRecord: JSON.parse(scope.previewWidgetTable).maxRecord,
                     dateDuration: widget.dateDuration,
-                    content: widget.content
+                    content: widget.content,
+                    width: widget.width
                 };
 
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -902,7 +1050,9 @@ app.directive('ckEditor', function () {
     return {
         require: '?ngModel',
         link: function (scope, elm, attr, ngModel) {
-            var ck = CKEDITOR.replace(elm[0]);
+            var ck = CKEDITOR.replace(elm[0], {
+                removeButtons: 'About'
+            });
 
             if (!ngModel)
                 return;
@@ -919,3 +1069,32 @@ app.directive('ckEditor', function () {
         }
     };
 });
+
+app.directive('customWidgetDateRange', function ($stateParams) {
+    return{
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            //Date range as a button
+            $(element[0]).daterangepicker(
+                    {
+                        ranges: {
+//                        'Today': [moment(), moment()],
+//                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+//                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+//                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                        },
+                        startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
+                        endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
+                        maxDate: new Date(),
+                    },
+                    function (start, end) {
+                        $('#widgetDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+                    }
+            );
+
+
+        }
+    }
+})

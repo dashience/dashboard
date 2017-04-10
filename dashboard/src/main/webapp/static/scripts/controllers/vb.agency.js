@@ -15,7 +15,6 @@ app.controller('AgencyController', function ($scope, $http) {
     function getAgency() {
         $http.get('admin/user/agency').success(function (response) {
             $scope.agencies = response;
-            //  $scope.editAgency(response[0], 0);
         });
     }
     getAgency();
@@ -54,7 +53,7 @@ app.controller('AgencyController', function ($scope, $http) {
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
         getAgencyLicence(agency)
-        $scope.agencyLicenceId = agency;
+        $scope.agencyById = agency;
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
@@ -65,6 +64,8 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $scope.agency = data;
         $scope.selectedRow = index;
+        $scope.showAgencyUserForm = false;
+        $scope.showAgencyProductForm = false;
     };
     $scope.clearAgency = function () {
         $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
@@ -82,10 +83,8 @@ app.controller('AgencyController', function ($scope, $http) {
         $http.get('admin/user/agencyLicence/' + agency.id).success(function (response) {
             $scope.agencyLicence = {}
             $scope.agencyLicences = response;
-            console.log($scope.agencyLicences)
             angular.forEach(response, function (value, key) {
                 $scope.agencyLicence = {id: value.id, maxNoTab: value.maxNoTab, maxNoUser: value.maxNoUser, maxNoClient: value.maxNoClient, maxNoAccount: value.maxNoAccount, expiryDate: value.expiryDate, maxNoWidgetPerTab: value.maxNoWidgetPerTab}
-                console.log($scope.agencyLicence)
             });
         });
 
@@ -99,10 +98,9 @@ app.controller('AgencyController', function ($scope, $http) {
     }
 
     $scope.saveAgencyLicence = function (agencyLicence) {
-        console.log($scope.agencyLicenceId)
         var data = {
             id: agencyLicence.id,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             maxNoTab: agencyLicence.maxNoTab,
             maxNoUser: agencyLicence.maxNoUser,
             maxNoClient: agencyLicence.maxNoClient,
@@ -130,11 +128,11 @@ app.controller('AgencyController', function ($scope, $http) {
             password: agencyUser.password,
             primaryPhone: agencyUser.primaryPhone,
             secondaryPhone: agencyUser.secondaryPhone,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
         };
 
         $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
-            getAgencyLicence($scope.agencyLicenceId);
+            getAgencyLicence($scope.agencyById);
         });
         $scope.agencyUser = "";
         $scope.showAgencyUserForm = false;
@@ -151,19 +149,18 @@ app.controller('AgencyController', function ($scope, $http) {
     }
     $scope.selectedRows = null;
     $scope.setAccountUserRow = function (agencyProduct, index) {
-        console.log(index);
         var data = {
             id: agencyProduct.id,
             productName: agencyProduct.productName,
             icon: $scope.agencyProduct.icon,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             showProduct: agencyProduct.showProduct
         }
         $scope.agencyProduct = data;
         $scope.selectedRows = index;
         $scope.showAgencyProductForm = true;
-//        console.log($index.productName);
-    }
+    };
+    
     $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
     $scope.productIcon = function (event) {
         var files = event.target.files;
@@ -180,8 +177,7 @@ app.controller('AgencyController', function ($scope, $http) {
         });
     };
     $scope.saveAgencyProduct = function (agencyProduct) {
-        var agencyProductId = $scope.agencyLicenceId;
-        console.log(agencyProductId)
+        var agencyProductId = $scope.agencyById;
         if ($scope.agencyProduct.icon === "static/img/logos/deeta-logo.png") {
             $scope.agencyProduct.icon = "";
         }
@@ -189,7 +185,7 @@ app.controller('AgencyController', function ($scope, $http) {
             id: agencyProduct.id,
             productName: agencyProduct.productName,
             icon: $scope.agencyProduct.icon,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             showProduct: agencyProduct.showProduct
         };
         $http({method: agencyProduct.id ? 'PUT' : 'POST', url: 'admin/user/agencyProduct', data: data}).success(function (response) {
@@ -203,21 +199,31 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
     };
     $scope.selectedAgencyProduct = null;
-    $scope.setAgencyUserRow = function (agencyProduct, index) {
+    $scope.deleteAgencyProduct = function (agencyProduct, index) {
+        $http({method: 'Delete', url: 'admin/user/agencyProduct/' + agencyProduct.id}).success(function (response) {
+            $scope.agencyProducts.splice(index, 1);
+        });
+    }
+    $scope.setAgencyProductRow = function (agencyProduct, index) {
+        $scope.selectedAgencyProduct = index;
+    }
+    $scope.editAgencyProduct = function (agencyProduct) {
         var data = {
             id: agencyProduct.id,
             productName: agencyProduct.productName,
             icon: agencyProduct.icon,
-            agencyId: $scope.agencyLicenceId.id,
+            agencyId: $scope.agencyById.id,
             showProduct: agencyProduct.showProduct
-        }
+        };
         $scope.agencyProduct = data;
-        $scope.selectedAgencyProduct = index;
-        $scope.showAgencyProductForm = true;     
+        $scope.showAgencyProductForm = true;
     }
     $scope.changeOrder = function (s) {
-        var agencyProductId = $scope.agencyLicenceId;
-//        console.log(s)
+        var agencyProductId = $scope.agencyById;
+        if(!agencyProductId){
+            return;
+        }
+        //console.log(s)
 //if()
         var order = s.map(function (value, key) {
             if (value) {
@@ -227,7 +233,7 @@ app.controller('AgencyController', function ($scope, $http) {
         console.log(order)
 
 //        if (order) {
-//            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
+            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
 //        }
     };
 });
