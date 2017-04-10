@@ -125,13 +125,23 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     }
 
+    $scope.showReportWidgetName = false;
     $scope.selectReport = function (reportWidget) {
+    $scope.showReportWidgetName = false;
+        $scope.reportWidgetTitle = []
         console.log(reportWidget)
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
         $http.get("admin/ui/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
             console.log(response)
-            $scope.reportWidgetTitle=response;
+            if (response.length > 0) {
+                $scope.showReportWidgetName = true;
+                $scope.reportWidgetTitle = response;
+                $scope.showReportEmptyMessage = false;
+            } else {
+                $scope.showReportEmptyMessage = true;
+                $scope.reportEmptyMessage = "No Data Found"
+            }
         })
     }
 
