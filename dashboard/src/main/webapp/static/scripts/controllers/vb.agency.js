@@ -229,7 +229,6 @@ app.controller('AgencyController', function ($scope, $http) {
             });
         } else {
             if (!$scope.agencyProduct.icon) {
-                alert("test")
                 $scope.productIconEmptyMessage = "Product Icon Required";
 
             } else {
