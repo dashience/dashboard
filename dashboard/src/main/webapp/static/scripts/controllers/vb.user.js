@@ -69,8 +69,21 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
 //        };
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
             getUser();
+            if (response.status == true) {
+                    $scope.user = "";
+                } else {
+                    var dialog = bootbox.dialog({
+                        title: 'Alert',
+                        message: response.message
+                    });
+                    dialog.init(function () {
+                        setTimeout(function () {
+                            dialog.modal('hide');
+                        }, 2000);
+                    });
+                }
         });
-        $scope.user = "";
+        
     };
 
     $scope.clearUser = function () {

@@ -155,9 +155,22 @@ app.controller('AgencyController', function ($scope, $http) {
             };
             $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
                 getAgencyLicence($scope.agencyById);
+                if (response.status == true) {
+                    $scope.agencyUser = "";
+                    $scope.showAgencyUserForm = false;
+                } else {
+                    var dialog = bootbox.dialog({
+                        title: 'Alert',
+                        message: response.message
+                    });
+                    dialog.init(function () {
+                        setTimeout(function () {
+                            dialog.modal('hide');
+                        }, 2000);
+                    });
+                }
+                console.log(response);
             });
-            $scope.agencyUser = "";
-            $scope.showAgencyUserForm = false;
         }
     };
 
@@ -217,7 +230,7 @@ app.controller('AgencyController', function ($scope, $http) {
         } else {
             if (!$scope.agencyProduct.icon) {
                 alert("test")
-                $scope.productIconEmptyMessage="Product Icon Required";
+                $scope.productIconEmptyMessage = "Product Icon Required";
 
             } else {
                 var data = {
@@ -232,14 +245,14 @@ app.controller('AgencyController', function ($scope, $http) {
                     $scope.showAgencyProductForm = false;
                 });
                 $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
-                $scope.productIconEmptyMessage="";
+                $scope.productIconEmptyMessage = "";
             }
         }
     };
     $scope.clearAgencyProduct = function () {
         $scope.showAgencyProductForm = false;
         $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
-        $scope.productIconEmptyMessage="";
+        $scope.productIconEmptyMessage = "";
     };
     $scope.selectedAgencyProduct = null;
     $scope.deleteAgencyProduct = function (agencyProduct, index) {
