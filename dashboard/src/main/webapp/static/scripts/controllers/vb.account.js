@@ -62,6 +62,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         };
         $scope.account = data;
         $scope.selectedRow = index;
+        $scope.showEditPage = false;
     };
 
     $scope.clearAccount = function () {

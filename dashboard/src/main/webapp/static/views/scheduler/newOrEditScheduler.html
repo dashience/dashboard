@@ -115,7 +115,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">
+                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly'">
+                            <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
                                 <div class="col-md-12">
 
                                     <label >Select Week</label>
@@ -124,7 +125,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">
+                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
+                            <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
                                 <div class="col-md-12">
                                     <label >Time</label>
                                     <div>
@@ -140,7 +142,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
+<!--                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
                                 <div class="col-md-12">
                                     <label>Select Month, Date And Time</label>
                                     <div>
@@ -160,7 +162,7 @@
                                         </ui-select>
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
 
 
                         </div>
@@ -197,10 +199,6 @@
                                         </ui-select>
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-6">
@@ -324,7 +322,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="col-sm-2">
+<!--                                    <div class="col-sm-2">
                                         <label class="scheduler-checkBox-label">
                                             <span>XLS</span>
                                         </label>
@@ -332,7 +330,7 @@
                                             <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'xls'" ng-true-value="'xls'" ng-model="scheduler.schedulerType" /> 
 
                                         </div>
-                                    </div>
+                                    </div>-->
 
                                 </div>
                             </div>

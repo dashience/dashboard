@@ -129,6 +129,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(reportWidget)
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
+        $http.get("admin/ui/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
+            console.log(response)
+            $scope.reportWidgetTitle=response;
+        })
     }
 
 //    $scope.setLineFn = function (lineFn) {
@@ -1030,7 +1034,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         var loopCount = 0;
                         var chartData = response.data;
                         if (sortFields.length > 0) {
-                            chartData = scope.orderData(chartData, sortFields);                            
+                            chartData = scope.orderData(chartData, sortFields);
                         }
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {

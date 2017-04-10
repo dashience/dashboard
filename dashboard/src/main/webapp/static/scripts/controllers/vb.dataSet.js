@@ -782,6 +782,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.searchDataSourceItems.push({name:value.name, value: value.name, id: value.id});
         });
     });
+    
+    $scope.selectedItems = {name: "All Data Source", value:  '', id: 0}
 
     $scope.selectXlsSheet = function (dataSource) {
         if (dataSource.dataSourceType == 'xls') {

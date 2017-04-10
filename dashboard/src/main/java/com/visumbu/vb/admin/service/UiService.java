@@ -196,6 +196,13 @@ public class UiService {
         tabWidget.setDataSourceId(dataSource);
         tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setContent(tabWidgetBean.getContent());
+        tabWidget.setDateRangeName(tabWidgetBean.getDateRangeName());
+        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
+        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
+        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
+        tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
+        tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
+        tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
         uiDao.deleteWidgetColumns(tabWidget.getId());

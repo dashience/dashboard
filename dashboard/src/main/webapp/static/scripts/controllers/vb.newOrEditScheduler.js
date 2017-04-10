@@ -3,7 +3,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
+    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly"];
+//    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
     $scope.weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     $http.get("admin/ui/report").success(function (response) {
@@ -271,6 +272,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                     maxDate: new Date()
                 },
                 function (start, end) {
+
                     $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
                 }
         );

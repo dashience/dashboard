@@ -64,6 +64,8 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $scope.agency = data;
         $scope.selectedRow = index;
+        $scope.showAgencyUserForm = false;
+        $scope.showAgencyProductForm = false;
     };
     $scope.clearAgency = function () {
         $scope.agency = {logo: "static/img/logos/deeta-logo.png"};

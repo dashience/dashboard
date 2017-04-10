@@ -10,6 +10,7 @@
                         <th>End Date</th>
                         <!--<th>Next Execution Time</th>-->
                         <th>Last Execution Status</th>
+                        <th>Scheduler Type</th>
                         <th>Enable/Disable</th>
                         <th>
                             <button class="btn btn-success btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({accountId: accountId, accountName: accountName, schedulerId: 0, startDate: startDate, endDate: endDate})"><i class="fa fa-plus"></i></button>
@@ -17,13 +18,13 @@
                     </tr>
                 </thead>
                 <tbody ng-repeat="scheduler in schedulers" ng-switch on="dayDataCollapse[$index]">
-                    <tr >
+                    <tr>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{$index + 1}}</td>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.schedulerName}}</td>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.startDate| date: 'MM/dd/yyyy'}}</td>
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.endDate| date: 'MM/dd/yyyy'}}</td>
-                        <!--<td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.startDate| date: 'MM/dd/yyyy'}}</td>-->
                         <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.lastExecutionStatus}}</td>
+                        <td ng-click="showSchedulerHistory(scheduler);selectTableRow($index, scheduler.id)">{{scheduler.schedulerRepeatType}}</td>
                         <td>
                             <div class="checkbox checkbox-slider--b schedule-on">
                                 <label class="" for="field{{$index + 1}}">
@@ -83,16 +84,16 @@
                                     <table class="table table-bordered text-center">
                                         <thead>
                                             <tr class="success">
-                                                <td colspan="2">schedulerName</td>
-                                                <td>StartDate</td>
-                                                <td>StartTime</td>
-                                                <td>EndTime</td>
+                                                <td colspan="2">scheduler Name</td>
+                                                <td>Start Date</td>
+                                                <td>Start Time</td>
+                                                <td>End Time</td>
                                                 <td>status</td>
-                                                <td colspan="2">FileName</td>
+                                                <td colspan="2">File Name</td>
                                             </tr>                                            
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="history in schedularHistoryDetails" class="success" >
+                                            <tr ng-repeat="history in schedularHistoryDetails | limitTo:-10 | orderBy: '-executionStartTime'" class="success" >
                                                 <td colspan="2">{{history.schedulerName}}</td>
                                                 <td>{{history.startDate}}</td>
                                                 <td>{{history.executionStartTime}}</td>

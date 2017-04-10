@@ -29,15 +29,14 @@
     .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
         display: none !important;
     }
-
 </style>
-
 <body class="fixed-navbar">
     <div id="logo">
         <span>
             <img src="static/img/logos/deeta-logo.png" width="100" />
         </span>
     </div>
+
     <!--<section class="content-header header-menu" ng-controller="HeaderController">
         <ol class="breadcrumb">
             <li>
@@ -67,9 +66,6 @@
             </li>
         </ol>
     </section>-->
-
-
-
     <nav role="navigation" ng-controller="HeaderController">
         <!-- <div class="header-link hide-menu"><i class="fa fa-bars"></i></div>-->
         <div class="small-logo">
@@ -77,7 +73,7 @@
                 <img src="static/img/logos/deeta-logo.png" width="100" />
             </span>
         </div>
-        <form ng-hide="hideLocation" role="search" class="navbar-form-custom" method="post" action="#">
+        <form role="search" class="navbar-form-custom" method="post" action="#">
             <div class="form-group">
                 <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
                     <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
@@ -86,16 +82,8 @@
                     </ui-select-choices>
                 </ui-select>
             </div>
-            <!--            <div class="form-group">
-                            <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                                <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
-                                <ui-select-choices repeat="account in accounts | filter: $select.search">
-                                    <span ng-bind-html="account.accountName | highlight: $select.search"></span>
-                                </ui-select-choices>
-                            </ui-select>
-                        </div>-->
-
         </form>
+        
         <div class="mobile-menu">
             <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
                 <i class="fa fa-chevron-down"></i>
@@ -124,42 +112,28 @@
                 <li class="button-submit"> <span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
             </ul>
             <ul class="nav navbar-nav no-borders">
-
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         <i class="pe-7s-keypad"></i>
                     </a>
-
                     <div class="dropdown-menu hdropdown bigmenu animated flipInX">
                         <div class="col-lg-12 row">
                             <div ng-repeat="product in products| orderBy:'productOrder'">
                                 <ul class="col-lg-3 icon-dash"  ng-if="product.showProduct == 1">
                                     <li class="product-dashboard-icon">
-                                        <a class="active" ng-click="setParamsProduct(product)" 
-                                           data-ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, productId: product.id, tabId: tabId, startDate: startDate, endDate: endDate})">
+                                        <a class="active" ng-click="setParamsProduct(product)">
+                                           <!--data-ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, productId: product.id, tabId: tabId, startDate: startDate, endDate: endDate})">-->
                                             <img class="product-icon img-responsive" ng-src="{{product.icon}}"/> 
-                                            <!--<h5>{{product.productName}}</h5>-->
-                                            <!--<i class="fa fa-fighter-jet" aria-hidden="true"></i> <h5>{{product.productName}}</h5>-->
                                         </a>
                                     </li>
                                 </ul>
                             </div>
-
-                            <!--                            <div>
-                                                            <ul class="col-lg-3 icon-dash">
-                                                                <li class="product-dashboard-icon" ng-click="setParams(); hideLocationBox('franchiseMarketing')">
-                                                                    <a data-ui-sref="index.franchiseMarketing({locationId: locationId, startDate: startDate, endDate: endDate})"><i class="pe-7s-graph2 text-info"></i> <h5>Franchise Marketing</h5></a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>-->
-
                             <div class="clear">
                                 <div ng-if="permission.createDataSource === true;">
                                     <ul class="col-lg-3 icon-dash">                                    
                                         <li class="product-dashboard-icon" ng-click="setParams()">
                                             <a data-ui-sref="index.dataSource({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <img src="static/img/logos/data-source.png" width="117">
-                                                <!--<i class="fa fa-database text-warning"></i> <h5>Data Source</h5>-->
                                             </a>
                                         </li>
                                     </ul>
@@ -201,7 +175,7 @@
                                     </ul>
                                 </div>                                                              
                             </div>
-                            <div>
+                            <div ng-if="permission.createReport === true;">
                                 <ul class="col-lg-3 icon-dash"> 
                                     <li class="product-dashboard-icon" ng-click="setParams()">
                                         <a data-ui-sref="index.report.reports({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">

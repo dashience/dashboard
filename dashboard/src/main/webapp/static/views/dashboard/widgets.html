@@ -388,15 +388,32 @@
                         <div class="report-body-img">
                             <img class="report-body-imgs in" src="{{reportLogo}}">
                         </div>
-                        <ul class="report-body-descr" ng-if="reportDescription">
-                            <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
-                                <p>
-                                    {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
-                                    <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
-                                    <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
-                                </p>
-                            </li>
-                        </ul>
+                        <div class="form-group">
+                            <ul class="report-body-descr" ng-if="reportDescription">
+                                <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
+                                    <p>
+                                        {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
+                                        <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
+                                        <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                        <br>
+                        <div class="form-horizontal col-sm-6 col-md-offset-3">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Widget Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="titleName in reportWidgetTitle">
+                                        <td>{{titleName.widgetId.widgetTitle}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="report-footer-btn">
                         <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
