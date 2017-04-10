@@ -220,6 +220,9 @@
         margin: 0 0 10px;
         word-wrap: break-word;
     }
+    .report-chat-box {
+        margin-bottom: 10px;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
@@ -385,19 +388,21 @@
                         </ui-select>
                     </div>
                     <div class="report-body-content">
-                        <div class="report-body-img">
-                            <img class="report-body-imgs in" src="{{reportLogo}}">
-                        </div>
-                        <div class="form-group">
-                            <ul class="report-body-descr" ng-if="reportDescription">
-                                <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
-                                    <p>
-                                        {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
-                                        <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
-                                        <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
-                                    </p>
-                                </li>
-                            </ul>
+                        <div class="row report-chat-box">
+                            <div class="report-body-img">
+                                <img class="report-body-imgs in" src="{{reportLogo}}">
+                            </div>
+                            <div class="form-group">
+                                <ul class="report-body-descr" ng-if="reportDescription">
+                                    <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
+                                        <p>
+                                            {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
+                                            <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
+                                            <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div class="row form-group">

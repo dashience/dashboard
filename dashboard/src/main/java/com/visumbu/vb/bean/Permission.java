@@ -156,7 +156,7 @@ public class Permission {
     
     public String setPermission(String permissionName, Boolean permission) {
         try {
-            // System.out.println("Permission Name " + permissionName + " Permission Value " + permission);
+             System.out.println("Permission Name " + permissionName + " Permission Value " + permission);
             PropertyUtils.setProperty(this, permissionName, permission);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
             // Logger.getLogger(Permission.class.getName()).log(Level.SEVERE, null, ex);

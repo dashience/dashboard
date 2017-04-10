@@ -54,7 +54,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Scheduler.findByLastNweeks", query = "SELECT s FROM Scheduler s WHERE s.lastNweeks = :lastNweeks")
     , @NamedQuery(name = "Scheduler.findByLastNyears", query = "SELECT s FROM Scheduler s WHERE s.lastNyears = :lastNyears")
     , @NamedQuery(name = "Scheduler.findByIsAccountEmail", query = "SELECT s FROM Scheduler s WHERE s.isAccountEmail = :isAccountEmail")
-    , @NamedQuery(name = "Scheduler.findByStatus", query = "SELECT s FROM Scheduler s WHERE s.status = :status")})
+    , @NamedQuery(name = "Scheduler.findByStatus", query = "SELECT s FROM Scheduler s WHERE s.status = :status")
+    , @NamedQuery(name = "Scheduler.findByLastExecutionStatus", query = "SELECT s FROM Scheduler s WHERE s.lastExecutionStatus = :lastExecutionStatus")})
 public class Scheduler implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -124,6 +125,9 @@ public class Scheduler implements Serializable {
     @Size(max = 45)
     @Column(name = "status")
     private String status;
+    @Size(max = 255)
+    @Column(name = "last_execution_status")
+    private String lastExecutionStatus;
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     @ManyToOne
     private Report reportId;
@@ -323,6 +327,14 @@ public class Scheduler implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getLastExecutionStatus() {
+        return lastExecutionStatus;
+    }
+
+    public void setLastExecutionStatus(String lastExecutionStatus) {
+        this.lastExecutionStatus = lastExecutionStatus;
     }
 
     public Report getReportId() {

@@ -273,8 +273,14 @@ public class UserService {
     public List<Account> getAccount(Agency agency) {
         return userDao.getAccountByAgency(agency);
     }
+    
+    public String getAccountName(Integer id) {
+        return userDao.getAccountName(id);
+    }
 
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
+        System.out.println("==================================>");
+        System.out.println(agencyProduct);
         return (AgencyProduct) userDao.create(agencyProduct);
     }
 
@@ -288,6 +294,10 @@ public class UserService {
 
     public String productUpdateOrder(Integer agencyProductId, String productOrder) {
         return userDao.productUpdateOrder(agencyProductId, productOrder);
+    }
+
+    public AgencyProduct deleteAgencyProductId(Integer agencyProductId) {
+        return userDao.deleteAgencyProduct(agencyProductId);
     }
 
 }

@@ -89,6 +89,8 @@ public class SchedulerService {
         scheduler.setLastNyears(schedulerBean.getLastNyears());
         scheduler.setSchedulerEmail(schedulerBean.getSchedulerEmail());
         scheduler.setIsAccountEmail(schedulerBean.getIsAccountEmail());
+        scheduler.setLastExecutionStatus(schedulerBean.getLastExecutionStatus());
+        scheduler.setStatus(schedulerBean.getStatus());
         scheduler.setReportId(schedulerBean.getReportId());
         scheduler.setAgencyId(schedulerBean.getAgencyId());
         scheduler.setAccountId(schedulerBean.getAccountId());
@@ -124,6 +126,8 @@ public class SchedulerService {
         scheduler.setLastNyears(schedulerBean.getLastNyears());
         scheduler.setSchedulerEmail(schedulerBean.getSchedulerEmail());
         scheduler.setIsAccountEmail(schedulerBean.getIsAccountEmail());
+        scheduler.setLastExecutionStatus(schedulerBean.getLastExecutionStatus());
+        scheduler.setStatus(schedulerBean.getStatus());
         scheduler.setReportId(schedulerBean.getReportId());
         scheduler.setAgencyId(schedulerBean.getAgencyId());
         scheduler.setAccountId(schedulerBean.getAccountId());
@@ -133,6 +137,10 @@ public class SchedulerService {
 
     public List<SchedulerHistory> getSchedulerHistoryById(Integer schedulerId) {
         return schedulerDao.getSchedulerHistoryById(schedulerId);
+    }
+
+    public Scheduler updateSchedulerEnableDisable(Scheduler scheduler) {
+       return schedulerDao.updateSchedulerEnableDisable(scheduler);
     }
     
 }

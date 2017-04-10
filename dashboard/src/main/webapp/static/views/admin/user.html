@@ -137,7 +137,7 @@
                                                     </div>
                                                 </td>                                                
                                                 <td class="col-xs-3">
-                                                    <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount); userAccount.isEdit = false;"><i class="fa fa-save"></i></button>
+                                                    <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount)"><i class="fa fa-save"></i></button>
                                                     <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="removeUserAccount($index)"><i class="fa fa-times"></i></button>
                                                     <button ng-hide="userAccount.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash-o"></i></button>
                                                     <div class="modal hmodal-success" id="deleteUserAccount{{userAccount.id}}" tabindex="-1" role="dialog"  aria-hidden="true">

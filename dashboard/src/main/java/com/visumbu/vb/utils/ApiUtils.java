@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.utils;
 
+import com.visumbu.api.bing.report.xml.bean.Data;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author user
  */
 public class ApiUtils {
-
 
     public static Integer toInteger(String string) {
         try {
@@ -53,12 +53,9 @@ public class ApiUtils {
         return "Unknown";
     }
 
-   
-
     public static String toGaAccountId(String ppcBingAccountId) {
         return ppcBingAccountId.substring(0, 3) + "-" + ppcBingAccountId.substring(3, 6) + "-" + ppcBingAccountId.substring(6);
     }
-
 
     public static String removePercent(String value) {
         if (value == null) {
@@ -73,16 +70,33 @@ public class ApiUtils {
         return "0.0";
     }
 
+    public static Data removePercent(Data value) {
+        Data data = new Data();
+        String value1 = value.getValue();
+        if (value == null) {
+            data.setValue("0.0");
+            return data;
+        }
+        value1 = value1.replaceAll("%", "");
+        try {
+            data.setValue((Double.parseDouble(value1) / 100.0) + "");
+            return data;
+        } catch (Exception e) {
+
+        }
+        data.setValue("0.0");
+        return data;
+    }
 
     public static String toMins(String seconds) {
         Double secondsInt = toDouble(seconds);
-        Double minsInt = secondsInt/60;
-        secondsInt = secondsInt%60;
+        Double minsInt = secondsInt / 60;
+        secondsInt = secondsInt % 60;
         return String.format("%02d", minsInt.intValue()) + ":" + String.format("%02d", secondsInt.intValue());
     }
 
-     public static void main(String[] argv) {
+    public static void main(String[] argv) {
         System.out.println(toMins("7468"));
     }
-    
+
 }

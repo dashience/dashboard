@@ -8,8 +8,6 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
-import com.visumbu.vb.bean.ReportColumnBean;
-import com.visumbu.vb.bean.ReportWidgetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
 import com.visumbu.vb.model.AgencyProduct;
@@ -20,7 +18,6 @@ import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
-import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
@@ -28,21 +25,12 @@ import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -140,6 +128,7 @@ public class UiService {
     public List<TabWidget> getTabWidget(Integer tabId) {
         return uiDao.getTabWidget(tabId);
     }
+
     public List<TabWidget> getReportWidgetByWidgetId(Integer widgetId) {
         return uiDao.getReportWidgetByWidgetId(widgetId);
     }
@@ -205,8 +194,15 @@ public class UiService {
         tabWidget.setDataset(tabWidgetBean.getDataset());
         tabWidget.setDataSetId(dataSet);
         tabWidget.setDataSourceId(dataSource);
+        tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setContent(tabWidgetBean.getContent());
-        tabWidget.setCreatedTime(tabWidgetBean.getCreatedTime());
+        tabWidget.setDateRangeName(tabWidgetBean.getDateRangeName());
+        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
+        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
+        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
+        tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
+        tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
+        tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
         uiDao.deleteWidgetColumns(tabWidget.getId());
@@ -417,70 +413,14 @@ public class UiService {
     }
 
     public DataSource saveDataSource(DataSourceBean dataSource) {
-        HSSFWorkbook workBook = new HSSFWorkbook();
-
         try {
             DataSource dbDataSource = new DataSource();
             BeanUtils.copyProperties(dbDataSource, dataSource);
-            String filename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + "-";
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("csv")) {
-                filename = filename + dataSource.getSourceFileName();
-                PrintWriter out = new PrintWriter(filename);
-                out.print(dataSource.getSourceFile());
-                out.close();
-                dbDataSource.setConnectionString(filename);
-                dbDataSource.setSqlDriver(dataSource.getSourceFileName());
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("xls")) {
-                filename = filename + dataSource.getSourceFileName();
-                System.out.println(filename);
-                FileOutputStream fos = new FileOutputStream(filename);
-                workBook.write(fos);
-                fos.flush();
-                fos.close();
-                //PrintWriter out = new PrintWriter(filename);
-                //out.print(dataSource.getSourceFile());
-                //out.close();
-//                out.close();
-
-                //FileInputStream fstream = new FileInputStream(filename);
-//                PrintWriter out = new PrintWriter(filename);
-//                out.print(dataSource.getSourceFile());
-//                out.close();
-                dbDataSource.setConnectionString(filename);
-                dbDataSource.setSqlDriver(dataSource.getSourceFileName());
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("sql")) {
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("https")) {
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("facebook")) {
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("linkedin")) {
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("instagram")) {
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("adwords")) {
-                uiDao.create(dbDataSource);
-            }
-            if (dbDataSource.getDataSourceType().equalsIgnoreCase("analytics")) {
-                uiDao.create(dbDataSource);
-            }
+            uiDao.create(dbDataSource);
 
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -568,5 +508,9 @@ public class UiService {
 
     public UserPermission deleteUserPermission(Integer userPermissionId) {
         return uiDao.deleteUserPermission(userPermissionId);
+    }
+
+    public DataSource getDataSourceById(Integer dataSourceIdInt) {
+        return uiDao.getDataSourceById(dataSourceIdInt);
     }
 }

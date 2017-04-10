@@ -119,7 +119,6 @@ public class Account implements Serializable {
     public void setEmailId(String emailId) {
         this.emailId = emailId;
     }
-    
 
     @Override
     public int hashCode() {
@@ -155,5 +154,5 @@ public class Account implements Serializable {
     public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
         this.schedulerCollection = schedulerCollection;
     }
-    
+
 }
