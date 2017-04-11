@@ -20,7 +20,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             $scope.properties = response;
             console.log(response)
         });
-        
+
         $http.get('admin/user/userAccount/' + account.id).success(function (response) {
             $scope.accountUsers = response;
             console.log(response)
@@ -46,7 +46,6 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         $http({method: account.id ? 'PUT' : 'POST', url: 'admin/user/account', data: account}).success(function (response) {
             getAccount();
         });
-
         $scope.account = "";
     };
 
@@ -84,20 +83,32 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         var accountId = $scope.accountUserId;
         console.log($scope.accountUserId);
         console.log(accountId);
-        var data = {
-            id: property.id,
-            propertyName: property.propertyName,
-            accountId: accountId.id, //property.accountId,
-            propertyValue: property.propertyValue,
-            propertyRemark: property.propertyRemark
+        if (!accountId) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Account</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            var data = {
+                id: property.id,
+                propertyName: property.propertyName,
+                accountId: accountId.id, //property.accountId,
+                propertyValue: property.propertyValue,
+                propertyRemark: property.propertyRemark
+            }
+
+            $http({method: property.id ? 'PUT' : 'POST', url: 'admin/user/property', data: data}).success(function (response) {
+                getAccountProperty(accountId);
+            });
+
+            $scope.property = "";
+            $scope.showEditPage = false;
         }
-
-        $http({method: property.id ? 'PUT' : 'POST', url: 'admin/user/property', data: data}).success(function (response) {
-            getAccountProperty(accountId);
-        });
-
-        $scope.property = "";
-        $scope.showEditPage = false;
     };
 
     $scope.editProperty = function (property) {
@@ -148,17 +159,29 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
 
     $scope.saveAccountUser = function (accountUser) {
         var account = $scope.accountUserId;
-        var data = {
-            id: accountUser.id,
-            accountId: account.id, //accountUser.accountId,
-            userId: accountUser.userId,
-            status: accountUser.status
-        };
-        $http({method: accountUser.id ? 'PUT' : 'POST', url: 'admin/user/userAccount', data: data}).success(function (response) {
-            getAccountProperty(account);
-        });
-
-        $scope.accountUser = "";
+        if (!account) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Account</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            var data = {
+                id: accountUser.id,
+                accountId: account.id, //accountUser.accountId,
+                userId: accountUser.userId,
+                status: accountUser.status
+            };
+            $http({method: accountUser.id ? 'PUT' : 'POST', url: 'admin/user/userAccount', data: data}).success(function (response) {
+                getAccountProperty(account);
+            });
+            $scope.accountUser = "";
+            accountUser.isEdit = false;
+        }
     };
 
     $scope.editAccountUser = function (accountUser) {

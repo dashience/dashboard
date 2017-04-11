@@ -279,6 +279,8 @@ public class UserService {
     }
 
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
+        System.out.println("==================================>");
+        System.out.println(agencyProduct);
         return (AgencyProduct) userDao.create(agencyProduct);
     }
 

@@ -83,6 +83,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         data.reportId = widget.reportWidget.id;
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/reportWidget', data: data}).success(function (response) {
         });
+        $scope.reportLogo = "";
+        $scope.reportDescription = "";
+        $scope.reportWidgetTitle = "";
+        $scope.showReportWidgetName = false;
+    };
+    
+    $scope.clearReport = function(){
+        $scope.reportLogo = "";
+        $scope.reportDescription = "";
+        $scope.reportWidgetTitle = "";
+        $scope.showReportWidgetName = false;
     };
 
     $scope.goReport = function () {
