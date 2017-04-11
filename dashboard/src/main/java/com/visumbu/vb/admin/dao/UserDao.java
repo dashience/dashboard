@@ -54,6 +54,31 @@ public class UserDao extends BaseDao {
         query.setParameter("userName", username);
         return query.list();
     }
+    public List<Account> findByAccountName(String accountName) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from Account where agencyId is null and accountName = :accountName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("accountName", accountName);
+        List<Account> accounts = query.list();
+        if (!accounts.isEmpty()) {
+            return accounts;
+        }
+
+        query = sessionFactory.getCurrentSession().createQuery("from Account where (agencyId is null or agencyId.status is null or agencyId.status != 'Deleted') and (status is null or status != 'Deleted') and accountName = :accountName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("accountName", accountName);
+        return query.list();
+    }
+    public List findByAgencyName(String agencyName) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyName = :agencyName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("agencyName", agencyName);
+        List<Agency> agencies = query.list();
+        if (!agencies.isEmpty()) {
+            return agencies;
+        }
+
+        query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyName = :agencyName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("agencyName", agencyName);
+        return query.list();
+    }
+
 
     public VbUser createNewUser(String userId, String userName, String fullName) {
         VbUser user = new VbUser();
@@ -314,4 +339,5 @@ public class UserDao extends BaseDao {
         return null;
     }
 
+    
 }
