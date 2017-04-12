@@ -251,6 +251,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $scope.tableDef = function (widget) {      //Dynamic Url from columns Type data - Popup
         var dataSourcePassword;
+        if (!widget.dataSetId) {
+            return;
+        }
         if (widget.dataSetId.dataSourceId.password) {
             dataSourcePassword = widget.dataSetId.dataSourceId.password;
         } else {
@@ -414,6 +417,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
+        if (chartType.type == 'text') {
+            widget.dataSetId = '';
+            widget.dataSourceId = '';
+        }
     };
 
     $scope.selectPieChartX = function (widget, column) {
@@ -681,25 +688,25 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             };
             widgetColumnsData.push(columnData);
         });
-//        var dataSourceType;
-//        var dataSetType;
-//        if (widget.chartType != 'text') {
-//            dataSourceType = widget.dataSourceId.id;
-//        } else {
-//            dataSourceType = ''
-//        }
-//        if (widget.chartType != 'text') {
-//            dataSetType = widget.dataSetId.id;
-//        } else {
-//            dataSetType = '';
-//        }
+        var dataSourceTypeId;
+        var dataSetTypeId;
+        if (widget.chartType != 'text') {
+            dataSourceTypeId = widget.dataSourceId.id;
+        } else {
+            dataSourceTypeId = 0;
+        }
+        if (widget.chartType != 'text') {
+            dataSetTypeId = widget.dataSetId.id;
+        } else {
+            dataSetTypeId = 0;
+        }
         var data = {
             id: widget.id,
             chartType: $scope.editChartType ? $scope.editChartType : widget.chartType,
             widgetTitle: widget.widgetTitle,
             widgetColumns: widgetColumnsData,
-            dataSourceId: widget.dataSourceId.id,
-            dataSetId: widget.dataSetId.id,
+            dataSourceId: dataSourceTypeId,
+            dataSetId: dataSetTypeId,
             tableFooter: widget.tableFooter,
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
@@ -711,7 +718,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            customStartDate: $scope.customStartDate,//widget.customStartDate,
+            customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate//widget.customEndDate
         };
 

@@ -30,16 +30,16 @@ public class Permission {
     private Boolean deleteReport;
     private Boolean downloadReport;
     private Boolean scheduleReport;
-    private Boolean viewAgency;
+    private Boolean viewReport;
 
-    public Boolean getViewAgency() {
-        return viewAgency;
+    public Boolean getViewReport() {
+        return viewReport;
     }
 
-    public void setViewAgency(Boolean viewAgency) {
-        this.viewAgency = viewAgency;
+    public void setViewReport(Boolean viewReport) {
+        this.viewReport = viewReport;
     }
-    
+        
     public Boolean getCreateUser() {
         return createUser;
     }

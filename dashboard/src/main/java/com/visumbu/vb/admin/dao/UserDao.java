@@ -54,6 +54,25 @@ public class UserDao extends BaseDao {
         query.setParameter("userName", username);
         return query.list();
     }
+    
+    public List<Agency> findUserNameByUser(String userName) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where userName = :userName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("userName", userName);
+        return query.list();
+    }
+    
+    public List<Account> findByAccountName(String accountName) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from Account where accountName = :accountName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("accountName", accountName);
+        return query.list();
+    }
+    
+    public List<Agency> findByAgencyName(String agencyName) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyName = :agencyName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("agencyName", agencyName);
+        return query.list();
+    }
+
 
     public VbUser createNewUser(String userId, String userName, String fullName) {
         VbUser user = new VbUser();
@@ -314,4 +333,5 @@ public class UserDao extends BaseDao {
         return null;
     }
 
+    
 }

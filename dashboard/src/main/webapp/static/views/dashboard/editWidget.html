@@ -138,7 +138,7 @@
                                 <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>                            
                         </span>
-                        <select class="form-control m-b" ng-model="widget.dataSourceId"
+                        <select class="form-control m-b" ng-model="widget.dataSourceId" ng-disabled="widget.chartType == 'text'"
                                 ng-change="selectDataSource(widget.dataSourceId, widget)"
                                 ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                         </select>
@@ -154,7 +154,7 @@
                                 <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>
                         </span>
-                        <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
+                        <select class="form-control" ng-disabled="widget.chartType == 'text'" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
                         </select>
                     </div>
                 </div>
