@@ -365,10 +365,9 @@ public class UserController extends BaseController {
         }
         return returnList;
     }
-
     @RequestMapping(value = "account", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    Account createAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody Account account) {
+    Object createAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody Account account) {
         if (account.getAgencyId() == null) {
             VbUser loggedInUser = userService.findByUsername(getUser(request));
             account.setAgencyId(loggedInUser.getAgencyId());
@@ -460,7 +459,7 @@ public class UserController extends BaseController {
 
     @RequestMapping(value = "agency", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    Agency createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
+    Object createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
         return userService.createAgency(agency);
     }
 
