@@ -59,6 +59,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
+import com.visumbu.vb.bean.GaReport;
 import com.visumbu.vb.utils.ApiUtils;
 import java.util.Iterator;
 
@@ -145,26 +146,25 @@ public class GaService {
     }
 
     public List<Map<String, String>> get(String reportName, String accountId, String profileId, Date startDate, Date endDate) {
-        if(reportName.equalsIgnoreCase("accountPerformance")) {
-            return getAccountPerformance(accountId, profileId, startDate, endDate);
-        } else if(reportName.equalsIgnoreCase("geoPerformance")) {
+        if (reportName.equalsIgnoreCase("accountPerformance")) {
+            return getAccountPerformance(accountId, profileId, startDate, endDate, null, null);
+        } else if (reportName.equalsIgnoreCase("geoPerformance")) {
             return getGeoPerformance(accountId, profileId, startDate, endDate);
-        } else if(reportName.equalsIgnoreCase("devicePerformance")) {
+        } else if (reportName.equalsIgnoreCase("devicePerformance")) {
             return getDevicePerformance(accountId, profileId, startDate, endDate);
-        } 
+        }
         return null;
     }
-    
-    public List<Map<String, String>> getAccountPerformance(String analyticsAccountId, String analyticsProfileId, Date startDate, Date endDate) {
-        String metricsList = "ga:visits,visits;ga:percentNewSessions,percentNewSessions;"
-                + "ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;";
-        String dimensions = "ga:channelGrouping";
-        String filter = "ga:channelGrouping==Organic Search";
+
+    public List<Map<String, String>> getAccountPerformance(String analyticsAccountId, String analyticsProfileId, Date startDate, Date endDate, String dimension, String filter) {
+        String metricsList = "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate"
+                + "ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:sessionDuration,sessionDuration";
+
         System.out.println("SEO GA Profile Id " + analyticsProfileId);
         List<Map<String, String>> gaDataMap = new ArrayList<>();
         System.out.println(analyticsProfileId);
         if (analyticsProfileId != null) {
-            GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, filter);
+            GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimension, filter);
             gaDataMap = (List) getResponseAsMap(gaData).get("data");
 
             for (Iterator<Map<String, String>> iterator = gaDataMap.iterator(); iterator.hasNext();) {
@@ -215,6 +215,17 @@ public class GaService {
             }
         }
         return gaDataMap;
+    }
+
+    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions) {
+        Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
+        GaReport gaReport = gaReports.get(reportName);
+        String metricsList = gaReport.getFields();
+        String dimensions = reqDimensions == null ? gaReport.getDefaultDimension() : reqDimensions;
+        String filter = gaReport.getDefaultFilter();
+
+        GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, filter);
+        return getResponseAsMap(gaData);
     }
 
     public List<Map<String, String>> getDevicePerformance(String analyticsAccountId, String analyticsProfileId, Date startDate, Date endDate) {
@@ -376,23 +387,30 @@ public class GaService {
                     metricList.add(metric);
                 }
             }
+            List<Dimension> dimensionList = null;
+            if (dimentions != null) {
+                String[] dimensionArray = dimentions.split(";");
+                dimensionList = new ArrayList<>();
+                for (int i = 0; i < dimensionArray.length; i++) {
+                    String dimensionStr = dimensionArray[i];
+                    Dimension dimension = new Dimension()
+                            .setName(dimensionStr);
+                    dimensionList.add(dimension);
 
-            String[] dimensionArray = dimentions.split(";");
-            List<Dimension> dimensionList = new ArrayList<>();
-            for (int i = 0; i < dimensionArray.length; i++) {
-                String dimensionStr = dimensionArray[i];
-                Dimension dimension = new Dimension()
-                        .setName(dimensionStr);
-                dimensionList.add(dimension);
-
+                }
             }
-
             ReportRequest request = new ReportRequest()
                     .setViewId(viewId)
                     .setDateRanges(dateRangeList)
-                    .setDimensions(dimensionList)
-                    .setFiltersExpression(filter)
+                    //.setDimensions(dimensionList)
+                    //.setFiltersExpression(filter)
                     .setMetrics(metricList);
+            if (filter != null) {
+                request.setFiltersExpression(filter);
+            }
+            if (dimensionList != null) {
+                request.setDimensions(dimensionList);
+            }
             ArrayList<ReportRequest> requests = new ArrayList<ReportRequest>();
             requests.add(request);
             // Create the GetReportsRequest object.
@@ -490,7 +508,7 @@ public class GaService {
         return null;
     }
 
-    public static Map getResponseAsMap(GetReportsResponse response) {
+    public static Map<String, List<Map<String, Object>>> getResponseAsMap(GetReportsResponse response) {
         Map returnMap = new HashMap();
 
         for (Report report : response.getReports()) {
@@ -499,9 +517,11 @@ public class GaService {
             List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();
             List<ReportRow> rows = report.getData().getRows();
             List<ColumnDef> columnDefs = new ArrayList<>();
-            for (int i = 0; i < dimensionHeaders.size(); i++) {
-                columnDefs.add(new ColumnDef(dimensionHeaders.get(i), "string", dimensionHeaders.get(i)));
-                System.out.println(dimensionHeaders.get(i));
+            if (dimensionHeaders != null) {
+                for (int i = 0; i < dimensionHeaders.size(); i++) {
+                    columnDefs.add(new ColumnDef(dimensionHeaders.get(i), "string", dimensionHeaders.get(i)));
+                    System.out.println(dimensionHeaders.get(i));
+                }
             }
             for (int i = 0; i < metricHeaders.size(); i++) {
                 columnDefs.add(new ColumnDef(metricHeaders.get(i).getName(), metricHeaders.get(i).getType(), metricHeaders.get(i).getName()));
@@ -512,16 +532,17 @@ public class GaService {
                 System.out.println("No data found for ");
                 return new HashMap();
             }
-            List<Map<String, String>> data = new ArrayList<>();
+            List<Map<String, Object>> data = new ArrayList<>();
             for (ReportRow row : rows) {
                 List<String> dimensions = row.getDimensions();
                 List<DateRangeValues> metrics = row.getMetrics();
-                Map dataMap = new HashMap();
-                for (int i = 0; i < dimensionHeaders.size() && i < dimensions.size(); i++) {
-                    System.out.println(dimensionHeaders.get(i) + ": " + dimensions.get(i));
-                    dataMap.put(dimensionHeaders.get(i), dimensions.get(i));
+                Map<String, Object> dataMap = new HashMap();
+                if (dimensionHeaders != null) {
+                    for (int i = 0; i < dimensionHeaders.size() && i < dimensions.size(); i++) {
+                        System.out.println(dimensionHeaders.get(i) + ": " + dimensions.get(i));
+                        dataMap.put(dimensionHeaders.get(i), dimensions.get(i));
+                    }
                 }
-
                 for (int j = 0; j < metrics.size(); j++) {
                     System.out.print("Date Range (" + j + "): ");
                     DateRangeValues values = metrics.get(j);
