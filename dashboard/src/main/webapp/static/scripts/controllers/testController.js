@@ -190,6 +190,6 @@ app.controller('TestController', function ($scope, $http) {
 
 
     $http.get("../../../static/datas/2.json").success(function (response) {
-        //$scope.tableItems = response;
+        $scope.tableItems = response;
     });
 })
