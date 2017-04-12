@@ -54,27 +54,21 @@ public class UserDao extends BaseDao {
         query.setParameter("userName", username);
         return query.list();
     }
+    
+    public List<Agency> findUserNameByUser(String userName) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where userName = :userName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("userName", userName);
+        return query.list();
+    }
+    
     public List<Account> findByAccountName(String accountName) {
-        Query query = sessionFactory.getCurrentSession().createQuery("from Account where agencyId is null and accountName = :accountName");//.getNamedQuery("VbUser.findByUserName");
-        query.setParameter("accountName", accountName);
-        List<Account> accounts = query.list();
-        if (!accounts.isEmpty()) {
-            return accounts;
-        }
-
-        query = sessionFactory.getCurrentSession().createQuery("from Account where (agencyId is null or agencyId.status is null or agencyId.status != 'Deleted') and (status is null or status != 'Deleted') and accountName = :accountName");//.getNamedQuery("VbUser.findByUserName");
+        Query query = sessionFactory.getCurrentSession().createQuery("from Account where accountName = :accountName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("accountName", accountName);
         return query.list();
     }
-    public List findByAgencyName(String agencyName) {
+    
+    public List<Agency> findByAgencyName(String agencyName) {
         Query query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyName = :agencyName");//.getNamedQuery("VbUser.findByUserName");
-        query.setParameter("agencyName", agencyName);
-        List<Agency> agencies = query.list();
-        if (!agencies.isEmpty()) {
-            return agencies;
-        }
-
-        query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyName = :agencyName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("agencyName", agencyName);
         return query.list();
     }
