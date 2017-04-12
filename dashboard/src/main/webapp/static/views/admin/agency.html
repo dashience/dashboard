@@ -53,7 +53,7 @@
         margin-bottom: 10px;
     }
     .nav-tabs-custom {
-        padding-top: 10px;
+        padding-top: 0px;
         padding-bottom: 10px;
     }
     .hpanel .panel-body {
@@ -79,19 +79,19 @@
     }
 
 </style>
-<section class="content">
-    <div class="row">
-        <div class="normalheader transition animated fadeIn">
-            <div class="hpanel">
-                <div class="header-title">
-                    <h2 class="agency-bt font-bold m-b-xs ng-binding">
-                        Agency
-                    </h2>               
-                </div>
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
             </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Agency
+            </h2>               
         </div>
-
-        <div class="nav-tabs-custom col-md-12">
+    </div>
+</div>
+<section class="content">
+        <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li ng-class="{ active: isSetAgency(1) }">
                     <a href ng-click="setTabAgency(1)"> Details</a>
@@ -112,9 +112,11 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-12">
                 <div class="col-md-4">
                     <div class="hpanel">
+                        <div class="panel-heading">
+                            Edit Agency Details
+                        </div>
                         <div class="panel-body">
 
                             <div class="tab-content">
@@ -395,11 +397,14 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                
 
 
                 <div class="col-md-8">
                     <div class="hpanel">
+                        <div class="panel-heading">
+                            View Agency Details
+                        </div>
                         <div class="panel-body">
                             <div class="row">
                                 <div class="data-search col-sm-12">
@@ -479,7 +484,7 @@
                         </div>
                     </div>
                 </div>  
-            </div>
+           </div>
         </div>                
-    </div>
+    
 </section>
