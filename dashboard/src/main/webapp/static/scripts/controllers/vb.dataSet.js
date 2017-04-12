@@ -704,7 +704,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         },
-        {
+        { 
             type: 'adCopyPerformance',
             name: 'adCopyPerformance',
             timeSegments: [
