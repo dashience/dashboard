@@ -1,4 +1,5 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService) {
+    $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;

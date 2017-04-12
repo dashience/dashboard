@@ -229,16 +229,16 @@
         <div class="btn-group">
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" ng-if="permission.downloadReport === true;">
             <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Export
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li ng-if="permission.downloadReport === true;" class="btn-group">
+                    <li class="btn-group">
                         <a class="refresh" ng-click="downloadPdf()"><i class="fa fa-file-pdf-o"></i> Export PDF</a>
                     </li>
-                    <li ng-if="permission.downloadReport === true;" class="btn-group">
+                    <li class="btn-group">
                         <a class="refresh" ng-click="downloadPpt()"><i class="fa fa-file-powerpoint-o"></i> Export PPT</a>
                     </li>
                 </ul>

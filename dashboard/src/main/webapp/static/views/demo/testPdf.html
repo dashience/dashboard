@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html ng-app="TestApp">
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../../../static/lib/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../../static/lib/js/c3/c3.css" rel="stylesheet" type="text/css"/>
+
+        <link href="../../../static/lib/css/L2T.css" rel="stylesheet">
+
+        <script src="../../../static/lib/js/d3/d3.v3.js" type="text/javascript"></script>
+        <script src="../../../static/lib/js/c3/c3.js" type="text/javascript"></script>
+        <script src="../../../static/lib/js/jquery/jquery-2.2.3.min.js" type="text/javascript"></script>        
+        <script src="../../../static/lib/js/bootstrap.min.js" type="text/javascript"></script>        
+        <script src="../../../static/lib/js/angular/angular.min.js" type="text/javascript"></script>
+        <script src="../../../static/scripts/testApp.js"></script>
+        <script src="../../../static/scripts/controllers/testController.js" type="text/javascript"></script>
+        <style>
+            .select2 > .select2-choice.ui-select-match {
+                height: 29px;
+            }
+            .selectize-control > .selectize-dropdown {
+                top: 36px;
+            }
+            .select-box {
+                background: #fff;
+                position: relative;
+                z-index: 1;
+            }
+            .alert-info.positioned {
+                margin-top: 1em;
+                position: relative;
+                z-index: 10000;
+            }
+
+            .product-icon {
+                width: 100px;
+                height: 60px;
+            }
+
+            .admin-fnt {
+                font-size: 12px;
+                padding-top: 20px;
+                text-transform: capitalize;
+            }
+            .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
+                display: none !important;
+            }
+            
+            .bar {
+  fill: steelblue;
+}
+.bar:hover {
+  fill: brown;
+}
+.axis {
+  font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: none;
+}
+        </style>
+    </head>
+    <body ng-controller="TestController">
+        <div class="fixed-navbar">
+            <div id="logo">
+                <span>
+                    <img src="../../../static/img/logos/deeta-logo.png" width="100" />
+                </span>
+            </div>
+            <nav role="navigation" ng-controller="HeaderController">
+                <!-- <div class="header-link hide-menu"><i class="fa fa-bars"></i></div>-->
+                <div class="small-logo">
+                    <span>
+                        <img src="static/img/logos/deeta-logo.png" width="100" />
+                    </span>
+                </div>
+                <form role="search" class="navbar-form-custom" method="post" action="#">
+                    <div class="form-group">
+                        <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
+                            <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
+                            <ui-select-choices repeat="account in accounts | filter: $select.search">
+                                <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </form>
+
+                <div class="mobile-menu">
+                    <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
+                        <i class="fa fa-chevron-down"></i>
+                    </button>
+                    <div class="collapse mobile-navbar" id="mobile-collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="admin/user/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav no-borders">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown"> <span class="admin-fnt">{{userName}} / {{agencyId.agencyName}}</span></a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a class="pull-right" id="daterange-btn">
+                                <span class="date-border">
+                                    {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
+                                </span>
+                            </a>  
+                        </li>
+                        <li class="button-submit"> <span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
+                    </ul>                    
+                </div>
+            </nav>
+        </div>
+
+
+        <div class="col-md-12 table-deeta">
+            <div class="hpanel hgreen border-table"> 
+                <div class="panel-heading">
+                    <div>
+                        <span class="text-capitalize">Test</span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <div id="chart"></div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 table-deeta">
+            <div class="hpanel hgreen border-table"> 
+                <div class="panel-heading">
+                    <div>
+                        <span class="text-capitalize">Test</span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <div id="barChart"></div>
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 table-deeta">
+            <div class="hpanel hgreen border-table"> 
+                <div class="panel-heading">
+                    <div>
+                        <span class="text-capitalize">Test</span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <table class="table table-bordered">
+                            <thead>
+                            <th>name</th>
+                            <th>dept</th>
+                            <th>rollno</th>
+                            <th>college</th>
+                            <th>address</th>
+                            <th>mobile</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="tableItem in tableItems">
+                                    <td>{{tableItem.name}}</td>
+                                    <td>{{tableItem.dept}}</td>
+                                    <td>{{tableItem.rollno}}</td>
+                                    <td>{{tableItem.college}}</td>
+                                    <td>{{tableItem.address}}</td>
+                                    <td>{{tableItem.mobile}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
