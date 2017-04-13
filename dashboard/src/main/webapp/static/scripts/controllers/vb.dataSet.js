@@ -367,114 +367,427 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //accountPerformance
     $scope.analyticsPerformance = [
         {
-            type: 'accountPerformance',
-            name: 'accountPerformance',
+            type: 'overallPerformance',
+            name: 'Overall Performance',
             timeSegments: [
                 {
                     type: 'day',
-                    name: 'day'
+                    name: 'Day'
                 },
                 {
                     type: 'week',
-                    name: 'week'
+                    name: 'Week'
                 },
                 {
                     type: 'month',
-                    name: 'month'
+                    name: 'Month'
                 },
                 {
                     type: 'year',
-                    name: 'year'
+                    name: 'Year'
                 },
                 {
                     type: 'hourOfWeek',
-                    name: 'hourOfWeek'
+                    name: 'Hour Of Week'
+                },
+                {
+                    type: 'dayOfWeek',
+                    name: 'Day Of Week'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
+                    type: 'browser',
+                    name: 'Browser'
                 },
                 {
-                    type: 'network search partner',
-                    name: 'network search partner'
+                    type: 'OS',
+                    name: 'OS'
+                },
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'source',
+                    name: 'Source'
+                },
+                {
+                    type: 'previousPagePath',
+                    name: 'Previous Page Path'
+                },
+                {
+                    type: 'nextPagePath',
+                    name: 'Next Page Path'
+                },
+                {
+                    type: 'city',
+                    name: 'City'
+                },
+                {
+                    type: 'country',
+                    name: 'Country'
+                },
+                {
+                    type: 'metro',
+                    name: 'Metro'
+                },
+                {
+                    type: 'channelGrouping',
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         },
         {
-            type: 'geoPerformance',
-            name: 'geoPerformance',
+            type: 'referralReport',
+            name: 'Referral Report',
             timeSegments: [
                 {
                     type: 'day',
-                    name: 'day'
+                    name: 'Day'
                 },
                 {
                     type: 'week',
-                    name: 'week'
+                    name: 'Week'
                 },
                 {
                     type: 'month',
-                    name: 'month'
+                    name: 'Month'
                 },
                 {
                     type: 'year',
-                    name: 'year'
+                    name: 'Year'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
+                    type: 'browser',
+                    name: 'Browser'
                 },
                 {
-                    type: 'network search partner',
-                    name: 'network search partner'
+                    type: 'OS',
+                    name: 'OS'
+                },
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'source',
+                    name: 'Source'
+                },
+                {
+                    type: 'channelGrouping',
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         },
         {
-            type: 'devicePerformance',
-            name: 'devicePerformance',
+            type: 'pagePerformance',
+            name: 'Page Performance',
             timeSegments: [
                 {
                     type: 'day',
-                    name: 'day'
+                    name: 'Day'
                 },
                 {
                     type: 'week',
-                    name: 'week'
+                    name: 'Week'
                 },
                 {
                     type: 'month',
-                    name: 'month'
+                    name: 'Month'
                 },
                 {
                     type: 'year',
-                    name: 'year'
+                    name: 'Year'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
+                    type: 'browser',
+                    name: 'Browser'
                 },
                 {
-                    type: 'network search partner',
-                    name: 'network search partner'
+                    type: 'OS',
+                    name: 'OS'
+                },
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'source',
+                    name: 'Source'
+                },
+                {
+                    type: 'city',
+                    name: 'City'
+                },
+                {
+                    type: 'country',
+                    name: 'Country'
+                },
+                {
+                    type: 'region',
+                    name: 'Region'
+                },
+                {
+                    type: 'metro',
+                    name: 'Metro'
+                },
+                {
+                    type: 'channelGrouping',
+                    name: 'Channel Grouping'
                 },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'visitorsTypeReport',
+            name: 'VisitosType Report',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'Day'
+                },
+                {
+                    type: 'week',
+                    name: 'Week'
+                },
+                {
+                    type: 'month',
+                    name: 'Month'
+                },
+                {
+                    type: 'year',
+                    name: 'Year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'frequencyReport',
+            name: 'Frequency Report',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'Day'
+                },
+                {
+                    type: 'week',
+                    name: 'Week'
+                },
+                {
+                    type: 'month',
+                    name: 'Month'
+                },
+                {
+                    type: 'year',
+                    name: 'Year'
+                }
+            ],
+            productSegments: [
+
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'goalsReport',
+            name: 'Goals Report',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'Day'
+                },
+                {
+                    type: 'week',
+                    name: 'Week'
+                },
+                {
+                    type: 'month',
+                    name: 'Month'
+                },
+                {
+                    type: 'year',
+                    name: 'Year'
+                },
+                {
+                    type: 'dayOfWeek',
+                    name: 'Day Of Week'
+                },
+                {
+                    type: 'hourOfDay',
+                    name: 'Hour Of Day'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'browser',
+                    name: 'Browser'
+                },
+                {
+                    type: 'OS',
+                    name: 'OS'
+                },
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'source',
+                    name: 'Source'
+                },
+                {
+                    type: 'city',
+                    name: 'City'
+                },
+                {
+                    type: 'country',
+                    name: 'Country'
+                },
+                {
+                    type: 'region',
+                    name: 'Region'
+                },
+                {
+                    type: 'metro',
+                    name: 'Metro'
+                },
+                {
+                    type: 'channelGrouping',
+                    name: 'Channel Grouping'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'pageGoalsReport',
+            name: 'Page Goal Report',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'Day'
+                },
+                {
+                    type: 'week',
+                    name: 'Week'
+                },
+                {
+                    type: 'month',
+                    name: 'Month'
+                },
+                {
+                    type: 'year',
+                    name: 'Year'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'browser',
+                    name: 'Browser'
+                },
+                {
+                    type: 'OS',
+                    name: 'OS'
+                },
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'source',
+                    name: 'Source'
+                },
+                {
+                    type: 'channelGrouping',
+                    name: 'Channel Grouping'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'eventsReport',
+            name: 'Events Report',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'Day'
+                },
+                {
+                    type: 'week',
+                    name: 'Week'
+                },
+                {
+                    type: 'month',
+                    name: 'Month'
+                },
+                {
+                    type: 'year',
+                    name: 'Year'
+                },
+                {
+                    type: 'dayOfWeek',
+                    name: 'Day Of Week'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'browser',
+                    name: 'Browser'
+                },
+                {
+                    type: 'OS',
+                    name: 'OS'
+                },
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'source',
+                    name: 'Source'
+                },
+                {
+                    type: 'eventLabel',
+                    name: 'event Label'
+                },
+                {
+                    type: 'eventAction',
+                    name: 'event Action'
+                },
+                {
+                    type: 'channelGrouping',
+                    name: 'Channel Grouping'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ]
         }
@@ -892,7 +1205,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         },
-        { 
+        {
             type: 'adCopyPerformance',
             name: 'adCopyPerformance',
             timeSegments: [
@@ -948,14 +1261,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.instagramPerformance);
             $scope.timeSegment = $scope.instagramPerformance[index].timeSegments;
             $scope.productSegment = $scope.instagramPerformance[index].productSegments;
-            $scope.nwStatus = true;
+            $scope.nwStatusFlag = true;
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
-            $scope.nwStatus = false;
+            $scope.nwStatusFlag = false;
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "adwords")
@@ -963,22 +1276,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.adwordsPerformance);
             $scope.timeSegment = $scope.adwordsPerformance[index].timeSegments;
             $scope.productSegment = $scope.adwordsPerformance[index].productSegments;
-            $scope.nwStatus = true;
+            $scope.nwStatusFlag = true;
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "analytics")
         {
-            var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
+            var index = getIndex($scope.dataSet.reportName, $scope.analyticsPerformance);
             $scope.timeSegment = $scope.analyticsPerformance[index].timeSegments;
             $scope.productSegment = $scope.analyticsPerformance[index].productSegments;
-            $scope.nwStatus = false;
+            $scope.nwStatusFlag = false;
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "linkedin")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
             $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
-            $scope.nwStatus = false;
+            $scope.nwStatusFlag = false;
         }
 
         function getIndex(data, object)
@@ -1031,12 +1344,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.saveDataSet = function () {
         var dataSet = $scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
-        var networkType = dataSet.networkType.map(function (value, key) {
-            if (value) {
-                return value.name;
-            }
-        }).join(',');
-        dataSet.networkType = networkType;
+        console.log(dataSet);
+        if (dataSet.networkType !== null && typeof(dataSet.networkType)!=="undefined")
+        {
+            var networkType = dataSet.networkType.map(function (value, key) {
+                if (value) {
+                    return value.name;
+                }
+            }).join(',');
+            dataSet.networkType = networkType;
+            $scope.nwStatusFlag=true;
+        }
+        else {
+            $scope.nwStatusFlag=false;
+        }
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });
@@ -1055,11 +1376,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     'name': value ? value : ''
                 }
             });
-            $scope.nwStatusFlag=true;
-        }
-        else  {
-            
-            $scope.nwStatusFlag=false;
+            $scope.nwStatusFlag = true;
+        } else {
+
+            $scope.nwStatusFlag = false;
         }
         console.log(dataSet.networkType);
         var data = {
