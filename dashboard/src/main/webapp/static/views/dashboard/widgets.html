@@ -89,7 +89,7 @@
 
     .odd {
         color: #333;
-        background-color: rgb(235, 238, 225) !important;
+        background-color: #fff !important;
     }
 
     .even {
@@ -350,7 +350,7 @@
                             <div area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}"></div>
                         </div>
                     </div>
-                    <div class="panel-body list" ng-if="widget.chartType === 'table'" adjust-height>
+                    <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
                             <div id="changes-height" class="project-list">
                                 <div dynamic-Table pdf-function="addToPdf(test)" dynamic-Table-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Obj="{{widget}}" table-Footer="{{widget.tableFooter}}" widget-Columns="{{widget.columns}}"></div> 

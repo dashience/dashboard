@@ -120,7 +120,17 @@
         margin-bottom:10px;
     }
 </style>
-
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Edit Widget
+            </h2>               
+        </div>
+    </div>
+</div>
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
         
@@ -340,17 +350,23 @@
                                 </ui-select>
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
+                            <div class="col-md-12">
+                                <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="showAdvanceOptions == true">
                             <div class="col-md-12">
                                 <label>Format</label>                                 
                                 <table class="table table-bordered table-responsive">
                                     <thead>
                                         <tr>
-                                            <td>Name</td>
-                                            <td>Format</td>
-                                            <td>Sort</td>
-                                            <td>Field Type</td>
+                                            <th>Name</th>
+                                            <th>Format</th>
+                                            <th>Sort</th>
+                                            <th>Field Type</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -472,7 +488,7 @@
         </div>
     <div class="row edit-widget" ng-if="editChartType === 'table'">
         <div class="col-lg-12">
-            <div class="hpanel border-table preview-table">
+            <div class="preview-table">
                 <div widget-Preview-Table 
                      preview-Table-List='{{collectionFields}}'
                      preview-Urls='{{previewChartUrl}}' 
