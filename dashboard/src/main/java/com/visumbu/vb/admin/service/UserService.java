@@ -21,6 +21,7 @@ import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.VbUtils;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -156,8 +157,24 @@ public class UserService {
         return user;
     }
 
-    public Account createAccount(Account account) {
-        return (Account) userDao.create(account);
+    public HashMap createAccount(Account account) {
+        String returnMsg = null;
+        Boolean isSuccess = null;
+        HashMap returnMap = new HashMap();
+        List findUserAccount = userDao.findByAccountName(account.getAccountName());
+        if (findUserAccount.isEmpty()) {
+            userDao.create(account);
+            returnMsg = "Success";
+            isSuccess = true;
+
+        } else {
+            returnMsg = "User Already Exist";
+            isSuccess = false;
+        }
+        returnMap.put("message", returnMsg);
+        returnMap.put("status", isSuccess);
+        return returnMap;
+//        return (Account) userDao.create(account);
     }
 
     public Account updateAccount(Account account) {
@@ -228,8 +245,24 @@ public class UserService {
         return userDao.getUserAccountById(accountId);
     }
 
-    public Agency createAgency(Agency agency) {
-        return (Agency) userDao.create(agency);
+    public HashMap createAgency(Agency agency) {
+        String returnMsg = null;
+        Boolean isSuccess = null;
+        HashMap returnMap = new HashMap();
+        List findAgencyName = userDao.findByAgencyName(agency.getAgencyName());
+        if (findAgencyName.isEmpty()) {
+            userDao.create(agency);
+            returnMsg = "Success";
+            isSuccess = true;
+
+        } else {
+            returnMsg = "User Already Exist";
+            isSuccess = false;
+        }
+        returnMap.put("message", returnMsg);
+        returnMap.put("status", isSuccess);
+        return returnMap;
+        //return (Agency) userDao.create(agency);
     }
 
     public Agency updateAgency(Agency agency) {
@@ -279,6 +312,8 @@ public class UserService {
     }
 
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
+        System.out.println("==================================>");
+        System.out.println(agencyProduct);
         return (AgencyProduct) userDao.create(agencyProduct);
     }
 

@@ -137,7 +137,7 @@
                                                     </div>
                                                 </td>                                                
                                                 <td class="col-xs-3">
-                                                    <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount); userAccount.isEdit = false;"><i class="fa fa-save"></i></button>
+                                                    <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount)"><i class="fa fa-save"></i></button>
                                                     <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="removeUserAccount($index)"><i class="fa fa-times"></i></button>
                                                     <button ng-hide="userAccount.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash-o"></i></button>
                                                     <div class="modal hmodal-success" id="deleteUserAccount{{userAccount.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -215,10 +215,10 @@
                     <div class="hpanel">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="data-search col-sm-8">
+                                <div class="data-search col-sm-12">
                                     <input type="text" class="form-control" ng-model="searchUser" placeholder="Search...">
                                 </div>
-                                <div class="col-sm-4">
+<!--                                <div class="col-sm-4">
                                     <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchuserDetails(agencyName)" style="min-width:225px;">
                                         <ui-select-match placeholder="Search Agency Name...">
                                             {{$select.selected}}
@@ -228,7 +228,7 @@
                                             </div>                                
                                         </ui-select-choices>
                                     </ui-select>
-                                </div>
+                                </div>-->
                             </div>
                             <table class="table table-responsive table-fixed">
                                 <thead>

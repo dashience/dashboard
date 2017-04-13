@@ -72,15 +72,30 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: "right", displayName: "Right"},
         {name: "center", displayName: "Center"}
     ];
+
+
     $scope.sorting = [
         {name: 'None', value: ''},
         {name: 'asc', value: 'asc'},
         {name: 'desc', value: 'desc'}
     ];
+
+    //$scope.sorting = ['None', 'asc', 'desc']
+//        {name: 'None', value: ''},
+//        {name: 'asc', value: 'asc'},
+//        {name: 'desc', value: 'desc'}
+//    ];
     $scope.tableWrapText = [
         {name: 'None', value: ''},
         {name: 'Yes', value: "yes"}
     ];
+
+    $scope.fieldTypes = ['none', 'string', 'number', 'date']
+//        {id: 0, name: 'None', value: ''},
+//        {id: 1, name: 'String', value: 'string'},
+//        {id: 2, name: 'Number', value: 'number'},
+//        {id: 3, name: 'Date', value: 'date'}
+//    ];
     $scope.hideOptions = [
         {name: 'Yes', value: 1},
         {name: 'No', value: ''}
@@ -88,27 +103,65 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.isEditPreviewColumn = false;
 
     $scope.formats = [
-        '$,.2f',
-        ',.0f',
-        ',.2%',
-        ',.1f',
-        ',.2f',
-        'None'
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "None", value: ''}
     ];
-//        {name: "Currency", value: '$,.2f'},
-//        {name: "Integer", value: ',.0f'},
-//        {name: "Percentage", value: ',.2%'},
-//        {name: "Decimal1", value: ',.1f'},
-//        {name: "Decimal2", value: ',.2f'},
-//        {name: "None", value: ''}
-//
-//    $('.dropdown-menu input').click(function (e) {
-//        e.stopPropagation();
-//    });
 
-    $scope.dateDuration = function (widget, selectDateDuration) {
-        widget.duration = selectDateDuration.duration;
-    };
+    $scope.selectWidgetDuration = function (dateRangeName, widget) {
+        //scheduler.dateRangeName = dateRangeName;
+        console.log(dateRangeName)
+        if (dateRangeName == 'Last N Days') {
+            if (widget.lastNdays) {
+                widget.dateRangeName = "Last " + widget.lastNdays + " Days";
+            } else {
+                widget.dateRangeName = "Last 0 Days";
+            }
+            widget.lastNweeks = "";
+            widget.lastNmonths = "";
+            widget.lastNyears = "";
+        } else if (dateRangeName == 'Last N Weeks') {
+            if (widget.lastNweeks) {
+                widget.dateRangeName = "Last " + widget.lastNweeks + " Weeks";
+            } else {
+                widget.dateRangeName = "Last 0 Weeks";
+            }
+            widget.lastNdays = "";
+            widget.lastNmonths = "";
+            widget.lastNyears = "";
+        } else if (dateRangeName == 'Last N Months') {
+            if (widget.lastNmonths) {
+                widget.dateRangeName = "Last " + widget.lastNmonths + " Months";
+            } else {
+                widget.dateRangeName = "Last 0 Months";
+            }
+            widget.lastNdays = "";
+            widget.lastNweeks = "";
+            widget.lastNyears = "";
+        } else if (dateRangeName == 'Last N Years') {
+            if (widget.lastNyears) {
+                widget.dateRangeName = "Last " + widget.lastNyears + " Years";
+            } else {
+                widget.dateRangeName = "Last 0 Years";
+            }
+            widget.lastNdays = "";
+            widget.lastNweeks = "";
+            widget.lastNmonths = "";
+        } else {
+            widget.dateRangeName = dateRangeName;
+            widget.lastNdays = "";
+            widget.lastNweeks = "";
+            widget.lastNmonths = "";
+            widget.lastNyears = "";
+        }
+    }
+
+//    $scope.dateDuration = function (widget, selectDateDuration) {
+//        widget.duration = selectDateDuration.duration;
+//    };
 
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
@@ -198,6 +251,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $scope.tableDef = function (widget) {      //Dynamic Url from columns Type data - Popup
         var dataSourcePassword;
+        if (!widget.dataSetId) {
+            return;
+        }
         if (widget.dataSetId.dataSourceId.password) {
             dataSourcePassword = widget.dataSetId.dataSourceId.password;
         } else {
@@ -361,6 +417,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
+        if (chartType.type == 'text') {
+            widget.dataSetId = '';
+            widget.dataSourceId = '';
+        }
     };
 
     $scope.selectPieChartX = function (widget, column) {
@@ -587,6 +647,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.save = function (widget) {
+        try {
+            $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+            $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+        } catch (e) {
+
+        }
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -594,7 +661,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (value.groupPriority > 0) {
                 hideColumn = 1;
             }
-
             var columnData = {
                 id: value.id,
                 fieldName: value.fieldName,
@@ -622,31 +688,38 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             };
             widgetColumnsData.push(columnData);
         });
-//        var dataSourceType;
-//        var dataSetType;
-//        if (widget.chartType != 'text') {
-//            dataSourceType = widget.dataSourceId.id;
-//        } else {
-//            dataSourceType = ''
-//        }
-//        if (widget.chartType != 'text') {
-//            dataSetType = widget.dataSetId.id;
-//        } else {
-//            dataSetType = '';
-//        }
+        var dataSourceTypeId;
+        var dataSetTypeId;
+        if (widget.chartType != 'text') {
+            dataSourceTypeId = widget.dataSourceId.id;
+        } else {
+            dataSourceTypeId = 0;
+        }
+        if (widget.chartType != 'text') {
+            dataSetTypeId = widget.dataSetId.id;
+        } else {
+            dataSetTypeId = 0;
+        }
         var data = {
             id: widget.id,
             chartType: $scope.editChartType ? $scope.editChartType : widget.chartType,
             widgetTitle: widget.widgetTitle,
             widgetColumns: widgetColumnsData,
-            dataSourceId: widget.dataSourceId.id,
-            dataSetId: widget.dataSetId.id,
+            dataSourceId: dataSourceTypeId,
+            dataSetId: dataSetTypeId,
             tableFooter: widget.tableFooter,
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
             dateDuration: widget.dateDuration,
             content: widget.content,
-            width: widget.width
+            width: widget.width,
+            dateRangeName: widget.dateRangeName,
+            lastNdays: widget.lastNdays,
+            lastNweeks: widget.lastNweeks,
+            lastNmonths: widget.lastNmonths,
+            lastNyears: widget.lastNyears,
+            customStartDate: $scope.customStartDate, //widget.customStartDate,
+            customEndDate: $scope.customEndDate//widget.customEndDate
         };
 
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -657,10 +730,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
         $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-    }
-    ;
-}
-);
+    };
+});
 
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
@@ -765,6 +836,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<li class='input-group col-sm-12'><label>Sort</label><select ng-model='collectionField.sortPriority' class='form-control'>" +
                 "<option ng-repeat='sort in sorting' value='{{sort.value}}'>" +
                 "{{sort.name}}</option></select></li>" +
+                "<li class='input-group col-sm-12'><label>Field Type</label>" +
+                "<select class='form-control' ng-model='collectionField.fieldType' ng-options='fieldType for fieldType in fieldTypes'>" +
+                "</select>" +
+                "</li>" +
                 "<li class='input-group col-sm-12'><label>Format</label><select ng-model='collectionField.displayFormat' class='form-control'>" +
                 "<option ng-repeat='format in formats' value='{{format.value}}'>" +
                 "{{format.name}}</option></select></li>" +
@@ -843,6 +918,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 {name: 'asc', value: 'asc'},
                 {name: 'desc', value: 'desc'}
             ];
+            scope.fieldTypes = ['none', 'string', 'number', 'date']
             scope.formats = [
                 {name: "Currency", value: '$,.2f'},
                 {name: "Integer", value: ',.0f'},
@@ -906,6 +982,13 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 scope.previewTableHeaderName.splice($index, 1);
             }
             scope.save = function (column) {
+                try {
+                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                } catch (e) {
+
+                }
                 var widgetColumnsData = [];
                 angular.forEach(scope.previewTableHeaderName, function (value, key) {
                     var hideColumn = value.columnHide;
@@ -993,3 +1076,32 @@ app.directive('ckEditor', function () {
         }
     };
 });
+
+app.directive('customWidgetDateRange', function ($stateParams) {
+    return{
+        restrict: 'A',
+        link: function (scope, element, attr) {
+            //Date range as a button
+            $(element[0]).daterangepicker(
+                    {
+                        ranges: {
+//                        'Today': [moment(), moment()],
+//                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+//                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+//                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                        },
+                        startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
+                        endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
+                        maxDate: new Date(),
+                    },
+                    function (start, end) {
+                        $('#widgetDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+                    }
+            );
+
+
+        }
+    }
+})

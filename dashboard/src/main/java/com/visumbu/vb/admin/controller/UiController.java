@@ -385,7 +385,7 @@ public class UiController extends BaseController {
                 MultipartFile mFile = mRequest.getFile(itr.next());
                 String fileName = mFile.getOriginalFilename();
                 System.out.println(fileName);
-                returnFilename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + new Date() + "-" + fileName;
+                returnFilename = "/opt/datasources/" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + new Date().getTime() + "-" + fileName;
                 java.nio.file.Path path = Paths.get(returnFilename);
                 Files.deleteIfExists(path);
                 InputStream in = mFile.getInputStream();
@@ -479,7 +479,7 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    VbUser createUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
+    Object createUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
         if (vbUser.getAgencyId() == null) {
             VbUser loggedInUser = userService.findByUsername(getUser(request));
             vbUser.setAgencyId(loggedInUser.getAgencyId());

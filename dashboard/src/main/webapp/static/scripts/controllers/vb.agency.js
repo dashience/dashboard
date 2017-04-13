@@ -47,8 +47,21 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             getAgency();
+             if (response.status == true) {
+                    $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+                } else {
+                    var dialog = bootbox.dialog({
+                        title: 'Alert',
+                        message: response.message
+                    });
+                    dialog.init(function () {
+                        setTimeout(function () {
+                            dialog.modal('hide');
+                        }, 2000);
+                    });
+                }
         });
-        $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+        
     };
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
@@ -64,6 +77,8 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $scope.agency = data;
         $scope.selectedRow = index;
+        $scope.showAgencyUserForm = false;
+        $scope.showAgencyProductForm = false;
     };
     $scope.clearAgency = function () {
         $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
@@ -96,19 +111,31 @@ app.controller('AgencyController', function ($scope, $http) {
     }
 
     $scope.saveAgencyLicence = function (agencyLicence) {
-        var data = {
-            id: agencyLicence.id,
-            agencyId: $scope.agencyById.id,
-            maxNoTab: agencyLicence.maxNoTab,
-            maxNoUser: agencyLicence.maxNoUser,
-            maxNoClient: agencyLicence.maxNoClient,
-            maxNoAccount: agencyLicence.maxNoAccount,
-            expiryDate: new Date(agencyLicence.expiryDate),
-            maxNoWidgetPerTab: agencyLicence.maxNoWidgetPerTab
-        };
-        $http({method: agencyLicence.id ? 'PUT' : 'POST', url: 'admin/user/agencyLicence', data: data}).success(function (response) {
-            $scope.agencyLicences = response;
-        });
+        if (!$scope.agencyById) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Agency</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            var data = {
+                id: agencyLicence.id,
+                agencyId: $scope.agencyById.id,
+                maxNoTab: agencyLicence.maxNoTab,
+                maxNoUser: agencyLicence.maxNoUser,
+                maxNoClient: agencyLicence.maxNoClient,
+                maxNoAccount: agencyLicence.maxNoAccount,
+                expiryDate: new Date(agencyLicence.expiryDate),
+                maxNoWidgetPerTab: agencyLicence.maxNoWidgetPerTab
+            };
+            $http({method: agencyLicence.id ? 'PUT' : 'POST', url: 'admin/user/agencyLicence', data: data}).success(function (response) {
+                $scope.agencyLicences = response;
+            });
+        }
     };
 
     $scope.addAgencyUser = function () {
@@ -117,23 +144,47 @@ app.controller('AgencyController', function ($scope, $http) {
     };
 
     $scope.saveAgencyUser = function (agencyUser) {
-        var agencyUserData = {
-            id: agencyUser.id,
-            firstName: agencyUser.firstName,
-            lastName: agencyUser.lastName,
-            userName: agencyUser.userName,
-            email: agencyUser.email,
-            password: agencyUser.password,
-            primaryPhone: agencyUser.primaryPhone,
-            secondaryPhone: agencyUser.secondaryPhone,
-            agencyId: $scope.agencyById.id,
-        };
-
-        $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
-            getAgencyLicence($scope.agencyById);
-        });
-        $scope.agencyUser = "";
-        $scope.showAgencyUserForm = false;
+        if (!$scope.agencyById) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Agency</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            var agencyUserData = {
+                id: agencyUser.id,
+                firstName: agencyUser.firstName,
+                lastName: agencyUser.lastName,
+                userName: agencyUser.userName,
+                email: agencyUser.email,
+                password: agencyUser.password,
+                primaryPhone: agencyUser.primaryPhone,
+                secondaryPhone: agencyUser.secondaryPhone,
+                agencyId: $scope.agencyById.id,
+            };
+            $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
+                getAgencyLicence($scope.agencyById);
+                if (response.status == true) {
+                    $scope.agencyUser = "";
+                    $scope.showAgencyUserForm = false;
+                } else {
+                    var dialog = bootbox.dialog({
+                        title: 'Alert',
+                        message: response.message
+                    });
+                    dialog.init(function () {
+                        setTimeout(function () {
+                            dialog.modal('hide');
+                        }, 2000);
+                    });
+                }
+                console.log(response);
+            });
+        }
     };
 
     $scope.clearAgencyUser = function () {
@@ -158,7 +209,7 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.selectedRows = index;
         $scope.showAgencyProductForm = true;
     };
-    
+
     $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
     $scope.productIcon = function (event) {
         var files = event.target.files;
@@ -179,22 +230,41 @@ app.controller('AgencyController', function ($scope, $http) {
         if ($scope.agencyProduct.icon === "static/img/logos/deeta-logo.png") {
             $scope.agencyProduct.icon = "";
         }
-        var data = {
-            id: agencyProduct.id,
-            productName: agencyProduct.productName,
-            icon: $scope.agencyProduct.icon,
-            agencyId: $scope.agencyById.id,
-            showProduct: agencyProduct.showProduct
-        };
-        $http({method: agencyProduct.id ? 'PUT' : 'POST', url: 'admin/user/agencyProduct', data: data}).success(function (response) {
-            getAgencyLicence(agencyProductId);
-            $scope.showAgencyProductForm = false;
-        });
-        $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+        if (!$scope.agencyById) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Agency</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            if (!$scope.agencyProduct.icon) {
+                $scope.productIconEmptyMessage = "Product Icon Required";
+
+            } else {
+                var data = {
+                    id: agencyProduct.id,
+                    productName: agencyProduct.productName,
+                    icon: $scope.agencyProduct.icon,
+                    agencyId: $scope.agencyById.id,
+                    showProduct: agencyProduct.showProduct
+                };
+                $http({method: agencyProduct.id ? 'PUT' : 'POST', url: 'admin/user/agencyProduct', data: data}).success(function (response) {
+                    getAgencyLicence(agencyProductId);
+                    $scope.showAgencyProductForm = false;
+                });
+                $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+                $scope.productIconEmptyMessage = "";
+            }
+        }
     };
     $scope.clearAgencyProduct = function () {
         $scope.showAgencyProductForm = false;
         $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+        $scope.productIconEmptyMessage = "";
     };
     $scope.selectedAgencyProduct = null;
     $scope.deleteAgencyProduct = function (agencyProduct, index) {
@@ -218,7 +288,7 @@ app.controller('AgencyController', function ($scope, $http) {
     }
     $scope.changeOrder = function (s) {
         var agencyProductId = $scope.agencyById;
-        if(!agencyProductId){
+        if (!agencyProductId) {
             return;
         }
         //console.log(s)
@@ -231,7 +301,7 @@ app.controller('AgencyController', function ($scope, $http) {
         console.log(order)
 
 //        if (order) {
-            $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
+        $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
 //        }
     };
 });

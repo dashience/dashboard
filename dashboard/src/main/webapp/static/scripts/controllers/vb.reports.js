@@ -17,7 +17,8 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
         console.log($scope.showSchedulerReport)
     }
 
-    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
+    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly"];
+//    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
     $scope.weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     function getWeeks(d) {

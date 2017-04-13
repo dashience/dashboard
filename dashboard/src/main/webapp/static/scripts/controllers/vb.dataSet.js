@@ -809,7 +809,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.accountName = $stateParams.accountName;
 
     $scope.startDate = $stateParams.startDate;
-    $scope.endDate = $stateParams.endDate
+    $scope.endDate = $stateParams.endDate;
 
     function getItems() {
         $http.get('admin/ui/dataSet').success(function (response) {
@@ -817,9 +817,17 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         });
     }
     getItems();
+
     $http.get('admin/ui/dataSource').success(function (response) {
+    $scope.searchDataSourceItems = [];
         $scope.dataSources = response;
+        $scope.searchDataSourceItems.unshift({name: 'All Data Source', value: '', id: 0});
+        angular.forEach(response, function (value, key) {
+            $scope.searchDataSourceItems.push({name:value.name, value: value.name, id: value.id});
+        });
     });
+    
+    $scope.selectedItems = {name: "All Data Source", value:  '', id: 0}
 
     $scope.selectXlsSheet = function (dataSource) {
         if (dataSource.dataSourceType == 'xls') {

@@ -7,16 +7,25 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
     $scope.setParamsProduct = function (product) {
-        $stateParams.productId = product.id;
-        $scope.accountId = $stateParams.accountId;
-        $scope.accountName = $stateParams.accountName;
-        $scope.tabId = $stateParams.tabId;
-        $scope.startDate = $stateParams.startDate;
-        $scope.endDate = $stateParams.endDate;
+        var setTabId = 0;
+
+//        $scope.accountId = $stateParams.accountId;
+//        $scope.accountName = $stateParams.accountName;
+//        $scope.tabId = $stateParams.tabId;
+//        $scope.startDate = $stateParams.startDate;
+//        $scope.endDate = $stateParams.endDate;
+        if ($stateParams.productId != product.id) {
+            $stateParams.productId = product.id;
+            $state.go("index.dashboard.widget", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, productId: $stateParams.productId, tabId: setTabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+        } else {
+            return;//$stateParams.productId = product.id;
+        }
+
     };
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
+//        $stateParams.tabId = 0;
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
     };

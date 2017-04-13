@@ -1,5 +1,6 @@
-app.controller('UserController', function ($scope, $http, localStorageService) {
+app.controller('UserController', function ($scope, $http, localStorageService, $cookies) {
     $scope.permission = localStorageService.get("permission");
+    $scope.checkAdmin = $cookies.getObject("isAdmin");
     $scope.users = [];
 
     //Tabs
@@ -38,7 +39,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             $scope.users = response;
             angular.forEach($scope.users, function (val, key) {
                 console.log(val)
-                if(!val.agencyId){
+                if (!val.agencyId) {
                     return;
                 }
                 $scope.userAgencyDetails.push(val.agencyId.agencyName)
@@ -67,10 +68,31 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
 //            secondaryPhone: user.secondaryPhone,
 //            agencyId: user.agencyId.id?user.agencyId.id:''
 //        };
+        if ($scope.checkAdmin === 'admin') {
+            user.isAdmin = true;
+        }
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
             getUser();
+            console.log(response)
+            if (!response.message) {
+                $scope.user = "";
+                return;
+            }
+            if (response.status == true) {
+                $scope.user = "";
+            } else {
+                var dialog = bootbox.dialog({
+                    title: 'Alert',
+                    message: response.message
+                });
+                dialog.init(function () {
+                    setTimeout(function () {
+                        dialog.modal('hide');
+                    }, 2000);
+                });
+            }
         });
-        $scope.user = "";
+
     };
 
     $scope.clearUser = function () {
@@ -94,7 +116,8 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             password: user.password,
             primaryPhone: user.primaryPhone,
             secondaryPhone: user.secondaryPhone,
-            agencyId: user.agencyId
+            agencyId: user.agencyId,
+            isAdmin: user.isAdmin
         };
         $scope.user = data;
         $scope.selectedUser = index;
@@ -153,31 +176,46 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
 
     $scope.saveUserAccount = function (userAccount) {
         var currentUserId = $scope.userId;
-        var data = {
-            id: userAccount.id,
-            accountId: userAccount.accountId.id,
-            userId: currentUserId.id
-        };
-        $http({method: userAccount.id ? 'PUT' : 'POST', url: 'admin/ui/userAccount', data: data}).success(function (response) {
-            getUserAccount(currentUserId)
-           //$scope.userAccounts = response.id;
+        if (!currentUserId) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select User</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+
+        } else {
+            var data = {
+                id: userAccount.id,
+                accountId: userAccount.accountId.id,
+                userId: currentUserId.id
+            };
+            $http({method: userAccount.id ? 'PUT' : 'POST', url: 'admin/ui/userAccount', data: data}).success(function (response) {
+                getUserAccount(currentUserId)
+                //$scope.userAccounts = response.id;
 //            userAccount(currentUserId);
-        });
+            });
+            userAccount.isEdit = false;
+
+        }
     };
 
     $scope.deleteUserAccount = function (userAccount, index) {
         //if (userAccount.id) {
-            $http({method: 'DELETE', url: 'admin/ui/userAccount/' + userAccount.id}).success(function (response) {
-                
-                $scope.userAccounts.splice(index, 1);
-                //$scope.userAccounts = response;
-            });
-       // } else {
+        $http({method: 'DELETE', url: 'admin/ui/userAccount/' + userAccount.id}).success(function (response) {
+
+            $scope.userAccounts.splice(index, 1);
+            //$scope.userAccounts = response;
+        });
+        // } else {
         //$scope.userAccounts.splice(index, 1);
         //}
     };
-    
-    $scope.removeUserAccount = function(index){
+
+    $scope.removeUserAccount = function (index) {
         $scope.userAccounts.splice(index, 1);
     }
 

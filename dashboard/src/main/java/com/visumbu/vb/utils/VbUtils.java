@@ -106,9 +106,12 @@ public class VbUtils {
             permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), userPermission.getStatus());
 //            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), Boolean.TRUE);
         }
-        if (user.getAgencyId() == null || (user.getIsAdmin() != null && user.getIsAdmin())) {
-            permission.setViewAgency(Boolean.TRUE);
-        }
+//        if (user.getIsAdmin() != null && user.getIsAdmin()) {
+//            permission.setViewAgency(Boolean.TRUE);
+//        }
+//        if (user.getAgencyId() == null || (user.getIsAdmin() != null && user.getIsAdmin())) {
+//            permission.setViewAgency(Boolean.TRUE);
+//        }
         return permission;
     }
 }
