@@ -1,6 +1,6 @@
-app.controller('UserController', function ($scope, $http, localStorageService,$cookies) {
+app.controller('UserController', function ($scope, $http, localStorageService, $cookies) {
     $scope.permission = localStorageService.get("permission");
-     $scope.checkAdmin = $cookies.getObject("isAdmin");
+    $scope.checkAdmin = $cookies.getObject("isAdmin");
     $scope.users = [];
 
     //Tabs
@@ -73,6 +73,11 @@ app.controller('UserController', function ($scope, $http, localStorageService,$c
         }
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
             getUser();
+            console.log(response)
+            if (!response.message) {
+                $scope.user = "";
+                return;
+            }
             if (response.status == true) {
                 $scope.user = "";
             } else {
