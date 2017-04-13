@@ -891,6 +891,50 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
+        },
+        { 
+            type: 'adCopyPerformance',
+            name: 'adCopyPerformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'hourOfTheDay',
+                    name: 'hourOfTheDay'
+                },
+                {
+                    type: 'DayOfWeek',
+                    name: 'DayOfWeek'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'network search partner',
+                    name: 'network search partner'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
         }
     ];
 

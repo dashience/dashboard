@@ -1,5 +1,6 @@
-app.controller('UserController', function ($scope, $http, localStorageService) {
+app.controller('UserController', function ($scope, $http, localStorageService, $cookies) {
     $scope.permission = localStorageService.get("permission");
+    $scope.checkAdmin = $cookies.getObject("isAdmin");
     $scope.users = [];
 
     //Tabs
@@ -67,23 +68,31 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
 //            secondaryPhone: user.secondaryPhone,
 //            agencyId: user.agencyId.id?user.agencyId.id:''
 //        };
+        if ($scope.checkAdmin === 'admin') {
+            user.isAdmin = true;
+        }
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
             getUser();
+            console.log(response)
+            if (!response.message) {
+                $scope.user = "";
+                return;
+            }
             if (response.status == true) {
-                    $scope.user = "";
-                } else {
-                    var dialog = bootbox.dialog({
-                        title: 'Alert',
-                        message: response.message
-                    });
-                    dialog.init(function () {
-                        setTimeout(function () {
-                            dialog.modal('hide');
-                        }, 2000);
-                    });
-                }
+                $scope.user = "";
+            } else {
+                var dialog = bootbox.dialog({
+                    title: 'Alert',
+                    message: response.message
+                });
+                dialog.init(function () {
+                    setTimeout(function () {
+                        dialog.modal('hide');
+                    }, 2000);
+                });
+            }
         });
-        
+
     };
 
     $scope.clearUser = function () {
@@ -107,7 +116,8 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
             password: user.password,
             primaryPhone: user.primaryPhone,
             secondaryPhone: user.secondaryPhone,
-            agencyId: user.agencyId
+            agencyId: user.agencyId,
+            isAdmin: user.isAdmin
         };
         $scope.user = data;
         $scope.selectedUser = index;
@@ -176,7 +186,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
                     dialog.modal('hide');
                 }, 2000);
             });
-            
+
         } else {
             var data = {
                 id: userAccount.id,
@@ -189,7 +199,7 @@ app.controller('UserController', function ($scope, $http, localStorageService) {
 //            userAccount(currentUserId);
             });
             userAccount.isEdit = false;
-            
+
         }
     };
 

@@ -447,7 +447,7 @@ public class UiService {
         String returnMsg = null;
         Boolean isSuccess = null;
         HashMap returnMap = new HashMap();
-        List findUser = userDao.findByUserName(vbUser.getUserName());
+        List findUser = userDao.findUserNameByUser(vbUser.getUserName());
         if (findUser.isEmpty()) {
             uiDao.create(vbUser);
             returnMsg = "Success";

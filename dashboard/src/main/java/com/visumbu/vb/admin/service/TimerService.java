@@ -47,7 +47,6 @@ public class TimerService {
     private SchedulerDao schedulerDao;
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
-        System.out.println("Test 2");
         Date today = new Date();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
             Date schedulerStartTime = new Date();
@@ -77,7 +76,7 @@ public class TimerService {
             System.out.println("TO Address============================================>");
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
-            String message = "scheduler message";
+            String message = subject + "\n\n- System";
             Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
             schedulerHistory.setFileName(filename);
             schedulerHistory.setEmailId(toAddress);

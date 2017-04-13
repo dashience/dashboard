@@ -47,8 +47,21 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             getAgency();
+             if (response.status == true) {
+                    $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+                } else {
+                    var dialog = bootbox.dialog({
+                        title: 'Alert',
+                        message: response.message
+                    });
+                    dialog.init(function () {
+                        setTimeout(function () {
+                            dialog.modal('hide');
+                        }, 2000);
+                    });
+                }
         });
-        $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+        
     };
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
