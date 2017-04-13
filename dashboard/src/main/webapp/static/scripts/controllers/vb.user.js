@@ -111,7 +111,8 @@ app.controller('UserController', function ($scope, $http, localStorageService,$c
             password: user.password,
             primaryPhone: user.primaryPhone,
             secondaryPhone: user.secondaryPhone,
-            agencyId: user.agencyId
+            agencyId: user.agencyId,
+            isAdmin: user.isAdmin
         };
         $scope.user = data;
         $scope.selectedUser = index;
