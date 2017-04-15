@@ -241,9 +241,6 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
-        if (timeSegment == null) {
-            timeSegment = "daily";
-        }
         String productSegment = request.getParameter("productSegment");
         if (productSegment == null) {
             productSegment = "daily";
@@ -267,16 +264,17 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
-        List<Map<String, String>> data = gaService.get(dataSetReportName, gaAccountId, gaProfileId, startDate, endDate);
-        System.out.println(data);
-        Map returnMap = new HashMap();
-        List<ColumnDef> columnDefs = getColumnDef(data);
-        returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
-        returnMap.put("data", data);
-        return returnMap;
+        System.out.println("Report Name " + dataSetReportName);
+        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment);
+//        System.out.println(data);
+//        Map returnMap = new HashMap();
+//        List<ColumnDef> columnDefs = getColumnDefObject(data);
+//        returnMap.put("columnDefs", columnDefs);
+//        if (fieldsOnly != null) {
+//            return returnMap;
+//        }
+//        returnMap.put("data", data);
+//        return returnMap;
     }
 
     private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {

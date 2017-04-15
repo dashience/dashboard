@@ -371,70 +371,70 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Overall Performance',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:yearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 },
                 {
-                    type: 'hourOfWeek',
+                    type: 'ga:dateHour',
                     name: 'Hour Of Week'
                 },
                 {
-                    type: 'dayOfWeek',
+                    type: 'ga:dayOfWeekName',
                     name: 'Day Of Week'
                 }
             ],
             productSegments: [
                 {
-                    type: 'browser',
+                    type: 'ga:browser',
                     name: 'Browser'
                 },
                 {
-                    type: 'OS',
+                    type: 'ga:operatingSystem',
                     name: 'OS'
                 },
                 {
-                    type: 'device',
+                    type: 'ga:deviceCategory',
                     name: 'Device'
                 },
                 {
-                    type: 'source',
+                    type: 'ga:source',
                     name: 'Source'
                 },
                 {
-                    type: 'previousPagePath',
+                    type: 'ga:previousPagePath',
                     name: 'Previous Page Path'
                 },
                 {
-                    type: 'nextPagePath',
+                    type: 'ga:secondPagePath',
                     name: 'Next Page Path'
                 },
                 {
-                    type: 'city',
+                    type: 'ga:city',
                     name: 'City'
                 },
                 {
-                    type: 'country',
+                    type: 'ga:country',
                     name: 'Country'
                 },
                 {
-                    type: 'metro',
+                    type: 'ga:metro',
                     name: 'Metro'
                 },
                 {
-                    type: 'channelGrouping',
-                    name: 'ChannelGrouping'
+                    type: 'ga:channelGrouping',
+                    name: 'Channel Grouping'
                 },
                 {
                     type: 'none',
@@ -1547,6 +1547,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +
+                    "&productSegment=" + dataSourcePath.productSegment +
                     "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&location=" + $stateParams.locationId +

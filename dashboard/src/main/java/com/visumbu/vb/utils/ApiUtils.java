@@ -177,11 +177,30 @@ public class ApiUtils {
 
     public static Map<String, GaReport> getAllGaReports() {
         Map<String, GaReport> gaReports = new HashMap<>();
-        gaReports.put("accountPerformance",
-                new GaReport("accountPerformance", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:sessionDuration,sessionDuration",
+        gaReports.put("overallPerformance",
+                new GaReport("overallPerformance", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:sessionDuration,sessionDuration",
                         null, null));
+        gaReports.put("referralReport",
+                new GaReport("referralReport", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:avgSessionDuration,avgSessionDuration",
+                        "ga:fullReferrer", null));
+        gaReports.put("pagePerformance",
+                new GaReport("pagePerformance", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:avgSessionDuration,avgSessionDuration",
+                        "ga:pagePath", null));
+        gaReports.put("visitorsTypeReport",
+                new GaReport("visitorsTypeReport", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:avgSessionDuration,avgSessionDuration",
+                        "ga:userType", null));
+        gaReports.put("frequencyReport",
+                new GaReport("frequencyReport", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:avgSessionDuration,avgSessionDuration",
+                        "ga:sessionCount", null));
+        gaReports.put("goalsReport",
+                new GaReport("goalsReport", "ga:sessions,sessions;ga:bounceRate,bounceRate;ga:percentNewSessions,percentNewSessions;ga:avgTimeOnPage,avgTimeOnPage;ga:goal1Completions,goals1;ga:goal2Completions,goals2;ga:goal3Completions,goals3;ga:goal4Completions,goals4;ga:goal5Completions,goals5;ga:goal6Completions,goals6",
+                        null, null));
+        gaReports.put("pageGoalsReport",
+                new GaReport("pageGoalsReport", "ga:sessions,sessions;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:goal1Completions,goals1;ga:goal2Completions,goals2;ga:goal3Completions,goals3;ga:goal4Completions,goals4;ga:goal5Completions,goals5;ga:goal6Completions,goals6",
+                        "ga:pagePath", null));
+        gaReports.put("eventsReport",
+                new GaReport("eventsReport", "ga:totalEvents,totalEvents;ga:uniqueEvents,uniqueEvents;ga:eventValue,eventValue;ga:avgEventValue,avgEventValue", "ga:eventCategory", null));
         
-
         return gaReports;
     }
 
