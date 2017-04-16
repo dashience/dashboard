@@ -15,6 +15,7 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
@@ -531,5 +532,9 @@ public class UiService {
 
     public DataSource getDataSourceById(Integer dataSourceIdInt) {
         return uiDao.getDataSourceById(dataSourceIdInt);
+    }
+
+    public DefaultFieldProperties getDefaultFieldProperties(String fieldName) {
+        return uiDao.getDefaultFieldProperties(fieldName);
     }
 }

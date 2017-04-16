@@ -59,9 +59,12 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
+import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.bean.GaReport;
+import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.utils.ApiUtils;
 import java.util.Iterator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -71,6 +74,8 @@ import java.util.Iterator;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class GaService {
 
+    @Autowired
+    private UiDao uiDao;
     // private static final String CLIENT_SECRET_JSON_RESOURCE = "F:\\GaToken\\client_secret_384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com.json";
     // Replace with your view ID.
     private static final String VIEW_ID = "82176546";
@@ -145,214 +150,19 @@ public class GaService {
         return null;
     }
 
-    public List<Map<String, String>> get(String reportName, String accountId, String profileId, Date startDate, Date endDate) {
-        if (reportName.equalsIgnoreCase("accountPerformance")) {
-            return getAccountPerformance(accountId, profileId, startDate, endDate, null, null);
-        } else if (reportName.equalsIgnoreCase("geoPerformance")) {
-            return getGeoPerformance(accountId, profileId, startDate, endDate);
-        } else if (reportName.equalsIgnoreCase("devicePerformance")) {
-            return getDevicePerformance(accountId, profileId, startDate, endDate);
-        }
-        return null;
-    }
-
-    public List<Map<String, String>> getAccountPerformance(String analyticsAccountId, String analyticsProfileId, Date startDate, Date endDate, String dimension, String filter) {
-        String metricsList = "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate"
-                + "ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:sessionDuration,sessionDuration";
-
-        System.out.println("SEO GA Profile Id " + analyticsProfileId);
-        List<Map<String, String>> gaDataMap = new ArrayList<>();
-        System.out.println(analyticsProfileId);
-        if (analyticsProfileId != null) {
-            GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimension, filter);
-            gaDataMap = (List) getResponseAsMap(gaData).get("data");
-
-            for (Iterator<Map<String, String>> iterator = gaDataMap.iterator(); iterator.hasNext();) {
-                Map<String, String> map = iterator.next();
-                map.put("avgTimeOnPage", ApiUtils.toMins(map.get("avgTimeOnPage")));
-                map.put("bounceRate", ApiUtils.removePercent(map.get("bounceRate") + ""));
-                map.put("percentNewSessions", ApiUtils.removePercent(map.get("percentNewSessions") + ""));
-                map.put("channelGrouping", map.get("ga:channelGrouping"));
-                Integer engagements = 0;
-                engagements += (ApiUtils.toInteger(map.get("directionsPageView"))
-                        + ApiUtils.toInteger(map.get("inventoryPageViews"))
-                        + ApiUtils.toInteger(map.get("leadSubmission"))
-                        + ApiUtils.toInteger(map.get("specialsPageView"))
-                        + ApiUtils.toInteger(map.get("timeOnSiteGt2Mins"))
-                        + ApiUtils.toInteger(map.get("vdpViews")));
-                map.put("engagements", engagements + "");
-            }
-            // returnMap.put("gaData", gaData);
-        }
-        return gaDataMap;
-    }
-
-    public List<Map<String, String>> getGeoPerformance(String analyticsAccountId, String analyticsProfileId, Date startDate, Date endDate) {
-        List<Map<String, String>> gaDataMap = new ArrayList<>();
-        if (analyticsProfileId != null) {
-            String metricsList = "ga:visits,visits;ga:percentNewSessions,percentNewSessions;"
-                    + "ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;";
-            String dimensions = "ga:city";
-            String filter = "ga:channelGrouping==Organic Search";
-
-            GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, filter);
-            gaDataMap = (List) getResponseAsMap(gaData).get("data");
-            for (Iterator<Map<String, String>> iterator = gaDataMap.iterator(); iterator.hasNext();) {
-                Map<String, String> map = iterator.next();
-                map.put("avgTimeOnPage", ApiUtils.toMins(map.get("avgTimeOnPage")));
-                map.put("bounceRate", ApiUtils.removePercent(map.get("bounceRate") + ""));
-                map.put("percentNewSessions", ApiUtils.removePercent(map.get("percentNewSessions") + ""));
-                map.put("city", map.get("ga:city"));
-                Integer engagements = 0;
-                engagements += (ApiUtils.toInteger(map.get("directionsPageView"))
-                        + ApiUtils.toInteger(map.get("inventoryPageViews"))
-                        + ApiUtils.toInteger(map.get("leadSubmission"))
-                        + ApiUtils.toInteger(map.get("specialsPageView"))
-                        + ApiUtils.toInteger(map.get("timeOnSiteGt2Mins"))
-                        + ApiUtils.toInteger(map.get("vdpViews")));
-                map.put("engagements", engagements + "");
-
-            }
-        }
-        return gaDataMap;
-    }
-
-    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions) {
+    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
+        String productSegments = reqProductSegments == null ? null : reqProductSegments;
         String dimensions = reqDimensions == null ? gaReport.getDefaultDimension() : reqDimensions;
         String filter = gaReport.getDefaultFilter();
 
-        GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, filter);
+        GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
         return getResponseAsMap(gaData);
     }
 
-    public List<Map<String, String>> getDevicePerformance(String analyticsAccountId, String analyticsProfileId, Date startDate, Date endDate) {
-        List<Map<String, String>> gaDataMap = new ArrayList<>();
-        if (analyticsProfileId != null) {
-            String metricsList = "ga:visits,visits;ga:percentNewSessions,percentNewSessions;"
-                    + "ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;";
-            String dimensions = "ga:deviceCategory";
-            String filter = "ga:channelGrouping==Organic Search";
-
-            GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, filter);
-            gaDataMap = (List) getResponseAsMap(gaData).get("data");
-            for (Iterator<Map<String, String>> iterator = gaDataMap.iterator(); iterator.hasNext();) {
-                Map<String, String> map = iterator.next();
-                map.put("avgTimeOnPage", ApiUtils.toMins(map.get("avgTimeOnPage")));
-                map.put("bounceRate", ApiUtils.removePercent(map.get("bounceRate") + ""));
-                map.put("percentNewSessions", ApiUtils.removePercent(map.get("percentNewSessions") + ""));
-                map.put("deviceCategory", map.get("ga:deviceCategory"));
-                Integer engagements = 0;
-                engagements += (ApiUtils.toInteger(map.get("directionsPageView"))
-                        + ApiUtils.toInteger(map.get("inventoryPageViews"))
-                        + ApiUtils.toInteger(map.get("leadSubmission"))
-                        + ApiUtils.toInteger(map.get("specialsPageView"))
-                        + ApiUtils.toInteger(map.get("timeOnSiteGt2Mins"))
-                        + ApiUtils.toInteger(map.get("vdpViews")));
-                map.put("engagements", engagements + "");
-            }
-        }
-
-        return gaDataMap;
-    }
-
-    public GetReportsResponse getSeoPerformance(String accountId, String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2) {
-        Date startDate = DateUtils.get30DaysBack();
-        Date endDate = new Date();
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;ga:percentNewSessions,PercentNewSessions;"
-                + "ga:newUsers,NewUsers;ga:pageViews,PageViews;ga:bounceRate,BounceRate;"
-                + getGaGoals(accountId, viewId);
-        String dimensions = "ga:medium";
-        String filter = "ga:medium==organic,ga:medium==Organic";
-        return getGenericData(viewId, startDate1, endDate1, startDate2, endDate2, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;"
-                + getGaGoals(accountId, viewId);
-
-        String dimensions = "ga:channelGrouping;ga:date";
-        if (aggregation == null || aggregation.isEmpty()) {
-            dimensions = "ga:channelGrouping";
-        }
-        String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getDynamicDisplayGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
-
-        String dimensions = "ga:source;ga:date";
-        if (aggregation == null || aggregation.isEmpty()) {
-            dimensions = "ga:source";
-        }
-
-        String filter = "ga:source==DynamicDisplay,ga:source==dynamicdisplay;ga:medium==Display,ga:medium==display";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getCampaignGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
-        String dimensions = "ga:channelGrouping;ga:date;ga:campaign";
-        if (aggregation == null || aggregation.isEmpty()) {
-            dimensions = "ga:channelGrouping;ga:campaign";
-        }
-        String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getAdGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
-        String dimensions = "ga:channelGrouping;ga:date;ga:adContent";
-        if (aggregation == null || aggregation.isEmpty()) {
-            dimensions = "ga:channelGrouping;ga:adContent";
-        }
-        String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getDeviceGoals(String accountId, String viewId, Date startDate, Date endDate) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
-        String dimensions = "ga:channelGrouping;ga:deviceCategory";
-        String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getCampaignDeviceGoals(String accountId, String viewId, Date startDate, Date endDate) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
-        String dimensions = "ga:channelGrouping;ga:campaign;ga:deviceCategory";
-        String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getGeoGoals(String accountId, String viewId, Date startDate, Date endDate) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
-        String dimensions = "ga:channelGrouping;ga:city";
-        String filter = "ga:channelGrouping==Display,ga:channelGrouping==display;ga:medium==cpc,ga:medium==Cpc,ga:medium==CPC";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getSeoOverallPerformanceGoals(String accountId, String viewId, Date startDate, Date endDate, String aggregation) {
-        String metricsList = "ga:visits,Visits;ga:sessions,Sessions;"
-                + "ga:bounceRate,BounceRate;" + getGaGoals(accountId, viewId);
-        String dimensions = "ga:channelGrouping;ga:date";
-        if (aggregation == null || aggregation.isEmpty()) {
-            dimensions = "ga:channelGrouping";
-        }
-        String filter = "ga:medium==organic,ga:medium==Organic";
-        return getGenericData(viewId, startDate, endDate, null, null, metricsList, dimensions, filter);
-    }
-
-    public GetReportsResponse getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2, String metrics, String dimentions, String filter) {
+    public GetReportsResponse getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2, String metrics, String dimentions, String productSegments, String filter) {
         System.out.println(viewId);
         try {
             List<DateRange> dateRangeList = new ArrayList<>();
@@ -371,6 +181,7 @@ public class GaService {
                 }
                 dateRangeList.add(dateRange1);
             }
+
             String[] metricsArray = metrics.split(";");
             List<Metric> metricList = new ArrayList<>();
             for (int i = 0; i < metricsArray.length; i++) {
@@ -387,6 +198,7 @@ public class GaService {
                     metricList.add(metric);
                 }
             }
+
             List<Dimension> dimensionList = null;
             if (dimentions != null) {
                 String[] dimensionArray = dimentions.split(";");
@@ -397,6 +209,22 @@ public class GaService {
                             .setName(dimensionStr);
                     dimensionList.add(dimension);
 
+                }
+            }
+            if (productSegments != null) {
+                String[] productSegmentArray = productSegments.split(";");
+                for (int i = 0; i < productSegmentArray.length; i++) {
+                    String productSegment = productSegmentArray[i];
+                    String[] nameAliasArray = productSegment.split(",");
+                    if (nameAliasArray.length >= 2) {
+                        Dimension dimension = new Dimension()
+                                .setName(nameAliasArray[0]);
+                        dimensionList.add(dimension);
+                    } else if (nameAliasArray.length >= 1) {
+                        Dimension dimension = new Dimension()
+                                .setName(nameAliasArray[0]);
+                        dimensionList.add(dimension);
+                    }
                 }
             }
             ReportRequest request = new ReportRequest()
@@ -508,7 +336,7 @@ public class GaService {
         return null;
     }
 
-    public static Map<String, List<Map<String, Object>>> getResponseAsMap(GetReportsResponse response) {
+    public Map<String, List<Map<String, Object>>> getResponseAsMap(GetReportsResponse response) {
         Map returnMap = new HashMap();
 
         for (Report report : response.getReports()) {
@@ -519,13 +347,24 @@ public class GaService {
             List<ColumnDef> columnDefs = new ArrayList<>();
             if (dimensionHeaders != null) {
                 for (int i = 0; i < dimensionHeaders.size(); i++) {
-                    columnDefs.add(new ColumnDef(dimensionHeaders.get(i), "string", dimensionHeaders.get(i)));
-                    System.out.println(dimensionHeaders.get(i));
+                    String key = dimensionHeaders.get(i);
+                    DefaultFieldProperties fieldProperties = uiDao.getDefaultFieldProperties(key);
+                    if (fieldProperties != null) {
+                        columnDefs.add(new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat()));
+                    } else {
+                        columnDefs.add(new ColumnDef(key, "string", key));
+                    }
                 }
             }
             for (int i = 0; i < metricHeaders.size(); i++) {
-                columnDefs.add(new ColumnDef(metricHeaders.get(i).getName(), metricHeaders.get(i).getType(), metricHeaders.get(i).getName()));
-                System.out.println(metricHeaders.get(i));
+                String key = metricHeaders.get(i).getName();
+                String type = metricHeaders.get(i).getType();
+                DefaultFieldProperties fieldProperties = uiDao.getDefaultFieldProperties(key);
+                if (fieldProperties != null) {
+                    columnDefs.add(new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat()));
+                } else {
+                    columnDefs.add(new ColumnDef(key, "string", key));
+                }
             }
             returnMap.put("columnDefs", columnDefs);
             if (rows == null) {
