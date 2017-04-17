@@ -350,13 +350,17 @@ public class ProxyController {
                 } catch (NumberFormatException e) {
 
                 }
-                List<String> costFields = Arrays.asList(new String[]{"avgCPC", "cost", "costConv"});
-                for (Iterator<String> iterator1 = costFields.iterator(); iterator1.hasNext();) {
-                    String costField = iterator1.next();
-                    Object cost = dataMap.get(costField);
-                    if (cost != null) {
-                        dataMap.put(costField, covertAdwordsCost(cost));
-                    }
+
+            }
+        }
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            List<String> costFields = Arrays.asList(new String[]{"avgCPC", "cost", "costConv"});
+            for (Iterator<String> iterator1 = costFields.iterator(); iterator1.hasNext();) {
+                String costField = iterator1.next();
+                Object cost = dataMap.get(costField);
+                if (cost != null) {
+                    dataMap.put(costField, covertAdwordsCost(cost));
                 }
             }
         }
