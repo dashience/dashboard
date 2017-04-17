@@ -144,7 +144,7 @@ public class ApiUtils {
 
         adwordsReports.put("geoPerformance",
                 new AdwordsReport("geoPerformance", new String[]{"CampaignId", "AccountDescriptiveName", "CampaignName", "Impressions", "Clicks",
-                    "Conversions", "AveragePosition", "AllConversions", "AdGroupName", "AdGroupId", "VideoViewRate", "VideoViews",
+                    "Conversions", "AveragePosition", "AllConversions", "AdGroupName", "AdGroupId", "VideoViewRate", "VideoViews", "CountryCriteriaId",
                     "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId"},
                         ReportDefinitionReportType.GEO_PERFORMANCE_REPORT));
 
