@@ -140,7 +140,7 @@
                 <!--                <th>Created Time</th>-->
                 <th>Agency</th>
                 <!--<th>Logo</th>-->
-                <th></th>
+                <th ng-if="permission.createReport === true || permission.downloadReport === true || permission.deleteReport === true"></th>
             </tr>
         </thead>
         <tbody>
@@ -150,7 +150,7 @@
                 <!--<td ui-sref="index.report.newOrEdit({locationId: locationId, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})">{{report.time}}</td>-->
                 <td>{{report.agencyId.agencyName}}</td>
                 <!--<td><img class="img-responsive img-thumbnail" src="{{report.logo}}"/></td>-->
-                <td>
+                <td ng-if="permission.createReport === true || permission.downloadReport === true || permission.deleteReport === true">
                     <button ng-if="permission.createReport === true;" class="btn btn-default btn-xs" ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></button>
                     <button ng-if="permission.downloadReport === true;" class="btn btn-info btn-xs" ng-click="downloadReportPdf(report)"><i class="fa fa-download"></i></button>
                     <!--<button class="btn btn-primary btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>-->
