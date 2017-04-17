@@ -151,7 +151,7 @@ public class ApiUtils {
         adwordsReports.put("videoPerformance",
                 new AdwordsReport("videoPerformance", new String[]{"AccountDescriptiveName", "Impressions", "Clicks", "AdGroupId", "AdGroupName",
                     "CampaignId", "CampaignName", "CreativeId", "Engagements", "EngagementRate", "Conversions",
-                    "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId",
+                    "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId",
                     "VideoId", "VideoTitle", "VideoViews", "VideoViewRate", "VideoQuartile100Rate", "VideoQuartile25Rate", "VideoQuartile50Rate", "VideoQuartile75Rate"},
                         ReportDefinitionReportType.VIDEO_PERFORMANCE_REPORT));
 
