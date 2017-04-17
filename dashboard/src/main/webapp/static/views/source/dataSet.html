@@ -7,7 +7,7 @@
         border-bottom: none;
     }
     .table-fixed tbody {
-/*        height: 430px;*/
+        /*        height: 430px;*/
         overflow-y: auto !important;
         width: 100%;
     }
@@ -42,14 +42,9 @@
     </div>
 </div>
 
-
-
 <section class="content">
-
     <div class="row">
-        
-        
-         <div class="col-md-6">
+        <div class="col-md-6">
             <div class="hpanel">
                 <div class="panel-heading">
                     View Data Set
@@ -127,9 +122,6 @@
                 </div>
             </div>
         </div>
-        
-        
-        
         <div class="col-md-6">
             <div class="hpanel">
                 <div class="panel-heading">
@@ -202,27 +194,25 @@
             </div>
         </div>
 
-       
-    
-    <div ng-show="showPreviewChart" ng-if="previewData">
-        <div class="col-md-12">
-            <div class="hpanel">
-                <div class="panel-heading">
-                    Preview
-                </div>
-                <div class="panel-body">
-                    <div class="box-body popup-head">
-                        
+        <div ng-show="showPreviewChart" ng-if="previewData">
+            <div class="col-md-12">
+                <div class="hpanel">
+                    <div class="panel-heading">
+                        Preview
+                    </div>
+                    <div class="panel-body">
+                        <div class="box-body popup-head">
+
                             <div id="changes-height" class="table-responsive">
                                 <div preview-Table path="{{previewData}}"></div>
                             </div>
-                        
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </section>
 <script>
             $(document).ready(function () {
