@@ -123,8 +123,7 @@ public class ApiUtils {
 
         adwordsReports.put("adGroupPerformance",
                 new AdwordsReport("adGroupPerformance", new String[]{"AccountDescriptiveName", "Impressions", "Clicks", "AdGroupId", "AdGroupName",
-                    "SearchImpressionShare", "SearchExactMatchImpressionShare", "SearchBudgetLostImpressionShare", "SearchRankLostImpressionShare",
-                    "ContentImpressionShare", "ContentBudgetLostImpressionShare", "ContentRankLostImpressionShare", "Conversions", "AveragePosition",
+                    "Conversions", "AveragePosition",
                     "AllConversions", "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId"},
                         ReportDefinitionReportType.ADGROUP_PERFORMANCE_REPORT));
 

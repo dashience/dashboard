@@ -13,27 +13,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
      */
     $scope.networkTypes = [
         {
-            type: 'all',
-            name: 'All'
-        },
-        {
-            type: 'search',
+            type: 'SEARCH',
             name: 'Search'
         },
         {
-            type: 'unknown',
-            name: 'Unknown'
-        },
-        {
-            type: 'content',
+            type: 'CONTENT',
             name: 'Content'
         },
         {
-            type: 'youtubeSearch',
+            type: 'YOUTUBE_SEARCH',
             name: 'Youtube Search'
         },
         {
-            type: 'youtubeWatch',
+            type: 'YOUTUBE_WATCH',
             name: 'Youtube Watch'
         }
     ];
@@ -604,7 +596,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ],
             productSegments: [
-
                 {
                     type: 'none',
                     name: 'None'
@@ -924,7 +915,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'network search partner',
                     name: 'Network Search Partner'
                 },
-
                 {
                     type: 'none',
                     name: 'None'
@@ -1100,7 +1090,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Quarter'
                 }
             ],
-
         },
         {
             type: 'geoPerformance',
@@ -1350,7 +1339,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             var networkType = dataSet.networkType.map(function (value, key) {
                 if (value) {
-                    return value.name;
+                    return value.type;
                 }
             }).join(',');
             dataSet.networkType = networkType;
@@ -1542,11 +1531,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             } else {
                 dataSourcePassword = '';
             }
+            console.log(dataSourcePath.networkType);
+            
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +
+                    "&filter=" + dataSourcePath.networkType.type +
                     "&productSegment=" + dataSourcePath.productSegment +
                     "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +

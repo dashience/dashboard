@@ -286,6 +286,9 @@ public class ProxyController {
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
+        if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
+            filter = null;
+        }
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
@@ -304,7 +307,7 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
-        List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, null);
+        List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
         System.out.println(data);
         Map returnMap = new HashMap();
         List<ColumnDef> columnDefs = getColumnDefObject(data);
