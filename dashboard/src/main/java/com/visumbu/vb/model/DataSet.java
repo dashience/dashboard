@@ -42,6 +42,13 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")})
 public class DataSet implements Serializable {
 
+    @Size(max = 500)
+    @Column(name = "report_performance")
+    private String reportPerformance;
+    @Size(max = 255)
+    @Column(name = "network_type")
+    private String networkType;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -187,6 +194,22 @@ public class DataSet implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.DataSet[ id=" + id + " ]";
+    }
+
+    public String getReportPerformance() {
+        return reportPerformance;
+    }
+
+    public void setReportPerformance(String reportPerformance) {
+        this.reportPerformance = reportPerformance;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
     }
 
 }

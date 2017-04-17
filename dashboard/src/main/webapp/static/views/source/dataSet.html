@@ -80,6 +80,14 @@
                                             <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                             <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
                                         </select>
+
+                                        <label ng-show="nwStatusFlag">Network Type</label>
+                                        <ui-select multiple ng-show="nwStatusFlag" ng-model="dataSet.networkType" on-removed="removed($item)" theme="select2" ng-disabled="disabled" class="form-control">
+                                            <ui-select-match placeholder="Select Network...">{{$item.name}}</ui-select-match>
+                                            <ui-select-choices repeat="network in networkTypes | filter:$select.search">
+                                                {{network.name}}
+                                            </ui-select-choices>
+                                        </ui-select>
                                     </div>
                                 </div>
 
@@ -206,3 +214,10 @@
         </div>
     </div>
 </section>
+<script>
+            $(document).ready(function () {
+                $("#mySel2").select2({
+                    closeOnSelect: false
+                });
+            });
+</script>
