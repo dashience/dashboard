@@ -1097,10 +1097,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });
@@ -1338,10 +1338,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });
