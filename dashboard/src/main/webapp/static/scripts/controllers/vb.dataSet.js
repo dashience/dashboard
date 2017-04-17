@@ -447,41 +447,41 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Referral Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:yearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 }
             ],
             productSegments: [
                 {
-                    type: 'browser',
+                    type: 'ga:browser',
                     name: 'Browser'
                 },
                 {
-                    type: 'OS',
+                    type: 'ga:operatingSystem',
                     name: 'OS'
                 },
                 {
-                    type: 'device',
+                    type: 'ga:deviceCategory',
                     name: 'Device'
                 },
                 {
-                    type: 'source',
+                    type: 'ga:source',
                     name: 'Source'
                 },
                 {
-                    type: 'channelGrouping',
+                    type: 'ga:channelGrouping',
                     name: 'ChannelGrouping'
                 },
                 {
@@ -495,57 +495,57 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Page Performance',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:yearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 }
             ],
             productSegments: [
                 {
-                    type: 'browser',
+                    type: 'ga:browser',
                     name: 'Browser'
                 },
                 {
-                    type: 'OS',
+                    type: 'ga:operatingSystem',
                     name: 'OS'
                 },
                 {
-                    type: 'device',
+                    type: 'ga:deviceCategory',
                     name: 'Device'
                 },
                 {
-                    type: 'source',
+                    type: 'ga:source',
                     name: 'Source'
                 },
                 {
-                    type: 'city',
+                    type: 'ga:city',
                     name: 'City'
                 },
                 {
-                    type: 'country',
+                    type: 'ga:country',
                     name: 'Country'
                 },
                 {
-                    type: 'region',
+                    type: 'ga:region',
                     name: 'Region'
                 },
                 {
-                    type: 'metro',
+                    type: 'ga:metro',
                     name: 'Metro'
                 },
                 {
-                    type: 'channelGrouping',
+                    type: 'ga:channelGrouping',
                     name: 'Channel Grouping'
                 },
                 {
@@ -559,19 +559,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'VisitosType Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:yearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 }
             ],
@@ -587,19 +587,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Frequency Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:yearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 }
             ],
@@ -616,65 +616,65 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Goals Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:YearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 },
                 {
-                    type: 'dayOfWeek',
+                    type: 'ga:dayOfWeek',
                     name: 'Day Of Week'
                 },
                 {
-                    type: 'hourOfDay',
+                    type: 'ga:dateHour',
                     name: 'Hour Of Day'
                 }
             ],
             productSegments: [
                 {
-                    type: 'browser',
+                    type: 'ga:browser',
                     name: 'Browser'
                 },
                 {
-                    type: 'OS',
+                    type: 'ga:operatingSystem',
                     name: 'OS'
                 },
                 {
-                    type: 'device',
+                    type: 'ga:deviceCategory',
                     name: 'Device'
                 },
                 {
-                    type: 'source',
+                    type: 'ga:source',
                     name: 'Source'
                 },
                 {
-                    type: 'city',
+                    type: 'ga:city',
                     name: 'City'
                 },
                 {
-                    type: 'country',
+                    type: 'ga:country',
                     name: 'Country'
                 },
                 {
-                    type: 'region',
+                    type: 'ga:region',
                     name: 'Region'
                 },
                 {
-                    type: 'metro',
+                    type: 'ga:metro',
                     name: 'Metro'
                 },
                 {
-                    type: 'channelGrouping',
+                    type: 'ga:channelGrouping',
                     name: 'Channel Grouping'
                 },
                 {
@@ -688,41 +688,41 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Page Goal Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:YearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 }
             ],
             productSegments: [
                 {
-                    type: 'browser',
+                    type: 'ga:browser',
                     name: 'Browser'
                 },
                 {
-                    type: 'OS',
+                    type: 'ga:operatingSystem',
                     name: 'OS'
                 },
                 {
-                    type: 'device',
+                    type: 'ga:deviceCategory',
                     name: 'Device'
                 },
                 {
-                    type: 'source',
+                    type: 'ga:source',
                     name: 'Source'
                 },
                 {
-                    type: 'channelGrouping',
+                    type: 'ga:channelGrouping',
                     name: 'Channel Grouping'
                 },
                 {
@@ -736,53 +736,53 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Events Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'ga:date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'ga:isoYearIsoWeek',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'ga:YearMonth',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'ga:year',
                     name: 'Year'
                 },
                 {
-                    type: 'dayOfWeek',
+                    type: 'ga:dayOfWeek',
                     name: 'Day Of Week'
                 }
             ],
             productSegments: [
                 {
-                    type: 'browser',
+                    type: 'ga:browser',
                     name: 'Browser'
                 },
                 {
-                    type: 'OS',
+                    type: 'ga:operatingSystem',
                     name: 'OS'
                 },
                 {
-                    type: 'device',
+                    type: 'ga:deviceCategory',
                     name: 'Device'
                 },
                 {
-                    type: 'source',
+                    type: 'ga:source',
                     name: 'Source'
                 },
                 {
-                    type: 'eventLabel',
+                    type: 'ga:eventLabel',
                     name: 'event Label'
                 },
                 {
-                    type: 'eventAction',
+                    type: 'ga:eventAction',
                     name: 'event Action'
                 },
                 {
-                    type: 'channelGrouping',
+                    type: 'ga:channelGrouping',
                     name: 'Channel Grouping'
                 },
                 {

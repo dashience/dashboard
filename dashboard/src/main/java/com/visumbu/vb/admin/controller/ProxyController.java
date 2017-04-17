@@ -242,11 +242,11 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
-        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null"))) {
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null")|| timeSegment.equalsIgnoreCase("none"))) {
             timeSegment = null;
         }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null"))) {
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null")|| productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
         if (dataSetId != null) {
