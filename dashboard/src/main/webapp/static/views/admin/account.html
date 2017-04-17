@@ -7,7 +7,7 @@
         border-bottom: none;
     }
     .table-fixed tbody {
-        height: 430px;
+/*        height: 430px;*/
         overflow-y: auto !important;
         width: 100%;
     }
@@ -29,7 +29,7 @@
         margin-bottom: 10px;
     }
     .nav-tabs-custom {
-        padding-top: 10px;
+        padding-top: 0px;
         padding-bottom: 10px;
     }
     .hpanel .panel-body {
@@ -37,18 +37,21 @@
     }    
 
 </style>
+
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Accounts
+            </h2>               
+        </div>
+    </div>
+</div>
+
 <section class="content">
     <div class="row">
-        <div class="normalheader transition animated fadeIn">
-            <div class="hpanel">
-                <div class="header-title">
-                    <h2 class="agency-bt font-bold m-b-xs ng-binding">
-                        Accounts
-                    </h2>               
-                </div>
-            </div>
-        </div>
-
         <div class="nav-tabs-custom col-md-12">
             <ul class="nav nav-tabs">
                 <li ng-class="{ active: isSet(1) }">
@@ -69,10 +72,13 @@
             <div class="col-lg-12">
                 <div class="col-md-6">
                     <div class="hpanel">
+                        <div class="panel-heading">
+                            Edit
+                        </div>
                         <div class="panel-body">
                             <div class="tab-content">
                                 <div ng-show="isSet(1)" class="license">
-                                    <div class="pull-right account-new">
+                                    <div class="account-new">
                                         <button class="btn btn-success" ng-click="addAccount()">New</button>
                                     </div>
 
@@ -108,7 +114,6 @@
 
                                 </div>
                                 <div ng-show="isSet(2)" class="license">
-
                                     <div class="col-lg-12" ng-hide="showEditPage">
                                         <table class="table table-responsive table-fixed">
                                             <thead>
@@ -180,7 +185,6 @@
                                                 <div>
                                                     <input type="text" class="form-control" ng-model="property.propertyName" placeholder="Name">
                                                 </div>
-
                                                 <!--                                                        <label class="col-sm-2">Account Name</label>
                                                                                                         <div class="col-sm-4">
                                                                                                             <input type="text" class="form-control" ng-model="property.accountId" placeholder="Name">
@@ -255,7 +259,7 @@
                                                         <!--<i class="fa" ng-class="{'fa-times': !accountUser.status, 'text-danger':!accountUser.status, 'fa-circle': accountUser.status, 'text-success':accountUser.status}"></i>-->
                                                     </td>
                                                     <td class="col-xs-2">
-                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser); accountUser.isEdit = false;"><i class="fa fa-save"></i></button>
+                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser)"><i class="fa fa-save"></i></button>
                                                         <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="removeAccountUser($index)"><i class="fa fa-times"></i></button>
                                                         <button ng-hide="accountUser.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccountUser{{accountUser.id}}"><i class="fa fa-trash-o"></i></button>
                                                         <div class="modal hmodal-success" id="deleteAccountUser{{accountUser.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -309,7 +313,9 @@
 
                 <div class="col-md-6">
                     <div class="hpanel">
-
+                        <div class="panel-heading">
+                            View
+                        </div>
                         <div class="panel-body">
                             <div class="data-search">
                                 <input type="text" class="form-control" ng-model="searchAccount" placeholder="Search...">
@@ -317,20 +323,24 @@
                             <table class="table table-responsive table-fixed">
                                 <thead>
                                     <tr>
-                                        <th class="col-xs-5">Name</th>
-                                        <th class="col-xs-6">Geo Location</th>
+                                        <th class="col-xs-4">Name</th>
+                                        <th class="col-xs-4">Geo Location</th>
+                                        <th class="col-xs-3">Agency Name</th>
                                         <th class="col-xs-1"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr data-dir-paginate="account in accounts| filter: searchAccount|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
-                                        <td class="col-xs-5" ng-click="editAccount(account, $index); accountData()">
+                                        <td class="col-xs-4" ng-click="editAccount(account, $index); accountData()">
                                             {{account.accountName}}
                                         </td>
-                                        <td class="col-xs-6" ng-click="editAccount(account, $index); accountData()">
+                                        <td class="col-xs-4" ng-click="editAccount(account, $index); accountData()">
                                             {{account.geoLocation?account.geoLocation:'-'}}
                                         </td>
-                                        <td class="col-xs-1s">
+                                        <td class="col-xs-3" ng-click="editAccount(account, $index); accountData()">
+                                            {{account.agencyId.agencyName?account.agencyId.agencyName:'-'}}
+                                        </td>
+                                        <td class="col-xs-1">
                                             <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccount{{account.id}}"><i class="fa fa-trash-o"></i></button>
                                             <div class="modal hmodal-success" id="deleteAccount{{account.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                                 <div class="modal-dialog">

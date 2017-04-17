@@ -56,6 +56,13 @@ public class TabWidgetBean {
     private Integer dataSetId;
     private Integer dataSourceId;
     private String content;
+    private String dateRangeName;
+    private String customStartDate;
+    private String customEndDate;
+    private Integer lastNdays;
+    private Integer lastNmonths;
+    private Integer lastNweeks;
+    private Integer lastNyears;
     private List<WidgetColumnBean> widgetColumns;
 
     public Integer getId() {
@@ -339,9 +346,65 @@ public class TabWidgetBean {
         this.content = content;
     }
 
+    public String getDateRangeName() {
+        return dateRangeName;
+    }
+
+    public void setDateRangeName(String dateRangeName) {
+        this.dateRangeName = dateRangeName;
+    }
+
+    public String getCustomStartDate() {
+        return customStartDate;
+    }
+
+    public void setCustomStartDate(String customStartDate) {
+        this.customStartDate = customStartDate;
+    }
+
+    public String getCustomEndDate() {
+        return customEndDate;
+    }
+
+    public void setCustomEndDate(String customEndDate) {
+        this.customEndDate = customEndDate;
+    }
+
+    public Integer getLastNdays() {
+        return lastNdays;
+    }
+
+    public void setLastNdays(Integer lastNdays) {
+        this.lastNdays = lastNdays;
+    }
+
+    public Integer getLastNmonths() {
+        return lastNmonths;
+    }
+
+    public void setLastNmonths(Integer lastNmonths) {
+        this.lastNmonths = lastNmonths;
+    }
+
+    public Integer getLastNweeks() {
+        return lastNweeks;
+    }
+
+    public void setLastNweeks(Integer lastNweeks) {
+        this.lastNweeks = lastNweeks;
+    }
+
+    public Integer getLastNyears() {
+        return lastNyears;
+    }
+
+    public void setLastNyears(Integer lastNyears) {
+        this.lastNyears = lastNyears;
+    }
+
     @Override
     public String toString() {
-        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", widgetColumns=" + widgetColumns + '}';
+        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", widgetColumns=" + widgetColumns + '}';
     }
 
 }

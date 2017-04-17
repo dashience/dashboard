@@ -70,10 +70,17 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByCustomRange", query = "SELECT t FROM TabWidget t WHERE t.customRange = :customRange")
     , @NamedQuery(name = "TabWidget.findByFrequencyDuration", query = "SELECT t FROM TabWidget t WHERE t.frequencyDuration = :frequencyDuration")
     , @NamedQuery(name = "TabWidget.findByDataset", query = "SELECT t FROM TabWidget t WHERE t.dataset = :dataset")
-    , @NamedQuery(name = "TabWidget.findByDatasource", query = "SELECT t FROM TabWidget t WHERE t.datasource = :datasource")})
+    , @NamedQuery(name = "TabWidget.findByDatasource", query = "SELECT t FROM TabWidget t WHERE t.datasource = :datasource")
+    , @NamedQuery(name = "TabWidget.findByDateRangeName", query = "SELECT t FROM TabWidget t WHERE t.dateRangeName = :dateRangeName")
+    , @NamedQuery(name = "TabWidget.findByCustomStartDate", query = "SELECT t FROM TabWidget t WHERE t.customStartDate = :customStartDate")
+    , @NamedQuery(name = "TabWidget.findByCustomEndDate", query = "SELECT t FROM TabWidget t WHERE t.customEndDate = :customEndDate")
+    , @NamedQuery(name = "TabWidget.findByLastNdays", query = "SELECT t FROM TabWidget t WHERE t.lastNdays = :lastNdays")
+    , @NamedQuery(name = "TabWidget.findByLastNmonths", query = "SELECT t FROM TabWidget t WHERE t.lastNmonths = :lastNmonths")
+    , @NamedQuery(name = "TabWidget.findByLastNweeks", query = "SELECT t FROM TabWidget t WHERE t.lastNweeks = :lastNweeks")
+    , @NamedQuery(name = "TabWidget.findByLastNyears", query = "SELECT t FROM TabWidget t WHERE t.lastNyears = :lastNyears")})
 public class TabWidget implements Serializable {
 
-   @OneToMany(mappedBy = "widgetId")
+    @OneToMany(mappedBy = "widgetId")
     private Collection<ReportWidget> reportWidgetCollection;
 
     private static final long serialVersionUID = 1L;
@@ -152,20 +159,37 @@ public class TabWidget implements Serializable {
     private Boolean zeroSuppression;
     @Column(name = "max_record")
     private Integer maxRecord;
-    
-    
+
     @Size(max = 255)
     @Column(name = "frequency_duration")
     private String frequencyDuration;
     @Size(max = 255)
     @Column(name = "custom_range")
     private String customRange;
-    
+
+    @Size(max = 255)
+    @Column(name = "date_range_name")
+    private String dateRangeName;
+    @Size(max = 45)
+    @Column(name = "custom_start_date")
+    private String customStartDate;
+    @Size(max = 45)
+    @Column(name = "custom_end_date")
+    private String customEndDate;
+    @Column(name = "last_ndays")
+    private Integer lastNdays;
+    @Column(name = "last_nmonths")
+    private Integer lastNmonths;
+    @Column(name = "last_nweeks")
+    private Integer lastNweeks;
+    @Column(name = "last_nyears")
+    private Integer lastNyears;
+
     @Lob
     @Size(max = 65535)
     @Column(name = "content")
     private String content;
-    
+
     @Size(max = 255)
     @Column(name = "dataset")
     private String dataset;
@@ -184,7 +208,7 @@ public class TabWidget implements Serializable {
     @JoinColumn(name = "tab_id", referencedColumnName = "id")
     @ManyToOne
     private DashboardTabs tabId;
-    
+
     @Transient
     private List<WidgetColumn> columns;
 
@@ -261,7 +285,7 @@ public class TabWidget implements Serializable {
     public void setData(List<Map<String, Object>> data) {
         this.data = data;
     }
-    
+
     public Short getEditable() {
         return editable;
     }
@@ -460,7 +484,7 @@ public class TabWidget implements Serializable {
 
     public void setDatasource(String datasource) {
         this.datasource = datasource;
-    }   
+    }
 
     public VbUser getCreatedBy() {
         return createdBy;
@@ -493,8 +517,8 @@ public class TabWidget implements Serializable {
     public void setTabId(DashboardTabs tabId) {
         this.tabId = tabId;
     }
-    
-     public List<WidgetColumn> getColumns() {
+
+    public List<WidgetColumn> getColumns() {
         return columns;
     }
 
@@ -510,6 +534,61 @@ public class TabWidget implements Serializable {
         this.content = content;
     }
 
+    public String getDateRangeName() {
+        return dateRangeName;
+    }
+
+    public void setDateRangeName(String dateRangeName) {
+        this.dateRangeName = dateRangeName;
+    }
+
+    public String getCustomStartDate() {
+        return customStartDate;
+    }
+
+    public void setCustomStartDate(String customStartDate) {
+        this.customStartDate = customStartDate;
+    }
+
+    public String getCustomEndDate() {
+        return customEndDate;
+    }
+
+    public void setCustomEndDate(String customEndDate) {
+        this.customEndDate = customEndDate;
+    }
+
+    public Integer getLastNdays() {
+        return lastNdays;
+    }
+
+    public void setLastNdays(Integer lastNdays) {
+        this.lastNdays = lastNdays;
+    }
+
+    public Integer getLastNmonths() {
+        return lastNmonths;
+    }
+
+    public void setLastNmonths(Integer lastNmonths) {
+        this.lastNmonths = lastNmonths;
+    }
+
+    public Integer getLastNweeks() {
+        return lastNweeks;
+    }
+
+    public void setLastNweeks(Integer lastNweeks) {
+        this.lastNweeks = lastNweeks;
+    }
+
+    public Integer getLastNyears() {
+        return lastNyears;
+    }
+
+    public void setLastNyears(Integer lastNyears) {
+        this.lastNyears = lastNyears;
+    }   
 
     @Override
     public int hashCode() {
@@ -545,5 +624,5 @@ public class TabWidget implements Serializable {
     public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
         this.reportWidgetCollection = reportWidgetCollection;
     }
-    
+
 }

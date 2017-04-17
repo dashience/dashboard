@@ -17,6 +17,7 @@ import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Dealer;
+import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
@@ -243,12 +244,12 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
-        if (timeSegment == null) {
-            timeSegment = "daily";
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
+            timeSegment = null;
         }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment == null) {
-            productSegment = "daily";
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
+            productSegment = null;
         }
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
@@ -269,28 +270,21 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
-        List<Map<String, String>> data = gaService.get(dataSetReportName, gaAccountId, gaProfileId, startDate, endDate);
-        System.out.println(data);
-        Map returnMap = new HashMap();
-        List<ColumnDef> columnDefs = getColumnDef(data);
-        returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
-        returnMap.put("data", data);
-        return returnMap;
+        System.out.println("Report Name " + dataSetReportName);
+        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment);
     }
 
     private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
-        if (timeSegment == null) {
-            timeSegment = "daily";
+        String filter = request.getParameter("filter");
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
+            timeSegment = null;
         }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment == null) {
-            productSegment = "daily";
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
+            productSegment = null;
         }
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
@@ -310,16 +304,48 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
-        List<Map<String, String>> data = adwordsService.get(dataSetReportName, adwordsAccountId, startDate, endDate, timeSegment, productSegment);
+        List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, null);
         System.out.println(data);
         Map returnMap = new HashMap();
-        List<ColumnDef> columnDefs = getColumnDef(data);
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
         if (fieldsOnly != null) {
             return returnMap;
         }
         returnMap.put("data", data);
         return returnMap;
+    }
+
+    @RequestMapping(value = "testAdwords", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object testAdwords(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("Report Name" + request.getParameter("reportName"));
+        System.out.println("Time Segment" + request.getParameter("timeSegment"));
+        System.out.println("Product Segment" + request.getParameter("productSegment"));
+        System.out.println("filter " + request.getParameter("filter"));
+
+        List<Map<String, Object>> data = adwordsService.getAdwordsReport(request.getParameter("reportName"), DateUtils.get30DaysBack(), new Date(), "827-719-8225", request.getParameter("timeSegment"), request.getParameter("productSegment"), request.getParameter("filter"));
+        System.out.println(data);
+        Map returnMap = new HashMap();
+        String fieldsOnly = request.getParameter("fieldsOnly");
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
+        returnMap.put("columnDefs", columnDefs);
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", data);
+        System.out.println(returnMap);
+        return returnMap;
+    }
+
+    @RequestMapping(value = "testGa", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object testGa(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("Report Name" + request.getParameter("reportName"));
+        System.out.println("Time Segment" + request.getParameter("timeSegment"));
+        System.out.println("Product Segment" + request.getParameter("productSegment"));
+        System.out.println("filter " + request.getParameter("filter"));
+        return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"));
     }
 
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
@@ -379,6 +405,27 @@ public class ProxyController {
             }
         }
         return propertyAccountId;
+    }
+
+    private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
+        log.debug("Calling of getColumnDef function in ProxyController class");
+        List<ColumnDef> columnDefs = new ArrayList<>();
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> mapData = iterator.next();
+            for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
+                String key = entrySet.getKey();
+                DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
+                if (fieldProperties != null) {
+                    columnDefs.add(new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat()));
+                } else {
+                    Object value = entrySet.getValue();
+                    System.out.println(value.getClass());
+                    columnDefs.add(new ColumnDef(key, "string", key));
+                }
+            }
+            return columnDefs;
+        }
+        return columnDefs;
     }
 
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
@@ -484,7 +531,7 @@ public class ProxyController {
                     if (tabWidget.getDataSourceId() == null) {
                         continue;
                     }
-                    String url = "../testing/admin/proxy/getData?";
+                    String url = "../dashboard/admin/proxy/getData?";
 //                    String url = "admin/proxy/getData?";
                     log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -496,12 +543,12 @@ public class ProxyController {
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                         System.out.println("DS TYPE ==>  CSV");
-                        url = "../testing/admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                        url = "../dashboard/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                        url = "../testing/admin/proxy/getData?";
+                        url = "../dashboard/admin/proxy/getData?";
 //                    url = "admin/proxy/getData?";
                     }
                     valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
@@ -569,7 +616,6 @@ public class ProxyController {
             selectDate = start_date.concat(" - " + end_date);
         }
         System.out.println("selectDate ---> " + selectDate);
-
         log.debug("EXport type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -621,6 +667,7 @@ public class ProxyController {
                     System.out.println("DS TYPE ==>  CSV");
 //                    url = "../testing/admin/csv/getData";
                     url = "../dashboard/admin/csv/getData";
+//                    url = "admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
@@ -704,7 +751,7 @@ public class ProxyController {
             selectDate = start_date.concat(" - " + end_date);
         }
         System.out.println("selectDate ---> " + selectDate);
-
+        
         log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";

@@ -112,28 +112,38 @@
     .ui-select-bootstrap > .ui-select-choices, .ui-select-bootstrap > .ui-select-no-choice {
         display: contents;
     }
-
-
-
     .search-check {
-
         vertical-align: middle;
-
     }
-
+    .edit-widget {
+        margin-top:10px;
+        margin-bottom:10px;
+    }
+    .edit-widget-space{
+        overflow: hidden;
+    }
 </style>
-
-<div class="content animate-panel" ng-repeat="widget in editWidgetData">
+<div class="normalheader transition animated fadeIn">
     <div class="hpanel">
-        <div class="panel-heading">
-            Select the Elements
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Edit Widget
+            </h2>               
+        </div>
+    </div>
+</div>
+<div class="content" ng-repeat="widget in editWidgetData">
+    <div class="row edit-widget">
+        
             <div class="pull-right">
                 <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
             </div>
-        </div>
-        <div class="panel-body">
+        
+       <div class="row col-md-12">
             <div class="col-lg-4">
-                <div class="col-md-12">
+                <div>
                     <label>Data Source</label>
                     <div class="input-group m-b">
                         <span class="input-group-addon">
@@ -141,7 +151,7 @@
                                 <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>                            
                         </span>
-                        <select class="form-control m-b" ng-model="widget.dataSourceId"
+                        <select class="form-control m-b" ng-model="widget.dataSourceId" ng-disabled="widget.chartType == 'text'"
                                 ng-change="selectDataSource(widget.dataSourceId, widget)"
                                 ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                         </select>
@@ -149,7 +159,7 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="col-md-12">
+                <div>
                     <label>Data Set</label>
                     <div class="input-group m-b">
                         <span class="input-group-addon">                                
@@ -157,7 +167,7 @@
                                 <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>
                         </span>
-                        <select class="form-control" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
+                        <select class="form-control" ng-disabled="widget.chartType == 'text'" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
                         </select>
                     </div>
                 </div>
@@ -171,11 +181,11 @@
                     </a>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-lg-12" ng-if="editChartType == 'table'">
-                    <div class="form-group col-lg-3">
-                        <div class="col-md-12">
+       </div>
+            <div class="row col-md-12">
+                <div ng-if="editChartType == 'table'">
+                    <div class="form-group col-md-4">
+                        <div>
                             <label>Max Record</label>
                             <input type="text" ng-model="widget.maxRecord" class="form-control">
                         </div>
@@ -195,14 +205,88 @@
                     </div> 
                 </div>
             </div>
+         <div class="row col-md-12">
+            <div class="col-md-4">
+                <label>Date Range</label>
+                <div>
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu scheduler-list-style">
+                            <li ng-click="selectWidgetDuration('None', widget)"><a>None</a></li>
+                            <li ng-click="selectWidgetDuration('Today', widget)"><a>Today</a></li>
+                            <li ng-click="selectWidgetDuration('Yesterday', widget)"><a>Yesterday</a></li>
+                            <li ng-click="selectWidgetDuration('This Week', widget)"><a>This Week</a></li>
+                            <li ng-click="selectWidgetDuration('Last Week', widget)"><a>Last Week</a></li>
+                            <li ng-click="selectWidgetDuration('This Month', widget)"><a>This Month</a></li>
+                            <li ng-click="selectWidgetDuration('Last Month', widget)"><a>Last Month</a></li>
+                            <li ng-click="selectWidgetDuration('This Year', widget)"><a>This Year</a></li>
+                            <li ng-click="selectWidgetDuration('Last Year', widget)"><a>Last Year</a></li>
+                            <li ng-click="selectWidgetDuration('Last N Days', widget)">
+                                <a>Last <input type="text"
+                                               ng-model="widget.lastNdays" 
+                                               ng-change="selectWidgetDuration('Last N Days', widget)" 
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Days
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Last N Weeks', widget)">
+                                <a>Last <input type="text" 
+                                               ng-model="widget.lastNweeks" 
+                                               ng-change="selectWidgetDuration('Last N Weeks', widget)"
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Weeks
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Last N Months', widget)">
+                                <a>Last <input type="text" 
+                                               ng-model="widget.lastNmonths" 
+                                               ng-change="selectWidgetDuration('Last N Months', widget)"
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Months
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Last N Years', widget)">
+                                <a>Last <input type="text" 
+                                               ng-model="widget.lastNyears" 
+                                               ng-change="selectWidgetDuration('Last N Years', widget)"
+                                               class="form-control" 
+                                               ng-model-options="{debounce: 500}"
+                                               style="width: 60px; display: contents; height: 25px;"> 
+                                    Years
+                                </a>
+                            </li>
+                            <li ng-click="selectWidgetDuration('Custom', widget)"><a>Custom</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="widget.dateRangeName === 'Custom'">
+                <div class="col-md-4">
+                    <label>Custom Range</label>
+                    <div>
+                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                            <span class="date-border">
+                                {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
+                            </span>
+                        </a> 
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row" ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
-        <div class="col-lg-12 table-deeta" >
+    
+    <div ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
+        <div class="col-lg-12 table-deeta edit-widget">
             <div class="hpanel hgreen border-table"> 
                 <div class="panel-heading">
-                    <!--<div class="panel-tools">-->
-
+                    <div class="edit-widget-space">
                     <div ng-hide='editPreviewTitle'> 
                         <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a>
                     </div> 
@@ -213,35 +297,11 @@
                         <a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>
                         <a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>
                     </div>
-                    <!--</div>-->
+                    </div>
                 </div>
                 <div class="panel-body">                    
-                    <div class="col-md-7">
-                        <div ng-if="editChartType === 'ticker'">
-                            <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
-                        </div>
-                        <div ng-if="editChartType === 'line'">
-                            <div>
-                                <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}"></div>
-                            </div>
-                        </div>
-                        <div ng-if="editChartType === 'area'">
-                            <div>
-                                <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}"></div>
-                            </div>
-                        </div>
-                        <div ng-if="editChartType === 'bar'">
-                            <div>
-                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}"></div>
-                            </div>
-                        </div>
-                        <div ng-if="editChartType === 'pie'">
-                            <div>
-                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}"></div>
-                            </div>                            
-                        </div> 
-                    </div>
-                    <div class="col-md-5" ng-if="editChartType != 'ticker'">
+                   
+                    <div class="col-md-6" ng-if="editChartType != 'ticker'">
                         <div class="form-group">
                             <div class="col-md-12" ng-if="editChartType != 'pie'">
                                 <label>Select X-Axis</label>
@@ -292,17 +352,23 @@
                                 </ui-select>
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
+                            <div class="col-md-12">
+                                <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="showAdvanceOptions == true">
                             <div class="col-md-12">
                                 <label>Format</label>                                 
                                 <table class="table table-bordered table-responsive">
                                     <thead>
                                         <tr>
-                                            <td>Name</td>
-                                            <td>Format</td>
-                                            <td>Sort</td>
-                                            <td>Field Type</td>
+                                            <th>Name</th>
+                                            <th>Format</th>
+                                            <th>Sort</th>
+                                            <th>Field Type</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -381,6 +447,35 @@
                             </div>
                         </div>
                     </div>
+                    
+                    
+                     <div class="col-md-6">
+                        <div ng-if="editChartType === 'ticker'">
+                            <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
+                        </div>
+                        <div ng-if="editChartType === 'line'">
+                            <div>
+                                <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                            </div>
+                        </div>
+                        <div ng-if="editChartType === 'area'">
+                            <div>
+                                <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                            </div>
+                        </div>
+                        <div ng-if="editChartType === 'bar'">
+                            <div>
+                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}"></div>
+                            </div>
+                        </div>
+                        <div ng-if="editChartType === 'pie'">
+                            <div>
+                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                            </div>                            
+                        </div> 
+                    </div>
+                    
+                    
                 </div> 
                 <div class='panel-footer'>
                     <div>
@@ -392,9 +487,10 @@
         </div>
 
     </div>
-    <div class="row" ng-if="editChartType === 'table'">
+        </div>
+    <div class="row edit-widget" ng-if="editChartType === 'table'">
         <div class="col-lg-12">
-            <div class="hpanel border-table preview-table">
+            <div class="preview-table">
                 <div widget-Preview-Table 
                      preview-Table-List='{{collectionFields}}'
                      preview-Urls='{{previewChartUrl}}' 
@@ -437,6 +533,3 @@
         </div>
     </div>
 </div>
-
-
-

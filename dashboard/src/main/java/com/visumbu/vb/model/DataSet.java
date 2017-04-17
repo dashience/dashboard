@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,9 +18,12 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -37,6 +41,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DataSet.findByTimeSegment", query = "SELECT d FROM DataSet d WHERE d.timeSegment = :timeSegment")
     , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")})
 public class DataSet implements Serializable {
+
+    @Size(max = 500)
+    @Column(name = "report_performance")
+    private String reportPerformance;
+    @Size(max = 255)
+    @Column(name = "network_type")
+    private String networkType;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -184,5 +195,21 @@ public class DataSet implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DataSet[ id=" + id + " ]";
     }
-    
+
+    public String getReportPerformance() {
+        return reportPerformance;
+    }
+
+    public void setReportPerformance(String reportPerformance) {
+        this.reportPerformance = reportPerformance;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
+    }
+
 }

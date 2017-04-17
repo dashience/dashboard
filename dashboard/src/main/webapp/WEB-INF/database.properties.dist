@@ -2,9 +2,9 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 database.driver=com.mysql.jdbc.Driver
-database.url=jdbc:mysql://localhost/vb_arul?zeroDateTimeBehavior=convertToNull
+database.url=jdbc:mysql://localhost/vb
 database.user=root
-database.password=
+database.password=root
 
 hibernate.dialect=org.hibernate.dialect.MySQLDialect
 hibernate.show_sql=true

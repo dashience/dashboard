@@ -47,7 +47,6 @@ public class TimerService {
     private SchedulerDao schedulerDao;
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
-        System.out.println("Test 2");
         Date today = new Date();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
             Date schedulerStartTime = new Date();
@@ -77,7 +76,7 @@ public class TimerService {
             System.out.println("TO Address============================================>");
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
-            String message = "scheduler message";
+            String message = subject + "\n\n- System";
             Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
             schedulerHistory.setFileName(filename);
             schedulerHistory.setEmailId(toAddress);
@@ -90,7 +89,7 @@ public class TimerService {
             schedulerHistory.setExecutionEndTime(schedulerEndTime);
             schedulerHistory.setSchedulerId(schedulerById);
             schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-            //schedulerService.createSchedulerHistory(schedulerHistory);
+            schedulerService.createSchedulerHistory(schedulerHistory);
         }
     }
 
@@ -142,7 +141,7 @@ public class TimerService {
 
     }
 
-//    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeOnce() {
         Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();
@@ -150,7 +149,6 @@ public class TimerService {
         List<Scheduler> scheduledTasks = schedulerDao.getOnce(hour, today);
         System.out.println("Once 1");
         executeTasks(scheduledTasks);
-
     }
 
     private Boolean downloadReportAndSend(Date startDate, Date endDate,

@@ -15,6 +15,7 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
@@ -26,12 +27,16 @@ import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -178,7 +183,7 @@ public class UiService {
         } else {
             dataSet = new DataSet();
         }
-
+        tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setChartType(tabWidgetBean.getChartType());
         tabWidget.setDirectUrl(tabWidgetBean.getDirectUrl());
         tabWidget.setWidgetTitle(tabWidgetBean.getWidgetTitle());
@@ -196,6 +201,13 @@ public class UiService {
         tabWidget.setDataSourceId(dataSource);
         tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setContent(tabWidgetBean.getContent());
+        tabWidget.setDateRangeName(tabWidgetBean.getDateRangeName());
+        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
+        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
+        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
+        tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
+        tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
+        tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
         uiDao.deleteWidgetColumns(tabWidget.getId());
@@ -432,8 +444,24 @@ public class UiService {
         return uiDao.getUsersByAgencyUser(user);
     }
 
-    public VbUser createUser(VbUser vbUser) {
-        return (VbUser) uiDao.create(vbUser);
+    public HashMap createUser(VbUser vbUser) {
+        String returnMsg = null;
+        Boolean isSuccess = null;
+        HashMap returnMap = new HashMap();
+        List findUser = userDao.findUserNameByUser(vbUser.getUserName());
+        if (findUser.isEmpty()) {
+            uiDao.create(vbUser);
+            returnMsg = "Success";
+            isSuccess = true;
+
+        } else {
+//            Iterator<VbUser> userList = userDao.findByUserName(vbUser.getUserName()).iterator();
+            returnMsg = "User Already Exist";
+            isSuccess = false;
+        }
+        returnMap.put("message", returnMsg);
+        returnMap.put("status", isSuccess);
+        return returnMap;
     }
 
     public VbUser updateUser(VbUser vbUser) {
@@ -445,7 +473,6 @@ public class UiService {
     }
 
     public VbUser deleteUser(Integer id) {
-        //VbUser vbUser = readUser(id);
         return uiDao.deleteUser(id);
     }
 
@@ -505,5 +532,9 @@ public class UiService {
 
     public DataSource getDataSourceById(Integer dataSourceIdInt) {
         return uiDao.getDataSourceById(dataSourceIdInt);
+    }
+
+    public DefaultFieldProperties getDefaultFieldProperties(String fieldName) {
+        return uiDao.getDefaultFieldProperties(fieldName);
     }
 }
