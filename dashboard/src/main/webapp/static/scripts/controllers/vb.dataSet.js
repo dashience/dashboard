@@ -1406,14 +1406,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.refreshDataSet = function (dataSet) {
-        $scope.dataSet.timeSegment = "";
-        $scope.dataSet.productSegment = "";
+//        var tmpDataSet = dataSet
+//        dataSet.timeSegment = "";
+//        dataSet.productSegment = "";
         $scope.showPreviewChart = true;
         $scope.previewData = null;
         $timeout(function () {
             $scope.previewData = dataSet;
         }, 50);
     };
+
+    $scope.clearSeg = function (dataSet) {
+        dataSet.timeSegment = '';
+        dataSet.productSegment = '';
+    }
 
     $scope.clearDataSet = function (dataSet) {
         $scope.dataSet = "";

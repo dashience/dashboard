@@ -143,7 +143,7 @@
 
                             <div ng-show="dataSetFlag">
                                 <label>Report</label>
-                                <select class="form-control" ng-model="dataSet.reportName" ng-change="getTimeSegemens(); refreshDataSet(dataSet)">
+                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegemens(); refreshDataSet(dataSet)">
                                     <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     <option ng-repeat="reportPerformances in report track by $index" value="{{reportPerformances.type}}">
                                         {{reportPerformances.name}}</option>
