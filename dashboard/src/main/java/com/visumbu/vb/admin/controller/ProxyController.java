@@ -242,11 +242,11 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
-        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null")|| timeSegment.equalsIgnoreCase("none"))) {
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
             timeSegment = null;
         }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null")|| productSegment.equalsIgnoreCase("none"))) {
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
         if (dataSetId != null) {
@@ -277,12 +277,12 @@ public class ProxyController {
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
         String filter = request.getParameter("filter");
-        if (timeSegment == null) {
-            timeSegment = "daily";
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
+            timeSegment = null;
         }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment == null) {
-            productSegment = "daily";
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
+            productSegment = null;
         }
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
@@ -302,7 +302,7 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
-        List<Map<String, Object>> data = adwordsService.get(dataSetReportName, adwordsAccountId, startDate, endDate, timeSegment, productSegment, filter);
+        List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, null);
         System.out.println(data);
         Map returnMap = new HashMap();
         List<ColumnDef> columnDefs = getColumnDefObject(data);
