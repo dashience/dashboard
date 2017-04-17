@@ -972,7 +972,13 @@ public class AdwordsService {
             response.saveToFile(filename);
             Map dataMap = (Map) XmlUtils.getAsMap(filename);
             dataMap = (Map) dataMap.get("report");
+            if(dataMap == null) {
+                return null;
+            }
             dataMap = (Map) dataMap.get("table");
+            if(dataMap == null) {
+                return null;
+            }
             if (dataMap.get("row") instanceof Map) {
                 List<Map<String, Object>> returnList = new ArrayList<>();
                 returnList.add((Map<String, Object>) dataMap.get("row"));
