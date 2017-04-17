@@ -42,6 +42,9 @@ public class ApiUtils {
     }
 
     public static String getCityById(String cityId) {
+        if(cityId == null) {
+            return null;
+        }
         String line = "";
         String cvsSplitBy = ",";
         ClassLoader classLoader = ApiUtils.class.getClassLoader();

@@ -14,6 +14,7 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Dealer;
@@ -22,6 +23,7 @@ import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
@@ -308,8 +310,61 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
+        if (dataSetReportName.equalsIgnoreCase("geoPerformance")) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                Object cityCriteria = dataMap.get("city");
+                Object regionCriteria = dataMap.get("region");
+                Object countryCriteria = dataMap.get("countryTerritory");
+                try {
+                    if (cityCriteria != null) {
+                        System.out.println("CITY CRITERIA CLASS  " + cityCriteria.getClass());
+                        Integer criteriaId = Integer.parseInt(cityCriteria + "");
+                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                        if (criteria != null) {
+                            dataMap.put("cityName", criteria.getCriteriaName());
+                        }
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+                try {
+                    if (regionCriteria != null) {
+                        Integer criteriaId = Integer.parseInt(regionCriteria + "");
+                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                        if (criteria != null) {
+                            dataMap.put("regionName", criteria.getCriteriaName());
+                        }
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+                try {
+                    if (countryCriteria != null) {
+                        Integer criteriaId = Integer.parseInt(countryCriteria + "");
+                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                        if (criteria != null) {
+                            dataMap.put("countryName", criteria.getCriteriaName());
+                        }
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+                List<String> costFields = Arrays.asList(new String[]{"avgCPC", "cost", "costConv"});
+                for (Iterator<String> iterator1 = costFields.iterator(); iterator1.hasNext();) {
+                    String costField = iterator1.next();
+                    Object cost = dataMap.get(costField);
+                    if (cost != null) {
+                        dataMap.put(costField, covertAdwordsCost(cost));
+                    }
+                }
+            }
+        }
         System.out.println(data);
         Map returnMap = new HashMap();
+        if (data == null) {
+            return null;
+        }
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
         if (fieldsOnly != null) {
@@ -317,6 +372,18 @@ public class ProxyController {
         }
         returnMap.put("data", data);
         return returnMap;
+    }
+
+    private Double covertAdwordsCost(Object costData) {
+        if (costData == null) {
+            return null;
+        }
+        String costDataStr = costData + "";
+        Double cost = Double.parseDouble(costDataStr);
+        if (cost > 0) {
+            return cost / 1000000;
+        }
+        return 0D;
     }
 
     @RequestMapping(value = "testAdwords", method = RequestMethod.GET, produces = "application/json")
@@ -547,7 +614,7 @@ public class ProxyController {
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                         System.out.println("DS TYPE ==>  CSV");
 //                        url = "../dashboard/admin/csv/getData";
-                    url = "../dashboard/admin/csv/getData";
+                        url = "../dashboard/admin/csv/getData";
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
@@ -751,7 +818,7 @@ public class ProxyController {
             selectDate = start_date.concat(" - " + end_date);
         }
         System.out.println("selectDate ---> " + selectDate);
-        
+
         log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
