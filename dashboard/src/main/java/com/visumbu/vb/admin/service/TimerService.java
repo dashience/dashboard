@@ -47,7 +47,6 @@ public class TimerService {
     private SchedulerDao schedulerDao;
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
-        System.out.println("Test 2");
         Date today = new Date();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
             Date schedulerStartTime = new Date();
@@ -77,7 +76,7 @@ public class TimerService {
             System.out.println("TO Address============================================>");
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
-            String message = "scheduler message";
+            String message = subject + "\n\n- System";
             Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
             schedulerHistory.setFileName(filename);
             schedulerHistory.setEmailId(toAddress);
@@ -159,8 +158,8 @@ public class TimerService {
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-//            String urlStr = "http://localhost:8082/testing/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
-            String urlStr = "http://localhost:8080/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
+            String urlStr = "http://localhost:8082/testing/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
+//            String urlStr = "http://localhost:8080/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
             System.out.println(urlStr);
             URL website = new URL(urlStr);
 
