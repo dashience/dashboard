@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
@@ -322,6 +323,16 @@ public class UiDao extends BaseDao {
         List fieldProperties = query.list();
         if (fieldProperties.size() > 0) {
             return (DefaultFieldProperties) fieldProperties.get(0);
+        }
+        return null;
+    }
+    
+    public AdwordsCriteria getAdwordsCriteria(Integer criteriaId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("AdwordsCriteria.findById");
+        query.setParameter("id", criteriaId);
+        List data = query.list();
+        if (data.size() > 0) {
+            return (AdwordsCriteria) data.get(0);
         }
         return null;
     }

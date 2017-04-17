@@ -816,6 +816,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'DayOfWeek',
                     name: 'Day Of Week'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -864,6 +868,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'DayOfWeek',
                     name: 'Day Of Week'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -904,6 +912,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -944,6 +956,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -984,6 +1000,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1024,6 +1044,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1056,6 +1080,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1088,6 +1116,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
         },
@@ -1134,6 +1166,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'CityCriteriaId,RegionCriteriaId,MostSpecificCriteriaId',
                     name: 'Zip'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1173,6 +1209,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
