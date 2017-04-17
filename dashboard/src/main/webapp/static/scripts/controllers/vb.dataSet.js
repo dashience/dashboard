@@ -962,7 +962,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
         {
-            type: 'adCopyPerformance',
+            type: 'adPerformance',
             name: 'AdCopy',
             timeSegments: [
                 {
@@ -1002,8 +1002,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
         {
-            type: 'SQR',
-            name: 'SQR',
+            type: 'searchQueryReport',
+            name: 'Search Query Report',
             timeSegments: [
                 {
                     type: 'day',
@@ -1195,8 +1195,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
         {
-            type: 'adCopyPerformance',
-            name: 'adCopyPerformance',
+            type: 'adPerformance',
+            name: 'adPerformance',
             timeSegments: [
                 {
                     type: 'day',
