@@ -30,6 +30,9 @@
     .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
         display: none !important;
     }
+    .logout{
+        padding-left: 20px;
+    }
 </style>
 <body class="fixed-navbar">
     <div id="logo">
@@ -89,16 +92,16 @@
 
         <div class="navbar-right">
 
-<!--            <ul class="nav navbar-nav navbar-left">
-                <li>
-                    <a class="pull-right" id="daterange-btn">
-                        <span class="date-border">
-                            {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
-                        </span>
-                    </a>  
-                </li>
-                <li class="button-submit"> <span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
-            </ul>-->
+            <!--            <ul class="nav navbar-nav navbar-left">
+                            <li>
+                                <a class="pull-right" id="daterange-btn">
+                                    <span class="date-border">
+                                        {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
+                                    </span>
+                                </a>  
+                            </li>
+                            <li class="button-submit"> <span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
+                        </ul>-->
 
 
 
@@ -114,8 +117,8 @@
                     </a>
                 </li>
                 <li class="dropdown go"><span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
-                
-               
+
+
                 <li class="dropdown">
                     <form role="search" class="navbar-form-custom" method="post" action="#">
                         <div class="form-group">
@@ -209,26 +212,31 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div>
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParams()">
-                                        <a data-ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-cog text-danger" aria-hidden="true"></i> <h5> Field Settings</h5>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <!--                            <div>
+                                                            <ul class="col-lg-3 icon-dash"> 
+                                                                <li class="product-dashboard-icon" ng-click="setParams()">
+                                                                    <a data-ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                                        <i class="fa fa-cog text-danger" aria-hidden="true"></i> <h5> Field Settings</h5>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>-->
                         </div>
                     </div>
                 </li>
 
+                <!--                <li class="dropdown">
+                                    <a href="login.html">
+                                        <i class="pe-7s-upload pe-rotate-90"></i>
+                                    </a>
+                                </li>-->
                 <li class="dropdown">
-                    <a href="login.html">
-                        <i class="pe-7s-upload pe-rotate-90"></i>
-                    </a>
-                </li>
-                 <li>
-                    <a><i class="fa fa-user"></i><span class="admin-fnt">{{userName}} / {{agencyId.agencyName}}</span></a>
+                    <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><span class="admin-fnt">{{userName}} / {{agencyId.agencyName}}</span></a>
+                    <div class="dropdown-menu">
+                        <a class="logout" href="login.html">
+                            Logout
+                        </a>
+                    </div>
                 </li>
             </ul>
         </div>

@@ -1524,10 +1524,10 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });
@@ -1753,10 +1753,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });

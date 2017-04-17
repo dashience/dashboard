@@ -119,6 +119,9 @@
         margin-top:10px;
         margin-bottom:10px;
     }
+    .edit-widget-space{
+        overflow: hidden;
+    }
 </style>
 <div class="normalheader transition animated fadeIn">
     <div class="hpanel">
@@ -283,8 +286,7 @@
         <div class="col-lg-12 table-deeta edit-widget">
             <div class="hpanel hgreen border-table"> 
                 <div class="panel-heading">
-                    <!--<div class="panel-tools">-->
-
+                    <div class="edit-widget-space">
                     <div ng-hide='editPreviewTitle'> 
                         <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a>
                     </div> 
@@ -295,7 +297,7 @@
                         <a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>
                         <a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>
                     </div>
-                    <!--</div>-->
+                    </div>
                 </div>
                 <div class="panel-body">                    
                    

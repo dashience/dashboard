@@ -556,7 +556,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         },
         {
             type: 'visitorsTypeReport',
-            name: 'VisitosType Report',
+            name: 'Visitors Type Report',
             timeSegments: [
                 {
                     type: 'ga:date',
@@ -1253,8 +1253,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
 
 
-    $scope.getTimeSegemens = function ()
-    {
+    $scope.getTimeSegemens = function () {
+        $scope.dataSet.timeSegment = "";
+        $scope.dataSet.productSegment = "";
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
@@ -1345,7 +1346,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSet = $scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
         console.log(dataSet);
-        if (dataSet.networkType !== null && typeof(dataSet.networkType)!=="undefined")
+        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
         {
             var networkType = dataSet.networkType.map(function (value, key) {
                 if (value) {
@@ -1353,10 +1354,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             }).join(',');
             dataSet.networkType = networkType;
-            $scope.nwStatusFlag=true;
-        }
-        else {
-            $scope.nwStatusFlag=false;
+            $scope.nwStatusFlag = true;
+        } else {
+            $scope.nwStatusFlag = false;
         }
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
@@ -1520,11 +1520,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
-            console.log(dataSourcePath);
-            console.log(dataSourcePath.dataSourceId.userName);
-            console.log(dataSourcePath.dataSourceId.connectionString);
-            console.log(dataSourcePath.dataSourceId.sqlDriver);
-            console.log(dataSourcePath.dataSourceId.password);
+//            console.log(dataSourcePath);
+//            console.log(dataSourcePath.dataSourceId.userName);
+//            console.log(dataSourcePath.dataSourceId.connectionString);
+//            console.log(dataSourcePath.dataSourceId.sqlDriver);
+//            console.log(dataSourcePath.dataSourceId.password);
             var url = "admin/proxy/getData?";
             if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
