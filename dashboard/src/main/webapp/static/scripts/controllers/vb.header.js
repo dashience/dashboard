@@ -194,7 +194,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
-            } else {
+            }  else if ($scope.getCurrentPage() === "fieldSettings") {
+                $state.go("index.fieldSettings", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }
+            else {
                 $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
             }
         });
@@ -336,7 +344,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $scope.startDate,
                 endDate: $scope.endDate
             });
-        } else {
+        } else if ($scope.getCurrentPage() === "fieldSettings") {
+                $state.go("index.fieldSettings", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }
+        else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
@@ -380,6 +396,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         if (url.indexOf("agency") > 0) {
             return "agency";
+        }
+        if (url.indexOf("fieldSettings") > 0) {
+            return "fieldSettings";
         }
         return "dashboard";
     };

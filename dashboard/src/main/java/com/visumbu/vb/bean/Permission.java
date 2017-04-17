@@ -31,7 +31,8 @@ public class Permission {
     private Boolean downloadReport;
     private Boolean scheduleReport;
     private Boolean viewReport;
-
+    private Boolean viewFieldSettings;
+    
     public Boolean getViewReport() {
         return viewReport;
     }
@@ -151,9 +152,15 @@ public class Permission {
     public void setScheduleReport(Boolean scheduleReport) {
         this.scheduleReport = scheduleReport;
     }
-    
-    
-    
+
+    public Boolean getViewFieldSettings() {
+        return viewFieldSettings;
+    }
+
+    public void setViewFieldSettings(Boolean viewFieldSettings) {
+        this.viewFieldSettings = viewFieldSettings;
+    }
+           
     public String setPermission(String permissionName, Boolean permission) {
         try {
              System.out.println("Permission Name " + permissionName + " Permission Value " + permission);
