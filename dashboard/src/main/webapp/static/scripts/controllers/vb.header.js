@@ -356,6 +356,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
+    $scope.userLogout=function(){
+        window.location.href="login.html"
+    }
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         if (url.indexOf("widget") > 0) {
