@@ -30,12 +30,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
@@ -242,11 +244,11 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
-        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null")|| timeSegment.equalsIgnoreCase("none"))) {
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
             timeSegment = null;
         }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null")|| productSegment.equalsIgnoreCase("none"))) {
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
         if (dataSetId != null) {
@@ -277,12 +279,15 @@ public class ProxyController {
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
         String filter = request.getParameter("filter");
-        if (timeSegment == null) {
-            timeSegment = "daily";
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
+            timeSegment = null;
         }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment == null) {
-            productSegment = "daily";
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
+            productSegment = null;
+        }
+        if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
+            filter = null;
         }
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
@@ -302,7 +307,7 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
-        List<Map<String, Object>> data = adwordsService.get(dataSetReportName, adwordsAccountId, startDate, endDate, timeSegment, productSegment, filter);
+        List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
         System.out.println(data);
         Map returnMap = new HashMap();
         List<ColumnDef> columnDefs = getColumnDefObject(data);
@@ -529,7 +534,7 @@ public class ProxyController {
                     if (tabWidget.getDataSourceId() == null) {
                         continue;
                     }
-                    String url = "../testing/admin/proxy/getData?";
+                    String url = "../dashboard/admin/proxy/getData?";
 //                    String url = "admin/proxy/getData?";
                     log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -541,12 +546,12 @@ public class ProxyController {
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                         System.out.println("DS TYPE ==>  CSV");
-                        url = "../testing/admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                        url = "../dashboard/admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                        url = "../testing/admin/proxy/getData?";
+                        url = "../dashboard/admin/proxy/getData?";
 //                    url = "admin/proxy/getData?";
                     }
                     valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
@@ -596,6 +601,24 @@ public class ProxyController {
         log.debug("Start Function of downloadReport");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
+        SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+
+        String start_date = month_date.format(startDate);
+        String end_date = month_date.format(endDate);
+        String selectDate;
+
+        System.out.println("startDate ----> " + start_date);
+        System.out.println("endDate ----> " + end_date);
+
+        if (start_date.equalsIgnoreCase(end_date)) {
+            selectDate = start_date;
+        } else {
+            selectDate = start_date.concat(" - " + end_date);
+        }
+        System.out.println("selectDate ---> " + selectDate);
         log.debug("EXport type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -632,8 +655,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../testing/admin/proxy/getData?"; // tabWidget.getDirectUrl();
-//                String url = "admin/proxy/getData?"; // tabWidget.getDirectUrl();
+//                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = "admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -644,13 +667,13 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../testing/admin/csv/getData";
+                    url = "admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "../testing/admin/proxy/getData?";
-//                    url = "admin/proxy/getData?";
+//                    url = "../dashboard/admin/proxy/getData?";
+                    url = "admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 
@@ -689,7 +712,7 @@ public class ProxyController {
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicPdfTable(tabWidgets, account, out);
+                crd.dynamicPdfTable(tabWidgets, account, selectDate, out);
 
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
@@ -710,6 +733,25 @@ public class ProxyController {
         log.debug("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
+        SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
+
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+
+        String start_date = month_date.format(startDate);
+        String end_date = month_date.format(endDate);
+        String selectDate;
+
+        System.out.println("startDate ----> " + start_date);
+        System.out.println("endDate ----> " + end_date);
+
+        if (start_date.equalsIgnoreCase(end_date)) {
+            selectDate = start_date;
+        } else {
+            selectDate = start_date.concat(" - " + end_date);
+        }
+        System.out.println("selectDate ---> " + selectDate);
+        
         log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -737,9 +779,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../testing/admin/proxy/getData?";
 //                String url = "../dashboard/admin/proxy/getData?";
-//                String url = "admin/proxy/getData?";
+                String url = "admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -750,13 +791,12 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../testing/admin/csv/getData";
+                    url = "admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-//                    url = "admin/proxy/getData?";
-                    url = "../testing/admin/proxy/getData?";
+                    url = "admin/proxy/getData?";
 //                    url = "../dashboard/admin/proxy/getData?";
 
                 }
@@ -796,7 +836,7 @@ public class ProxyController {
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicPdfTable(tabWidgets, account, out);
+                crd.dynamicPdfTable(tabWidgets, account, selectDate, out);
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");

@@ -13,27 +13,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
      */
     $scope.networkTypes = [
         {
-            type: 'all',
-            name: 'All'
-        },
-        {
-            type: 'search',
+            type: 'SEARCH',
             name: 'Search'
         },
         {
-            type: 'unknown',
-            name: 'Unknown'
-        },
-        {
-            type: 'content',
+            type: 'CONTENT',
             name: 'Content'
         },
         {
-            type: 'youtubeSearch',
+            type: 'YOUTUBE_SEARCH',
             name: 'Youtube Search'
         },
         {
-            type: 'youtubeWatch',
+            type: 'YOUTUBE_WATCH',
             name: 'Youtube Watch'
         }
     ];
@@ -556,7 +548,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         },
         {
             type: 'visitorsTypeReport',
-            name: 'VisitosType Report',
+            name: 'Visitors Type Report',
             timeSegments: [
                 {
                     type: 'ga:date',
@@ -604,7 +596,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ],
             productSegments: [
-
                 {
                     type: 'none',
                     name: 'None'
@@ -924,7 +915,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'network search partner',
                     name: 'Network Search Partner'
                 },
-
                 {
                     type: 'none',
                     name: 'None'
@@ -972,7 +962,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
         {
-            type: 'adCopyPerformance',
+            type: 'adPerformance',
             name: 'AdCopy',
             timeSegments: [
                 {
@@ -1012,8 +1002,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
         {
-            type: 'SQR',
-            name: 'SQR',
+            type: 'searchQueryReport',
+            name: 'Search Query Report',
             timeSegments: [
                 {
                     type: 'day',
@@ -1100,7 +1090,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Quarter'
                 }
             ],
-
         },
         {
             type: 'geoPerformance',
@@ -1204,57 +1193,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        },
-        {
-            type: 'adCopyPerformance',
-            name: 'adCopyPerformance',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
-                    type: 'hourOfTheDay',
-                    name: 'hourOfTheDay'
-                },
-                {
-                    type: 'DayOfWeek',
-                    name: 'DayOfWeek'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'network search partner',
-                    name: 'network search partner'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
         }
     ];
 
 
 
-    $scope.getTimeSegemens = function ()
-    {
+    $scope.getTimeSegemens = function () {
+        $scope.dataSet.timeSegment = "";
+        $scope.dataSet.productSegment = "";
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
@@ -1345,18 +1291,17 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSet = $scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
         console.log(dataSet);
-        if (dataSet.networkType !== null && typeof(dataSet.networkType)!=="undefined")
+        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
         {
             var networkType = dataSet.networkType.map(function (value, key) {
                 if (value) {
-                    return value.name;
+                    return value.type;
                 }
             }).join(',');
             dataSet.networkType = networkType;
-            $scope.nwStatusFlag=true;
-        }
-        else {
-            $scope.nwStatusFlag=false;
+            $scope.nwStatusFlag = true;
+        } else {
+            $scope.nwStatusFlag = false;
         }
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
@@ -1520,11 +1465,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
-            console.log(dataSourcePath);
-            console.log(dataSourcePath.dataSourceId.userName);
-            console.log(dataSourcePath.dataSourceId.connectionString);
-            console.log(dataSourcePath.dataSourceId.sqlDriver);
-            console.log(dataSourcePath.dataSourceId.password);
+//            console.log(dataSourcePath);
+//            console.log(dataSourcePath.dataSourceId.userName);
+//            console.log(dataSourcePath.dataSourceId.connectionString);
+//            console.log(dataSourcePath.dataSourceId.sqlDriver);
+//            console.log(dataSourcePath.dataSourceId.password);
             var url = "admin/proxy/getData?";
             if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
@@ -1542,11 +1487,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             } else {
                 dataSourcePassword = '';
             }
+            console.log(dataSourcePath.networkType);
+            
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +
+                    "&filter=" + dataSourcePath.networkType.type +
                     "&productSegment=" + dataSourcePath.productSegment +
                     "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +

@@ -17,17 +17,21 @@
     }
 
     .product-icon {
-        width: 100px;
-        height: 60px;
+        width: 70px;
+        margin: 0px auto;
     }
 
     .admin-fnt {
         font-size: 12px;
         padding-top: 20px;
+        padding-left:5px;
         text-transform: capitalize;
     }
     .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
         display: none !important;
+    }
+    .logout{
+        padding-left: 20px;
     }
 </style>
 <body class="fixed-navbar">
@@ -73,17 +77,8 @@
                 <img src="static/img/logos/deeta-logo.png" width="100" />
             </span>
         </div>
-        <form role="search" class="navbar-form-custom" method="post" action="#">
-            <div class="form-group">
-                <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                    <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
-                    <ui-select-choices repeat="account in accounts | filter: $select.search">
-                        <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
-                    </ui-select-choices>
-                </ui-select>
-            </div>
-        </form>
-        
+
+
         <div class="mobile-menu">
             <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
                 <i class="fa fa-chevron-down"></i>
@@ -96,22 +91,46 @@
         </div>
 
         <div class="navbar-right">
+
+            <!--            <ul class="nav navbar-nav navbar-left">
+                            <li>
+                                <a class="pull-right" id="daterange-btn">
+                                    <span class="date-border">
+                                        {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
+                                    </span>
+                                </a>  
+                            </li>
+                            <li class="button-submit"> <span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
+                        </ul>-->
+
+
+
+
+
+
             <ul class="nav navbar-nav no-borders">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown"> <span class="admin-fnt">{{userName}} / {{agencyId.agencyName}}</span></a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-left">
-                <li>
                     <a class="pull-right" id="daterange-btn">
                         <span class="date-border">
                             {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
-                        </span>
-                    </a>  
+                        </span> 
+                    </a>
                 </li>
-                <li class="button-submit"> <span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
-            </ul>
-            <ul class="nav navbar-nav no-borders">
+                <li class="dropdown go"><span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
+
+
+                <li class="dropdown">
+                    <form role="search" class="navbar-form-custom" method="post" action="#">
+                        <div class="form-group">
+                            <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
+                                <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
+                                <ui-select-choices repeat="account in accounts | filter: $select.search">
+                                    <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </form>
+                </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         <i class="pe-7s-keypad"></i>
@@ -122,7 +141,7 @@
                                 <ul class="col-lg-3 icon-dash"  ng-if="product.showProduct == 1">
                                     <li class="product-dashboard-icon">
                                         <a class="active" ng-click="setParamsProduct(product)">
-                                           <!--data-ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, productId: product.id, tabId: tabId, startDate: startDate, endDate: endDate})">-->
+                                            <!--data-ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, productId: product.id, tabId: tabId, startDate: startDate, endDate: endDate})">-->
                                             <img class="product-icon img-responsive" ng-src="{{product.icon}}"/> 
                                         </a>
                                     </li>
@@ -206,10 +225,18 @@
                     </div>
                 </li>
 
+                <!--                <li class="dropdown">
+                                    <a href="login.html">
+                                        <i class="pe-7s-upload pe-rotate-90"></i>
+                                    </a>
+                                </li>-->
                 <li class="dropdown">
-                    <a href="login.html">
-                        <i class="pe-7s-upload pe-rotate-90"></i>
-                    </a>
+                    <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><span class="admin-fnt">{{userName}} / {{agencyId.agencyName}}</span></a>
+                    <div class="dropdown-menu">
+                        <a class="logout" href="login.html">
+                            Logout
+                        </a>
+                    </div>
                 </li>
             </ul>
         </div>

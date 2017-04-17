@@ -49,7 +49,7 @@ public class UiDao extends BaseDao {
 
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         System.out.println(user);
-        String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.userId.id = :userId";
+        String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.accountId.agencyId = d.userId.agencyId and d.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", user.getId());
         return query.list();

@@ -761,20 +761,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             previewWidget: '@',
             previewWidgetTable: '@',
         },
-        template: "<div class='panel-head'>" +
+        template:                
+                "<div class='panel-head'>" +
                 //Panel Tools
                 "<div class='row'>" +
-                "<div class='col-md-12'>" +
-                //Panel Title
-                "<div ng-hide='editPreviewTitle'>" +
-                "<a ng-click='editPreviewTitle = true'>{{previewWidgetTitle?previewWidgetTitle:'Widget Title'}}</a>" +
-                "</div>" +
-                "<div ng-show='editPreviewTitle'>" +
-                "<div class='col-sm-8'><input class='form-control' type='text' ng-model='previewWidgetTitle'></div>" +
-                "<div class='col-sm-4'><a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>" +
-                "<a><i class='fa fa-close'></i></a>" +
-                "</div>" +
-                "</div>" +
+                "<div>" +
                 "<div class='pull-right list-button'>" +
                 "<button class='btn btn-info' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-list'></i> List" +
                 "</button>" +
@@ -787,12 +778,22 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "</li>" +
                 "</ul>" +
                 "</div>" +
+                //Panel Title
+                "<div ng-hide='editPreviewTitle'>" +
+                "<a ng-click='editPreviewTitle = true'>{{previewWidgetTitle?previewWidgetTitle:'Widget Title'}}</a>" +
+                "</div>" +
+                "<div ng-show='editPreviewTitle'>" +
+                "<div class='col-sm-6'><input class='form-control' type='text' ng-model='previewWidgetTitle'></div>" +
+                "<div class='col-sm-4'><a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>" +
+                "<a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>" +
+                "</div>" +
+                "</div>" +                
                 "</div>" +
                 "</div>" + //End Panel Title
                 "</div>" +
                 "</div>" +
                 //Table
-                "<div class='panel-body'>" +
+                "<div class=''>" +
                 "<div class='table-responsive tbl-preview' style='height:200px; overflow: auto'>" +
                 "<table class='table table-bordered table-hover' >" +
                 "<thead >" +
@@ -870,7 +871,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "</table> " +
                 "</div>" +
                 "</div>" +
-                "<div class='panel-footer'>" +
+                "<div class='preview-footer'>" +
 //                "<div class='form-group btn-preview pull-right'>" +
                 "<button data-dismiss='modal' class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>" +
                 "<button data-dismiss='modal' class='btn btn-info' ng-click='save()'><span class='fa fa-save'></span> Save</button>" +
