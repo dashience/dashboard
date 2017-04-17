@@ -17,8 +17,8 @@
         border-bottom: none;
     }
     .table-fixed tbody {
-        height: 430px;
-        overflow-y: auto !important;
+        /*height: 430px;*/
+        /*overflow-y: auto !important;*/
         width: 100%;
     }
 
@@ -91,400 +91,396 @@
     </div>
 </div>
 <section class="content">
-        <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs">
-                <li ng-class="{ active: isSetAgency(1) }">
-                    <a href ng-click="setTabAgency(1)"> Details</a>
-                </li>
-                <li ng-class="{ active: isSetAgency(2) }">
-                    <a href ng-click="setTabAgency(2)"> Licence
-                    </a>
-                </li>
-                <li ng-class="{ active: isSetAgency(3) }">
-                    <a href ng-click="setTabAgency(3)"> User
-                    </a>
-                </li>
-                <li ng-class="{ active: isSetAgency(4) }">
-                    <a href ng-click="setTabAgency(4)"> Product
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li ng-class="{ active: isSetAgency(1) }">
+                <a href ng-click="setTabAgency(1)"> Details</a>
+            </li>
+            <li ng-class="{ active: isSetAgency(2) }">
+                <a href ng-click="setTabAgency(2)"> Licence
+                </a>
+            </li>
+            <li ng-class="{ active: isSetAgency(3) }">
+                <a href ng-click="setTabAgency(3)"> User
+                </a>
+            </li>
+            <li ng-class="{ active: isSetAgency(4) }">
+                <a href ng-click="setTabAgency(4)"> Product
+                </a>
+            </li>
+        </ul>
+    </div>
 
-        <div class="row">
-                <div class="col-md-4">
-                    <div class="hpanel">
-                        <div class="panel-heading">
-                            Edit
-                        </div>
-                        <div class="panel-body">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="hpanel">
+                <div class="panel-heading">
+                    Edit
+                </div>
+                <div class="panel-body">
 
-                            <div class="tab-content">
-                                <div ng-show="isSetAgency(1)" class="license">
-                                    <div class="col-md-12">
-                                        <form class="form-horizontal">
-                                            <div class="form-group">
-                                                <div class="row col-md-4 image-upload">
-                                                    <label for="file-input">
-                                                        <img class="img-responsive img-thumbnail" ng-src="{{agency.logo}}"/>
-                                                    </label>
+                    <div class="tab-content">
+                        <div ng-show="isSetAgency(1)" class="license">
+                            <div class="col-md-12">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="row col-md-4 image-upload">
+                                            <label for="file-input">
+                                                <img class="img-responsive img-thumbnail" ng-src="{{agency.logo}}"/>
+                                            </label>
 
-                                                    <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
-                                                </div>
-                                                <div class="pull-right account-new">
-                                                    <button class="btn btn-success" ng-click="addAgency()">New</button>
-                                                </div>
-                                            </div>
-                                            <div class="form-group"> 
-                                                <label>Agency Name</label>
-                                                <div>
-                                                    <input type="text" class="form-control" ng-model="agency.agencyName" placeholder="Name">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>Email</label>
-                                                <div>
-                                                    <input type="email" class="form-control" ng-model="agency.email" placeholder="Email">
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label>Description</label>
-                                                <div>
-                                                    <textarea class="form-control" ng-model="agency.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="form-group pull-right">
-                                                <button class="btn btn-info" ng-click="saveAgency(agency)">Save</button>
-                                                <button class="btn btn-warning" ng-click="clearAgency(agency)">Cancel</button>
-                                            </div>
-                                        </form>
+                                            <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
+                                        </div>
+                                        <div class="pull-right account-new">
+                                            <button class="btn btn-success" ng-click="addAgency()">New</button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div ng-show="isSetAgency(2)" class="license">
-                                    <div class="col-md-12">
-                                        <form class="form-horizontal">
-                                            <div class="form-group">
-                                                <label>Number Of Tabs</label>
-                                                <div>
-                                                    <input class="form-control" type="text" ng-model="agencyLicence.maxNoTab">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Number Of Users</label>
-                                                <div>
-                                                    <input class="form-control" type="text" ng-model="agencyLicence.maxNoUser">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Number Of Clients</label>
-                                                <div>
-                                                    <input class="form-control" type="text" ng-model="agencyLicence.maxNoClient">
-                                                </div>
-                                            </div>                                            
-                                            <div class="form-group">
-                                                <label>Number Of Accounts</label>
-                                                <div>
-                                                    <input type="text" class="form-control" ng-model="agencyLicence.maxNoAccount">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Expiry Date</label>
-                                                <div>
-                                                    <input type="text" date-Picker class="form-control" ng-model="agencyLicence.expiryDate">
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Number Of Widgets Per Tabs</label>
-                                                <div>
-                                                    <input type="text" class="form-control" ng-model="agencyLicence.maxNoWidgetPerTab">
-                                                </div>
-                                            </div>
-                                            <div class="form-group pull-right">
-                                                <button class="btn btn-info" ng-click="saveAgencyLicence(agencyLicence)">Save</button>
-                                                <!--<button class="btn btn-warning" ng-click="clearAgencyLicence(agencyLicence)">Cancel</button>-->
-                                            </div>
-                                        </form>
-                                    </div> 
-                                </div>
-                                <div ng-show="isSetAgency(3)" class="license">
-                                    <section ng-hide="showAgencyUserForm">
-                                        <div class="col-md-12">
-                                            <table class="table table-responsive table-fixed">
-                                                <thead>
-                                                    <tr>
-                                                        <!--<th class="col-xs-4">Account Name</th>-->
-                                                        <th class="col-xs-6">User Name</th>
-                                                        <th class="col-xs-4">Email</th>
-                                                        <th class="col-xs-2">
-                                                            <button class="btn btn-success btn-xs" ng-click="addAgencyUser()"><i class="fa fa-plus"></i></button>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="accountUser-Table" ng-repeat="agencyUser in agencyUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
-                                                        <td class="col-xs-6">{{agencyUser.userName}}</td>
-                                                        <td class="col-xs-4">{{agencyUser.email}}</td>
-                                                        <td class="col-xs-2"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>                                                
+                                    <div class="form-group"> 
+                                        <label>Agency Name</label>
+                                        <div>
+                                            <input type="text" class="form-control" ng-model="agency.agencyName" placeholder="Name">
                                         </div>
-                                    </section>
-                                    <section ng-show="showAgencyUserForm" class="license">
-                                        <div class="col-md-12">
-                                            <form class="form-horizontal">
-                                                <div class="form-group">
-                                                    <label>First Name</label>
-                                                    <input class="form-control" type="text" ng-model="agencyUser.firstName" placeholder="First Name">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Last Name</label>
-                                                    <input class="form-control" type="text" ng-model="agencyUser.lastName" placeholder="Last Name">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>User Name</label>
-                                                    <input class="form-control" type="text" ng-model="agencyUser.userName" placeholder="User Name">
-                                                </div>                                            
-                                                <div class="form-group">
-                                                    <label>Email</label>
-                                                    <input type="email" class="form-control" ng-model="agencyUser.email" placeholder="Email">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Password</label>
-                                                    <div class="input-group">
-                                                        <input type="password" class="form-control" ng-model="agencyUser.password" id="password" name="password" placeholder="Password">
-                                                        <span class="input-group-addon">
-                                                            <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
-                                                        </span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <div>
+                                            <input type="email" class="form-control" ng-model="agency.email" placeholder="Email">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <div>
+                                            <textarea class="form-control" ng-model="agency.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group pull-right">
+                                        <button class="btn btn-info" ng-click="saveAgency(agency)">Save</button>
+                                        <button class="btn btn-warning" ng-click="clearAgency(agency)">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div ng-show="isSetAgency(2)" class="license">
+                            <div class="col-md-12">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label>Number Of Tabs</label>
+                                        <div>
+                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoTab">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Number Of Users</label>
+                                        <div>
+                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoUser">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Number Of Clients</label>
+                                        <div>
+                                            <input class="form-control" type="text" ng-model="agencyLicence.maxNoClient">
+                                        </div>
+                                    </div>                                            
+                                    <div class="form-group">
+                                        <label>Number Of Accounts</label>
+                                        <div>
+                                            <input type="text" class="form-control" ng-model="agencyLicence.maxNoAccount">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Expiry Date</label>
+                                        <div>
+                                            <input type="text" date-Picker class="form-control" ng-model="agencyLicence.expiryDate">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Number Of Widgets Per Tabs</label>
+                                        <div>
+                                            <input type="text" class="form-control" ng-model="agencyLicence.maxNoWidgetPerTab">
+                                        </div>
+                                    </div>
+                                    <div class="form-group pull-right">
+                                        <button class="btn btn-info" ng-click="saveAgencyLicence(agencyLicence)">Save</button>
+                                        <!--<button class="btn btn-warning" ng-click="clearAgencyLicence(agencyLicence)">Cancel</button>-->
+                                    </div>
+                                </form>
+                            </div> 
+                        </div>
+                        <div ng-show="isSetAgency(3)" class="license">
+                            <section ng-hide="showAgencyUserForm">
+                                <div class="col-md-12">
+                                    <table class="table table-responsive table-fixed">
+                                        <thead>
+                                            <tr>
+                                                <!--<th class="col-xs-4">Account Name</th>-->
+                                                <th class="col-xs-6">User Name</th>
+                                                <th class="col-xs-4">Email</th>
+                                                <th class="col-xs-2">
+                                                    <button class="btn btn-success btn-xs" ng-click="addAgencyUser()"><i class="fa fa-plus"></i></button>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="accountUser-Table" ng-repeat="agencyUser in agencyUsers" ng-class="{'selectedTableRow':$index == selectedAccountUser}" ng-click="setAccountUserRow($index)">
+                                                <td class="col-xs-6">{{agencyUser.userName}}</td>
+                                                <td class="col-xs-4">{{agencyUser.email}}</td>
+                                                <td class="col-xs-2"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>                                                
+                                </div>
+                            </section>
+                            <section ng-show="showAgencyUserForm" class="license">
+                                <div class="col-md-12">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">
+                                            <label>First Name</label>
+                                            <input class="form-control" type="text" ng-model="agencyUser.firstName" placeholder="First Name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Last Name</label>
+                                            <input class="form-control" type="text" ng-model="agencyUser.lastName" placeholder="Last Name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>User Name</label>
+                                            <input class="form-control" type="text" ng-model="agencyUser.userName" placeholder="User Name">
+                                        </div>                                            
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" ng-model="agencyUser.email" placeholder="Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Password</label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" ng-model="agencyUser.password" id="password" name="password" placeholder="Password">
+                                                <span class="input-group-addon">
+                                                    <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            <!--                                                    <label>Password</label>
+                                                                                                <input type="password" class="form-control" ng-model="agencyUser.password" placeholder="Password">-->
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Primary Phone</label>
+                                            <input type="text" class="form-control" ng-model="agencyUser.primaryPhone" placeholder="Primary Phone">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Secondary Phone</label>
+                                            <input type="text" class="form-control" ng-model="agencyUser.secondaryPhone" placeholder="Secondary Phone">
+                                        </div>
+                                        <div class="form-group pull-right">
+                                            <button class="btn btn-info" ng-click="saveAgencyUser(agencyUser)">Save</button>
+                                            <button class="btn btn-warning" ng-click="clearAgencyUser(agencyUser)">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+                        </div>
+                        <div ng-show="isSetAgency(4)" class="license">
+                            <section ng-hide="showAgencyProductForm">
+
+                                <div class="col-md-12">
+                                    <table class="table table-responsive table-fixed">
+                                        <thead>
+                                            <tr>
+                                                <!--<th class="col-xs-4">Account Name</th>-->
+                                                <th class="col-xs-4">Icon</th>
+                                                <th class="col-xs-6">Product Name</th>
+                                                <th class="col-xs-2">
+                                                    <button class="btn btn-success btn-xs" ng-click="addAgencyProduct()"><i class="fa fa-plus"></i></button>
+                                                </th>
+                                            </tr>
+                                        </thead>                                           
+                                        <tbody data-as-sortable="" data-ng-model="agencyProducts" unselectable="on" ng-mouseleave="changeOrder(agencyProducts)" class="unselectable" style="height:420px">
+                                            <tr class="accountUser-Table" ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAgencyProduct}" ng-click="setAgencyProductRow(agencyProduct, $index)" data-as-sortable-item>
+                                                <td ng-click="editAgencyProduct(agencyProduct)" data-as-sortable-item-handle class="col-xs-4">
+                                                    <div class="image-upload">
+                                                        <label for="file-input">
+                                                            <img class="agencyImg-size img-responsive img-thumbnail" ng-src="{{agencyProduct.icon}}"/>
+                                                        </label>
                                                     </div>
-                                                    <!--                                                    <label>Password</label>
-                                                                                                        <input type="password" class="form-control" ng-model="agencyUser.password" placeholder="Password">-->
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Primary Phone</label>
-                                                    <input type="text" class="form-control" ng-model="agencyUser.primaryPhone" placeholder="Primary Phone">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Secondary Phone</label>
-                                                    <input type="text" class="form-control" ng-model="agencyUser.secondaryPhone" placeholder="Secondary Phone">
-                                                </div>
-                                                <div class="form-group pull-right">
-                                                    <button class="btn btn-info" ng-click="saveAgencyUser(agencyUser)">Save</button>
-                                                    <button class="btn btn-warning" ng-click="clearAgencyUser(agencyUser)">Cancel</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </section>
-                                </div>
-                                <div ng-show="isSetAgency(4)" class="license">
-                                    <section ng-hide="showAgencyProductForm">
+                                                </td>
+                                                <td ng-click="editAgencyProduct(agencyProduct)" data-as-sortable-item-handle class="col-xs-6">
+                                                    {{agencyProduct.productName}}
+                                                </td>
+                                                <td data-as-sortable-item-handle class="col-xs-2">
+                                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgencyProduct{{agencyProduct.id}}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
 
-                                        <div class="col-md-12">
-                                            <table class="table table-responsive table-fixed">
-                                                <thead>
-                                                    <tr>
-                                                        <!--<th class="col-xs-4">Account Name</th>-->
-                                                        <th class="col-xs-4">Icon</th>
-                                                        <th class="col-xs-6">Product Name</th>
-                                                        <th class="col-xs-2">
-                                                            <button class="btn btn-success btn-xs" ng-click="addAgencyProduct()"><i class="fa fa-plus"></i></button>
-                                                        </th>
-                                                    </tr>
-                                                </thead>                                           
-                                                <tbody data-as-sortable="" data-ng-model="agencyProducts" unselectable="on" ng-mouseleave="changeOrder(agencyProducts)" class="unselectable" style="height:420px">
-                                                    <tr class="accountUser-Table" ng-repeat="agencyProduct in agencyProducts" ng-class="{'selectedTableRow':$index == selectedAgencyProduct}" ng-click="setAgencyProductRow(agencyProduct, $index)" data-as-sortable-item>
-                                                        <td ng-click="editAgencyProduct(agencyProduct)" data-as-sortable-item-handle class="col-xs-4">
-                                                            <div class="image-upload">
-                                                                <label for="file-input">
-                                                                    <img class="agencyImg-size img-responsive img-thumbnail" ng-src="{{agencyProduct.icon}}"/>
-                                                                </label>
-                                                            </div>
-                                                        </td>
-                                                        <td ng-click="editAgencyProduct(agencyProduct)" data-as-sortable-item-handle class="col-xs-6">
-                                                            {{agencyProduct.productName}}
-                                                        </td>
-                                                        <td data-as-sortable-item-handle class="col-xs-2">
-                                                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgencyProduct{{agencyProduct.id}}">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-
-                                                            <div class="modal hmodal-success" id="deleteAgencyProduct{{agencyProduct.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                                                <div class="modal-dialog">
-                                                                    <div class="modal-content">
-                                                                        <div class="color-line"></div>
-                                                                        <div class="modal-header">
-                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                            <h4 class="modal-title">Delete</h4>
-                                                                            <small class="font-bold"></small>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <form class="form-horizontal" role="form">
-                                                                                <div class="form-group">
-                                                                                    <div class="col-sm-12  col-md-12">
-                                                                                        <span>Want to delete ?</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </form>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <div class="col-sm-12">
-                                                                                <button type="button" class="btn btn-primary btn-xs " 
-                                                                                        ng-click="deleteAgencyProduct(agencyProduct, $index)" 
-                                                                                        data-dismiss="modal">
-                                                                                    <span class="fa fa-trash"></span> Yes
-                                                                                </button>
-                                                                                <button type="button" class="btn btn-danger btn-xs " 
-                                                                                        data-dismiss="modal">
-                                                                                    <span class="fa fa-times"></span> No
-                                                                                </button>
+                                                    <div class="modal hmodal-success" id="deleteAgencyProduct{{agencyProduct.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="color-line"></div>
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title">Delete</h4>
+                                                                    <small class="font-bold"></small>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form class="form-horizontal" role="form">
+                                                                        <div class="form-group">
+                                                                            <div class="col-sm-12  col-md-12">
+                                                                                <span>Want to delete ?</span>
                                                                             </div>
                                                                         </div>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <div class="col-sm-12">
+                                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                                                ng-click="deleteAgencyProduct(agencyProduct, $index)" 
+                                                                                data-dismiss="modal">
+                                                                            <span class="fa fa-trash"></span> Yes
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-danger btn-xs " 
+                                                                                data-dismiss="modal">
+                                                                            <span class="fa fa-times"></span> No
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>                                                
-                                        </div>
-                                    </section>
-                                    <section ng-show="showAgencyProductForm" class="license">
-                                        <div class="col-md-12">
-                                            <form class="form-horizontal">
-                                                <div class="form-group">                                                    
-
-                                                    <div class="row col-md-4 image-upload">
-                                                        <label for="file-input1">
-                                                            <img class="img-responsive img-thumbnail" ng-src="{{agencyProduct.icon}}"/>
-                                                        </label>
-                                                        <input id="file-input1" type="file" ng-model-instant onchange="angular.element(this).scope().productIcon(event)"/>
+                                                        </div>
                                                     </div>
-
-                                                    <div class="pull-right account-new">
-                                                        <button class="btn btn-success" ng-click="addAgencyProduct()">New</button>
-                                                    </div>
-
-                                                </div>
-                                                <div>
-                                                    <span class="text-danger">{{productIconEmptyMessage}}</span>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Product Name</label>
-                                                    <div>
-                                                        <input type="text" class="form-control" ng-model="agencyProduct.productName" placeholder="Product Name">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Show Product</label>
-                                                    <div class="checkbox-slider--b">
-                                                        <label class="col-sm-10" for="field{{agencyProduct.id}}">
-                                                            <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" value="1" />
-                                                            <!--                                                                            <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" ng-change="saveStatus(accountUser)" value="1" />-->
-                                                            <span class="bullet"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group pull-right">
-                                                    <button class="btn btn-info" ng-click="saveAgencyProduct(agencyProduct)">Save</button>
-                                                    <button class="btn btn-warning" ng-click="clearAgencyProduct(agencyProduct)">Cancel</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </section>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>                                                
                                 </div>
-                            </div>
+                            </section>
+                            <section ng-show="showAgencyProductForm" class="license">
+                                <div class="col-md-12">
+                                    <form class="form-horizontal">
+                                        <div class="form-group">                                                    
+
+                                            <div class="row col-md-4 image-upload">
+                                                <label for="file-input1">
+                                                    <img class="img-responsive img-thumbnail" ng-src="{{agencyProduct.icon}}"/>
+                                                </label>
+                                                <input id="file-input1" type="file" ng-model-instant onchange="angular.element(this).scope().productIcon(event)"/>
+                                            </div>
+
+                                            <div class="pull-right account-new">
+                                                <button class="btn btn-success" ng-click="addAgencyProduct()">New</button>
+                                            </div>
+
+                                        </div>
+                                        <div>
+                                            <span class="text-danger">{{productIconEmptyMessage}}</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Product Name</label>
+                                            <div>
+                                                <input type="text" class="form-control" ng-model="agencyProduct.productName" placeholder="Product Name">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Show Product</label>
+                                            <div class="checkbox-slider--b">
+                                                <label class="col-sm-10" for="field{{agencyProduct.id}}">
+                                                    <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" value="1" />
+                                                    <!--                                                                            <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" ng-change="saveStatus(accountUser)" value="1" />-->
+                                                    <span class="bullet"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group pull-right">
+                                            <button class="btn btn-info" ng-click="saveAgencyProduct(agencyProduct)">Save</button>
+                                            <button class="btn btn-warning" ng-click="clearAgencyProduct(agencyProduct)">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
                         </div>
                     </div>
-                
-
-
-                <div class="col-md-8">
-                    <div class="hpanel">
-                        <div class="panel-heading">
-                            View
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="hpanel">
+                <div class="panel-heading">
+                    View
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="data-search col-sm-12">
+                            <input type="text" class="form-control" ng-model="searchAgency" placeholder="Search...">
                         </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="data-search col-sm-12">
-                                    <input type="text" class="form-control" ng-model="searchAgency" placeholder="Search...">
-                                </div>
-                                <!--                                <div class="col-sm-4">
-                                                                    <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
-                                                                        <ui-select-match placeholder="Search Agency Name...">
-                                                                            {{$select.selected.agencyName}}
-                                                                        </ui-select-match>
-                                                                        <ui-select-choices repeat="agency in agencies | filter: $select.search">                                
-                                                                            <div ng-bind-html="agency.agencyName | highlight: $select.search" style="display: inline">
-                                                                            </div>                                
-                                                                        </ui-select-choices>
-                                                                    </ui-select>
-                                                                </div>-->
-                            </div>
-                            <table class="table table-responsive table-fixed">
-                                <thead>
-                                    <tr>
-                                        <th class="col-xs-5">Name</th>
-                                        <th class="col-xs-6">Email</th>
-                                        <th class="col-xs-1"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        <!--                                <div class="col-sm-4">
+                                                            <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
+                                                                <ui-select-match placeholder="Search Agency Name...">
+                                                                    {{$select.selected.agencyName}}
+                                                                </ui-select-match>
+                                                                <ui-select-choices repeat="agency in agencies | filter: $select.search">                                
+                                                                    <div ng-bind-html="agency.agencyName | highlight: $select.search" style="display: inline">
+                                                                    </div>                                
+                                                                </ui-select-choices>
+                                                            </ui-select>
+                                                        </div>-->
+                    </div>
+                    <table class="table table-responsive table-fixed">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-5">Name</th>
+                                <th class="col-xs-6">Email</th>
+                                <th class="col-xs-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                                    <tr class="accountUser-Table" data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
-                                        <!--<tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">-->
-                                        <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
-                                            {{agency.agencyName}}
-                                        </td>
-                                        <td class="col-xs-6" ng-click="editAgency(agency, $index); agencyData()">
-                                            {{agency.email}}
-                                        </td>
-                                        <td class="col-xs-1s">
-                                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgency{{agency.id}}"><i class="fa fa-trash-o"></i></button>
-                                            <div class="modal hmodal-success" id="deleteAgency{{agency.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="color-line"></div>
-                                                        <div class="modal-header">
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            <h4 class="modal-title">Delete</h4>
-                                                            <small class="font-bold"></small>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form class="form-horizontal" role="form">
-                                                                <div class="form-group">
-                                                                    <div class="col-sm-12  col-md-12">
-                                                                        <span>Want to delete ?</span>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <div class="col-sm-12">
-                                                                <button type="button" class="btn btn-primary btn-xs " 
-                                                                        ng-click="deleteAgency(agency, $index)" 
-                                                                        data-dismiss="modal">
-                                                                    <span class="fa fa-trash"></span> Yes
-                                                                </button>
-                                                                <button type="button" class="btn btn-danger btn-xs " 
-                                                                        data-dismiss="modal">
-                                                                    <span class="fa fa-times"></span> No
-                                                                </button>
+                            <tr class="accountUser-Table" data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                <!--<tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">-->
+                                <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
+                                    {{agency.agencyName}}
+                                </td>
+                                <td class="col-xs-6" ng-click="editAgency(agency, $index); agencyData()">
+                                    {{agency.email}}
+                                </td>
+                                <td class="col-xs-1s">
+                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgency{{agency.id}}"><i class="fa fa-trash-o"></i></button>
+                                    <div class="modal hmodal-success" id="deleteAgency{{agency.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="color-line"></div>
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Delete</h4>
+                                                    <small class="font-bold"></small>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form class="form-horizontal" role="form">
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12  col-md-12">
+                                                                <span>Want to delete ?</span>
                                                             </div>
                                                         </div>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="col-sm-12">
+                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                                ng-click="deleteAgency(agency, $index)" 
+                                                                data-dismiss="modal">
+                                                            <span class="fa fa-trash"></span> Yes
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-xs " 
+                                                                data-dismiss="modal">
+                                                            <span class="fa fa-times"></span> No
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
-                        </div>
-                    </div>
-                </div>  
-           </div>
-        </div>                
-    
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
+                </div>
+            </div>
+        </div>  
+    </div>
 </section>

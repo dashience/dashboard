@@ -1199,8 +1199,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
 
     $scope.getTimeSegemens = function () {
-        $scope.dataSet.timeSegment = "";
-        $scope.dataSet.productSegment = "";
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
@@ -1291,18 +1289,18 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSet = $scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
         console.log(dataSet);
-        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
-        {
-            var networkType = dataSet.networkType.map(function (value, key) {
-                if (value) {
-                    return value.type;
-                }
-            }).join(',');
-            dataSet.networkType = networkType;
-            $scope.nwStatusFlag = true;
-        } else {
-            $scope.nwStatusFlag = false;
-        }
+//        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
+//        {
+//            var networkType = dataSet.networkType.map(function (value, key) {
+//                if (value) {
+//                    return value.type;
+//                }
+//            }).join(',');
+//            dataSet.networkType = networkType;
+        $scope.nwStatusFlag = true;
+//        } else {
+//            $scope.nwStatusFlag = false;
+//        }
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });
@@ -1313,20 +1311,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.editDataSet = function (dataSet) {
+        console.log(dataSet)
         console.log(dataSet);
-        if (dataSet.networkType !== null)
-        {
-            dataSet.networkType = dataSet.networkType.split(',').map(function (value, key) {
-                return {
-                    'name': value ? value : ''
-                }
-            });
-            $scope.nwStatusFlag = true;
-        } else {
-
-            $scope.nwStatusFlag = false;
-        }
+//        if (dataSet.networkType !== null)
+//        {
+//            dataSet.networkType = dataSet.networkType.split(',').map(function (value, key) {
+//                return {
+//                    'name': value ? value : ''
+//                }
+//            });
+        $scope.nwStatusFlag = true;
+//        } else {
+//
+//            $scope.nwStatusFlag = false;
+//        }
         console.log(dataSet.networkType);
+        console.log(dataSet.timeSegment);
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -1335,7 +1335,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             reportName: dataSet.reportName,
             timeSegment: dataSet.timeSegment,
             productSegment: dataSet.productSegment,
-            networkType: dataSet.networkType ? dataSet.networkType : '',
+            networkType: dataSet.networkType,
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
             userId: dataSet.userId.id
@@ -1410,6 +1410,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.refreshDataSet = function (dataSet) {
+        $scope.dataSet.timeSegment = "";
+        $scope.dataSet.productSegment = "";
         $scope.showPreviewChart = true;
         $scope.previewData = null;
         $timeout(function () {
@@ -1488,13 +1490,13 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSourcePassword = '';
             }
             console.log(dataSourcePath.networkType);
-            
+
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +
-                    "&filter=" + dataSourcePath.networkType.type +
+                    "&filter=" + dataSourcePath.networkType +
                     "&productSegment=" + dataSourcePath.productSegment +
                     "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
