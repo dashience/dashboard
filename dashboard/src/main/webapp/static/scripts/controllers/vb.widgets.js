@@ -264,7 +264,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 ' Group' +
                 '</th>' +
                 '<th ng-repeat="col in columns" ng-if="col.columnHide == null">' + //Display Fields Header Names and Sorting Icons
-                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}' +
+                '<div ng-click="initData(col)" class="">{{col.displayName}}' +
+//                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}' +
                 '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i>' +
                 '<i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i>' +
                 '</div>' +
@@ -891,10 +892,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
-            
-            console.log(scope.widgetObj);
-            
-            
+
             var labels = {format: {}};
             scope.loadingLine = true;
             var yAxis = [];
@@ -1058,8 +1056,13 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         scope.hideEmptyLine = true;
                     } else {
                         var loopCount = 0;
-                        ///console.log(scope.widgetObj);
-                        var chartData = response.data//.slice(0, );
+                        var chartData;
+                        var chartMaxRecord = JSON.parse(scope.widgetObj)
+                        if (chartMaxRecord.maxRecord > 0) {
+                            chartData = response.data.slice(0, chartMaxRecord.maxRecord);
+                        } else {
+                            chartData = response.data;
+                        }
                         if (sortFields.length > 0) {
                             chartData = scope.orderData(chartData, sortFields);
                         }
@@ -1128,7 +1131,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
             barChartSource: '@',
             widgetId: '@',
             barChartId: '@',
-            widgetColumns: '@'
+            widgetColumns: '@',
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -1296,7 +1300,13 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
                         scope.hideEmptyBar = true;
                     } else {
                         var loopCount = 0;
-                        var chartData = response.data;
+                        var chartData;
+                        var chartMaxRecord = JSON.parse(scope.widgetObj)
+                        if (chartMaxRecord.maxRecord > 0) {
+                            chartData = response.data.slice(0, chartMaxRecord.maxRecord);
+                        } else {
+                            chartData = response.data;
+                        }
 
                         if (sortFields.length > 0) {
                             chartData = scope.orderData(chartData, sortFields);
@@ -1370,7 +1380,8 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
             widgetId: '@',
             widgetColumns: '@',
             pieChartId: '@',
-            loadingPie: '&'
+            loadingPie: '&',
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -1482,7 +1493,14 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                         scope.hideEmptyPie = true;
                     } else {
                         var loopCount = 0;
-                        var chartData = response.data;
+                        var chartData;
+//                        var chartData = response.data;
+                        var chartMaxRecord = JSON.parse(scope.widgetObj)
+                        if (chartMaxRecord.maxRecord > 0) {
+                            chartData = response.data.slice(0, chartMaxRecord.maxRecord);
+                        } else {
+                            chartData = response.data;
+                        }
                         chartData = sortResults(chartData, sortField, sortOrder);
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
@@ -1556,7 +1574,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter) {
             widgetId: '@',
             areaChartSource: '@',
             widgetColumns: '@',
-            pieChartId: '@'
+            pieChartId: '@',
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -1717,7 +1736,13 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter) {
                         scope.hideEmptyArea = true;
                     } else {
                         var loopCount = 0;
-                        var chartData = response.data;
+                        var chartData;
+                        var chartMaxRecord = JSON.parse(scope.widgetObj)
+                        if (chartMaxRecord.maxRecord > 0) {
+                            chartData = response.data.slice(0, chartMaxRecord.maxRecord);
+                        } else {
+                            chartData = response.data;
+                        }
                         if (sortFields.length > 0) {
                             chartData = scope.orderData(chartData, sortFields);
                         }

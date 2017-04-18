@@ -337,17 +337,17 @@
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'bar'">
                         <div>
-                            <div bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}"></div>
+                            <div bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div> 
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
-                            <div pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}"></div>
+                            <div pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div> 
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'area'">
                         <div>
-                            <div area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}"></div>
+                            <div area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div>
                     </div>
                     <div class="list" ng-if="widget.chartType === 'table'" adjust-height>

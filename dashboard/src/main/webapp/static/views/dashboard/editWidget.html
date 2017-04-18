@@ -183,6 +183,12 @@
             </div>
         </div>
         <div class="row col-md-12">
+            <div class="form-group col-md-4" ng-if="editChartType != 'ticker'">
+                <div>
+                    <label>Max Record</label>
+                    <input type="text" ng-model="widget.maxRecord" class="form-control">
+                </div>
+            </div>
             <div ng-if="editChartType == 'table'">                         
                 <div class="col-lg-4">
                     <div class="col-md-12">
@@ -273,13 +279,7 @@
                         </a> 
                     </div>
                 </div>
-            </div>
-            <div class="form-group col-md-4">
-                <div>
-                    <label>Max Record</label>
-                    <input type="text" ng-model="widget.maxRecord" class="form-control">
-                </div>
-            </div>
+            </div>            
         </div>
 
         <div ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
@@ -457,23 +457,23 @@
                                 <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                             </div>
                             <div ng-if="editChartType === 'line'">
-                                <div>{{widget}}ggggggg
+                                <div>
                                     <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                 </div>
                             </div>
                             <div ng-if="editChartType === 'area'">
                                 <div>
-                                    <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                                    <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                 </div>
                             </div>
                             <div ng-if="editChartType === 'bar'">
                                 <div>
-                                    <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}"></div>
+                                    <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                 </div>
                             </div>
                             <div ng-if="editChartType === 'pie'">
                                 <div>
-                                    <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                                    <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                 </div>                            
                             </div> 
                         </div>
