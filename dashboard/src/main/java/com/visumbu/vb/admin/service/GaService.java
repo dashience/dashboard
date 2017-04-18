@@ -155,9 +155,12 @@ public class GaService {
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
         String productSegments = reqProductSegments == null ? null : reqProductSegments;
+        if(productSegments.trim().isEmpty()) {
+            productSegments = null;
+        }
         String dimensions = reqDimensions == null ? gaReport.getDefaultDimension() : reqDimensions;
         String filter = gaReport.getDefaultFilter();
-
+        System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
         return getResponseAsMap(gaData);
     }

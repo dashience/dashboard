@@ -435,11 +435,14 @@
                                         <tr ng-repeat="tickerItem in widget.columns">
                                             <td>{{tickerItem.displayName}}</td>
                                             <td>
-                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' 
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' ng-change="tickerFormat(widget, tickerItem)">
+                                                    <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
+                                                </select>
+<!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' 
                                                         class='form-control'
                                                         ng-change="tickerFormat(widget, tickerItem)"
                                                         ng-options="format for format in formats">
-                                                </select>
+                                                </select>-->
                                             </td>
                                         </tr>
                                     </tbody>

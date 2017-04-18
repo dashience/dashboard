@@ -834,7 +834,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 "<li class='input-group col-sm-12'><label>Group priority</label><select ng-model='collectionField.groupPriority' class='form-control'>" +
                 "<option ng-repeat='selectGroupPriority in selectGroupPriorities' value='{{selectGroupPriority.value}}'>" +
                 "{{selectGroupPriority.num}}</option></select></li>" +
-                "<li class='input-group col-sm-12'><label>Sort</label><select ng-model='collectionField.sortPriority' class='form-control'>" +
+                "<li class='input-group col-sm-12'><label>Sort</label><select ng-model='collectionField.sortOrder' class='form-control'>" +
                 "<option ng-repeat='sort in sorting' value='{{sort.value}}'>" +
                 "{{sort.name}}</option></select></li>" +
                 "<li class='input-group col-sm-12'><label>Field Type</label>" +

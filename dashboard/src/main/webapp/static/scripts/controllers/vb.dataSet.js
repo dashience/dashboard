@@ -1459,7 +1459,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.clearSeg = function (dataSet) {
         dataSet.timeSegment = '';
         dataSet.productSegment = '';
-    }
+    };
 
     $scope.clearDataSet = function (dataSet) {
         $scope.dataSet = "";

@@ -1188,6 +1188,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
                     if (value.fieldType == "string") {
                         if (value.sortOrder == "asc") {
                             fieldsOrder.push(value.fieldName);
+                            console.log(fieldsOrder)
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push("-" + value.fieldName);
                         }
@@ -1293,6 +1294,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
 
                         if (sortFields.length > 0) {
                             chartData = scope.orderData(chartData, sortFields);
+                            console.log(chartData)
                         }
 
 //                        chartData = orderData(chartData, sortFields);
