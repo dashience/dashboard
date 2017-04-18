@@ -2707,10 +2707,11 @@ public class CustomReportDesigner {
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
-                if (column.getSortOrder() != null) {
+                if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                    System.out.println("SORT ORDER ======> " + column.getSortOrder());
                     sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
                 }
-                if (column.getAgregationFunction() != null) {
+                if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                     aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
                 }
                 if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -3051,10 +3052,11 @@ public class CustomReportDesigner {
 
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
             if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -3066,8 +3068,10 @@ public class CustomReportDesigner {
             if (column.getxAxis() != null) {
                 xAxis = column.getFieldName();
                 xAxisDisplay = column.getDisplayName();
+                System.out.println("XAxisDisplay: " + xAxisDisplay);
             }
         }
+        System.out.println("sortFields size: " + sortFields.size());
 
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);

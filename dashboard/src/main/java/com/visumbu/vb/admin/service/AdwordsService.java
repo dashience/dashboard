@@ -213,9 +213,13 @@ public class AdwordsService {
     }
 
     public Selector addTimeSelector(Selector selector, String timeSegment) {
-        String timeSegmentValue = getTimeSegment(timeSegment);
+        String timeSegmentValue = timeSegment; //getTimeSegment(timeSegment);
         if (timeSegmentValue != null) {
-            selector.getFields().add(timeSegmentValue);
+            String[] timeSegmentArr = timeSegmentValue.split(",");
+            for (int i = 0; i < timeSegmentArr.length; i++) {
+                String timeSegmentData = timeSegmentArr[i];
+                selector.getFields().add(timeSegmentData);
+            }
         }
 
         return selector;
@@ -223,7 +227,7 @@ public class AdwordsService {
 
     public Selector addProductSelector(Selector selector, String productSegment) {
 
-        String productSegmentValue = getProductSegment(productSegment);
+        String productSegmentValue = productSegment; //getProductSegment(productSegment);
         if (productSegmentValue != null) {
             String[] productSegmentArr = productSegmentValue.split(",");
             for (int i = 0; i < productSegmentArr.length; i++) {
@@ -231,6 +235,7 @@ public class AdwordsService {
                 selector.getFields().add(productSegmentName);
             }
         }
+        System.out.println("ADDED FIELDS - Product Segments " + selector.getFields());
         return selector;
     }
 
@@ -449,7 +454,6 @@ public class AdwordsService {
 //        }
 //        return null;
 //    }
-
 //    public AddGroupReport getAdGroupReport(Date startDate, Date endDate, String accountId, String timeSegment, String productSegment, String filter) {
 //        AdWordsSession session = getSession(accountId);
 //        Selector selector = new Selector();
@@ -644,7 +648,6 @@ public class AdwordsService {
 //        }
 //        return null;
 //    }
-
     public Object adWordsAsMap(Date startDate, Date endDate, String accountId, String[] fields, Map<String, String> filter, String aggregation, String reportType) {
         AdWordsSession session = getSession(accountId);
         com.google.api.ads.adwords.lib.jaxb.v201609.Selector selector = new com.google.api.ads.adwords.lib.jaxb.v201609.Selector();
@@ -914,9 +917,7 @@ public class AdwordsService {
 //    }
 //    
     Map<String, AdwordsReport> adwordsReports = ApiUtils.getAllAdwordsReports();
-    
-    
-    
+
     public List<Map<String, Object>> getAdwordsReport(String reportName, Date startDate, Date endDate, String accountId, String timeSegment, String productSegment, String filter) {
         AdwordsReport adwordsData = adwordsReports.get(reportName);
         System.out.println(adwordsData);
@@ -925,11 +926,13 @@ public class AdwordsService {
         AdWordsSession session = getSession(accountId);
         Selector selector = new Selector();
         selector.getFields().addAll(Lists.newArrayList(fields));
-
-        addTimeSelector(selector, timeSegment);
-        addProductSelector(selector, productSegment);
-        setAdNetworkTypeFilters(selector, filter);
-
+        System.out.println("Time Segment ===> " + timeSegment);
+        System.out.println("Product Segment ===> " + productSegment);
+        System.out.println("Filter ===> " + filter);
+        selector = addTimeSelector(selector, timeSegment);
+        selector = addProductSelector(selector, productSegment);
+        selector = setAdNetworkTypeFilters(selector, filter);
+        System.out.println("Selector " + selector.getFields());
         // Create report definition.
         ReportDefinition reportDefinition = new ReportDefinition();
         reportDefinition.setReportName("Criteria performance report #" + System.currentTimeMillis());
@@ -969,10 +972,16 @@ public class AdwordsService {
             response.saveToFile(filename);
             Map dataMap = (Map) XmlUtils.getAsMap(filename);
             dataMap = (Map) dataMap.get("report");
+            if(dataMap == null) {
+                return null;
+            }
             dataMap = (Map) dataMap.get("table");
-            if(dataMap.get("row") instanceof Map) {
+            if(dataMap == null) {
+                return null;
+            }
+            if (dataMap.get("row") instanceof Map) {
                 List<Map<String, Object>> returnList = new ArrayList<>();
-                returnList.add((Map<String, Object>)dataMap.get("row"));
+                returnList.add((Map<String, Object>) dataMap.get("row"));
                 return returnList;
             }
             return (List<Map<String, Object>>) dataMap.get("row");

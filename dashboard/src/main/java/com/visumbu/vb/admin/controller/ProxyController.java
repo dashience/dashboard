@@ -14,6 +14,7 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.Dealer;
@@ -22,6 +23,7 @@ import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
@@ -279,16 +281,8 @@ public class ProxyController {
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
         String filter = request.getParameter("filter");
-        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
-            timeSegment = null;
-        }
         String productSegment = request.getParameter("productSegment");
-        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
-            productSegment = null;
-        }
-        if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
-            filter = null;
-        }
+
         if (dataSetId != null) {
             Integer dataSetIdInt = Integer.parseInt(dataSetId);
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
@@ -296,7 +290,17 @@ public class ProxyController {
                 dataSetReportName = dataSet.getReportName();
                 timeSegment = dataSet.getTimeSegment();
                 productSegment = dataSet.getProductSegment();
+                filter = dataSet.getNetworkType();
             }
+        }
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
+            timeSegment = null;
+        }
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
+            productSegment = null;
+        }
+        if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
+            filter = null;
         }
         String accountIdStr = request.getParameter("accountId");
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
@@ -308,8 +312,65 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
+        if (dataSetReportName.equalsIgnoreCase("geoPerformance")) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                Object cityCriteria = dataMap.get("city");
+                Object regionCriteria = dataMap.get("region");
+                Object countryCriteria = dataMap.get("countryTerritory");
+                try {
+                    if (cityCriteria != null) {
+                        System.out.println("CITY CRITERIA CLASS  " + cityCriteria.getClass());
+                        Integer criteriaId = Integer.parseInt(cityCriteria + "");
+                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                        if (criteria != null) {
+                            dataMap.put("cityName", criteria.getCriteriaName());
+                        }
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+                try {
+                    if (regionCriteria != null) {
+                        Integer criteriaId = Integer.parseInt(regionCriteria + "");
+                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                        if (criteria != null) {
+                            dataMap.put("regionName", criteria.getCriteriaName());
+                        }
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+                try {
+                    if (countryCriteria != null) {
+                        Integer criteriaId = Integer.parseInt(countryCriteria + "");
+                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                        if (criteria != null) {
+                            dataMap.put("countryName", criteria.getCriteriaName());
+                        }
+                    }
+                } catch (NumberFormatException e) {
+
+                }
+
+            }
+        }
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            List<String> costFields = Arrays.asList(new String[]{"avgCPC", "cost", "costConv"});
+            for (Iterator<String> iterator1 = costFields.iterator(); iterator1.hasNext();) {
+                String costField = iterator1.next();
+                Object cost = dataMap.get(costField);
+                if (cost != null) {
+                    dataMap.put(costField, covertAdwordsCost(cost));
+                }
+            }
+        }
         System.out.println(data);
         Map returnMap = new HashMap();
+        if (data == null) {
+            return null;
+        }
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
         if (fieldsOnly != null) {
@@ -317,6 +378,18 @@ public class ProxyController {
         }
         returnMap.put("data", data);
         return returnMap;
+    }
+
+    private Double covertAdwordsCost(Object costData) {
+        if (costData == null) {
+            return null;
+        }
+        String costDataStr = costData + "";
+        Double cost = Double.parseDouble(costDataStr);
+        if (cost > 0) {
+            return cost / 1000000;
+        }
+        return 0D;
     }
 
     @RequestMapping(value = "testAdwords", method = RequestMethod.GET, produces = "application/json")
@@ -657,7 +730,7 @@ public class ProxyController {
                     continue;
                 }
 //                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
-                String url = "admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -668,13 +741,13 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "admin/csv/getData";
+                    url = "../admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
 //                    url = "../dashboard/admin/proxy/getData?";
-                    url = "admin/proxy/getData?";
+                    url = "../admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 
@@ -753,7 +826,7 @@ public class ProxyController {
         }
         System.out.println("selectDate ---> " + selectDate);
 
-               log.debug("Export type ==> " + exportType);
+        log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
         }
@@ -774,7 +847,7 @@ public class ProxyController {
 
         List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
         String account = null;
-        String product = null;
+        String product = "Analytics";
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next();
             try {
@@ -782,7 +855,7 @@ public class ProxyController {
                     continue;
                 }
 //                String url = "../dashboard/admin/proxy/getData?";
-                String url = "admin/proxy/getData?";
+                String url = "../admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -793,12 +866,12 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "admin/csv/getData";
+                    url = "../admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "admin/proxy/getData?";
+                    url = "../admin/proxy/getData?";
 //                    url = "../dashboard/admin/proxy/getData?";
 
                 }
@@ -810,11 +883,11 @@ public class ProxyController {
                 int account_id = Integer.parseInt(request.getParameter("accountId"));
                 account = userService.getAccountName(account_id);
 
-                int product_id = Integer.parseInt(request.getParameter("productId"));
-                System.out.println("product_id :" + product_id);
-                product = userService.getProductName(product_id);
-
-                System.out.println("product name :" + product);
+//                int product_id = Integer.parseInt(request.getParameter("productId"));
+//                System.out.println("product_id :" + product_id);
+//                product = userService.getProductName(product_id);
+//
+//                System.out.println("product name :" + product);
                 System.out.println("account name :" + account);
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";

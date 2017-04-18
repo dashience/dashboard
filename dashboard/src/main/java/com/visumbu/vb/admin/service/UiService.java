@@ -10,6 +10,7 @@ import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
+import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
@@ -536,5 +537,8 @@ public class UiService {
 
     public DefaultFieldProperties getDefaultFieldProperties(String fieldName) {
         return uiDao.getDefaultFieldProperties(fieldName);
+    }
+    public AdwordsCriteria getAdwordsCriteria(Integer criteriaId) {
+        return uiDao.getAdwordsCriteria(criteriaId);
     }
 }

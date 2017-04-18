@@ -311,9 +311,9 @@ public class UserService {
         return userDao.getAccountName(id);
     }
     
-    public String getProductName(Integer id) {
-        return userDao.getProductName(id);
-    }
+//    public String getProductName(Integer id) {
+//        return userDao.getProductName(id);
+//    }
     
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
         System.out.println("==================================>");

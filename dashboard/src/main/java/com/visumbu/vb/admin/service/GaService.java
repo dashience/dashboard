@@ -155,9 +155,18 @@ public class GaService {
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
         String productSegments = reqProductSegments == null ? null : reqProductSegments;
-        String dimensions = reqDimensions == null ? gaReport.getDefaultDimension() : reqDimensions;
+        if (productSegments == null || productSegments.trim().isEmpty() || productSegments.trim().equalsIgnoreCase("none")) {
+            productSegments = null;
+        }
+        String dimensions = reqDimensions;
+        if (dimensions == null || dimensions.trim().isEmpty() || dimensions.trim().equalsIgnoreCase("none")) {
+            dimensions = gaReport.getDefaultDimension();
+        }
+        if (dimensions == null || dimensions.trim().isEmpty() || dimensions.trim().equalsIgnoreCase("none")) {
+            dimensions = null;
+        }
         String filter = gaReport.getDefaultFilter();
-
+        System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
         return getResponseAsMap(gaData);
     }
@@ -187,6 +196,9 @@ public class GaService {
             for (int i = 0; i < metricsArray.length; i++) {
                 String metricStr = metricsArray[i];
                 String[] nameAliasArray = metricStr.split(",");
+                if (nameAliasArray[0].isEmpty() || nameAliasArray[0].equalsIgnoreCase("none")) {
+                    continue;
+                }
                 if (nameAliasArray.length >= 2) {
                     Metric metric = new Metric()
                             .setExpression(nameAliasArray[0])
@@ -199,12 +211,14 @@ public class GaService {
                 }
             }
 
-            List<Dimension> dimensionList = null;
+            List<Dimension> dimensionList = new ArrayList<>();
             if (dimentions != null) {
                 String[] dimensionArray = dimentions.split(";");
-                dimensionList = new ArrayList<>();
                 for (int i = 0; i < dimensionArray.length; i++) {
                     String dimensionStr = dimensionArray[i];
+                    if (dimensionStr.isEmpty() || dimensionStr.equalsIgnoreCase("none")) {
+                        continue;
+                    }
                     Dimension dimension = new Dimension()
                             .setName(dimensionStr);
                     dimensionList.add(dimension);
@@ -216,6 +230,9 @@ public class GaService {
                 for (int i = 0; i < productSegmentArray.length; i++) {
                     String productSegment = productSegmentArray[i];
                     String[] nameAliasArray = productSegment.split(",");
+                    if (nameAliasArray[0].isEmpty() || nameAliasArray[0].equalsIgnoreCase("none")) {
+                        continue;
+                    }
                     if (nameAliasArray.length >= 2) {
                         Dimension dimension = new Dimension()
                                 .setName(nameAliasArray[0]);
@@ -236,7 +253,7 @@ public class GaService {
             if (filter != null) {
                 request.setFiltersExpression(filter);
             }
-            if (dimensionList != null) {
+            if (dimensionList != null && !dimensionList.isEmpty()) {
                 request.setDimensions(dimensionList);
             }
             ArrayList<ReportRequest> requests = new ArrayList<ReportRequest>();
@@ -348,6 +365,7 @@ public class GaService {
             if (dimensionHeaders != null) {
                 for (int i = 0; i < dimensionHeaders.size(); i++) {
                     String key = dimensionHeaders.get(i);
+                    key = key.replaceAll("ga:", "");
                     DefaultFieldProperties fieldProperties = uiDao.getDefaultFieldProperties(key);
                     if (fieldProperties != null) {
                         columnDefs.add(new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat()));
@@ -358,6 +376,7 @@ public class GaService {
             }
             for (int i = 0; i < metricHeaders.size(); i++) {
                 String key = metricHeaders.get(i).getName();
+                key = key.replaceAll("ga:", "");
                 String type = metricHeaders.get(i).getType();
                 DefaultFieldProperties fieldProperties = uiDao.getDefaultFieldProperties(key);
                 if (fieldProperties != null) {
@@ -379,14 +398,18 @@ public class GaService {
                 if (dimensionHeaders != null) {
                     for (int i = 0; i < dimensionHeaders.size() && i < dimensions.size(); i++) {
                         System.out.println(dimensionHeaders.get(i) + ": " + dimensions.get(i));
-                        dataMap.put(dimensionHeaders.get(i), dimensions.get(i));
+                        String key = dimensionHeaders.get(i);
+                        key = key.replaceAll("ga:", "");
+                        dataMap.put(key, dimensions.get(i));
                     }
                 }
                 for (int j = 0; j < metrics.size(); j++) {
                     System.out.print("Date Range (" + j + "): ");
                     DateRangeValues values = metrics.get(j);
                     for (int k = 0; k < values.getValues().size() && k < metricHeaders.size(); k++) {
-                        dataMap.put(metricHeaders.get(k).getName(), values.getValues().get(k));
+                        String key = metricHeaders.get(k).getName();
+                        key = key.replaceAll("ga:", "");
+                        dataMap.put(key, values.getValues().get(k));
                         System.out.println(metricHeaders.get(k).getName() + ": " + values.getValues().get(k));
                     }
                 }

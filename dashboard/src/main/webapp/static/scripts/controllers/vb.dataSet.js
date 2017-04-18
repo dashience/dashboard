@@ -380,11 +380,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:dateHour',
-                    name: 'Hour Of Week'
+                    name: 'Hour of Week'
                 },
                 {
                     type: 'ga:dayOfWeekName',
-                    name: 'Day Of Week'
+                    name: 'Day of Week'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -426,7 +430,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -453,6 +457,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -501,6 +509,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -538,7 +550,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -565,6 +577,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -593,6 +609,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -624,11 +644,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:dayOfWeek',
-                    name: 'Day Of Week'
+                    name: 'Day of Week'
                 },
                 {
                     type: 'ga:dateHour',
-                    name: 'Hour Of Day'
+                    name: 'Hour of Day'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -666,7 +690,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -693,6 +717,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -714,7 +742,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -744,7 +772,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:dayOfWeek',
-                    name: 'Day Of Week'
+                    name: 'Day of Week'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -766,15 +798,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:eventLabel',
-                    name: 'event Label'
+                    name: 'EventLabel'
                 },
                 {
                     type: 'ga:eventAction',
-                    name: 'event Action'
+                    name: 'EventAction'
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -790,41 +822,45 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Account',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
                 },
                 {
-                    type: 'hourOfTheDay',
+                    type: 'HourOfDay',
                     name: 'Hour Of The Day'
                 },
                 {
                     type: 'DayOfWeek',
                     name: 'Day Of Week'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
+                    type: 'Device',
                     name: 'Device'
                 },
                 {
-                    type: 'network search partner',
+                    type: 'AdNetworkType1',
                     name: 'Network Search Partner'
                 },
                 {
@@ -838,41 +874,45 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Campaign',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
                 },
                 {
-                    type: 'hourOfTheDay',
+                    type: 'HourOfDay',
                     name: 'Hour Of The Day'
                 },
                 {
                     type: 'DayOfWeek',
                     name: 'Day Of Week'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
+                    type: 'Device',
                     name: 'Device'
                 },
                 {
-                    type: 'network search partner',
+                    type: 'AdNetworkType1',
                     name: 'Network Search Partner'
                 },
                 {
@@ -886,33 +926,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'AdGroup',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
+                    type: 'Device',
                     name: 'Device'
                 },
                 {
-                    type: 'network search partner',
+                    type: 'AdNetworkType1',
                     name: 'Network Search Partner'
                 },
                 {
@@ -926,33 +970,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Keyword',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
+                    type: 'Device',
                     name: 'Device'
                 },
                 {
-                    type: 'network search partner',
+                    type: 'AdNetworkType1',
                     name: 'Network Search Partner'
                 },
                 {
@@ -966,33 +1014,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'AdCopy',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
+                    type: 'Device',
                     name: 'Device'
                 },
                 {
-                    type: 'network search partner',
+                    type: 'AdNetworkType1',
                     name: 'Network Search Partner'
                 },
                 {
@@ -1006,24 +1058,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Search Query Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1038,24 +1094,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Final URL Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Day',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1070,24 +1130,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Placement Report',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
         },
@@ -1096,19 +1160,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Geo',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Day',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
@@ -1116,37 +1180,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Day Of Week'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
                 },
                 {
-                    type: 'country',
-                    name: 'Country'
-                },
-                {
-                    type: 'region',
+                    type: 'RegionCriteriaId',
                     name: 'Region'
                 },
                 {
-                    type: 'city',
+                    type: 'CityCriteriaId,RegionCriteriaId',
                     name: 'City'
                 },
                 {
-                    type: 'metroArea',
+                    type: 'MetroCriteriaId,RegionCriteriaId,CityCriteriaId',
                     name: 'Metro Area'
                 },
                 {
-                    type: 'zip',
+                    type: 'CityCriteriaId,RegionCriteriaId,MostSpecificCriteriaId',
                     name: 'Zip'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
+                    type: 'Device',
                     name: 'Device'
                 },
                 {
-                    type: 'network search partner',
+                    type: 'AdNetworkType1',
                     name: 'Network Search Partner'
                 },
                 {
@@ -1159,33 +1223,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Video',
             timeSegments: [
                 {
-                    type: 'day',
+                    type: 'Date',
                     name: 'Day'
                 },
                 {
-                    type: 'week',
+                    type: 'Week',
                     name: 'Week'
                 },
                 {
-                    type: 'month',
+                    type: 'Month',
                     name: 'Month'
                 },
                 {
-                    type: 'year',
+                    type: 'Year',
                     name: 'Year'
                 },
                 {
-                    type: 'quarter',
+                    type: 'Quarter',
                     name: 'Quarter'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
+                    type: 'Device',
                     name: 'Device'
                 },
                 {
-                    type: 'network search partner',
+                    type: 'AdNetworkType1',
                     name: 'Network Search Partner'
                 },
                 {
@@ -1199,8 +1267,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
 
     $scope.getTimeSegemens = function () {
-        $scope.dataSet.timeSegment = "";
-        $scope.dataSet.productSegment = "";
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
@@ -1291,18 +1357,18 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSet = $scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
         console.log(dataSet);
-        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
-        {
-            var networkType = dataSet.networkType.map(function (value, key) {
-                if (value) {
-                    return value.type;
-                }
-            }).join(',');
-            dataSet.networkType = networkType;
-            $scope.nwStatusFlag = true;
-        } else {
-            $scope.nwStatusFlag = false;
-        }
+//        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
+//        {
+//            var networkType = dataSet.networkType.map(function (value, key) {
+//                if (value) {
+//                    return value.type;
+//                }
+//            }).join(',');
+//            dataSet.networkType = networkType;
+        $scope.nwStatusFlag = true;
+//        } else {
+//            $scope.nwStatusFlag = false;
+//        }
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });
@@ -1313,20 +1379,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.editDataSet = function (dataSet) {
+        console.log(dataSet)
         console.log(dataSet);
-        if (dataSet.networkType !== null)
-        {
-            dataSet.networkType = dataSet.networkType.split(',').map(function (value, key) {
-                return {
-                    'name': value ? value : ''
-                }
-            });
-            $scope.nwStatusFlag = true;
-        } else {
-
-            $scope.nwStatusFlag = false;
-        }
+//        if (dataSet.networkType !== null)
+//        {
+//            dataSet.networkType = dataSet.networkType.split(',').map(function (value, key) {
+//                return {
+//                    'name': value ? value : ''
+//                }
+//            });
+        $scope.nwStatusFlag = true;
+//        } else {
+//
+//            $scope.nwStatusFlag = false;
+//        }
         console.log(dataSet.networkType);
+        console.log(dataSet.timeSegment);
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -1335,7 +1403,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             reportName: dataSet.reportName,
             timeSegment: dataSet.timeSegment,
             productSegment: dataSet.productSegment,
-            networkType: dataSet.networkType ? dataSet.networkType : '',
+            networkType: dataSet.networkType,
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
             userId: dataSet.userId.id
@@ -1410,11 +1478,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.refreshDataSet = function (dataSet) {
+//        var tmpDataSet = dataSet
+//        dataSet.timeSegment = "";
+//        dataSet.productSegment = "";
         $scope.showPreviewChart = true;
         $scope.previewData = null;
         $timeout(function () {
             $scope.previewData = dataSet;
         }, 50);
+    };
+
+    $scope.clearSeg = function (dataSet) {
+        dataSet.timeSegment = '';
+        dataSet.productSegment = '';
     };
 
     $scope.clearDataSet = function (dataSet) {
@@ -1458,14 +1534,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<tbody ng-repeat="tableRow in tableRows">' +
                 '<tr class="text-capitalize">' +
                 '<td ng-repeat="col in tableColumns">' +
-                '<div>{{tableRow[col.fieldName]}}</div>' +
+                '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
                 '</table>',
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
-//            console.log(dataSourcePath);
+            console.log(dataSourcePath);
 //            console.log(dataSourcePath.dataSourceId.userName);
 //            console.log(dataSourcePath.dataSourceId.connectionString);
 //            console.log(dataSourcePath.dataSourceId.sqlDriver);
@@ -1488,13 +1564,28 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSourcePassword = '';
             }
             console.log(dataSourcePath.networkType);
-            
+            scope.format = function (column, value) {
+                if (!value) {
+                    return "-";
+                }
+                if (column.displayFormat) {
+                    if (Number.isNaN(value)) {
+                        return "-";
+                    }
+                    if (column.displayFormat.indexOf("%") > -1) {
+                        // return d3.format(column.displayFormat)(value / 100);
+                    }
+                    return d3.format(column.displayFormat)(value);
+                }
+                return value;
+            };
+
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +
-                    "&filter=" + dataSourcePath.networkType.type +
+                    "&filter=" + dataSourcePath.networkType +
                     "&productSegment=" + dataSourcePath.productSegment +
                     "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +

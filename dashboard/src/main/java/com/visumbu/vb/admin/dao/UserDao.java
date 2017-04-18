@@ -293,13 +293,13 @@ public class UserDao extends BaseDao {
         return accountName;
     }
 
-    public String getProductName(Integer id) {
-        String queryStr = "select a.productName FROM Product a Where a.id = :id";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("id", id);
-        String productName = (String) query.list().get(0);
-        return productName;
-    }
+//    public String getProductName(Integer id) {
+//        String queryStr = "select a.productName FROM Product a Where a.id = :id";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("id", id);
+//        String productName = (String) query.list().get(0);
+//        return productName;
+//    }
 
     public List<Account> getAccountByAgency(Agency agency) {
         String queryStr = "select a from Account a where (a.agencyId.status is null or a.agencyId.status != 'Deleted') and a.agencyId.id = :agencyId";
