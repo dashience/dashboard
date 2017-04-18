@@ -90,7 +90,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Yes', value: "yes"}
     ];
 
-    $scope.fieldTypes = ['none', 'string', 'number', 'date']
+    $scope.fieldTypes = ['none', 'string', 'number', 'date', 'day']
 //        {id: 0, name: 'None', value: ''},
 //        {id: 1, name: 'String', value: 'string'},
 //        {id: 2, name: 'Number', value: 'number'},

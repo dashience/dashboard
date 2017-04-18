@@ -1122,7 +1122,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
     };
 });
 
-app.directive('barChartDirective', function ($http, $stateParams, $filter) {
+app.directive('barChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingBar" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -1310,8 +1310,21 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
                         }
 
                         if (sortFields.length > 0) {
-                            chartData = scope.orderData(chartData, sortFields);
-                            console.log(chartData)
+                            angular.forEach(sortFields, function (value, key) {
+                                if (value.fieldType != 'day') {
+                                    chartData = scope.orderData(chartData, sortFields);
+                                    console.log(chartData)
+                                } else {
+                                    var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                    chartData = orderByFilter(chartData, function (item) {
+                                        if (value.sortOrder === 'asc') {
+                                            return dateOrders.indexOf(item[value.fieldName]);
+                                        } else if (value.sortOrder === 'desc') {
+                                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                                        }
+                                    });
+                                }
+                            })
                         }
 
 //                        chartData = orderData(chartData, sortFields);
