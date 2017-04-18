@@ -380,15 +380,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:dateHour',
-                    name: 'Hour Of Week'
+                    name: 'Hour of Week'
                 },
                 {
                     type: 'ga:dayOfWeekName',
-                    name: 'Day Of Week'
+                    name: 'Day of Week'
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -430,7 +430,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -460,7 +460,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -512,7 +512,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -550,7 +550,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -580,7 +580,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -612,7 +612,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -644,15 +644,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:dayOfWeek',
-                    name: 'Day Of Week'
+                    name: 'Day of Week'
                 },
                 {
                     type: 'ga:dateHour',
-                    name: 'Hour Of Day'
+                    name: 'Hour of Day'
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -690,7 +690,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -720,7 +720,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -742,7 +742,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
@@ -772,11 +772,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:dayOfWeek',
-                    name: 'Day Of Week'
+                    name: 'Day of Week'
                 },
                 {
                     type:'none',
-                    name:'none'
+                    name:'None'
                 }
             ],
             productSegments: [
@@ -798,15 +798,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'ga:eventLabel',
-                    name: 'event Label'
+                    name: 'EventLabel'
                 },
                 {
                     type: 'ga:eventAction',
-                    name: 'event Action'
+                    name: 'EventAction'
                 },
                 {
                     type: 'ga:channelGrouping',
-                    name: 'Channel Grouping'
+                    name: 'ChannelGrouping'
                 },
                 {
                     type: 'none',
