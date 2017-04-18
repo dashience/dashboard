@@ -155,7 +155,7 @@ public class GaService {
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
         String productSegments = reqProductSegments == null ? null : reqProductSegments;
-        if(productSegments.trim().isEmpty()) {
+        if(productSegments.trim().isEmpty() || productSegments.trim().equalsIgnoreCase("none")) {
             productSegments = null;
         }
         String dimensions = reqDimensions == null ? gaReport.getDefaultDimension() : reqDimensions;
