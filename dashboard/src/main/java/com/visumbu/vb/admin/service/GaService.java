@@ -208,10 +208,9 @@ public class GaService {
                 }
             }
 
-            List<Dimension> dimensionList = null;
+            List<Dimension> dimensionList = new ArrayList<>();
             if (dimentions != null) {
                 String[] dimensionArray = dimentions.split(";");
-                dimensionList = new ArrayList<>();
                 for (int i = 0; i < dimensionArray.length; i++) {
                     String dimensionStr = dimensionArray[i];
                     if (dimensionStr.isEmpty() || dimensionStr.equalsIgnoreCase("none")) {
@@ -251,7 +250,7 @@ public class GaService {
             if (filter != null) {
                 request.setFiltersExpression(filter);
             }
-            if (dimensionList != null) {
+            if (dimensionList != null && !dimensionList.isEmpty()) {
                 request.setDimensions(dimensionList);
             }
             ArrayList<ReportRequest> requests = new ArrayList<ReportRequest>();
