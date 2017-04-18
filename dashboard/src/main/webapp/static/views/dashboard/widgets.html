@@ -332,7 +332,7 @@
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'line'">
                         <div>
-                            <div line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}"></div>
+                            <div line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div> 
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'bar'">

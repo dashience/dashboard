@@ -887,9 +887,14 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
             lineChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
-            lineChartId: '@'
+            lineChartId: '@',
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
+            
+            console.log(scope.widgetObj);
+            
+            
             var labels = {format: {}};
             scope.loadingLine = true;
             var yAxis = [];
@@ -1053,7 +1058,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                         scope.hideEmptyLine = true;
                     } else {
                         var loopCount = 0;
-                        var chartData = response.data;
+                        ///console.log(scope.widgetObj);
+                        var chartData = response.data//.slice(0, );
                         if (sortFields.length > 0) {
                             chartData = scope.orderData(chartData, sortFields);
                         }
