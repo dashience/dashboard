@@ -158,7 +158,10 @@ public class GaService {
         if (productSegments == null || productSegments.trim().isEmpty() || productSegments.trim().equalsIgnoreCase("none")) {
             productSegments = null;
         }
-        String dimensions = reqDimensions == null ? gaReport.getDefaultDimension() : reqDimensions;
+        String dimensions = reqDimensions;
+        if (dimensions == null || dimensions.trim().isEmpty() || dimensions.trim().equalsIgnoreCase("none")) {
+            dimensions = gaReport.getDefaultDimension();
+        }
         if (dimensions == null || dimensions.trim().isEmpty() || dimensions.trim().equalsIgnoreCase("none")) {
             dimensions = null;
         }
