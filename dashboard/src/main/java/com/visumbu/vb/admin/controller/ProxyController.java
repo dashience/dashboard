@@ -895,8 +895,8 @@ public class ProxyController {
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
-                log.debug("url: " + url);
-                log.debug("valuemap: " + valueMap);
+                System.out.println("url: " + url);
+                System.out.println("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
                 System.out.println("Data -----> : " + data);
                 JSONParser parser = new JSONParser();
