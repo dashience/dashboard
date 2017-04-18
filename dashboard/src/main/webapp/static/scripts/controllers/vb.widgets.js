@@ -14,12 +14,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.downloadPdf = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
     };
 
     $scope.downloadPpt = function () {
-        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
+        var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
         $window.open(url);
     };
 
@@ -1097,10 +1097,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });
@@ -1338,10 +1338,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });
@@ -1524,10 +1524,10 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });
@@ -1753,10 +1753,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter) {
                             },
                             grid: {
                                 x: {
-                                    show: true
+                                    show: false
                                 },
                                 y: {
-                                    show: true
+                                    show: false
                                 }
                             }
                         });

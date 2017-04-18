@@ -44,22 +44,28 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
 
     $scope.saveAccount = function (account) {
         $http({method: account.id ? 'PUT' : 'POST', url: 'admin/user/account', data: account}).success(function (response) {
+
             getAccount();
             if (response.status == true) {
+                $scope.account = "";
+            } else {
+                if (!response.message) {
                     $scope.account = "";
-                } else {
-                    var dialog = bootbox.dialog({
-                        title: 'Alert',
-                        message: response.message
-                    });
-                    dialog.init(function () {
-                        setTimeout(function () {
-                            dialog.modal('hide');
-                        }, 2000);
-                    });
+                    $scope.selectedRow = null;
+                    return;
                 }
+                var dialog = bootbox.dialog({
+                    title: 'Alert',
+                    message: response.message
+                });
+                dialog.init(function () {
+                    setTimeout(function () {
+                        dialog.modal('hide');
+                    }, 2000);
+                });
+            }
         });
-        
+
     };
 
     $scope.selectedRow = null;
@@ -70,7 +76,8 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             id: account.id,
             accountName: account.accountName,
             geoLocation: account.geoLocation,
-            description: account.description
+            description: account.description,
+            agencyId: account.agencyId
         };
         $scope.account = data;
         $scope.selectedRow = index;

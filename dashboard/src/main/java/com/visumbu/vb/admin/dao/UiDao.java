@@ -12,6 +12,7 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportColumn;
@@ -48,7 +49,7 @@ public class UiDao extends BaseDao {
 
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         System.out.println(user);
-        String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.userId.id = :userId";
+        String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.accountId.agencyId = d.userId.agencyId and d.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", user.getId());
         return query.list();
@@ -315,6 +316,16 @@ public class UiDao extends BaseDao {
         return null;
     }
 
+    public DefaultFieldProperties getDefaultFieldProperties(String fieldName) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("DefaultFieldProperties.findByFieldName");
+        query.setParameter("fieldName", fieldName);
+        List fieldProperties = query.list();
+        if (fieldProperties.size() > 0) {
+            return (DefaultFieldProperties) fieldProperties.get(0);
+        }
+        return null;
+    }
+    
     public List<Product> getDealerProduct(Integer dealerId) {
         String queryStr = "select p from DealerProduct dp, Product p where (p.productName = dp.productName or (dp.productName='PPC' and p.productName = 'Paid Search')"
                 + " or (p.productName like 'You%Tube%' and dp.productName like 'Video')) and dp.dealerId.id = :dealerId";
@@ -471,4 +482,6 @@ public class UiDao extends BaseDao {
         query.setParameter("agencyId", user.getAgencyId().getId());
         return query.list();
     }    
+    
+    
 }

@@ -7,8 +7,8 @@
         border-bottom: none;
     }
     .table-fixed tbody {
-        height: 430px;
-        overflow-y: auto !important;
+/*        height: 430px;*/
+/*        overflow-y: auto !important;*/
         width: 100%;
     }
     .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
@@ -29,7 +29,7 @@
         margin-bottom: 10px;
     }
     .nav-tabs-custom {
-        padding-top: 10px;
+        padding-top: 0px;
         padding-bottom: 10px;
     }
     .hpanel .panel-body {
@@ -37,18 +37,21 @@
     }    
 
 </style>
+
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Accounts
+            </h2>               
+        </div>
+    </div>
+</div>
+
 <section class="content">
     <div class="row">
-        <div class="normalheader transition animated fadeIn">
-            <div class="hpanel">
-                <div class="header-title">
-                    <h2 class="agency-bt font-bold m-b-xs ng-binding">
-                        Accounts
-                    </h2>               
-                </div>
-            </div>
-        </div>
-
         <div class="nav-tabs-custom col-md-12">
             <ul class="nav nav-tabs">
                 <li ng-class="{ active: isSet(1) }">
@@ -69,10 +72,13 @@
             <div class="col-lg-12">
                 <div class="col-md-6">
                     <div class="hpanel">
+                        <div class="panel-heading">
+                            Edit
+                        </div>
                         <div class="panel-body">
                             <div class="tab-content">
                                 <div ng-show="isSet(1)" class="license">
-                                    <div class="pull-right account-new">
+                                    <div class="account-new">
                                         <button class="btn btn-success" ng-click="addAccount()">New</button>
                                     </div>
 
@@ -307,7 +313,9 @@
 
                 <div class="col-md-6">
                     <div class="hpanel">
-
+                        <div class="panel-heading">
+                            View
+                        </div>
                         <div class="panel-body">
                             <div class="data-search">
                                 <input type="text" class="form-control" ng-model="searchAccount" placeholder="Search...">
