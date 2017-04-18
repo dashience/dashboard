@@ -310,7 +310,11 @@ public class UserService {
     public String getAccountName(Integer id) {
         return userDao.getAccountName(id);
     }
-
+    
+    public String getProductName(Integer id) {
+        return userDao.getProductName(id);
+    }
+    
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
         System.out.println("==================================>");
         System.out.println(agencyProduct);

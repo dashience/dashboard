@@ -1319,7 +1319,7 @@ public class CustomReportDesigner {
         return table;
     }
 
-    public void addReportHeader(Document document, String account, String selectDate) {
+    public void addReportHeader(Document document, String account, String product, String selectDate) {
         System.out.println("Start function of addReportHeader");
         try {
             // 236, 255, 224
@@ -1383,7 +1383,7 @@ public class CustomReportDesigner {
 
             Paragraph leftParagraph = new Paragraph(selectDate, pdfFontNormal);
             leftParagraph.add(new Phrase("\n"));
-            leftParagraph.add(new Paragraph("Facebook Monthly Budget", pdfFontBold));
+            leftParagraph.add(new Paragraph(product, pdfFontBold));
             leftParagraph.add(new Phrase("\n"));
             leftParagraph.add(new Paragraph("Budget ", pdfFontNormal));
             leftParagraph.add(new Paragraph("$1,500", pdfFontHighlight));
@@ -1950,7 +1950,7 @@ public class CustomReportDesigner {
         return lineChartObject;
     }
 
-    public void dynamicPdfTable(List<TabWidget> tabWidgets, String account, String selectDate, OutputStream out) {
+    public void dynamicPdfTable(List<TabWidget> tabWidgets, String account, String product, String selectDate, OutputStream out) {
         System.out.println("Start function of dynamicPdfTable");
         try {
             PdfWriter writer = null;
@@ -1964,7 +1964,7 @@ public class CustomReportDesigner {
             PageNumeration pevent = new PageNumeration();
             writer.setPageEvent(pevent);
 
-            addReportHeader(document, account, selectDate);
+            addReportHeader(document, account, product, selectDate);
 
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
