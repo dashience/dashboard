@@ -385,6 +385,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:dayOfWeekName',
                     name: 'Day Of Week'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
@@ -453,6 +457,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
@@ -501,6 +509,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
@@ -565,6 +577,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
@@ -593,6 +609,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
@@ -629,6 +649,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:dateHour',
                     name: 'Hour Of Day'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
@@ -693,6 +717,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:year',
                     name: 'Year'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
@@ -745,6 +773,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'ga:dayOfWeek',
                     name: 'Day Of Week'
+                },
+                {
+                    type:'none',
+                    name:'none'
                 }
             ],
             productSegments: [
