@@ -90,7 +90,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Yes', value: "yes"}
     ];
 
-    $scope.fieldTypes = ['none', 'string', 'number', 'date']
+    $scope.fieldTypes = ['none', 'string', 'number', 'date', 'day']
 //        {id: 0, name: 'None', value: ''},
 //        {id: 1, name: 'String', value: 'string'},
 //        {id: 2, name: 'Number', value: 'number'},
@@ -919,7 +919,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                 {name: 'asc', value: 'asc'},
                 {name: 'desc', value: 'desc'}
             ];
-            scope.fieldTypes = ['none', 'string', 'number', 'date']
+            scope.fieldTypes = ['none', 'string', 'number', 'date', 'day']
             scope.formats = [
                 {name: "Currency", value: '$,.2f'},
                 {name: "Integer", value: ',.0f'},

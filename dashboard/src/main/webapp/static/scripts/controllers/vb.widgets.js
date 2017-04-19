@@ -242,7 +242,7 @@ app.directive('dateRangePicker', function () {
     };
 });
 
-app.directive('dynamicTable', function ($http, $filter, $stateParams) {
+app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFilter) {
     return{
         restrict: 'A',
         scope: {
@@ -545,7 +545,30 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams) {
                 sortFields.push({fieldName: col.fieldName, sortOrder: col.sortOrder, fieldType: col.fieldType});
                 var responseData = scope.orignalData;
                 // scope.orignalData = response.data;
-                responseData = scope.orderData(responseData, sortFields);
+//                responseData = scope.orderData(responseData, sortFields);
+
+
+                angular.forEach(sortFields, function (value, key) {
+                    if (value.fieldType != 'day') {
+                        responseData = scope.orderData(responseData, sortFields);
+                        console.log(responseData)
+                    } else {
+                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                        responseData = orderByFilter(responseData, function (item) {
+                            if (value.sortOrder === 'asc') {
+                                return dateOrders.indexOf(item[value.fieldName]);
+                            } else if (value.sortOrder === 'desc') {
+                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                            }
+                        });
+                    }
+                });
+
+
+
+
+
+
                 var widgetData = JSON.parse(scope.widgetObj);
                 if (widgetData.maxRecord > 0) {
                     responseData = responseData.slice(0, widgetData.maxRecord);
@@ -879,7 +902,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
     };
 });
 
-app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
+app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -1065,7 +1088,22 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
                             chartData = response.data;
                         }
                         if (sortFields.length > 0) {
-                            chartData = scope.orderData(chartData, sortFields);
+                            angular.forEach(sortFields, function (value, key) {
+                                if (value.fieldType != 'day') {
+                                    chartData = scope.orderData(chartData, sortFields);
+                                    console.log(chartData)
+                                } else {
+                                    var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                                    chartData = orderByFilter(chartData, function (item) {
+                                        if (value.sortOrder === 'asc') {
+                                            return dateOrders.indexOf(item[value.fieldName]);
+                                        } else if (value.sortOrder === 'desc') {
+                                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                                        }
+                                    });
+                                }
+                            })
+                            // chartData = scope.orderData(chartData, sortFields);
                         }
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
@@ -1122,7 +1160,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams) {
     };
 });
 
-app.directive('barChartDirective', function ($http, $stateParams, $filter) {
+app.directive('barChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingBar" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -1310,8 +1348,21 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
                         }
 
                         if (sortFields.length > 0) {
-                            chartData = scope.orderData(chartData, sortFields);
-                            console.log(chartData)
+                            angular.forEach(sortFields, function (value, key) {
+                                if (value.fieldType != 'day') {
+                                    chartData = scope.orderData(chartData, sortFields);
+                                    console.log(chartData)
+                                } else {
+                                    var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                    chartData = orderByFilter(chartData, function (item) {
+                                        if (value.sortOrder === 'asc') {
+                                            return dateOrders.indexOf(item[value.fieldName]);
+                                        } else if (value.sortOrder === 'desc') {
+                                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                                        }
+                                    });
+                                }
+                            })
                         }
 
 //                        chartData = orderData(chartData, sortFields);
@@ -1370,7 +1421,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter) {
         }
     };
 });
-app.directive('pieChartDirective', function ($http, $stateParams) {
+app.directive('pieChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
     return{
         restrict: 'AC',
         template: '<div ng-show="loadingPie" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -1397,21 +1448,17 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
             var axes = {};
             var startDate = "";
             var endDate = "";
+            var sortFields = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
                 }
-
-                if (!value) {
-                    return;
-                }
-
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
+                            //return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -1435,28 +1482,144 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                 if (value.yAxis > 1) {
                     y2 = {show: true, label: ''};
                 }
+                if (value.sortOrder) {
+                    sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
             });
             var xData = [];
             var xTicks = [];
+            scope.orderData = function (list, fieldnames) {
+                if (fieldnames.length == 0) {
+                    return list;
+                }
+                var fieldsOrder = [];
+                angular.forEach(fieldnames, function (value, key) {
+                    if (value.fieldType == "string") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(value.fieldName);
+                            console.log(fieldsOrder)
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push("-" + value.fieldName);
+                        }
+                    } else if (value.fieldType == "number") {
+                        if (value.sortOrder == "asc") {
+                            //fieldsOrder.push(value.fieldname);
+                            fieldsOrder.push(function (a) {
 
-            function sortResults(unsortedData, prop, asc) {
-                sortedData = unsortedData.sort(function (a, b) {
-                    if (asc) {
-                        if (isNaN(a[prop])) {
-                            return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
-                        } else {
-                            return (parseInt(a[prop]) > parseInt(b[prop])) ? 1 : ((parseInt(a[prop]) < parseInt(b[prop])) ? -1 : 0);
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
+                        }
+                    } else if (value.fieldType == "date") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
                         }
                     } else {
-                        if (isNaN(a[prop])) {
-                            return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
-                        } else {
-                            return (parseInt(b[prop]) > parseInt(a[prop])) ? 1 : ((parseInt(b[prop]) < parseInt(a[prop])) ? -1 : 0);
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                if (isNaN(parsedValue)) {
+                                    return a[value.fieldName];
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                return -1 * parseFloat(a[value.fieldName])
+                            });
                         }
                     }
                 });
-                return sortedData;
+                return $filter('orderBy')(list, fieldsOrder);
             }
+//            angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
+//                if (!labels["format"]) {
+//                    labels = {format: {}};
+//                }
+//
+//                if (!value) {
+//                    return;
+//                }
+//
+//                if (value.displayFormat) {
+//                    var format = value.displayFormat;
+//                    var displayName = value.displayName;
+//                    labels["format"][displayName] = function (value) {
+//                        if (format.indexOf("%") > -1) {
+//                            return d3.format(format)(value / 100);
+//                        }
+//                        return d3.format(format)(value);
+//                    };
+//                } else {
+//                    var displayName = value.displayName;
+//                    labels["format"][displayName] = function (value) {
+//                        return value;
+//                    };
+//                }
+//                if (value.sortOrder) {
+//                    sortField = value.fieldName;
+//                    sortOrder = value.sortOrder;
+//                }
+//                if (value.xAxis) {
+//                    xAxis = {fieldName: value.fieldName, displayName: value.displayName};
+//                }
+//                if (value.yAxis) {
+//                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+//                    axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
+//                }
+//                if (value.yAxis > 1) {
+//                    y2 = {show: true, label: ''};
+//                }
+//            });
+//            var xData = [];
+//            var xTicks = [];
+
+//            function sortResults(unsortedData, prop, asc) {
+//                sortedData = unsortedData.sort(function (a, b) {
+//                    if (asc) {
+//                        if (isNaN(a[prop])) {
+//                            return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
+//                        } else {
+//                            return (parseInt(a[prop]) > parseInt(b[prop])) ? 1 : ((parseInt(a[prop]) < parseInt(b[prop])) ? -1 : 0);
+//                        }
+//                    } else {
+//                        if (isNaN(a[prop])) {
+//                            return (b[prop] > a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
+//                        } else {
+//                            return (parseInt(b[prop]) > parseInt(a[prop])) ? 1 : ((parseInt(b[prop]) < parseInt(a[prop])) ? -1 : 0);
+//                        }
+//                    }
+//                });
+//                return sortedData;
+//            }
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
                 var url = "admin/proxy/getData?";
@@ -1502,7 +1665,24 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
                         } else {
                             chartData = response.data;
                         }
-                        chartData = sortResults(chartData, sortField, sortOrder);
+                        if (sortFields.length > 0) {
+                            angular.forEach(sortFields, function (value, key) {
+                                if (value.fieldType != 'day') {
+                                    chartData = scope.orderData(chartData, sortFields);
+                                    console.log(chartData)
+                                } else {
+                                    var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                    chartData = orderByFilter(chartData, function (item) {
+                                        if (value.sortOrder === 'asc') {
+                                            return dateOrders.indexOf(item[value.fieldName]);
+                                        } else if (value.sortOrder === 'desc') {
+                                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                                        }
+                                    });
+                                }
+                            })
+                        }
+//                        chartData = sortResults(chartData, sortField, sortOrder);
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
                             xTicks.push(loopCount);
@@ -1565,7 +1745,7 @@ app.directive('pieChartDirective', function ($http, $stateParams) {
     };
 });
 
-app.directive('areaChartDirective', function ($http, $stateParams, $filter) {
+app.directive('areaChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingArea" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -1745,7 +1925,22 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter) {
                             chartData = response.data;
                         }
                         if (sortFields.length > 0) {
-                            chartData = scope.orderData(chartData, sortFields);
+                            angular.forEach(sortFields, function (value, key) {
+                                if (value.fieldType != 'day') {
+                                    chartData = scope.orderData(chartData, sortFields);
+                                    console.log(chartData)
+                                } else {
+                                    var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                    chartData = orderByFilter(chartData, function (item) {
+                                        if (value.sortOrder === 'asc') {
+                                            return dateOrders.indexOf(item[value.fieldName]);
+                                        } else if (value.sortOrder === 'desc') {
+                                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                                        }
+                                    });
+                                }
+                            })
+                            //chartData = scope.orderData(chartData, sortFields);
                         }
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
