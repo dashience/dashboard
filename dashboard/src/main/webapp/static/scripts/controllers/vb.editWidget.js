@@ -7,7 +7,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.tabId = $stateParams.tabId;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-     $scope.widgets = [];
+    $scope.widgets = [];
 
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
@@ -18,7 +18,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             })
         }
     });
-    
+
 //    $scope.pageRefresh = function () {          //Page Refresh
 //        getWidgetItem();
 //    };
@@ -173,15 +173,14 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             });
         });
     };
-   
+
     $scope.collectionField = {};
     $scope.dispName = function (currentColumn) {
         $scope.filterName = $filter('filter')($scope.collectionFields, {fieldName: currentColumn.fieldName})[0];
         currentColumn.displayName = $scope.filterName.displayName;
     };
 
-    $scope.tableDef = function (widget) {      //Dynamic Url from columns Type data - Popup
-
+    $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
                 columnHeaderDef(widget)
@@ -323,7 +322,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             // }, 50);
         });
     };
-    
+
     $http.get("static/datas/panelSize.json").success(function (response) {      //Default Panel in Ui
         $scope.newWidgets = response;
     });
@@ -362,6 +361,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         if (chartType.type == 'text') {
             widget.dataSetId = '';
             widget.dataSourceId = '';
+        }
+        if (chartType.type == 'ticker') {
+            $scope.tickerItem = '';
         }
     };
 
@@ -493,17 +495,21 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.setChartFormat = function (widget, column) {
         if (widget.chartType != 'pie') {
             if (column.yAxis == 1) {
-                $scope.selectY1Axis(widget, column);
+                $scope.setFormat(widget, column)
+//                $scope.selectY1Axis(widget, column);
             }
             if (column.yAxis == 2) {
-                $scope.selectY2Axis(widget, column);
+                $scope.setFormat(widget, column)
+//                $scope.selectY2Axis(widget, column);
             }
         } else if (widget.chartType == 'pie') {
             if (column.xAxis == 1) {
-                $scope.selectPieChartX(widget, column);
+                $scope.setFormat(widget, column)
+//                $scope.selectPieChartX(widget, column);
             }
             if (column.yAxis == 1) {
-                $scope.selectPieChartY(widget, column);
+                $scope.setFormat(widget, column)
+//                $scope.selectPieChartY(widget, column);
             }
         } else {
             return;
@@ -548,35 +554,23 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.ticker = function (widget, column) {
         $scope.editChartType = null;
         var newColumns = [];
-        angular.forEach(column, function (value, key) {
-            angular.forEach($scope.collectionFields, function (val, header) {
-                if (val.fieldName === value.fieldName) {
-                    val.displayFormat = value.displayFormat;
-                    newColumns.push(val);
-                }
+        if (column.length == 0) {
+            widget.columns = "";
+        } else {
+            angular.forEach(column, function (value, key) {
+                angular.forEach($scope.collectionFields, function (val, header) {
+                    if (val.fieldName === value.fieldName) {
+                        val.displayFormat = value.displayFormat;
+                        newColumns.push(val);
+                    }
+                });
+                widget.columns = newColumns;
             });
-            widget.columns = newColumns;
-        });
+        }        
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
         }, 50);
-    };
-
-    $scope.setFormat = function (widget, column) {
-        $scope.editChartType = null;
-        angular.forEach(widget.columns, function (value, key) {
-            if (column.fieldName === value.fieldName) {
-                value.displayFormat = column.displayFormat;
-            }
-        });
-        $timeout(function () {
-            $scope.editChartType = "ticker";
-        }, 50);
-    };
-
-    $scope.tickerFormat = function (widget, format) {
-        $scope.setFormat(widget, format)
     };
 
     $scope.removedByTicker = function (widget, column, tickerItem) {
@@ -587,6 +581,24 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.editChartType = "ticker";
         }, 50);
     };
+
+    $scope.setFormat = function (widget, column) {
+        $scope.editChartType = null;
+        angular.forEach(widget.columns, function (value, key) {
+            if (column.fieldName === value.fieldName) {
+                value.displayFormat = column.displayFormat;
+            }
+        });
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    };
+
+    $scope.tickerFormat = function (widget, format) {
+        $scope.setFormat(widget, format)
+    };
+
 
     $scope.save = function (widget) {
         try {
@@ -708,7 +720,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             fieldTypes: '@',
             displayFormats: '@',
             displayAlignments: '@',
-            hideOptions: '@'
+            hideOptions: '@',
+            currentUrl:'@'
         },
         template:
                 "<div class='panel-head'>" +

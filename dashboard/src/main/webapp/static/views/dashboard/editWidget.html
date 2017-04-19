@@ -419,15 +419,21 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <td>Name</td>
+                                                <td>Field Name</td>
+                                                <td>Display Name</td>
                                                 <td>Format</td>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="tickerItem in widget.columns">
-                                                <td>{{tickerItem.displayName}}</td>
+                                            <tr ng-repeat="tickerItems in widget.columns">
+                                                <td>{{tickerItems.displayName}}</td>
                                                 <td>
-                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' ng-change="tickerFormat(widget, tickerItem)">
+                                                    <div>
+                                                        <input type="text" class="form-control" ng-model="tickerItems.displayName">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItems.displayFormat' ng-change="tickerFormat(widget, tickerItems)">
                                                         <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
                                                     </select>
                                                 </td>
