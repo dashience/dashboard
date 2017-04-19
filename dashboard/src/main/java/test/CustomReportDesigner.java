@@ -290,14 +290,20 @@ public class CustomReportDesigner {
 
                 int order = 1;
                 System.out.println("sort Order: " + sortType1.getSortOrder());
-                System.out.println("Field type: " + sortType1.getFieldType());
+                String fieldType = sortType1.getFieldType();
+                System.out.println("Before if Field type: " + fieldType);
+                if (fieldType == null) {
+                    fieldType = "";
+                }
+                System.out.println("After if Field type: " + fieldType);
+
                 String day1 = o1.get(sortType1.getFieldName()) + "";
                 String day2 = o2.get(sortType1.getFieldName()) + "";
                 System.out.println("day1: " + day1);
                 System.out.println("day2: " + day2);
                 System.out.println("day1 length: " + day1.length());
 
-                if (sortType1.getFieldType().equalsIgnoreCase("date") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
+                if (fieldType.equalsIgnoreCase("date") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
                     if (day1.length() == 10) {
                         if ((day1.substring(4, 5).equalsIgnoreCase("-") || day1.substring(4, 5).equalsIgnoreCase("/")) && (day2.substring(4, 5).equalsIgnoreCase("-") || day2.substring(4, 5).equalsIgnoreCase("/"))) {
                             System.out.println("Date ---->");
@@ -315,7 +321,7 @@ public class CustomReportDesigner {
                     }
                 }
 
-                if (sortType1.getFieldType().equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
+                if (fieldType.equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
                     if (day1.length() >= 6) {
                         System.out.println("Days ------>");
                         if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
@@ -328,7 +334,7 @@ public class CustomReportDesigner {
                             continue;
                         }
                     }
-                } else if (sortType1.getFieldType().equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+                } else if (fieldType.equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
                     order = -1;
                     if (day1.length() >= 6) {
                         System.out.println("Days ------>");
@@ -344,12 +350,12 @@ public class CustomReportDesigner {
                     }
                 }
 
-                if (sortType1.getFieldType().equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+                if (fieldType.equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
                     order = -1;
                     return order * day1.compareTo(day2);
                 }
 
-                if (sortType1.getFieldType().equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
+                if (fieldType.equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
 
                     return order * day1.compareTo(day2);
                 }
@@ -425,7 +431,7 @@ public class CustomReportDesigner {
 //                if (sortType1.getSortOrder().equalsIgnoreCase("desc")) {
 //                    order = -1;
 //                }
-                if (sortType1.getFieldType().equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+                if (fieldType.equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
                     order = -1;
                     Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
                     Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
@@ -440,7 +446,7 @@ public class CustomReportDesigner {
                     }
                 }
 
-                if (sortType1.getFieldType().equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
+                if (fieldType.equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
                     Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
                     Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
                     if (value1 != value2) {
