@@ -274,7 +274,6 @@
                         <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
                             <span class="date-border">
                                 {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                                <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
                             </span>
                         </a> 
                     </div>
@@ -365,7 +364,8 @@
                                     <table class="table table-bordered table-responsive">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
+                                                <th>Field Name</th>
+                                                <th>Display Name</th>
                                                 <th>Format</th>
                                                 <th>Sort</th>
                                                 <th>Field Type</th>
@@ -373,33 +373,25 @@
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="columnList in widget.columns">
-                                                <td>{{columnList.displayName}}</td>
+                                                <td>{{columnList.fieldName}}</td>
                                                 <td>
-                                                    <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' 
-                                                                                                            class='form-control'
-                                                                                                            ng-change="setChartFormat(widget, columnList)"
-                                                                                                            ng-options="format for format in formats">
-                                                                                                    </select>-->
+                                                    <div>
+                                                        <input type="text" class="form-control" ng-model="columnList.displayName">
+                                                    </div>
+                                                </td>
+                                                <td>
                                                     <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' ng-change="setChartFormat(widget, columnList)">
                                                         <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' 
-                                                                                                            class='form-control'
-                                                                                                            ng-change="setChartFormat(widget, columnList)"
-                                                                                                            ng-options="sort for sort in sorting">
-                                                                                                    </select>-->
-
                                                     <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
                                                         <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' 
-                                                            class='form-control'
-                                                            ng-change="setChartFormat(widget, columnList)"
-                                                            ng-options="fieldType for fieldType in fieldTypes">
+                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' ng-change="setChartFormat(widget, columnList)">
+                                                        <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -427,22 +419,23 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <td>Name</td>
+                                                <td>Field Name</td>
+                                                <td>Display Name</td>
                                                 <td>Format</td>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="tickerItem in widget.columns">
-                                                <td>{{tickerItem.displayName}}</td>
+                                            <tr ng-repeat="tickerItems in widget.columns">
+                                                <td>{{tickerItems.displayName}}</td>
                                                 <td>
-                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' ng-change="tickerFormat(widget, tickerItem)">
+                                                    <div>
+                                                        <input type="text" class="form-control" ng-model="tickerItems.displayName">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItems.displayFormat' ng-change="tickerFormat(widget, tickerItems)">
                                                         <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
                                                     </select>
-                                                    <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' 
-                                                                                                            class='form-control'
-                                                                                                            ng-change="tickerFormat(widget, tickerItem)"
-                                                                                                            ng-options="format for format in formats">
-                                                                                                    </select>-->
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -499,7 +492,14 @@
                      preview-Urls='{{previewChartUrl}}' 
                      preview-Columns='{{widget.columns}}' 
                      preview-Widget="{{previewColumn}}" 
-                     preview-Widget-Table="{{widget}}">
+                     preview-Widget-Table="{{widget}}"
+                     aggregations-Types="{{selectAggregations}}"
+                     group-Priorities="{{selectGroupPriorities}}"
+                     sorting-Fields="{{sorting}}"
+                     display-Formats="{{formats}}"
+                     display-Alignments="{{alignments}}"
+                     hide-Options="{{hideOptions}}"
+                     field-Types="{{fieldTypes}}">
                 </div>
             </div>
         </div>

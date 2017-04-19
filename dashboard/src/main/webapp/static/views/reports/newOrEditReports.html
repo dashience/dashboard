@@ -217,16 +217,16 @@
                     <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle}}</span>
                 </div>
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'line'">
-                    <div line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}"></div>
+                    <div line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'bar'">
-                    <div bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}"></div>
+                    <div bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
-                    <div pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}"></div>
+                    <div pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area'">
-                    <div area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}"></div>
+                    <div area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
                     <div class="table-responsive project-list">

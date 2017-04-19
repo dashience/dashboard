@@ -14,7 +14,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.downloadPdf = function () {
-        console.log("product_id :" + $stateParams.productId);
         var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
     };
@@ -141,11 +140,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.selectReport = function (reportWidget) {
         $scope.showReportWidgetName = false;
         $scope.reportWidgetTitle = []
-        console.log(reportWidget)
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
         $http.get("admin/ui/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
-            console.log(response)
             if (response.length > 0) {
                 $scope.showReportWidgetName = true;
                 $scope.reportWidgetTitle = response;
@@ -175,8 +172,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
-        console.log($scope.expandChart)
-        //console.log(widget)
         if (expandchart == 'ticker') {
             if (widget.width == 4) {
                 widget.width = widget.width + 2;
@@ -213,7 +208,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 width: widget.width
             };
 
-            console.log(data);
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             });
         }, 50);
@@ -486,9 +480,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         '&username=' + tableDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
-                    //$http.post("admin/proxy/getJson", data).success(function (response) {
-//            $http.get("admin/proxy/getJson?url=" + scope.dynamicTableUrl + "&widgetId=" + scope.widgetId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&dealerId=" + $stateParams.dealerId).success(function (response) {
-
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
                     if (!response.data) {
@@ -503,7 +494,15 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         var responseData = response.data;
                         scope.orignalData = response.data;
                         pdfData[scope.widgetId] = scope.orignalData;
-                        responseData = scope.orderData(responseData, sortFields);
+                        angular.forEach(sortFields, function (value, key) {
+                            if (value.fieldType != 'day') {
+                                responseData = scope.orderData(responseData, sortFields);
+
+                            } else {
+                                responseData = sortByDay(responseData, sortFields)//                                
+                            }
+                        })
+                        console.log(responseData)
                         var widgetData = JSON.parse(scope.widgetObj);
                         if (widgetData.maxRecord > 0) {
                             responseData = responseData.slice(0, widgetData.maxRecord);
@@ -544,30 +543,15 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 var sortFields = [];
                 sortFields.push({fieldName: col.fieldName, sortOrder: col.sortOrder, fieldType: col.fieldType});
                 var responseData = scope.orignalData;
-                // scope.orignalData = response.data;
-//                responseData = scope.orderData(responseData, sortFields);
-
-
+                
                 angular.forEach(sortFields, function (value, key) {
                     if (value.fieldType != 'day') {
                         responseData = scope.orderData(responseData, sortFields);
                         console.log(responseData)
                     } else {
-                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                        responseData = orderByFilter(responseData, function (item) {
-                            if (value.sortOrder === 'asc') {
-                                return dateOrders.indexOf(item[value.fieldName]);
-                            } else if (value.sortOrder === 'desc') {
-                                return dateOrders.indexOf(item[value.fieldName] * -1);
-                            }
-                        });
+                        responseData = sortByDay(responseData, sortFields)
                     }
                 });
-
-
-
-
-
 
                 var widgetData = JSON.parse(scope.widgetObj);
                 if (widgetData.maxRecord > 0) {
@@ -588,6 +572,21 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     scope.groupingData = dataToPush;
 //                    scope.groupingData = $sce.trustAsHtml(dataToPush);
                 }
+            }
+
+            function sortByDay(list, sortFields) {
+                var returnSortDay;
+                var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                angular.forEach(sortFields, function (value, key) {
+                    returnSortDay = orderByFilter(list, function (item) {
+                        if (value.sortOrder === 'asc') {
+                            return dateOrders.indexOf(item[value.fieldName]);
+                        } else if (value.sortOrder === 'desc') {
+                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                        }
+                    });
+                });
+                return returnSortDay;
             }
 
             scope.sortColumn = scope.columns;
@@ -1091,7 +1090,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             angular.forEach(sortFields, function (value, key) {
                                 if (value.fieldType != 'day') {
                                     chartData = scope.orderData(chartData, sortFields);
-                                    console.log(chartData)
                                 } else {
                                     var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                                     chartData = orderByFilter(chartData, function (item) {
@@ -1237,7 +1235,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     if (value.fieldType == "string") {
                         if (value.sortOrder == "asc") {
                             fieldsOrder.push(value.fieldName);
-                            console.log(fieldsOrder)
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push("-" + value.fieldName);
                         }
@@ -1351,7 +1348,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             angular.forEach(sortFields, function (value, key) {
                                 if (value.fieldType != 'day') {
                                     chartData = scope.orderData(chartData, sortFields);
-                                    console.log(chartData)
                                 } else {
                                     var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                                     chartData = orderByFilter(chartData, function (item) {
@@ -1497,7 +1493,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     if (value.fieldType == "string") {
                         if (value.sortOrder == "asc") {
                             fieldsOrder.push(value.fieldName);
-                            console.log(fieldsOrder)
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push("-" + value.fieldName);
                         }
@@ -1669,7 +1664,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             angular.forEach(sortFields, function (value, key) {
                                 if (value.fieldType != 'day') {
                                     chartData = scope.orderData(chartData, sortFields);
-                                    console.log(chartData)
                                 } else {
                                     var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                                     chartData = orderByFilter(chartData, function (item) {
@@ -1928,7 +1922,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             angular.forEach(sortFields, function (value, key) {
                                 if (value.fieldType != 'day') {
                                     chartData = scope.orderData(chartData, sortFields);
-                                    console.log(chartData)
                                 } else {
                                     var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                                     chartData = orderByFilter(chartData, function (item) {

@@ -208,22 +208,22 @@
                         </div>
                         <div ng-if="editChartType === 'line'">
                             <div>
-                                <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                                <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div ng-if="editChartType === 'area'">
                             <div>
-                                <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                                <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div ng-if="editChartType === 'bar'">
                             <div>
-                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}"></div>
+                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div ng-if="editChartType === 'pie'">
                             <div>
-                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}"></div>
+                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                             </div>                            
                         </div> 
                     </div>
@@ -282,21 +282,37 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label>Format</label>                                 
-                                <table class="table table-bordered">
+                                <table class="table table-bordered table-responsive">
                                     <thead>
                                         <tr>
-                                            <td>Name</td>
-                                            <td>Format</td>
+                                            <th>Field Name</th>
+                                            <th>Display Name</th>
+                                            <th>Format</th>
+                                            <th>Sort</th>
+                                            <th>Field Type</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="columnList in widget.columns">
-                                            <td>{{columnList.displayName}}</td>
+                                            <td>{{columnList.fieldName}}</td>
                                             <td>
-                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' 
-                                                        class='form-control'
-                                                        ng-change="setChartFormat(widget, columnList)"
-                                                        ng-options="format for format in formats">
+                                                <div>
+                                                    <input type="text" class="form-control" ng-model="columnList.displayName">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' ng-change="setChartFormat(widget, columnList)">
+                                                    <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
+                                                    <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' ng-change="setChartFormat(widget, columnList)">
+                                                    <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
                                                 </select>
                                             </td>
                                         </tr>
@@ -324,7 +340,8 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <td>Name</td>
+                                            <td>Field Name</td>
+                                            <td>Display Name</td>
                                             <td>Format</td>
                                         </tr>
                                     </thead>
@@ -332,10 +349,13 @@
                                         <tr ng-repeat="tickerItem in widget.columns">
                                             <td>{{tickerItem.displayName}}</td>
                                             <td>
-                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' 
-                                                        class='form-control'
-                                                        ng-change="tickerFormat(widget, tickerItem)"
-                                                        ng-options="format for format in formats">
+                                                <div>
+                                                    <input type="text" class="form-control" ng-model="tickerItems.displayName">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItems.displayFormat' ng-change="tickerFormat(widget, tickerItems)">
+                                                    <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
                                                 </select>
                                             </td>
                                         </tr>
@@ -356,13 +376,20 @@
 
     </div>
     <div class="row" ng-if="editChartType === 'table'">
-        <div class="col-lg-12"><pre>{{widget}}</pre>
+        <div class="col-lg-12">
             <div class="hpanel border-table preview-table">
                 <div report-Widget-Table 
                      report-Urls='{{previewChartUrl}}' 
                      report-Columns='{{widget.columns}}' 
                      report-Widget="{{previewColumn}}" 
-                     report-Table="{{widget}}">
+                     report-Table="{{widget}}"
+                     report-Aggregations-Types="{{selectAggregations}}"
+                     report-Group-Priorities="{{selectGroupPriorities}}"
+                     report-Sorting-Fields="{{sorting}}"
+                     report-Display-Formats="{{formats}}"
+                     report-Display-Alignments="{{alignments}}"
+                     report-Hide-Options="{{hideOptions}}"
+                     report-Field-Types="{{fieldTypes}}">
                 </div>
             </div>
         </div>
