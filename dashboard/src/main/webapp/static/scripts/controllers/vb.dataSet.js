@@ -387,8 +387,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Day of Week'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -459,8 +459,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -511,8 +511,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -579,8 +579,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -611,8 +611,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -651,8 +651,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Hour of Day'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -719,8 +719,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -775,8 +775,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Day of Week'
                 },
                 {
-                    type:'none',
-                    name:'None'
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1534,14 +1534,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<tbody ng-repeat="tableRow in tableRows">' +
                 '<tr class="text-capitalize">' +
                 '<td ng-repeat="col in tableColumns">' +
-                '<div>{{tableRow[col.fieldName]}}</div>' +
+                '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
                 '</table>',
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
-//            console.log(dataSourcePath);
+            console.log(dataSourcePath);
 //            console.log(dataSourcePath.dataSourceId.userName);
 //            console.log(dataSourcePath.dataSourceId.connectionString);
 //            console.log(dataSourcePath.dataSourceId.sqlDriver);
@@ -1564,6 +1564,21 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSourcePassword = '';
             }
             console.log(dataSourcePath.networkType);
+            scope.format = function (column, value) {
+                if (!value) {
+                    return "-";
+                }
+                if (column.displayFormat) {
+                    if (Number.isNaN(value)) {
+                        return "-";
+                    }
+                    if (column.displayFormat.indexOf("%") > -1) {
+                        // return d3.format(column.displayFormat)(value / 100);
+                    }
+                    return d3.format(column.displayFormat)(value);
+                }
+                return value;
+            };
 
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +

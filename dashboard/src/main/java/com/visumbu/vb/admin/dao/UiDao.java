@@ -299,11 +299,13 @@ public class UiDao extends BaseDao {
     }
 
     public String updateReportOrder(Integer reportId, String widgetOrder) {
+        System.out.println(widgetOrder);
         String[] reportOrderArray = widgetOrder.split(",");
         for (int i = 0; i < reportOrderArray.length; i++) {
             Integer reportWidgetId = Integer.parseInt(reportOrderArray[i]);
             ReportWidget reportWidget = getReportWidgetById(reportWidgetId);
             // reportWidget.setWidgetOrder(i);
+        System.out.println(reportWidget);
             update(reportWidget);
         }
         return null;

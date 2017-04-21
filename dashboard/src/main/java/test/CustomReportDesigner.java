@@ -297,29 +297,61 @@ public class CustomReportDesigner {
                 System.out.println("day2: " + day2);
                 System.out.println("day1 length: " + day1.length());
 
-                if (day1.length() == 10) {
-                    if ((day1.substring(4, 5).equalsIgnoreCase("-") || day1.substring(4, 5).equalsIgnoreCase("/")) && (day2.substring(4, 5).equalsIgnoreCase("-") || day2.substring(4, 5).equalsIgnoreCase("/"))) {
-                        System.out.println("Date ---->");
-                        try {
-                            Date date1 = sdf.parse(day1);
-                            Date date2 = sdf.parse(day2);
-                            return date1.compareTo(date2);
-                        } catch (ParseException ex) {
-                            log.error("Parse Exception in  sortData function:  " + ex);
-                            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                if (sortType1.getFieldType().equalsIgnoreCase("date") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
+                    if (day1.length() == 10) {
+                        if ((day1.substring(4, 5).equalsIgnoreCase("-") || day1.substring(4, 5).equalsIgnoreCase("/")) && (day2.substring(4, 5).equalsIgnoreCase("-") || day2.substring(4, 5).equalsIgnoreCase("/"))) {
+                            System.out.println("Date ---->");
+                            try {
+                                Date date1 = sdf.parse(day1);
+                                Date date2 = sdf.parse(day2);
+                                return date1.compareTo(date2);
+                            } catch (ParseException ex) {
+                                log.error("Parse Exception in  sortData function:  " + ex);
+                                //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            continue;
                         }
                     }
                 }
 
-                if (day1.length() >= 6) {
-                    System.out.println("Days ------>");
-                    if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
-                        DAY dayOne = DAY.valueOf(day1);
-                        System.out.println("dayOne: " + dayOne);
-                        DAY dayTwo = DAY.valueOf(day2);
-                        System.out.println("dayTwo: " + dayTwo);
-                        return dayOne.getWeight() - dayTwo.getWeight();
+                if (sortType1.getFieldType().equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
+                    if (day1.length() >= 6) {
+                        System.out.println("Days ------>");
+                        if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
+                            DAY dayOne = DAY.valueOf(day1);
+                            System.out.println("dayOne: " + dayOne);
+                            DAY dayTwo = DAY.valueOf(day2);
+                            System.out.println("dayTwo: " + dayTwo);
+                            return dayOne.getWeight() - dayTwo.getWeight();
+                        } else {
+                            continue;
+                        }
                     }
+                } else if (sortType1.getFieldType().equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+                    order = -1;
+                    if (day1.length() >= 6) {
+                        System.out.println("Days ------>");
+                        if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
+                            DAY dayOne = DAY.valueOf(day1);
+                            System.out.println("dayOne: " + dayOne);
+                            DAY dayTwo = DAY.valueOf(day2);
+                            System.out.println("dayTwo: " + dayTwo);
+                            return order * (dayOne.getWeight() - dayTwo.getWeight());
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+
+                if (sortType1.getFieldType().equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+                    order = -1;
+                    return order * day1.compareTo(day2);
+                }
+
+                if (sortType1.getFieldType().equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
+
+                    return order * day1.compareTo(day2);
                 }
 
                 if (day1.length() == 4 || day1.length() == 5) {
@@ -386,16 +418,29 @@ public class CustomReportDesigner {
                             log.error("Parse Exception in  sortData function:  " + ex);
                             //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                    } else {
-                        continue;
                     }
                 }
                 // TODO : REMOVE TILL THIS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-                if (sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+//                if (sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+//                    order = -1;
+//                }
+                if (sortType1.getFieldType().equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
                     order = -1;
+                    Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
+                    Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
+                    if (value1 != value2) {
+                        return order * new Double(value1 - value2).intValue();
+                    }
+                } else {
+                    String value1 = o1.get(sortType1.getFieldName()) + "";
+                    String value2 = o2.get(sortType1.getFieldName()) + "";
+                    if (value1.compareTo(value2) != 0) {
+                        return order * value1.compareTo(value2);
+                    }
                 }
-                if (sortType1.getFieldType().equalsIgnoreCase("number")) {
+
+                if (sortType1.getFieldType().equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
                     Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
                     Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
                     if (value1 != value2) {
@@ -644,16 +689,18 @@ public class CustomReportDesigner {
 
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
             if (column.getGroupPriority() != null) {
                 groupByFields.add(column.getFieldName());
             }
         }
+        System.out.println("sortFields size: " + sortFields.size());
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
         }
@@ -811,10 +858,11 @@ public class CustomReportDesigner {
 
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
 //            if (column.getGroupPriority() != null) {
@@ -1128,10 +1176,11 @@ public class CustomReportDesigner {
 
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
             if (column.getGroupPriority() != null) {
@@ -1196,10 +1245,11 @@ public class CustomReportDesigner {
 
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
 //            if (column.getGroupPriority() != null) {
@@ -1319,7 +1369,7 @@ public class CustomReportDesigner {
         return table;
     }
 
-    public void addReportHeader(Document document, String account, String selectDate) {
+    public void addReportHeader(Document document, String account, String product, String selectDate) {
         System.out.println("Start function of addReportHeader");
         try {
             // 236, 255, 224
@@ -1383,7 +1433,7 @@ public class CustomReportDesigner {
 
             Paragraph leftParagraph = new Paragraph(selectDate, pdfFontNormal);
             leftParagraph.add(new Phrase("\n"));
-            leftParagraph.add(new Paragraph("Facebook Monthly Budget", pdfFontBold));
+            leftParagraph.add(new Paragraph(product, pdfFontBold));
             leftParagraph.add(new Phrase("\n"));
             leftParagraph.add(new Paragraph("Budget ", pdfFontNormal));
             leftParagraph.add(new Paragraph("$1,500", pdfFontHighlight));
@@ -1950,7 +2000,7 @@ public class CustomReportDesigner {
         return lineChartObject;
     }
 
-    public void dynamicPdfTable(List<TabWidget> tabWidgets, String account, String selectDate, OutputStream out) {
+    public void dynamicPdfTable(List<TabWidget> tabWidgets, String account, String product, String selectDate, OutputStream out) {
         System.out.println("Start function of dynamicPdfTable");
         try {
             PdfWriter writer = null;
@@ -1964,7 +2014,7 @@ public class CustomReportDesigner {
             PageNumeration pevent = new PageNumeration();
             writer.setPageEvent(pevent);
 
-            addReportHeader(document, account, selectDate);
+            addReportHeader(document, account, product, selectDate);
 
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
@@ -2200,10 +2250,11 @@ public class CustomReportDesigner {
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
-                if (column.getSortOrder() != null) {
+                if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                    System.out.println("SORT ORDER ======> " + column.getSortOrder());
                     sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
                 }
-                if (column.getAgregationFunction() != null) {
+                if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                     aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
                 }
                 if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -2218,21 +2269,25 @@ public class CustomReportDesigner {
                     System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
             }
+            System.out.println("sortFields size: " + sortFields.size());
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
+            }
 
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
-            }
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
 //            final CategoryDataset dataset1 = createDataset3();
 //            final CategoryDataset dataset2 = createDataset4();
             Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
             long firstAxisCount = firstAxiss.count();
+            System.out.println("firstAxisCount: " + firstAxisCount);
 
             Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
             long secondAxisCount = secondAxiss.count();
+            System.out.println("secondAxisCount: " + secondAxisCount);
 
             long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
@@ -2381,10 +2436,11 @@ public class CustomReportDesigner {
         String xAxisDisplay = null;
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
             if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -2396,13 +2452,16 @@ public class CustomReportDesigner {
             if (column.getxAxis() != null) {
                 xAxis = column.getFieldName();
                 xAxisDisplay = column.getDisplayName();
+                System.out.println("XAxisDisplay: " + xAxisDisplay);
             }
+        }
+        System.out.println("sortFields size: " + sortFields.size());
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
-        }
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
         }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
@@ -2527,10 +2586,11 @@ public class CustomReportDesigner {
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
-                if (column.getSortOrder() != null) {
+                if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                    System.out.println("SORT ORDER ======> " + column.getSortOrder());
                     sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
                 }
-                if (column.getAgregationFunction() != null) {
+                if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                     aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
                 }
                 if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -2542,14 +2602,17 @@ public class CustomReportDesigner {
                 if (column.getxAxis() != null) {
                     xAxis = column.getFieldName();
                     xAxisDisplay = column.getDisplayName();
+                    System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
+            }
+            System.out.println("sortFields size: " + sortFields.size());
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
-            }
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
@@ -2705,10 +2768,11 @@ public class CustomReportDesigner {
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
-                if (column.getSortOrder() != null) {
+                if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                    System.out.println("SORT ORDER ======> " + column.getSortOrder());
                     sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
                 }
-                if (column.getAgregationFunction() != null) {
+                if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                     aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
                 }
                 if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -2723,14 +2787,16 @@ public class CustomReportDesigner {
                     System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
             }
+            System.out.println("sortFields size: " + sortFields.size());
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
+            }
 
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
             }
 
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
             System.out.println("FirstAxis: " + firstAxis);
             System.out.println("SecondAxis: " + secondAxis.size());
 //            final CategoryDataset dataset1 = createDataset3();
@@ -2894,10 +2960,11 @@ public class CustomReportDesigner {
 
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
             if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -2909,17 +2976,18 @@ public class CustomReportDesigner {
             if (column.getxAxis() != null) {
                 xAxis = column.getFieldName();
                 xAxisDisplay = column.getDisplayName();
+                System.out.println("XAxisDisplay: " + xAxisDisplay);
             }
         }
-
-        if (sortFields.size() > 0) {
-            data = sortData(data, sortFields);
-        }
+        System.out.println("sortFields size: " + sortFields.size());
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
             data = data.subList(0, tabWidget.getMaxRecord());
         }
 
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
 
@@ -3049,10 +3117,11 @@ public class CustomReportDesigner {
 
         for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
             WidgetColumn column = iterator.next();
-            if (column.getSortOrder() != null) {
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
                 sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
             }
-            if (column.getAgregationFunction() != null) {
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
                 aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
             }
             if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
@@ -3064,15 +3133,17 @@ public class CustomReportDesigner {
             if (column.getxAxis() != null) {
                 xAxis = column.getFieldName();
                 xAxisDisplay = column.getDisplayName();
+                System.out.println("XAxisDisplay: " + xAxisDisplay);
             }
+        }
+        System.out.println("sortFields size: " + sortFields.size());
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
 
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
-        }
-
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
         }
 
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();

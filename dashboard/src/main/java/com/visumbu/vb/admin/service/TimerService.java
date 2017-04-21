@@ -155,6 +155,7 @@ public class TimerService {
             String accountId, String exportType, Integer reportId, String filename,
             String to, String subject, String message) {
         try {
+            System.out.println("exportType: "+exportType);
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
@@ -164,7 +165,7 @@ public class TimerService {
             URL website = new URL(urlStr);
 
             File file = new File(filename);
-
+            System.out.println("filename: "+filename);
             FileUtils.copyURLToFile(website, file);
             MailProperties mailProps = new MailProperties();
             TextMailWithAttachment sender = new TextMailWithAttachment(mailProps);
