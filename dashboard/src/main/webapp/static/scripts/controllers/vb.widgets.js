@@ -1645,6 +1645,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     sortingObj = scope.orderData(chartData, sortFields);
                                     if (chartMaxRecord.maxRecord) {
                                         chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        console.log(chart)
                                     } else {
                                         chartData = sortingObj;
                                     }

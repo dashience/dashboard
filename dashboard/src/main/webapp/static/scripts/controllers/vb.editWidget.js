@@ -228,7 +228,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
-//            widget.columns = response.columnDefs;
+            widget.columns = response.columnDefs;
             $scope.collectionFields = response.columnDefs;
         });
     }
@@ -425,7 +425,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (column.fieldName == value.fieldName) {
                 exists = true;
                 value.xAxis = 1;
-            } else{
+            } else {
                 value.xAxis = null;
             }
         });
@@ -470,8 +470,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
-    $scope.reloadMaxRecord = function(widget){
+
+    $scope.reloadMaxRecord = function (widget) {
         $scope.editChartType = null;
         console.log(widget)
         var chartType = widget;
@@ -583,7 +583,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 });
                 widget.columns = newColumns;
             });
-        }        
+        }
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -738,7 +738,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             displayFormats: '@',
             displayAlignments: '@',
             hideOptions: '@',
-            currentUrl:'@'
+            currentUrl: '@'
         },
         template:
                 "<div class='panel-head'>" +
@@ -773,8 +773,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" +
                 //Table
                 "<div class=''>" +
-                "<div class='table-responsive tbl-preview' style='height:200px; overflow: auto'>" +
-                "<table  class='defaultTable table table-bordered table-hover' >" +
+                "<div class='table-responsive tbl-preview'>" +
+                "<table  class='defaultTable table table-bordered table-hover'>" +
                 "<thead>" +
                 "<tr ng-model='previewTableHeaderName'>" +
                 "<th id='{{collectionField.displayName}}'  ng-repeat='collectionField in previewTableHeaderName track by $index'>" +
@@ -892,11 +892,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.tableHideOptions = JSON.parse(scope.hideOptions);
             scope.tableFieldTypes = JSON.parse(scope.fieldTypes)
 
-            scope.widgetTableSave = function ()
-            {
-                
+            scope.widgetTableSave = function () {
                 scope.editPreviewTitle = false;
-
             };
 
             scope.widgetTableEdit = function ()
@@ -953,7 +950,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     '&password=' + dataSourcePassword +
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 scope.tableData = response.data;
-                console.log(response.data);
                 scope.tableList = response.columnDefs;
             })
             scope.deleteColumn = function ($index) {
@@ -987,8 +983,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 });
             });
 
-            scope.mapJson = function (object)
-            {
+            scope.mapJson = function (object) {
 
                 scope.draggedObject = [];
                 scope.newHeaders = [];
@@ -998,9 +993,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 });
                 scope.filterReturnItem = [];
                 angular.forEach(scope.previewTableHeaderName, function (value, key) {
+                    console.log(scope.previewTableHeaderName)
                     scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
-                        console.log(item)
-                        return scope.draggedObject.indexOf(item.fieldName)
+                        console.log(item.fieldName)
+                        return scope.draggedObject.indexOf(item.displayName)
                     })
                 })
                 console.log(scope.filterReturnItem)
@@ -1016,7 +1012,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
 
                 }
                 var widgetColumnsData = [];
-                angular.forEach(scope.filterReturnItem, function (value, key) {
+                console.log(scope.filterReturnItem)
+                var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeaderName;
+                console.log(saveWidgetColumnList)
+                angular.forEach(saveWidgetColumnList, function (value, key) {
                     var hideColumn = value.columnHide;
                     if (value.groupPriority > 0) {
                         hideColumn = 1;
