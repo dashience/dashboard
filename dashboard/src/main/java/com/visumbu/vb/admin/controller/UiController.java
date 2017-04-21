@@ -293,13 +293,13 @@ public class UiController extends BaseController {
 //
 //    }
 //
-//    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-//        String widgetOrder = request.getParameter("widgetOrder");
-//        uiService.updateReportOrder(reportId, widgetOrder);
-//        return null;
-//    }
+    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+        String widgetOrder = request.getParameter("widgetOrder");
+        uiService.updateReportOrder(reportId, widgetOrder);
+        return null;
+    }
 //
 //    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
 //    public @ResponseBody
