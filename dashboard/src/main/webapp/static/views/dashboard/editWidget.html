@@ -469,6 +469,11 @@
                                     <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                 </div>                            
                             </div> 
+                             <div ng-if="editChartType === 'stackedbar'">
+                                <div>
+                                    <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                </div>                            
+                            </div>
                         </div>
 
 
