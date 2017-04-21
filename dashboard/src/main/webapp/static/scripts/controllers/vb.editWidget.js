@@ -882,7 +882,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
 
             scope.widgetTableSave = function ()
             {
-                alert();
+                
                 scope.editPreviewTitle = false;
 
             };
