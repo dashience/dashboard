@@ -758,13 +758,13 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</ul>" +
                 "</div>" +
                 //Panel Title
-                "<div ng-show='editPreviewTitle'>" +
+                "<div ng-hide='editPreviewTitle'>" +
                 "<a ng-click='editPreviewTitle = true'>{{previewWidgetTitle?previewWidgetTitle:'Widget Title'}}</a>" +
                 "</div>" +
-                "<div ng-hide='editPreviewTitle'>" +
+                "<div ng-show='editPreviewTitle'>" +
                 "<div class='col-sm-6' ng-click='widgetTableEdit()'><input class='form-control' type='text'  ng-model='previewWidgetTitle'></div>" +
-                "<div class='col-sm-4' ng-click='widgetTableSave()'><a ><i class='fa fa-save'></i></a>" +
-                "<div class='col-sm-4' ng-click='widgetTableSave()'><a><i class='fa fa-close'></i></a></div>" +
+                "<div class='col-sm-4'><a ng-click='widgetTableSave()'><i class='fa fa-save'></i></a>" +
+                "<a ng-click='widgetTableSave()'><i class='fa fa-close'></i></a></div>" +
                 "</div>" +
                 "</div>" +
                 "</div>" +
