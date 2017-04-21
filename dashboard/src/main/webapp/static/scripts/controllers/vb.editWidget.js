@@ -105,7 +105,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: "Percentage", value: ',.2%'},
         {name: "Decimal1", value: ',.1f'},
         {name: "Decimal2", value: ',.2f'},
+        {name: "Time", value: 'H:M:S'},
         {name: "None", value: ''}
+    ];
+    $scope.chartAggregation = [
+        {name: 'Min', value: "min"},
+        {name: 'Max', value: "max"}
     ];
 
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
@@ -413,12 +418,15 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.selectX1Axis = function (widget, column) {
+        console.log(column)
         $scope.editChartType = null;
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
             if (column.fieldName == value.fieldName) {
                 exists = true;
                 value.xAxis = 1;
+            } else{
+                value.xAxis = null;
             }
         });
         if (exists == false) {
@@ -457,6 +465,15 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         });
 
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    };
+    
+    $scope.reloadMaxRecord = function(widget){
+        $scope.editChartType = null;
+        console.log(widget)
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -924,7 +941,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
-                console.log(response)
             })
             scope.deleteColumn = function ($index) {
                 scope.previewTableHeaderName.splice($index, 1);

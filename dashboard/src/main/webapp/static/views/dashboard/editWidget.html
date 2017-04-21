@@ -182,14 +182,15 @@
                 </div>
             </div>
         </div>
-        <div class="row col-md-12">
-            <div class="form-group col-md-4" ng-if="editChartType != 'ticker'">
-                <div>
-                    <label>Max Record</label>
-                    <input type="text" ng-model="widget.maxRecord" class="form-control">
+        <div class="row col-md-12">            
+            <div ng-if="editChartType == 'table'">   
+                <div class="form-group col-md-4">
+                    <div>
+                        <label>Max Record</label>
+                        <input type="text" ng-model="widget.maxRecord" class="form-control">
+                        <!--<input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">-->
+                    </div>
                 </div>
-            </div>
-            <div ng-if="editChartType == 'table'">                         
                 <div class="col-lg-4">
                     <div class="col-md-12">
                         <div class="checkbox col-md-6" >
@@ -399,7 +400,6 @@
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-md-4" ng-show="editChartType == 'ticker'">
                             <div class="form-group">
@@ -446,6 +446,12 @@
 
 
                         <div class="col-md-6">
+                            <div class="form-group" ng-if="editChartType != 'ticker'">
+                                <div>
+                                    <label>Max Record</label>
+                                    <input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">
+                                </div>
+                            </div>
                             <div ng-if="editChartType === 'ticker'">
                                 <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                             </div>
