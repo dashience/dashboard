@@ -715,6 +715,7 @@ public class ProxyController {
         List<TabWidget> tabWidgets = new ArrayList<>();
         Report report = uiService.getReportById(reportId);
         String account = null;
+        String product = "Dashience Report";
         List<ReportWidget> reportWidgets = uiService.getReportWidget(reportId);
         for (Iterator<ReportWidget> iterator = reportWidgets.iterator(); iterator.hasNext();) {
             ReportWidget reportWidget = iterator.next();
@@ -785,7 +786,7 @@ public class ProxyController {
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicPdfTable(tabWidgets, account, selectDate, out);
+                crd.dynamicPdfTable(tabWidgets, account, product, selectDate, out);
 
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
@@ -846,6 +847,7 @@ public class ProxyController {
 
         List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
         String account = null;
+        String product = "Analytics";
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next();
             try {
@@ -878,9 +880,14 @@ public class ProxyController {
 
                 Integer port = request.getServerPort();
 
-                int id = Integer.parseInt(request.getParameter("accountId"));
-                account = userService.getAccountName(id);
+                int account_id = Integer.parseInt(request.getParameter("accountId"));
+                account = userService.getAccountName(account_id);
 
+//                int product_id = Integer.parseInt(request.getParameter("productId"));
+//                System.out.println("product_id :" + product_id);
+//                product = userService.getProductName(product_id);
+//
+//                System.out.println("product name :" + product);
                 System.out.println("account name :" + account);
 
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
@@ -888,8 +895,8 @@ public class ProxyController {
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
-                log.debug("url: " + url);
-                log.debug("valuemap: " + valueMap);
+                System.out.println("url: " + url);
+                System.out.println("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
                 System.out.println("Data -----> : " + data);
                 JSONParser parser = new JSONParser();
@@ -909,7 +916,7 @@ public class ProxyController {
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pdf");
                 OutputStream out = response.getOutputStream();
                 CustomReportDesigner crd = new CustomReportDesigner();
-                crd.dynamicPdfTable(tabWidgets, account, selectDate, out);
+                crd.dynamicPdfTable(tabWidgets, account, product, selectDate, out);
             } else if (exportType.equalsIgnoreCase("ppt")) {
                 response.setContentType("application/vnd.ms-powerpoint");
                 response.setHeader("Content-disposition", "attachment; filename=richanalytics.pptx");
