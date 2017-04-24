@@ -425,7 +425,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (column.fieldName == value.fieldName) {
                 exists = true;
                 value.xAxis = 1;
-            } else{
+            } else {
                 value.xAxis = null;
             }
         });
@@ -470,8 +470,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
-    $scope.reloadMaxRecord = function(widget){
+
+    $scope.reloadMaxRecord = function (widget) {
         $scope.editChartType = null;
         console.log(widget)
         var chartType = widget;
@@ -583,7 +583,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 });
                 widget.columns = newColumns;
             });
-        }        
+        }
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -614,6 +614,41 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $scope.tickerFormat = function (widget, format) {
         $scope.setFormat(widget, format)
+    };
+
+
+
+    $scope.selectGrouping = function (widget, groupingFields) {
+        $scope.editChartType = null;
+        var groups = [];
+        var newColumn = []
+        console.log(groupingFields)
+        angular.forEach(groupingFields, function (value, key) {
+            $scope.fieldNames = value.fieldName;
+            groups.push($scope.fieldNames);
+        });
+
+        angular.forEach(groupingFields, function (value, key) {
+            angular.forEach(widget.columns, function (val, header) {
+                if (value.fieldName === val.fieldName) {
+                    val.groupField = groups.indexOf(value.fieldName) + 1;
+                    newColumn.push(val)
+                    console.log(groups.indexOf(value.fieldName) + "====================>" + value.fieldName)
+                }
+            })
+        })
+
+        console.log(widget.columns) //= newColumn;
+        console.log(newColumn);
+//        if ($scope.groups.indexOf(groupingFields)) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
     };
 
 
@@ -655,7 +690,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 xAxisLabel: value.xAxisLabel,
                 yAxisLabel: value.yAxisLabel,
                 columnHide: hideColumn,
-                search: value.search
+                search: value.search,
+                groupField: value.groupField
             };
             widgetColumnsData.push(columnData);
         });
@@ -738,7 +774,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             displayFormats: '@',
             displayAlignments: '@',
             hideOptions: '@',
-            currentUrl:'@'
+            currentUrl: '@'
         },
         template:
                 "<div class='panel-head'>" +

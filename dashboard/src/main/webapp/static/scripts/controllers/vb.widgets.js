@@ -96,6 +96,22 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showReportWidgetName = false;
     };
 
+    $scope.favourites = false;
+    console.log($scope.favourites)
+
+    $scope.favouritesNew = function (favourites) {
+        if (favourites == "true")
+        {
+            alert(favourites);
+        } else {
+            alert(favourites);
+        }
+        // alert(favourites);
+
+        // console.log($scope.favourites);
+    }
+
+
     $scope.goReport = function () {
         $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
@@ -1665,7 +1681,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 }
                             })
                         }
-                        
+
 //                        chartData = sortResults(chartData, sortField, sortOrder);
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
@@ -1938,7 +1954,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             })
                             //chartData = scope.orderData(chartData, sortFields);
                         }
-                        
+
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
                             xTicks.push(loopCount);
@@ -2023,6 +2039,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             var startDate = "";
             var endDate = "";
             var sortFields = [];
+            var groupingFields = []
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -2058,6 +2075,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 }
                 if (value.sortOrder) {
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
+                if (value.groupField) {
+                    groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType});
                 }
             });
             var xData = [];
@@ -2192,6 +2212,13 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             })
                             //chartData = scope.orderData(chartData, sortFields);
                         }
+
+                        var groups = [];
+                       // console.log("y1axis:", yAxis);
+                       // console.log("y21axis:", yAxis);
+                        groups.push({yAxis});
+                        console.log("groups:", yAxis);
+
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
                             xTicks.push(loopCount);
@@ -2206,7 +2233,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             ySeriesData.unshift(value.displayName);
                             columns.push(ySeriesData);
                         });
-                        console.log(columns);
+                        console.log(groupingFields);
+                        var groupingNames = []
+                        angular.forEach(groupingFields, function (value, key) {
+                            groupingNames.push(value.fieldName)
+                        })
+                        //console.log(groupingFields);
                         var chart = c3.generate({
                             bindto: element[0],
                             data: {
@@ -2214,10 +2246,10 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 columns: columns,
                                 labels: labels,
                                 type: 'bar',
-                                groups: [['visits','vdpViews']],
+                                groups: [[groupingFields]],
                                 axes: axes
                             },
-                            
+
                             color: {
                                 pattern: ['#62cb31', '#555555']
 
