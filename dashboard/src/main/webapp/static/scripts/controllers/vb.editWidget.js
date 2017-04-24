@@ -9,6 +9,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
 
+
+    $scope.tabFilter = 1;
+
+    $scope.setTab = function (newTab) {
+        $scope.tabFilter = newTab;
+    };
+
+    $scope.isSet = function (tabNum) {
+        return $scope.tabFilter === tabNum;
+    };
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId) {
@@ -425,7 +435,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (column.fieldName == value.fieldName) {
                 exists = true;
                 value.xAxis = 1;
-            } else{
+            } else {
                 value.xAxis = null;
             }
         });
@@ -470,8 +480,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
-    $scope.reloadMaxRecord = function(widget){
+
+    $scope.reloadMaxRecord = function (widget) {
         $scope.editChartType = null;
         console.log(widget)
         var chartType = widget;
@@ -583,7 +593,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 });
                 widget.columns = newColumns;
             });
-        }        
+        }
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -738,7 +748,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state) {
             displayFormats: '@',
             displayAlignments: '@',
             hideOptions: '@',
-            currentUrl:'@'
+            currentUrl: '@'
         },
         template:
                 "<div class='panel-head'>" +
