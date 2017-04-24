@@ -228,7 +228,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
-            widget.columns = response.columnDefs;
+//            widget.columns = response.columnDefs;
             $scope.collectionFields = response.columnDefs;
         });
     }
