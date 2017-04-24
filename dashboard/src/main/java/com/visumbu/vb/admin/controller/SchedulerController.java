@@ -56,6 +56,7 @@ public class SchedulerController extends BaseController {
             System.out.println("Test 1");
             List<Scheduler> scheduledTasks = new ArrayList<>();
             scheduledTasks.add(scheduler);
+            System.out.println("scheduledTasks: "+scheduledTasks);
             timeService.executeTasks(scheduledTasks);
         }
         return scheduler;

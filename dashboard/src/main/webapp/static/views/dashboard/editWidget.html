@@ -213,15 +213,26 @@
                         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style">
-                            <li ng-click="selectWidgetDuration('None', widget)"><a>None</a></li>
-                            <li ng-click="selectWidgetDuration('Today', widget)"><a>Today</a></li>
-                            <li ng-click="selectWidgetDuration('Yesterday', widget)"><a>Yesterday</a></li>
-                            <li ng-click="selectWidgetDuration('This Week', widget)"><a>This Week</a></li>
-                            <li ng-click="selectWidgetDuration('Last Week', widget)"><a>Last Week</a></li>
-                            <li ng-click="selectWidgetDuration('This Month', widget)"><a>This Month</a></li>
-                            <li ng-click="selectWidgetDuration('Last Month', widget)"><a>Last Month</a></li>
-                            <li ng-click="selectWidgetDuration('This Year', widget)"><a>This Year</a></li>
-                            <li ng-click="selectWidgetDuration('Last Year', widget)"><a>Last Year</a></li>
+                            <li ng-click="selectWidgetDuration('Custom', widget)"><a>Custom</a>
+                                <div class="col-md-12">
+                                    <div>
+                                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                                            <span class="date-border">
+                                                {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                            </span>
+                                        </a> 
+                                    </div>
+                                </div>
+                            </li>
+                            <!--                            <li ng-click="selectWidgetDuration('None', widget)"><a>None</a></li>
+                                                        <li ng-click="selectWidgetDuration('Today', widget)"><a>Today</a></li>
+                                                        <li ng-click="selectWidgetDuration('Yesterday', widget)"><a>Yesterday</a></li>
+                                                        <li ng-click="selectWidgetDuration('This Week', widget)"><a>This Week</a></li>
+                                                        <li ng-click="selectWidgetDuration('Last Week', widget)"><a>Last Week</a></li>
+                                                        <li ng-click="selectWidgetDuration('This Month', widget)"><a>This Month</a></li>
+                                                        <li ng-click="selectWidgetDuration('Last Month', widget)"><a>Last Month</a></li>
+                                                        <li ng-click="selectWidgetDuration('This Year', widget)"><a>This Year</a></li>
+                                                        <li ng-click="selectWidgetDuration('Last Year', widget)"><a>Last Year</a></li>-->
                             <li ng-click="selectWidgetDuration('Last N Days', widget)">
                                 <a>Last <input type="text"
                                                ng-model="widget.lastNdays" 
@@ -262,12 +273,11 @@
                                     Years
                                 </a>
                             </li>
-                            <li ng-click="selectWidgetDuration('Custom', widget)"><a>Custom</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div ng-show="widget.dateRangeName === 'Custom'">
+<!--            <div ng-show="widget.dateRangeName === 'Custom'">
                 <div class="col-md-4">
                     <label>Custom Range</label>
                     <div>
@@ -278,7 +288,7 @@
                         </a> 
                     </div>
                 </div>
-            </div>            
+            </div>            -->
         </div>
 
         <div ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
