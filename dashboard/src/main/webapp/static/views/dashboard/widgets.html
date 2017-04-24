@@ -267,7 +267,7 @@
     </div>
 </div>
 <div>
-    <div ng-repeat="widget in widgets">
+    <div ng-repeat="widget in widgets" ui-gridster="gridsterOptions" data-gridster-drag-enabled="dragEnabled">
         <div ng-if="widget.chartType == 'ticker'">
             <div class="col-sm-{{2 * widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
@@ -296,10 +296,9 @@
                 </div>
             </div>
         </div>
-
         <div ng-if="widget.chartType != 'ticker'">
             <div class="col-md-{{2 * widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
-                <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget"> 
+                <div ui-gridster-item="widget" class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget"> 
                     <div class="panel-heading">
                         <div class="panel-tools">
                             <div>  
@@ -326,7 +325,7 @@
                             </div>
                         </div>
 
-                        <span class="{{widget.icon}}"></span> 
+                        <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span> 
                         <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
 
                     </div>

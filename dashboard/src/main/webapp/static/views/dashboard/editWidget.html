@@ -122,6 +122,37 @@
     .edit-widget-space{
         overflow: hidden;
     }
+    .dragtable-sortable { 
+        list-style-type: none; margin: 0; padding: 0; -moz-user-select: none;
+    }
+    .dragtable-sortable li {
+        margin: 0; padding: 0; float: left; font-size: 1em; background: white; 
+    }
+
+    .dragtable-sortable th, .dragtable-sortable td{
+        border-left: 0px;
+    }
+
+    .dragtable-sortable li:first-child th, .dragtable-sortable li:first-child td {
+        border-left: 1px solid #CCC; 
+    }
+
+    .ui-sortable-helper {
+        opacity: 0.7;filter: alpha(opacity=70);
+    }
+    .ui-sortable-placeholder { 
+        -moz-box-shadow: 4px 5px 4px #C6C6C6 inset;
+        -webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;
+        box-shadow: 4px 5px 4px #C6C6C6 inset;
+        border-bottom: 1px solid #CCCCCC;
+        border-top: 1px solid #CCCCCC;
+        visibility: visible !important;
+        background: #EFEFEF !important; 
+        visibility: visible !important;
+    }
+    .ui-sortable-placeholder * { 
+        opacity: 0.0; visibility: hidden; 
+    }
 </style>
 <div class="normalheader transition animated fadeIn">
     <div class="hpanel">
@@ -182,14 +213,15 @@
                 </div>
             </div>
         </div>
-        <div class="row col-md-12">
-            <div class="form-group col-md-4" ng-if="editChartType != 'ticker'">
-                <div>
-                    <label>Max Record</label>
-                    <input type="text" ng-model="widget.maxRecord" class="form-control">
+        <div class="row col-md-12">            
+            <div ng-if="editChartType == 'table'">   
+                <div class="form-group col-md-4">
+                    <div>
+                        <label>Max Record</label>
+                        <input type="text" ng-model="widget.maxRecord" class="form-control">
+                        <!--<input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">-->
+                    </div>
                 </div>
-            </div>
-            <div ng-if="editChartType == 'table'">                         
                 <div class="col-lg-4">
                     <div class="col-md-12">
                         <div class="checkbox col-md-6" >
@@ -409,7 +441,6 @@
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-md-4" ng-show="editChartType == 'ticker'">
                             <div class="form-group">
@@ -456,6 +487,12 @@
 
 
                         <div class="col-md-6">
+                            <div class="form-group" ng-if="editChartType != 'ticker'">
+                                <div>
+                                    <label>Max Record</label>
+                                    <input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">
+                                </div>
+                            </div>
                             <div ng-if="editChartType === 'ticker'">
                                 <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                             </div>
@@ -513,6 +550,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
     <div class="row" ng-if="editChartType === 'text'">
         <div class="col-sm-12">
