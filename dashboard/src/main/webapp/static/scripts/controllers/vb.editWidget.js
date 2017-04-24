@@ -11,11 +11,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
-        if ($stateParams.widgetId) {
+        if ($stateParams.widgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
             })
+        } else {
+            $scope.editWidgetData.push({width: 6, columns: []})
         }
     });
 

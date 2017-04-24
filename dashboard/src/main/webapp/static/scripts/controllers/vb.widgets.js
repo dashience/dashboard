@@ -43,20 +43,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     getWidgetItem();
 
     $scope.addWidget = function (newWidget) {       //Add Widget
-        var data = {
-            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
-        };
-        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+//        var data = {
+//            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
+//        };
+//        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             $state.go("index.editWidget", {
                 productId: $stateParams.productId,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 tabId: $stateParams.tabId,
-                widgetId: response.id,
+                widgetId: 0,//response.id,
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
-        });
+//        });
     };
     $scope.removeBackDrop = function () {
         $('body').removeClass().removeAttr('style');
