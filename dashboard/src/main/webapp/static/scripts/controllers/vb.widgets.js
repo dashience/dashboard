@@ -1,4 +1,13 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
+
+    $scope.dragEnabled = true;
+
+    $scope.toggleDragging = function () {
+        $scope.dragEnabled = !$scope.dragEnabled;
+    };
+
+
+
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -1666,7 +1675,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 }
                             })
                         }
-                        
+
 //                        chartData = sortResults(chartData, sortField, sortOrder);
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
@@ -1939,7 +1948,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             })
                             //chartData = scope.orderData(chartData, sortFields);
                         }
-                        
+
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
                             xTicks.push(loopCount);
