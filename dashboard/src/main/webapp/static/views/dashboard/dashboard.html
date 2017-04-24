@@ -11,9 +11,9 @@
         </div>
     </div>
     <section class="content">
-        <div class="row">
+<!--        <div class="row">
             <div class="col-lg-12">
-                <div class="hpanel hgreen">
+                <div class="hpanel hgreen">-->
                     <ul class="nav nav-tabs">
                         <li ng-repeat="tab in tabs" ui-sref-active="active" ng-dblclick="startEditing(tab);" ng-drop="true" ng-drop-success="onDropTabComplete($index, $data,$event)">
                             <a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">
@@ -95,18 +95,18 @@
                                     </div>
                                     
                                 </div>-->
-                    <div class="tab-content">
-                        <div class="row" ngsf-fullscreen="fullscreenCtrl">
-                            <div id="tab-1" class="tab-pane active">
+<!--                    <div class="tab-content">
+                        <div class="row" ngsf-fullscreen="fullscreenCtrl">-->
+                            <!--<div id="tab-1" class="tab-pane active">-->
 
                                 <ui-view></ui-view>
 
-                            </div>
-                        </div>
-                    </div>
+                            <!--</div>-->
+<!--                        </div>
+                    </div>-->
 
-                </div>
+<!--                </div>
             </div>
-        </div>
+        </div>-->
     </section>
 </div>
