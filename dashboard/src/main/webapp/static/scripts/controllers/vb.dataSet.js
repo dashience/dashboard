@@ -1377,10 +1377,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.previewData = null;
         $scope.dataSetFlag = false;
     };
+    
+    $scope.clearTable = function (){
+        $scope.dataSet = "";        
+    };
 
     $scope.editDataSet = function (dataSet) {
-        console.log(dataSet)
-        console.log(dataSet);
 //        if (dataSet.networkType !== null)
 //        {
 //            dataSet.networkType = dataSet.networkType.split(',').map(function (value, key) {

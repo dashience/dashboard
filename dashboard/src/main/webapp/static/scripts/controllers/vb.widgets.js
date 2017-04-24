@@ -1,4 +1,13 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
+
+    $scope.dragEnabled = true;
+
+    $scope.toggleDragging = function () {
+        $scope.dragEnabled = !$scope.dragEnabled;
+    };
+
+
+
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -1661,6 +1670,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     sortingObj = scope.orderData(chartData, sortFields);
                                     if (chartMaxRecord.maxRecord) {
                                         chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        console.log(chart)
                                     } else {
                                         chartData = sortingObj;
                                     }

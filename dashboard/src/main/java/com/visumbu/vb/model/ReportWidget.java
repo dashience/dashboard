@@ -28,7 +28,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ReportWidget.findAll", query = "SELECT r FROM ReportWidget r")
-    , @NamedQuery(name = "ReportWidget.findById", query = "SELECT r FROM ReportWidget r WHERE r.id = :id")})
+    , @NamedQuery(name = "ReportWidget.findById", query = "SELECT r FROM ReportWidget r WHERE r.id = :id")
+    , @NamedQuery(name = "ReportWidget.findByWidgetOrder", query = "SELECT r FROM ReportWidget r WHERE r.widgetOrder = :widgetOrder")})
 public class ReportWidget implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,6 +38,8 @@ public class ReportWidget implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Column(name = "widget_order")
+    private Integer widgetOrder;
     @JoinColumn(name = "report_id", referencedColumnName = "id")
     @ManyToOne
     private Report reportId;
@@ -45,7 +48,11 @@ public class ReportWidget implements Serializable {
     private TabWidget widgetId;
 
     public ReportWidget() {
-    }  
+    }
+
+    public ReportWidget(Integer id) {
+        this.id = id;
+    }
 
     public Integer getId() {
         return id;
@@ -53,6 +60,14 @@ public class ReportWidget implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getWidgetOrder() {
+        return widgetOrder;
+    }
+
+    public void setWidgetOrder(Integer widgetOrder) {
+        this.widgetOrder = widgetOrder;
     }
 
     public Report getReportId() {

@@ -588,7 +588,7 @@ public class TabWidget implements Serializable {
 
     public void setLastNyears(Integer lastNyears) {
         this.lastNyears = lastNyears;
-    }   
+    }
 
     @Override
     public int hashCode() {

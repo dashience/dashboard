@@ -52,7 +52,7 @@
                             <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
                         </div>
                         <div class="col-md-4 data-search">
-                            <select class="form-control" 
+                            <select class="form-control" ng-change="clearTable()"
                                     ng-options="dataSource.name for dataSource in searchDataSourceItems track by dataSource.id"
                                     ng-model="selectedItems">
 
