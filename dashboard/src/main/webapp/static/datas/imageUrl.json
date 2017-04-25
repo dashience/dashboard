@@ -47,5 +47,12 @@
         "type": "text",
         "name": "Text",
         "icon": "fa-file-text-o"
+    },
+    {
+        "id": 10,
+        "url": "static/img/stackedbarchart.png",
+        "type": "stackedbar",
+        "name": "Stacked Bar",
+        "icon": "fa-bar-chart"
     }
 ]

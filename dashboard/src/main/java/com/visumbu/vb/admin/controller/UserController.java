@@ -120,6 +120,8 @@ public class UserController extends BaseController {
     public @ResponseBody
     LoginUserBean login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginUserBean loginUserBean) {
         LoginUserBean userBean = userService.authenicate(loginUserBean);
+        System.out.println("----------------------------------------------->");
+        System.out.println(userBean);
         HttpSession session = request.getSession();
         session.setAttribute("isAuthenticated", userBean.getAuthenticated());
         session.setAttribute("username", userBean.getUsername());

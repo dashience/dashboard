@@ -127,6 +127,9 @@ public class UiDao extends BaseDao {
     }
 
     public TabWidget getTabWidgetById(Integer widgetId) {
+        if(widgetId == null){
+        return null;
+        }
         TabWidget tabWidget = (TabWidget) sessionFactory.getCurrentSession().get(TabWidget.class, widgetId);
         tabWidget.setColumns(getColumns(tabWidget));
         return tabWidget;
