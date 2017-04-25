@@ -324,6 +324,7 @@
                                 <a ng-if="widget.chartType === 'bar'" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'pie'" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'area'" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'stackedbar'" class="refresh" ng-click="directiveStackedBarFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'table'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
                                 <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
@@ -390,7 +391,7 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
                         <div>
-                            <div stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)"stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div>
                     </div>
                 </div>
