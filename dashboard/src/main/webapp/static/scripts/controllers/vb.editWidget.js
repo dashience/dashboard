@@ -35,6 +35,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    }
 //    getWidgetItem();
 
+
+    $scope.tags=["test","test1"]
+
+//    $http.get('admin/user/account').success(function (response) {
+//        $scope.emailAccounts = [];
+//        $scope.accounts = response;
+//        angular.forEach($scope.accounts, function (val, key) {
+//            $scope.emailAccounts.push(val.agencyId.email)
+//            $scope.tags = unique($scope.emailAccounts);
+//        });
+//    });
+
+
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},
@@ -620,6 +633,41 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
 
+
+    $scope.selectGrouping = function (widget, groupingFields) {
+        $scope.editChartType = null;
+        var groups = [];
+        var newColumn = []
+        console.log(groupingFields)
+        angular.forEach(groupingFields, function (value, key) {
+            $scope.fieldNames = value.fieldName;
+            groups.push($scope.fieldNames);
+        });
+
+        angular.forEach(groupingFields, function (value, key) {
+            angular.forEach(widget.columns, function (val, header) {
+                if (value.fieldName === val.fieldName) {
+                    val.groupField = groups.indexOf(value.fieldName) + 1;
+                    newColumn.push(val)
+                    console.log(groups.indexOf(value.fieldName) + "====================>" + value.fieldName)
+                }
+            })
+        })
+
+        console.log(widget.columns) //= newColumn;
+        console.log(newColumn);
+//        if ($scope.groups.indexOf(groupingFields)) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    };
+
+
     $scope.save = function (widget) {
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
@@ -658,7 +706,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 xAxisLabel: value.xAxisLabel,
                 yAxisLabel: value.yAxisLabel,
                 columnHide: hideColumn,
-                search: value.search
+                search: value.search,
+                groupField: value.groupField
             };
             widgetColumnsData.push(columnData);
         });

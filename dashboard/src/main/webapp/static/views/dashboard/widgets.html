@@ -223,6 +223,17 @@
     .report-chat-box {
         margin-bottom: 10px;
     }
+
+/*Favorites*/
+    .red {
+        color:red;
+    }
+    .green {
+         color:green;
+    }
+    .fa-heart{
+        font-size: 15px !important;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
@@ -304,6 +315,8 @@
                     <div class="panel-heading">
                         <div class="panel-tools">
                             <div>  
+                                <!--<i class="fa fa-heart-o" ng-click="favourites = !favourites; favouritesNew(favourites)" ng-class="{'red' : favourites, 'green' : !favourites}"></i>-->
+                                 <i class="fa fa-heart"  ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>
                                 <a ng-show="showCreateReport" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a> 
                                 <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
                                 <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
@@ -365,6 +378,11 @@
                             <div class="text-widget">
                                 <span ng-bind-html="widget.content"></span>
                             </div>
+                        </div>
+                    </div>
+                    <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
+                        <div>
+                            <div stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div>
                     </div>
                 </div>
