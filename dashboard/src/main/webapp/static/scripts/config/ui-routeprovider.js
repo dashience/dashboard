@@ -97,8 +97,13 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 url: "/fieldSettings/:accountId/:accountName?:startDate/:endDate",
                 templateUrl: "static/views/fieldSettings/fieldSettings.html",
                 controller: 'fieldSettingsController'
+            })
+            .state("index.tag", {
+                url: "/tag/:accountId/:accountName?:startDate/:endDate",
+                templateUrl: "static/views/Tag/tag.html",
+                controller: 'tagController'
             });
-                 
+
 
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('index.dashboard');

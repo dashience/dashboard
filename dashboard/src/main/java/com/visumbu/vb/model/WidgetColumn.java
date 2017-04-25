@@ -119,6 +119,10 @@ public class WidgetColumn implements Serializable {
     private Integer columnHide;
     @Column(name = "search")
     private Boolean search;
+    
+    @Size(max = 128)
+    @Column(name = "group_field")
+    private String groupField;
 
     public WidgetColumn() {
     }
@@ -310,6 +314,16 @@ public class WidgetColumn implements Serializable {
     public void setSearch(Boolean search) {
         this.search = search;
     }
+
+    public String getGroupField() {
+        return groupField;
+    }
+
+    public void setGroupField(String groupField) {
+        this.groupField = groupField;
+    }
+    
+    
     
     @XmlTransient
     @JsonIgnore

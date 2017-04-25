@@ -122,6 +122,37 @@
     .edit-widget-space{
         overflow: hidden;
     }
+    .dragtable-sortable { 
+        list-style-type: none; margin: 0; padding: 0; -moz-user-select: none;
+    }
+    .dragtable-sortable li {
+        margin: 0; padding: 0; float: left; font-size: 1em; background: white; 
+    }
+
+    .dragtable-sortable th, .dragtable-sortable td{
+        border-left: 0px;
+    }
+
+    .dragtable-sortable li:first-child th, .dragtable-sortable li:first-child td {
+        border-left: 1px solid #CCC; 
+    }
+
+    .ui-sortable-helper {
+        opacity: 0.7;filter: alpha(opacity=70);
+    }
+    .ui-sortable-placeholder { 
+        -moz-box-shadow: 4px 5px 4px #C6C6C6 inset;
+        -webkit-box-shadow: 4px 5px 4px #C6C6C6 inset;
+        box-shadow: 4px 5px 4px #C6C6C6 inset;
+        border-bottom: 1px solid #CCCCCC;
+        border-top: 1px solid #CCCCCC;
+        visibility: visible !important;
+        background: #EFEFEF !important; 
+        visibility: visible !important;
+    }
+    .ui-sortable-placeholder * { 
+        opacity: 0.0; visibility: hidden; 
+    }
 </style>
 <div class="normalheader transition animated fadeIn">
     <div class="hpanel">
@@ -182,14 +213,15 @@
                 </div>
             </div>
         </div>
-        <div class="row col-md-12">
-            <div class="form-group col-md-4" ng-if="editChartType != 'ticker'">
-                <div>
-                    <label>Max Record</label>
-                    <input type="text" ng-model="widget.maxRecord" class="form-control">
+        <div class="row col-md-12">            
+            <div ng-if="editChartType == 'table'">   
+                <div class="form-group col-md-4">
+                    <div>
+                        <label>Max Record</label>
+                        <input type="text" ng-model="widget.maxRecord" class="form-control">
+                        <!--<input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">-->
+                    </div>
                 </div>
-            </div>
-            <div ng-if="editChartType == 'table'">                         
                 <div class="col-lg-4">
                     <div class="col-md-12">
                         <div class="checkbox col-md-6" >
@@ -274,13 +306,26 @@
                         <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
                             <span class="date-border">
                                 {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                                <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
                             </span>
                         </a> 
                     </div>
                 </div>
-            </div>            
+            </div>    
+            
+             <div class="col-md-4">
+                <label>Tags</label>
+                <div>
+                    <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.widgetTag" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                        <ui-select-match placeholder="Tags...">{{$item}}</ui-select-match>
+                        <ui-select-choices repeat="tag in tags | filter:$select.search">
+                            {{tag}}
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
         </div>
+
+
 
         <div ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
             <div class="col-lg-12 table-deeta edit-widget">
@@ -365,7 +410,8 @@
                                     <table class="table table-bordered table-responsive">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
+                                                <th>Field Name</th>
+                                                <th>Display Name</th>
                                                 <th>Format</th>
                                                 <th>Sort</th>
                                                 <th>Field Type</th>
@@ -373,33 +419,25 @@
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="columnList in widget.columns">
-                                                <td>{{columnList.displayName}}</td>
+                                                <td>{{columnList.fieldName}}</td>
                                                 <td>
-                                                    <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' 
-                                                                                                            class='form-control'
-                                                                                                            ng-change="setChartFormat(widget, columnList)"
-                                                                                                            ng-options="format for format in formats">
-                                                                                                    </select>-->
+                                                    <div>
+                                                        <input type="text" class="form-control" ng-model="columnList.displayName">
+                                                    </div>
+                                                </td>
+                                                <td>
                                                     <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' ng-change="setChartFormat(widget, columnList)">
                                                         <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' 
-                                                                                                            class='form-control'
-                                                                                                            ng-change="setChartFormat(widget, columnList)"
-                                                                                                            ng-options="sort for sort in sorting">
-                                                                                                    </select>-->
-
                                                     <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
                                                         <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' 
-                                                            class='form-control'
-                                                            ng-change="setChartFormat(widget, columnList)"
-                                                            ng-options="fieldType for fieldType in fieldTypes">
+                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' ng-change="setChartFormat(widget, columnList)">
+                                                        <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
                                                     </select>
                                                 </td>
                                             </tr>
@@ -407,7 +445,6 @@
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-md-4" ng-show="editChartType == 'ticker'">
                             <div class="form-group">
@@ -427,22 +464,23 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <td>Name</td>
+                                                <td>Field Name</td>
+                                                <td>Display Name</td>
                                                 <td>Format</td>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="tickerItem in widget.columns">
-                                                <td>{{tickerItem.displayName}}</td>
+                                            <tr ng-repeat="tickerItems in widget.columns">
+                                                <td>{{tickerItems.displayName}}</td>
                                                 <td>
-                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' ng-change="tickerFormat(widget, tickerItem)">
+                                                    <div>
+                                                        <input type="text" class="form-control" ng-model="tickerItems.displayName">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItems.displayFormat' ng-change="tickerFormat(widget, tickerItems)">
                                                         <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
                                                     </select>
-                                                    <!--                                                <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItem.displayFormat' 
-                                                                                                            class='form-control'
-                                                                                                            ng-change="tickerFormat(widget, tickerItem)"
-                                                                                                            ng-options="format for format in formats">
-                                                                                                    </select>-->
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -453,6 +491,23 @@
 
 
                         <div class="col-md-6">
+                            <div class="form-group" ng-if="editChartType != 'ticker'">
+                                <div>
+                                    <label>Max Record</label>
+                                    <input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-show="editChartType == 'stackedbar'">
+                                <label>Grouping</label>
+                                <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
+                                    <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
+                                    <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
+                                        {{group.displayName}}
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+
                             <div ng-if="editChartType === 'ticker'">
                                 <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                             </div>
@@ -476,6 +531,11 @@
                                     <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                 </div>                            
                             </div> 
+                            <div ng-if="editChartType === 'stackedbar'">
+                                <div>
+                                    <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                </div>                            
+                            </div>
                         </div>
 
 
@@ -499,10 +559,18 @@
                      preview-Urls='{{previewChartUrl}}' 
                      preview-Columns='{{widget.columns}}' 
                      preview-Widget="{{previewColumn}}" 
-                     preview-Widget-Table="{{widget}}">
+                     preview-Widget-Table="{{widget}}"
+                     aggregations-Types="{{selectAggregations}}"
+                     group-Priorities="{{selectGroupPriorities}}"
+                     sorting-Fields="{{sorting}}"
+                     display-Formats="{{formats}}"
+                     display-Alignments="{{alignments}}"
+                     hide-Options="{{hideOptions}}"
+                     field-Types="{{fieldTypes}}">
                 </div>
             </div>
         </div>
+
     </div>
     <div class="row" ng-if="editChartType === 'text'">
         <div class="col-sm-12">

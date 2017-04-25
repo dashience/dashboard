@@ -1,0 +1,144 @@
+<style> 
+    .table-fixed thead {
+        width: 100%;
+        border-bottom: none;
+    }
+    .table-fixed tbody {
+        /*height: 430px;*/
+        /*overflow-y: auto !important;*/
+        width: 100%;
+    }
+    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+        display: block;
+    }
+    .table-fixed tbody td, .table-fixed thead > tr> th {
+        float: left;
+        border-bottom-width: 0;
+    }
+    .table-fixed tr td {
+        cursor:pointer;
+    }
+    .form-horizontal .form-group {
+        margin:10px 0px 10px 0px;
+    }
+    .agency-bt {
+        margin-bottom: 10px;
+    }
+    .nav-tabs-custom {
+        padding-top: 0px;
+        padding-bottom: 10px;
+    }
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }
+</style>
+
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Tags
+            </h2>               
+        </div>
+    </div>
+</div>
+
+
+<section class="content">
+
+    <div class="row">
+
+        <div class="col-md-5">
+            <div class="hpanel">                    
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div  class="license">
+                            <div class="col-md-12">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label>Tag Name</label>
+                                        <input class="form-control" type="text" ng-model="tag.tagname">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input class="form-control" type="text" ng-model="tag.description">
+                                    </div>
+<div class="form-group pull-right">
+    <button class="btn btn-info" ng-click="saveTag(tag)">Save</button>
+    <button class="btn btn-warning" ng-click="clearTag(tag)">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+<div class="col-md-7">
+    <div class="hpanel">                    
+        <div class="panel-body">
+            <table class="table table-responsive table-fixed">
+                <thead>
+                    <tr>
+                        <th class="col-xs-5">Sl.No</th>
+                                <th class="col-xs-6">Tag Name</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="accountUser-Table" ng-repeat="tag in tags">
+                            <td class="col-xs-5">{{$index + 1}}</td>
+                            <td class="col-xs-6">{{tag.tagName}}</td>
+                                <td class="col-xs-1">
+                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUser{{tag.id}}"><i class="fa fa-trash"></i></button>
+                                    <div class="modal hmodal-success" id="deleteUser{{tag.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="color-line"></div>
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Delete</h4>
+                                                    <small class="font-bold"></small>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form class="form-horizontal" role="form">
+                                                        <div class="form-group">
+                                                            <div class="col-sm-12  col-md-12">
+                                                                <span>Want to delete ?</span>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <div class="col-sm-12">
+                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                                ng-click="deleteUser(user, $index)" 
+                                                                data-dismiss="modal">
+                                                            <span class="fa fa-trash"></span> Yes
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-xs " 
+                                                                data-dismiss="modal">
+                                                            <span class="fa fa-times"></span> No
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <!--<dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" max-size="10" template-url="static/views/reports/pagination.tpl.html"></dir-pagination-c                                        ontrols>-->
+                    <dir-pagination-controls data-pagination-id="myPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-paginatio                                    n-controls>
+                </div>
+            </div>
+        </div>
+    </div>    
+</section>

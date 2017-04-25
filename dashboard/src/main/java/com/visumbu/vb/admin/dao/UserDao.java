@@ -41,8 +41,33 @@ public class UserDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where status is null or status != 'Deleted'");
         return query.list();
     }
+    
+    public List<VbUser> findByLoginUserName(String username) {
+        
+        Query agencyQuery=sessionFactory.getCurrentSession().getNamedQuery("VbUser.findAgencyByUser");
+        agencyQuery.setParameter("userName", username);
+        
+        System.out.println(agencyQuery);
+        
+        List agencyId=agencyQuery.list();
+        System.out.println("Agency ID=====>"+agencyId);
+       
+       
+        
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("userName", username);
+        List<VbUser> users = query.list();
+        if (!users.isEmpty()) {
+            return users;
+        }
+
+//        query = sessionFactory.getCurrentSession().createQuery("from VbUser where (agencyId is null or agencyId.status is null or agencyId.status != 'Deleted') and (status is null or status != 'Deleted') and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
+//        query.setParameter("userName", username);
+        return query.list();
+    }
 
     public List<VbUser> findByUserName(String username) {
+        
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("userName", username);
         List<VbUser> users = query.list();
@@ -54,25 +79,24 @@ public class UserDao extends BaseDao {
         query.setParameter("userName", username);
         return query.list();
     }
-    
+
     public List<Agency> findUserNameByUser(String userName) {
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where userName = :userName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("userName", userName);
         return query.list();
     }
-    
+
     public List<Account> findByAccountName(String accountName) {
         Query query = sessionFactory.getCurrentSession().createQuery("from Account where accountName = :accountName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("accountName", accountName);
         return query.list();
     }
-    
+
     public List<Agency> findByAgencyName(String agencyName) {
         Query query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyName = :agencyName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("agencyName", agencyName);
         return query.list();
     }
-
 
     public VbUser createNewUser(String userId, String userName, String fullName) {
         VbUser user = new VbUser();
@@ -294,6 +318,14 @@ public class UserDao extends BaseDao {
         return accountName;
     }
 
+//    public String getProductName(Integer id) {
+//        String queryStr = "select a.productName FROM Product a Where a.id = :id";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("id", id);
+//        String productName = (String) query.list().get(0);
+//        return productName;
+//    }
+
     public List<Account> getAccountByAgency(Agency agency) {
         String queryStr = "select a from Account a where (a.agencyId.status is null or a.agencyId.status != 'Deleted') and a.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -333,5 +365,4 @@ public class UserDao extends BaseDao {
         return null;
     }
 
-    
 }

@@ -45,17 +45,14 @@
 <section class="content">
     <div class="row">
         <div class="col-md-6">
-            <div class="hpanel">
-                <div class="panel-heading">
-                    View Data Set
-                </div>
+            <div class="hpanel">                
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-8 data-search">
                             <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
                         </div>
                         <div class="col-md-4 data-search">
-                            <select class="form-control" 
+                            <select class="form-control" ng-change="clearTable()"
                                     ng-options="dataSource.name for dataSource in searchDataSourceItems track by dataSource.id"
                                     ng-model="selectedItems">
 
@@ -123,10 +120,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="hpanel">
-                <div class="panel-heading">
-                    Edit Data Set
-                </div>
+            <div class="hpanel">               
                 <div class="panel-body">
                     <form class="col-md-12 form-horizontal">
                         <div class="form-group">
@@ -179,7 +173,8 @@
 
                         <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
                             <label>Query</label>
-                            <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>
+                            <!--<textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>-->
+                            <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
                         </div>
 
                         <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https'">

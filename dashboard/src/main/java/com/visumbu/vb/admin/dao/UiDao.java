@@ -127,6 +127,9 @@ public class UiDao extends BaseDao {
     }
 
     public TabWidget getTabWidgetById(Integer widgetId) {
+        if(widgetId == null){
+        return null;
+        }
         TabWidget tabWidget = (TabWidget) sessionFactory.getCurrentSession().get(TabWidget.class, widgetId);
         tabWidget.setColumns(getColumns(tabWidget));
         return tabWidget;
@@ -299,11 +302,13 @@ public class UiDao extends BaseDao {
     }
 
     public String updateReportOrder(Integer reportId, String widgetOrder) {
+        System.out.println(widgetOrder);
         String[] reportOrderArray = widgetOrder.split(",");
         for (int i = 0; i < reportOrderArray.length; i++) {
             Integer reportWidgetId = Integer.parseInt(reportOrderArray[i]);
             ReportWidget reportWidget = getReportWidgetById(reportWidgetId);
             // reportWidget.setWidgetOrder(i);
+        System.out.println(reportWidget);
             update(reportWidget);
         }
         return null;

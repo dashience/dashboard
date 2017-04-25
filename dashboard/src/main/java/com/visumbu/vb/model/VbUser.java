@@ -39,6 +39,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     ,
     @NamedQuery(name = "VbUser.findById", query = "SELECT v FROM VbUser v WHERE v.id = :id")
     ,
+    @NamedQuery(name = "VbUser.findAgencyByUser", query = "SELECT v.agencyId.id FROM VbUser v WHERE v.userName = :userName")
+        ,
     @NamedQuery(name = "VbUser.findByCreatedTime", query = "SELECT v FROM VbUser v WHERE v.createdTime = :createdTime")
     ,
     @NamedQuery(name = "VbUser.findByDisableNotification", query = "SELECT v FROM VbUser v WHERE v.disableNotification = :disableNotification")

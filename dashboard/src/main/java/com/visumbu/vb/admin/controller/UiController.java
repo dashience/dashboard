@@ -149,8 +149,8 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidget tabWidget) {
-        return uiService.createTabWidget(tabId, tabWidget);
+    TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
+        return uiService.saveTabWidget(tabId, tabWidget);
     }
 
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")
@@ -293,13 +293,13 @@ public class UiController extends BaseController {
 //
 //    }
 //
-//    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-//        String widgetOrder = request.getParameter("widgetOrder");
-//        uiService.updateReportOrder(reportId, widgetOrder);
-//        return null;
-//    }
+    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+        String widgetOrder = request.getParameter("widgetOrder");
+        uiService.updateReportOrder(reportId, widgetOrder);
+        return null;
+    }
 //
 //    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
 //    public @ResponseBody
