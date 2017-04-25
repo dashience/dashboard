@@ -1378,9 +1378,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetFlag = false;
     };
 
+    $scope.clearTable = function () {
+        $scope.dataSet = "";
+    };
+
     $scope.editDataSet = function (dataSet) {
-        console.log(dataSet)
-        console.log(dataSet);
 //        if (dataSet.networkType !== null)
 //        {
 //            dataSet.networkType = dataSet.networkType.split(',').map(function (value, key) {
@@ -1475,6 +1477,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.previewDataSet = function (dataSet) {
         $scope.showPreviewChart = true;
         $scope.previewData = dataSet;
+        $scope.previewData = null;
+        $timeout(function () {
+            $scope.previewData = dataSet;
+        }, 50);
     };
 
     $scope.refreshDataSet = function (dataSet) {

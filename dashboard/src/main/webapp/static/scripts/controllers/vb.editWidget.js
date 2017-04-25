@@ -11,11 +11,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
-        if ($stateParams.widgetId) {
+        if ($stateParams.widgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
             })
+        } else {
+            $scope.editWidgetData.push({width: 12, columns: []})
         }
     });
 
@@ -32,6 +34,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //        });
 //    }
 //    getWidgetItem();
+
+
+    $scope.tags=["test","test1"]
+
+//    $http.get('admin/user/account').success(function (response) {
+//        $scope.emailAccounts = [];
+//        $scope.accounts = response;
+//        angular.forEach($scope.accounts, function (val, key) {
+//            $scope.emailAccounts.push(val.agencyId.email)
+//            $scope.tags = unique($scope.emailAccounts);
+//        });
+//    });
+
 
     $scope.selectAggregations = [
         {name: 'None', value: ""},
@@ -228,7 +243,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
-            widget.columns = response.columnDefs;
+//            widget.columns = response.columnDefs;
             $scope.collectionFields = response.columnDefs;
         });
     }
@@ -333,6 +348,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     });
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
+
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
@@ -617,6 +633,41 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
 
+
+    $scope.selectGrouping = function (widget, groupingFields) {
+        $scope.editChartType = null;
+        var groups = [];
+        var newColumn = []
+        console.log(groupingFields)
+        angular.forEach(groupingFields, function (value, key) {
+            $scope.fieldNames = value.fieldName;
+            groups.push($scope.fieldNames);
+        });
+
+        angular.forEach(groupingFields, function (value, key) {
+            angular.forEach(widget.columns, function (val, header) {
+                if (value.fieldName === val.fieldName) {
+                    val.groupField = groups.indexOf(value.fieldName) + 1;
+                    newColumn.push(val)
+                    console.log(groups.indexOf(value.fieldName) + "====================>" + value.fieldName)
+                }
+            })
+        })
+
+        console.log(widget.columns) //= newColumn;
+        console.log(newColumn);
+//        if ($scope.groups.indexOf(groupingFields)) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    };
+
+
     $scope.save = function (widget) {
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
@@ -655,7 +706,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 xAxisLabel: value.xAxisLabel,
                 yAxisLabel: value.yAxisLabel,
                 columnHide: hideColumn,
-                search: value.search
+                search: value.search,
+                groupField: value.groupField
             };
             widgetColumnsData.push(columnData);
         });
@@ -891,16 +943,13 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.tableAlignments = JSON.parse(scope.displayAlignments);
             scope.tableHideOptions = JSON.parse(scope.hideOptions);
             scope.tableFieldTypes = JSON.parse(scope.fieldTypes)
-
             scope.widgetTableSave = function () {
                 scope.editPreviewTitle = false;
             };
-
             scope.widgetTableEdit = function ()
             {
                 scope.editPreviewTitle = true;
             };
-
             scope.previewTableHeaderName = JSON.parse(scope.previewColumns);
             scope.listColumns = [];
             scope.listColumns = JSON.parse(scope.previewColumns);
@@ -909,6 +958,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.addList = function (list) {
                 list.isEdit = true;
                 scope.previewTableHeaderName.push(list);
+                $('.defaultTable').dragtable();
             };
             var tableDataSource = JSON.parse(scope.previewUrls)
             var data = {
@@ -952,15 +1002,33 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
             })
+            console.log(scope.previewTableHeaderName);
+            console.log(scope.filterReturnItem);
             scope.deleteColumn = function ($index) {
-                scope.previewTableHeaderName.splice($index, 1);
+                console.log($index);
+//                console.log(scope.filterReturnItem);
+//                console.log(scope.previewTableHeaderName);
+//                console.log($index);
+//                console.log(previewHeaderObject);
+                if (typeof (scope.filterReturnItem) == "undefined")
+                {
+                    scope.previewTableHeaderName.splice($index, 1);
+                    console.log(scope.previewTableHeaderName);
+                    sessionStorage.clear();
+                } else {
+                    var previewHeaderObject = scope.previewTableHeaderName[$index];
+                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
+                    console.log(dragableHeaderIndex);
+                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
+                    console.log(scope.filterReturnItem);
+                    scope.previewTableHeaderName = [];
+                    scope.previewTableHeaderName = scope.filterReturnItem;
+                    sessionStorage.clear();
+                }
             }
-
             $(document).ready(function () {
-
-
                 $('.defaultTable').dragtable({
-                    dragHandle: '.handle',
+
                     persistState: function (table) {
                         console.log(table);
                         if (!window.sessionStorage)
@@ -968,6 +1036,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         var ss = window.sessionStorage;
                         table.el.find('th').each(function (i) {
                             if (this.id != '') {
+                                console.log("ID----->" + this.id);
+                                console.log("i----->" + i);
                                 table.sortOrder[this.id] = i;
                             }
                         });
@@ -991,17 +1061,19 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $.each(object, function (key, value) {
                     scope.draggedObject[value] = key;
                 });
+                console.log(scope.draggedObject);
                 scope.filterReturnItem = [];
+                console.log(scope.previewTableHeaderName);
                 angular.forEach(scope.previewTableHeaderName, function (value, key) {
-                    console.log(scope.previewTableHeaderName)
+//                    console.log(scope.previewTableHeaderName)
                     scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
-                        console.log(item.fieldName)
+//                        console.log(item.fieldName)
                         return scope.draggedObject.indexOf(item.displayName)
                     })
                 })
-                console.log(scope.filterReturnItem)
-                console.log(scope.draggedObject)
-            }
+                    console.log(scope.filterReturnItem)
+//                console.log(scope.draggedObject)
+                }
 
             scope.save = function (column) {
                 try {

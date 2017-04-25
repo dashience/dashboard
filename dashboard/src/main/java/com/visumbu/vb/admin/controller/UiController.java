@@ -149,8 +149,8 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidget tabWidget) {
-        return uiService.createTabWidget(tabId, tabWidget);
+    TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
+        return uiService.saveTabWidget(tabId, tabWidget);
     }
 
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")

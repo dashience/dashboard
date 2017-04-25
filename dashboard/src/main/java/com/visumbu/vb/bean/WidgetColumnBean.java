@@ -34,6 +34,7 @@ public class WidgetColumnBean {
     private String alignment;
     private Integer columnHide;
     private Boolean search;
+    private String groupField;
     
     public Integer getId() {
         return id;
@@ -227,9 +228,19 @@ public class WidgetColumnBean {
         this.search = search;
     }
 
+    public String getGroupField() {
+        return groupField;
+    }
+
+    public void setGroupField(String groupField) {
+        this.groupField = groupField;
+    }
+    
+
     @Override
     public String toString() {
         return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + '}';
     }    
+    
         
 }
