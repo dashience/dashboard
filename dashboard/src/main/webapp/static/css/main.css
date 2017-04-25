@@ -62,7 +62,9 @@
 .aqb-input-error {
     border-color: #b94a48;
 }
-
+.nav-pills > li.active > a:focus {
+    background-color: rgb(98, 203, 49)! important;
+}
 /* animate enter/leave */
 
 .aqb-animate-enter.ng-enter,
