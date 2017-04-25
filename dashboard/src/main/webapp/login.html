@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="hpanel">
-                        <h5 class="text-center text-danger">{{errorMessage}}</h5>
+                        <h5 class="text-center text-danger" ng-show="showErrorMessage">{{errorMessage}}</h5>
                         <div class="panel-body">
                             <form ng-submit="submitForm()" name="adminForm">
                                 <div class="form-group">
