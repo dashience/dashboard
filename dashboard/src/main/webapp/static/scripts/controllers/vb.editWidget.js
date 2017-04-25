@@ -254,6 +254,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.y1Column = [];
         $scope.y2Column = [];
         $scope.tickerItem = []
+        $scope.groupingFields = []
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
         widget.previewUrl = widget.dataSetId;//widget.directUrl;
@@ -292,6 +293,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
                 }
+            }
+            if(val.groupField){
+                console.log(val)
+                $scope.groupingFields.push(val)
             }
         });
     };
