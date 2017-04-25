@@ -83,6 +83,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
@@ -119,6 +123,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
@@ -151,6 +159,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
@@ -183,6 +195,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
@@ -214,6 +230,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
@@ -245,6 +265,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
@@ -276,6 +300,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
@@ -307,6 +335,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'year',
                     name: 'year'
+                },
+                {
+                  type: 'none',
+                  name: 'None'  
                 }
             ],
             productSegments: [
