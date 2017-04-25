@@ -35,6 +35,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    }
 //    getWidgetItem();
 
+
+    $scope.tags=["test","test1"]
+
+//    $http.get('admin/user/account').success(function (response) {
+//        $scope.emailAccounts = [];
+//        $scope.accounts = response;
+//        angular.forEach($scope.accounts, function (val, key) {
+//            $scope.emailAccounts.push(val.agencyId.email)
+//            $scope.tags = unique($scope.emailAccounts);
+//        });
+//    });
+
+
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},

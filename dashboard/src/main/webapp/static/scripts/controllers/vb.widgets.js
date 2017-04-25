@@ -2087,6 +2087,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.groupField) {
+                    console.log(value.groupField)
                     groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType});
                 }
             });
@@ -2221,13 +2222,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 }
                             })
                             //chartData = scope.orderData(chartData, sortFields);
-                        }
-
-                        var groups = [];
-                       // console.log("y1axis:", yAxis);
-                       // console.log("y21axis:", yAxis);
-                        groups.push({yAxis});
-                        console.log("groups:", yAxis);
+                        }                        
 
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
@@ -2248,7 +2243,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                         angular.forEach(groupingFields, function (value, key) {
                             groupingNames.push(value.fieldName)
                         })
-                        //console.log(groupingFields);
+                        console.log(groupingNames);
                         var chart = c3.generate({
                             bindto: element[0],
                             data: {
@@ -2256,7 +2251,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 columns: columns,
                                 labels: labels,
                                 type: 'bar',
-                                groups: [[groupingFields]],
+                                groups: [groupingNames],
                                 axes: axes
                             },
 

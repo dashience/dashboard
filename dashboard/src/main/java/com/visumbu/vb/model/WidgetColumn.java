@@ -120,9 +120,9 @@ public class WidgetColumn implements Serializable {
     @Column(name = "search")
     private Boolean search;
     
-//    @Size(max = 128)
-//    @Column(name = "group_field")
-//    private String groupField;
+    @Size(max = 128)
+    @Column(name = "group_field")
+    private String groupField;
 
     public WidgetColumn() {
     }
@@ -315,13 +315,13 @@ public class WidgetColumn implements Serializable {
         this.search = search;
     }
 
-//    public String getGroupField() {
-//        return groupField;
-//    }
-//
-//    public void setGroupField(String groupField) {
-//        this.groupField = groupField;
-//    }
+    public String getGroupField() {
+        return groupField;
+    }
+
+    public void setGroupField(String groupField) {
+        this.groupField = groupField;
+    }
     
     
     
