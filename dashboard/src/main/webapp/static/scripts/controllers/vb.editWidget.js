@@ -17,7 +17,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 $scope.editWidget(value)
             })
         } else {
-            $scope.editWidgetData.push({width: 6, columns: []})
+            $scope.editWidgetData.push({width: 12, columns: []})
         }
     });
 
@@ -1022,9 +1022,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         return scope.draggedObject.indexOf(item.displayName)
                     })
                 })
-                console.log(scope.filterReturnItem)
+                    console.log(scope.filterReturnItem)
 //                console.log(scope.draggedObject)
-            }
+                }
 
             scope.save = function (column) {
                 try {

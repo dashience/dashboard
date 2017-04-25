@@ -1377,9 +1377,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.previewData = null;
         $scope.dataSetFlag = false;
     };
-    
-    $scope.clearTable = function (){
-        $scope.dataSet = "";        
+
+    $scope.clearTable = function () {
+        $scope.dataSet = "";
     };
 
     $scope.editDataSet = function (dataSet) {
@@ -1477,6 +1477,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.previewDataSet = function (dataSet) {
         $scope.showPreviewChart = true;
         $scope.previewData = dataSet;
+        $scope.previewData = null;
+        $timeout(function () {
+            $scope.previewData = dataSet;
+        }, 50);
     };
 
     $scope.refreshDataSet = function (dataSet) {

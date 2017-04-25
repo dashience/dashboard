@@ -47,15 +47,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
 //        };
 //        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            $state.go("index.editWidget", {
-                productId: $stateParams.productId,
-                accountId: $stateParams.accountId,
-                accountName: $stateParams.accountName,
-                tabId: $stateParams.tabId,
-                widgetId: 0,//response.id,
-                startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
-            });
+        $state.go("index.editWidget", {
+            productId: $stateParams.productId,
+            accountId: $stateParams.accountId,
+            accountName: $stateParams.accountName,
+            tabId: $stateParams.tabId,
+            widgetId: 0, //response.id,
+            startDate: $stateParams.startDate,
+            endDate: $stateParams.endDate
+        });
 //        });
     };
     $scope.removeBackDrop = function () {
@@ -181,23 +181,49 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
-        if (expandchart == 'ticker') {
-            if (widget.width == 4) {
-                widget.width = widget.width + 2;
-            } else if (widget.width == 6) {
-                widget.width = widget.width + 6;
-            } else {
-                widget.width = 4;
-            }
+        if (widget.width == 3) {
+            widget.width = widget.width + 1;
+        } else if (widget.width == 4) {
+            widget.width = widget.width + 2;
+        } else if (widget.width == 6) {
+            widget.width = widget.width + 2;
+        } else {
+            widget.width = 12;
         }
-        if (expandchart != 'ticker') {
-            if (widget.width == 12) {
-                widget.width = widget.width - 6;
-            } else if (widget.width == 6) {
-                widget.width = widget.width - 2;
-            } else {
-                widget.width = 12;
-            }
+        $timeout(function () {
+            widget.chartType = expandchart;
+            var data = {
+                id: widget.id,
+                chartType: widget.chartType,
+                widgetTitle: widget.widgetTitle,
+                widgetColumns: widget.columns,
+                dataSourceId: widget.dataSourceId.id,
+                dataSetId: widget.dataSetId.id,
+                tableFooter: widget.tableFooter,
+                zeroSuppression: widget.zeroSuppression,
+                maxRecord: widget.maxRecord,
+                dateDuration: widget.dateDuration,
+                content: widget.content,
+                width: widget.width
+            };
+
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+            });
+        }, 50);
+
+    };
+    $scope.reduceWidget = function (widget) {
+        var expandchart = widget.chartType;
+        widget.chartType = null;
+
+        if (widget.width == 12) {
+            widget.width = widget.width - 4;
+        } else if (widget.width == 8) {
+            widget.width = widget.width - 2;
+        } else if (widget.width == 6) {
+            widget.width = widget.width - 2;
+        } else {
+            widget.width = 3;
         }
 
         $timeout(function () {
@@ -221,8 +247,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }, 50);
 
-    };
+    }
 });
+
 
 app.directive('dateRangePicker', function () {
     return{

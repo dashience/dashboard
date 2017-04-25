@@ -173,7 +173,8 @@
 
                         <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
                             <label>Query</label>
-                            <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>
+                            <!--<textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>-->
+                            <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
                         </div>
 
                         <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https'">
