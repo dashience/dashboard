@@ -225,12 +225,12 @@
         margin-bottom: 10px;
     }
 
-/*Favorites*/
+    /*Favorites*/
     .red {
         color:red;
     }
     .green {
-         color:#555;
+        color:#555;
     }
     .fa-heart{
         font-size: 13px !important;
@@ -319,13 +319,14 @@
                         <div class="panel-tools">
                             <div> 
                                 <!--<i class="fa fa-heart-o" ng-click="favourites = !favourites; favouritesNew(favourites)" ng-class="{'red' : favourites, 'green' : !favourites}"></i>-->
-                                 <i class="fa fa-heart"  ng-click="favourites = !favourites;favouritesNew(favourites)" title="Favourites" ng-class="{'red' : favourites,'green':!favourites}"></i>
-                                <a ng-show="showCreateReport" ng-click="showReportList[widget.id] = true;" title="Report"><i class="fa fa-file-text"></i></a>
-                                <a ng-if="widget.chartType === 'line'" class="refresh" ng-click="directiveLineFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'bar'" class="refresh" ng-click="directiveBarFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'pie'" class="refresh" ng-click="directivePieFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'area'" class="refresh" ng-click="directiveAreaFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'table'" class="refresh" ng-click="directiveTableFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                                <i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>
+                                <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
+                                <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
                                 <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
                                 <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
@@ -391,7 +392,7 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
                         <div>
-                            <div stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)"stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div>
                     </div>
                 </div>
@@ -466,6 +467,6 @@
         </div>
     </div>
 </div>
-	
 
-	
+
+
