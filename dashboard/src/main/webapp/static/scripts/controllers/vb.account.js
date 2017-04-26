@@ -15,6 +15,22 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         return $scope.tab === tabNum;
     };
 
+    $scope.account = {logo: "static/img/logos/deeta-logo.png"}; //Logo Upload
+    $scope.imageUpload = function (event) {
+        var files = event.target.files;
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var reader = new FileReader();
+            reader.onload = $scope.imageIsLoaded;
+            reader.readAsDataURL(file);
+        }
+    };
+    $scope.imageIsLoaded = function (e) {
+        $scope.$apply(function () {
+            $scope.account.logo = e.target.result;
+        });
+    };
+
     function getAccountProperty(account) {
         $http.get('admin/user/property/' + account.id).success(function (response) {
             $scope.properties = response;
@@ -43,14 +59,19 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     getAccount();
 
     $scope.saveAccount = function (account) {
+        if ($scope.account.logo === "static/img/logos/deeta-logo.png") {
+            $scope.account.logo = "";
+        }
+        console.log(account)
+        account.logo = $scope.account.logo;
         $http({method: account.id ? 'PUT' : 'POST', url: 'admin/user/account', data: account}).success(function (response) {
-
             getAccount();
             if (response.status == true) {
-                $scope.account = "";
+                $scope.account = {logo: "static/img/logos/deeta-logo.png"};
             } else {
                 if (!response.message) {
                     $scope.account = "";
+                    $scope.account = {logo: "static/img/logos/deeta-logo.png"};
                     $scope.selectedRow = null;
                     return;
                 }
@@ -77,7 +98,8 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             accountName: account.accountName,
             geoLocation: account.geoLocation,
             description: account.description,
-            agencyId: account.agencyId
+            agencyId: account.agencyId,
+            logo: account.logo ? account.logo : "static/img/logos/deeta-logo.png"
         };
         $scope.account = data;
         $scope.selectedRow = index;
@@ -85,7 +107,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     };
 
     $scope.clearAccount = function () {
-        $scope.account = "";
+        $scope.account = {logo: "static/img/logos/deeta-logo.png"};
     };
 
     $scope.deleteAccount = function (account, index) {

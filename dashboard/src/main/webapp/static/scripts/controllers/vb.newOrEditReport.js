@@ -1,4 +1,4 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -84,7 +84,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         })
         console.log($scope.reportWidgets)
     });
-    
+
     $scope.downloadReportPdf = function (report) {
         var url = "admin/proxy/downloadReport/" + $stateParams.reportId + "?dealerId=" + $stateParams.accountId + "&location=" + $stateParams.accountId + "&accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
@@ -123,6 +123,78 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $stateParams.reportId = $scope.reports[$scope.reports.length - 1].id;
         });
     };
+
+    $scope.expandWidget = function (widget) {
+        var expandchart = widget.chartType;
+        widget.chartType = null;
+        if (widget.width == 3) {
+            widget.width = widget.width + 1;
+        } else if (widget.width == 4) {
+            widget.width = widget.width + 2;
+        } else if (widget.width == 6) {
+            widget.width = widget.width + 2;
+        } else {
+            widget.width = 12;
+        }
+        $timeout(function () {
+            widget.chartType = expandchart;
+            var data = {
+                id: widget.id,
+                chartType: widget.chartType,
+                widgetTitle: widget.widgetTitle,
+                widgetColumns: widget.columns,
+                dataSourceId: widget.dataSourceId.id,
+                dataSetId: widget.dataSetId.id,
+                tableFooter: widget.tableFooter,
+                zeroSuppression: widget.zeroSuppression,
+                maxRecord: widget.maxRecord,
+                dateDuration: widget.dateDuration,
+                content: widget.content,
+                width: widget.width
+            };
+
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+//                    $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+            });
+        }, 50);
+
+    };
+    $scope.reduceWidget = function (widget) {
+        var expandchart = widget.chartType;
+        widget.chartType = null;
+
+        if (widget.width == 12) {
+            widget.width = widget.width - 4;
+        } else if (widget.width == 8) {
+            widget.width = widget.width - 2;
+        } else if (widget.width == 6) {
+            widget.width = widget.width - 2;
+        } else {
+            widget.width = 3;
+        }
+
+        $timeout(function () {
+            widget.chartType = expandchart;
+            var data = {
+                id: widget.id,
+                chartType: widget.chartType,
+                widgetTitle: widget.widgetTitle,
+                widgetColumns: widget.columns,
+                dataSourceId: widget.dataSourceId.id,
+                dataSetId: widget.dataSetId.id,
+                tableFooter: widget.tableFooter,
+                zeroSuppression: widget.zeroSuppression,
+                maxRecord: widget.maxRecord,
+                dateDuration: widget.dateDuration,
+                content: widget.content,
+                width: widget.width
+            };
+
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+            });
+        }, 50);
+
+    }
 
 //    $scope.addReportWidget = function (newWidget) {                                     //Add new Report Widget
 //        var data = {

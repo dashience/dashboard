@@ -106,7 +106,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.favourites = false;
-    console.log($scope.favourites)
 
     $scope.favouritesNew = function (favourites) {
         if (favourites == "true")
@@ -1510,7 +1509,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
         template: '<div ng-show="loadingPie" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyPie" class="text-center">{{pieEmptyMessage}}</div>',
         scope: {
-            setPieChartFn: '&',
             pieChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -1788,7 +1786,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
         template: '<div ng-show="loadingArea" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
         scope: {
-            setPieChartFn: '&',
             widgetId: '@',
             areaChartSource: '@',
             widgetColumns: '@',
@@ -2044,17 +2041,13 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             }
         }
     };
-})
-
-
-
+});
 app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingStackedBar" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyStackedBar" class="text-center">{{stackedBarEmptyMessage}}</div>',
         scope: {
-            setPieChartFn: '&',
             widgetId: '@',
             stackedBarChartSource: '@',
             widgetColumns: '@',
@@ -2063,7 +2056,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
-            scope.loadingStackedBar = true;
+            scope.loadingBar = true;
             var yAxis = [];
             var columns = [];
             var xAxis;
@@ -2076,7 +2069,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             var startDate = "";
             var endDate = "";
             var sortFields = [];
-            var groupingFields = []
+            var groupingFields = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -2114,7 +2107,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.groupField) {
-                    console.log(value.groupField)
                     groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType});
                 }
             });
@@ -2191,6 +2183,15 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 });
                 return $filter('orderBy')(list, fieldsOrder);
             }
+
+            function maximumRecord(maxValue, list) {
+                var maxData;
+                if (maxValue.maxRecord > 0) {
+                    maxData = list.slice(0, maxValue.maxRecord);
+                }
+                return maxData;
+            }
+
             var stackedBarChartDataSource = JSON.parse(scope.stackedBarChartSource);
             if (scope.stackedBarChartSource) {
                 var url = "admin/proxy/getData?";
@@ -2225,39 +2226,48 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                         scope.hideEmptyStackedBar = true;
                     } else {
                         var loopCount = 0;
-                        var chartData;
+                        var sortingObj;
                         var chartMaxRecord = JSON.parse(scope.widgetObj)
-                        if (chartMaxRecord.maxRecord > 0) {
-                            chartData = response.data.slice(0, chartMaxRecord.maxRecord);
-                        } else {
-                            chartData = response.data;
-                            console.log(chartData);
-                        }
+                        var chartData = response.data;
                         if (sortFields.length > 0) {
                             angular.forEach(sortFields, function (value, key) {
                                 if (value.fieldType != 'day') {
-                                    chartData = scope.orderData(chartData, sortFields);
+//                                    chartData = scope.orderData(chartData, sortFields);
+                                    sortingObj = scope.orderData(chartData, sortFields);
+                                    if (chartMaxRecord.maxRecord) {
+                                        console.log(chartMaxRecord.maxRecord)
+                                        chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                    } else {
+                                        chartData = sortingObj;
+                                    }
                                 } else {
                                     var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                                    chartData = orderByFilter(chartData, function (item) {
+                                    sortingObj = orderByFilter(chartData, function (item) {
                                         if (value.sortOrder === 'asc') {
                                             return dateOrders.indexOf(item[value.fieldName]);
                                         } else if (value.sortOrder === 'desc') {
                                             return dateOrders.indexOf(item[value.fieldName] * -1);
                                         }
                                     });
-                                }
-                            })
-                            //chartData = scope.orderData(chartData, sortFields);
-                        }                        
 
+                                    if (chartMaxRecord.maxRecord) {
+                                        chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                    } else {
+                                        chartData = sortingObj;
+                                    }
+                                }
+                            });
+                        }
+//                        chartData = orderData(chartData, sortFields);
                         xTicks = [xAxis.fieldName];
                         xData = chartData.map(function (a) {
                             xTicks.push(loopCount);
                             loopCount++;
                             return a[xAxis.fieldName];
                         });
+
                         columns.push(xTicks);
+
                         angular.forEach(yAxis, function (value, key) {
                             ySeriesData = chartData.map(function (a) {
                                 return a[value.fieldName] || "0";
@@ -2265,12 +2275,10 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             ySeriesData.unshift(value.displayName);
                             columns.push(ySeriesData);
                         });
-                        console.log(groupingFields);
                         var groupingNames = []
                         angular.forEach(groupingFields, function (value, key) {
                             groupingNames.push(value.fieldName)
                         })
-                        console.log(groupingNames);
                         var chart = c3.generate({
                             bindto: element[0],
                             data: {
@@ -2281,7 +2289,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 groups: [groupingNames],
                                 axes: axes
                             },
-
                             color: {
                                 pattern: ['#62cb31', '#555555']
 
@@ -2311,18 +2318,16 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             }
         }
     };
+});
+
+app.filter('setDecimal', function () {
+    return function (input, places) {
+        if (isNaN(input))
+            return input;
+        var factor = "1" + Array(+(places > 0 && places + 1)).join("0");
+        return Math.round(input * factor) / factor;
+    };
 })
-
-
-
-        .filter('setDecimal', function () {
-            return function (input, places) {
-                if (isNaN(input))
-                    return input;
-                var factor = "1" + Array(+(places > 0 && places + 1)).join("0");
-                return Math.round(input * factor) / factor;
-            };
-        })
         .filter('gridDisplayFormat', function () {
             return function (input, formatString) {
                 if (formatString) {

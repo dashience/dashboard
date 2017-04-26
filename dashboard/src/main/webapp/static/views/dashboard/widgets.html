@@ -1,3 +1,4 @@
+
 <style>
     .ui-select-bootstrap .ui-select-toggle > .caret {
         position: absolute;
@@ -229,10 +230,11 @@
         color:red;
     }
     .green {
-         color:green;
+         color:#555;
     }
     .fa-heart{
-        font-size: 15px !important;
+        font-size: 13px !important;
+        cursor:pointer;
     }
 </style>
 <div class="row add-widget">
@@ -283,8 +285,9 @@
             <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
                     <div class="panel-tools">
-                        <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
-                        <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                        <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
+                        <a ng-if="permission.deleteWidget === true;" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
                         <div id="delete{{widget.id}}" class="modal">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -302,24 +305,30 @@
                                 </div>
                             </div>
                         </div>
-                        <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)"><i class="fa fa-angle-left"></i></a>
-                        <a ng-if="widget.width != 12" ng-click="expandWidget(widget)"><i class="fa fa-angle-right"></i></a>
+                        <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
+                        <a ng-if="widget.width != 12" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
                     </div>
-                    <div ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+                    <div set-Ticker-Fn="setTickerFn(tickerFn)" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
                 </div>
             </div>
         </div>
         <div ng-if="widget.chartType != 'ticker'">
             <div class="col-md-{{widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
-                <div ui-gridster-item="widget" class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget"> 
+                <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget">
                     <div class="panel-heading">
                         <div class="panel-tools">
-                            <div>  
+                            <div> 
                                 <!--<i class="fa fa-heart-o" ng-click="favourites = !favourites; favouritesNew(favourites)" ng-class="{'red' : favourites, 'green' : !favourites}"></i>-->
-                                 <i class="fa fa-heart"  ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>
-                                <a ng-show="showCreateReport" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a> 
-                                <a ng-if="permission.addWidget === true;" class="edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
-                                <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                                 <i class="fa fa-heart"  ng-click="favourites = !favourites;favouritesNew(favourites)" title="Favourites" ng-class="{'red' : favourites,'green':!favourites}"></i>
+                                <a ng-show="showCreateReport" ng-click="showReportList[widget.id] = true;" title="Report"><i class="fa fa-file-text"></i></a>
+                                <a ng-if="widget.chartType === 'line'" class="refresh" ng-click="directiveLineFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'bar'" class="refresh" ng-click="directiveBarFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'pie'" class="refresh" ng-click="directivePieFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'area'" class="refresh" ng-click="directiveAreaFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'table'" class="refresh" ng-click="directiveTableFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                                <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
+                                <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
+                                <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
                                 <div id="delete{{widget.id}}" class="modal">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -337,39 +346,39 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)"><i class="fa fa-angle-left"></i></a>
-                                <a ng-if="widget.width != 12" ng-click="expandWidget(widget)"><i class="fa fa-angle-right"></i></a>
+                                <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
+                                <a ng-if="widget.width != 12" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
                             </div>
                         </div>
 
-                        <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span> 
+                        <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>
                         <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
 
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'line'">
                         <div>
-                            <div line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
-                        </div> 
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                        </div>
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'bar'">
                         <div>
-                            <div bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
-                        </div> 
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                        </div>
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
-                            <div pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
-                        </div> 
+                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                        </div>
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'area'">
                         <div>
-                            <div area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div>
                     </div>
                     <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
                             <div id="changes-height" class="project-list">
-                                <div dynamic-Table pdf-function="addToPdf(test)" dynamic-Table-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Obj="{{widget}}" table-Footer="{{widget.tableFooter}}" widget-Columns="{{widget.columns}}"></div> 
+                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" dynamic-Table pdf-function="addToPdf(test)" dynamic-Table-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Obj="{{widget}}" table-Footer="{{widget.tableFooter}}" widget-Columns="{{widget.columns}}"></div>
                             </div>
                         </div>
                     </div>
@@ -386,7 +395,7 @@
                         </div>
                     </div>
                 </div>
-            </div>   
+            </div>  
 
             <div class="report-bottomMenu pull-right" ng-show="showReportList[widget.id]">
                 <div class="report-menuHeader">
@@ -452,8 +461,11 @@
                         <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
                         <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right">Add</button>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     </div>
 </div>
+	
+
+	

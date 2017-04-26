@@ -37,7 +37,7 @@
         height: auto! important; 
     }
 </style>
-<body class="fixed-navbar">
+<div class="fixed-navbar" ng-controller="HeaderController">
     <div id="logo">
         <span>
             <img src="static/img/logos/dashience-logo.jpg" width="80" />
@@ -47,41 +47,12 @@
 
     <div id="logo">
         <span>
-            <img src="static/img/logos/deeta-logo.png" width="100" />
+            <img class="img-responsive img-thumbnail client-logo" ng-src="{{accountLogo}}" />
+            <!--<img src="static/img/logos/deeta-logo.png" width="100" />-->
         </span>
     </div>
 
-    <!--<section class="content-header header-menu" ng-controller="HeaderController">
-        <ol class="breadcrumb">
-            <li>
-            <ui-select ng-model="selectDealer.selected" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                <ui-select-match placeholder="Select Dealer...">{{$select.selected.dealerName}}</ui-select-match>
-                <ui-select-choices repeat="dealer in dealers | filter: $select.search">
-                    <span ng-click="getDealerId(dealer); loadNewUrl()" ng-bind-html="dealer.dealerName | highlight: $select.search"></span>
-                    
-                </ui-select-choices>
-            </ui-select>
-            </li>
-            <li>              
-                <a class="pull-right" id="daterange-btn">
-                   
-                    <span class="date-border">
-                        {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
-                    </span>
-                </a>                   
-            </li>
-            <li> <span class="label label-info" ng-click="loadNewUrl()">Go</span></li>
-            <li class="pull-right user user-menu">
-                <a data-toggle="dropdown" class="logout">
-                    <i class="fa fa-user" style="font-size:20px;"></i> {{userName}}</a>
-                <ul class="dropdown-menu pull-left">
-                    <li><a href="admin/user/logout">Logout</a></li>
-                </ul>
-            </li>
-        </ol>
-    </section>-->
-    <nav role="navigation" ng-controller="HeaderController">
-        <!-- <div class="header-link hide-menu"><i class="fa fa-bars"></i></div>-->
+    <nav role="navigation">
         <div class="small-logo">
             <span>
                 <img src="static/img/logos/dashience-logo.jpg" width="80" />
@@ -89,20 +60,20 @@
         </div>
         <div class="small-logo">
             <span>
-                <img src="static/img/logos/deeta-logo.png" width="100" />
+                <img class="img-responsive img-thumbnail client-logo" ng-src="{{accountLogo}}" width="100" />
+                <!--<img src="static/img/logos/deeta-logo.png" width="100" />-->
             </span>
         </div>
-<!--        <div class="mobile-menu">
-
-            <div id="animations">
-
-                <button type="button" class = "navbar-toggle mobile-menu-toggle" data-animation="am-slide-left" data-placement="left" bs-aside="aside">
+<!--       <nav class = "navbar-default" role = "navigation">
+            <div class = "navbar-header" id="animations">
+                <button type="button" class="navbar-toggle mobile-menu-toggle" data-animation="am-slide-left" data-placement="left" bs-aside="aside">
                     <span class = "sr-only">Toggle navigation</span>
-                            <span class = "icon-bar"></span>
-                            <span class = "icon-bar"></span>
-                            <span class = "icon-bar"></span><br></button>
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span><br>
+                </button>
             </div>
-        </div>-->
+        </nav>-->
 
         <!--        <div class="mobile-menu">
                     <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
@@ -214,23 +185,6 @@
 
 
         <div class="navbar-right">
-
-            <!--            <ul class="nav navbar-nav navbar-left">
-                            <li>
-                                <a class="pull-right" id="daterange-btn">
-                                    <span class="date-border">
-                                        {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
-                                    </span>
-                                </a>  
-                            </li>
-                            <li class="button-submit"> <span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
-                        </ul>-->
-
-
-
-
-
-
             <ul class="nav navbar-nav no-borders">
                 <li class="dropdown">
                     <a class="pull-right" id="daterange-btn">
@@ -344,6 +298,15 @@
                                     </li>
                                 </ul>
                             </div>
+                            <div>
+                                <ul class="col-lg-3 icon-dash"> 
+                                    <li class="product-dashboard-icon" ng-click="setParams()">
+                                        <a data-ui-sref="index.tag({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <i class="fa fa-tag text-info" aria-hidden="true"></i> <h5>Tag</h5>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </li>
@@ -364,4 +327,4 @@
             </ul>
         </div>
     </nav>
-</body>
+</div>

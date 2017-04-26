@@ -600,7 +600,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
             dateDuration: widget.dateDuration,
-            content: widget.content
+            content: widget.content,
+            width: widget.width
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
@@ -887,7 +888,8 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state) {
                     zeroSuppression: JSON.parse(scope.reportTable).zeroSuppression,
                     maxRecord: JSON.parse(scope.reportTable).maxRecord,
                     dateDuration: widget.dateDuration,
-                    content: widget.content
+                    content: widget.content,
+                    width: widget.width
                 };
 
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
