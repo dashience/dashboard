@@ -1,25 +1,4 @@
 app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter) {
-//    $(document).ready(function (e) {
-//        $("#customDateRange").click(function (e) {
-//            e.stopPropagation();
-//            $(".scheduler-list-style").show();
-//        });
-//        $(".dropdown").click(function (e) {
-//            $(".scheduler-list-style").show();
-//        });
-//         $(document).on("click", function (e) {
-//            e.stopPropagation();
-//            $(".scheduler-list-style").hide();
-//        });
-//        $("body").on("click", function (e) {
-//            $(".scheduler-list-style").show();
-//        });
-//        
-//        $(".ranges ul > li").on("click",function(e){
-//            $(".dropdown button").text($(this).text());
-//        });
-//    });
-
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;

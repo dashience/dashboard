@@ -20,85 +20,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $(".scheduler-list-style").hide();
         });
 
-
-//        $(".scheduler-list-style li").addClass("pickers");
-//        $(".scheduler-list-style li:eq(0)").removeClass("pickers");
-//////
-//        $(".custom-picker").click(function (e) {
-//            alert();
-////            e.stopPropogation();
-//            $(this).parent().parent().parent().addClass("drop");
-//            var elementValidate = $(this).parent().parent().parent().hasClass("drop");
-//            if (elementValidate == true)
-//            {
-//                alert();
-//
-//                $(".scheduler-list-style").css("display", "block !important");
-//            } else {
-//                alert("fasle");
-//                $(".scheduler-list-style").css("display", "none !important");
-//            }
-//        });
-////
-////            $(".scheduler-list-style li").click(function(e){
-////                
-////                e.stopPropogation();
-////            })
-//
-//
-//
-//
-//        $(".dropdown button").click(function (e) {
-//            $(this).addClass("drop");
-//            var elementValidate = $(this).hasClass("drop");
-//            if (elementValidate == true)
-//            {
-//
-//                $(".scheduler-list-style").css("display", "block !important");
-//            } else {
-//
-//                $(".scheduler-list-style").css("display", "none !important");
-//            }
-//        });
-//
-//        $(".pickers").click(function (e) {
-//            $(this).parent().parent().removeClass("drop");
-//            var elementValidate = $(this).parent().parent().hasClass("drop");
-//            if (elementValidate == true)
-//            {
-//
-//                $(".scheduler-list-style").css("display", "block !important");
-//            } else {
-//
-//                $(".scheduler-list-style").css("display", "none !important"); 
-//            }
-//        });
-//
-////        $('div.dropdown').on('click', function (event) {
-////            $(this).toggleClass("open");
-////        });
-////        $(".scheduler-list-style li").click(function (e) {
-//////                
-////            e.stopPropogation();
-////            $("div.dropdown").toggleClass("open")
-////        });
-////
-////        $('body').on('click', function (e) {
-////            if (!$('div.dropdown').is(e.target) && $('div.dropdown').has(e.target).length === 0 && $('.open').has(e.target).length === 0) {
-//////                $('div.dropdown').removeClass('open');
-////            }
-////        });
-
-
-
     });
 
-//    $scope.customPicker = function ()
-//    {
-//        $scope.pickertDropdown = false;
-//        var myEl = angular.element(document.querySelector('.dropdown'));
-//        myEl.addClass('alpha');
-//    };
 
 
     $scope.editWidgetData = []
