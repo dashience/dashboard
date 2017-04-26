@@ -168,9 +168,9 @@
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
 
-<!--        <div class="pull-right">
-            <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-        </div>-->
+        <!--        <div class="pull-right">
+                    <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
+                </div>-->
 
         <div class="row col-md-12">
             <div class="col-lg-4">
@@ -311,8 +311,8 @@
                     </div>
                 </div>
             </div>    
-            
-             <div class="col-md-4">
+
+            <div class="col-md-4">
                 <label>Tags</label>
                 <div>
                     <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.tagName"  on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
@@ -325,277 +325,329 @@
             </div>
         </div>
 
-        <div ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
-            <div class="col-lg-12 table-deeta edit-widget">
-                <div class="hpanel hgreen border-table"> 
-                    <div class="panel-heading">
-                        <div class="edit-widget-space">
-                            <div ng-hide='editPreviewTitle'> 
-                                <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a>
-                            </div> 
-                            <div class="col-sm-10" ng-show='editPreviewTitle'>                           
-                                <input  class='form-control' type='text' ng-model='widget.widgetTitle'>
-                            </div>
-                            <div class='col-sm-2 pull-right' ng-show='editPreviewTitle'>
-                                <a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>
-                                <a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>
+
+
+
+        <div class="nav-tabs-custom col-md-12">
+            <ul class="nav nav-tabs">
+                <li ng-class="{ active: isSet(1) }">
+                    <a href ng-click="setTab(1)"> Config
+                    </a>
+                </li>
+                <li ng-class="{ active: isSet(2) }">
+                    <a href ng-click="setTab(2)"> Filter
+                    </a>
+                </li>
+                <!--            <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
+                                <a href ng-click="setTab(3)"> User
+                                </a>
+                            </li>-->
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div ng-show="isSet(1)">
+                <div class="col-md-12">
+                    <div class="row edit-widget">
+                        <div ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
+                            <div class="col-lg-12 table-deeta edit-widget">
+                                <div class="hpanel hgreen border-table"> 
+                                    <div class="panel-heading">
+                                        <div class="edit-widget-space">
+                                            <div ng-hide='editPreviewTitle'> 
+                                                <a class="title-ew" ng-click='editPreviewTitle = true;'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a>
+                                            </div> 
+                                            <div class="col-sm-10" ng-show='editPreviewTitle'>                           
+                                                <input  class='form-control' type='text' ng-model='widget.widgetTitle'>
+                                            </div>
+                                            <div class='col-sm-2 pull-right' ng-show='editPreviewTitle'>
+                                                <a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>
+                                                <a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">                    
+
+                                        <div class="col-md-6" ng-if="editChartType != 'ticker'">
+                                            <div class="form-group">
+                                                <div class="col-md-12" ng-if="editChartType != 'pie'">
+                                                    <label>Select X-Axis</label>
+                                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                                            class="form-control" ng-model="xColumn" 
+                                                            ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                                            ng-change="selectX1Axis(widget, xColumn)">
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12" ng-show="editChartType == 'pie'">
+                                                    <label>Select X Axis</label>
+                                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                                            class="form-control" ng-model="selectPieChartXAxis" 
+                                                            ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                                            ng-change="selectPieChartX(widget, selectPieChartXAxis)">
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-12" ng-show="editChartType == 'pie'">
+                                                    <label>Select Y Axis</label>
+                                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                                            class="form-control" ng-model="selectPieChartYAxis" 
+                                                            ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                                            ng-change="selectPieChartY(widget, selectPieChartYAxis)">
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" ng-if="editChartType != 'pie'">
+                                                <div class="col-md-12">
+                                                    <label>Select Y1-Axis</label>
+                                                    <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByY1Column(widget,$item, y1Column)">
+                                                        <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
+                                                        <ui-select-choices repeat="y1axis in collectionFields  | filter:$select.search">
+                                                            {{y1axis.displayName}}
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" ng-if="editChartType != 'pie'">
+                                                <div class="col-md-12">
+                                                    <label>Select Y2-Axis</label>
+                                                    <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
+                                                        <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
+                                                        <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
+                                                            {{y2axis.displayName}}
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" ng-if="showAdvanceOptions == true">
+                                                <div class="col-md-12">
+                                                    <label>Format</label>                                 
+                                                    <table class="table table-bordered table-responsive">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Field Name</th>
+                                                                <th>Display Name</th>
+                                                                <th>Format</th>
+                                                                <th>Sort</th>
+                                                                <th>Field Type</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="columnList in widget.columns">
+                                                                <td>{{columnList.fieldName}}</td>
+                                                                <td>
+                                                                    <div>
+                                                                        <input type="text" class="form-control" ng-model="columnList.displayName">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' ng-change="setChartFormat(widget, columnList)">
+                                                                        <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
+                                                                        <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td>
+                                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' ng-change="setChartFormat(widget, columnList)">
+                                                                        <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" ng-show="editChartType == 'ticker'">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Ticker Items</label>
+                                                    <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" on-select="ticker(widget, tickerItem)" on-remove="removedByTicker(widget,$item,tickerItem)">
+                                                        <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
+                                                        <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
+                                                            {{currentColumn.displayName}}
+                                                        </ui-select-choices>
+                                                    </ui-select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <label>Format</label>
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <td>Field Name</td>
+                                                                <td>Display Name</td>
+                                                                <td>Format</td>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="tickerItems in widget.columns">
+                                                                <td>{{tickerItems.displayName}}</td>
+                                                                <td>
+                                                                    <div>
+                                                                        <input type="text" class="form-control" ng-model="tickerItems.displayName">
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItems.displayFormat' ng-change="tickerFormat(widget, tickerItems)">
+                                                                        <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <div class="form-group" ng-if="editChartType != 'ticker'">
+                                                <div>
+                                                    <label>Max Record</label>
+                                                    <input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group" ng-show="editChartType == 'stackedbar'">
+                                                <label>Grouping</label>
+                                                <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, groupingFields)">
+                                                    <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
+                                                    <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
+                                                        {{group.displayName}}
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+
+                                            <div ng-if="editChartType === 'ticker'">
+                                                <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
+                                            </div>
+                                            <div ng-if="editChartType === 'line'">
+                                                <div>
+                                                    <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                </div>
+                                            </div>
+                                            <div ng-if="editChartType === 'area'">
+                                                <div>
+                                                    <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                </div>
+                                            </div>
+                                            <div ng-if="editChartType === 'bar'">
+                                                <div>
+                                                    <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                </div>
+                                            </div>
+                                            <div ng-if="editChartType === 'pie'">
+                                                <div>
+                                                    <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                </div>                            
+                                            </div> 
+                                            <div ng-if="editChartType === 'stackedbar'">
+                                                <div>
+                                                    <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                </div>                            
+                                            </div>
+                                        </div>
+
+
+                                    </div> 
+                                    <div class='panel-footer'>
+                                        <div>
+                                            <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
+                                            <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="panel-body">                    
-
-                        <div class="col-md-6" ng-if="editChartType != 'ticker'">
-                            <div class="form-group">
-                                <div class="col-md-12" ng-if="editChartType != 'pie'">
-                                    <label>Select X-Axis</label>
-                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
-                                            class="form-control" ng-model="xColumn" 
-                                            ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
-                                            ng-change="selectX1Axis(widget, xColumn)">
-                                    </select>
-                                </div>
-                                <div class="col-md-12" ng-show="editChartType == 'pie'">
-                                    <label>Select X Axis</label>
-                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
-                                            class="form-control" ng-model="selectPieChartXAxis" 
-                                            ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
-                                            ng-change="selectPieChartX(widget, selectPieChartXAxis)">
-                                    </select>
-                                </div>
-                                <div class="col-md-12" ng-show="editChartType == 'pie'">
-                                    <label>Select Y Axis</label>
-                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
-                                            class="form-control" ng-model="selectPieChartYAxis" 
-                                            ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
-                                            ng-change="selectPieChartY(widget, selectPieChartYAxis)">
-                                    </select>
+                        <div class="row edit-widget" ng-if="editChartType === 'table'">
+                            <div class="col-lg-12">
+                                <div class="preview-table">
+                                    <div widget-Preview-Table 
+                                         preview-Table-List='{{collectionFields}}'
+                                         preview-Urls='{{previewChartUrl}}' 
+                                         preview-Columns='{{widget.columns}}' 
+                                         preview-Widget="{{previewColumn}}" 
+                                         preview-Widget-Table="{{widget}}"
+                                         aggregations-Types="{{selectAggregations}}"
+                                         group-Priorities="{{selectGroupPriorities}}"
+                                         sorting-Fields="{{sorting}}"
+                                         display-Formats="{{formats}}"
+                                         display-Alignments="{{alignments}}"
+                                         hide-Options="{{hideOptions}}"
+                                         field-Types="{{fieldTypes}}">
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="form-group" ng-if="editChartType != 'pie'">
-                                <div class="col-md-12">
-                                    <label>Select Y1-Axis</label>
-                                    <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByY1Column(widget,$item, y1Column)">
-                                        <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
-                                        <ui-select-choices repeat="y1axis in collectionFields  | filter:$select.search">
-                                            {{y1axis.displayName}}
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
-                            </div>
-
-                            <div class="form-group" ng-if="editChartType != 'pie'">
-                                <div class="col-md-12">
-                                    <label>Select Y2-Axis</label>
-                                    <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
-                                        <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
-                                        <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
-                                            {{y2axis.displayName}}
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
-                                </div>
-                            </div>
-
-                            <div class="form-group" ng-if="showAdvanceOptions == true">
-                                <div class="col-md-12">
-                                    <label>Format</label>                                 
-                                    <table class="table table-bordered table-responsive">
-                                        <thead>
-                                            <tr>
-                                                <th>Field Name</th>
-                                                <th>Display Name</th>
-                                                <th>Format</th>
-                                                <th>Sort</th>
-                                                <th>Field Type</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="columnList in widget.columns">
-                                                <td>{{columnList.fieldName}}</td>
-                                                <td>
-                                                    <div>
-                                                        <input type="text" class="form-control" ng-model="columnList.displayName">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.displayFormat' ng-change="setChartFormat(widget, columnList)">
-                                                        <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
-                                                        <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' ng-change="setChartFormat(widget, columnList)">
-                                                        <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
-                        <div class="col-md-4" ng-show="editChartType == 'ticker'">
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label>Ticker Items</label>
-                                    <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" on-select="ticker(widget, tickerItem)" on-remove="removedByTicker(widget,$item,tickerItem)">
-                                        <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
-                                        <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
-                                            {{currentColumn.displayName}}
-                                        </ui-select-choices>
-                                    </ui-select>
+                        <div class="row" ng-if="editChartType === 'text'">
+                            <div class="col-sm-12">
+                                <div class="hpanel hgreen border-table">
+                                    <div class="panel-heading">
+                                        <div ng-hide='editPreviewTitle'> 
+                                            <span><a ng-click='editPreviewTitle = true'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a></span>
+                                        </div> 
+                                        <div ng-show='editPreviewTitle'>
+                                            <div class='col-sm-8'>
+                                                <input  class='form-control' type='text' ng-model='widget.widgetTitle'>
+                                            </div> 
+                                            <div class='col-sm-4'>
+                                                <a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>
+                                                <a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body" style="overflow: auto;height:350px;">
+                                        <div>
+                                            <textarea ck-Editor ng-model="widget.content" rows="10" cols="99"></textarea>
+                                        </div>  
+                                    </div>  
+                                    <div class='panel-footer'>
+                                        <div>
+                                            <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
+                                            <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label>Format</label>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <td>Field Name</td>
-                                                <td>Display Name</td>
-                                                <td>Format</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="tickerItems in widget.columns">
-                                                <td>{{tickerItems.displayName}}</td>
-                                                <td>
-                                                    <div>
-                                                        <input type="text" class="form-control" ng-model="tickerItems.displayName">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='tickerItems.displayFormat' ng-change="tickerFormat(widget, tickerItems)">
-                                                        <option ng-repeat='format in formats' value='{{format.value}}'>{{format.name}}</option>
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col-md-6">
-                            <div class="form-group" ng-if="editChartType != 'ticker'">
-                                <div>
-                                    <label>Max Record</label>
-                                    <input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">
-                                </div>
-                            </div>
-
-                            <div class="form-group" ng-show="editChartType == 'stackedbar'">
-                                <label>Grouping</label>
-                                <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, groupingFields)">
-                                    <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
-                                    <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
-                                        {{group.displayName}}
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-
-                            <div ng-if="editChartType === 'ticker'">
-                                <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
-                            </div>
-                            <div ng-if="editChartType === 'line'">
-                                <div>
-                                    <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
-                                </div>
-                            </div>
-                            <div ng-if="editChartType === 'area'">
-                                <div>
-                                    <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
-                                </div>
-                            </div>
-                            <div ng-if="editChartType === 'bar'">
-                                <div>
-                                    <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
-                                </div>
-                            </div>
-                            <div ng-if="editChartType === 'pie'">
-                                <div>
-                                    <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
-                                </div>                            
-                            </div> 
-                            <div ng-if="editChartType === 'stackedbar'">
-                                <div>
-                                    <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
-                                </div>                            
-                            </div>
-                        </div>
-
-
-                    </div> 
-                    <div class='panel-footer'>
-                        <div>
-                            <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                            <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-        </div>
-    </div>
-    <div class="row edit-widget" ng-if="editChartType === 'table'">
-        <div class="col-lg-12">
-            <div class="preview-table">
-                <div widget-Preview-Table 
-                     preview-Table-List='{{collectionFields}}'
-                     preview-Urls='{{previewChartUrl}}' 
-                     preview-Columns='{{widget.columns}}' 
-                     preview-Widget="{{previewColumn}}" 
-                     preview-Widget-Table="{{widget}}"
-                     aggregations-Types="{{selectAggregations}}"
-                     group-Priorities="{{selectGroupPriorities}}"
-                     sorting-Fields="{{sorting}}"
-                     display-Formats="{{formats}}"
-                     display-Alignments="{{alignments}}"
-                     hide-Options="{{hideOptions}}"
-                     field-Types="{{fieldTypes}}">
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="row" ng-if="editChartType === 'text'">
-        <div class="col-sm-12">
-            <div class="hpanel hgreen border-table">
-                <div class="panel-heading">
-                    <div ng-hide='editPreviewTitle'> 
-                        <span><a ng-click='editPreviewTitle = true'>{{widget.widgetTitle?widget.widgetTitle:"Widget Title"}}</a></span>
-                    </div> 
-                    <div ng-show='editPreviewTitle'>
-                        <div class='col-sm-8'>
-                            <input  class='form-control' type='text' ng-model='widget.widgetTitle'>
-                        </div> 
-                        <div class='col-sm-4'>
-                            <a ng-click='editPreviewTitle = false'><i class='fa fa-save'></i></a>
-                            <a ng-click='editPreviewTitle = false'><i class='fa fa-close'></i></a>
+            <div ng-show="isSet(2)">
+                <div class="row edit-widget">
+                    <div class="col-lg-12">
+                        <div class="aqb-search-form">
+                            <form name="searchForm" ng-submit="search(searchForm, $event)">
+                                <div class="aqb-search-form-body">
+                                    <div class="aqb-animate-combined" ng-repeat="group in searchContainer.groups| orderBy:'index'">
+                                        <div search-group
+                                             search-container="searchContainer"
+                                             groups="searchContainer.groups"
+                                             group-index="$index"
+                                             source-types="sourceTypes"
+                                             logical-operators="logicalOperators"></div>
+                                    </div>
+                                </div>
+                                <div class="aqb-search-form-footer">
+                                    <button type="submit" class="btn" ng-disabled="searchForm.$invalid">Search</button>
+                                </div>
+                            </form>
+                            <div ng-show="!!output">
+                                <pre ng-bind-html="output"></pre>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="panel-body" style="overflow: auto;height:350px;">
-                    <div>
-                        <textarea ck-Editor ng-model="widget.content" rows="10" cols="99"></textarea>
-                    </div>  
-                </div>  
-                <div class='panel-footer'>
-                    <div>
-                        <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                        <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
                     </div>
                 </div>
             </div>

@@ -33,11 +33,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.accounts = response;
         $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-        console.log()
         // $scope.name = $filter('filter')($scope.accounts, {id: response[0].id})[0];
         angular.forEach($scope.accounts, function (value, key) {
             if (value.accountId.id == $stateParams.accountId) {
-                console.log()
                 $scope.name = value;
 //        $scope.accountLogo;
             }
