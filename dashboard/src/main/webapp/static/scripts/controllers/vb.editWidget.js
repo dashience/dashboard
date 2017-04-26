@@ -1290,10 +1290,7 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
     this.$get = function demoDataFactory() {
         return new DemoData();
     };
-});
-
-
-       
+});       
 // ends query builder
 app.filter('xAxis', [function () {
         return function (chartXAxis) {

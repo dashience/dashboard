@@ -643,6 +643,9 @@
                                 <div class="aqb-search-form-footer">
                                     <button type="submit" class="btn" ng-disabled="searchForm.$invalid">Search</button>
                                 </div>
+                                <div>
+                                    <pre>{{jsonOutput}}</pre>
+                                </div>
                             </form>
                             <div ng-show="!!output">
                                 <pre ng-bind-html="output"></pre>
