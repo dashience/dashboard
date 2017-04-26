@@ -243,13 +243,14 @@
                 <label>Date Range</label>
                 <div>
                     <div>
-                        <button class="drop btn btn-default" type="button">{{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
+                        <button class="drop btn btn-default" type="button">
+                            {{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style ">
-                            <li ng-click="selectWidgetDuration('Custom', widget)"><a>Custom</a>
-                                <div class="col-md-12 custom-picker">
+                            <li ><a>Custom</a>
+                                <div class="col-md-12">
                                     <div>
-                                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                                        <a  class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
                                             <span class="date-border">
                                                 {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
                                             </span>
