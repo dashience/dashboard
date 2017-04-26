@@ -834,7 +834,7 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
 .provider('DemoData', function DemoDataProvider() {
 
     function DemoData() {
-       /* this.getObjectTypes = function () {
+       this.getObjectTypes = function () {
             return [
                 {
                     "data": "Subject",
@@ -901,7 +901,7 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
                     "displayName": "Brain"
                 }
             ];
-        };*/
+        };
         this.getSourceFields = function () {
             return [
                 {
@@ -1294,6 +1294,7 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
         return new DemoData();
     };
 });
+
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
             var xAxis = ['', 'x-1']

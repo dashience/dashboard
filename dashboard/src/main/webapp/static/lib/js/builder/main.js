@@ -1,3 +1,7 @@
+//angular.module('VizBoardApp', [
+//    'angular-query-builder'
+//])
+
 //.constant('APP_VERSION', angular_query_builder_version)
 
 app.config(['$httpProvider', '$logProvider', 'DemoDataProvider', function ($httpProvider, $logProvider, DemoDataProvider) {
