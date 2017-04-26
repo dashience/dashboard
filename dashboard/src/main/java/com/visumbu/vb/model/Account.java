@@ -24,6 +24,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -61,6 +62,9 @@ public class Account implements Serializable {
     @Size(max = 65535)
     @Column(name = "description")
     private String description;
+    @Type(type = "org.hibernate.type.StringClobType")
+    @Column(name = "logo")
+    private String logo;
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
@@ -119,6 +123,15 @@ public class Account implements Serializable {
     public void setEmailId(String emailId) {
         this.emailId = emailId;
     }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }   
+    
 
     @Override
     public int hashCode() {
