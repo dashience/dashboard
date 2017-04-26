@@ -68,3 +68,4 @@ public class Formatter {
         System.out.println(Formatter.format(format, value));
     }
 }
+

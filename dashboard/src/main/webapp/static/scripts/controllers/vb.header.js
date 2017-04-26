@@ -49,13 +49,17 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.accounts = response;
         $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
+        console.log()
         // $scope.name = $filter('filter')($scope.accounts, {id: response[0].id})[0];
         angular.forEach($scope.accounts, function (value, key) {
             if (value.accountId.id == $stateParams.accountId) {
+                console.log()
                 $scope.name = value;
+//        $scope.accountLogo;
             }
         });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
+        $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
             $scope.loadNewUrl()
             //$state.go("index.dashboard")
@@ -65,6 +69,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     });
 
     $scope.getAccountId = function (account) {
+        console.log(account)
+        $scope.accountLogo = account.accountId.logo;
         $stateParams.accountId = account.accountId.id;
         $scope.selectAccount.selected = {accountName: account.accountId.accountName};
         $stateParams.accountName = account.accountId.accountName;
@@ -196,6 +202,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 });
             } else if ($scope.getCurrentPage() === "fieldSettings") {
                 $state.go("index.fieldSettings", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }
+            else if ($scope.getCurrentPage() === "tag") {
+                $state.go("index.tag", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -344,13 +358,22 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 endDate: $scope.endDate
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
-            $state.go("index.fieldSettings", {
-                accountId: $stateParams.accountId,
-                accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-            });
-        } else {
+                $state.go("index.fieldSettings", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }
+            else if ($scope.getCurrentPage() === "tag") {
+                $state.go("index.tag", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }
+        else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
@@ -400,6 +423,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         if (url.indexOf("fieldSettings") > 0) {
             return "fieldSettings";
+        }
+        if (url.indexOf("tag") > 0) {
+            return "tag";
         }
         return "dashboard";
     };

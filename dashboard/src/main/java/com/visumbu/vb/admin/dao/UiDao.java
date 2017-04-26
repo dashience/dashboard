@@ -111,7 +111,14 @@ public class UiDao extends BaseDao {
 
         return tabWidgets;
     }
-    
+
+    public List<TabWidget> getWidget(Integer widgetId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("TabWidget.findById");
+        query.setParameter("id", widgetId);
+        List<TabWidget> tabWidgets = query.list();
+        return tabWidgets;
+    }
+
     public List<TabWidget> getReportWidgetByWidgetId(Integer widgetId) {
         String queryStr = "select d from TabWidget d where (status is null or status != 'Deleted') and d.id = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -127,11 +134,14 @@ public class UiDao extends BaseDao {
     }
 
     public TabWidget getTabWidgetById(Integer widgetId) {
+        if (widgetId == null) {
+            return null;
+        }
         TabWidget tabWidget = (TabWidget) sessionFactory.getCurrentSession().get(TabWidget.class, widgetId);
         tabWidget.setColumns(getColumns(tabWidget));
         return tabWidget;
     }
-
+   
     public Dashboard getDashboardById(Integer dashboardId) {
         return (Dashboard) sessionFactory.getCurrentSession().get(Dashboard.class, dashboardId);
     }
@@ -144,7 +154,18 @@ public class UiDao extends BaseDao {
         String queryStr = "select d from WidgetColumn d where d.widgetId = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("widgetId", widget);
+        return query.list();
+    }
 
+    public List<WidgetColumn> getColumnsById(Integer widgetId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetColumn.findById");
+        query.setParameter("id", widgetId);
+        return query.list();
+    }
+    
+    public List<WidgetColumn> getWidgetColumnsByWidgetId(Integer widgetId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetColumn.findByWidgetId");
+        query.setParameter("id", widgetId);
         return query.list();
     }
 
@@ -174,7 +195,7 @@ public class UiDao extends BaseDao {
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryReport);
         querySess.setParameter("widgetId", id);
         querySess.executeUpdate();
-        
+
         String queryStr = "delete from WidgetColumn d where d.widgetId.id = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("widgetId", id);
@@ -207,6 +228,20 @@ public class UiDao extends BaseDao {
     public WidgetColumn getWidgetColunmById(Integer id) {
         WidgetColumn widgetColumn = (WidgetColumn) sessionFactory.getCurrentSession().get(WidgetColumn.class, id);
         return widgetColumn;
+    }
+
+    public Integer getWidgetCount(Integer id) {
+        System.out.println("id ---> " + id);
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("TabWidget.findByTabId");
+        query.setParameter("tabId", id);
+//        Integer count = (Integer) query.list().get(0);
+//        String widgetCountQuery = ("SELECT count(t.id) from TabWidget t where t.tabId.id = :tabId");
+//        Query query = sessionFactory.getCurrentSession().createQuery(widgetCountQuery);
+//        query.setParameter("tabId", id);
+//        Integer count =at com.visumbu.vb.admin.dao.UiDao.getWidgetCount(UiDao.java:231) (Integer) query.list().get(0);
+        int count=(int) (long) query.list().get(0);
+        System.out.println("count ---> "+count);
+        return count;
     }
 
     public void saveOrUpdate(Object object) {
@@ -305,12 +340,12 @@ public class UiDao extends BaseDao {
             Integer reportWidgetId = Integer.parseInt(reportOrderArray[i]);
             ReportWidget reportWidget = getReportWidgetById(reportWidgetId);
             // reportWidget.setWidgetOrder(i);
-        System.out.println(reportWidget);
+            System.out.println(reportWidget);
             update(reportWidget);
         }
         return null;
     }
-    
+
     public Report deleteReport(Integer reportId) {
         String queryString = "update Report d set status = 'Deleted' where d.id = :reportId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
@@ -328,7 +363,7 @@ public class UiDao extends BaseDao {
         }
         return null;
     }
-    
+
     public AdwordsCriteria getAdwordsCriteria(Integer criteriaId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("AdwordsCriteria.findById");
         query.setParameter("id", criteriaId);
@@ -338,7 +373,7 @@ public class UiDao extends BaseDao {
         }
         return null;
     }
-    
+
     public List<Product> getDealerProduct(Integer dealerId) {
         String queryStr = "select p from DealerProduct dp, Product p where (p.productName = dp.productName or (dp.productName='PPC' and p.productName = 'Paid Search')"
                 + " or (p.productName like 'You%Tube%' and dp.productName like 'Video')) and dp.dealerId.id = :dealerId";
@@ -494,7 +529,9 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", user.getAgencyId().getId());
         return query.list();
-    }    
-    
-    
+    }
+
+    public WidgetColumn getWidgetColumn(Integer widgetId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

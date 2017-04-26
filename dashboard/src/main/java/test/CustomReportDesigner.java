@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package test;
 
 import com.itextpdf.awt.DefaultFontMapper;
@@ -2688,11 +2683,15 @@ public class CustomReportDesigner {
 
             Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
             long firstAxisCount = firstAxiss.count();
+            System.out.println("firstAxisCount -----> "+firstAxisCount);
 
             Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
             long secondAxisCount = secondAxiss.count();
+                        System.out.println("secondAxisCount ----> "+secondAxisCount);
+
 
             long totalCount = firstAxisCount + secondAxisCount;
+            System.out.println("totalCount ----> "+totalCount);
 
             final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
 

@@ -10,13 +10,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $(".scheduler-list-style").find("li").click(function (e) {
             e.stopPropagation();
         });
-        
+
 //        $(".ranges ul").find("li:eq(0)").click(function(e){
 //           $(".scheduler-list-style").show();
 //        });
 
         $(document).click(function (e) {
-           
+
             $(".scheduler-list-style").hide();
         });
 
@@ -36,11 +36,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
-        if ($stateParams.widgetId) {
+        if ($stateParams.widgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
             })
+        } else {
+            $scope.editWidgetData.push({width: 12, columns: []})
         }
     });
 
@@ -57,6 +59,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //        });
 //    }
 //    getWidgetItem();
+
+
+    $scope.tags = ["test", "test1"]
+
+//    $http.get('admin/user/account').success(function (response) {
+//        $scope.emailAccounts = [];
+//        $scope.accounts = response;
+//        angular.forEach($scope.accounts, function (val, key) {
+//            $scope.emailAccounts.push(val.agencyId.email)
+//            $scope.tags = unique($scope.emailAccounts);
+//        });
+//    });
+
 
     $scope.selectAggregations = [
         {name: 'None', value: ""},
@@ -258,7 +273,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
-            widget.columns = response.columnDefs;
+//            widget.columns = response.columnDefs;
             $scope.collectionFields = response.columnDefs;
         });
     }
@@ -269,6 +284,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.y1Column = [];
         $scope.y2Column = [];
         $scope.tickerItem = []
+        $scope.groupingFields = []
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
         widget.previewUrl = widget.dataSetId;//widget.directUrl;
@@ -307,6 +323,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
                 }
+            }
+            if (val.groupField) {
+                console.log(val)
+                $scope.groupingFields.push(val)
             }
         });
     };
@@ -647,6 +667,36 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.setFormat(widget, format)
     };
 
+    $scope.selectGrouping = function (widget, groupingFields) {
+        $scope.editChartType = null;
+        var groups = [];
+        angular.forEach(groupingFields, function (value, key) {
+            $scope.fieldNames = value.fieldName;
+            groups.push($scope.fieldNames);
+        });
+
+        angular.forEach(groupingFields, function (value, key) {
+            angular.forEach(widget.columns, function (val, header) {
+                if (value.fieldName === val.fieldName) {
+                    val.groupField = groups.indexOf(value.fieldName) + 1;
+                }
+            });
+        });
+        console.log(widget.columns)
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    };
+
+    $scope.removedByGrouping = function (widget, column, groupList) {
+        angular.forEach(widget.columns, function (value, key) {
+            if (value.fieldName == column.fieldName) {
+                value.groupField = "";
+            }
+        })
+        $scope.selectGrouping(widget, groupList)
+    };
 
     $scope.save = function (widget) {
         try {
@@ -686,7 +736,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 xAxisLabel: value.xAxisLabel,
                 yAxisLabel: value.yAxisLabel,
                 columnHide: hideColumn,
-                search: value.search
+                search: value.search,
+                groupField: value.groupField
             };
             widgetColumnsData.push(columnData);
         });
@@ -1078,13 +1129,13 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
 //                angular.forEach(scope.previewTableHeaderName, function (value, key) {
 //                    console.log(scope.previewTableHeaderName)
                 scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
-                    console.log(item.displayName);
-                    return scope.draggedObject.indexOf(item.displayName);
-                });
-//                });
-                console.log(scope.filterReturnItem);
+//                        console.log(item.fieldName)
+                    return scope.draggedObject.indexOf(item.displayName)
+                })
+            }
+            console.log(scope.filterReturnItem)
 //                console.log(scope.draggedObject)
-            };
+
 
             scope.save = function () {
 //                console.log(column);
