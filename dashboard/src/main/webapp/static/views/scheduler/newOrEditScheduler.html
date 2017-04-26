@@ -214,15 +214,18 @@
                                 <div class="col-md-6">
                                     <label>Date Range</label>
                                     <div>
-                                        <div class="dropdown">
-                                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                        <div>
+                                            <button class="drop btn btn-default" type="button">
                                                {{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
                                                 <span class="caret"></span></button>
                                             <ul class="dropdown-menu scheduler-list-style">
-                                                <li ng-click="selectDuration('Custom')"><a>Custom</a>
-                                                    <div class="col-md-12">
+                                                <li><a>Custom</a></li>
+                                                <li ng-click="selectDuration('Custom', scheduler)" >
+                                                    <div class="col-md-12 custom-picker">
                                                         <!--                                                        <label>Custom Range</label>-->
-                                                        <a class="pull-right custom-daterange-box" id="customDateRange">
+                                                        <a ng-model="scheduler.Custom"
+                                                           
+                                                           class="pull-right custom-daterange-box" id="customDateRange">
                                                             <span class="date-border">
                                                                 {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
                                                                 <i class="custom-daterange-box-icon fa fa-caret-down"></i>

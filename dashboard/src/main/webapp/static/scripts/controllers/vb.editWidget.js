@@ -1,26 +1,13 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
     $(document).ready(function (e) {
 
-        $(".drop").click(function (e) {
-//             e.stopPropagation();
-            $(".scheduler-list-style").not($(this).next()).hide();
-            $(this).next().toggle();
-        });
-
-        $(".scheduler-list-style").find("li").click(function (e) {
-            e.stopPropagation();
-        });
-
-//        $(".ranges ul").find("li:eq(0)").click(function(e){
-//           $(".scheduler-list-style").show();
-//        });
-
-        $(document).click(function (e) {
-
-            $(".scheduler-list-style").hide();
-        });
 
 
+
+
+
+
+//ng-click="selectWidgetDuration('Custom', widget)"
 //        $(".scheduler-list-style li").addClass("pickers");
 //        $(".scheduler-list-style li:eq(0)").removeClass("pickers");
 //////
@@ -216,6 +203,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     ];
 
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
+        console.log(widget);
         $scope.editChartType = null;
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
@@ -264,8 +252,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }
 
         var chartType = widget;
+        console.log(chartType);
         $timeout(function () {
             $scope.previewChart(chartType, widget)
+            console.log("called now");
         }, 50);
     }
     $http.get('admin/ui/dataSource').success(function (response) {
@@ -465,12 +455,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.previewChart = function (chartType, widget) {
+        console.log(chartType);
+        console.log(widget);
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType;    //Selected Chart type - Bind chart-type to showPreview()
         $scope.selectedRow = chartType.type ? chartType.type : chartType.chartType;
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
+        console.log($scope.previewColumn);
+        console.log($scope.editChartType);
         if (chartType.type == 'text') {
             widget.dataSetId = '';
             widget.dataSourceId = '';
@@ -479,6 +473,54 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.tickerItem = '';
         }
     };
+    $(document).ready(function (e) {
+        $(".drop").click(function (e) {
+            e.stopPropagation();
+            $(".scheduler-list-style").not($(this).next()).hide();
+            $(this).next().toggle();
+        });
+
+        $(".scheduler-list-style").find("li").click(function (e) {
+            e.stopPropagation();
+        });
+
+        $(".ranges ul").find("li").addClass("custom-picker");
+        $(document).click(function (e) {
+            console.log(e.target.className);
+            var selectedElement = e.target.className;
+            if (selectedElement != 'fa fa-chevron-left glyphicon glyphicon-chevron-left' &&
+                    selectedElement != 'prev available' && selectedElement != 'next available' &&
+                    selectedElement != 'input-mini form-control active' &&
+                    selectedElement != 'daterangepicker_input' && selectedElement != 'calendar-table' &&
+                    selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar' &&
+                    selectedElement != 'fa fa-chevron-right glyphicon glyphicon-chevron-right' &&
+                    selectedElement != "custom-picker" && selectedElement != 'month' &&
+                    selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar')
+            {
+                console.log("1");
+                $(".scheduler-list-style").hide();
+            }
+        });
+
+        $(".applyBtn").click(function (e) {
+            console.log("apply buton click event");
+            console.log($scope.selectedRow)
+            try {
+                $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+            } catch (e) {
+
+            }
+
+            var widget = $scope.previewColumn;
+            widget.chartType = $scope.selectedRow;
+            widget.customStartDate = $scope.customStartDate;
+            widget.customEndDate = $scope.customEndDate;
+            $scope.selectWidgetDuration('Custom', widget);
+            console.log($scope.customStartDate);
+            console.log(widget);
+        });
+    });
 
     $scope.selectPieChartX = function (widget, column) {
         if (!column) {
