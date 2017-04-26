@@ -267,6 +267,11 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     };
 
     $(function () {
+        var start = moment();
+        var end = moment();
+        function cb(start, end) {
+            $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+        }
         //Initialize Select2 Elementsmouseenter
         $(".select2").select2();
         //Datemask dd/mm/yyyy
@@ -281,7 +286,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
         //Date range as a button
         $('#customDateRange').daterangepicker(
-                {
+                {startDate: start,
+                    endDate: end,
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -303,14 +309,10 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                     },
-                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
-                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
+
                     maxDate: new Date()
-                },
-                function (start, end) {
-                    $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-                }
-        );
+                }, cb);
+        cb(start, end);
         //Date picker
         $('#datepicker').datepicker({
             autoclose: true

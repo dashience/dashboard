@@ -1365,7 +1365,7 @@
 
         calculateChosenLabel: function() {
             var customRange = true;
-            var i = 0;
+            var i = 1;
             for (var range in this.ranges) {
                 if (this.timePicker) {
                     if (this.startDate.isSame(this.ranges[range][0]) && this.endDate.isSame(this.ranges[range][1])) {

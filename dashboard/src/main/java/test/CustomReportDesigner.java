@@ -347,16 +347,16 @@ public class CustomReportDesigner {
 
                     if (fieldType.equalsIgnoreCase("number")) {
                         System.out.println("fieldType number and sortType asc");
-                        System.out.println("type of day1 : "+o1.get(sortType1.getFieldName()).getClass().getSimpleName());
+                        System.out.println("type of day1 : " + o1.get(sortType1.getFieldName()).getClass().getSimpleName());
                         Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
                         Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
                         if (value1 != value2) {
                             return order * new Double(value1 - value2).intValue();
                         }
-                    } 
+                    }
                 }
                 if (sortOrder.equalsIgnoreCase("desc")) {
-                     order = -1;
+                    order = -1;
                     if (fieldType.equalsIgnoreCase("day")) {
                         System.out.println("inside date desc");
                         if (day1.length() >= 6) {
@@ -385,7 +385,7 @@ public class CustomReportDesigner {
                         if (value1 != value2) {
                             return order * new Double(value1 - value2).intValue();
                         }
-                    }                   
+                    }
 //                    else {
 //                        System.out.println("else type fieldType number and sortType desc");
 //
@@ -2322,12 +2322,12 @@ public class CustomReportDesigner {
             }
             System.out.println("sortFields size: " + sortFields.size());
 
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
-
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
+            }
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
 //            final CategoryDataset dataset1 = createDataset3();
@@ -2347,7 +2347,7 @@ public class CustomReportDesigner {
                 System.out.println("inside if...");
                 dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
             }
-            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+            final CategoryAxis domainAxis = new CategoryAxis();
             // final NumberAxis rangeAxis = new NumberAxis("Value");
 
             System.out.println("Dataset1 line data: " + data);
@@ -2513,11 +2513,12 @@ public class CustomReportDesigner {
         }
         System.out.println("sortFields size: " + sortFields.size());
 
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
-        }
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
@@ -2532,7 +2533,7 @@ public class CustomReportDesigner {
             System.out.println("inside if...");
             dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
         }
-        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        final CategoryAxis domainAxis = new CategoryAxis();
         System.out.println("Dataset1 line data: " + data);
         System.out.println("Dataset1 line first Axis: " + firstAxis);
         System.out.println("Dataset1 line Second Axis: " + secondAxis);
@@ -2667,12 +2668,12 @@ public class CustomReportDesigner {
             }
             System.out.println("sortFields size: " + sortFields.size());
 
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
-
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
+            }
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
@@ -2681,7 +2682,7 @@ public class CustomReportDesigner {
                 System.out.println("inside if...");
                 dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
             }
-            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+            final CategoryAxis domainAxis = new CategoryAxis();
             final NumberAxis rangeAxis = new NumberAxis();
             final AreaRenderer renderer1 = new AreaRenderer();
 
@@ -2829,6 +2830,7 @@ public class CustomReportDesigner {
             List<SecondAxis> secondAxis = new ArrayList<>();
             String xAxis = null;
             String xAxisDisplay = null;
+            String format = "";
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
@@ -2850,15 +2852,18 @@ public class CustomReportDesigner {
                     xAxisDisplay = column.getDisplayName();
                     System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
+                if (column.getDisplayFormat() != null) {
+                    format = column.getDisplayFormat();
+                }
             }
             System.out.println("sortFields size: " + sortFields.size());
 
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
-
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
+            }
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
             System.out.println("FirstAxis: " + firstAxis);
@@ -2883,7 +2888,7 @@ public class CustomReportDesigner {
             System.out.println("Dataset1 bar Second Axis: " + secondAxis);
             System.out.println("Dataset1 bar X Axis: " + xAxis);
 
-            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+            final CategoryAxis domainAxis = new CategoryAxis();
             //final NumberAxis rangeAxis = new NumberAxis("Value");
             final NumberAxis rangeAxis = new NumberAxis();
             final BarRenderer renderer1 = new BarRenderer();
@@ -3045,12 +3050,12 @@ public class CustomReportDesigner {
         }
         System.out.println("sortFields size: " + sortFields.size());
 
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
-        }
-
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
@@ -3066,7 +3071,7 @@ public class CustomReportDesigner {
             dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
         }
 
-        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        final CategoryAxis domainAxis = new CategoryAxis();
         final NumberAxis rangeAxis = new NumberAxis();
         final BarRenderer renderer1 = new BarRenderer();
         final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
@@ -3206,12 +3211,12 @@ public class CustomReportDesigner {
         }
         System.out.println("sortFields size: " + sortFields.size());
 
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
-        }
-
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
 
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
@@ -3228,7 +3233,7 @@ public class CustomReportDesigner {
             dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
         }
 
-        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        final CategoryAxis domainAxis = new CategoryAxis();
         final NumberAxis rangeAxis = new NumberAxis();
         final BarRenderer renderer1 = new BarRenderer();
         final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {

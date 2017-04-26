@@ -188,39 +188,40 @@ public class UiService {
         }
 
         String dateRangeName = tabWidgetBean.getDateRangeName();
-        Integer lastNdays = null;
-        if (tabWidgetBean.getLastNdays() != null) {
-            lastNdays = tabWidgetBean.getLastNdays();
-            System.out.println("Last N days ----> " + lastNdays);
-        } else if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
-            lastNdays = 0;
-        }
-        Integer lastNmonths = null;
-        if (tabWidgetBean.getLastNmonths() != null) {
-            lastNmonths = tabWidgetBean.getLastNmonths();
-            System.out.println("Last N months ----> " + lastNmonths);
-        } else if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
-            lastNmonths = 0;
-        }
-        Integer lastNweeks = null;
-        if (tabWidgetBean.getLastNweeks() != null) {
-            lastNweeks = tabWidgetBean.getLastNweeks();
-            System.out.println("Last N weeks ----> " + lastNweeks);
-
-        } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
-            lastNweeks = 0;
-        }
-        Integer lastNyears = null;
-        if (tabWidgetBean.getLastNyears() != null) {
-            lastNyears = tabWidgetBean.getLastNyears();
-            System.out.println("Last N years ----> " + lastNyears);
-        } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
-            lastNyears = 0;
-        }
-
-        System.out.println("dateRangename ----> " + dateRangeName);
-
-        Range dateRangeSelect = null;
+        System.out.println("dataRangeName -----> "+dateRangeName);
+//        Integer lastNdays = null;
+//        if (tabWidgetBean.getLastNdays() != null) {
+//            lastNdays = tabWidgetBean.getLastNdays();
+//            System.out.println("Last N days ----> " + lastNdays);
+//        } else if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
+//            lastNdays = 0;
+//        }
+//        Integer lastNmonths = null;
+//        if (tabWidgetBean.getLastNmonths() != null) {
+//            lastNmonths = tabWidgetBean.getLastNmonths();
+//            System.out.println("Last N months ----> " + lastNmonths);
+//        } else if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
+//            lastNmonths = 0;
+//        }
+//        Integer lastNweeks = null;
+//        if (tabWidgetBean.getLastNweeks() != null) {
+//            lastNweeks = tabWidgetBean.getLastNweeks();
+//            System.out.println("Last N weeks ----> " + lastNweeks);
+//
+//        } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
+//            lastNweeks = 0;
+//        }
+//        Integer lastNyears = null;
+//        if (tabWidgetBean.getLastNyears() != null) {
+//            lastNyears = tabWidgetBean.getLastNyears();
+//            System.out.println("Last N years ----> " + lastNyears);
+//        } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
+//            lastNyears = 0;
+//        }
+//
+//        System.out.println("dateRangename ----> " + dateRangeName);
+//
+//        Range dateRangeSelect = null;
 //            if (dateRangeName.equalsIgnoreCase("Today")) {
 //                dateRangeSelect = Range.TODAY;
 //            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
@@ -238,45 +239,44 @@ public class UiService {
 //            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
 //                dateRangeSelect = Range.LAST_YEAR;
 //            } 
-        if (dateRangeName.equalsIgnoreCase("Custom")) {
-            dateRangeSelect = null;
-        } else if (lastNdays != null) {
-            dateRangeSelect = Range.DAY;
-        } else if (lastNweeks != null) {
-            dateRangeSelect = Range.WEEK;
-        } else if (lastNmonths != null) {
-            dateRangeSelect = Range.MONTH;
-        } else if (lastNyears != null) {
-            dateRangeSelect = Range.YEAR;
-        }
-        DateRange dateRange = null;
-        String startDate = null;
-        String endDate = null;
-        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-
-        if (dateRangeSelect == null) {
-            startDate = tabWidgetBean.getCustomStartDate();
-            endDate = tabWidgetBean.getCustomEndDate();
-        } else if (dateRangeSelect.equals(Range.DAY)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
-        } else if (dateRangeSelect.equals(Range.WEEK)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
-        } else if (dateRangeSelect.equals(Range.MONTH)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
-        } else if (dateRangeSelect.equals(Range.YEAR)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
-        } else {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect);
-        }
-
-        if (dateRange != null) {
-            startDate = df.format(dateRange.getStartDate());
-            endDate = df.format(dateRange.getEndDate());
-        }
-
-        System.out.println("dateRange start Date-----> " + startDate);
-        System.out.println("dateRange End Date-----> " + endDate);
-
+//        if (dateRangeName.equalsIgnoreCase("Custom")) {
+//            dateRangeSelect = null;
+//        } else if (lastNdays != null) {
+//            dateRangeSelect = Range.DAY;
+//        } else if (lastNweeks != null) {
+//            dateRangeSelect = Range.WEEK;
+//        } else if (lastNmonths != null) {
+//            dateRangeSelect = Range.MONTH;
+//        } else if (lastNyears != null) {
+//            dateRangeSelect = Range.YEAR;
+//        }
+//        DateRange dateRange = null;
+//        String startDate = null;
+//        String endDate = null;
+//        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+//
+//        if (dateRangeSelect == null) {
+//            startDate = tabWidgetBean.getCustomStartDate();
+//            endDate = tabWidgetBean.getCustomEndDate();
+//        } else if (dateRangeSelect.equals(Range.DAY)) {
+//            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
+//        } else if (dateRangeSelect.equals(Range.WEEK)) {
+//            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
+//        } else if (dateRangeSelect.equals(Range.MONTH)) {
+//            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
+//        } else if (dateRangeSelect.equals(Range.YEAR)) {
+//            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
+//        } else {
+//            dateRange = DateRangeFactory.getRange(dateRangeSelect);
+//        }
+//
+//        if (dateRange != null) {
+//            startDate = df.format(dateRange.getStartDate());
+//            endDate = df.format(dateRange.getEndDate());
+//        }
+//
+//        System.out.println("dateRange start Date-----> " + startDate);
+//        System.out.println("dateRange End Date-----> " + endDate);
         tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setChartType(tabWidgetBean.getChartType());
         tabWidget.setDirectUrl(tabWidgetBean.getDirectUrl());
@@ -296,12 +296,19 @@ public class UiService {
         tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setContent(tabWidgetBean.getContent());
         tabWidget.setDateRangeName(tabWidgetBean.getDateRangeName());
-        tabWidget.setCustomStartDate(startDate);
-        tabWidget.setCustomEndDate(endDate);
-        tabWidget.setLastNdays(lastNdays);
-        tabWidget.setLastNmonths(lastNmonths);
-        tabWidget.setLastNweeks(lastNweeks);
-        tabWidget.setLastNyears(lastNyears);
+//        tabWidget.setCustomStartDate(startDate);
+//        tabWidget.setCustomEndDate(endDate);
+//        tabWidget.setLastNdays(lastNdays);
+//        tabWidget.setLastNmonths(lastNmonths);
+//        tabWidget.setLastNweeks(lastNweeks);
+//        tabWidget.setLastNyears(lastNyears);
+        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
+        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
+        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
+        tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
+        tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
+        tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
+
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
         uiDao.deleteWidgetColumns(tabWidget.getId());

@@ -1,4 +1,106 @@
-app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) { 
+app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
+    $(document).ready(function (e) {
+
+        $(".drop").click(function (e) {
+//             e.stopPropagation();
+            $(".scheduler-list-style").not($(this).next()).hide();
+            $(this).next().toggle();
+        });
+
+        $(".scheduler-list-style").find("li").click(function (e) {
+            e.stopPropagation();
+        });
+        
+//        $(".ranges ul").find("li:eq(0)").click(function(e){
+//           $(".scheduler-list-style").show();
+//        });
+
+        $(document).click(function (e) {
+           
+            $(".scheduler-list-style").hide();
+        });
+
+
+//        $(".scheduler-list-style li").addClass("pickers");
+//        $(".scheduler-list-style li:eq(0)").removeClass("pickers");
+//////
+//        $(".custom-picker").click(function (e) {
+//            alert();
+////            e.stopPropogation();
+//            $(this).parent().parent().parent().addClass("drop");
+//            var elementValidate = $(this).parent().parent().parent().hasClass("drop");
+//            if (elementValidate == true)
+//            {
+//                alert();
+//
+//                $(".scheduler-list-style").css("display", "block !important");
+//            } else {
+//                alert("fasle");
+//                $(".scheduler-list-style").css("display", "none !important");
+//            }
+//        });
+////
+////            $(".scheduler-list-style li").click(function(e){
+////                
+////                e.stopPropogation();
+////            })
+//
+//
+//
+//
+//        $(".dropdown button").click(function (e) {
+//            $(this).addClass("drop");
+//            var elementValidate = $(this).hasClass("drop");
+//            if (elementValidate == true)
+//            {
+//
+//                $(".scheduler-list-style").css("display", "block !important");
+//            } else {
+//
+//                $(".scheduler-list-style").css("display", "none !important");
+//            }
+//        });
+//
+//        $(".pickers").click(function (e) {
+//            $(this).parent().parent().removeClass("drop");
+//            var elementValidate = $(this).parent().parent().hasClass("drop");
+//            if (elementValidate == true)
+//            {
+//
+//                $(".scheduler-list-style").css("display", "block !important");
+//            } else {
+//
+//                $(".scheduler-list-style").css("display", "none !important"); 
+//            }
+//        });
+//
+////        $('div.dropdown').on('click', function (event) {
+////            $(this).toggleClass("open");
+////        });
+////        $(".scheduler-list-style li").click(function (e) {
+//////                
+////            e.stopPropogation();
+////            $("div.dropdown").toggleClass("open")
+////        });
+////
+////        $('body').on('click', function (e) {
+////            if (!$('div.dropdown').is(e.target) && $('div.dropdown').has(e.target).length === 0 && $('.open').has(e.target).length === 0) {
+//////                $('div.dropdown').removeClass('open');
+////            }
+////        });
+
+
+
+    });
+
+//    $scope.customPicker = function ()
+//    {
+//        $scope.pickertDropdown = false;
+//        var myEl = angular.element(document.querySelector('.dropdown'));
+//        myEl.addClass('alpha');
+//    };
+
+
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -114,6 +216,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     ];
 
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
+        $scope.editChartType = null;
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
         if (dateRangeName == 'Last N Days') {
@@ -150,7 +253,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 widget.dateRangeName = "Last 0 Years";
             }
             widget.lastNdays = "";
-            widget.lastNweeks = ""; 
+            widget.lastNweeks = "";
             widget.lastNmonths = "";
         } else {
             widget.dateRangeName = dateRangeName;
@@ -159,8 +262,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             widget.lastNmonths = "";
             widget.lastNyears = "";
         }
-    }
 
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    }
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
@@ -693,6 +800,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate//widget.customEndDate
         };
+        console.log(data);
 
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
@@ -903,10 +1011,39 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.listColumns = [];
             scope.listColumns = JSON.parse(scope.previewColumns);
             scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
+            console.log(JSON.parse(scope.previewWidget));
             var widget = JSON.parse(scope.previewWidget);
             scope.addList = function (list) {
-                list.isEdit = true;
-                scope.previewTableHeaderName.push(list);
+                console.log(list);
+//                list.isEdit = true;
+                var obj = {
+                    agregationFunction: list.agregationFunction,
+                    alignment: null,
+                    baseFieldName: null,
+                    columnHide: null,
+                    displayFormat: list.displayFormat,
+                    displayName: list.displayName,
+                    fieldGenerationFields: null,
+                    fieldGenerationFunction: null,
+                    fieldName: list.fieldName,
+                    fieldType: list.type,
+                    functionParameters: null,
+                    groupPriority: list.groupPriority,
+                    id: 519,
+                    remarks: null,
+                    search: null,
+                    sortOrder: list.sortOrder,
+                    sortPriority: list.sortPriority,
+                    width: null,
+                    wrapText: null,
+                    xAxis: null,
+                    xAxisLabel: null,
+                    yAxis: null,
+                    yAxisLabel: null
+                };
+                console.log(obj);
+                scope.previewTableHeaderName.push(obj);
+                console.log(scope.previewTableHeaderName);
                 $('.defaultTable').dragtable();
             };
             var tableDataSource = JSON.parse(scope.previewUrls)
@@ -975,11 +1112,13 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     sessionStorage.clear();
                 }
             }
-            $(document).ready(function () {
-                $('.defaultTable').dragtable({
 
+            $(document).ready(function () {
+
+                $('.defaultTable').dragtable({
                     persistState: function (table) {
                         console.log(table);
+                        console.log("outside list");
                         if (!window.sessionStorage)
                             return;
                         var ss = window.sessionStorage;
@@ -1003,28 +1142,29 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             });
 
             scope.mapJson = function (object) {
-
                 scope.draggedObject = [];
                 scope.newHeaders = [];
                 console.log(object);
                 $.each(object, function (key, value) {
+                    console.log("id ---->" + key);
                     scope.draggedObject[value] = key;
                 });
                 console.log(scope.draggedObject);
                 scope.filterReturnItem = [];
                 console.log(scope.previewTableHeaderName);
-                angular.forEach(scope.previewTableHeaderName, function (value, key) {
+//                angular.forEach(scope.previewTableHeaderName, function (value, key) {
 //                    console.log(scope.previewTableHeaderName)
-                    scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
-//                        console.log(item.fieldName)
-                        return scope.draggedObject.indexOf(item.displayName)
-                    })
-                })
-                console.log(scope.filterReturnItem)
+                scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
+                    console.log(item.displayName);
+                    return scope.draggedObject.indexOf(item.displayName);
+                });
+//                });
+                console.log(scope.filterReturnItem);
 //                console.log(scope.draggedObject)
-            }
+            };
 
-            scope.save = function (column) {
+            scope.save = function () {
+//                console.log(column);
                 try {
                     scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -1084,9 +1224,12 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     zeroSuppression: JSON.parse(scope.previewWidgetTable).zeroSuppression,
                     maxRecord: JSON.parse(scope.previewWidgetTable).maxRecord,
                     dateDuration: widget.dateDuration,
+                    dateRangeName: widget.dateRangeName,
                     content: widget.content,
                     width: widget.width
                 };
+
+                console.log(data);
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
                     $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
@@ -1124,9 +1267,16 @@ app.directive('customWidgetDateRange', function ($stateParams) {
     return{
         restrict: 'A',
         link: function (scope, element, attr) {
+            var start = moment();
+            var end = moment();
+            function cb(start, end) {
+                $('#widgetDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+            }
             //Date range as a button
             $(element[0]).daterangepicker(
                     {
+                        startDate: start,
+                        endDate: end,
                         ranges: {
                             'Today': [moment(), moment()],
                             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -1148,14 +1298,9 @@ app.directive('customWidgetDateRange', function ($stateParams) {
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                         },
-                        startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
-                        endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
                         maxDate: new Date()
-                    },
-                    function (start, end) {
-                        $('#widgetDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-                    }
-            );
+                    }, cb);
+            cb(start, end);
         }
     };
 });

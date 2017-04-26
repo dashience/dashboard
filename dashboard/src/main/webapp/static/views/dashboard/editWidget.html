@@ -153,6 +153,7 @@
     .ui-sortable-placeholder * { 
         opacity: 0.0; visibility: hidden; 
     }
+    
 </style>
 <div class="normalheader transition animated fadeIn">
     <div class="hpanel">
@@ -241,12 +242,12 @@
             <div class="col-md-4">
                 <label>Date Range</label>
                 <div>
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
+                    <div>
+                        <button class="drop btn btn-default" type="button">{{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
-                        <ul class="dropdown-menu scheduler-list-style">
+                        <ul class="dropdown-menu scheduler-list-style ">
                             <li ng-click="selectWidgetDuration('Custom', widget)"><a>Custom</a>
-                                <div class="col-md-12">
+                                <div class="col-md-12 custom-picker">
                                     <div>
                                         <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
                                             <span class="date-border">
