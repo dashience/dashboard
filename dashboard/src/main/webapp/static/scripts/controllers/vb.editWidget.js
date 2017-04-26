@@ -1,4 +1,4 @@
-app.controller('EditWidgetController',function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state, $sce, $log, AppConfig, DemoData) {
+app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -19,8 +19,8 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
-    
-    
+
+
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
@@ -48,7 +48,7 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
 //    getWidgetItem();
 
 
-    $scope.tags=["test","test1"]
+    $scope.tags = ["test", "test1"]
 
 //    $http.get('admin/user/account').success(function (response) {
 //        $scope.emailAccounts = [];
@@ -306,7 +306,7 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
                     $scope.y2Column.push(val);
                 }
             }
-            if(val.groupField){
+            if (val.groupField) {
                 console.log(val)
                 $scope.groupingFields.push(val)
             }
@@ -657,7 +657,7 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
         });
 
         angular.forEach(groupingFields, function (value, key) {
-            angular.forEach(widget.columns, function (val, header) {               
+            angular.forEach(widget.columns, function (val, header) {
                 if (value.fieldName === val.fieldName) {
                     val.groupField = groups.indexOf(value.fieldName) + 1;
                 }
@@ -669,14 +669,14 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
-     $scope.removedByGrouping = function(widget, column, groupList){         
-         angular.forEach(widget.columns, function(value, key){
-             if(value.fieldName == column.fieldName){
-                 value.groupField = "";
-             }
-         })         
-         $scope.selectGrouping(widget, groupList)
+
+    $scope.removedByGrouping = function (widget, column, groupList) {
+        angular.forEach(widget.columns, function (value, key) {
+            if (value.fieldName == column.fieldName) {
+                value.groupField = "";
+            }
+        })
+        $scope.selectGrouping(widget, groupList)
     };
 
     $scope.save = function (widget) {
@@ -766,531 +766,114 @@ app.controller('EditWidgetController',function ($scope, $http, $stateParams, loc
         $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
 
-   // query builder
+    // query builder
     //$scope.appVersion = APP_VERSION;
 
-    AppConfig.setMaxGroups(4);
-    AppConfig.setMaxConditions(4);
+    var data = '{"group": {"operator": "AND","rules": []}}';
 
-    $scope.jsonOutput = {};
+    function htmlEntities(str) {
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
 
-    $scope.search = function (form, $event) {
-        $log.debug($scope.searchContainer);
-        $scope.jsonOutput = JSON.stringify($scope.searchContainer, null, 4);
-    };
-
-    $scope.$watch("searchContainer", function () {
-        $scope.jsonOutput = {};
-        var groups = $scope.searchContainer.groups;
-        if (!!groups && groups instanceof Array && groups.length > 0) {
-            $scope.output = $sce.trustAsHtml(computeOutput(groups[0]));
-        }
-    }, true);
-
-    function computeOutput(group) {
-        if (!group) return "";
-        for (var str = "(", i = 0; i < group.conditions.length; i++) {
-            i > 0 && (str += " <strong>" + group.logicalOperator.displayName + "</strong> ");
-            var condition = group.conditions[i];
-            if (!!condition && !!condition.sourceField && !!condition.comparisonOperator && !!condition.inputItem) {
-                str += condition.sourceField.displayName + " " + condition.comparisonOperator.displayName + " '" + condition.inputItem.displayName + "'";
-            }
-        }
-
-        if (!!group.groups && group.groups instanceof Array) {
-            for (var x = 0; x < group.groups.length; x++) {
-                if (!!group.logicalOperator && !!group.conditions) {
-                    if (group.conditions.length > 0 || x > 0) {
-                        str += " <strong>" + group.logicalOperator.displayName + "</strong> ";
-                    }
-                    str += computeOutput(group.groups[x]);
-                }
-            }
+    function computed(group) {
+        if (!group)
+            return "";
+        for (var str = "(", i = 0; i < group.rules.length; i++) {
+            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+            str += group.rules[i].group ?
+                    computed(group.rules[i].group) :
+                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
         }
 
         return str + ")";
     }
 
-    $scope.sourceTypes = DemoData.getSourceTypes();
+    $scope.json = null;
 
-    $scope.logicalOperators = DemoData.getLogicalOperators();
+    $scope.filter = JSON.parse(data);
 
-    var emptySearchContainer = {
-        "groups": [
-            {
-                "conditions": [
-                    {}
-                ]
+    $scope.$watch('filter', function (newValue) {
+        $scope.json = JSON.stringify(newValue, null, 2);
+        $scope.output = computed(newValue.group);
+    }, true);
+
+
+
+});
+
+
+var queryBuilder = angular.module('queryBuilder', []);
+queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+        return {
+            restrict: 'E',
+            scope: {
+                group: '='
+            },
+            templateUrl: '/queryBuilderDirective.html',
+            compile: function (element, attrs) {
+                var content, directive;
+                content = element.contents().remove();
+                return function (scope, element, attrs) {
+                    scope.operators = [
+                        {name: 'AND'},
+                        {name: 'OR'}
+                    ];
+
+                    scope.fields = [
+                        {name: 'Firstname'},
+                        {name: 'Lastname'},
+                        {name: 'Birthdate'},
+                        {name: 'City'},
+                        {name: 'Country'}
+                    ];
+
+                    scope.conditions = [
+                        {name: '='},
+                        {name: '<>'},
+                        {name: '<'},
+                        {name: '<='},
+                        {name: '>'},
+                        {name: '>='}
+                    ];
+
+                    scope.addCondition = function () {
+                        scope.group.rules.push({
+                            condition: '=',
+                            field: 'Firstname',
+                            data: ''
+                        });
+                    };
+
+                    scope.removeCondition = function (index) {
+                        scope.group.rules.splice(index, 1);
+                    };
+
+                    scope.addGroup = function () {
+                        scope.group.rules.push({
+                            group: {
+                                operator: 'AND',
+                                rules: []
+                            }
+                        });
+                    };
+
+                    scope.removeGroup = function () {
+                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                    };
+
+                    directive || (directive = $compile(content));
+
+                    element.append(directive(scope, function ($compile) {
+                        return $compile;
+                    }));
+                }
             }
-        ]
-    };
-    //$scope.searchContainer = emptySearchContainer;
-    $scope.searchContainer = DemoData.getSearchContainer1();
-    //$scope.searchContainer = DemoData.getSearchContainer2();
-})
-.provider('DemoData', function DemoDataProvider() {
-
-    function DemoData() {
-       /* this.getObjectTypes = function () {
-            return [
-                {
-                    "data": "Subject",
-                    "displayName": "Subject"
-                },
-                {
-                    "data": "Study",
-                    "displayName": "Study"
-                },
-                {
-                    "data": "RawImage",
-                    "displayName": "Raw Image"
-                },
-                {
-                    "data": "SegmentationImage",
-                    "displayName": "Segmentation Image"
-                },
-                {
-                    "data": "ClinicalStudyData",
-                    "displayName": "Clinical Study Data"
-                },
-                {
-                    "data": "ClinicalStudyDefinition",
-                    "displayName": "Clinical Study Definition"
-                },
-                {
-                    "data": "StatisticalModel",
-                    "displayName": "Statistical Model"
-                },
-                {
-                    "data": "GenomicData",
-                    "displayName": "Genomic Data"
-                },
-                {
-                    "data": "GenomicSeries",
-                    "displayName": "Genomic Series"
-                },
-                {
-                    "data": "GenomicPlatform",
-                    "displayName": "Genomic Platform"
-                }
-            ];
-        };
-        this.getFMATerms = function () {
-            return [
-                {
-                    "data": "3734",
-                    "displayName": "Aorta"
-                },
-                {
-                    "data": "3740",
-                    "displayName": "Bulb of aorta"
-                },
-                {
-                    "data": "7195",
-                    "displayName": "Lung"
-                },
-                {
-                    "data": "7203",
-                    "displayName": "Kidney"
-                },
-                {
-                    "data": "50801",
-                    "displayName": "Brain"
-                }
-            ];
-        };*/
-        this.getSourceFields = function () {
-            return [
-                {
-                    "name": "Type",
-                    "displayName": "Type",
-                    "position": 1,
-                    "comparisonOperators": [
-                        {
-                            "name": "Equals",
-                            "displayName": "=",
-                            "position": 1,
-                            "typeaheadUrl": "https://localhost/aqb/typeahead/object-types/"
-                        },
-                        {
-                            "name": "NotEquals",
-                            "displayName": "!=",
-                            "position": 2,
-                            "typeaheadUrl": "https://localhost/aqb/typeahead/object-types/"
-                        }
-                    ]
-                },
-                {
-                    "name": "ObjectId",
-                    "displayName": "Id",
-                    "position": 2,
-                    "comparisonOperators": [
-                        {
-                            "name": "Equals",
-                            "displayName": "=",
-                            "position": 1
-                        },
-                        {
-                            "name": "NotEquals",
-                            "displayName": "!=",
-                            "position": 2
-                        },
-                        {
-                            "name": "Greater",
-                            "displayName": ">",
-                            "position": 6
-                        },
-                        {
-                            "name": "Less",
-                            "displayName": "<",
-                            "position": 7
-                        },
-                        {
-                            "name": "GreaterEqual",
-                            "displayName": ">=",
-                            "position": 8
-                        },
-                        {
-                            "name": "LessEqual",
-                            "displayName": "<=",
-                            "position": 9
-                        }
-                    ]
-                },
-                {
-                    "name": "SubjectId",
-                    "displayName": "Subject Id",
-                    "position": 3,
-                    "comparisonOperators": [
-                        {
-                            "name": "Equals",
-                            "displayName": "=",
-                            "position": 1
-                        },
-                        {
-                            "name": "NotEquals",
-                            "displayName": "!=",
-                            "position": 2
-                        },
-                        {
-                            "name": "Contains",
-                            "displayName": "Contains",
-                            "position": 3
-                        }
-                    ]
-                },
-                {
-                    "name": "AnatomicalRegion",
-                    "displayName": "Anatomical Region",
-                    "position": 4,
-                    "comparisonOperators": [
-                        {
-                            "name": "Contains",
-                            "displayName": "Contains",
-                            "position": 1,
-                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
-                        },
-                        {
-                            "name": "Equals",
-                            "displayName": "=",
-                            "position": 2,
-                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
-                        },
-                        {
-                            "name": "NotEquals",
-                            "displayName": "!=",
-                            "position": 3,
-                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
-                        }
-                    ]
-                },
-                {
-                    "name": "Fulltext",
-                    "displayName": "Fulltext",
-                    "position": 5,
-                    "comparisonOperators": [
-                        {
-                            "name": "Equals",
-                            "displayName": "=",
-                            "position": 1
-                        }
-                    ]
-                },
-                {
-                    "name": "FileExtension",
-                    "displayName": "File Extension",
-                    "position": 6,
-                    "comparisonOperators": [
-                        {
-                            "name": "Equals",
-                            "displayName": "=",
-                            "position": 1
-                        },
-                        {
-                            "name": "NotEquals",
-                            "displayName": "!=",
-                            "position": 2
-                        }
-                    ]
-                },
-                {
-                    "name": "Placeholder",
-                    "displayName": "Placeholder",
-                    "position": 7,
-                    "comparisonOperators": [
-                        {
-                            "name": "Equals",
-                            "displayName": "=",
-                            "position": 1,
-                            "typeaheadUrl": "https://localhost/aqb/typeahead/object-types/"
-                        },
-                        {
-                            "name": "Contains",
-                            "displayName": "Contains",
-                            "position": 3
-                        },
-                        {
-                            "name": "NotEquals",
-                            "displayName": "!=",
-                            "position": 2,
-                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
-                        }
-                    ]
-                }
-            ];
-        };
-        this.getSourceTypes = function () {
-            return [
-                {
-                    "name": "Objects",
-                    "displayName": "Objects",
-                    "position": 1,
-                    "sourceFields": this.getSourceFields()
-                },
-                {
-                    "name": "RelatedObjects",
-                    "displayName": "Related Objects",
-                    "position": 2,
-                    "sourceFields": this.getSourceFields()
-                }
-            ];
-        };
-        this.getLogicalOperators = function () {
-            return [
-                {
-                    "name": "And",
-                    "displayName": "AND",
-                    "position": 1
-                },
-                {
-                    "name": "Or",
-                    "displayName": "OR",
-                    "position": 2
-                }
-            ];
-        };
-        this.getSearchContainer1 = function () {
-            return {
-                "groups": [
-                    {
-                        "logicalOperator": {
-                            "name": "And",
-                            "displayName": "AND"
-                        },
-                        "sourceType": {
-                            "name": "Objects",
-                            "displayName": "Objects"
-                        },
-                        "conditions": [
-                             {
-                                 "sourceField": {
-                                     "name": "Type",
-                                     "displayName": "Type"
-                                 },
-                                 "comparisonOperator": {
-                                     "name": "Equals",
-                                     "displayName": "="
-                                 },
-                                 "inputItem": {
-                                     "data": "Subject",
-                                     "displayName": "Subject",
-                                     "isTypeahead": true
-                                 }
-                             }
-                        ],
-                        "groups": [
-                            {
-                                "logicalOperator": {
-                                    "name": "And",
-                                    "displayName": "AND"
-                                },
-                                "sourceType": {
-                                    "name": "RelatedObjects",
-                                    "displayName": "Related Objects"
-                                },
-                                "conditions": [
-                                     {
-                                         "sourceField": {
-                                             "name": "AnatomicalRegion",
-                                             "displayName": "Anatomical Region"
-                                         },
-                                         "comparisonOperator": {
-                                             "name": "Equals",
-                                             "displayName": "="
-                                         },
-                                         "inputItem": {
-                                             "data": "7203",
-                                             "displayName": "Kidney",
-                                             "isTypeahead": true
-                                         }
-                                     },
-                                     {
-                                         "sourceField": {
-                                             "name": "Type",
-                                             "displayName": "Type"
-                                         },
-                                         "comparisonOperator": {
-                                             "name": "Equals",
-                                             "displayName": "="
-                                         },
-                                         "inputItem": {
-                                             "data": "RawImage",
-                                             "displayName": "Raw Image",
-                                             "isTypeahead": true
-                                         }
-                                     },
-                                     {
-                                         "sourceField": {
-                                             "name": "Type",
-                                             "displayName": "Type"
-                                         },
-                                         "comparisonOperator": {
-                                             "name": "Equals",
-                                             "displayName": "="
-                                         },
-                                         "inputItem": {
-                                             "data": "ClinicalStudyData",
-                                             "displayName": "Clinical Study Data",
-                                             "isTypeahead": true
-                                         }
-                                     }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            };
         }
-        this.getSearchContainer2 = function () {
-            return {
-                "groups": [
-                    {
-                        "logicalOperator": {
-                            "name": "Or",
-                            "displayName": "OR"
-                        },
-                        "sourceType": {
-                            "name": "Objects",
-                            "displayName": "Objects"
-                        },
-                        "conditions": [
-                        ],
-                        "groups": [
-                            {
-                                "logicalOperator": {
-                                    "name": "And",
-                                    "displayName": "AND"
-                                },
-                                "sourceType": {
-                                    "name": "RelatedObjects",
-                                    "displayName": "Related Objects"
-                                },
-                                "conditions": [
-                                    {
-                                        "sourceField": {
-                                            "name": "AnatomicalRegion",
-                                            "displayName": "Anatomical Region"
-                                        },
-                                        "comparisonOperator": {
-                                            "name": "Equals",
-                                            "displayName": "="
-                                        },
-                                        "inputItem": {
-                                            "data": "7203",
-                                            "displayName": "Kidney",
-                                            "isTypeahead": true
-                                        }
-                                    },
-                                    {
-                                        "sourceField": {
-                                            "name": "Type",
-                                            "displayName": "Type"
-                                        },
-                                        "comparisonOperator": {
-                                            "name": "Equals",
-                                            "displayName": "="
-                                        },
-                                        "inputItem": {
-                                            "data": "RawImage",
-                                            "displayName": "Raw Image",
-                                            "isTypeahead": true
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "logicalOperator": {
-                                    "name": "And",
-                                    "displayName": "AND"
-                                },
-                                "sourceType": {
-                                    "name": "RelatedObjects",
-                                    "displayName": "Related Objects"
-                                },
-                                "conditions": [
-                                    {
-                                        "sourceField": {
-                                            "name": "AnatomicalRegion",
-                                            "displayName": "Anatomical Region"
-                                        },
-                                        "comparisonOperator": {
-                                            "name": "Equals",
-                                            "displayName": "="
-                                        },
-                                        "inputItem": {
-                                            "data": "7203",
-                                            "displayName": "Kidney",
-                                            "isTypeahead": true
-                                        }
-                                    },
-                                    {
-                                        "sourceField": {
-                                            "name": "Type",
-                                            "displayName": "Type"
-                                        },
-                                        "comparisonOperator": {
-                                            "name": "Equals",
-                                            "displayName": "="
-                                        },
-                                        "inputItem": {
-                                            "data": "RawImage",
-                                            "displayName": "Raw Image",
-                                            "isTypeahead": true
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            };
-        };
-    }
+    }]);
 
-    this.$get = function demoDataFactory() {
-        return new DemoData();
-    };
-});       
+
+
+
 // ends query builder
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
@@ -1564,7 +1147,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             }
             $(document).ready(function () {
                 $('.defaultTable').dragtable({
-
                     persistState: function (table) {
                         console.log(table);
                         if (!window.sessionStorage)
@@ -1582,7 +1164,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         console.log(object)
                         scope.mapJson(object);
                     },
-
                     clickDelay: 200,
                     restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
 
@@ -1607,9 +1188,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         return scope.draggedObject.indexOf(item.displayName)
                     })
                 })
-                    console.log(scope.filterReturnItem)
+                console.log(scope.filterReturnItem)
 //                console.log(scope.draggedObject)
-                }
+            }
 
             scope.save = function (column) {
                 try {
