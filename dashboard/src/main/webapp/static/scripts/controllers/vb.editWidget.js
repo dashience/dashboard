@@ -779,7 +779,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "<thead>" +
                 "<tr ng-model='previewTableHeaderName'>" +
                 "<th id='{{collectionField.displayName}}'  ng-repeat='collectionField in previewTableHeaderName track by $index'>" +
-                "<div  ng-hide='collectionField.isEdit'>" +
+                "<div ng-hide='collectionField.isEdit'>" +
 //                "<div class='preview-table-settings' ng-click='collectionField.isEdit=true'>" +
                 "<div class='preview-table-settings' ng-hide='collectionField.isEdit'>" +
                 "<a ng-click='collectionField.isEdit = true'>{{collectionField.displayName}}</a>" +
@@ -861,7 +861,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</li>" +
                 "</ul>" +
                 "<button class='btn btn-info btn-sm' ng-click='hidePopover()'>Close</button>&nbsp;" +
-                "<button class='btn btn-warning btn-sm' ng-click='deleteColumn($index); hidePopover()'>Delete</button>" +
+                "<button class='btn btn-warning btn-sm' ng-click='deleteColumn(collectionField); hidePopover()'>Delete</button>" +
                 "</form>" +
                 "</div>" +
                 "</script>" +
@@ -907,7 +907,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.addList = function (list) {
                 list.isEdit = true;
                 scope.previewTableHeaderName.push(list);
-                $('.defaultTable').dragtable();
+//                $('.defaultTable').dragtable();
             };
             var tableDataSource = JSON.parse(scope.previewUrls)
             var data = {
@@ -952,77 +952,98 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 scope.tableList = response.columnDefs;
             })
             console.log(scope.previewTableHeaderName);
-            console.log(scope.filterReturnItem);
-            scope.deleteColumn = function ($index) {
-                console.log($index);
-//                console.log(scope.filterReturnItem);
-//                console.log(scope.previewTableHeaderName);
-//                console.log($index);
-//                console.log(previewHeaderObject);
-                if (typeof (scope.filterReturnItem) == "undefined")
-                {
-                    scope.previewTableHeaderName.splice($index, 1);
-                    console.log(scope.previewTableHeaderName);
-                    sessionStorage.clear();
-                } else {
-                    var previewHeaderObject = scope.previewTableHeaderName[$index];
-                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
-                    console.log(dragableHeaderIndex);
-                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
-                    console.log(scope.filterReturnItem);
-                    scope.previewTableHeaderName = [];
-                    scope.previewTableHeaderName = scope.filterReturnItem;
-                    sessionStorage.clear();
-                }
+//            console.log(scope.filterReturnItem);
+            scope.deleteColumn = function (object) {
+                console.log(object);
+                console.log(scope.filterReturnItem);
+                var index = scope.filterReturnItem.indexOf(object);
+                console.log("index---->" + index);
+                scope.filterReturnItem.splice(index, 1);
+                console.log(scope.filterReturnItem);
+                scope.previewTableHeaderName = scope.filterReturnItem;
+                $(".settings").on("click", function (e) {
+                    $(this).bind().click();
+                });
+//                sessionStorage.clear();
+
+//                if (typeof (scope.filterReturnItem) == "undefined")
+//                {
+//                    scope.previewTableHeaderName.splice($index, 1);
+//                    console.log(scope.previewTableHeaderName);
+//                    sessionStorage.clear();
+//                } else {
+//                    scope.previewHeaderObject = scope.previewTableHeaderName[$index];
+//                    console.log(scope.previewTableHeaderName[$index]);
+//                    console.log(scope.filterReturnItem)
+//                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(scope.previewHeaderObject);
+//                    console.log(dragableHeaderIndex);
+//                    console.log(scope.filterReturnItem);
+//                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
+//                    console.log(scope.filterReturnItem);
+////                    scope.previewTableHeaderName = "";
+//                    scope.previewTableHeaderName = scope.filterReturnItem;
+//                    console.log(scope.previewTableHeaderName);
+////                    sessionStorage.clear();
+//                }
             }
             $(document).ready(function () {
+                sessionStorage.clear();
                 $('.defaultTable').dragtable({
-
+                    dragHandle: '.handle',
                     persistState: function (table) {
-                        console.log(table);
+//                        console.log(table);
                         if (!window.sessionStorage)
                             return;
                         var ss = window.sessionStorage;
                         table.el.find('th').each(function (i) {
                             if (this.id != '') {
-                                console.log("ID----->" + this.id);
-                                console.log("i----->" + i);
+//                                console.log("ID----->" + this.id);
+//                                console.log("i----->" + i);
                                 table.sortOrder[this.id] = i;
                             }
                         });
                         ss.setItem('tableorder', JSON.stringify(table.sortOrder));
                         var object = eval('(' + window.sessionStorage.getItem('tableorder') + ')');
-                        console.log(object)
+//                        console.log(object)
                         scope.mapJson(object);
                     },
-
                     clickDelay: 200,
                     restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
-
                 });
+
+                scope.mapJson = function (object) {
+
+                    scope.draggedObject = [];
+                    scope.newHeaders = [];
+//                console.log(object);
+                    $.each(object, function (key, value) {
+                        scope.draggedObject[value] = key;
+                    });
+//                console.log(scope.draggedObject);
+                    scope.filterReturnItem = [];
+//                console.log(scope.previewTableHeaderName);
+                    angular.forEach(scope.previewTableHeaderName, function (value, key) {
+//                    console.log(scope.previewTableHeaderName)
+                        scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
+//                        console.log(item.fieldName)
+                            return scope.draggedObject.indexOf(item.displayName)
+                        });
+                    });
+                    sessionStorage.clear();
+//                console.log(scope.filterReturnItem)
+//                console.log(scope.draggedObject)
+                }
+
+                
+
+
+
+
+
+
             });
 
-            scope.mapJson = function (object) {
 
-                scope.draggedObject = [];
-                scope.newHeaders = [];
-                console.log(object);
-                $.each(object, function (key, value) {
-                    scope.draggedObject[value] = key;
-                });
-                console.log(scope.draggedObject);
-                scope.filterReturnItem = [];
-                console.log(scope.previewTableHeaderName);
-                angular.forEach(scope.previewTableHeaderName, function (value, key) {
-//                    console.log(scope.previewTableHeaderName)
-                    scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
-//                        console.log(item.fieldName)
-                        return scope.draggedObject.indexOf(item.displayName)
-                    })
-                })
-                console.log(scope.filterReturnItem)
-//                console.log(scope.draggedObject)
-            }
 
             scope.save = function (column) {
                 try {
