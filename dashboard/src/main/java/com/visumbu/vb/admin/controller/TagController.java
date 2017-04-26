@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author deldot
  */
 @Controller
-@RequestMapping("widgetTag")
+@RequestMapping("tag")
 public class TagController {
     @Autowired
     private TagService tagService;

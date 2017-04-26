@@ -1,4 +1,4 @@
-app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
+app.controller('EditWidgetController',function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state, $sce, $log, AppConfig, DemoData) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -9,6 +9,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
 
+    $scope.tab = 1;
+
+    $scope.setTab = function (newTab) {
+        $scope.tab = newTab;
+    };
+
+    $scope.isSet = function (tabNum) {
+        return $scope.tab === tabNum;
+    };    
+    
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
@@ -20,7 +30,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.editWidgetData.push({width: 12, columns: []})
         }
     });
-
 //    $scope.pageRefresh = function () {          //Page Refresh
 //        getWidgetItem();
 //    };
@@ -34,9 +43,27 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //        });
 //    }
 //    getWidgetItem();
+    $http.get('admin/tag').success(function (response) {
+        console.log(response)
+//        var widgetTag=response.tagName.split(', ');
+//        alert(widgetTag)
+//        angular.forEach(response, function (val, key) {
+//            var widgetTag;
+//            
+//                widgetTag = response[key].tagName;
+//                
+//                console.log(widgetTag)
+//            
+//        })
+        $scope.tags = response;
+    })
 
+    $scope.getWidgetTag = function () {
+        $http.get('admin/tag').success(function (response) {
+            $scope.tags = response;
+        })
+    }
 
-    $scope.tags=["test","test1"]
 
 //    $http.get('admin/user/account').success(function (response) {
 //        $scope.emailAccounts = [];
@@ -69,7 +96,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'CPP', value: "cpp"},
         {name: 'CPR', value: "cpr"}
 
-    ];   //Aggregation Type-Popup
+    ]; //Aggregation Type-Popup
     $scope.selectGroupPriorities = [
         {num: 'None', value: ""},
         {num: 1, value: 1},
@@ -127,7 +154,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Min', value: "min"},
         {name: 'Max', value: "max"}
     ];
-
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
@@ -179,7 +205,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
-
     $scope.selectDataSource = function (dataSourceName, widget) {
         if (!dataSourceName) {
             return;
@@ -193,13 +218,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             });
         });
     };
-
     $scope.collectionField = {};
     $scope.dispName = function (currentColumn) {
         $scope.filterName = $filter('filter')($scope.collectionFields, {fieldName: currentColumn.fieldName})[0];
         currentColumn.displayName = $scope.filterName.displayName;
     };
-
     $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
@@ -211,7 +234,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         }
     };
-
     function columnHeaderDef(widget) {
         var dataSourcePassword;
         if (!widget.dataSetId) {
@@ -257,7 +279,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.groupingFields = []
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
-        widget.previewUrl = widget.dataSetId;//widget.directUrl;
+        widget.previewUrl = widget.dataSetId; //widget.directUrl;
         $scope.selectDataSource(widget.dataSourceId, widget)
         widget.previewType = widget.chartType;
         $scope.editChartType = widget.chartType;
@@ -280,7 +302,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (val.xAxis == 1) {
                 $scope.xColumn = val;
                 $scope.selectPieChartXAxis = val;
-
                 $scope.selectX1Axis(widget, val);
             }
             if (val.yAxis == 1) {
@@ -294,14 +315,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                     $scope.y2Column.push(val);
                 }
             }
-            if(val.groupField){
+            if (val.groupField) {
                 console.log(val)
                 $scope.groupingFields.push(val)
             }
         });
     };
-
-
     $scope.changeUrl = function (dataSet, widget) {
         if (!dataSet) {
             return;
@@ -347,27 +366,22 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             // }, 50);
         });
     };
-
     $http.get("static/datas/panelSize.json").success(function (response) {      //Default Panel in Ui
         $scope.newWidgets = response;
     });
-
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
 
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
     };
-
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartTypes = response;
     });
-
     //DataSource
     $http.get('admin/datasources').success(function (response) {
         $scope.datasources = response;
     });
-
     //Data Source
     $http.get('admin/datasources').success(function (response) {
         $scope.datasources = response;
@@ -376,10 +390,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.selectItem = selectedItem;
         selectedItems(selectedItem);
     };
-
     $scope.previewChart = function (chartType, widget) {
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
-        widget.chartType = chartType.type ? chartType.type : chartType.chartType;    //Selected Chart type - Bind chart-type to showPreview()
+        widget.chartType = chartType.type ? chartType.type : chartType.chartType; //Selected Chart type - Bind chart-type to showPreview()
         $scope.selectedRow = chartType.type ? chartType.type : chartType.chartType;
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
@@ -392,7 +405,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.tickerItem = '';
         }
     };
-
     $scope.selectPieChartX = function (widget, column) {
         if (!column) {
             return;
@@ -416,7 +428,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.selectPieChartY = function (widget, column) {
         $scope.editChartType = null;
         var exists = false;
@@ -437,7 +448,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.selectX1Axis = function (widget, column) {
         console.log(column)
         $scope.editChartType = null;
@@ -460,7 +470,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.selectY1Axis = function (widget, y1data) {
         $scope.editChartType = null;
         angular.forEach(y1data, function (value, key) {
@@ -485,13 +494,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 }
             }
         });
-
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.reloadMaxRecord = function (widget) {
         $scope.editChartType = null;
         console.log(widget)
@@ -500,7 +507,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.selectY2Axis = function (widget, y2data) {
         $scope.editChartType = null;
         angular.forEach(y2data, function (value, key) {
@@ -553,7 +559,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             return;
         }
     };
-
     $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
         if (yAxisItems.length > 0) {
@@ -588,7 +593,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.ticker = function (widget, column) {
         $scope.editChartType = null;
         var newColumns = [];
@@ -610,7 +614,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.removedByTicker = function (widget, column, tickerItem) {
         $scope.editChartType = null;
         $scope.ticker(widget, tickerItem);
@@ -619,7 +622,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.editChartType = "ticker";
         }, 50);
     };
-
     $scope.setFormat = function (widget, column) {
         $scope.editChartType = null;
         angular.forEach(widget.columns, function (value, key) {
@@ -632,50 +634,58 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
     $scope.tickerFormat = function (widget, format) {
         $scope.setFormat(widget, format)
     };
 
-
-
     $scope.selectGrouping = function (widget, groupingFields) {
         $scope.editChartType = null;
         var groups = [];
-        var newColumn = []
-        console.log(groupingFields)
         angular.forEach(groupingFields, function (value, key) {
             $scope.fieldNames = value.fieldName;
             groups.push($scope.fieldNames);
         });
-
         angular.forEach(groupingFields, function (value, key) {
-            angular.forEach(widget.columns, function (val, header) {
+            angular.forEach(widget.columns, function (val, header) {               
                 if (value.fieldName === val.fieldName) {
                     val.groupField = groups.indexOf(value.fieldName) + 1;
-                    newColumn.push(val)
-                    console.log(groups.indexOf(value.fieldName) + "====================>" + value.fieldName)
                 }
-            })
-        })
-
-        console.log(widget.columns) //= newColumn;
-        console.log(newColumn);
-//        if ($scope.groups.indexOf(groupingFields)) {
-//            return true;
-//        } else {
-//            return false;
-//        }
+            });
+        });
+        console.log(widget.columns)
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-
+    
+     $scope.removedByGrouping = function(widget, column, groupList){         
+         angular.forEach(widget.columns, function(value, key){
+             if(value.fieldName == column.fieldName){
+                 value.groupField = "";
+             }
+         })         
+         $scope.selectGrouping(widget, groupList)
+    };
 
     $scope.save = function (widget) {
+////        var tag = widget.tagName.map(function (value, key) {
+////            if (value) {
+////                return value;
+////            }
+//        }).join(',');
+//        var tagData = {
+////            id: widget.tag.id,
+//            tagName: widget.tagName,
+////            description: widget.tag.description ,
+////            status: tag.status,
+//        }
+//        console.log(data)
+//        $http({method: tag.id ? "PUT" : "POST", url: 'admin/tag', data: tagData}).success(function (response) {
+//            console.log(response)
+//        });
         try {
-            $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+            $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
             $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
         } catch (e) {
@@ -749,18 +759,541 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate//widget.customEndDate
         };
-
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+
             $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
     };
-
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
         $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
-});
 
+   // query builder
+    //$scope.appVersion = APP_VERSION;
+
+    AppConfig.setMaxGroups(4);
+    AppConfig.setMaxConditions(4);
+
+    $scope.jsonOutput = {};
+
+    $scope.search = function (form, $event) {
+        $log.debug($scope.searchContainer);
+        $scope.jsonOutput = JSON.stringify($scope.searchContainer, null, 4);
+    };
+
+    $scope.$watch("searchContainer", function () {
+        $scope.jsonOutput = {};
+        var groups = $scope.searchContainer.groups;
+        if (!!groups && groups instanceof Array && groups.length > 0) {
+            $scope.output = $sce.trustAsHtml(computeOutput(groups[0]));
+        }
+    }, true);
+
+    function computeOutput(group) {
+        if (!group) return "";
+        for (var str = "(", i = 0; i < group.conditions.length; i++) {
+            i > 0 && (str += " <strong>" + group.logicalOperator.displayName + "</strong> ");
+            var condition = group.conditions[i];
+            if (!!condition && !!condition.sourceField && !!condition.comparisonOperator && !!condition.inputItem) {
+                str += condition.sourceField.displayName + " " + condition.comparisonOperator.displayName + " '" + condition.inputItem.displayName + "'";
+            }
+        }
+
+        if (!!group.groups && group.groups instanceof Array) {
+            for (var x = 0; x < group.groups.length; x++) {
+                if (!!group.logicalOperator && !!group.conditions) {
+                    if (group.conditions.length > 0 || x > 0) {
+                        str += " <strong>" + group.logicalOperator.displayName + "</strong> ";
+                    }
+                    str += computeOutput(group.groups[x]);
+                }
+            }
+        }
+
+        return str + ")";
+    }
+
+    $scope.sourceTypes = DemoData.getSourceTypes();
+
+    $scope.logicalOperators = DemoData.getLogicalOperators();
+
+    var emptySearchContainer = {
+        "groups": [
+            {
+                "conditions": [
+                    {}
+                ]
+            }
+        ]
+    };
+    //$scope.searchContainer = emptySearchContainer;
+    $scope.searchContainer = DemoData.getSearchContainer1();
+    //$scope.searchContainer = DemoData.getSearchContainer2();
+})
+.provider('DemoData', function DemoDataProvider() {
+
+    function DemoData() {
+       /* this.getObjectTypes = function () {
+            return [
+                {
+                    "data": "Subject",
+                    "displayName": "Subject"
+                },
+                {
+                    "data": "Study",
+                    "displayName": "Study"
+                },
+                {
+                    "data": "RawImage",
+                    "displayName": "Raw Image"
+                },
+                {
+                    "data": "SegmentationImage",
+                    "displayName": "Segmentation Image"
+                },
+                {
+                    "data": "ClinicalStudyData",
+                    "displayName": "Clinical Study Data"
+                },
+                {
+                    "data": "ClinicalStudyDefinition",
+                    "displayName": "Clinical Study Definition"
+                },
+                {
+                    "data": "StatisticalModel",
+                    "displayName": "Statistical Model"
+                },
+                {
+                    "data": "GenomicData",
+                    "displayName": "Genomic Data"
+                },
+                {
+                    "data": "GenomicSeries",
+                    "displayName": "Genomic Series"
+                },
+                {
+                    "data": "GenomicPlatform",
+                    "displayName": "Genomic Platform"
+                }
+            ];
+        };
+        this.getFMATerms = function () {
+            return [
+                {
+                    "data": "3734",
+                    "displayName": "Aorta"
+                },
+                {
+                    "data": "3740",
+                    "displayName": "Bulb of aorta"
+                },
+                {
+                    "data": "7195",
+                    "displayName": "Lung"
+                },
+                {
+                    "data": "7203",
+                    "displayName": "Kidney"
+                },
+                {
+                    "data": "50801",
+                    "displayName": "Brain"
+                }
+            ];
+        };*/
+        this.getSourceFields = function () {
+            return [
+                {
+                    "name": "Type",
+                    "displayName": "Type",
+                    "position": 1,
+                    "comparisonOperators": [
+                        {
+                            "name": "Equals",
+                            "displayName": "=",
+                            "position": 1,
+                            "typeaheadUrl": "https://localhost/aqb/typeahead/object-types/"
+                        },
+                        {
+                            "name": "NotEquals",
+                            "displayName": "!=",
+                            "position": 2,
+                            "typeaheadUrl": "https://localhost/aqb/typeahead/object-types/"
+                        }
+                    ]
+                },
+                {
+                    "name": "ObjectId",
+                    "displayName": "Id",
+                    "position": 2,
+                    "comparisonOperators": [
+                        {
+                            "name": "Equals",
+                            "displayName": "=",
+                            "position": 1
+                        },
+                        {
+                            "name": "NotEquals",
+                            "displayName": "!=",
+                            "position": 2
+                        },
+                        {
+                            "name": "Greater",
+                            "displayName": ">",
+                            "position": 6
+                        },
+                        {
+                            "name": "Less",
+                            "displayName": "<",
+                            "position": 7
+                        },
+                        {
+                            "name": "GreaterEqual",
+                            "displayName": ">=",
+                            "position": 8
+                        },
+                        {
+                            "name": "LessEqual",
+                            "displayName": "<=",
+                            "position": 9
+                        }
+                    ]
+                },
+                {
+                    "name": "SubjectId",
+                    "displayName": "Subject Id",
+                    "position": 3,
+                    "comparisonOperators": [
+                        {
+                            "name": "Equals",
+                            "displayName": "=",
+                            "position": 1
+                        },
+                        {
+                            "name": "NotEquals",
+                            "displayName": "!=",
+                            "position": 2
+                        },
+                        {
+                            "name": "Contains",
+                            "displayName": "Contains",
+                            "position": 3
+                        }
+                    ]
+                },
+                {
+                    "name": "AnatomicalRegion",
+                    "displayName": "Anatomical Region",
+                    "position": 4,
+                    "comparisonOperators": [
+                        {
+                            "name": "Contains",
+                            "displayName": "Contains",
+                            "position": 1,
+                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
+                        },
+                        {
+                            "name": "Equals",
+                            "displayName": "=",
+                            "position": 2,
+                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
+                        },
+                        {
+                            "name": "NotEquals",
+                            "displayName": "!=",
+                            "position": 3,
+                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
+                        }
+                    ]
+                },
+                {
+                    "name": "Fulltext",
+                    "displayName": "Fulltext",
+                    "position": 5,
+                    "comparisonOperators": [
+                        {
+                            "name": "Equals",
+                            "displayName": "=",
+                            "position": 1
+                        }
+                    ]
+                },
+                {
+                    "name": "FileExtension",
+                    "displayName": "File Extension",
+                    "position": 6,
+                    "comparisonOperators": [
+                        {
+                            "name": "Equals",
+                            "displayName": "=",
+                            "position": 1
+                        },
+                        {
+                            "name": "NotEquals",
+                            "displayName": "!=",
+                            "position": 2
+                        }
+                    ]
+                },
+                {
+                    "name": "Placeholder",
+                    "displayName": "Placeholder",
+                    "position": 7,
+                    "comparisonOperators": [
+                        {
+                            "name": "Equals",
+                            "displayName": "=",
+                            "position": 1,
+                            "typeaheadUrl": "https://localhost/aqb/typeahead/object-types/"
+                        },
+                        {
+                            "name": "Contains",
+                            "displayName": "Contains",
+                            "position": 3
+                        },
+                        {
+                            "name": "NotEquals",
+                            "displayName": "!=",
+                            "position": 2,
+                            "typeaheadUrl": "https://localhost/aqb/typeahead/fma/"
+                        }
+                    ]
+                }
+            ];
+        };
+        this.getSourceTypes = function () {
+            return [
+                {
+                    "name": "Objects",
+                    "displayName": "Objects",
+                    "position": 1,
+                    "sourceFields": this.getSourceFields()
+                },
+                {
+                    "name": "RelatedObjects",
+                    "displayName": "Related Objects",
+                    "position": 2,
+                    "sourceFields": this.getSourceFields()
+                }
+            ];
+        };
+        this.getLogicalOperators = function () {
+            return [
+                {
+                    "name": "And",
+                    "displayName": "AND",
+                    "position": 1
+                },
+                {
+                    "name": "Or",
+                    "displayName": "OR",
+                    "position": 2
+                }
+            ];
+        };
+        this.getSearchContainer1 = function () {
+            return {
+                "groups": [
+                    {
+                        "logicalOperator": {
+                            "name": "And",
+                            "displayName": "AND"
+                        },
+                        "sourceType": {
+                            "name": "Objects",
+                            "displayName": "Objects"
+                        },
+                        "conditions": [
+                             {
+                                 "sourceField": {
+                                     "name": "Type",
+                                     "displayName": "Type"
+                                 },
+                                 "comparisonOperator": {
+                                     "name": "Equals",
+                                     "displayName": "="
+                                 },
+                                 "inputItem": {
+                                     "data": "Subject",
+                                     "displayName": "Subject",
+                                     "isTypeahead": true
+                                 }
+                             }
+                        ],
+                        "groups": [
+                            {
+                                "logicalOperator": {
+                                    "name": "And",
+                                    "displayName": "AND"
+                                },
+                                "sourceType": {
+                                    "name": "RelatedObjects",
+                                    "displayName": "Related Objects"
+                                },
+                                "conditions": [
+                                     {
+                                         "sourceField": {
+                                             "name": "AnatomicalRegion",
+                                             "displayName": "Anatomical Region"
+                                         },
+                                         "comparisonOperator": {
+                                             "name": "Equals",
+                                             "displayName": "="
+                                         },
+                                         "inputItem": {
+                                             "data": "7203",
+                                             "displayName": "Kidney",
+                                             "isTypeahead": true
+                                         }
+                                     },
+                                     {
+                                         "sourceField": {
+                                             "name": "Type",
+                                             "displayName": "Type"
+                                         },
+                                         "comparisonOperator": {
+                                             "name": "Equals",
+                                             "displayName": "="
+                                         },
+                                         "inputItem": {
+                                             "data": "RawImage",
+                                             "displayName": "Raw Image",
+                                             "isTypeahead": true
+                                         }
+                                     },
+                                     {
+                                         "sourceField": {
+                                             "name": "Type",
+                                             "displayName": "Type"
+                                         },
+                                         "comparisonOperator": {
+                                             "name": "Equals",
+                                             "displayName": "="
+                                         },
+                                         "inputItem": {
+                                             "data": "ClinicalStudyData",
+                                             "displayName": "Clinical Study Data",
+                                             "isTypeahead": true
+                                         }
+                                     }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+        this.getSearchContainer2 = function () {
+            return {
+                "groups": [
+                    {
+                        "logicalOperator": {
+                            "name": "Or",
+                            "displayName": "OR"
+                        },
+                        "sourceType": {
+                            "name": "Objects",
+                            "displayName": "Objects"
+                        },
+                        "conditions": [
+                        ],
+                        "groups": [
+                            {
+                                "logicalOperator": {
+                                    "name": "And",
+                                    "displayName": "AND"
+                                },
+                                "sourceType": {
+                                    "name": "RelatedObjects",
+                                    "displayName": "Related Objects"
+                                },
+                                "conditions": [
+                                    {
+                                        "sourceField": {
+                                            "name": "AnatomicalRegion",
+                                            "displayName": "Anatomical Region"
+                                        },
+                                        "comparisonOperator": {
+                                            "name": "Equals",
+                                            "displayName": "="
+                                        },
+                                        "inputItem": {
+                                            "data": "7203",
+                                            "displayName": "Kidney",
+                                            "isTypeahead": true
+                                        }
+                                    },
+                                    {
+                                        "sourceField": {
+                                            "name": "Type",
+                                            "displayName": "Type"
+                                        },
+                                        "comparisonOperator": {
+                                            "name": "Equals",
+                                            "displayName": "="
+                                        },
+                                        "inputItem": {
+                                            "data": "RawImage",
+                                            "displayName": "Raw Image",
+                                            "isTypeahead": true
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "logicalOperator": {
+                                    "name": "And",
+                                    "displayName": "AND"
+                                },
+                                "sourceType": {
+                                    "name": "RelatedObjects",
+                                    "displayName": "Related Objects"
+                                },
+                                "conditions": [
+                                    {
+                                        "sourceField": {
+                                            "name": "AnatomicalRegion",
+                                            "displayName": "Anatomical Region"
+                                        },
+                                        "comparisonOperator": {
+                                            "name": "Equals",
+                                            "displayName": "="
+                                        },
+                                        "inputItem": {
+                                            "data": "7203",
+                                            "displayName": "Kidney",
+                                            "isTypeahead": true
+                                        }
+                                    },
+                                    {
+                                        "sourceField": {
+                                            "name": "Type",
+                                            "displayName": "Type"
+                                        },
+                                        "comparisonOperator": {
+                                            "name": "Equals",
+                                            "displayName": "="
+                                        },
+                                        "inputItem": {
+                                            "data": "RawImage",
+                                            "displayName": "Raw Image",
+                                            "isTypeahead": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            };
+        };
+    }
+
+    this.$get = function demoDataFactory() {
+        return new DemoData();
+    };
+});
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
             var xAxis = ['', 'x-1']
@@ -779,7 +1312,6 @@ app.filter('hideColumn', [function () {
             return hideColumn[chartYAxis];
         };
     }]);
-
 app.directive('widgetPreviewTable', function ($http, $stateParams, $state, orderByFilter) {
     return{
         restrict: 'AE',
@@ -1051,13 +1583,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         console.log(object)
                         scope.mapJson(object);
                     },
-
                     clickDelay: 200,
                     restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
 
                 });
             });
-
             scope.mapJson = function (object) {
 
                 scope.draggedObject = [];
@@ -1076,9 +1606,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         return scope.draggedObject.indexOf(item.displayName)
                     })
                 })
-                    console.log(scope.filterReturnItem)
+                console.log(scope.filterReturnItem)
 //                console.log(scope.draggedObject)
-                }
+            }
 
             scope.save = function (column) {
                 try {
@@ -1201,4 +1731,6 @@ app.directive('customWidgetDateRange', function ($stateParams) {
             );
         }
     };
-});
+})
+        ;
+ 

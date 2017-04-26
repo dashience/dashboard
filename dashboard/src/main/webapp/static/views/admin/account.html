@@ -89,12 +89,14 @@
                                         <form class="form-horizontal">
 
                                             <div class="form-group">
-                                                <div class="row col-md-4 image-upload">
-                                                    <label for="file-input">
-                                                        <img class="img-responsive img-thumbnail" ng-src="{{account.logo}}"/>
-                                                    </label>
+                                                <div class="row col-md-4">
+                                                    <div class="image-upload">
+                                                        <label for="file-input">
+                                                            <img class="img-responsive img-thumbnail" ng-src="{{account.logo}}" title="Logo - This image will be constrained to a max height of 56px and max width of 150px. Width will be scaled by the browser. Acceptable Formats: jpg, jpeg, png"/>
+                                                        </label>
 
-                                                    <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
+                                                        <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)" title="Logo - This image will be constrained to a max height of 56px and max width of 150px. Width will be scaled by the browser. Acceptable Formats: jpg, jpeg, png"/>
+                                                    </div>                                                    
                                                 </div>
                                                 <div class="pull-right account-new">
                                                     <button class="btn btn-success" ng-click="addAccount()">New</button>

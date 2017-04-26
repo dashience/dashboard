@@ -53,6 +53,6 @@
         "url": "static/img/stackedbarchart.png",
         "type": "stackedbar",
         "name": "Stacked Bar",
-        "icon": "fa-bar-chart"
+        "icon": "fa-braille"
     }
 ]
