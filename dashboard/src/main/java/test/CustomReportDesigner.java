@@ -287,71 +287,114 @@ public class CustomReportDesigner {
                 SortType sortType1 = iterator.next();
                 // TODO: Should remove and fix with correct logic  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
                 int order = 1;
-                System.out.println("sort Order: " + sortType1.getSortOrder());
-                System.out.println("Field type: " + sortType1.getFieldType());
+                String sortOrder = sortType1.getSortOrder();
+                System.out.println("sort Order: " + sortOrder);
+                String fieldType = sortType1.getFieldType();
+                System.out.println("Before if Field type: " + fieldType);
+                if (fieldType == null) {
+                    fieldType = "";
+                }
+                System.out.println("After if Field type: " + fieldType);
+
                 String day1 = o1.get(sortType1.getFieldName()) + "";
                 String day2 = o2.get(sortType1.getFieldName()) + "";
                 System.out.println("day1: " + day1);
                 System.out.println("day2: " + day2);
                 System.out.println("day1 length: " + day1.length());
 
-                if (sortType1.getFieldType().equalsIgnoreCase("date") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
-                    if (day1.length() == 10) {
-                        if ((day1.substring(4, 5).equalsIgnoreCase("-") || day1.substring(4, 5).equalsIgnoreCase("/")) && (day2.substring(4, 5).equalsIgnoreCase("-") || day2.substring(4, 5).equalsIgnoreCase("/"))) {
-                            System.out.println("Date ---->");
-                            try {
-                                Date date1 = sdf.parse(day1);
-                                Date date2 = sdf.parse(day2);
-                                return date1.compareTo(date2);
-                            } catch (ParseException ex) {
-                                log.error("Parse Exception in  sortData function:  " + ex);
-                                //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                if (sortOrder.equalsIgnoreCase("asc")) {
+                    if (fieldType.equalsIgnoreCase("date")) {
+                        System.out.println("inside date asc");
+                        if (day1.length() == 10) {
+                            if ((day1.substring(4, 5).equalsIgnoreCase("-") || day1.substring(4, 5).equalsIgnoreCase("/")) && (day2.substring(4, 5).equalsIgnoreCase("-") || day2.substring(4, 5).equalsIgnoreCase("/"))) {
+                                System.out.println("Date ---->");
+                                try {
+                                    Date date1 = sdf.parse(day1);
+                                    Date date2 = sdf.parse(day2);
+                                    return date1.compareTo(date2);
+                                } catch (ParseException ex) {
+                                    log.error("Parse Exception in  sortData function:  " + ex);
+                                    //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } else {
+                                continue;
                             }
-                        } else {
-                            continue;
+                        }
+                    }
+
+                    if (fieldType.equalsIgnoreCase("day")) {
+                        System.out.println("inside day asc");
+
+                        if (day1.length() >= 6) {
+                            System.out.println("Days ------>");
+                            if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
+                                DAY dayOne = DAY.valueOf(day1);
+                                System.out.println("dayOne: " + dayOne);
+                                DAY dayTwo = DAY.valueOf(day2);
+                                System.out.println("dayTwo: " + dayTwo);
+                                return dayOne.getWeight() - dayTwo.getWeight();
+                            } else {
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (fieldType.equalsIgnoreCase("string")) {
+                        System.out.println("inside string asc");
+                        return order * day1.compareTo(day2);
+                    }
+
+                    if (fieldType.equalsIgnoreCase("number")) {
+                        System.out.println("fieldType number and sortType asc");
+                        System.out.println("type of day1 : " + o1.get(sortType1.getFieldName()).getClass().getSimpleName());
+                        Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
+                        Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
+                        if (value1 != value2) {
+                            return order * new Double(value1 - value2).intValue();
                         }
                     }
                 }
-
-                if (sortType1.getFieldType().equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
-                    if (day1.length() >= 6) {
-                        System.out.println("Days ------>");
-                        if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
-                            DAY dayOne = DAY.valueOf(day1);
-                            System.out.println("dayOne: " + dayOne);
-                            DAY dayTwo = DAY.valueOf(day2);
-                            System.out.println("dayTwo: " + dayTwo);
-                            return dayOne.getWeight() - dayTwo.getWeight();
-                        } else {
-                            continue;
-                        }
-                    }
-                } else if (sortType1.getFieldType().equalsIgnoreCase("day") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+                if (sortOrder.equalsIgnoreCase("desc")) {
                     order = -1;
-                    if (day1.length() >= 6) {
-                        System.out.println("Days ------>");
-                        if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
-                            DAY dayOne = DAY.valueOf(day1);
-                            System.out.println("dayOne: " + dayOne);
-                            DAY dayTwo = DAY.valueOf(day2);
-                            System.out.println("dayTwo: " + dayTwo);
-                            return order * (dayOne.getWeight() - dayTwo.getWeight());
-                        } else {
-                            continue;
+                    if (fieldType.equalsIgnoreCase("day")) {
+                        System.out.println("inside date desc");
+                        if (day1.length() >= 6) {
+                            System.out.println("Days ------>");
+                            if (day1.substring(day1.length() - 3, day1.length()).equalsIgnoreCase("day") && day2.substring(day2.length() - 3, day2.length()).equalsIgnoreCase("day")) {
+                                DAY dayOne = DAY.valueOf(day1);
+                                System.out.println("dayOne: " + dayOne);
+                                DAY dayTwo = DAY.valueOf(day2);
+                                System.out.println("dayTwo: " + dayTwo);
+                                return order * (dayOne.getWeight() - dayTwo.getWeight());
+                            } else {
+                                continue;
+                            }
                         }
                     }
-                }
 
-                if (sortType1.getFieldType().equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
-                    order = -1;
-                    return order * day1.compareTo(day2);
-                }
+                    if (fieldType.equalsIgnoreCase("string")) {
+                        System.out.println("inside string desc");
+                        return order * day1.compareTo(day2);
+                    }
 
-                if (sortType1.getFieldType().equalsIgnoreCase("string") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
-
-                    return order * day1.compareTo(day2);
+                    if (fieldType.equalsIgnoreCase("number")) {
+                        System.out.println("fieldType number and sortType desc");
+                        Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
+                        Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
+                        if (value1 != value2) {
+                            return order * new Double(value1 - value2).intValue();
+                        }
+                    }
+//                    else {
+//                        System.out.println("else type fieldType number and sortType desc");
+//
+//                        String value1 = o1.get(sortType1.getFieldName()) + "";
+//                        String value2 = o2.get(sortType1.getFieldName()) + "";
+//                        if (value1.compareTo(value2) != 0) {
+//                            return order * value1.compareTo(value2);
+//                        }
+//                    }
                 }
 
                 if (day1.length() == 4 || day1.length() == 5) {
@@ -422,37 +465,45 @@ public class CustomReportDesigner {
                 }
                 // TODO : REMOVE TILL THIS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-//                if (sortType1.getSortOrder().equalsIgnoreCase("desc")) {
+//                if (sortOrder.equalsIgnoreCase("desc")) {
 //                    order = -1;
 //                }
-                if (sortType1.getFieldType().equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("desc")) {
-                    order = -1;
-                    Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
-                    Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
-                    if (value1 != value2) {
-                        return order * new Double(value1 - value2).intValue();
-                    }
-                } else {
-                    String value1 = o1.get(sortType1.getFieldName()) + "";
-                    String value2 = o2.get(sortType1.getFieldName()) + "";
-                    if (value1.compareTo(value2) != 0) {
-                        return order * value1.compareTo(value2);
-                    }
-                }
-
-                if (sortType1.getFieldType().equalsIgnoreCase("number") && sortType1.getSortOrder().equalsIgnoreCase("asc")) {
-                    Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
-                    Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
-                    if (value1 != value2) {
-                        return order * new Double(value1 - value2).intValue();
-                    }
-                } else {
-                    String value1 = o1.get(sortType1.getFieldName()) + "";
-                    String value2 = o2.get(sortType1.getFieldName()) + "";
-                    if (value1.compareTo(value2) != 0) {
-                        return order * value1.compareTo(value2);
-                    }
-                }
+//                if (fieldType.equalsIgnoreCase("number") && sortOrder.equalsIgnoreCase("desc")) {
+//                    System.out.println("fieldType number and sortType desc");
+//                    order = -1;
+//                    Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
+//                    Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
+//                    if (value1 != value2) {
+//                        return order * new Double(value1 - value2).intValue();
+//                    }
+//                }
+//                else {
+//                    System.out.println("else type fieldType number and sortType desc");
+//
+//                    String value1 = o1.get(sortType1.getFieldName()) + "";
+//                    String value2 = o2.get(sortType1.getFieldName()) + "";
+//                    if (value1.compareTo(value2) != 0) {
+//                        return order * value1.compareTo(value2);
+//                    }
+//                }
+//                System.out.println(fieldType + ":" + sortOrder + ":");
+//                if (fieldType.equalsIgnoreCase("number") && sortOrder.equalsIgnoreCase("asc")) {
+//                    System.out.println("fieldType number and sortType asc");
+//                    Double value1 = ApiUtils.toDouble(o1.get(sortType1.getFieldName()) + "");
+//                    Double value2 = ApiUtils.toDouble(o2.get(sortType1.getFieldName()) + "");
+//                    if (value1 != value2) {
+//                        return order * new Double(value1 - value2).intValue();
+//                    }
+//                }
+//                else {
+//                    System.out.println("else type fieldType number and sortType asc");
+//
+//                    String value1 = o1.get(sortType1.getFieldName()) + "";
+//                    String value2 = o2.get(sortType1.getFieldName()) + "";
+//                    if (value1.compareTo(value2) != 0) {
+//                        return order * value1.compareTo(value2);
+//                    }
+//                }
             }
             return 0;
         });
@@ -2271,12 +2322,12 @@ public class CustomReportDesigner {
             }
             System.out.println("sortFields size: " + sortFields.size());
 
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
-
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
+            }
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
 //            final CategoryDataset dataset1 = createDataset3();
@@ -2291,8 +2342,12 @@ public class CustomReportDesigner {
 
             long totalCount = firstAxisCount + secondAxisCount;
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
-            final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
-            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+            CategoryDataset dataset2 = null;
+            if (secondAxis.size() != 0) {
+                System.out.println("inside if...");
+                dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+            }
+            final CategoryAxis domainAxis = new CategoryAxis();
             // final NumberAxis rangeAxis = new NumberAxis("Value");
 
             System.out.println("Dataset1 line data: " + data);
@@ -2368,6 +2423,7 @@ public class CustomReportDesigner {
             plot.setBackgroundPaint(Color.white);
             plot.setRowRenderingOrder(SortOrder.ASCENDING);
             plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+            System.out.println("dataset2 ------> " + dataset2);
             if (dataset2 != null) {
                 plot.setDataset(1, dataset2);
                 plot.mapDatasetToRangeAxis(1, 1);
@@ -2457,11 +2513,12 @@ public class CustomReportDesigner {
         }
         System.out.println("sortFields size: " + sortFields.size());
 
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
-        }
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
@@ -2471,8 +2528,12 @@ public class CustomReportDesigner {
 
         long totalCount = firstAxisCount + secondAxisCount;
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
-        final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
-        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        CategoryDataset dataset2 = null;
+        if (secondAxis.size() != 0) {
+            System.out.println("inside if...");
+            dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+        }
+        final CategoryAxis domainAxis = new CategoryAxis();
         System.out.println("Dataset1 line data: " + data);
         System.out.println("Dataset1 line first Axis: " + firstAxis);
         System.out.println("Dataset1 line Second Axis: " + secondAxis);
@@ -2607,17 +2668,21 @@ public class CustomReportDesigner {
             }
             System.out.println("sortFields size: " + sortFields.size());
 
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
-
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
             }
 
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
+            }
+
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
-            final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
-            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+            CategoryDataset dataset2 = null;
+            if (secondAxis.size() != 0) {
+                System.out.println("inside if...");
+                dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+            }
+            final CategoryAxis domainAxis = new CategoryAxis();
             final NumberAxis rangeAxis = new NumberAxis();
             final AreaRenderer renderer1 = new AreaRenderer();
 
@@ -2765,6 +2830,7 @@ public class CustomReportDesigner {
             List<SecondAxis> secondAxis = new ArrayList<>();
             String xAxis = null;
             String xAxisDisplay = null;
+            String format = "";
 
             for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
                 WidgetColumn column = iterator.next();
@@ -2786,15 +2852,18 @@ public class CustomReportDesigner {
                     xAxisDisplay = column.getDisplayName();
                     System.out.println("XAxisDisplay: " + xAxisDisplay);
                 }
+                if (column.getDisplayFormat() != null) {
+                    format = column.getDisplayFormat();
+                }
             }
             System.out.println("sortFields size: " + sortFields.size());
 
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
-
             if (sortFields.size() > 0) {
                 data = sortData(data, sortFields);
+            }
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
             }
 
             System.out.println("FirstAxis: " + firstAxis);
@@ -2819,7 +2888,7 @@ public class CustomReportDesigner {
             System.out.println("Dataset1 bar Second Axis: " + secondAxis);
             System.out.println("Dataset1 bar X Axis: " + xAxis);
 
-            final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+            final CategoryAxis domainAxis = new CategoryAxis();
             //final NumberAxis rangeAxis = new NumberAxis("Value");
             final NumberAxis rangeAxis = new NumberAxis();
             final BarRenderer renderer1 = new BarRenderer();
@@ -2981,12 +3050,12 @@ public class CustomReportDesigner {
         }
         System.out.println("sortFields size: " + sortFields.size());
 
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
-        }
-
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
@@ -2996,9 +3065,13 @@ public class CustomReportDesigner {
 
         long totalCount = firstAxisCount + secondAxisCount;
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
-        final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+        CategoryDataset dataset2 = null;
+        if (secondAxis.size() != 0) {
+            System.out.println("inside if...");
+            dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+        }
 
-        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        final CategoryAxis domainAxis = new CategoryAxis();
         final NumberAxis rangeAxis = new NumberAxis();
         final BarRenderer renderer1 = new BarRenderer();
         final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
@@ -3138,12 +3211,12 @@ public class CustomReportDesigner {
         }
         System.out.println("sortFields size: " + sortFields.size());
 
-        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
-        }
-
         if (sortFields.size() > 0) {
             data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
         }
 
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
@@ -3154,9 +3227,13 @@ public class CustomReportDesigner {
 
         long totalCount = firstAxisCount + secondAxisCount;
         final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
-        final CategoryDataset dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+        CategoryDataset dataset2 = null;
+        if (secondAxis.size() != 0) {
+            System.out.println("inside if...");
+            dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+        }
 
-        final CategoryAxis domainAxis = new CategoryAxis(xAxisDisplay);
+        final CategoryAxis domainAxis = new CategoryAxis();
         final NumberAxis rangeAxis = new NumberAxis();
         final BarRenderer renderer1 = new BarRenderer();
         final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
@@ -3330,7 +3407,6 @@ public class CustomReportDesigner {
                 System.out.println(null + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
                 dataset.addValue(null, axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
-
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();

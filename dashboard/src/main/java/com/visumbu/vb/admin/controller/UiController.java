@@ -150,12 +150,14 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidget tabWidget) {
+        System.out.println("create tab widget");
         return uiService.createTabWidget(tabId, tabWidget);
     }
 
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
+       System.out.println("save tab widget");
         return uiService.saveTabWidget(tabId, tabWidget);
         //return null; //uiService.createTabWidget(tabId, tabWidget);
     }
