@@ -8,12 +8,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.selectTabID = $state;
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
-
-//        $scope.accountId = $stateParams.accountId;
-//        $scope.accountName = $stateParams.accountName;
-//        $scope.tabId = $stateParams.tabId;
-//        $scope.startDate = $stateParams.startDate;
-//        $scope.endDate = $stateParams.endDate;
         if ($stateParams.productId != product.id) {
             $stateParams.productId = product.id;
             $state.go("index.dashboard.widget", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, productId: $stateParams.productId, tabId: setTabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
@@ -31,16 +25,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
     $scope.product = [];
     $scope.selectAccount = {};
-//    $http.get('admin/user/account').success(function (response) {
-//        $scope.accounts = response;
-//        console.log(response)
-//        $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].id;
-//        $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountName;
-//        $scope.name = $filter('filter')($scope.accounts, {id: $stateParams.accountId})[0];
-//        $scope.selectAccount.selected = {accountName: $scope.name.accountName};
-//        getAgencyProduct($scope.name.agencyId.id)
-//
-//    });
 
     $http.get('admin/ui/userAccountByUser').success(function (response) {
         if (!response[0]) {
@@ -70,7 +54,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $scope.getAccountId = function (account) {
         console.log(account)
+        if(account.accountId.logo){            
         $scope.accountLogo = account.accountId.logo;
+        } else{
+            $scope.accountLogo = "";
+        }
         $stateParams.accountId = account.accountId.id;
         $scope.selectAccount.selected = {accountName: account.accountId.accountName};
         $stateParams.accountName = account.accountId.accountName;

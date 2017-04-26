@@ -658,25 +658,21 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.save = function (widget) {
-        alert(widget.tagName)
-
-//        var tag = widget.tagName.map(function (value, key) {
-//            if (value) {
-//                return value;
-//            }
+////        var tag = widget.tagName.map(function (value, key) {
+////            if (value) {
+////                return value;
+////            }
 //        }).join(',');
-        var tagData = {
-//            id: widget.tag.id,
-            tagName: widget.tagName,
-//            description: widget.tag.description ,
-//            status: tag.status,
-        }
-        console.log(data)
-        $http({method: tag.id ? "PUT" : "POST", url: 'admin/tag', data: tagData}).success(function (response) {
-            alert()
-
-            console.log(response)
-        });
+//        var tagData = {
+////            id: widget.tag.id,
+//            tagName: widget.tagName,
+////            description: widget.tag.description ,
+////            status: tag.status,
+//        }
+//        console.log(data)
+//        $http({method: tag.id ? "PUT" : "POST", url: 'admin/tag', data: tagData}).success(function (response) {
+//            console.log(response)
+//        });
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
