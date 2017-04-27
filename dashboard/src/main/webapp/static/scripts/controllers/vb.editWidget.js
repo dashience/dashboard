@@ -143,6 +143,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Min', value: "min"},
         {name: 'Max', value: "max"}
     ];
+    $scope.combinationChartTypes = [
+        {name: 'None', value: ""},
+        {name: 'Line Chart', value: "line"},
+        {name: 'Area Chart', value: "area"},
+        {name: 'Bar Chart', value: "bar"}
+
+    ];
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
@@ -264,8 +271,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.editPreviewTitle = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
-        $scope.tickerItem = []
-        $scope.groupingFields = []
+        $scope.tickerItem = [];
+        $scope.groupingFields = [];
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
         widget.previewUrl = widget.dataSetId; //widget.directUrl;
@@ -635,7 +642,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             groups.push($scope.fieldNames);
         });
         angular.forEach(groupingFields, function (value, key) {
-            angular.forEach(widget.columns, function (val, header) {               
+            angular.forEach(widget.columns, function (val, header) {
                 if (value.fieldName === val.fieldName) {
                     val.groupField = groups.indexOf(value.fieldName) + 1;
                 }
@@ -647,36 +654,42 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
-     $scope.removedByGrouping = function(widget, column, groupList){         
-         angular.forEach(widget.columns, function(value, key){
-             if(value.fieldName == column.fieldName){
-                 value.groupField = "";
-             }
-         })         
-         $scope.selectGrouping(widget, groupList)
+
+    $scope.removedByGrouping = function (widget, column, groupList) {
+        angular.forEach(widget.columns, function (value, key) {
+            if (value.fieldName == column.fieldName) {
+                value.groupField = "";
+            }
+        })
+        $scope.selectGrouping(widget, groupList)
     };
-
+//    $scope.setCombinationChartType = function (widget, chartType) {
+//        console.log(widget.columns)
+//        console.log(chartType)
+////        $scope.combinationType = [];
+////        $scope.combinationType.push(chartType.name)
+////        console.log($scope.combinationType)
+//    }
     $scope.save = function (widget) {
-        alert(widget.tagName)
-
-//        var tag = widget.tagName.map(function (value, key) {
-//            if (value) {
-//                return value;
-//            }
-//        }).join(',');
-        var tagData = {
-//            id: widget.tag.id,
-            tagName: widget.tagName,
-//            description: widget.tag.description ,
-//            status: tag.status,
-        }
-        console.log(data)
-        $http({method: tag.id ? "PUT" : "POST", url: 'admin/tag', data: tagData}).success(function (response) {
-            alert()
-
-            console.log(response)
-        });
+//        alert(widget.tagName)
+//
+////        var tag = widget.tagName.map(function (value, key) {
+////            if (value) {
+////                return value;
+////            }
+////        }).join(',');
+//        var tagData = {
+////            id: widget.tag.id,
+//            tagName: widget.tagName,
+////            description: widget.tag.description ,
+////            status: tag.status,
+//        }
+//        console.log(data)
+//        $http({method: tag.id ? "PUT" : "POST", url: 'admin/tag', data: tagData}).success(function (response) {
+//            alert()
+//
+//            console.log(response)
+//        });
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -715,7 +728,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 yAxisLabel: value.yAxisLabel,
                 columnHide: hideColumn,
                 search: value.search,
-                groupField: value.groupField
+                groupField: value.groupField,
+                combinationType: value.combinationType
             };
             widgetColumnsData.push(columnData);
         });
@@ -1201,4 +1215,4 @@ app.directive('customWidgetDateRange', function ($stateParams) {
     };
 })
         ;
- 
+

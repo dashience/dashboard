@@ -28,7 +28,6 @@ app.controller('tagController', function ($scope, $http, $stateParams, $filter, 
     }
 
     $http.get('admin/tag').success(function (response) {
-
         $scope.tags = response;
     })
     $scope.editTag = function (tag, index) {
@@ -36,15 +35,15 @@ app.controller('tagController', function ($scope, $http, $stateParams, $filter, 
         $scope.id = tag;
         var data = {
             id: tag.id,
-            tagName:tag.tagName,
+            tagName: tag.tagName,
             description: tag.description,
-            status:tag.status
+            status: tag.status
         }
-        $scope.tag=data;
+        $scope.tags= data;
     }
-    $scope.deleteTag=function(tag,index){
-         $http({method: "DELETE", url: 'admin/tag/' + tag.id}).success(function (response) {
-             $scope.tags.splice(index, 1);
+    $scope.deleteTag = function (tag, index) {
+        $http({method: "DELETE", url: 'admin/tag/' + tag.id}).success(function (response) {
+            $scope.tags.splice(index, 1);
             $scope.tagData();
         });
     }

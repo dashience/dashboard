@@ -230,6 +230,7 @@ public class UiService {
             widgetColumn.setAlignment(widgetColumnBean.getAlignment());
             widgetColumn.setFieldType(widgetColumnBean.getFieldType());
             widgetColumn.setGroupField(widgetColumnBean.getGroupField());
+            widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
             Integer columnHide = null;
             if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
                 columnHide = 1;

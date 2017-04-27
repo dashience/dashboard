@@ -316,9 +316,9 @@
                 <label>Tags</label>
                 <div>
                     <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.tagName"  on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
-                        <ui-select-match placeholder="Tags...">{{$item.tagName}}</ui-select-match>
+                        <ui-select-match placeholder="Tags...">{{$select.selected.tagName}}</ui-select-match>
                         <ui-select-choices repeat="tag in tags | filter:$select.search">
-                            {{tag.tagName}}
+                            {{tag.tagName[$index]}}
                         </ui-select-choices>
                     </ui-select>
                 </div>
@@ -413,6 +413,7 @@
                                                 <th>Format</th>
                                                 <th>Sort</th>
                                                 <th>Field Type</th>
+                                                <th>Combination Type</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -437,6 +438,11 @@
                                                     <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.fieldType' ng-change="setChartFormat(widget, columnList)">
                                                         <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
                                                     </select>
+                                                </td>
+                                                <td>
+                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.combinationType' ng-change="setCombinationChartType(widget, columnList)">
+                                                        <option ng-repeat=' combinationChartType in combinationChartTypes' value='{{combinationChartType.value}}'>{{combinationChartType.name}}</option>
+                                                    </select> 
                                                 </td>
                                             </tr>
                                         </tbody>
