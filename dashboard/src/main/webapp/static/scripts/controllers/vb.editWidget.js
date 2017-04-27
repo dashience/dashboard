@@ -8,6 +8,17 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
+
+    $scope.tab = 1;
+
+    $scope.setTab = function (newTab) {
+        $scope.tab = newTab;
+    };
+
+    $scope.isSet = function (tabNum) {
+        return $scope.tab === tabNum;
+    };
+
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
@@ -19,50 +30,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.editWidgetData.push({width: 12, columns: []})
         }
     });
-//    $scope.pageRefresh = function () {          //Page Refresh
-//        getWidgetItem();
-//    };
-//    
-//    function getWidgetItem() {      //Default Loading Items
-//        if (!$stateParams.tabId) {
-//            $stateParams.tabId = 1;
-//        }
-//        $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-//            $scope.widgets = response;
-//        });
-//    }
-//    getWidgetItem();
-    $http.get('admin/tag').success(function (response) {
-        console.log(response)
-//        var widgetTag=response.tagName.split(', ');
-//        alert(widgetTag)
-//        angular.forEach(response, function (val, key) {
-//            var widgetTag;
-//            
-//                widgetTag = response[key].tagName;
-//                
-//                console.log(widgetTag)
-//            
-//        })
-        $scope.tags = response;
-    })
-
-    $scope.getWidgetTag = function () {
-        $http.get('admin/tag').success(function (response) {
-            $scope.tags = response;
-        })
-    }
-
-
-//    $http.get('admin/user/account').success(function (response) {
-//        $scope.emailAccounts = [];
-//        $scope.accounts = response;
-//        angular.forEach($scope.accounts, function (val, key) {
-//            $scope.emailAccounts.push(val.agencyId.email)
-//            $scope.tags = unique($scope.emailAccounts);
-//        });
-//    });
-
 
     $scope.selectAggregations = [
         {name: 'None', value: ""},
@@ -268,6 +235,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
 
     $scope.editWidget = function (widget) {    //Edit widget
+        tagWidgetId(widget)
         $scope.editPreviewTitle = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
@@ -648,7 +616,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 }
             });
         });
-        console.log(widget.columns)
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -663,33 +630,28 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         })
         $scope.selectGrouping(widget, groupList)
     };
-//    $scope.setCombinationChartType = function (widget, chartType) {
-//        console.log(widget.columns)
-//        console.log(chartType)
-////        $scope.combinationType = [];
-////        $scope.combinationType.push(chartType.name)
-////        console.log($scope.combinationType)
-//    }
+
+    $scope.tags = [];
+    $http.get('admin/tag').success(function (response) {
+        $scope.tagsGroups = response;
+        angular.forEach(response, function (value, key) {
+            $scope.tags.push(value.tagName)
+        });
+    });
+
+    function tagWidgetId(widget) {
+        widget.tagName = [];
+        $http.get("admin/tag/widgetTag/" + widget.id).success(function (response) {
+            console.log(response)
+            $scope.widgetTags = response;
+            angular.forEach(response, function (value, key) {
+                console.log(value)
+                widget.tagName.push(value.tagId.tagName)
+            });
+        });
+    }
+
     $scope.save = function (widget) {
-//        alert(widget.tagName)
-//
-////        var tag = widget.tagName.map(function (value, key) {
-////            if (value) {
-////                return value;
-////            }
-////        }).join(',');
-//        var tagData = {
-////            id: widget.tag.id,
-//            tagName: widget.tagName,
-////            description: widget.tag.description ,
-////            status: tag.status,
-//        }
-//        console.log(data)
-//        $http({method: tag.id ? "PUT" : "POST", url: 'admin/tag', data: tagData}).success(function (response) {
-//            alert()
-//
-//            console.log(response)
-//        });
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -767,15 +729,134 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             customEndDate: $scope.customEndDate//widget.customEndDate
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-
+            console.log(widget.tagName)
+            var tag = widget.tagName.map(function (value, key) {
+                if (value) {
+                    return value;
+                }
+            }).join(',');
+            var tagData = {
+                tagName: tag,
+                widgetId: widget.id
+            };
+            $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
             $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
+
     };
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
         $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
+
+    $scope.removedTags = function (deletedItem) {
+        var tags = $scope.widgetTags;
+        tags.forEach(function (value, key) {
+            if (value.tagId.tagName === deletedItem) {
+                $http({method: 'DELETE', url: "admin/tag/widgetTag/" + value.id});
+            }
+        })
+    };
+
+    var data = '{"group": {"operator": "AND","rules": []}}';
+
+    function htmlEntities(str) {
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+    function computed(group) {
+        if (!group)
+            return "";
+        for (var str = "(", i = 0; i < group.rules.length; i++) {
+            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+            str += group.rules[i].group ?
+                    computed(group.rules[i].group) :
+                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+            }
+
+        return str + ")";
+    }
+
+    $scope.json = null;
+
+    $scope.filter = JSON.parse(data);
+
+    $scope.$watch('filter', function (newValue) {
+        $scope.json = JSON.stringify(newValue, null, 2);
+        $scope.output = computed(newValue.group);
+    }, true);
 });
+
+
+app.directive('queryBuilder', ['$compile', function ($compile) {
+        return {
+            restrict: 'E',
+            scope: {
+                group: '='
+            },
+            templateUrl: '/queryBuilderDirective.html',
+            compile: function (element, attrs) {
+                var content, directive;
+                content = element.contents().remove();
+                return function (scope, element, attrs) {
+                    scope.operators = [
+                        {name: 'AND'},
+                        {name: 'OR'}
+                    ];
+
+                    scope.fields = [
+                        {name: 'Firstname'},
+                        {name: 'Lastname'},
+                        {name: 'Birthdate'},
+                        {name: 'City'},
+                        {name: 'Country'}
+                    ];
+
+                    scope.conditions = [
+                        {name: '='},
+                        {name: '<>'},
+                        {name: '<'},
+                        {name: '<='},
+                        {name: '>'},
+                        {name: '>='}
+                    ];
+
+                    scope.addCondition = function () {
+                        scope.group.rules.push({
+                            condition: '=',
+                            field: 'Firstname',
+                            data: ''
+                        });
+                    };
+
+                    scope.removeCondition = function (index) {
+                        scope.group.rules.splice(index, 1);
+                    };
+
+                    scope.addGroup = function () {
+                        scope.group.rules.push({
+                            group: {
+                                operator: 'AND',
+                                rules: []
+                            }
+                        });
+                    };
+
+                    scope.removeGroup = function () {
+                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+                    };
+
+                    directive || (directive = $compile(content));
+
+                    element.append(directive(scope, function ($compile) {
+                        return $compile;
+                    }));
+                }
+            }
+                        }
+    }]);
+
+
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
             var xAxis = ['', 'x-1']

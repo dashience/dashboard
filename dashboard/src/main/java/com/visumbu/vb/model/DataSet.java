@@ -42,6 +42,12 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")})
 public class DataSet implements Serializable {
 
+    @Size(max = 255)
+    @Column(name = "sheet_name")
+    private String sheetName;
+    @OneToMany(mappedBy = "dataSetId")
+    private Collection<TabWidget> tabWidgetCollection;
+
     @Size(max = 500)
     @Column(name = "report_performance")
     private String reportPerformance;
@@ -210,6 +216,24 @@ public class DataSet implements Serializable {
 
     public void setNetworkType(String networkType) {
         this.networkType = networkType;
+    }
+
+    public String getSheetName() {
+        return sheetName;
+    }
+
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<TabWidget> getTabWidgetCollection() {
+        return tabWidgetCollection;
+    }
+
+    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
+        this.tabWidgetCollection = tabWidgetCollection;
     }
 
 }

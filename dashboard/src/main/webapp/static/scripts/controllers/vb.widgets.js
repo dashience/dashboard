@@ -697,18 +697,18 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
 
             listOfCalculatedFunction = [
-                {name: 'ctr', field1: 'data__clicks', field2: 'data__impressions'},
-                {name: 'cpa', field1: 'data__cost', field2: 'data__conversions'},
-                {name: 'cpas', field1: 'data__spend', field2: 'data__conversions'},
-                {name: 'cpc', field1: 'data__cost', field2: 'data__clicks'},
-                {name: 'cpcs', field1: 'data__spend', field2: 'data__clicks'},
-                {name: 'cpr', field1: 'data__spend', field2: 'data__actions_post_reaction'},
-                {name: 'ctl', field1: 'data__spend', field2: 'data__actions_like'},
-                {name: 'cplc', field1: 'data__spend', field2: 'data__actions_link_click'},
-                {name: 'cpcomment', field1: 'data__spend', field2: 'data__actions_comment'},
-                {name: 'cposte', field1: 'data__spend', field2: 'data__actions_post_engagement'},
-                {name: 'cpagee', field1: 'data__spend', field2: 'data__actions_page_engagement'},
-                {name: 'cpp', field1: 'data__spend', field2: 'data__actions_post'}
+                {name: 'ctr', field1: 'clicks', field2: 'impressions'},
+                {name: 'cpa', field1: 'cost', field2: 'conversions'},
+                {name: 'cpas', field1: 'spend', field2: 'conversions'},
+                {name: 'cpc', field1: 'cost', field2: 'clicks'},
+                {name: 'cpcs', field1: 'spend', field2: 'clicks'},
+                {name: 'cpr', field1: 'spend', field2: 'actions_post_reaction'},
+                {name: 'ctl', field1: 'spend', field2: 'actions_like'},
+                {name: 'cplc', field1: 'spend', field2: 'actions_link_click'},
+                {name: 'cpcomment', field1: 'spend', field2: 'actions_comment'},
+                {name: 'cposte', field1: 'spend', field2: 'actions_post_engagement'},
+                {name: 'cpagee', field1: 'spend', field2: 'actions_page_engagement'},
+                {name: 'cpp', field1: 'spend', field2: 'actions_post'}
             ];
 
             function aggregate(list, aggreationList) {
