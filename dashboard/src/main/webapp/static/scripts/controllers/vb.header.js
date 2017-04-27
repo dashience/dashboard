@@ -438,6 +438,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $(function () {
+        
         var start = moment();
         var end = moment();
         function cb(start, end) {

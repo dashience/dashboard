@@ -367,15 +367,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $scope.previewChart = function (chartType, widget) {
         console.log(chartType);
-        console.log(widget);
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType;    //Selected Chart type - Bind chart-type to showPreview()
         $scope.selectedRow = chartType.type ? chartType.type : chartType.chartType;
+        console.log(chartType.type ? chartType.type : chartType.chartType)
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
-        console.log($scope.previewColumn);
-        console.log($scope.editChartType);
         if (chartType.type == 'text') {
             widget.dataSetId = '';
             widget.dataSourceId = '';
@@ -385,7 +383,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }
     };
     $(document).ready(function (e) {
-        $(".drop").click(function (e) {
+        $(".ranges  ul").find("li").addClass("custom-picker");
+        $(document).on("click",".drop",function(e){
             console.log("drop clicked event");
             e.stopPropagation();
             $(".scheduler-list-style").not($(this).next()).hide();
@@ -396,15 +395,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             e.stopPropagation();
         });
 
-        $(".ranges ul").find("li").addClass("custom-picker");
         $(document).click(function (e) {
+             $(".ranges  ul").find("li").addClass("custom-picker");
             console.log(e.target.className);
             var selectedElement = e.target.className;
-            if(selectedElement=="drop btn btn-default ng-binding")
-            {
-                console.log("inside here")
-                $(".scheduler-list-style").show();
-            }
             if (selectedElement != 'fa fa-chevron-left glyphicon glyphicon-chevron-left' &&
                     selectedElement != 'prev available' && selectedElement != 'next available' &&
                     selectedElement != 'input-mini form-control active' &&
@@ -412,6 +406,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                     selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar' &&
                     selectedElement != 'fa fa-chevron-right glyphicon glyphicon-chevron-right' &&
                     selectedElement != "custom-picker" && selectedElement != 'month' &&
+                    selectedElement !="date-border ng-binding" &&
                     selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar')
             {
                 console.log("1");
@@ -420,6 +415,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         });
 
         $(".applyBtn").click(function (e) {
+            $scope.editChartType=null;
             console.log("apply buton click event");
             console.log($scope.selectedRow)
             try {
