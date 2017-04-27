@@ -8,7 +8,17 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
+    
+    //Tabs
+    $scope.tab = 1;
+    $scope.setTab = function (newTab) {
+        $scope.tab = newTab;
+    };
 
+    $scope.isSet = function (tabNum) {
+        return $scope.tab === tabNum;
+    };
+    
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
@@ -20,17 +30,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.editWidgetData.push({width: 12, columns: []})
         }
     });
-
-    //Tabs
-    $scope.tab = 1;
-    $scope.setTab = function (newTab) {
-        $scope.tab = newTab;
-    };
-
-    $scope.isSet = function (tabNum) {
-        return $scope.tab === tabNum;
-    };
-
 
     $scope.selectAggregations = [
         {name: 'None', value: ""},
@@ -188,7 +187,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.filterName = $filter('filter')($scope.collectionFields, {fieldName: currentColumn.fieldName})[0];
         currentColumn.displayName = $scope.filterName.displayName;
     };
-    s
+    
     $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
