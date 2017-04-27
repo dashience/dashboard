@@ -1,29 +1,4 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
-    $(document).ready(function (e) {
-
-        $(".drop").click(function (e) {
-//             e.stopPropagation();
-            $(".scheduler-list-style").not($(this).next()).hide();
-            $(this).next().toggle();
-        });
-
-        $(".scheduler-list-style").find("li").click(function (e) {
-            e.stopPropagation();
-        });
-
-//        $(".ranges ul").find("li:eq(0)").click(function(e){
-//           $(".scheduler-list-style").show();
-//        });
-
-        $(document).click(function (e) {
-
-            $(".scheduler-list-style").hide();
-        });
-
-    });
-
-
-
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -36,13 +11,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
-        if ($stateParams.widgetId != 0) {
+        if ($stateParams.widgetId) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
             })
-        } else {
-            $scope.editWidgetData.push({width: 12, columns: []})
         }
     });
 
@@ -59,19 +32,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //        });
 //    }
 //    getWidgetItem();
-
-
-    $scope.tags = ["test", "test1"]
-
-//    $http.get('admin/user/account').success(function (response) {
-//        $scope.emailAccounts = [];
-//        $scope.accounts = response;
-//        angular.forEach($scope.accounts, function (val, key) {
-//            $scope.emailAccounts.push(val.agencyId.email)
-//            $scope.tags = unique($scope.emailAccounts);
-//        });
-//    });
-
 
     $scope.selectAggregations = [
         {name: 'None', value: ""},
@@ -276,7 +236,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
-//            widget.columns = response.columnDefs;
+            widget.columns = response.columnDefs;
             $scope.collectionFields = response.columnDefs;
         });
     }
@@ -287,7 +247,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.y1Column = [];
         $scope.y2Column = [];
         $scope.tickerItem = []
-        $scope.groupingFields = []
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
         widget.previewUrl = widget.dataSetId;//widget.directUrl;
@@ -326,10 +285,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
                 }
-            }
-            if (val.groupField) {
-                console.log(val)
-                $scope.groupingFields.push(val)
             }
         });
     };
@@ -431,6 +386,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $(document).ready(function (e) {
         $(".drop").click(function (e) {
+            console.log("drop clicked event");
             e.stopPropagation();
             $(".scheduler-list-style").not($(this).next()).hide();
             $(this).next().toggle();
@@ -444,6 +400,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $(document).click(function (e) {
             console.log(e.target.className);
             var selectedElement = e.target.className;
+            if(selectedElement=="drop btn btn-default ng-binding")
+            {
+                console.log("inside here")
+                $(".scheduler-list-style").show();
+            }
             if (selectedElement != 'fa fa-chevron-left glyphicon glyphicon-chevron-left' &&
                     selectedElement != 'prev available' && selectedElement != 'next available' &&
                     selectedElement != 'input-mini form-control active' &&
@@ -722,36 +683,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.setFormat(widget, format)
     };
 
-    $scope.selectGrouping = function (widget, groupingFields) {
-        $scope.editChartType = null;
-        var groups = [];
-        angular.forEach(groupingFields, function (value, key) {
-            $scope.fieldNames = value.fieldName;
-            groups.push($scope.fieldNames);
-        });
-
-        angular.forEach(groupingFields, function (value, key) {
-            angular.forEach(widget.columns, function (val, header) {
-                if (value.fieldName === val.fieldName) {
-                    val.groupField = groups.indexOf(value.fieldName) + 1;
-                }
-            });
-        });
-        console.log(widget.columns)
-        var chartType = widget;
-        $timeout(function () {
-            $scope.previewChart(chartType, widget)
-        }, 50);
-    };
-
-    $scope.removedByGrouping = function (widget, column, groupList) {
-        angular.forEach(widget.columns, function (value, key) {
-            if (value.fieldName == column.fieldName) {
-                value.groupField = "";
-            }
-        })
-        $scope.selectGrouping(widget, groupList)
-    };
 
     $scope.save = function (widget) {
         try {
@@ -791,8 +722,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 xAxisLabel: value.xAxisLabel,
                 yAxisLabel: value.yAxisLabel,
                 columnHide: hideColumn,
-                search: value.search,
-                groupField: value.groupField
+                search: value.search
             };
             widgetColumnsData.push(columnData);
         });
@@ -1045,32 +975,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.addList = function (list) {
                 console.log(list);
                 list.isEdit = true;
-//                var obj = {
-//                    agregationFunction: list.agregationFunction,
-//                    alignment: null,
-//                    baseFieldName: null,
-//                    columnHide: null,
-//                    displayFormat: list.displayFormat,
-//                    displayName: list.displayName,
-//                    fieldGenerationFields: null,
-//                    fieldGenerationFunction: null,
-//                    fieldName: list.fieldName,
-//                    fieldType: list.type,
-//                    functionParameters: null,
-//                    groupPriority: list.groupPriority,
-//                    id: 519,
-//                    remarks: null,
-//                    search: null,
-//                    sortOrder: list.sortOrder,
-//                    sortPriority: list.sortPriority,
-//                    width: null,
-//                    wrapText: null,
-//                    xAxis: null,
-//                    xAxisLabel: null,
-//                    yAxis: null,
-//                    yAxisLabel: null
-//                };
-                console.log(obj);
                 scope.previewTableHeaderName.push(list);
                 console.log(scope.previewTableHeaderName);
                 $('.defaultTable').dragtable();
@@ -1192,15 +1096,14 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
 //                console.log(scope.previewTableHeaderName);
                     angular.forEach(scope.previewTableHeaderName, function (value, key) {
 //                    console.log(scope.previewTableHeaderName)
-                scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
+                        scope.filterReturnItem = orderByFilter(scope.previewTableHeaderName, function (item) {
 //                        console.log(item.fieldName)
-                    return scope.draggedObject.indexOf(item.displayName)
-                })
-            }
-            console.log(scope.filterReturnItem)
-//                console.log(scope.draggedObject)
-
-
+                            return scope.draggedObject.indexOf(item.displayName)
+                        });
+                    });
+                    sessionStorage.clear();
+                }
+            });
             scope.save = function () {
 //                console.log(column);
                 try {
@@ -1342,5 +1245,3 @@ app.directive('customWidgetDateRange', function ($stateParams) {
         }
     };
 });
-
-        
