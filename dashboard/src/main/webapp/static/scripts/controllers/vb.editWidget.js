@@ -802,8 +802,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 });
 
 
-var queryBuilder = angular.module('queryBuilder', []);
-queryBuilder.directive('queryBuilder', ['$compile', function ($compile) {
+app.directive('queryBuilder', ['$compile', function ($compile) {
         return {
             restrict: 'E',
             scope: {
