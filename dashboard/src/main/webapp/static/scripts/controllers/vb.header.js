@@ -43,7 +43,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
-            $scope.loadNewUrl()
+//            $scope.loadNewUrl()
             //$state.go("index.dashboard")
             return;
         }

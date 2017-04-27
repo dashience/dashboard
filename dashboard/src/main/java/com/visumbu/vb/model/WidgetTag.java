@@ -17,20 +17,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author deldot
+ * @author duc-dev-04
  */
 @Entity
 @Table(name = "widget_tag")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "WidgetTag.findAll", query = "SELECT w FROM WidgetTag w")
-    , @NamedQuery(name = "WidgetTag.findById", query = "SELECT w FROM WidgetTag w WHERE w.id = :id")
-    , @NamedQuery(name = "WidgetTag.findByWidgetId", query = "SELECT w FROM WidgetTag w WHERE w.widgetId = :widgetId")})
+    , @NamedQuery(name = "WidgetTag.findById", query = "SELECT w FROM WidgetTag w WHERE w.id = :id")})
 public class WidgetTag implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,10 +37,9 @@ public class WidgetTag implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "widget_id")
-    private int widgetId;
+    @JoinColumn(name = "widget_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private TabWidget widgetId;
     @JoinColumn(name = "tag_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Tag tagId;
@@ -54,11 +51,6 @@ public class WidgetTag implements Serializable {
         this.id = id;
     }
 
-    public WidgetTag(Integer id, int widgetId) {
-        this.id = id;
-        this.widgetId = widgetId;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -67,11 +59,11 @@ public class WidgetTag implements Serializable {
         this.id = id;
     }
 
-    public int getWidgetId() {
+    public TabWidget getWidgetId() {
         return widgetId;
     }
 
-    public void setWidgetId(int widgetId) {
+    public void setWidgetId(TabWidget widgetId) {
         this.widgetId = widgetId;
     }
 

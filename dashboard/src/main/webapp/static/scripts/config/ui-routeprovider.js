@@ -96,12 +96,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
             .state("index.fieldSettings", {
                 url: "/fieldSettings/:accountId/:accountName?:startDate/:endDate",
                 templateUrl: "static/views/fieldSettings/fieldSettings.html",
-                controller: 'fieldSettingsController'
+                controller: 'FieldSettingsController'
             })
             .state("index.tag", {
                 url: "/tag/:accountId/:accountName?:startDate/:endDate",
-                templateUrl: "static/views/Tag/tag.html",
-                controller: 'tagController'
+                templateUrl: "static/views/tag/tag.html",
+                controller: 'TagController'
             });
 
 
