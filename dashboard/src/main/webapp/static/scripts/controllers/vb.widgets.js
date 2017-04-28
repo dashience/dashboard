@@ -1794,7 +1794,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0']
+                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0', '#DC143C']
 
                                 },
                                 tooltip: {show: false},

@@ -232,15 +232,15 @@ public class UiDao extends BaseDao {
         return reportType;
     }
 
-    public Report getReportById(Integer reportId) {
-        Report report = (Report) sessionFactory.getCurrentSession().get(Report.class, reportId);
-        return report;
-    }
+//    public Report getReportById(Integer reportId) {
+//        Report report = (Report) sessionFactory.getCurrentSession().get(Report.class, reportId);
+//        return report;
+//    }
 
-    public ReportWidget getReportWidgetById(Integer reportId) {
-        ReportWidget reportWidget = (ReportWidget) sessionFactory.getCurrentSession().get(ReportWidget.class, reportId);
-        return reportWidget;
-    }
+//    public ReportWidget getReportWidgetById(Integer reportId) {
+//        ReportWidget reportWidget = (ReportWidget) sessionFactory.getCurrentSession().get(ReportWidget.class, reportId);
+//        return reportWidget;
+//    }
 
     public ReportWidget saveReportWidget(ReportWidget reportWidget) {
         sessionFactory.getCurrentSession().saveOrUpdate(reportWidget);
@@ -254,30 +254,30 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
-    public List<ReportWidget> getReportWidget(Integer reportId) {
-        String queryStr = "select d from ReportWidget d where d.reportId.id = :reportId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("reportId", reportId);
+//    public List<ReportWidget> getReportWidget(Integer reportId) {
+//        String queryStr = "select d from ReportWidget d where d.reportId.id = :reportId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("reportId", reportId);
+//
+//        List<ReportWidget> tabWidgets = query.list();
+//        for (Iterator<ReportWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
+//            TabWidget widget = iterator.next().getWidgetId();
+//            widget.setColumns(getColumns(widget));
+//        }
+//        return tabWidgets;
+//    }
 
-        List<ReportWidget> tabWidgets = query.list();
-        for (Iterator<ReportWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
-            TabWidget widget = iterator.next().getWidgetId();
-            widget.setColumns(getColumns(widget));
-        }
-        return tabWidgets;
-    }
+//    private List<WidgetColumn> getColumns(ReportWidget widget) {
+//        String queryStr = "select d from WidgetColumn d where d.widgetId = :widgetId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("widgetId", widget);
+//        return query.list();
+//    }
 
-    private List<WidgetColumn> getColumns(ReportWidget widget) {
-        String queryStr = "select d from WidgetColumn d where d.widgetId = :widgetId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("widgetId", widget);
-        return query.list();
-    }
-
-    public ReportWidget deleteReportWidget(Integer id) {
-        delete(getReportWidgetById(id));
-        return null;
-    }
+//    public ReportWidget deleteReportWidget(Integer id) {
+//        delete(getReportWidgetById(id));
+//        return null;
+//    }
 
     public String updateWidgetUpdateOrder(Integer tabId, String widgetOrder) {
         String[] widgetOrderArray = widgetOrder.split(",");
@@ -301,26 +301,26 @@ public class UiDao extends BaseDao {
         return null;
     }
 
-    public String updateReportOrder(Integer reportId, String widgetOrder) {
-        System.out.println(widgetOrder);
-        String[] reportOrderArray = widgetOrder.split(",");
-        for (int i = 0; i < reportOrderArray.length; i++) {
-            Integer reportWidgetId = Integer.parseInt(reportOrderArray[i]);
-            ReportWidget reportWidget = getReportWidgetById(reportWidgetId);
-            // reportWidget.setWidgetOrder(i);
-        System.out.println(reportWidget);
-            update(reportWidget);
-        }
-        return null;
-    }
+//    public String updateReportOrder(Integer reportId, String widgetOrder) {
+//        System.out.println(widgetOrder);
+//        String[] reportOrderArray = widgetOrder.split(",");
+//        for (int i = 0; i < reportOrderArray.length; i++) {
+//            Integer reportWidgetId = Integer.parseInt(reportOrderArray[i]);
+//            ReportWidget reportWidget = getReportWidgetById(reportWidgetId);
+//            // reportWidget.setWidgetOrder(i);
+//        System.out.println(reportWidget);
+//            update(reportWidget);
+//        }
+//        return null;
+//    }
     
-    public Report deleteReport(Integer reportId) {
-        String queryString = "update Report d set status = 'Deleted' where d.id = :reportId";
-        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
-        querySess.setParameter("reportId", reportId);
-        querySess.executeUpdate();
-        return null;
-    }
+//    public Report deleteReport(Integer reportId) {
+//        String queryString = "update Report d set status = 'Deleted' where d.id = :reportId";
+//        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
+//        querySess.setParameter("reportId", reportId);
+//        querySess.executeUpdate();
+//        return null;
+//    }
 
     public DefaultFieldProperties getDefaultFieldProperties(String fieldName) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("DefaultFieldProperties.findByFieldName");
@@ -492,12 +492,12 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<Report> getAgencyReport(VbUser user) {
-        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyId", user.getAgencyId().getId());
-        return query.list();
-    }    
+//    public List<Report> getAgencyReport(VbUser user) {
+//        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("agencyId", user.getAgencyId().getId());
+//        return query.list();
+//    }    
     
     
 }

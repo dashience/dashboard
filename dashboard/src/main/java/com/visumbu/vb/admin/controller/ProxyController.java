@@ -10,6 +10,7 @@ import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
+import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
@@ -91,6 +92,9 @@ public class ProxyController {
 
     @Autowired
     private BingService bingService;
+    
+    @Autowired
+    private ReportService reportService;
 
     final static Logger log = Logger.getLogger(ProxyController.class);
 
@@ -713,10 +717,10 @@ public class ProxyController {
 
         //List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
         List<TabWidget> tabWidgets = new ArrayList<>();
-        Report report = uiService.getReportById(reportId);
+        Report report = reportService.getReportById(reportId);
         String account = null;
         String product = "Dashience Report";
-        List<ReportWidget> reportWidgets = uiService.getReportWidget(reportId);
+        List<ReportWidget> reportWidgets = reportService.getReportWidget(reportId);
         for (Iterator<ReportWidget> iterator = reportWidgets.iterator(); iterator.hasNext();) {
             ReportWidget reportWidget = iterator.next();
             TabWidget widget = reportWidget.getWidgetId();
