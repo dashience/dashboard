@@ -78,11 +78,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         return list;
     };
 
-    $http.get("admin/ui/reportWidget").success(function (response) {
+    $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
     });
 
-    $http.get('admin/ui/report').success(function (response) {
+    $http.get('admin/report/getReport').success(function (response) {
         $scope.reportList = response;
     });
 
@@ -90,7 +90,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var data = {};
         data.widgetId = widget.id;
         data.reportId = widget.reportWidget.id;
-        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/reportWidget', data: data}).success(function (response) {
+        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/reportWidget', data: data}).success(function (response) {
         });
         $scope.reportLogo = "";
         $scope.reportDescription = "";
@@ -166,7 +166,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportWidgetTitle = []
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
-        $http.get("admin/ui/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
+        $http.get("admin/report/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
             if (response.length > 0) {
                 $scope.showReportWidgetName = true;
                 $scope.reportWidgetTitle = response;
