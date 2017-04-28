@@ -124,7 +124,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         });
     };
 
-    $scope.expandWidget = function (widget) {
+   $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
         if (widget.width == 3) {
@@ -196,6 +196,24 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
 
     }
 
+$scope.setLineChartFn = function (lineFn) {
+        $scope.directiveLineFn = lineFn;
+    };
+    $scope.setAreaChartFn = function (areaFn) {
+        $scope.directiveAreaFn = areaFn;
+    };
+    $scope.setBarChartFn = function (barFn) {
+        $scope.directiveBarFn = barFn;
+    };
+    $scope.setPieChartFn = function (pieFn) {
+        $scope.directivePieFn = pieFn;
+    };
+    $scope.setStackedChartFn = function (stackedBarChartFn) {
+        $scope.directiveStackedBarChartFn = stackedBarChartFn;
+    };
+    $scope.setTableChartFn = function (tableFn) {
+        $scope.directiveTableFn = tableFn;
+    };
 //    $scope.addReportWidget = function (newWidget) {                                     //Add new Report Widget
 //        var data = {
 //            width: newWidget, 'minHeight': 25, columns: []

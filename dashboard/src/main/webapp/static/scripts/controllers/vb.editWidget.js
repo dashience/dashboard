@@ -749,16 +749,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             customEndDate: $scope.customEndDate//widget.customEndDate
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            var tag = widget.tagName.map(function (value, key) {
-                if (value) {
-                    return value;
-                }
-            }).join(',');
-            var tagData = {
-                tagName: tag,
-                widgetId: widget.id
-            };
-            $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
+            if (widget.tagName) {
+
+                var tag = widget.tagName.map(function (value, key) {
+                    if (value) {
+                        return value;
+                    }
+                }).join(',');
+                var tagData = {
+                    tagName: tag,
+                    widgetId: widget.id
+                };
+                $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
+            }
             $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
 
@@ -870,6 +873,7 @@ app.directive('queryBuilder', ['$compile', function ($compile) {
             }
         }
     }]);
+
 
 
 app.filter('xAxis', [function () {
