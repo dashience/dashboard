@@ -68,44 +68,57 @@ public class TimerService {
             System.out.println("Last Execution Status -----> " + scheduler.getLastExecutionStatus());
             String dateRangeName = scheduler.getDateRangeName();
             System.out.println("Date Range Name ----> " + dateRangeName);
-            Integer lastNdays = null;
-            if (scheduler.getLastNdays() != null) {
-                lastNdays = scheduler.getLastNdays();
-                System.out.println("Last N days ----> " + lastNdays);
-            } else if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
-                lastNdays = 0;
-            }
-            Integer lastNmonths = null;
-            if (scheduler.getLastNmonths() != null) {
-                lastNmonths = scheduler.getLastNmonths();
-                System.out.println("Last N months ----> " + lastNmonths);
-            } else if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
-                lastNmonths = 0;
-            }
-            Integer lastNweeks = null;
-            if (scheduler.getLastNweeks() != null) {
-                lastNweeks = scheduler.getLastNweeks();
-                System.out.println("Last N weeks ----> " + lastNweeks);
-
-            } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
-                lastNweeks = 0;
-            }
-            Integer lastNyears = null;
-            if (scheduler.getLastNyears() != null) {
-                lastNyears = scheduler.getLastNyears();
-                System.out.println("Last N years ----> " + lastNyears);
-            } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
-                lastNyears = 0;
-            }
-
+            String currentDateStr = null;
             schedulerHistory.setExecutionStartTime(schedulerStartTime);
-            String currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
+            currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
             System.out.println("CurrentDateStr -----> " + currentDateStr);
+            DateRange dateRange = null;
+            Date startDate = null;
+            Date endDate = null;
+            SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+            Integer lastNdays = null;
+            if (dateRangeName == null || dateRangeName.isEmpty()) {
+                startDate = null;
+                endDate = null;
+            } else {
+                if (scheduler.getLastNdays() != null) {
+                    lastNdays = scheduler.getLastNdays();
+                    System.out.println("Last N days ----> " + lastNdays);
+                }
+                if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
+                    lastNdays = 0;
+                }
+                Integer lastNmonths = null;
+                if (scheduler.getLastNmonths() != null) {
+                    lastNmonths = scheduler.getLastNmonths();
+                    System.out.println("Last N months ----> " + lastNmonths);
+                }
+                if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
+                    lastNmonths = 0;
+                }
+                Integer lastNweeks = null;
+                if (scheduler.getLastNweeks() != null) {
+                    lastNweeks = scheduler.getLastNweeks();
+                    System.out.println("Last N weeks ----> " + lastNweeks);
+
+                }
+                if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
+                    lastNweeks = 0;
+                }
+                Integer lastNyears = null;
+                if (scheduler.getLastNyears() != null) {
+                    lastNyears = scheduler.getLastNyears();
+                    System.out.println("Last N years ----> " + lastNyears);
+                }
+                if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
+                    lastNyears = 0;
+                }
+
 //            Date startDate = DateUtils.getSixMonthsBack(today);
 //            System.out.println("Start Date -----> " + startDate);
 //            Date endDate = today;
 //            System.out.println("End Date -----> " + endDate);
-            Range dateRangeSelect = null;
+                Range dateRangeSelect = null;
 //            if (dateRangeName.equalsIgnoreCase("Today")) {
 //                dateRangeSelect = Range.TODAY;
 //            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
@@ -123,52 +136,48 @@ public class TimerService {
 //            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
 //                dateRangeSelect = Range.LAST_YEAR;
 //            } 
-            if (dateRangeName.equalsIgnoreCase("Custom")) {
-                System.out.println("custom");
-                dateRangeSelect = null;
-            } else if (lastNdays != null) {
-                System.out.println("last days");
-                dateRangeSelect = Range.DAY;
-            } else if (lastNweeks != null) {
-                dateRangeSelect = Range.WEEK;
-            } else if (lastNmonths != null) {
-                dateRangeSelect = Range.MONTH;
-            } else if (lastNyears != null) {
-                dateRangeSelect = Range.YEAR;
-            }
-            DateRange dateRange = null;
-            Date startDate = null;
-            Date endDate = null;
-            SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-
-            if (dateRangeSelect == null) {
-                try {
-                    startDate = df.parse(scheduler.getCustomStartDate());
-                    endDate = df.parse(scheduler.getCustomEndDate());
-                } catch (ParseException ex) {
-                    Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
+                if (dateRangeName.equalsIgnoreCase("Custom")) {
+                    System.out.println("custom");
+                    dateRangeSelect = null;
+                } else if (lastNdays != null) {
+                    System.out.println("last days");
+                    dateRangeSelect = Range.DAY;
+                } else if (lastNweeks != null) {
+                    dateRangeSelect = Range.WEEK;
+                } else if (lastNmonths != null) {
+                    dateRangeSelect = Range.MONTH;
+                } else if (lastNyears != null) {
+                    dateRangeSelect = Range.YEAR;
                 }
-            } else if (dateRangeSelect.equals(Range.DAY)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
-            } else if (dateRangeSelect.equals(Range.WEEK)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
-            } else if (dateRangeSelect.equals(Range.MONTH)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
-            } else if (dateRangeSelect.equals(Range.YEAR)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
-            } else {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect);
-            }
 
-            if (dateRange != null) {
-                startDate = dateRange.getStartDate();
-                endDate = dateRange.getEndDate();
+                if (dateRangeSelect == null) {
+                    try {
+                        startDate = df.parse(scheduler.getCustomStartDate());
+                        endDate = df.parse(scheduler.getCustomEndDate());
+                    } catch (ParseException ex) {
+                        Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (dateRangeSelect.equals(Range.DAY)) {
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
+                } else if (dateRangeSelect.equals(Range.WEEK)) {
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
+                } else if (dateRangeSelect.equals(Range.MONTH)) {
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
+                } else if (dateRangeSelect.equals(Range.YEAR)) {
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
+                } else {
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect);
+                }
+
+                if (dateRange != null) {
+                    startDate = dateRange.getStartDate();
+                    endDate = dateRange.getEndDate();
+                }
             }
 
             System.out.println("dateRange start Date-----> " + startDate);
             System.out.println("dateRange End Date-----> " + endDate);
             schedulerHistory.setStartTime(startDate);
-
             schedulerHistory.setEndTime(endDate);
 
             String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + "." + exportType;

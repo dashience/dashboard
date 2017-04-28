@@ -219,15 +219,13 @@
                                                {{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
                                                 <span class="caret"></span></button>
                                             <ul class="dropdown-menu scheduler-list-style">
-                                                <li><a>Custom</a></li>
                                                 <li ng-click="selectDuration('Custom', scheduler)" >
+<!--                                                    <a>Custom</a>-->
                                                     <div class="col-md-12 custom-picker">
                                                         <!--                                                        <label>Custom Range</label>-->
-                                                        <a ng-model="scheduler.Custom"
-                                                           
-                                                           class="pull-right custom-daterange-box" id="customDateRange">
+                                                        <a class="pull-right custom-daterange-box" id="customDateRange">
                                                             <span class="date-border">
-                                                                {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                                                {{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}} 
                                                                 <i class="custom-daterange-box-icon fa fa-caret-down"></i>
                                                             </span>
                                                         </a> 
