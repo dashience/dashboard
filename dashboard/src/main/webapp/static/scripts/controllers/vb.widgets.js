@@ -190,8 +190,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setPieChartFn = function (pieFn) {
         $scope.directivePieFn = pieFn;
     };
-    $scope.setStackedChartFn = function (stackedBarChartFn) {
-        $scope.directiveStackedBarChartFn = stackedBarChartFn;
+    $scope.setStackedBarChartFn = function (stackedBarFn) {
+        $scope.directiveStackedBarChartFn = stackedBarFn;
     };
     $scope.setTableChartFn = function (tableFn) {
         $scope.directiveTableFn = tableFn;
@@ -1821,7 +1821,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                         }
                     });
                 }
-                scope.setPieChartFn({pieChartFn: scope.refreshPieChart});
+                scope.setPieChartFn({pieFn: scope.refreshPieChart});
                 scope.refreshPieChart();
             }
         }
@@ -2097,7 +2097,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                         }
                     });
                 }
-                scope.setAreaChartFn({areaChartFn: scope.refreshAreaChart});
+                scope.setAreaChartFn({areaFn: scope.refreshAreaChart});
                 scope.refreshAreaChart();
             }
         }

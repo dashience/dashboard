@@ -801,6 +801,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.json = JSON.stringify(newValue, null, 2);
         $scope.output = computed(newValue.group);
     }, true);
+    $scope.currentLocation="index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
 });
 
 
@@ -907,7 +908,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             displayFormats: '@',
             displayAlignments: '@',
             hideOptions: '@',
-            currentUrl: '@'
+            currentUrl: '@',
+            reloadUrl:'@'
         },
         template:
                 "<div class='panel-head'>" +
@@ -1255,13 +1257,14 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
-                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+                    $state.go(scope.reloadUrl)
+                    
                 });
             };
             scope.closeWidget = function () {
                 widget = "";
                 sessionStorage.clear();
-                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+                $state.go(scope.reloadUrl)
             };
         }
     };

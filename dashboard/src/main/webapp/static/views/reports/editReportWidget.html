@@ -602,6 +602,28 @@
                 <div class="row edit-widget" ng-if="editChartType === 'table'">
                     <div class="col-lg-12">
                         <div class="preview-table">
+                            <div widget-Preview-Table 
+                                 preview-Table-List='{{collectionFields}}'
+                                 preview-Urls='{{previewChartUrl}}' 
+                                 preview-Columns='{{widget.columns}}' 
+                                 preview-Widget="{{previewColumn}}" 
+                                 preview-Widget-Table="{{widget}}"
+                                 aggregations-Types="{{selectAggregations}}"
+                                 group-Priorities="{{selectGroupPriorities}}"
+                                 sorting-Fields="{{sorting}}"
+                                 display-Formats="{{formats}}"
+                                 display-Alignments="{{alignments}}"
+                                 hide-Options="{{hideOptions}}"
+                                 field-Types="{{fieldTypes}}"
+                                 reload-url="{{currentLocation}}">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+<!--                <div class="row edit-widget" ng-if="editChartType === 'table'">
+                    <div class="col-lg-12">
+                        <div class="preview-table">
                             <div report-Widget-Table 
                                  report-Urls='{{previewChartUrl}}' 
                                  report-Columns='{{widget.columns}}' 
@@ -618,7 +640,7 @@
                         </div>
                     </div>
 
-                </div>
+                </div>-->
                 <div class="row" ng-if="editChartType === 'text'">
                     <div class="col-sm-12">
                         <div class="hpanel hgreen border-table">
