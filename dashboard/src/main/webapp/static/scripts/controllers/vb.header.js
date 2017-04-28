@@ -438,8 +438,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $(function () {
-        
-        var start = moment();
+        var start = moment().subtract(29, 'days');
         var end = moment();
         function cb(start, end) {
             $('#daterange-btn span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));

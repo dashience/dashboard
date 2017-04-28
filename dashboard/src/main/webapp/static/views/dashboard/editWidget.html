@@ -153,7 +153,7 @@
     .ui-sortable-placeholder * { 
         opacity: 0.0; visibility: hidden; 
     }
-    
+
 </style>
 <div class="normalheader transition animated fadeIn">
     <div class="hpanel">
@@ -169,9 +169,9 @@
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
 
-<!--        <div class="pull-right">
-            <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-        </div>-->
+        <!--        <div class="pull-right">
+                    <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
+                </div>-->
 
         <div class="row col-md-12">
             <div class="col-lg-4">
@@ -241,13 +241,14 @@
         <div class="row col-md-12">
             <div class="col-md-4">
                 <label>Date Range</label>
+               
                 <div>
-                    <div>
-                        <button class="drop btn btn-default" type="button">
+                    <div class="dropdown editWidgetDropDown">
+                        <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                             {{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
-                        <ul class="dropdown-menu scheduler-list-style ">
-                            <li ><a>Custom</a>
+                        <ul class="dropdown-menu scheduler-list-style">
+                            <li><a>Custom Range</a >
                                 <div class="col-md-12">
                                     <div>
                                         <a  class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
@@ -258,7 +259,7 @@
                                     </div>
                                 </div>
                             </li>
-                            <!--                            <li ng-click="selectWidgetDuration('None', widget)"><a>None</a></li>
+                            <!--                        <li ng-click="selectWidgetDuration('None', widget)"><a>None</a></li>
                                                         <li ng-click="selectWidgetDuration('Today', widget)"><a>Today</a></li>
                                                         <li ng-click="selectWidgetDuration('Yesterday', widget)"><a>Yesterday</a></li>
                                                         <li ng-click="selectWidgetDuration('This Week', widget)"><a>This Week</a></li>
@@ -267,7 +268,7 @@
                                                         <li ng-click="selectWidgetDuration('Last Month', widget)"><a>Last Month</a></li>
                                                         <li ng-click="selectWidgetDuration('This Year', widget)"><a>This Year</a></li>
                                                         <li ng-click="selectWidgetDuration('Last Year', widget)"><a>Last Year</a></li>-->
-                            <li ng-click="selectWidgetDuration('Last N Days', widget)">
+                            <li>
                                 <a>Last <input type="text"
                                                ng-model="widget.lastNdays" 
                                                ng-change="selectWidgetDuration('Last N Days', widget)" 
@@ -277,7 +278,7 @@
                                     Days
                                 </a>
                             </li>
-                            <li ng-click="selectWidgetDuration('Last N Weeks', widget)">
+                            <li>
                                 <a>Last <input type="text" 
                                                ng-model="widget.lastNweeks" 
                                                ng-change="selectWidgetDuration('Last N Weeks', widget)"
@@ -287,7 +288,7 @@
                                     Weeks
                                 </a>
                             </li>
-                            <li ng-click="selectWidgetDuration('Last N Months', widget)">
+                            <li>
                                 <a>Last <input type="text" 
                                                ng-model="widget.lastNmonths" 
                                                ng-change="selectWidgetDuration('Last N Months', widget)"
@@ -297,7 +298,7 @@
                                     Months
                                 </a>
                             </li>
-                            <li ng-click="selectWidgetDuration('Last N Years', widget)">
+                            <li>
                                 <a>Last <input type="text" 
                                                ng-model="widget.lastNyears" 
                                                ng-change="selectWidgetDuration('Last N Years', widget)"
@@ -311,20 +312,20 @@
                     </div>
                 </div>
             </div>
-<!--            <div ng-show="widget.dateRangeName === 'Custom'">
-                <div class="col-md-4">
-                    <label>Custom Range</label>
-                    <div>
-                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
-                            <span class="date-border">
-                                {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                            </span>
-                        </a> 
-                    </div>
-                </div>
-            </div>  -->  
-            
-             <div class="col-md-4">
+            <!--            <div ng-show="widget.dateRangeName === 'Custom'">
+                            <div class="col-md-4">
+                                <label>Custom Range</label>
+                                <div>
+                                    <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                                        <span class="date-border">
+                                            {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                        </span>
+                                    </a> 
+                                </div>
+                            </div>
+                        </div>  -->  
+
+            <div class="col-md-4">
                 <label>Tags</label>
                 <div>
                     <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.widgetTag" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">

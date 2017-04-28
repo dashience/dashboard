@@ -2,7 +2,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 
     $(document).ready(function (e) {
 
-        var start = moment();
+        var start = moment().subtract(29, 'days');
         var end = moment();
         function cb(start, end) {
             $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
