@@ -8,7 +8,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
-    
+
     //Tabs
     $scope.tab = 1;
     $scope.setTab = function (newTab) {
@@ -18,7 +18,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
-    
+
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
@@ -168,7 +168,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
-    
+
     $scope.selectDataSource = function (dataSourceName, widget) {
         if (!dataSourceName) {
             return;
@@ -187,7 +187,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.filterName = $filter('filter')($scope.collectionFields, {fieldName: currentColumn.fieldName})[0];
         currentColumn.displayName = $scope.filterName.displayName;
     };
-    
+
     $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
@@ -199,7 +199,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         }
     };
-    
+
     function columnHeaderDef(widget) {
         var dataSourcePassword;
         if (!widget.dataSetId) {
@@ -264,7 +264,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 $scope.tickerItem.push({displayName: value.displayName, fieldName: value.fieldName})
             }
         });
-        
+
         angular.forEach(widget.columns, function (val, key) {
             if (val.xAxis == 1) {
                 $scope.xColumn = val;
@@ -287,7 +287,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         });
     };
-    
+
     $scope.changeUrl = function (dataSet, widget) {
         if (!dataSet) {
             return;
@@ -345,17 +345,17 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartTypes = response;
     });
-    
+
     //DataSource
     $http.get('admin/datasources').success(function (response) {
         $scope.datasources = response;
     });
-    
+
     $scope.selectedDataSource = function (selectedItem) {
         $scope.selectItem = selectedItem;
         selectedItems(selectedItem);
     };
-    
+
     $scope.previewChart = function (chartType, widget) {
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType; //Selected Chart type - Bind chart-type to showPreview()
@@ -371,7 +371,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.tickerItem = '';
         }
     };
-    
+
     //Max Record
     $scope.reloadMaxRecord = function (widget) {
         $scope.editChartType = null;
@@ -380,7 +380,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     //Set Charts
     $scope.selectPieChartX = function (widget, column) {
         if (!column) {
@@ -405,7 +405,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     $scope.selectPieChartY = function (widget, column) {
         $scope.editChartType = null;
         var exists = false;
@@ -426,7 +426,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     $scope.selectX1Axis = function (widget, column) {
         console.log(column)
         $scope.editChartType = null;
@@ -477,8 +477,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $timeout(function () {
             $scope.previewChart(chartType, widget)
         }, 50);
-    };    
-    
+    };
+
     $scope.selectY2Axis = function (widget, y2data) {
         $scope.editChartType = null;
         angular.forEach(y2data, function (value, key) {
@@ -508,7 +508,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     $scope.setChartFormat = function (widget, column) {
         if (widget.chartType != 'pie') {
             if (column.yAxis == 1) {
@@ -532,7 +532,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             return;
         }
     };
-    
+
     $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
         if (yAxisItems.length > 0) {
@@ -550,7 +550,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     $scope.removedByY2Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
         if (yAxisItems.length > 0) {
@@ -568,7 +568,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     //Ticker Format
     $scope.ticker = function (widget, column) {
         $scope.editChartType = null;
@@ -591,7 +591,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     $scope.removedByTicker = function (widget, column, tickerItem) {
         $scope.editChartType = null;
         $scope.ticker(widget, tickerItem);
@@ -611,8 +611,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $timeout(function () {
             $scope.previewChart(chartType, widget)
         }, 50);
-    };    
-    
+    };
+
     $scope.tickerFormat = function (widget, format) {
         $scope.setFormat(widget, format)
     };
@@ -638,7 +638,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    
+
     //Removed Grouping
     $scope.removedByGrouping = function (widget, column, groupList) {
         angular.forEach(widget.columns, function (value, key) {
@@ -747,16 +747,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             customEndDate: $scope.customEndDate//widget.customEndDate
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            var tag = widget.tagName.map(function (value, key) {
-                if (value) {
-                    return value;
-                }
-            }).join(',');
-            var tagData = {
-                tagName: tag,
-                widgetId: widget.id
-            };
-            $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
+            if (widget.tagName) {
+
+                var tag = widget.tagName.map(function (value, key) {
+                    if (value) {
+                        return value;
+                    }
+                }).join(',');
+                var tagData = {
+                    tagName: tag,
+                    widgetId: widget.id
+                };
+                $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
+            }
             $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
 
@@ -868,6 +871,7 @@ app.directive('queryBuilder', ['$compile', function ($compile) {
             }
         }
     }]);
+
 
 
 app.filter('xAxis', [function () {
