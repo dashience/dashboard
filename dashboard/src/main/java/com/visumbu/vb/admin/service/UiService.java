@@ -261,35 +261,35 @@ public class UiService {
         return uiDao.readReportType(reportTypeId);
     }
 
-    public Report addReport(Report report) {
-        return (Report) uiDao.create(report);
-    }
+//    public Report addReport(Report report) {
+//        return (Report) uiDao.create(report);
+//    }
+//
+//    public Report updateReport(Report report) {
+//        return (Report) uiDao.update(report);
+//    }
 
-    public Report updateReport(Report report) {
-        return (Report) uiDao.update(report);
-    }
+//    public String updateReportOrder(Integer reportId, String widgetOrder) {
+//        return uiDao.updateReportOrder(reportId, widgetOrder);
+//    }
 
-    public String updateReportOrder(Integer reportId, String widgetOrder) {
-        return uiDao.updateReportOrder(reportId, widgetOrder);
-    }
-
-    public Report deleteReport(Integer reportId) {
-        return uiDao.deleteReport(reportId);
-        //return (Report) uiDao.delete(reportId);
-    }
+//    public Report deleteReport(Integer reportId) {
+//        return uiDao.deleteReport(reportId);
+//        //return (Report) uiDao.delete(reportId);
+//    }
 
     public List getReport() {
         List<Report> report = uiDao.read(Report.class);
         return report;
     }
 
-    public List getAgencyReport(VbUser user) {
-        if (user.getAgencyId() == null) {
-            List<Report> report = uiDao.read(Report.class);
-            return report;
-        }
-        return uiDao.getAgencyReport(user);
-    }
+//    public List getAgencyReport(VbUser user) {
+//        if (user.getAgencyId() == null) {
+//            List<Report> report = uiDao.read(Report.class);
+//            return report;
+//        }
+//        return uiDao.getAgencyReport(user);
+//    }
 
     public ReportWidget createReportWidget(ReportWidget reportWidget) {
         return (ReportWidget) uiDao.create(reportWidget);
@@ -355,17 +355,17 @@ public class UiService {
         return reportWidget;
     }
 
-    public List<ReportWidget> getReportWidget(Integer reportId) {
-        return uiDao.getReportWidget(reportId);
-    }
+//    public List<ReportWidget> getReportWidget(Integer reportId) {
+//        return uiDao.getReportWidget(reportId);
+//    }
 
-    public ReportWidget deleteReportWidget(Integer reportId) {
-        return uiDao.deleteReportWidget(reportId);
-    }
+//    public ReportWidget deleteReportWidget(Integer reportId) {
+//        return uiDao.deleteReportWidget(reportId);
+//    }
 
-    public Report getReportById(Integer reportId) {
-        return uiDao.getReportById(reportId);
-    }
+//    public Report getReportById(Integer reportId) {
+//        return uiDao.getReportById(reportId);
+//    }
 
     public DataSource create(DataSource dataSource) {
         return (DataSource) uiDao.create(dataSource);

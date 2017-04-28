@@ -340,7 +340,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 ' <span ng-bind-html="grouping._key"></span>' +
                 '</td>' +
                 '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
-                '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, grouping[col.fieldName])"></span></div>' +
+                '<div class="text-{{col.alignment}}">'+
+                '<span ng-if="col.displayFormat != \'starRating\'" ng-bind-html="format(col, grouping[col.fieldName])"></span>'+
+                '<span ng-if="col.displayFormat == \'starRating\'" class="stars alignright">' +
+                '<span ng-style="{\'width\': getStars(grouping[col.fieldName])}"></span>' +
+                '</div>' +
                 '</td>' +
                 '</tr>' +
                 '<tr ng-if="!isZeroRow(item, columns)" ng-show="grouping.$hideRows" ng-repeat-start="item in grouping.data">' + //Second Level Grouping and Data
@@ -484,6 +488,16 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return value;
             };
+            
+            scope.getStars = function (rating) {
+                console.log(rating);
+                // Get the value
+                var val = parseFloat(rating);
+                // Turn value into number/100
+                var size = val / 5 * 100;
+                console.log(size);
+                return size + '%';
+            }
 
             function sortByDay(list, sortFields) {
                 var returnSortDay;
@@ -1796,7 +1810,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0']
+                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0', '#DC143C']
 
                                 },
                                 tooltip: {show: false},
