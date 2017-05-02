@@ -663,7 +663,7 @@
                     <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>
                     <div>
                         <button ng-if="widget.chartType == 'table'" class="btn btn-success" ng-click="setFilterType(widget);">Save</button>
-                        <button class="btn btn-success" ng-click="save(widget);">Save</button>
+                        <button ng-if="widget.chartType != 'table'" class="btn btn-success" ng-click="save(widget);">Save</button>
                     </div>                    
                 </div>
             </div>
