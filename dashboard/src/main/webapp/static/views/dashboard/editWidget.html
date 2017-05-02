@@ -357,7 +357,7 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li ng-class="{ active: isSet(2) }">
+                <li ng-class="{ active: isSet(2) }" ng-click="buildQuery = widget.queryFilter">
                     <a href ng-click="setTab(2)"> Filter
                     </a>
                 </li>
@@ -603,6 +603,7 @@
                     <div class="col-lg-12">
                         <div class="preview-table">
                             <div widget-Preview-Table 
+                                 set-Query-Fn="setQueryFn(queryFn)"
                                  preview-Table-List='{{collectionFields}}'
                                  preview-Urls='{{previewChartUrl}}' 
                                  preview-Columns='{{widget.columns}}' 
@@ -657,9 +658,12 @@
                 <div class="col-lg-12">
                     <div class="alert alert-info">
                         <strong>Output</strong><br>
-                        <span ng-bind-html="output"></span>
+                        <span ng-bind-html="buildQuery"></span>
                     </div>
                     <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>
+                    <div>
+                        <button ng-click="setFilterType(widget);">Save</button>
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -690,5 +694,5 @@
     </div>
     </div>
     </div>
-    </div>
+    </div>    
 </script>
