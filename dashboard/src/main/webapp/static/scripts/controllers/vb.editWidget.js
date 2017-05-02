@@ -434,7 +434,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.editChartType = null;
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
-            if (column.fieldName == value.fieldName) {
+            if (column.fieldName === value.fieldName) {
                 exists = true;
                 value.xAxis = 1;
             } else {
@@ -614,6 +614,18 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
+    $scope.setCombinationChartType=function (widget, column) {
+        $scope.editChartType = null;
+        angular.forEach(widget.columns, function (value, key) {
+            if (column.fieldName === value.fieldName) {
+                value.combinationType = column.combinationType;
+            }
+        });
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    }
 
     $scope.tickerFormat = function (widget, format) {
         $scope.setFormat(widget, format)
@@ -804,8 +816,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         });
     };
-    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
-//    $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
+    
+//    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
+    $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
 });
 
 
@@ -1214,6 +1227,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             };
 
             scope.save = function (column) {
+                console.log(scope.reloadUrl)
                 try {
                     scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -1278,14 +1292,15 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
-                    $state.go(scope.reloadUrl)
+                    console.log(scope.reloadUrl)
+                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
 
                 });
             };
             scope.closeWidget = function () {
                 widget = "";
                 sessionStorage.clear();
-                $state.go(scope.reloadUrl)
+                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
             };
         }
     };
