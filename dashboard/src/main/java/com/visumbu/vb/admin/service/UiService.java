@@ -471,13 +471,13 @@ public class UiService {
         return report;
     }
 
-    public List getAgencyReport(VbUser user) {
-        if (user.getAgencyId() == null) {
-            List<Report> report = uiDao.read(Report.class);
-            return report;
-        }
-        return uiDao.getAgencyReport(user);
-    }
+//    public List getAgencyReport(VbUser user) {
+//        if (user.getAgencyId() == null) {
+//            List<Report> report = uiDao.read(Report.class);
+//            return report;
+//        }
+//        return uiDao.getAgencyReport(user);
+//    }
 
     public ReportWidget createReportWidget(ReportWidget reportWidget) {
         return (ReportWidget) uiDao.create(reportWidget);

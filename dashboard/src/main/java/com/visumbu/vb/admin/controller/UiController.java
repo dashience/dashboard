@@ -245,15 +245,15 @@ public class UiController extends BaseController {
 //        return uiService.deleteReport(reportId);
 //    }
 //
-    @RequestMapping(value = "report", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List getReport(HttpServletRequest request, HttpServletResponse response) {
-        VbUser user = userService.findByUsername(getUser(request));
-        if (user == null) {
-            return null;
-        }
-        return uiService.getAgencyReport(user);
-    }
+//    @RequestMapping(value = "report", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getReport(HttpServletRequest request, HttpServletResponse response) {
+//        VbUser user = userService.findByUsername(getUser(request));
+//        if (user == null) {
+//            return null;
+//        }
+//        return uiService.getAgencyReport(user);
+//    }
     
 //    @RequestMapping(value = "report/{reportId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody

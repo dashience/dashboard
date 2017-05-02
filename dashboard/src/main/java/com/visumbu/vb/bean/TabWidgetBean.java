@@ -63,6 +63,7 @@ public class TabWidgetBean {
     private Integer lastNmonths;
     private Integer lastNweeks;
     private Integer lastNyears;
+    private String queryFilter;
     private List<WidgetColumnBean> widgetColumns;
 
     public Integer getId() {
@@ -401,6 +402,15 @@ public class TabWidgetBean {
     public void setLastNyears(Integer lastNyears) {
         this.lastNyears = lastNyears;
     }
+
+    public String getQueryFilter() {
+        return queryFilter;
+    }
+
+    public void setQueryFilter(String queryFilter) {
+        this.queryFilter = queryFilter;
+    }    
+    
 
     @Override
     public String toString() {

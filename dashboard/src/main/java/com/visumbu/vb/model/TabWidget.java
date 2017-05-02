@@ -190,6 +190,10 @@ public class TabWidget implements Serializable {
     @Size(max = 65535)
     @Column(name = "content")
     private String content;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "query_filter")
+    private String queryFilter;
 
     @Size(max = 255)
     @Column(name = "dataset")
@@ -591,6 +595,14 @@ public class TabWidget implements Serializable {
         this.lastNyears = lastNyears;
     }
 
+    public String getQueryFilter() {
+        return queryFilter;
+    }
+
+    public void setQueryFilter(String queryFilter) {
+        this.queryFilter = queryFilter;
+    }
+   
     @Override
     public int hashCode() {
         int hash = 0;

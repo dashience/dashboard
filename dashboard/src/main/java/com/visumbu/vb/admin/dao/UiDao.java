@@ -525,12 +525,12 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<Report> getAgencyReport(VbUser user) {
-        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyId", user.getAgencyId().getId());
-        return query.list();
-    }    
+//    public List<Report> getAgencyReport(VbUser user) {
+//        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("agencyId", user.getAgencyId().getId());
+//        return query.list();
+//    }    
     
     
 

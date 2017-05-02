@@ -7,7 +7,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 //    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
     $scope.weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-    $http.get("admin/ui/report").success(function (response) {
+    $http.get("admin/report/getReport").success(function (response) {
         $scope.reports = response;
     });
     $scope.accounts = [];

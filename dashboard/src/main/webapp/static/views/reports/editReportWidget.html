@@ -599,7 +599,7 @@
 
                     </div>
                 </div>
-                <div class="row edit-widget" ng-if="editChartType === 'table'">
+<!--                <div class="row edit-widget" ng-if="editChartType === 'table'">
                     <div class="col-lg-12">
                         <div class="preview-table">
                             <div widget-Preview-Table 
@@ -620,8 +620,8 @@
                         </div>
                     </div>
 
-                </div>
-<!--                <div class="row edit-widget" ng-if="editChartType === 'table'">
+                </div>-->
+                <div class="row edit-widget" ng-if="editChartType === 'table'">
                     <div class="col-lg-12">
                         <div class="preview-table">
                             <div report-Widget-Table 
@@ -640,7 +640,7 @@
                         </div>
                     </div>
 
-                </div>-->
+                </div>
                 <div class="row" ng-if="editChartType === 'text'">
                     <div class="col-sm-12">
                         <div class="hpanel hgreen border-table">
@@ -673,15 +673,13 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="isSet(2)" class="license">
+           <div ng-show="isSet(2)" class="license">
                 <div class="col-lg-12">
-
                     <div class="alert alert-info">
-                        <strong>Example Output</strong><br>
+                        <strong>Output</strong><br>
                         <span ng-bind-html="output"></span>
                     </div>
-
-                    <query-builder group="filter.group"></query-builder>
+                    <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>
                 </div>
             </div>
         </div>
