@@ -357,7 +357,7 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li ng-class="{ active: isSet(2) }" ng-click="buildQuery = widget.queryFilter">
+                <li ng-class="{ active: isSet(2) }">
                     <a href ng-click="setTab(2)"> Filter
                     </a>
                 </li>
@@ -662,7 +662,8 @@
                     </div>
                     <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>
                     <div>
-                        <button ng-click="setFilterType(widget);">Save</button>
+                        <button ng-if="widget.chartType == 'table'" class="btn btn-success" ng-click="setFilterType(widget);">Save</button>
+                        <button class="btn btn-success" ng-click="save(widget);">Save</button>
                     </div>                    
                 </div>
             </div>
