@@ -1,4 +1,4 @@
-app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter) {
+app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter, $timeout) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -237,76 +237,72 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         }
 
         scheduler.schedulerEmail = emails;
-        console.log(scheduler)
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });
         $scope.scheduler = "";
     };
-
-    $(function () {
-        //Initialize Select2 Elements
-        $(".select2").select2();
-        //Datemask dd/mm/yyyy
-        $("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
-        //Datemask2 mm/dd/yyyy
-        $("#datemask2").inputmask("mm/dd/yyyy", {"placeholder": "mm/dd/yyyy"});
-        //Money Euro
-        $("[data-mask]").inputmask();
-        //Date range picker
-        $('#reservation').daterangepicker();
-        //Date range picker with time picker
-        $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
-        //Date range as a button
-        $('#customDateRange').daterangepicker(
-                {
-                    ranges: {
+    $timeout(function () {
+        $(function () {
+            //Initialize Select2 Elements
+            $(".select2").select2();
+            //Datemask dd/mm/yyyy
+            $("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
+            //Datemask2 mm/dd/yyyy
+            $("#datemask2").inputmask("mm/dd/yyyy", {"placeholder": "mm/dd/yyyy"});
+            //Money Euro
+            $("[data-mask]").inputmask();
+            //Date range picker
+            $('#reservation').daterangepicker();
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
+            //Date range as a button
+            $('#customDateRange').daterangepicker(
+                    {
+                        ranges: {
 //                        'Today': [moment(), moment()],
 //                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
 //                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
 //                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                        },
+                        startDate: $scope.scheduler.customStartDate ? $scope.scheduler.customStartDate : moment().subtract(29, 'days'),
+                        endDate: $scope.scheduler.customEndDate ? $scope.scheduler.customEndDate : moment(),
+                        maxDate: new Date()
                     },
-                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
-                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
-                    maxDate: new Date()
-                },
-                function (start, end) {
-
-                    $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-                }
-        );
-        //Date picker
-        $('#datepicker').datepicker({
-            autoclose: true
+                    function (start, end) {
+                        $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+                    }
+            );
+            //Date picker
+            $('#datepicker').datepicker({
+                autoclose: true
+            });
+            //iCheck for checkbox and radio inputs
+            $('input[type="checkbox"].minimal,  input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            });
+            //Red color scheme for iCheck
+            $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+                checkboxClass: 'icheckbox_minimal-red',
+                radioClass: 'iradio_minimal-red'
+            });
+            //Flat red color scheme for iCheck
+            $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
+            //Colorpicker
+            $(".my-colorpicker1").colorpicker();
+            //color picker with addon
+            $(".my-colorpicker2").colorpicker();
+            //Timepicker
+            $(".timepicker").timepicker({
+                showInputs: false
+            });
         });
-        //iCheck for checkbox and radio inputs
-        $('input[type="checkbox"].minimal,  input[type="radio"].minimal').iCheck({
-            checkboxClass: 'icheckbox_minimal-blue',
-            radioClass: 'iradio_minimal-blue'
-        });
-        //Red color scheme for iCheck
-        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
-            checkboxClass: 'icheckbox_minimal-red',
-            radioClass: 'iradio_minimal-red'
-        });
-        //Flat red color scheme for iCheck
-        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-            checkboxClass: 'icheckbox_flat-green',
-            radioClass: 'iradio_flat-green'
-        });
-        //Colorpicker
-        $(".my-colorpicker1").colorpicker();
-        //color picker with addon
-        $(".my-colorpicker2").colorpicker();
-        //Timepicker
-        $(".timepicker").timepicker({
-            showInputs: false
-        });
-
-        //$("#config-demo").click(function (e) {       
-
-    });
+    }, 50);
 });
 app.directive('jqdatepicker', function () {
     return {

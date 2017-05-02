@@ -490,12 +490,12 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
             
             scope.getStars = function (rating) {
-                console.log(rating);
+//                console.log(rating);
                 // Get the value
                 var val = parseFloat(rating);
                 // Turn value into number/100
                 var size = val / 5 * 100;
-                console.log(size);
+//                console.log(size);
                 return size + '%';
             }
 

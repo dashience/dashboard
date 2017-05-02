@@ -153,30 +153,30 @@
     .ui-sortable-placeholder * { 
         opacity: 0.0; visibility: hidden; 
     }
-    
+
     .group{
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 5px;
-    border: solid 1px #666;
-}
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        border: solid 1px #666;
+    }
 
-.group-conditions{
-    margin-left: 20px;
-}
+    .group-conditions{
+        margin-left: 20px;
+    }
 
-.alert-group{
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-color: rgb(192, 152, 83);
-    border-color: rgb(251, 238, 213);
-    border-color: rgb(220, 200, 150);
-}
+    .alert-group{
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border-color: rgb(192, 152, 83);
+        border-color: rgb(251, 238, 213);
+        border-color: rgb(220, 200, 150);
+    }
 
-.condition, .group{
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
+    .condition, .group{
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
 
 
 </style>
@@ -458,7 +458,7 @@
                                                             <th>Format</th>
                                                             <th>Sort</th>
                                                             <th>Field Type</th>
-                                                <th>Combination Type</th>
+                                                            <th>Combination Type</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -484,11 +484,11 @@
                                                                     <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
                                                                 </select>
                                                             </td>
-                                                <td>
-                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.combinationType' ng-change="setCombinationChartType(widget, columnList)">
-                                                        <option ng-repeat=' combinationChartType in combinationChartTypes' value='{{combinationChartType.value}}'>{{combinationChartType.name}}</option>
-                                                    </select> 
-                                                </td>
+                                                            <td>
+                                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.combinationType' ng-change="setCombinationChartType(widget, columnList)">
+                                                                    <option ng-repeat=' combinationChartType in combinationChartTypes' value='{{combinationChartType.value}}'>{{combinationChartType.name}}</option>
+                                                                </select> 
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -615,7 +615,7 @@
                                  display-Alignments="{{alignments}}"
                                  hide-Options="{{hideOptions}}"
                                  field-Types="{{fieldTypes}}"
-                                 reloadUrl="{{currentLocation}}">
+                                 reload-Url="{{currentLocation}}">
                             </div>
                         </div>
                     </div>
@@ -656,10 +656,10 @@
             <div ng-show="isSet(2)" class="license">
                 <div class="col-lg-12">
                     <div class="alert alert-info">
-                        <strong>Example Output</strong><br>
+                        <strong>Output</strong><br>
                         <span ng-bind-html="output"></span>
                     </div>
-                    <query-builder group="filter.group"></query-builder>
+                    <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>
                 </div>
             </div>
         </div>
@@ -677,7 +677,7 @@
     <div ng-repeat="rule in group.rules | orderBy:'index'" class="condition">
     <div ng-switch="rule.hasOwnProperty('group')">
     <div ng-switch-when="true">
-    <query-builder group="rule.group"></query-builder>
+    <query-builder group="rule.group" collection="{{columns}}"></query-builder>
     </div>
     <div ng-switch-default="ng-switch-default">
     <div class="form-inline">
