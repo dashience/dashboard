@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="loginApp">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
@@ -36,12 +36,8 @@
             }
 
         </style>
-        <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
     </head>
-    <body class="hold-transition login-page" ng-app="loginApp" ng-controller="LoginController">
+    <body ng-controller="LoginController" class="hold-transition login-page">
         <!--<div class="login-box">
             <div class="login-logo">
                 <a href="index.html"><img src="static/img/Logo-l2t.png" width="150" /></a>
@@ -56,23 +52,19 @@
                                 <img src="static/img/logos/deeta-logo.png" width="180" />
                             </span>
                         </div>
-                        <!--<h3>DEETA DASHBOARD</h3>-->
                     </div>
 
                     <div class="hpanel">
-                        <h5 class="text-center text-danger">{{errorMessage}}</h5>
+                        <h5 class="text-center text-danger" ng-show="showErrorMessage">{{errorMessage}}</h5>
                         <div class="panel-body">
                             <form ng-submit="submitForm()" name="adminForm">
                                 <div class="form-group">
                                     <label class="control-label" for="username">Username</label>
                                     <input type="text" placeholder="Username" title="Please enter you username" value="" name="username" id="username" class="form-control" ng-model="login.username">
-
-
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" for="password">Password</label>
                                     <input type="password" title="Please enter your password" placeholder="Password" value="" name="password" id="password" class="form-control" ng-model="login.password">
-
                                 </div>
 
                                 <!--                                <div class="checkbox">
@@ -84,18 +76,11 @@
                             </form>  
                         </div>
                     </div>
-
                 </div>
             </div>
-
         </div>
-
-
-
         <script src="static/lib/js/jquery/jquery-2.2.3.min.js"></script>
-        <!-- Bootstrap 3.3.6 -->
         <script src="static/lib/js/bootstrap.min.js"></script>
-
         <script src="static/lib/js/angular/angular.min.js"></script>
         <script src="static/lib/js/angular/angular-cookie.min.js"></script>
         <script src="static/lib/js/angular/angular-local-storage.min.js"></script>

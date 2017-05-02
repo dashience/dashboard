@@ -1,6 +1,4 @@
 app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
-   
-
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -274,7 +272,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             if (val.xAxis == 1) {
                 $scope.xColumn = val;
                 $scope.selectPieChartXAxis = val;
-
                 $scope.selectX1Axis(widget, val);
             }
             if (val.yAxis == 1) {
@@ -387,8 +384,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }
     };
     $(document).ready(function (e) {
-        $(".drop").click(function (e) {
-            console.log("drop clicked");
+        $(document).on('click', '.drop', function (e) {
+//        $(".drop").click(function (e) {
+            console.log("drop clicked event");
             e.stopPropagation();
             $(".scheduler-list-style").not($(this).next()).hide();
             $(this).next().toggle();
@@ -402,6 +400,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $(document).click(function (e) {
             console.log(e.target.className);
             var selectedElement = e.target.className;
+//            if (selectedElement == "drop btn btn-default ng-binding")
+//            {
+//                console.log("inside here")
+//                $(".scheduler-list-style").show();
+//            }
             if (selectedElement != 'fa fa-chevron-left glyphicon glyphicon-chevron-left' &&
                     selectedElement != 'prev available' && selectedElement != 'next available' &&
                     selectedElement != 'input-mini form-control active' &&
@@ -835,7 +838,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" +
                 "</div>" + //End Panel Title
                 "</div>" +
-                "</div>" +
+                "</div><br><pre>{{previewTableHeaderName | json }}</pre>" +
                 //Table
                 "<div class=''>" +
                 "<div class='table-responsive tbl-preview'>" +
@@ -925,7 +928,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</li>" +
                 "</ul>" +
                 "<button class='btn btn-info btn-sm' ng-click='hidePopover()'>Close</button>&nbsp;" +
-                "<button class='btn btn-warning btn-sm' ng-click='deleteColumn(collectionField); hidePopover()'>Delete</button>" +
+                    "<button class='btn btn-warning btn-sm' ng-click='deleteColumn(collectionField); hidePopover()'>Delete</button>" +
                 "</form>" +
                 "</div>" +
                 "</script>" +
@@ -972,32 +975,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.addList = function (list) {
                 console.log(list);
                 list.isEdit = true;
-//                var obj = {
-//                    agregationFunction: list.agregationFunction,
-//                    alignment: null,
-//                    baseFieldName: null,
-//                    columnHide: null,
-//                    displayFormat: list.displayFormat,
-//                    displayName: list.displayName,
-//                    fieldGenerationFields: null,
-//                    fieldGenerationFunction: null,
-//                    fieldName: list.fieldName,
-//                    fieldType: list.type,
-//                    functionParameters: null,
-//                    groupPriority: list.groupPriority,
-//                    id: 519,
-//                    remarks: null,
-//                    search: null,
-//                    sortOrder: list.sortOrder,
-//                    sortPriority: list.sortPriority,
-//                    width: null,
-//                    wrapText: null,
-//                    xAxis: null,
-//                    xAxisLabel: null,
-//                    yAxis: null,
-//                    yAxisLabel: null
-//                };
-                console.log(obj);
                 scope.previewTableHeaderName.push(list);
                 console.log(scope.previewTableHeaderName);
                 $('.defaultTable').dragtable();
@@ -1058,7 +1035,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 console.log(scope.filterReturnItem);
                 scope.previewTableHeaderName = scope.filterReturnItem;
                 $(".settings").on("click", function (e) {
-                    $(this).bind().click();
+                    e.bind();
                 });
 //                sessionStorage.clear();
 
@@ -1103,9 +1080,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         scope.mapJson(object);
                     },
                     clickDelay: 200,
-                    restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
+//                    restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
                 });
-
                 scope.mapJson = function (object) {
 
                     scope.draggedObject = [];
@@ -1124,6 +1100,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                             return scope.draggedObject.indexOf(item.displayName)
                         });
                     });
+                    scope.previewTableHeaderName=[];
+                    scope.previewTableHeaderName=scope.filterReturnItem;
+                    console.log(scope.previewTableHeaderName);
+                    scope.$apply();
                     sessionStorage.clear();
                 }
             });
@@ -1268,5 +1248,3 @@ app.directive('customWidgetDateRange', function ($stateParams) {
         }
     };
 });
-
-        

@@ -33,6 +33,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "WidgetColumn.findAll", query = "SELECT w FROM WidgetColumn w")
     , @NamedQuery(name = "WidgetColumn.findById", query = "SELECT w FROM WidgetColumn w WHERE w.id = :id")
+    , @NamedQuery(name = "WidgetColumn.findByWidgetId", query = "SELECT w FROM WidgetColumn w WHERE w.widgetId.id = :id")
     , @NamedQuery(name = "WidgetColumn.findByFieldName", query = "SELECT w FROM WidgetColumn w WHERE w.fieldName = :fieldName")
     , @NamedQuery(name = "WidgetColumn.findByWidget", query = "SELECT w FROM WidgetColumn w WHERE w.widgetId = :widget")
     , @NamedQuery(name = "WidgetColumn.findByDisplayName", query = "SELECT w FROM WidgetColumn w WHERE w.displayName = :displayName")
@@ -119,6 +120,10 @@ public class WidgetColumn implements Serializable {
     private Integer columnHide;
     @Column(name = "search")
     private Boolean search;
+    
+    @Size(max = 128)
+    @Column(name = "group_field")
+    private String groupField;
 
     public WidgetColumn() {
     }
@@ -310,6 +315,16 @@ public class WidgetColumn implements Serializable {
     public void setSearch(Boolean search) {
         this.search = search;
     }
+
+    public String getGroupField() {
+        return groupField;
+    }
+
+    public void setGroupField(String groupField) {
+        this.groupField = groupField;
+    }
+    
+    
     
     @XmlTransient
     @JsonIgnore

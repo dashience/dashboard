@@ -187,7 +187,7 @@
 </div>
 <div class="row content">
     <div ng-repeat="reportWidget in reportWidgets">
-        <div class="col-md-{{2 * reportWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
+        <div class="col-md-{{reportWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
             <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
                 <div class="panel-heading">
                     <div class="panel-tools">
@@ -212,6 +212,8 @@
                                 </div>
                             </div>
                         </div>
+                        <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)"><i class="fa fa-angle-left"></i></a>
+                        <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)"><i class="fa fa-angle-right"></i></a>
                     </div>
                     <span class="{{reportWidget.icon}}"></span> 
                     <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle}}</span>

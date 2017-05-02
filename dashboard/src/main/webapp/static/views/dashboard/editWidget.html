@@ -169,9 +169,9 @@
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
 
-        <div class="pull-right">
+<!--        <div class="pull-right">
             <button class='btn btn-default' ng-if="!(widget.chartType)" ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-        </div>
+        </div>-->
 
         <div class="row col-md-12">
             <div class="col-lg-4">
@@ -322,7 +322,19 @@
                         </a> 
                     </div>
                 </div>
-            </div>            -->
+            </div>  -->  
+            
+             <div class="col-md-4">
+                <label>Tags</label>
+                <div>
+                    <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.widgetTag" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                        <ui-select-match placeholder="Tags...">{{$item}}</ui-select-match>
+                        <ui-select-choices repeat="tag in tags | filter:$select.search">
+                            {{tag}}
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
         </div>
 
         <div ng-if="!(editChartType == 'table' || editChartType == 'text' || editChartType == '')">
@@ -495,6 +507,17 @@
                                     <input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">
                                 </div>
                             </div>
+
+                            <div class="form-group" ng-show="editChartType == 'stackedbar'">
+                                <label>Grouping</label>
+                                <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, groupingFields)">
+                                    <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
+                                    <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
+                                        {{group.displayName}}
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+
                             <div ng-if="editChartType === 'ticker'">
                                 <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                             </div>
@@ -518,6 +541,11 @@
                                     <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                 </div>                            
                             </div> 
+                            <div ng-if="editChartType === 'stackedbar'">
+                                <div>
+                                    <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                </div>                            
+                            </div>
                         </div>
 
 
@@ -552,7 +580,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     <div class="row" ng-if="editChartType === 'text'">
         <div class="col-sm-12">

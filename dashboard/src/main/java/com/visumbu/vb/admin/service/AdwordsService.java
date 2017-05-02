@@ -925,7 +925,11 @@ public class AdwordsService {
         ReportDefinitionReportType reportType = adwordsData.getReportType();
         AdWordsSession session = getSession(accountId);
         Selector selector = new Selector();
-        selector.getFields().addAll(Lists.newArrayList(fields));
+        ArrayList<String> fieldList = Lists.newArrayList(fields);
+        if(timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")){
+            fieldList.remove("AllConversions");
+        }
+        selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);
         System.out.println("Filter ===> " + filter);
