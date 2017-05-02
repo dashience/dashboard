@@ -78,9 +78,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
 //        $state.go("index.dashboard", {productId: $stateParams.productId});
             try {
-                $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
-                $scope.endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
+                var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
             } catch (e) {
             }
             if ($scope.getCurrentPage() === "dashboard") {
@@ -124,8 +124,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     accountName: $stateParams.accountName,
                     reportId: $stateParams.reportId,
                     reportWidgetId: $stateParams.reportWidgetId,
-                    startDate: $scope.startDate,
-                    endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
             }
 //            else if ($scope.getCurrentPage() === "franchiseMarketing") {
@@ -234,19 +234,25 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $scope.loadNewUrl = function () {
         try {
-            $scope.startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+            var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
-            $scope.endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
+            var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
         } catch (e) {
         }
+        $stateParams.startDate = startDate
+        $stateParams.endDate = endDate
+        console.log($scope.startDate)
+        console.log($scope.endDate)
+        console.log($stateParams.startDate)
+        console.log($stateParams.endDate)
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
                 tabId: $stateParams.tabId,
-                startDate: $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "editWidget") {
             $state.go("index.editWidget", {
@@ -254,8 +260,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountName: $stateParams.accountName,
                 tabId: $stateParams.tabId,
                 widgetId: $stateParams.widgetId,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "reports") {
             $state.go("index.report.reports", {
@@ -263,16 +269,16 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
                 tabId: $stateParams.tabId,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
             $state.go("index.report.newOrEdit", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "updateReportWidget") {
             $state.go("index.widgetEditByReport", {
@@ -280,8 +286,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
                 reportWidgetId: $stateParams.reportWidgetId,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         }
 //        else if ($scope.getCurrentPage() === "franchiseMarketing") {
@@ -297,65 +303,65 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $state.go("index.dataSource", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "dataSet") {
             $state.go("index.dataSet", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.report.newOrEdit", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 schedulerId: $stateParams.schedulerId,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "account") {
             $state.go("index.account", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "agency") {
             $state.go("index.agency", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
             $state.go("index.fieldSettings", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "tag") {
             $state.go("index.tag", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
             });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());

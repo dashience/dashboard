@@ -10,7 +10,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.widgets = [];
 
     //Tabs
-    $scope.tab = 1;
+    $scope.tab = 2;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
     };
@@ -670,6 +670,30 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             });
         });
     }
+    
+    //Query Builder
+    var data = '{"group": {"operator": "AND","rules": []}}';
+    function htmlEntities(str) {
+        console.log(str)
+        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function computed(group) {
+        if (!group)
+            return "";
+        for (var str = "(", i = 0; i < group.rules.length; i++) {
+            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+            str += group.rules[i].group ?
+                    computed(group.rules[i].group) :
+                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+        }
+        return str + ")";
+    }
+    $scope.json = null;
+    $scope.filter = JSON.parse(data);
+    $scope.$watch('filter', function (newValue) {
+        $scope.json = JSON.stringify(newValue, null, 2);
+        $scope.output = computed(newValue.group);
+    }, true);
 
     $scope.save = function (widget) {
         try {
@@ -780,30 +804,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         });
     };
-
-    //Query Builder
-    var data = '{"group": {"operator": "AND","rules": []}}';
-    function htmlEntities(str) {
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-    function computed(group) {
-        if (!group)
-            return "";
-        for (var str = "(", i = 0; i < group.rules.length; i++) {
-            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-            str += group.rules[i].group ?
-                    computed(group.rules[i].group) :
-                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-        }
-        return str + ")";
-    }
-    $scope.json = null;
-    $scope.filter = JSON.parse(data);
-    $scope.$watch('filter', function (newValue) {
-        $scope.json = JSON.stringify(newValue, null, 2);
-        $scope.output = computed(newValue.group);
-    }, true);
-    $scope.currentLocation="index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
+    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
+//    $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
 });
 
 
@@ -811,7 +813,8 @@ app.directive('queryBuilder', ['$compile', function ($compile) {
         return {
             restrict: 'E',
             scope: {
-                group: '='
+                group: '=',
+                collection: '@'
             },
             templateUrl: '/queryBuilderDirective.html',
             compile: function (element, attrs) {
@@ -822,14 +825,23 @@ app.directive('queryBuilder', ['$compile', function ($compile) {
                         {name: 'AND'},
                         {name: 'OR'}
                     ];
+                    console.log(scope.collection)
+                    scope.columns = scope.collection
+                    var columnList = JSON.parse(scope.collection)
+                    var filterList = [];
 
-                    scope.fields = [
-                        {name: 'Firstname'},
-                        {name: 'Lastname'},
-                        {name: 'Birthdate'},
-                        {name: 'City'},
-                        {name: 'Country'}
-                    ];
+                    columnList.forEach(function (value, key) {
+                        filterList.push({name: value.fieldName, type: value.fieldType})
+                    })
+                    console.log(filterList)
+                    scope.fields = filterList;
+//                    scope.fields = [
+//                        {name: 'Firstname', type: ''},
+//                        {name: 'Lastname', type: ''},
+//                        {name: 'Birthdate', type: ''},
+//                        {name: 'City', type: ''},
+//                        {name: 'Country', type: ''}
+//                    ];
 
                     scope.conditions = [
                         {name: '='},
@@ -837,13 +849,14 @@ app.directive('queryBuilder', ['$compile', function ($compile) {
                         {name: '<'},
                         {name: '<='},
                         {name: '>'},
-                        {name: '>='}
+                        {name: '>='},
+                        {name: 'contains'}
                     ];
 
                     scope.addCondition = function () {
                         scope.group.rules.push({
                             condition: '=',
-                            field: 'Firstname',
+                            field: filterList[0].name,
                             data: ''
                         });
                     };
@@ -911,7 +924,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             displayAlignments: '@',
             hideOptions: '@',
             currentUrl: '@',
-            reloadUrl:'@'
+            reloadUrl: '@'
         },
         template:
                 "<div class='panel-head'>" +
@@ -1131,7 +1144,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             $(document).ready(function () {
                 $('.defaultTable').dragtable({
                     persistState: function (table) {
-                        
+
                         if (!window.sessionStorage)
                             return;
                         //var ss = window.sessionStorage;
@@ -1173,7 +1186,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 });
 //                sessionStorage.clear();
             };
-            
+
             scope.deleteColumn = function (collectionField, $index) {
                 angular.forEach(scope.previewTableHeader, function (value, key) {
                     console.log("Drag Data")
@@ -1266,7 +1279,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
                     $state.go(scope.reloadUrl)
-                    
+
                 });
             };
             scope.closeWidget = function () {
