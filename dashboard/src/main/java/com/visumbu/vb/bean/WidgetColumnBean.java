@@ -10,6 +10,7 @@ package com.visumbu.vb.bean;
  * @author duc-dev-04
  */
 public class WidgetColumnBean {
+
     private Integer id;
     private String fieldName;
     private String type;
@@ -35,7 +36,8 @@ public class WidgetColumnBean {
     private Integer columnHide;
     private Boolean search;
     private String groupField;
-    
+    private String combinationType;
+
     public Integer getId() {
         return id;
     }
@@ -50,7 +52,7 @@ public class WidgetColumnBean {
 
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
-    }    
+    }
 
     public String getType() {
         return type;
@@ -114,7 +116,7 @@ public class WidgetColumnBean {
 
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
-    }    
+    }
 
     public Integer getGroupPriority() {
         return groupPriority;
@@ -131,7 +133,7 @@ public class WidgetColumnBean {
     public void setAgregationFunction(String agregationFunction) {
         this.agregationFunction = agregationFunction;
     }
-        
+
     public String getFunctionParameters() {
         return functionParameters;
     }
@@ -203,7 +205,7 @@ public class WidgetColumnBean {
     public void setWrapText(String wrapText) {
         this.wrapText = wrapText;
     }
-        
+
     public String getAlignment() {
         return alignment;
     }
@@ -235,12 +237,18 @@ public class WidgetColumnBean {
     public void setGroupField(String groupField) {
         this.groupField = groupField;
     }
-    
+
+    public String getCombinationType() {
+        return combinationType;
+    }
+
+    public void setCombinationType(String combinationType) {
+        this.combinationType = combinationType;
+    }
 
     @Override
     public String toString() {
-        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + '}';
-    }    
-    
-        
+        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + ", groupField=" + groupField + ", combinationType=" + combinationType + '}';
+    }
+
 }

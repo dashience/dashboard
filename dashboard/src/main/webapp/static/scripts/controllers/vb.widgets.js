@@ -1,9 +1,13 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
 
     $scope.dragEnabled = true;
+
     $scope.toggleDragging = function () {
         $scope.dragEnabled = !$scope.dragEnabled;
     };
+
+
+
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -11,6 +15,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
+
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
@@ -21,10 +26,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
     };
+
     $scope.downloadPpt = function () {
         var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
         $window.open(url);
     };
+
     function getWidgetItem() {      //Default Loading Items
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
@@ -34,6 +41,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
     getWidgetItem();
+
     $scope.addWidget = function (newWidget) {       //Add Widget
 //        var data = {
 //            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
@@ -55,15 +63,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $('.modal-backdrop').remove();
         $state.go('index.dataSource', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
+
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
     };
+
     $scope.widgetDuplicate = function (widgetData) {
         console.log(widgetData);
-        console.log(widgetData.widgetId+" : "+widgetData.tabId);
-        $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId+ "/"+ widgetData.tabId).success(function (response) {
+        console.log(widgetData.widgetId + " : " + widgetData.tabId);
+        $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             console.log(response);
             $scope.widgets.push(response);
         });
@@ -76,12 +86,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         list.splice(to, 0, list.splice(from, 1)[0]);
         return list;
     };
+
     $http.get("admin/ui/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
     });
+
     $http.get('admin/ui/report').success(function (response) {
         $scope.reportList = response;
     });
+
     $scope.addWidgetToReport = function (widget) {
         var data = {};
         data.widgetId = widget.id;
@@ -93,13 +106,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
     };
+
     $scope.clearReport = function () {
         $scope.reportLogo = "";
         $scope.reportDescription = "";
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
     };
+
     $scope.favourites = false;
+
     $scope.favouritesNew = function (favourites) {
         if (favourites == "true")
         {
@@ -116,6 +132,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.goReport = function () {
         $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
+
     $scope.onDropComplete = function (index, widget, evt) {
 
         if (widget !== "" && widget !== null) {
@@ -136,6 +153,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
+
     function splitCamelCase(s) {
         return s.split(/(?=[A-Z])/).join(' ');
     }
@@ -218,13 +236,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 content: widget.content,
                 width: widget.width
             };
+
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             });
         }, 50);
+
     };
     $scope.reduceWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
+
         if (widget.width == 12) {
             widget.width = widget.width - 4;
         } else if (widget.width == 8) {
@@ -251,11 +272,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 content: widget.content,
                 width: widget.width
             };
+
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             });
         }, 50);
+
     }
 });
+
+
 app.directive('dateRangePicker', function () {
     return{
         restrict: 'A',
@@ -276,6 +301,7 @@ app.directive('dateRangePicker', function () {
         }
     };
 });
+
 app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFilter) {
     return{
         restrict: 'A',
@@ -323,7 +349,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 ' <span ng-bind-html="grouping._key"></span>' +
                 '</td>' +
                 '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
-                '<div class="text-{{col.alignment}}"><span ng-bind-html="format(col, grouping[col.fieldName])"></span></div>' +
+                '<div class="text-{{col.alignment}}">' +
+                '<span ng-if="col.displayFormat != \'starRating\'" ng-bind-html="format(col, grouping[col.fieldName])"></span>' +
+                '<span ng-if="col.displayFormat == \'starRating\'" class="stars alignright">' +
+                '<span ng-style="{\'width\': getStars(grouping[col.fieldName])}"></span>' +
+                '</div>' +
                 '</td>' +
                 '</tr>' +
                 '<tr ng-if="!isZeroRow(item, columns)" ng-show="grouping.$hideRows" ng-repeat-start="item in grouping.data">' + //Second Level Grouping and Data
@@ -392,18 +422,21 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     //value.data.$hideRows = true;
                 });
             };
+
             scope.hideChild = function (item, hideStatus) {
                 // console.log(item);
                 if (!item)
                     return;
                 angular.forEach(item, function (value, key) {
                     value.$hideRows = hideStatus;
+
                     if (hideStatus == false) {
                         scope.hideChild(value, hideStatus);
                     }
                     //value.data.$hideRows = true;
                 });
             };
+
             scope.hideAll = function (grouping, hideStatus) {
                 if (!grouping)
                     return;
@@ -420,6 +453,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             scope.doSomething = function (ev) {
                 var element = ev.srcElement ? ev.srcElement : ev.target;
             };
+
             //scope.currentPage = 1;
             //scope.pageSize = 10;
             // console.log
@@ -427,6 +461,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 scope.columns.push(value);
             });
+
             scope.isZeroRow = function (row, col) {
                 var widgetData = JSON.parse(scope.widgetObj);
                 if (widgetData.zeroSuppression == false) {
@@ -462,6 +497,17 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return value;
             };
+
+            scope.getStars = function (rating) {
+//                console.log(rating);
+                // Get the value
+                var val = parseFloat(rating);
+                // Turn value into number/100
+                var size = val / 5 * 100;
+//                console.log(size);
+                return size + '%';
+            }
+
             function sortByDay(list, sortFields) {
                 var returnSortDay;
                 var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -557,6 +603,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         angular.forEach(sortFields, function (value, key) {
                             if (value.fieldType != 'day') {
                                 responseData = scope.orderData(responseData, sortFields);
+
                             } else {
                                 responseData = sortByDay(responseData, sortFields)//                                
                             }
@@ -600,6 +647,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 var sortFields = [];
                 sortFields.push({fieldName: col.fieldName, sortOrder: col.sortOrder, fieldType: col.fieldType});
                 var responseData = scope.orignalData;
+
                 angular.forEach(sortFields, function (value, key) {
                     if (value.fieldType != 'day') {
                         responseData = scope.orderData(responseData, sortFields);
@@ -608,6 +656,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         responseData = sortByDay(responseData, sortFields)
                     }
                 });
+
                 var widgetData = JSON.parse(scope.widgetObj);
                 if (widgetData.maxRecord > 0) {
                     responseData = responseData.slice(0, widgetData.maxRecord);
@@ -638,10 +687,12 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 scope.sortColumn = scope.objectHeader[index];
             };
+
 //Dir-Paginations
             scope.pageChangeHandler = function (num) {
                 console.log('reports page changed to ' + num);
             };
+
             scope.sum = function (list, fieldname) {
                 var sum = 0;
                 for (var i in list)
@@ -654,6 +705,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return sum;
             };
+
             scope.calculatedMetric = function (list, name, field1, field2) {
                 var value1 = scope.sum(list, field1);
                 var value2 = scope.sum(list, field2);
@@ -666,20 +718,22 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return returnValue;
             };
+
             listOfCalculatedFunction = [
-                {name: 'ctr', field1: 'data__clicks', field2: 'data__impressions'},
-                {name: 'cpa', field1: 'data__cost', field2: 'data__conversions'},
-                {name: 'cpas', field1: 'data__spend', field2: 'data__conversions'},
-                {name: 'cpc', field1: 'data__cost', field2: 'data__clicks'},
-                {name: 'cpcs', field1: 'data__spend', field2: 'data__clicks'},
-                {name: 'cpr', field1: 'data__spend', field2: 'data__actions_post_reaction'},
-                {name: 'ctl', field1: 'data__spend', field2: 'data__actions_like'},
-                {name: 'cplc', field1: 'data__spend', field2: 'data__actions_link_click'},
-                {name: 'cpcomment', field1: 'data__spend', field2: 'data__actions_comment'},
-                {name: 'cposte', field1: 'data__spend', field2: 'data__actions_post_engagement'},
-                {name: 'cpagee', field1: 'data__spend', field2: 'data__actions_page_engagement'},
-                {name: 'cpp', field1: 'data__spend', field2: 'data__actions_post'}
+                {name: 'ctr', field1: 'clicks', field2: 'impressions'},
+                {name: 'cpa', field1: 'cost', field2: 'conversions'},
+                {name: 'cpas', field1: 'spend', field2: 'conversions'},
+                {name: 'cpc', field1: 'cost', field2: 'clicks'},
+                {name: 'cpcs', field1: 'spend', field2: 'clicks'},
+                {name: 'cpr', field1: 'spend', field2: 'actions_post_reaction'},
+                {name: 'ctl', field1: 'spend', field2: 'actions_like'},
+                {name: 'cplc', field1: 'spend', field2: 'actions_link_click'},
+                {name: 'cpcomment', field1: 'spend', field2: 'actions_comment'},
+                {name: 'cposte', field1: 'spend', field2: 'actions_post_engagement'},
+                {name: 'cpagee', field1: 'spend', field2: 'actions_page_engagement'},
+                {name: 'cpp', field1: 'spend', field2: 'actions_post'}
             ];
+
             function aggregate(list, aggreationList) {
                 var returnValue = {};
                 angular.forEach(aggreationList, function (value, key) {
@@ -808,6 +862,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
         }
     };
 });
+
 app.directive('tickerDirective', function ($http, $stateParams) {
     return{
         restrict: 'AE',
@@ -857,6 +912,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 }
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
+
             var format = function (column, value) {
                 if (!value) {
                     return "-";
@@ -872,6 +928,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 }
                 return value;
             };
+
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
@@ -937,6 +994,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         }
     };
 });
+
 app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter) {
     return{
         restrict: 'A',
@@ -967,6 +1025,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             var startDate = "";
             var endDate = "";
             var sortFields = [];
+            var combinationTypes = [];
+            var chartCombinationtypes = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1002,6 +1062,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 if (value.sortOrder) {
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
+                if (value.combinationType) {
+                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
             var xData = [];
@@ -1129,6 +1192,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
+//                                    chartData = scope.orderData(chartData, sortFields);
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
@@ -1136,7 +1200,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                             chartData = sortingObj;
                                         }
                                     } else {
-                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                                         sortingObj = orderByFilter(chartData, function (item) {
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
@@ -1144,6 +1208,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                                 return dateOrders.indexOf(item[value.fieldName] * -1);
                                             }
                                         });
+
                                         if (chartMaxRecord.maxRecord) {
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
                                         } else {
@@ -1163,6 +1228,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 return a[xAxis.fieldName];
                             });
                             columns.push(xTicks);
+
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -1170,13 +1236,19 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
                             });
+
+                            angular.forEach(combinationTypes, function (value, key) {
+                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                            });
+
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
                                     columns: columns,
                                     labels: labels,
-                                    axes: axes
+                                    axes: axes,
+                                    types: chartCombinationtypes
                                 },
                                 color: {
                                     pattern: ['#62cb31', '#555555']
@@ -1211,6 +1283,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
         }
     };
 });
+
 app.directive('barChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
     return{
         restrict: 'A',
@@ -1239,6 +1312,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var startDate = "";
             var endDate = "";
             var sortFields = [];
+            var combinationTypes = [];
+            var chartCombinationtypes = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1274,6 +1349,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 }
                 if (value.sortOrder) {
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
+                if (value.combinationType) {
+                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
             var xData = [];
@@ -1419,6 +1497,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                                 return dateOrders.indexOf(item[value.fieldName] * -1);
                                             }
                                         });
+
                                         if (chartMaxRecord.maxRecord) {
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
                                         } else {
@@ -1434,13 +1513,18 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
+
                             columns.push(xTicks);
+
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
+                            });
+                            angular.forEach(combinationTypes, function (value, key) {
+                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
                             var chart = c3.generate({
                                 bindto: element[0],
@@ -1449,7 +1533,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     columns: columns,
                                     labels: labels,
                                     type: 'bar',
-                                    axes: axes
+                                    axes: axes,
+                                    types: chartCombinationtypes
                                 },
                                 color: {
                                     pattern: ['#62cb31', '#555555']
@@ -1734,7 +1819,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0']
+                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0', '#DC143C']
 
                                 },
                                 tooltip: {show: false},
@@ -1793,6 +1878,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             var startDate = "";
             var endDate = "";
             var sortFields = [];
+            var combinationTypes = [];
+            var chartCombinationtypes = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1828,6 +1915,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 }
                 if (value.sortOrder) {
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
+                if (value.combinationType) {
+                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
             var xData = [];
@@ -1990,6 +2080,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
                             });
+                            angular.forEach(combinationTypes, function (value, key) {
+                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                            });
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -1997,7 +2090,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     columns: columns,
                                     labels: labels,
                                     type: 'area',
-                                    axes: axes
+                                    axes: axes,
+                                    types: chartCombinationtypes
                                 },
                                 color: {
                                     pattern: ['#62cb31', '#555555']
@@ -2061,6 +2155,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             var endDate = "";
             var sortFields = [];
             var groupingFields = [];
+            var combinationTypes = [];
+            var chartCombinationtypes = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -2099,6 +2195,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 }
                 if (value.groupField) {
                     groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType});
+                }
+                if (value.combinationType) {
+                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
             var xData = [];
@@ -2267,7 +2366,10 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             var groupingNames = []
                             angular.forEach(groupingFields, function (value, key) {
                                 groupingNames.push(value.fieldName)
-                            })
+                            });
+                            angular.forEach(combinationTypes, function (value, key) {
+                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                            });
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -2276,7 +2378,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     labels: labels,
                                     type: 'bar',
                                     groups: [groupingNames],
-                                    axes: axes
+                                    axes: axes,
+                                    types: chartCombinationtypes
                                 },
                                 color: {
                                     pattern: ['#555555', '#62cb31', '#666666', '#a5d169', '#75ccd0']
@@ -2307,6 +2410,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 }
                 scope.setStackedBarChartFn({stackedBarFn: scope.refreshStackedBarChart});
                 scope.refreshStackedBarChart();
+
             }
         }
     };
@@ -2496,4 +2600,3 @@ app.service('stats', function ($filter) {
     };
     return service;
 });
-

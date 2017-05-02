@@ -220,6 +220,7 @@
                                                 <span class="caret"></span></button>
                                             <ul class="dropdown-menu scheduler-list-style">
                                                 <li ng-click="selectDuration('Custom', scheduler)" >
+
                                                     <a>Custom</a>
                                                     <div class="col-md-12 custom-picker">
                                                         <!--                                                        <label>Custom Range</label>-->
@@ -228,6 +229,7 @@
                                                                 {{scheduler.customStartDate}} - {{scheduler.customEndDate}} 
                                                                 <!--{{startDate}}-->
                                                                 <!--{{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}}--> 
+                                                                {{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}} 
                                                                 <i class="custom-daterange-box-icon fa fa-caret-down"></i>
                                                             </span>
                                                         </a> 

@@ -236,6 +236,22 @@
         font-size: 13px !important;
         cursor:pointer;
     }
+
+    span.stars, span.stars span {
+        display: block;
+        /* Download the star image here: http://stackoverflow.com/questions/1987524/turn-a-number-into-star-rating-display-using-jquery-and-css */
+        background: url('static/img/logos/stars.png') 0 -16px repeat-x;
+        width: 80px;
+        height: 16px;
+    }
+
+    span.stars span {
+        background-position: 0 0;
+    }
+
+    .alignright {
+        float:right;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
@@ -325,7 +341,7 @@
                                 <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
                                 <i class="fa fa-files-o" aria-hidden="true" ng-click="widgetDuplicate({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"></i>
@@ -393,7 +409,7 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
                         <div>
-                            <div stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)"stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                         </div>
                     </div>
                 </div>

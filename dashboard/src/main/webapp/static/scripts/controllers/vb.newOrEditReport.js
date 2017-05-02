@@ -63,7 +63,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         {name: 'No', value: "no"}
     ];
 
-    $http.get("admin/ui/report/" + $stateParams.reportId + "?locationId=" + $stateParams.accountId).success(function (response) {
+    $http.get("admin/report/" + $stateParams.reportId).success(function (response) {
         $scope.reports = response;
         if (!response) {
             $scope.editReport = true;
@@ -77,7 +77,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         })
     });
 
-    $http.get('admin/ui/reportWidget/' + $stateParams.reportId + "?locationId=" + $stateParams.accountId).success(function (response) {
+    $http.get('admin/report/reportWidget/' + $stateParams.reportId).success(function (response) {
         $scope.reportWidgets = response;
         angular.forEach(response, function (value, key) {
             console.log(value.widgetId)
@@ -108,10 +108,11 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     };
 
     $scope.saveReportData = function () {
-        if (0 == $stateParams.reportId) {
+        if (0 == $stateParams.reportId) {alert($stateParams.reportId)
             $scope.selectReportId = "";
         } else {
             $scope.selectReportId = $stateParams.reportId;
+            console.log($stateParams.reportId)
         }
         var data = {
             id: $scope.selectReportId,
@@ -119,12 +120,12 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             description: $scope.description,
             logo: $scope.uploadLogo   //window.btoa($scope.uploadLogo)
         };
-        $http({method: $scope.selectReportId ? 'PUT' : 'POST', url: 'admin/ui/report', data: data}).success(function () {
+        $http({method: $scope.selectReportId ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function () {
             $stateParams.reportId = $scope.reports[$scope.reports.length - 1].id;
         });
     };
 
-    $scope.expandWidget = function (widget) {
+   $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
         if (widget.width == 3) {
@@ -153,7 +154,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 width: widget.width
             };
 
-            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
 //                    $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
             });
         }, 50);
@@ -190,23 +191,44 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 width: widget.width
             };
 
-            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             });
         }, 50);
 
     }
 
+$scope.setLineChartFn = function (lineFn) {
+        $scope.directiveLineFn = lineFn;
+    };
+    $scope.setAreaChartFn = function (areaFn) {
+        $scope.directiveAreaFn = areaFn;
+    };
+    $scope.setBarChartFn = function (barFn) {
+        $scope.directiveBarFn = barFn;
+    };
+    $scope.setPieChartFn = function (pieFn) {
+        $scope.directivePieFn = pieFn;
+    };
+    $scope.setStackedBarChartFn = function (stackedBarFn) {
+        $scope.directiveStackedBarChartFn = stackedBarFn;
+    };
+    $scope.setTableChartFn = function (tableFn) {
+        $scope.directiveTableFn = tableFn;
+    };
+    $scope.setTickerFn = function (tickerFn) {
+        $scope.directiveTickerFn = tickerFn;
+    };
 //    $scope.addReportWidget = function (newWidget) {                                     //Add new Report Widget
 //        var data = {
 //            width: newWidget, 'minHeight': 25, columns: []
 //        };
-//        $http({method: 'POST', url: 'admin/ui/reportWidget/' + $stateParams.reportId, data: data}).success(function (response) {
+//        $http({method: 'POST', url: 'admin/report/reportWidget/' + $stateParams.reportId, data: data}).success(function (response) {
 //            $scope.reportWidgets.push({id: response.id, width: newWidget, 'minHeight': 25, columns: []});
 //        });
 //    };
 
     $scope.deleteReportWidget = function (reportWidget, index) {                            //Delete Widget
-        $http({method: 'DELETE', url: 'admin/ui/reportWidget/' + reportWidget.id}).success(function (response) {
+        $http({method: 'DELETE', url: 'admin/report/reportWidget/' + reportWidget.id}).success(function (response) {
             $scope.reportWidgets.splice(index, 1);
         });
     };
@@ -317,7 +339,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             productDisplayName: reportWidget.productDisplayName
         };
         reportWidget.chartType = "";
-        $http({method: reportWidget.id ? 'PUT' : 'POST', url: 'admin/ui/reportWidget/' + $stateParams.reportId, data: data}).success(function (response) {
+        $http({method: reportWidget.id ? 'PUT' : 'POST', url: 'admin/report/reportWidget/' + $stateParams.reportId, data: data}).success(function (response) {
             reportWidget.chartType = data.chartType;
         });
         reportWidget.widgetTitle = reportWidget.previewTitle ? reportWidget.previewTitle : reportWidget.widgetTitle;
@@ -337,7 +359,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 return value.id;
             }).join(',');
             if (widgetOrder) {
-                $http({method: 'GET', url: 'admin/ui/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
+                $http({method: 'GET', url: 'admin/report/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
             }
         }
         ;

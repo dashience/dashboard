@@ -13,8 +13,6 @@ import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
-import com.visumbu.vb.model.Report;
-import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
@@ -217,102 +215,29 @@ public class UiController extends BaseController {
         return uiService.deleteWidgetColumn(id);
     }
 
-//    @RequestMapping(value = "reportType", method = RequestMethod.POST, produces = "application/json")
-//    public @ResponseBody
-//    ReportType addReportType(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportType reportTypes) {
-//        return uiService.addReportType(reportTypes);
-//    }
-//
-//    @RequestMapping(value = "reportType", method = RequestMethod.PUT, produces = "application/json")
-//    public @ResponseBody
-//    ReportType update(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportType reportTypes) {
-//        return uiService.updateReportType(reportTypes);
-//    }
-//
-//    @RequestMapping(value = "reportTypes/{reportTypeId}", method = RequestMethod.DELETE, produces = "application/json")
-//    public @ResponseBody
-//    ReportType deleteReportType(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportTypeId) {
-//        return uiService.deleteReportType(reportTypeId);
-//    }
-//
-//    @RequestMapping(value = "reportTypes/{reportTypeId}", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    List getReportType(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportTypeId) {
-//        return uiService.getReportType(reportTypeId);
-//    }
-//
-    @RequestMapping(value = "report", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    Report addReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
-        VbUser user = userService.findByUsername(getUser(request));
-        report.setAgencyId(user.getAgencyId());
-        return uiService.addReport(report);
-    }
-
-    @RequestMapping(value = "report", method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    Report updateReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
-        VbUser user = userService.findByUsername(getUser(request));
-        report.setAgencyId(user.getAgencyId());
-        return uiService.updateReport(report);
-    }
-
 //    @RequestMapping(value = "report", method = RequestMethod.POST, produces = "application/json")
 //    public @ResponseBody
-//    Report addReport(HttpServletRequest request, HttpServletResponse response// , @RequestBody Report report
-//    ) {
-//
-//        try {
-//            //        Integer getReportTypeId = 1;
-////        System.out.println(report);
-//////        return uiService.addReport(report, getReportTypeId);
-////            StringBuilder sb = new StringBuilder();
-////            BufferedReader reader = request.getReader();
-////            String line = "";
-////            while((line = reader.readLine()) != null) {
-////                sb.append(reader.readLine());
-////            }
-////            String jsonString = sb.toString();
-////            System.out.println(jsonString);
-//        } catch (Exception ex) {
-//            Logger.getLogger(UiController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
+//    Report addReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
+//        VbUser user = userService.findByUsername(getUser(request));
+//        report.setAgencyId(user.getAgencyId());
+//        return uiService.addReport(report);
 //    }
+//
 //    @RequestMapping(value = "report", method = RequestMethod.PUT, produces = "application/json")
 //    public @ResponseBody
-//    Report update(HttpServletRequest request, HttpServletResponse response// @RequestBody Report report
-//    ) {
-//
-//        try {
-//            //        Integer getReportTypeId = 1;
-////        System.out.println(report);
-//////        return uiService.addReport(report, getReportTypeId);
-//            StringBuilder sb = new StringBuilder();
-//            BufferedReader reader = request.getReader();
-//            String line = "";
-//            while ((line = reader.readLine()) != null) {
-//                sb.append(line);
-//            }
-//            String jsonString = sb.toString();
-//            ObjectMapper mapper = new ObjectMapper();
-//            Report report = mapper.readValue(jsonString, Report.class);
-//            System.out.println(jsonString);
-//            return uiService.updateReport(report);
-//        } catch (Exception ex) {
-//            Logger.getLogger(UiController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//
+//    Report updateReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
+//        VbUser user = userService.findByUsername(getUser(request));
+//        report.setAgencyId(user.getAgencyId());
+//        return uiService.updateReport(report);
 //    }
-//
-    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-        String widgetOrder = request.getParameter("widgetOrder");
-        uiService.updateReportOrder(reportId, widgetOrder);
-        return null;
-    }
+
+//    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+//        String widgetOrder = request.getParameter("widgetOrder");
+//        uiService.updateReportOrder(reportId, widgetOrder);
+//        return null;
+//    }
 //
 //    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
 //    public @ResponseBody
@@ -329,32 +254,32 @@ public class UiController extends BaseController {
         }
         return uiService.getAgencyReport(user);
     }
+    
+//    @RequestMapping(value = "report/{reportId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    Report getReportById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+//        return uiService.getReportById(reportId);
+//    }
 
-    @RequestMapping(value = "report/{reportId}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Report getReportById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-        return uiService.getReportById(reportId);
-    }
-
-    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
-    public @ResponseBody
-    Report deleteReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-        return uiService.deleteReport(reportId);
-    }
+//    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
+//    public @ResponseBody
+//    Report deleteReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+//        return uiService.deleteReport(reportId);
+//    }
 //
 
-    @RequestMapping(value = "reportWidget", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    ReportWidget createReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
-        return uiService.createReportWidget(reportWidget);
-    }
+//    @RequestMapping(value = "reportWidget", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    ReportWidget createReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
+//        return uiService.createReportWidget(reportWidget);
+//    }
+////
 //
-
-    @RequestMapping(value = "reportWidget", method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    ReportWidget updateReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
-        return uiService.updateReportWidget(reportWidget);
-    }
+//    @RequestMapping(value = "reportWidget", method = RequestMethod.PUT, produces = "application/json")
+//    public @ResponseBody
+//    ReportWidget updateReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
+//        return uiService.updateReportWidget(reportWidget);
+//    }
 //
 
     @RequestMapping(value = "reportWidget", method = RequestMethod.GET, produces = "application/json")
@@ -364,17 +289,17 @@ public class UiController extends BaseController {
     }
 //    
 
-    @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List getReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-        return uiService.getReportWidget(reportId);
-    }
-
-    @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
-    public @ResponseBody
-    ReportWidget deleteReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
-        return uiService.deleteReportWidget(reportId);
-    }
+//    @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+//        return uiService.getReportWidget(reportId);
+//    }
+//
+//    @RequestMapping(value = "reportWidget/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
+//    public @ResponseBody
+//    ReportWidget deleteReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
+//        return uiService.deleteReportWidget(reportId);
+//    }
 
     @RequestMapping(value = "dataSource", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
