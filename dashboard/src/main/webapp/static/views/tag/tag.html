@@ -59,41 +59,41 @@
                                 <form class="form-horizontal">
                                     <div class="form-group">
                                         <label>Tag Name</label>
-                                        <input class="form-control" type="text" ng-model="tag.tagname">
+                                        <input class="form-control" type="text" ng-model="tag.tagName">
                                     </div>
                                     <div class="form-group">
                                         <label>Description</label>
                                         <input class="form-control" type="text" ng-model="tag.description">
                                     </div>
-<div class="form-group pull-right">
-    <button class="btn btn-info" ng-click="saveTag(tag)">Save</button>
-    <button class="btn btn-warning" ng-click="clearTag(tag)">Cancel</button>
-</div>
-</form>
-</div>
-</div>
+                                    <div class="form-group pull-right">
+                                        <button class="btn btn-info" ng-click="saveTag(tag)">Save</button>
+                                        <button class="btn btn-warning" ng-click="clearTag(tag)">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
 
-</div>
-</div>
-</div>
-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-<div class="col-md-7">
-    <div class="hpanel">                    
-        <div class="panel-body">
-            <table class="table table-responsive table-fixed">
-                <thead>
-                    <tr>
-                        <th class="col-xs-5">Sl.No</th>
+        <div class="col-md-7">
+            <div class="hpanel">                    
+                <div class="panel-body">
+                    <table class="table table-responsive table-fixed">
+                        <thead>
+                            <tr>
+                                <th class="col-xs-5">Sl.No</th>
                                 <th class="col-xs-6">Tag Name</th>
 
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="accountUser-Table" ng-repeat="tag in tags">
-                            <td class="col-xs-5">{{$index + 1}}</td>
-                            <td class="col-xs-6">{{tag.tagName}}</td>
+                                <td class="col-xs-5" ng-click="editTag(tag, $index)">{{$index + 1}}</td>
+                                <td class="col-xs-6" ng-click="editTag(tag, $index)">{{tag.tagName}}</td>
                                 <td class="col-xs-1">
                                     <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUser{{tag.id}}"><i class="fa fa-trash"></i></button>
                                     <div class="modal hmodal-success" id="deleteUser{{tag.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -117,7 +117,7 @@
                                                 <div class="modal-footer">
                                                     <div class="col-sm-12">
                                                         <button type="button" class="btn btn-primary btn-xs " 
-                                                                ng-click="deleteUser(user, $index)" 
+                                                                ng-click="deleteTag(tag, $index)" 
                                                                 data-dismiss="modal">
                                                             <span class="fa fa-trash"></span> Yes
                                                         </button>

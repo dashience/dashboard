@@ -1,4 +1,4 @@
-app.controller('fieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout) {
+app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout) {
     $scope.fieldSettings = [];
 
     $http.get('admin/fieldSettings').success(function (response) {

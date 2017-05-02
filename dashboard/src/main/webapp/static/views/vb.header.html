@@ -33,15 +33,18 @@
     .logout{
         padding-left: 20px;
     }
+    .navbar-nav > li, .navbar-nav > li > a{
+        height: auto! important; 
+    }
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
     <div id="logo">
-            <span>
-                <img src="static/img/logos/dashience-logo.jpg" width="80" />
-            </span>
+        <span>
+            <img src="static/img/logos/dashience-logo.jpg" width="80" />
+        </span>
         <!--<img src="../img/logos/border.png" alt=""  width="1" height="50"/>-->
-        </div>
-    
+    </div>
+
     <div id="logo">
         <span>
             <img class="img-responsive img-thumbnail client-logo" ng-src="{{accountLogo}}" />
@@ -61,18 +64,134 @@
                 <!--<img src="static/img/logos/deeta-logo.png" width="100" />-->
             </span>
         </div>
+        <nav class = "navbar-default" role = "navigation">
+<!--            <div class = "navbar-header" id="animations">
+                <button class="navbar-toggle"ng-click="showLeft($event)">Show Left Menu!</button>
 
+                <menu visible="leftVisible" alignment="left">
+                    <menu-item hash="first-page">First Page</menu-item>
+                    <menu-item hash="second-page">Second Page</menu-item>
+                    <menu-item hash="third-page">Third Page</menu-item>
+                </menu>
+            </div>-->
+            <!--            <div class = "navbar-header" id="animations">
+                            <button type="button" class="navbar-toggle mobile-menu-toggle" data-animation="am-slide-left" data-placement="left" bs-aside="aside">
+                                <span class = "sr-only">Toggle navigation</span>
+                                <span class = "icon-bar"></span>
+                                <span class = "icon-bar"></span>
+                                <span class = "icon-bar"></span><br>
+                            </button>
+                        </div>-->
+        </nav>
 
-        <div class="mobile-menu">
-            <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
-                <i class="fa fa-chevron-down"></i>
-            </button>
-            <div class="collapse mobile-navbar" id="mobile-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="admin/user/logout">Logout</a></li>
-                </ul>
-            </div>
-        </div>
+        <!--        <div class="mobile-menu">
+                    <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
+                        <i class="fa fa-chevron-down"></i>
+                    </button>
+                    <div class="collapse mobile-navbar" id="mobile-collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="admin/user/logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>-->
+        <!--        <nav class = "navbar-default" role = "navigation">
+                    <div class = "navbar-header">
+                        <button type = "button" class = "navbar-toggle mobile-menu-toggle" data-toggle = "collapse" data-target = "#mobile-collapse">                    
+                            <span class = "sr-only">Toggle navigation</span>
+                            <span class = "icon-bar"></span>
+                            <span class = "icon-bar"></span>
+                            <span class = "icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class = "collapse mobile-navbar" id="mobile-collapse">
+        
+                        <ul class = "nav navbar-nav">
+                                                <li><a href = "#">iOS</a></li>
+                                                <li><a href = "#">SVN</a></li>
+                                                <li class = "dropdown">
+                                                    <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">
+                                                        Java 
+                                                        <b class = "caret"></b>
+                                                    </a>
+                                                    <ul class = "dropdown-menu">
+                                                        <li><a href = "#">jmeter</a></li>
+                                                        <li><a href = "#">EJB</a></li>
+                                                        <li><a href = "#">Jasper Report</a></li>
+                                                        <li><a href = "#">Separated link</a></li>
+                                                        <li><a href = "#">One more separated link</a></li>
+                                                    </ul>
+                                                </li>
+        
+                                                <li class="dropdown" id="daterange-btn">
+                                                    <a id="daterange-btn">
+                                                    <a class="date-border">
+                                                        {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
+                                                    </a> 
+                                                    </a>
+                                                </li>
+                            <li class="dropdown" id="daterange-b">
+                                <a class="date-border">
+                                    {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
+                                </a>
+                            </li>
+                            <li class="col-lg-3 icon-dash mobile-menus dropdown"  >
+                                <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">
+                                    Products 
+                                    <b class = "caret"></b>
+                                </a>
+                                <ul class="dropdown-menu active" ng-repeat="product in products| orderBy:'productOrder'" ng-if="product.showProduct == 1" >
+                                    <li ng-click="setParamsProduct(product)"><a>{{product.productName}}</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">
+                                    Report 
+                                    <b class = "caret"></b>
+                                </a>
+                                <ul class = "dropdown-menu">
+                                    <li ng-if="permission.createDataSource === true;">                     
+                                        <a class="product-dashboard-icon" ng-click="setParams()">
+                                            <span data-ui-sref="index.dataSource({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li ng-if="permission.createDataSet === true;">
+                                        <a class="product-dashboard-icon" ng-click="setParams()">
+                                            <span data-ui-sref="index.dataSet({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                Data Sets
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li ng-if="isAdmin === 'admin'">
+                                        <a class="product-dashboard-icon" ng-click="setParams()">
+                                            <span data-ui-sref="index.agency({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                Agency
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li ng-if="permission.createAccount === true;">
+                                        <a class="product-dashboard-icon" ng-click="setParams()">
+                                            <span data-ui-sref="index.account({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                Account
+                                            </span>
+                                        </a>
+                                    </li>  
+                                    <li ng-if="permission.createUser === true;">
+                                        <a class="product-dashboard-icon" ng-click="setParams()">
+                                            <span data-ui-sref="index.user({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                Users
+                                            </span>
+                                        </a>
+                                    </li>                                                              
+                                </ul>
+                            </li>
+        
+                            <li><a href="admin/user/logout">Logout</a></li>
+                        </ul>
+                    </div>
+        
+                </nav>-->
+
 
         <div class="navbar-right">
             <ul class="nav navbar-nav no-borders">
@@ -179,7 +298,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div ng-if="permission.viewFieldSettings===true;">
+                            <div ng-if="permission.viewFieldSettings === true;">
                                 <ul class="col-lg-3 icon-dash"> 
                                     <li class="product-dashboard-icon" ng-click="setParams()">
                                         <a data-ui-sref="index.fieldSettings({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">

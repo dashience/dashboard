@@ -120,6 +120,9 @@ public class WidgetColumn implements Serializable {
     private Integer columnHide;
     @Column(name = "search")
     private Boolean search;
+    @Size(max = 255)
+    @Column(name = "combination_type")
+    private String combinationType;
     
     @Size(max = 128)
     @Column(name = "group_field")
@@ -323,8 +326,15 @@ public class WidgetColumn implements Serializable {
     public void setGroupField(String groupField) {
         this.groupField = groupField;
     }
-    
-    
+
+    public String getCombinationType() {
+        return combinationType;
+    }
+
+    public void setCombinationType(String combinationType) {
+        this.combinationType = combinationType;
+    }
+       
     
     @XmlTransient
     @JsonIgnore

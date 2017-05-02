@@ -1,4 +1,4 @@
-app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter) {
+app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter, $timeout) {
 
 
 
@@ -254,6 +254,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 
 //    var start = moment().subtract(29, 'days');
 //    var end = moment();
+$timeout(function(){
     $(function () {
         //Initialize Select2 Elementsmouseenter
         $(".select2").select2();
@@ -373,7 +374,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             }
         });
 
-    })
+    });
+    },50);
 });
 app.directive('jqdatepicker', function () {
     return {

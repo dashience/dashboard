@@ -7,7 +7,6 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportWidgets = [];
-
     if ($scope.permission.scheduleReport === true) {
         $scope.showSchedulerReport = true;
         console.log($scope.showSchedulerReport)
@@ -42,7 +41,7 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
         $scope.totalYearOfWeeks.push(i);
     }
 
-    $http.get("admin/ui/report").success(function (response) {
+    $http.get("admin/report/getReport").success(function (response) {
         $scope.reports = response;
     });
 
@@ -57,7 +56,7 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     };
 
     $scope.deleteReport = function (report, index) {
-        $http({method: 'DELETE', url: 'admin/ui/report/' + report.id}).success(function (response) {
+        $http({method: 'DELETE', url: 'admin/report/' + report.id}).success(function (response) {
             $scope.reports.splice(index, 1);
         });
     }

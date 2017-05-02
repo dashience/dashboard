@@ -6,7 +6,9 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,9 +16,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -32,6 +37,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Tag.findByDescription", query = "SELECT t FROM Tag t WHERE t.description = :description")
     , @NamedQuery(name = "Tag.findByStatus", query = "SELECT t FROM Tag t WHERE t.status = :status")})
 public class Tag implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tagId")
+    private Collection<WidgetTag> widgetTagCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -111,6 +119,16 @@ public class Tag implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.Tag[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<WidgetTag> getWidgetTagCollection() {
+        return widgetTagCollection;
+    }
+
+    public void setWidgetTagCollection(Collection<WidgetTag> widgetTagCollection) {
+        this.widgetTagCollection = widgetTagCollection;
     }
     
 }
