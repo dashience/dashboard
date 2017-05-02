@@ -109,8 +109,8 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.AreaRenderer;
-import org.jfree.chart.renderer.category.GroupedStackedBarRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.util.SortOrder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Node;
@@ -3101,6 +3101,7 @@ public class CustomReportDesigner {
             List<Aggregation> aggreagtionList = new ArrayList<>();
             List<FirstAxis> firstAxis = new ArrayList<>();
             List<SecondAxis> secondAxis = new ArrayList<>();
+            List<GroupField> groupFields = new ArrayList<>();
             String xAxis = null;
             String xAxisDisplay = null;
             String format = "";
@@ -3128,7 +3129,17 @@ public class CustomReportDesigner {
                 if (column.getDisplayFormat() != null) {
                     format = column.getDisplayFormat();
                 }
+                if (column.getGroupField() != null) {
+                    groupFields.add(new GroupField(column.getFieldName(), column.getDisplayName()));
+                }
             }
+            
+            for(Iterator<GroupField> groupField = groupFields.iterator(); groupField.hasNext();){
+                GroupField groupFieldName = groupField.next();
+                System.out.println("GroupField Display Names -----> "+groupFieldName.getDisplayName());
+                System.out.println("GroupField Field Names -----> "+groupFieldName.getFieldName());
+            }
+            
             System.out.println("sortFields size: " + sortFields.size());
 
             if (sortFields.size() > 0) {
@@ -3164,7 +3175,7 @@ public class CustomReportDesigner {
             final CategoryAxis domainAxis = new CategoryAxis();
             //final NumberAxis rangeAxis = new NumberAxis("Value");
             final NumberAxis rangeAxis = new NumberAxis();
-            final GroupedStackedBarRenderer renderer1 = new GroupedStackedBarRenderer();
+            final StackedBarRenderer renderer1 = new StackedBarRenderer();
             final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
 
                 /**
@@ -3240,7 +3251,7 @@ public class CustomReportDesigner {
                 plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
             }
 
-            final GroupedStackedBarRenderer renderer2 = new GroupedStackedBarRenderer();
+            final StackedBarRenderer renderer2 = new StackedBarRenderer();
             renderer2.setShadowVisible(false);
             Paint[] paint = new Paint[]{
                 new Color(98, 203, 49),
@@ -3347,7 +3358,7 @@ public class CustomReportDesigner {
 
         final CategoryAxis domainAxis = new CategoryAxis();
         final NumberAxis rangeAxis = new NumberAxis();
-        final GroupedStackedBarRenderer renderer1 = new GroupedStackedBarRenderer();
+        final StackedBarRenderer renderer1 = new StackedBarRenderer();
         final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
 
             /**
@@ -3420,7 +3431,7 @@ public class CustomReportDesigner {
             plot.setRangeAxis(1, axis2);
             plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
         }
-        final GroupedStackedBarRenderer renderer2 = new GroupedStackedBarRenderer();
+        final StackedBarRenderer renderer2 = new StackedBarRenderer();
         renderer2.setShadowVisible(false);
         Paint[] paint = new Paint[]{
             new Color(98, 203, 49),
@@ -4544,6 +4555,34 @@ public class CustomReportDesigner {
             this.fieldName = fieldName;
             this.displayName = displayName;
         }
+    }
+
+    public class GroupField {
+
+        public String fieldName;
+        public String displayName;
+
+        public GroupField(String fieldName, String displayName) {
+            this.fieldName = fieldName;
+            this.displayName = displayName;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        public void setFieldName(String fieldName) {
+            this.fieldName = fieldName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        } 
+        
     }
 
     public static class PageNumeration extends PdfPageEventHelper {
