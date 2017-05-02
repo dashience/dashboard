@@ -108,7 +108,8 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     };
 
     $scope.saveReportData = function () {
-        if (0 == $stateParams.reportId) {alert($stateParams.reportId)
+        if (0 == $stateParams.reportId) {
+            alert($stateParams.reportId)
             $scope.selectReportId = "";
         } else {
             $scope.selectReportId = $stateParams.reportId;
@@ -125,7 +126,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         });
     };
 
-   $scope.expandWidget = function (widget) {
+    $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
         if (widget.width == 3) {
@@ -197,7 +198,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
 
     }
 
-$scope.setLineChartFn = function (lineFn) {
+    $scope.setLineChartFn = function (lineFn) {
         $scope.directiveLineFn = lineFn;
     };
     $scope.setAreaChartFn = function (areaFn) {

@@ -175,8 +175,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.showReportEmptyMessage = true;
                 $scope.reportEmptyMessage = "No Data Found"
             }
-        })
-    }
+        });
+    };
 
     $scope.setLineChartFn = function (lineFn) {
         $scope.directiveLineFn = lineFn;

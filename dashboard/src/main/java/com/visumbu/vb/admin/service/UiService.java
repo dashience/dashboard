@@ -210,6 +210,7 @@ public class UiService {
         tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
         tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
         tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
+        tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
         uiDao.deleteWidgetColumns(tabWidget.getId());
