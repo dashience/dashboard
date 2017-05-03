@@ -418,6 +418,7 @@ public class UiService {
             widgetColumn.setAlignment(widgetColumnBean.getAlignment());
             widgetColumn.setFieldType(widgetColumnBean.getFieldType());
             widgetColumn.setGroupField(widgetColumnBean.getGroupField());
+            widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
 //                widgetColumn.setWidgetId(tabWidget);
             Integer columnHide = null;
             if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
