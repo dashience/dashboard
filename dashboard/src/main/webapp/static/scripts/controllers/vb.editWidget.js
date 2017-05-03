@@ -26,7 +26,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
                 $scope.buildQuery = value.queryFilter;
-            })
+            });
         } else {
             $scope.editWidgetData.push({width: 12, columns: []})
         }
@@ -426,7 +426,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }
         var chartType = widget;
         $timeout(function () {
-            $scope.previewChart(chartType, widget)
+            $scope.previewChart(chartType, widget);
         }, 50);
     };
 

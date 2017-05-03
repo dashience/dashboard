@@ -79,6 +79,13 @@ public class TagController {
         return tagService.deleteWidgetTag(widgetTagId);
     }
     
+    
+    @RequestMapping(value = "selectedTag", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    WidgetTag selectWidgetTag(HttpServletRequest request, HttpServletResponse response, @RequestBody TagWidgetBean tagWidgetBean) {
+        return tagService.selectWidgetTag(tagWidgetBean);
+    }
+    
 //    @RequestMapping(value = "widgetTag/{widgetTagId}", method = RequestMethod.DELETE, produces = "application/json")
 //    public @ResponseBody
 //    WidgetTag deleteWidgetTag(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetTagId) {

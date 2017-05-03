@@ -1,12 +1,23 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
 
+    $scope.widgets = []
     $scope.dragEnabled = true;
-
     $scope.toggleDragging = function () {
         $scope.dragEnabled = !$scope.dragEnabled;
     };
 
+    $http.get("admin/report/reportWidget").success(function (response) {
+        $scope.reportWidgets = response;
+    });
 
+    $http.get('admin/report/getReport').success(function (response) {
+        $scope.reportList = response;
+    });
+
+    $scope.tags = [];
+    $http.get('admin/tag').success(function (response) {
+        $scope.tags = response;
+    });
 
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
@@ -37,7 +48,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $stateParams.tabId = 0;
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            $scope.widgets = response;
+            var widgetItems = [];
+            widgetItems = response;
+            widgetItems.forEach(function (value, key) {
+                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
+                    console.log(response)
+                    if (response.length == 0) {
+                        var tagsList = $scope.tags[0]
+                        tagsList.status = 'InActive';
+                        value.tags = tagsList;
+                    }
+                    response.forEach(function (val, k) {
+                        if (value.id == val.widgetId.id) {
+                            val.tagId.status = val.status ? val.status : 'InActive';
+                            value.tags = val.tagId;
+                        }
+                    });
+                });
+            });
+            $scope.widgets = widgetItems;
         });
     }
     getWidgetItem();
@@ -78,14 +107,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         return list;
     };
 
-    $http.get("admin/report/reportWidget").success(function (response) {
-        $scope.reportWidgets = response;
-    });
-
-    $http.get('admin/report/getReport').success(function (response) {
-        $scope.reportList = response;
-    });
-
     $scope.addWidgetToReport = function (widget) {
         var data = {};
         data.widgetId = widget.id;
@@ -107,17 +128,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.favourites = false;
 
-    $scope.favouritesNew = function (favourites) {
-        if (favourites == "true")
-        {
-            alert(favourites);
+    $scope.favouritesNew = function (favourites, widget) {
+        if (favourites === true) {
+            widget.tags.status = "Active";
         } else {
-            alert(favourites);
+            widget.tags.status = "InActive";
         }
-        // alert(favourites);
-
-        // console.log($scope.favourites);
-    }
+        var tagData = {
+            tagName: widget.tags.tagName,
+            widgetId: widget.id,
+            status: widget.tags.status
+        }
+        $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData});
+    };
 
 
     $scope.goReport = function () {
@@ -340,8 +363,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 ' <span ng-bind-html="grouping._key"></span>' +
                 '</td>' +
                 '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
-                '<div class="text-{{col.alignment}}">'+
-                '<span ng-if="col.displayFormat != \'starRating\'" ng-bind-html="format(col, grouping[col.fieldName])"></span>'+
+                '<div class="text-{{col.alignment}}">' +
+                '<span ng-if="col.displayFormat != \'starRating\'" ng-bind-html="format(col, grouping[col.fieldName])"></span>' +
                 '<span ng-if="col.displayFormat == \'starRating\'" class="stars alignright">' +
                 '<span ng-style="{\'width\': getStars(grouping[col.fieldName])}"></span>' +
                 '</div>' +
@@ -488,7 +511,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return value;
             };
-            
+
             scope.getStars = function (rating) {
 //                console.log(rating);
                 // Get the value
@@ -1207,65 +1230,65 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                         }
                                     }
                                 });
-                            // chartData = scope.orderData(chartData, sortFields);
-                        }
-                        if (chartMaxRecord.maxRecord > 0) {
-                            chartData = chartData.slice(0, chartMaxRecord.maxRecord);
-                        }
-                        xTicks = [xAxis.fieldName];
-                        xData = chartData.map(function (a) {
-                            xTicks.push(loopCount);
-                            loopCount++;
-                            return a[xAxis.fieldName];
-                        });
-                        columns.push(xTicks);
-
-                        angular.forEach(yAxis, function (value, key) {
-                            ySeriesData = chartData.map(function (a) {
-                                return a[value.fieldName] || "0";
-                            });
-                            ySeriesData.unshift(value.displayName);
-                            columns.push(ySeriesData);
-                        });
-
-                        angular.forEach(combinationTypes, function (value, key) {
-                            chartCombinationtypes[[value.fieldName]] = value.combinationType;
-                        });
-
-                        var chart = c3.generate({
-                            bindto: element[0],
-                            data: {
-                                x: xAxis.fieldName,
-                                columns: columns,
-                                labels: labels,
-                                axes: axes,
-                                types: chartCombinationtypes
-                            },
-                            color: {
-                                pattern: ['#62cb31', '#555555']
-
-                            },
-                            tooltip: {show: false},
-                            axis: {
-                                x: {
-                                    tick: {
-                                        format: function (x) {
-                                            return xData[x];
-                                        }
-                                    }
-                                },
-                                y2: y2
-                            },
-                            grid: {
-                                x: {
-                                    show: false
-                                },
-                                y: {
-                                    show: false
-                                }
+                                // chartData = scope.orderData(chartData, sortFields);
                             }
-                        });
-                    }
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
+                            }
+                            xTicks = [xAxis.fieldName];
+                            xData = chartData.map(function (a) {
+                                xTicks.push(loopCount);
+                                loopCount++;
+                                return a[xAxis.fieldName];
+                            });
+                            columns.push(xTicks);
+
+                            angular.forEach(yAxis, function (value, key) {
+                                ySeriesData = chartData.map(function (a) {
+                                    return a[value.fieldName] || "0";
+                                });
+                                ySeriesData.unshift(value.displayName);
+                                columns.push(ySeriesData);
+                            });
+
+                            angular.forEach(combinationTypes, function (value, key) {
+                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                            });
+
+                            var chart = c3.generate({
+                                bindto: element[0],
+                                data: {
+                                    x: xAxis.fieldName,
+                                    columns: columns,
+                                    labels: labels,
+                                    axes: axes,
+                                    types: chartCombinationtypes
+                                },
+                                color: {
+                                    pattern: ['#62cb31', '#555555']
+
+                                },
+                                tooltip: {show: false},
+                                axis: {
+                                    x: {
+                                        tick: {
+                                            format: function (x) {
+                                                return xData[x];
+                                            }
+                                        }
+                                    },
+                                    y2: y2
+                                },
+                                grid: {
+                                    x: {
+                                        show: false
+                                    },
+                                    y: {
+                                        show: false
+                                    }
+                                }
+                            });
+                        }
                     });
                 }
                 scope.setLineChartFn({lineFn: scope.refreshLineChart});
