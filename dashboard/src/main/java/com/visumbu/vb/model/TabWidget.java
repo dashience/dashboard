@@ -41,6 +41,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "TabWidget.findAll", query = "SELECT t FROM TabWidget t")
     , @NamedQuery(name = "TabWidget.findById", query = "SELECT t FROM TabWidget t WHERE t.id = :id")
+        , @NamedQuery(name = "TabWidget.findByTabId", query = "SELECT count(t.id) FROM TabWidget t WHERE t.tabId.id = :tabId")
     , @NamedQuery(name = "TabWidget.findByChartType", query = "SELECT t FROM TabWidget t WHERE t.chartType = :chartType")
     , @NamedQuery(name = "TabWidget.findByClosable", query = "SELECT t FROM TabWidget t WHERE t.closable = :closable")
     , @NamedQuery(name = "TabWidget.findByCol", query = "SELECT t FROM TabWidget t WHERE t.col = :col")

@@ -7,7 +7,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 //    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
     $scope.weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-    $http.get("admin/ui/report").success(function (response) {
+    $http.get("admin/report/getReport").success(function (response) {
         $scope.reports = response;
     });
     $scope.accounts = [];
@@ -88,6 +88,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             lastExecutionStatus: response.lastExecutionStatus,
             status: response.status
         };
+        console.log($scope.scheduler);
     });
 
     $scope.addNewScheduler = function () {
@@ -116,6 +117,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     }
 
     $scope.selectDuration = function (dateRangeName, scheduler) {
+        console.log(scheduler);
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
         if (dateRangeName == 'Last N Days') {
@@ -161,8 +163,10 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $scope.scheduler.lastNmonths = "";
             $scope.scheduler.lastNyears = "";
         }
+        console.log(scheduler)
     }
     $scope.saveScheduler = function (scheduler) {
+        console.log(scheduler);
         try {
             $scope.customStartDate = moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -173,6 +177,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         if (scheduler.schedulerRepeatType === "Now") {
             scheduler.schedulerNow = new Date();
             scheduler.schedulerTime = null;
+            scheduler.startDate = null;
+            scheduler.endDate = null;
             scheduler.schedulerWeekly = null;
             scheduler.schedulerMonthly = null;
             scheduler.schedulerYearly = null;
@@ -241,6 +247,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         });
         $scope.scheduler = "";
     };
+
     $timeout(function () {
         $(function () {
             //Initialize Select2 Elements
@@ -259,12 +266,25 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $('#customDateRange').daterangepicker(
                     {
                         ranges: {
-//                        'Today': [moment(), moment()],
-//                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-//                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-//                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'Today': [moment(), moment()],
+                            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                            'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
+                            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+//                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                            'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
+//                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
                             'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                            'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                            'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+//                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+//                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                         },
                         startDate: $scope.scheduler.customStartDate ? $scope.scheduler.customStartDate : moment().subtract(29, 'days'),
                         endDate: $scope.scheduler.customEndDate ? $scope.scheduler.customEndDate : moment(),
@@ -300,6 +320,48 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             //Timepicker
             $(".timepicker").timepicker({
                 showInputs: false
+            });
+
+            //picker code added 
+
+            $(".ranges ul").find("li").addClass("custom-picker");
+            $(".drop").click(function (e) {
+                e.stopPropagation();
+                $(".scheduler-list-style").not($(this).next()).hide();
+                $(this).next().toggle();
+            });
+
+            $(".scheduler-list-style").find("li").click(function (e) {
+                e.stopPropagation();
+            });
+
+
+            $(document).click(function (e) {
+                console.log(e.target.className);
+                var selectedElement = e.target.className;
+                if (selectedElement != 'fa fa-chevron-left glyphicon glyphicon-chevron-left' &&
+                        selectedElement != 'prev available' && selectedElement != 'next available' &&
+                        selectedElement != 'input-mini form-control active' &&
+                        selectedElement != 'daterangepicker_input' && selectedElement != 'calendar-table' &&
+                        selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar' &&
+                        selectedElement != 'fa fa-chevron-right glyphicon glyphicon-chevron-right' &&
+                        selectedElement != "custom-picker" && selectedElement != 'month' &&
+                        selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar')
+                {
+                    console.log("1");
+                    $(".scheduler-list-style").hide();
+                }
+            });
+
+            $(".applyBtn").click(function (e) {
+                console.log("apply buton click event");
+                console.log($scope.selectedRow)
+                try {
+                    $scope.customStartDate = moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    $scope.customEndDate = moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                } catch (e) {
+
+                }
             });
         });
     }, 50);

@@ -70,6 +70,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
 
+    $scope.widgetDuplicate = function (widgetData) {
+        console.log(widgetData);
+        console.log(widgetData.widgetId + " : " + widgetData.tabId);
+        $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
+            console.log(response);
+            $scope.widgets.push(response);
+        });
+    }
+
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();
     };
@@ -190,8 +199,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setPieChartFn = function (pieFn) {
         $scope.directivePieFn = pieFn;
     };
-    $scope.setStackedBarChartFn = function (stackedBarFn) {
-        $scope.directiveStackedBarChartFn = stackedBarFn;
+    $scope.setStackedChartFn = function (stackedBarChartFn) {
+        $scope.directiveStackedBarChartFn = stackedBarChartFn;
     };
     $scope.setTableChartFn = function (tableFn) {
         $scope.directiveTableFn = tableFn;
@@ -340,8 +349,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 ' <span ng-bind-html="grouping._key"></span>' +
                 '</td>' +
                 '<td ng-repeat="col in columns" style="width: {{col.width}}%" ng-if="col.columnHide == null">' +
-                '<div class="text-{{col.alignment}}">'+
-                '<span ng-if="col.displayFormat != \'starRating\'" ng-bind-html="format(col, grouping[col.fieldName])"></span>'+
+                '<div class="text-{{col.alignment}}">' +
+                '<span ng-if="col.displayFormat != \'starRating\'" ng-bind-html="format(col, grouping[col.fieldName])"></span>' +
                 '<span ng-if="col.displayFormat == \'starRating\'" class="stars alignright">' +
                 '<span ng-style="{\'width\': getStars(grouping[col.fieldName])}"></span>' +
                 '</div>' +
@@ -488,7 +497,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return value;
             };
-            
+
             scope.getStars = function (rating) {
 //                console.log(rating);
                 // Get the value
@@ -1207,65 +1216,65 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                         }
                                     }
                                 });
-                            // chartData = scope.orderData(chartData, sortFields);
-                        }
-                        if (chartMaxRecord.maxRecord > 0) {
-                            chartData = chartData.slice(0, chartMaxRecord.maxRecord);
-                        }
-                        xTicks = [xAxis.fieldName];
-                        xData = chartData.map(function (a) {
-                            xTicks.push(loopCount);
-                            loopCount++;
-                            return a[xAxis.fieldName];
-                        });
-                        columns.push(xTicks);
-
-                        angular.forEach(yAxis, function (value, key) {
-                            ySeriesData = chartData.map(function (a) {
-                                return a[value.fieldName] || "0";
-                            });
-                            ySeriesData.unshift(value.displayName);
-                            columns.push(ySeriesData);
-                        });
-
-                        angular.forEach(combinationTypes, function (value, key) {
-                            chartCombinationtypes[[value.fieldName]] = value.combinationType;
-                        });
-
-                        var chart = c3.generate({
-                            bindto: element[0],
-                            data: {
-                                x: xAxis.fieldName,
-                                columns: columns,
-                                labels: labels,
-                                axes: axes,
-                                types: chartCombinationtypes
-                            },
-                            color: {
-                                pattern: ['#62cb31', '#555555']
-
-                            },
-                            tooltip: {show: false},
-                            axis: {
-                                x: {
-                                    tick: {
-                                        format: function (x) {
-                                            return xData[x];
-                                        }
-                                    }
-                                },
-                                y2: y2
-                            },
-                            grid: {
-                                x: {
-                                    show: false
-                                },
-                                y: {
-                                    show: false
-                                }
+                                // chartData = scope.orderData(chartData, sortFields);
                             }
-                        });
-                    }
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
+                            }
+                            xTicks = [xAxis.fieldName];
+                            xData = chartData.map(function (a) {
+                                xTicks.push(loopCount);
+                                loopCount++;
+                                return a[xAxis.fieldName];
+                            });
+                            columns.push(xTicks);
+
+                            angular.forEach(yAxis, function (value, key) {
+                                ySeriesData = chartData.map(function (a) {
+                                    return a[value.fieldName] || "0";
+                                });
+                                ySeriesData.unshift(value.displayName);
+                                columns.push(ySeriesData);
+                            });
+
+                            angular.forEach(combinationTypes, function (value, key) {
+                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                            });
+
+                            var chart = c3.generate({
+                                bindto: element[0],
+                                data: {
+                                    x: xAxis.fieldName,
+                                    columns: columns,
+                                    labels: labels,
+                                    axes: axes,
+                                    types: chartCombinationtypes
+                                },
+                                color: {
+                                    pattern: ['#62cb31', '#555555']
+
+                                },
+                                tooltip: {show: false},
+                                axis: {
+                                    x: {
+                                        tick: {
+                                            format: function (x) {
+                                                return xData[x];
+                                            }
+                                        }
+                                    },
+                                    y2: y2
+                                },
+                                grid: {
+                                    x: {
+                                        show: false
+                                    },
+                                    y: {
+                                        show: false
+                                    }
+                                }
+                            });
+                        }
                     });
                 }
                 scope.setLineChartFn({lineFn: scope.refreshLineChart});
@@ -1835,7 +1844,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                         }
                     });
                 }
-                scope.setPieChartFn({pieFn: scope.refreshPieChart});
+                scope.setPieChartFn({pieChartFn: scope.refreshPieChart});
                 scope.refreshPieChart();
             }
         }
@@ -2111,7 +2120,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                         }
                     });
                 }
-                scope.setAreaChartFn({areaFn: scope.refreshAreaChart});
+                scope.setAreaChartFn({areaChartFn: scope.refreshAreaChart});
                 scope.refreshAreaChart();
             }
         }
@@ -2591,4 +2600,3 @@ app.service('stats', function ($filter) {
     };
     return service;
 });
-

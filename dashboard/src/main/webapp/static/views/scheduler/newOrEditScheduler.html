@@ -89,25 +89,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label>Start Date</label>
-                                    <div>
-                                        <input type="text" jqdatepicker placeholder="Start Date" ng-model="scheduler.startDate" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <label>End Date</label>
-                                    <div>
-                                        <input type="text" jqdatepicker placeholder="End Date" ng-model="scheduler.endDate" class="form-control">
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="form-group">
+                             <div class="form-group">
                                 <div class="col-md-12">
                                     <label>Repeat</label>
                                     <div>
@@ -116,7 +98,7 @@
                                 </div>
                             </div>
                             <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly'">
-                            <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
+                                <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
                                 <div class="col-md-12">
 
                                     <label >Select Week</label>
@@ -126,7 +108,7 @@
                                 </div>
                             </div>
                             <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
-                            <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
+                                <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
                                 <div class="col-md-12">
                                     <label >Time</label>
                                     <div>
@@ -142,27 +124,46 @@
                                     </div>
                                 </div>
                             </div>
-<!--                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
+                            <div class="form-group" ng-if="scheduler.schedulerRepeatType !== 'Now'">
                                 <div class="col-md-12">
-                                    <label>Select Month, Date And Time</label>
+                                    <label>Start Date</label>
                                     <div>
-                                        <input type="text" jqdatetimepicker placeholder="Select Month, Date And Time" ng-model="scheduler.schedulerYearly" class="form-control">
+                                        <input type="text" jqdatepicker placeholder="Start Date" ng-model="scheduler.startDate" class="form-control">
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Year Of Week'">
+                            <div class="form-group" ng-if="scheduler.schedulerRepeatType !== 'Now'">
                                 <div class="col-md-12">
-                                    <label>Year Of Week</label>
+                                    <label>End Date</label>
                                     <div>
-                                        <ui-select ng-model="scheduler.schedulerYearOfWeek" theme="select2" ng-disabled="disabled" style="width:150px">
-                                            <ui-select-match placeholder="Select Year Of Week...">{{$select.selected}}</ui-select-match>
-                                            <ui-select-choices repeat="totalYearOfWeek in totalYearOfWeeks | filter: $select.search">
-                                                <span ng-bind-html="totalYearOfWeek | highlight: $select.search"></span>
-                                            </ui-select-choices>
-                                        </ui-select>
+                                        <input type="text" jqdatepicker placeholder="End Date" ng-disabled ng-model="scheduler.endDate" class="form-control">
                                     </div>
+
                                 </div>
-                            </div>-->
+                            </div>
+
+                           
+                            <!--                            <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
+                                                            <div class="col-md-12">
+                                                                <label>Select Month, Date And Time</label>
+                                                                <div>
+                                                                    <input type="text" jqdatetimepicker placeholder="Select Month, Date And Time" ng-model="scheduler.schedulerYearly" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Year Of Week'">
+                                                            <div class="col-md-12">
+                                                                <label>Year Of Week</label>
+                                                                <div>
+                                                                    <ui-select ng-model="scheduler.schedulerYearOfWeek" theme="select2" ng-disabled="disabled" style="width:150px">
+                                                                        <ui-select-match placeholder="Select Year Of Week...">{{$select.selected}}</ui-select-match>
+                                                                        <ui-select-choices repeat="totalYearOfWeek in totalYearOfWeeks | filter: $select.search">
+                                                                            <span ng-bind-html="totalYearOfWeek | highlight: $select.search"></span>
+                                                                        </ui-select-choices>
+                                                                    </ui-select>
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
 
 
                         </div>
@@ -213,19 +214,31 @@
                                 <div class="col-md-6">
                                     <label>Date Range</label>
                                     <div>
-                                        <div class="dropdown">
-                                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
+                                        <div>
+                                            <button class="drop btn btn-default" type="button">
+                                               {{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
                                                 <span class="caret"></span></button>
                                             <ul class="dropdown-menu scheduler-list-style">
-                                                <li ng-click="selectDuration('None', null)"><a>None</a></li>
-                                                <li ng-click="selectDuration('Today', null)"><a>Today</a></li>
+                                                <li ng-click="selectDuration('Custom', scheduler)" >
+<!--                                                    <a>Custom</a>-->
+                                                    <div class="col-md-12 custom-picker">
+                                                        <!--                                                        <label>Custom Range</label>-->
+                                                        <a class="pull-right custom-daterange-box" id="customDateRange">
+                                                            <span class="date-border">
+                                                                {{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}} 
+                                                                <i class="custom-daterange-box-icon fa fa-caret-down"></i>
+                                                            </span>
+                                                        </a> 
+                                                    </div>
+                                                </li>
+<!--                                            <li ng-click="selectDuration('Today', null)"><a>Today</a></li>
                                                 <li ng-click="selectDuration('Yesterday', null)"><a>Yesterday</a></li>
                                                 <li ng-click="selectDuration('This Week', null)"><a>This Week</a></li>
                                                 <li ng-click="selectDuration('Last Week', null)"><a>Last Week</a></li>
                                                 <li ng-click="selectDuration('This Month', null)"><a>This Month</a></li>
                                                 <li ng-click="selectDuration('Last Month', null)"><a>Last Month</a></li>
                                                 <li ng-click="selectDuration('This Year', null)"><a>This Year</a></li>
-                                                <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>
+                                                <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>-->
                                                 <li ng-click="selectDuration('Last N Days', scheduler)">
                                                     <a>Last <input type="text"
                                                                    ng-model="scheduler.lastNdays" 
@@ -266,26 +279,25 @@
                                                         Years
                                                     </a>
                                                 </li>
-                                                <li ng-click="selectDuration('Custom')"><a>Custom</a></li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group" ng-show="scheduler.dateRangeName === 'Custom'">
-                                <div class="col-md-12">
-                                    <label>Custom Range</label>
-                                    <div>
-                                        <a class="pull-right custom-daterange-box" id="customDateRange">
-                                            <span class="date-border">
-                                                {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                                                <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
-                                            </span>
-                                        </a> 
-                                    </div>
-                                </div>
-                            </div>
+                            <!--                            <div class="form-group" ng-show="scheduler.dateRangeName === 'Custom'">
+                                                            <div class="col-md-12">
+                                                                <label>Custom Range</label>
+                                                                <div>
+                                                                    <a class="pull-right custom-daterange-box" id="customDateRange">
+                                                                        <span class="date-border">
+                                                                            {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                                                            <i class="custom-daterange-box-icon fa fa-caret-down"></i>
+                                                                        </span>
+                                                                    </a> 
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <label>Email Ids</label>
@@ -322,15 +334,15 @@
 
                                         </div>
                                     </div>
-<!--                                    <div class="col-sm-2">
-                                        <label class="scheduler-checkBox-label">
-                                            <span>XLS</span>
-                                        </label>
-                                        <div>
-                                            <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'xls'" ng-true-value="'xls'" ng-model="scheduler.schedulerType" /> 
-
-                                        </div>
-                                    </div>-->
+                                    <!--                                    <div class="col-sm-2">
+                                                                            <label class="scheduler-checkBox-label">
+                                                                                <span>XLS</span>
+                                                                            </label>
+                                                                            <div>
+                                                                                <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'xls'" ng-true-value="'xls'" ng-model="scheduler.schedulerType" /> 
+                                    
+                                                                            </div>
+                                                                        </div>-->
 
                                 </div>
                             </div>

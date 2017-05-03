@@ -110,6 +110,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.renderer.category.AreaRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
 import org.jfree.util.SortOrder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Node;
@@ -1708,6 +1709,43 @@ public class CustomReportDesigner {
                     pic.setAnchor(new java.awt.Rectangle(30, 55, 640, 480));
                     chart_out.close();
 
+                } else if (tabWidget.getChartType().equalsIgnoreCase("stackedbar")) {
+
+                    JFreeChart stackedBarChart = multiAxisStackedBarJFreeChart(tabWidget);
+                    float quality = 1;
+
+                    //creating a slide with title and content layout
+                    XSLFSlide slide = ppt.createSlide();
+
+                    //selection of title place holder
+                    XSLFTextBox txt = slide.createTextBox();
+                    if (tabWidget.getWidgetTitle() != null) {
+                        txt.setText(tabWidget.getWidgetTitle());
+                    } else {
+                        txt.setText("");
+                    }
+
+                    txt.setTextDirection(TextShape.TextDirection.HORIZONTAL);
+                    txt.setAnchor(new java.awt.Rectangle(30, 30, 300, 50));
+
+                    XSLFTextParagraph tp = txt.getTextParagraphs().get(0);
+                    tp.setTextAlign(TextAlign.LEFT);
+                    XSLFTextRun run = tp.getTextRuns().get(0);
+
+                    run.setBold(true);
+                    run.setFontSize(13.0);
+                    run.setFontColor(tableTitleFontColor);
+
+                    ByteArrayOutputStream chart_out = new ByteArrayOutputStream();
+                    ChartUtilities.writeChartAsJPEG(chart_out, quality, stackedBarChart, 640, 480);
+
+                    XSLFPictureData idx = ppt.addPicture(chart_out.toByteArray(), org.apache.poi.sl.usermodel.PictureData.PictureType.JPEG);
+
+                    //creating a slide with given picture on it
+                    XSLFPictureShape pic = slide.createPicture(idx);
+                    pic.setAnchor(new java.awt.Rectangle(30, 55, 640, 480));
+                    chart_out.close();
+
                 } else if (tabWidget.getChartType().equalsIgnoreCase("area")) {
 
                     JFreeChart areaChart = multiAxisAreaJFreeChart(tabWidget);
@@ -2130,6 +2168,44 @@ public class CustomReportDesigner {
                     Image barChart = multiAxisBarChart(writer, tabWidget);
                     if (barChart != null) {
                         PdfPCell chartCell = new PdfPCell(barChart);
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    } else {
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
+                    }
+
+                } else if (tabWidget.getChartType().equalsIgnoreCase("stackedbar")) {
+                    //document.add(multiAxisBarChart(writer, tabWidget));
+                    PdfPTable table = new PdfPTable(1);
+                    PdfPCell cell;
+                    table.setWidthPercentage(100f);
+                    pdfFontTitle.setSize(14);
+                    pdfFontTitle.setStyle(Font.BOLD);
+                    pdfFontTitle.setColor(tableTitleFontColor);
+                    cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+                    cell.setFixedHeight(30);
+                    cell.setBorderColor(widgetBorderColor);
+                    cell.setBackgroundColor(widgetTitleColor);
+                    cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                    cell.setColspan(1);
+                    cell.setPaddingTop(5);
+                    cell.setPaddingLeft(10);
+                    table.addCell(cell);
+                    System.out.println("StackedBar Writer: " + writer);
+                    System.out.println("StackedBar Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("StackedBar Tab Widget DataSource: " + tabWidget.getDatasource());
+
+                    Image stackedBarChart = multiAxisStackedBarChart(writer, tabWidget);
+                    if (stackedBarChart != null) {
+                        PdfPCell chartCell = new PdfPCell(stackedBarChart);
                         chartCell.setBorderColor(widgetBorderColor);
                         chartCell.setPadding(10);
                         table.addCell(chartCell);
@@ -2683,15 +2759,14 @@ public class CustomReportDesigner {
 
             Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
             long firstAxisCount = firstAxiss.count();
-            System.out.println("firstAxisCount -----> "+firstAxisCount);
+            System.out.println("firstAxisCount -----> " + firstAxisCount);
 
             Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
             long secondAxisCount = secondAxiss.count();
-                        System.out.println("secondAxisCount ----> "+secondAxisCount);
-
+            System.out.println("secondAxisCount ----> " + secondAxisCount);
 
             long totalCount = firstAxisCount + secondAxisCount;
-            System.out.println("totalCount ----> "+totalCount);
+            System.out.println("totalCount ----> " + totalCount);
 
             final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
 
@@ -3007,6 +3082,379 @@ public class CustomReportDesigner {
         }
         System.out.println("End function of multiAxisBarChart");
         return null;
+    }
+
+    public Image multiAxisStackedBarChart(PdfWriter writer, TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisBarChart");
+        try {
+            List<WidgetColumn> columns = tabWidget.getColumns();
+
+            List<Map<String, Object>> originalData = tabWidget.getData();
+            if (originalData == null || originalData.isEmpty()) {
+                return null;
+            }
+            List<Map<String, Object>> data = new ArrayList<>(originalData);
+
+            List<Map<String, Object>> tempData = tabWidget.getData();
+
+            List<SortType> sortFields = new ArrayList<>();
+            List<Aggregation> aggreagtionList = new ArrayList<>();
+            List<FirstAxis> firstAxis = new ArrayList<>();
+            List<SecondAxis> secondAxis = new ArrayList<>();
+            List<GroupField> groupFields = new ArrayList<>();
+            String xAxis = null;
+            String xAxisDisplay = null;
+            String format = "";
+
+            for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+                WidgetColumn column = iterator.next();
+                if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                    System.out.println("SORT ORDER ======> " + column.getSortOrder());
+                    sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+                }
+                if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
+                    aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+                }
+                if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
+                    firstAxis.add(new FirstAxis(column.getFieldName(), column.getDisplayName()));
+                }
+                if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) > 1) {
+                    secondAxis.add(new SecondAxis(column.getFieldName(), column.getDisplayName()));
+                }
+                if (column.getxAxis() != null) {
+                    xAxis = column.getFieldName();
+                    xAxisDisplay = column.getDisplayName();
+                    System.out.println("XAxisDisplay: " + xAxisDisplay);
+                }
+                if (column.getDisplayFormat() != null) {
+                    format = column.getDisplayFormat();
+                }
+                if (column.getGroupField() != null) {
+                    groupFields.add(new GroupField(column.getFieldName(), column.getDisplayName()));
+                }
+            }
+            
+            for(Iterator<GroupField> groupField = groupFields.iterator(); groupField.hasNext();){
+                GroupField groupFieldName = groupField.next();
+                System.out.println("GroupField Display Names -----> "+groupFieldName.getDisplayName());
+                System.out.println("GroupField Field Names -----> "+groupFieldName.getFieldName());
+            }
+            
+            System.out.println("sortFields size: " + sortFields.size());
+
+            if (sortFields.size() > 0) {
+                data = sortData(data, sortFields);
+            }
+
+            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+                data = data.subList(0, tabWidget.getMaxRecord());
+            }
+
+            System.out.println("FirstAxis: " + firstAxis);
+            System.out.println("SecondAxis: " + secondAxis.size());
+//            final CategoryDataset dataset1 = createDataset3();
+//            final CategoryDataset dataset2 = createDataset4();
+            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+            long firstAxisCount = firstAxiss.count();
+
+            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+            long secondAxisCount = secondAxiss.count();
+
+            long totalCount = firstAxisCount + secondAxisCount;
+            final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
+            CategoryDataset dataset2 = null;
+            if (secondAxis.size() != 0) {
+                System.out.println("inside if...");
+                dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+            }
+            System.out.println("Dataset1 bar data: " + data);
+            System.out.println("Dataset1 bar first Axis: " + firstAxis);
+            System.out.println("Dataset1 bar Second Axis: " + secondAxis);
+            System.out.println("Dataset1 bar X Axis: " + xAxis);
+
+            final CategoryAxis domainAxis = new CategoryAxis();
+            //final NumberAxis rangeAxis = new NumberAxis("Value");
+            final NumberAxis rangeAxis = new NumberAxis();
+            final StackedBarRenderer renderer1 = new StackedBarRenderer();
+            final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
+
+                /**
+                 * Override the getLegendItems() method to handle special case.
+                 *
+                 * @return the legend items.
+                 */
+                public LegendItemCollection getLegendItems() {
+
+                    final LegendItemCollection result = new LegendItemCollection();
+
+                    if (firstAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset data = getDataset();
+                        if (data != null) {
+                            final CategoryItemRenderer r = getRenderer();
+                            r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            r.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_CENTER);
+                            r.setBasePositiveItemLabelPosition(position);
+                            if (r != null) {
+                                for (long i = 0; i < firstAxisCount; i++) {
+                                    final LegendItem item = r.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
+                            }
+                        }
+                    }
+
+                    // the JDK 1.2.2 compiler complained about the name of this
+                    // variable 
+                    if (secondAxis.isEmpty()) {
+                    } else {
+                        final CategoryDataset dset2 = getDataset(1);
+                        if (dset2 != null) {
+                            System.out.println("dset2");
+                            final CategoryItemRenderer renderer2 = getRenderer(1);
+                            renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                            renderer2.setBaseItemLabelsVisible(true);
+                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                    TextAnchor.BASELINE_CENTER);
+                            renderer2.setBasePositiveItemLabelPosition(position);
+                            if (renderer2 != null) {
+                                for (long i = firstAxisCount; i < totalCount; i++) {
+                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                    result.add(item);
+                                }
+                            }
+                        }
+                    }
+                    return result;
+                }
+
+            };
+            plot.setRangeGridlinesVisible(true);
+            plot.setDomainGridlinesVisible(true);
+            plot.setOrientation(PlotOrientation.VERTICAL);
+            // final JFreeChart chart = new JFreeChart(tabWidget.getWidgetTitle(), plot);
+            final JFreeChart chart = new JFreeChart(plot);
+            CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
+            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+            chart.setBackgroundPaint(Color.white);
+            plot.setBackgroundPaint(Color.white);
+            plot.setRowRenderingOrder(SortOrder.ASCENDING);
+            plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+            if (dataset2 != null) {
+                System.out.println("inside if dataset2...");
+                plot.setDataset(1, dataset2);
+                plot.mapDatasetToRangeAxis(1, 1);
+                final ValueAxis axis2 = new NumberAxis();
+                plot.setRangeAxis(1, axis2);
+                plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+            }
+
+            final StackedBarRenderer renderer2 = new StackedBarRenderer();
+            renderer2.setShadowVisible(false);
+            Paint[] paint = new Paint[]{
+                new Color(98, 203, 49),
+                new Color(85, 85, 85),
+                new Color(161, 225, 132),
+                new Color(102, 102, 102)
+            };
+            int j = 0;
+            for (long i = 0; i < totalCount; i++) {
+                if (i == 4) {
+                    j = 0;
+                }
+                renderer2.setSeriesPaint((int) i, paint[j++]);
+                plot.setRenderer((int) i, renderer2);
+            }
+            plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+
+            // OPTIONAL CUSTOMISATION COMPLETED.
+            plot.setDrawingSupplier(new ChartDrawingSupplier());
+            PdfContentByte contentByte = writer.getDirectContent();
+
+            PdfTemplate templatePie = contentByte.createTemplate(widgetWidth, widgetHeight);
+            Graphics2D graphics2dPie = templatePie.createGraphics(widgetWidth, widgetHeight,
+                    new DefaultFontMapper());
+            Rectangle2D rectangle2dPie = new Rectangle2D.Double(0, 0, widgetWidth,
+                    widgetHeight);
+
+            chart.draw(graphics2dPie, rectangle2dPie);
+
+            graphics2dPie.dispose();
+
+            // contentByte.addTemplate(templatePie, 30, 30);
+            Image img = Image.getInstance(templatePie);
+            return img;
+        } catch (BadElementException ex) {
+            log.error("BadElementException in multiAxisStackedBarChart Function: " + ex);
+            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("End function of multiAxisStarkedBarChart");
+        return null;
+    }
+
+    public JFreeChart multiAxisStackedBarJFreeChart(TabWidget tabWidget) {
+        System.out.println("Start function of multiAxisBarJFreeChart");
+
+        List<WidgetColumn> columns = tabWidget.getColumns();
+
+        List<Map<String, Object>> originalData = tabWidget.getData();
+        List<Map<String, Object>> data = new ArrayList<>(originalData);
+
+        List<Map<String, Object>> tempData = tabWidget.getData();
+
+        List<SortType> sortFields = new ArrayList<>();
+        List<Aggregation> aggreagtionList = new ArrayList<>();
+        List<FirstAxis> firstAxis = new ArrayList<>();
+        List<SecondAxis> secondAxis = new ArrayList<>();
+        String xAxis = null;
+        String xAxisDisplay = null;
+
+        for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+            WidgetColumn column = iterator.next();
+            if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+                System.out.println("SORT ORDER ======> " + column.getSortOrder());
+                sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+            }
+            if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
+                aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+            }
+            if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
+                firstAxis.add(new FirstAxis(column.getFieldName(), column.getDisplayName()));
+            }
+            if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) > 1) {
+                secondAxis.add(new SecondAxis(column.getFieldName(), column.getDisplayName()));
+            }
+            if (column.getxAxis() != null) {
+                xAxis = column.getFieldName();
+                xAxisDisplay = column.getDisplayName();
+                System.out.println("XAxisDisplay: " + xAxisDisplay);
+            }
+        }
+        System.out.println("sortFields size: " + sortFields.size());
+
+        if (sortFields.size() > 0) {
+            data = sortData(data, sortFields);
+        }
+
+        if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            data = data.subList(0, tabWidget.getMaxRecord());
+        }
+
+        Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+        long firstAxisCount = firstAxiss.count();
+
+        Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+        long secondAxisCount = secondAxiss.count();
+
+        long totalCount = firstAxisCount + secondAxisCount;
+        final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
+        CategoryDataset dataset2 = null;
+        if (secondAxis.size() != 0) {
+            System.out.println("inside if...");
+            dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+        }
+
+        final CategoryAxis domainAxis = new CategoryAxis();
+        final NumberAxis rangeAxis = new NumberAxis();
+        final StackedBarRenderer renderer1 = new StackedBarRenderer();
+        final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
+
+            /**
+             * Override the getLegendItems() method to handle special case.
+             *
+             * @return the legend items.
+             */
+            public LegendItemCollection getLegendItems() {
+
+                final LegendItemCollection result = new LegendItemCollection();
+                if (firstAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset data = getDataset();
+                    if (data != null) {
+                        final CategoryItemRenderer r = getRenderer();
+                        r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        r.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_CENTER);
+                        r.setBasePositiveItemLabelPosition(position);
+                        if (r != null) {
+                            for (long i = 0; i < firstAxisCount; i++) {
+                                final LegendItem item = r.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
+                        }
+                    }
+                }
+
+                // the JDK 1.2.2 compiler complained about the name of this
+                // variable 
+                if (secondAxis.isEmpty()) {
+                } else {
+                    final CategoryDataset dset2 = getDataset(1);
+                    if (dset2 != null) {
+                        System.out.println("dset2");
+                        final CategoryItemRenderer renderer2 = getRenderer(1);
+                        renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+                        renderer2.setBaseItemLabelsVisible(true);
+                        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+                                TextAnchor.BASELINE_CENTER);
+                        renderer2.setBasePositiveItemLabelPosition(position);
+                        if (renderer2 != null) {
+                            for (long i = firstAxisCount; i < totalCount; i++) {
+                                final LegendItem item = renderer2.getLegendItem(0, (int) i);
+                                result.add(item);
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+
+        };
+        plot.setRangeGridlinesVisible(true);
+        plot.setDomainGridlinesVisible(true);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        final JFreeChart chart = new JFreeChart(plot);
+        CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
+        axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+        chart.setBackgroundPaint(Color.white);
+        plot.setBackgroundPaint(Color.white);
+        plot.setRowRenderingOrder(SortOrder.ASCENDING);
+        plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+        if (dataset2 != null) {
+            System.out.println("inside if dataset2...");
+            plot.setDataset(1, dataset2);
+            plot.mapDatasetToRangeAxis(1, 1);
+            final ValueAxis axis2 = new NumberAxis();
+            plot.setRangeAxis(1, axis2);
+            plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+        }
+        final StackedBarRenderer renderer2 = new StackedBarRenderer();
+        renderer2.setShadowVisible(false);
+        Paint[] paint = new Paint[]{
+            new Color(98, 203, 49),
+            new Color(85, 85, 85),
+            new Color(161, 225, 132),
+            new Color(102, 102, 102)
+        };
+        int j = 0;
+        for (long i = 0; i < totalCount; i++) {
+            if (i == 4) {
+                j = 0;
+            }
+            renderer2.setSeriesPaint((int) i, paint[j++]);
+            plot.setRenderer((int) i, renderer2);
+        }
+        plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+
+        // OPTIONAL CUSTOMISATION COMPLETED.
+        plot.setDrawingSupplier(new ChartDrawingSupplier());
+        System.out.println("End function of multiAxisStackedBarJFreeChart");
+
+        return chart;
+
     }
 
     public JFreeChart multiAxisAreaJFreeChart(TabWidget tabWidget) {
@@ -4107,6 +4555,34 @@ public class CustomReportDesigner {
             this.fieldName = fieldName;
             this.displayName = displayName;
         }
+    }
+
+    public class GroupField {
+
+        public String fieldName;
+        public String displayName;
+
+        public GroupField(String fieldName, String displayName) {
+            this.fieldName = fieldName;
+            this.displayName = displayName;
+        }
+
+        public String getFieldName() {
+            return fieldName;
+        }
+
+        public void setFieldName(String fieldName) {
+            this.fieldName = fieldName;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        } 
+        
     }
 
     public static class PageNumeration extends PdfPageEventHelper {

@@ -33,6 +33,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "WidgetColumn.findAll", query = "SELECT w FROM WidgetColumn w")
     , @NamedQuery(name = "WidgetColumn.findById", query = "SELECT w FROM WidgetColumn w WHERE w.id = :id")
+    , @NamedQuery(name = "WidgetColumn.findByWidgetId", query = "SELECT w FROM WidgetColumn w WHERE w.widgetId.id = :id")
     , @NamedQuery(name = "WidgetColumn.findByFieldName", query = "SELECT w FROM WidgetColumn w WHERE w.fieldName = :fieldName")
     , @NamedQuery(name = "WidgetColumn.findByWidget", query = "SELECT w FROM WidgetColumn w WHERE w.widgetId = :widget")
     , @NamedQuery(name = "WidgetColumn.findByDisplayName", query = "SELECT w FROM WidgetColumn w WHERE w.displayName = :displayName")
