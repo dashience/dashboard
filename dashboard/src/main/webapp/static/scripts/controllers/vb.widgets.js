@@ -2373,7 +2373,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31', '#666666', '#a5d169', '#75ccd0']
+                                    pattern: ['#555555', '#62cb31','#75ccd0','#666666', '#a5d169']
 
                                 },
                                 tooltip: {show: false},
