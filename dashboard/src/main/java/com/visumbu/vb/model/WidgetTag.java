@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -37,6 +38,9 @@ public class WidgetTag implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Size(max = 45)
+    @Column(name = "status")
+    private String status;
     @JoinColumn(name = "widget_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private TabWidget widgetId;
@@ -74,6 +78,14 @@ public class WidgetTag implements Serializable {
     public void setTagId(Tag tagId) {
         this.tagId = tagId;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }    
 
     @Override
     public int hashCode() {

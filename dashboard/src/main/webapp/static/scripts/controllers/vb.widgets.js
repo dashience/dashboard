@@ -1,12 +1,23 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
 
+    $scope.widgets = []
     $scope.dragEnabled = true;
-
     $scope.toggleDragging = function () {
         $scope.dragEnabled = !$scope.dragEnabled;
     };
 
+    $http.get("admin/report/reportWidget").success(function (response) {
+        $scope.reportWidgets = response;
+    });
 
+    $http.get('admin/report/getReport').success(function (response) {
+        $scope.reportList = response;
+    });
+
+    $scope.tags = [];
+    $http.get('admin/tag').success(function (response) {
+        $scope.tags = response;
+    });
 
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
@@ -37,7 +48,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $stateParams.tabId = 0;
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            $scope.widgets = response;
+            var widgetItems = [];
+            widgetItems = response;
+            widgetItems.forEach(function (value, key) {
+                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
+                    console.log(response)
+                    if (response.length == 0) {
+                        var tagsList = $scope.tags[0]
+                        tagsList.status = 'InActive';
+                        value.tags = tagsList;
+                    }
+                    response.forEach(function (val, k) {
+                        if (value.id == val.widgetId.id) {
+                            val.tagId.status = val.status ? val.status : 'InActive';
+                            value.tags = val.tagId;
+                        }
+                    });
+                });
+            });
+            $scope.widgets = widgetItems;
         });
     }
     getWidgetItem();
@@ -87,14 +116,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         return list;
     };
 
-    $http.get("admin/report/reportWidget").success(function (response) {
-        $scope.reportWidgets = response;
-    });
-
-    $http.get('admin/report/getReport').success(function (response) {
-        $scope.reportList = response;
-    });
-
     $scope.addWidgetToReport = function (widget) {
         var data = {};
         data.widgetId = widget.id;
@@ -116,17 +137,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.favourites = false;
 
-    $scope.favouritesNew = function (favourites) {
-        if (favourites == "true")
-        {
-            alert(favourites);
+    $scope.favouritesNew = function (favourites, widget) {
+        if (favourites === true) {
+            widget.tags.status = "Active";
         } else {
-            alert(favourites);
+            widget.tags.status = "InActive";
         }
-        // alert(favourites);
-
-        // console.log($scope.favourites);
-    }
+        var tagData = {
+            tagName: widget.tags.tagName,
+            widgetId: widget.id,
+            status: widget.tags.status
+        }
+        $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData});
+    };
 
 
     $scope.goReport = function () {

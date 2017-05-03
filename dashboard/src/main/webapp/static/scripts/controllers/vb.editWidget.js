@@ -23,7 +23,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
                 $scope.buildQuery = value.queryFilter;
-            })
+            });
         } else {
             $scope.editWidgetData.push({width: 12, columns: []})
         }
@@ -410,7 +410,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }
         var chartType = widget;
         $timeout(function () {
-            $scope.previewChart(chartType, widget)
+            $scope.previewChart(chartType, widget);
         }, 50);
     };
     $scope.selectX1Axis = function (widget, column) {
@@ -810,7 +810,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         });
     };
 //    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
-    $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
+//    $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
 });
 app.directive('queryBuilder', ['$compile', function ($compile) {
         return {
@@ -1276,7 +1276,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
-                    console.log(scope.reloadUrl)
+//                    console.log(scope.reloadUrl)
                     $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
 
                 });                

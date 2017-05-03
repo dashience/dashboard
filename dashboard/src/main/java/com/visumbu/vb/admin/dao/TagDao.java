@@ -49,6 +49,18 @@ public class TagDao extends BaseDao {
         return null;
     }
     
+    public WidgetTag findWidgetTagByWidget(Integer tagId, Integer widgetId) {
+        String queryStr = "select t from WidgetTag t where t.tagId.id = :tagId and t.widgetId.id = :widgetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("tagId", tagId);
+        query.setParameter("widgetId", widgetId);
+        List<WidgetTag> widgetTagList = (List<WidgetTag>) query.list();
+        if (widgetTagList != null && !widgetTagList.isEmpty()) {
+            return widgetTagList.get(0);
+        }
+        return null;
+    }
+    
      public WidgetTag deleteWidgetTag(Integer widgetTagId) {
         String queryStr = "delete WidgetTag t where t.id = :widgetTagId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);

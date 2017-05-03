@@ -335,7 +335,9 @@
                     <div class="panel-heading">
                         <div class="panel-tools">
                             <div> 
-                                <i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>
+                                <!--<i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites; favouritesNew(favourites, widget)" ng-class="{'red' : favourites,'green':!favourites}"></i>-->
+                                <a ng-if="widget.tags.status === 'Active'" title="Favourites" ng-click="favourites = !favourites; favouritesNew(favourites, widget)" style="color: #e43725"><i class="fa fa-heart"></i></a>
+                                <a ng-if="widget.tags.status === 'InActive'" title="Favourites" ng-click="favourites = !favourites; favouritesNew(favourites, widget)" style="color: #555"><i class="fa fa-heart"></i></a>
                                 <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
