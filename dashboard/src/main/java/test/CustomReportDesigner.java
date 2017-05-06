@@ -2159,79 +2159,80 @@ public class CustomReportDesigner {
                             combination.add(new CombinationalType(columns.getFieldName(), columns.getCombinationType(), columns.getyAxis()));
                         }
                     }
-                    if (combination.isEmpty()) {
-                        PdfPTable table = new PdfPTable(1);
-                        PdfPCell cell;
-                        table.setWidthPercentage(100f);
-                        pdfFontTitle.setSize(14);
-                        pdfFontTitle.setStyle(Font.BOLD);
-                        pdfFontTitle.setColor(tableTitleFontColor);
-                        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
-                        cell.setFixedHeight(30);
-                        cell.setBorderColor(widgetBorderColor);
-                        cell.setBackgroundColor(widgetTitleColor);
-                        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-                        cell.setColspan(1);
-                        cell.setPaddingTop(5);
-                        cell.setPaddingLeft(10);
-                        table.addCell(cell);
-                        System.out.println("Bar Writer: " + writer);
-                        System.out.println("Bar Tab Widget DataSet: " + tabWidget.getDataset());
-                        System.out.println("Bar Tab Widget DataSource: " + tabWidget.getDatasource());
+//                    if (combination.isEmpty()) {
+                    PdfPTable table = new PdfPTable(1);
+                    PdfPCell cell;
+                    table.setWidthPercentage(100f);
+                    pdfFontTitle.setSize(14);
+                    pdfFontTitle.setStyle(Font.BOLD);
+                    pdfFontTitle.setColor(tableTitleFontColor);
+                    cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+                    cell.setFixedHeight(30);
+                    cell.setBorderColor(widgetBorderColor);
+                    cell.setBackgroundColor(widgetTitleColor);
+                    cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                    cell.setColspan(1);
+                    cell.setPaddingTop(5);
+                    cell.setPaddingLeft(10);
+                    table.addCell(cell);
+                    System.out.println("Bar Writer: " + writer);
+                    System.out.println("Bar Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("Bar Tab Widget DataSource: " + tabWidget.getDatasource());
 
-                        Image barChart = multiAxisBarChart(writer, tabWidget);
-                        if (barChart != null) {
-                            PdfPCell chartCell = new PdfPCell(barChart);
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        } else {
-                            PdfPCell chartCell = new PdfPCell();
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        }
+                    Image barChart = multiAxisBarChart(writer, tabWidget);
+                    if (barChart != null) {
+                        PdfPCell chartCell = new PdfPCell(barChart);
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
                     } else {
-                        PdfPTable table = new PdfPTable(1);
-                        PdfPCell cell;
-                        table.setWidthPercentage(100f);
-                        pdfFontTitle.setSize(14);
-                        pdfFontTitle.setStyle(Font.BOLD);
-                        pdfFontTitle.setColor(tableTitleFontColor);
-                        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
-                        cell.setFixedHeight(30);
-                        cell.setBorderColor(widgetBorderColor);
-                        cell.setBackgroundColor(widgetTitleColor);
-                        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-                        cell.setColspan(1);
-                        cell.setPaddingTop(5);
-                        cell.setPaddingLeft(10);
-                        table.addCell(cell);
-                        System.out.println("Combinational Writer: " + writer);
-                        System.out.println("Combinational Tab Widget DataSet: " + tabWidget.getDataset());
-                        System.out.println("Cpmbinational Tab Widget DataSource: " + tabWidget.getDatasource());
-
-                        Image barChart = multiAxisCombinationalChart(writer, tabWidget);
-                        if (barChart != null) {
-                            PdfPCell chartCell = new PdfPCell(barChart);
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        } else {
-                            PdfPCell chartCell = new PdfPCell();
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        }
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
                     }
+//                    } 
+//                    else {
+//                        PdfPTable table = new PdfPTable(1);
+//                        PdfPCell cell;
+//                        table.setWidthPercentage(100f);
+//                        pdfFontTitle.setSize(14);
+//                        pdfFontTitle.setStyle(Font.BOLD);
+//                        pdfFontTitle.setColor(tableTitleFontColor);
+//                        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+//                        cell.setFixedHeight(30);
+//                        cell.setBorderColor(widgetBorderColor);
+//                        cell.setBackgroundColor(widgetTitleColor);
+//                        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+//                        cell.setColspan(1);
+//                        cell.setPaddingTop(5);
+//                        cell.setPaddingLeft(10);
+//                        table.addCell(cell);
+//                        System.out.println("Combinational Writer: " + writer);
+//                        System.out.println("Combinational Tab Widget DataSet: " + tabWidget.getDataset());
+//                        System.out.println("Cpmbinational Tab Widget DataSource: " + tabWidget.getDatasource());
+//
+//                        Image barChart = multiAxisCombinationalChart(writer, tabWidget);
+//                        if (barChart != null) {
+//                            PdfPCell chartCell = new PdfPCell(barChart);
+//                            chartCell.setBorderColor(widgetBorderColor);
+//                            chartCell.setPadding(10);
+//                            table.addCell(chartCell);
+//                            document.add(new Phrase("\n"));
+//                            document.add(table);
+//                        } else {
+//                            PdfPCell chartCell = new PdfPCell();
+//                            chartCell.setBorderColor(widgetBorderColor);
+//                            chartCell.setPadding(10);
+//                            table.addCell(chartCell);
+//                            document.add(new Phrase("\n"));
+//                            document.add(table);
+//                        }
+//                    }
 
                 } else if (tabWidget.getChartType().equalsIgnoreCase("stackedbar")) {
                     //document.add(multiAxisBarChart(writer, tabWidget));
@@ -2281,74 +2282,38 @@ public class CustomReportDesigner {
                         }
                     }
 
-                    if (combination.isEmpty()) {
-                        PdfPTable table = new PdfPTable(1);
-                        PdfPCell cell;
-                        table.setWidthPercentage(100f);
-                        pdfFontTitle.setSize(14);
-                        pdfFontTitle.setStyle(Font.BOLD);
-                        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
-                        cell.setFixedHeight(30);
-                        cell.setBorderColor(widgetBorderColor);
-                        cell.setBackgroundColor(widgetTitleColor);
-                        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-                        cell.setColspan(1);
-                        cell.setPaddingTop(5);
-                        cell.setPaddingLeft(10);
-                        table.addCell(cell);
-                        System.out.println("line Writer: " + writer);
-                        System.out.println("line Tab Widget DataSet: " + tabWidget.getDataset());
-                        System.out.println("line Tab Widget DataSource: " + tabWidget.getDatasource());
-                        Image lineChart = multiAxisLineChart(writer, tabWidget);
-                        if (lineChart != null) {
-                            PdfPCell chartCell = new PdfPCell(lineChart);
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(5);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        } else {
-                            PdfPCell chartCell = new PdfPCell();
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        }
+                    PdfPTable table = new PdfPTable(1);
+                    PdfPCell cell;
+                    table.setWidthPercentage(100f);
+                    pdfFontTitle.setSize(14);
+                    pdfFontTitle.setStyle(Font.BOLD);
+                    cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+                    cell.setFixedHeight(30);
+                    cell.setBorderColor(widgetBorderColor);
+                    cell.setBackgroundColor(widgetTitleColor);
+                    cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                    cell.setColspan(1);
+                    cell.setPaddingTop(5);
+                    cell.setPaddingLeft(10);
+                    table.addCell(cell);
+                    System.out.println("line Writer: " + writer);
+                    System.out.println("line Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("line Tab Widget DataSource: " + tabWidget.getDatasource());
+                    Image lineChart = multiAxisLineChart(writer, tabWidget);
+                    if (lineChart != null) {
+                        PdfPCell chartCell = new PdfPCell(lineChart);
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(5);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
                     } else {
-                        PdfPTable table = new PdfPTable(1);
-                        PdfPCell cell;
-                        table.setWidthPercentage(100f);
-                        pdfFontTitle.setSize(14);
-                        pdfFontTitle.setStyle(Font.BOLD);
-                        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
-                        cell.setFixedHeight(30);
-                        cell.setBorderColor(widgetBorderColor);
-                        cell.setBackgroundColor(widgetTitleColor);
-                        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-                        cell.setColspan(1);
-                        cell.setPaddingTop(5);
-                        cell.setPaddingLeft(10);
-                        table.addCell(cell);
-                        System.out.println("line Writer: " + writer);
-                        System.out.println("line Tab Widget DataSet: " + tabWidget.getDataset());
-                        System.out.println("line Tab Widget DataSource: " + tabWidget.getDatasource());
-                        Image lineChart = multiAxisCombinationalChart(writer, tabWidget);
-                        if (lineChart != null) {
-                            PdfPCell chartCell = new PdfPCell(lineChart);
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(5);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        } else {
-                            PdfPCell chartCell = new PdfPCell();
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        }
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
                     }
 
                 } else if (tabWidget.getChartType().equalsIgnoreCase("area")) {
@@ -2362,80 +2327,41 @@ public class CustomReportDesigner {
                         }
                     }
 
-                    if (combination.isEmpty()) {
-                        PdfPTable table = new PdfPTable(1);
-                        PdfPCell cell;
-                        table.setWidthPercentage(100f);
-                        pdfFontTitle.setSize(14);
-                        pdfFontTitle.setStyle(Font.BOLD);
-                        pdfFontTitle.setColor(tableTitleFontColor);
-                        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
-                        cell.setFixedHeight(30);
-                        cell.setBorderColor(widgetBorderColor);
-                        cell.setBackgroundColor(widgetTitleColor);
-                        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-                        cell.setColspan(1);
-                        cell.setPaddingTop(5);
-                        cell.setPaddingLeft(10);
-                        table.addCell(cell);
-                        System.out.println("Area Writer: " + writer);
-                        System.out.println("Area Tab Widget DataSet: " + tabWidget.getDataset());
-                        System.out.println("Area Tab Widget DataSource: " + tabWidget.getDatasource());
+                    PdfPTable table = new PdfPTable(1);
+                    PdfPCell cell;
+                    table.setWidthPercentage(100f);
+                    pdfFontTitle.setSize(14);
+                    pdfFontTitle.setStyle(Font.BOLD);
+                    pdfFontTitle.setColor(tableTitleFontColor);
+                    cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
+                    cell.setFixedHeight(30);
+                    cell.setBorderColor(widgetBorderColor);
+                    cell.setBackgroundColor(widgetTitleColor);
+                    cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+                    cell.setColspan(1);
+                    cell.setPaddingTop(5);
+                    cell.setPaddingLeft(10);
+                    table.addCell(cell);
+                    System.out.println("Area Writer: " + writer);
+                    System.out.println("Area Tab Widget DataSet: " + tabWidget.getDataset());
+                    System.out.println("Area Tab Widget DataSource: " + tabWidget.getDatasource());
 
-                        Image areaChart = multiAxisAreaChart(writer, tabWidget);
-                        if (areaChart != null) {
-                            PdfPCell chartCell = new PdfPCell(areaChart);
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        } else {
-                            PdfPCell chartCell = new PdfPCell();
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        }
+                    Image areaChart = multiAxisAreaChart(writer, tabWidget);
+                    if (areaChart != null) {
+                        PdfPCell chartCell = new PdfPCell(areaChart);
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
                     } else {
-                        PdfPTable table = new PdfPTable(1);
-                        PdfPCell cell;
-                        table.setWidthPercentage(100f);
-                        pdfFontTitle.setSize(14);
-                        pdfFontTitle.setStyle(Font.BOLD);
-                        pdfFontTitle.setColor(tableTitleFontColor);
-                        cell = new PdfPCell(new Phrase(tabWidget.getWidgetTitle(), pdfFontTitle));
-                        cell.setFixedHeight(30);
-                        cell.setBorderColor(widgetBorderColor);
-                        cell.setBackgroundColor(widgetTitleColor);
-                        cell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-                        cell.setColspan(1);
-                        cell.setPaddingTop(5);
-                        cell.setPaddingLeft(10);
-                        table.addCell(cell);
-                        System.out.println("Area Writer: " + writer);
-                        System.out.println("Area Tab Widget DataSet: " + tabWidget.getDataset());
-                        System.out.println("Area Tab Widget DataSource: " + tabWidget.getDatasource());
-
-                        Image areaChart = multiAxisCombinationalChart(writer, tabWidget);
-                        if (areaChart != null) {
-                            PdfPCell chartCell = new PdfPCell(areaChart);
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        } else {
-                            PdfPCell chartCell = new PdfPCell();
-                            chartCell.setBorderColor(widgetBorderColor);
-                            chartCell.setPadding(10);
-                            table.addCell(chartCell);
-                            document.add(new Phrase("\n"));
-                            document.add(table);
-                        }
+                        PdfPCell chartCell = new PdfPCell();
+                        chartCell.setBorderColor(widgetBorderColor);
+                        chartCell.setPadding(10);
+                        table.addCell(chartCell);
+                        document.add(new Phrase("\n"));
+                        document.add(table);
                     }
-
                 }
                 // System.out.println("Chart Type ===> " + tabWidget.getChartType());
             }
@@ -3445,273 +3371,272 @@ public class CustomReportDesigner {
         return null;
     }
 
-    public Image multiAxisCombinationalChart(PdfWriter writer, TabWidget tabWidget) {
-        System.out.println("Start function of multiAxisBarChart");
-        try {
-            List<WidgetColumn> columns = tabWidget.getColumns();
-
-            List<Map<String, Object>> originalData = tabWidget.getData();
-            if (originalData == null || originalData.isEmpty()) {
-                return null;
-            }
-            List<Map<String, Object>> data = new ArrayList<>(originalData);
-
-            List<Map<String, Object>> tempData = tabWidget.getData();
-
-            List<SortType> sortFields = new ArrayList<>();
-            List<Aggregation> aggreagtionList = new ArrayList<>();
-            List<FirstAxis> firstAxis = new ArrayList<>();
-            List<SecondAxis> secondAxis = new ArrayList<>();
-            List<CombinationalType> combinationType = new ArrayList<>();
-            String xAxis = null;
-            String xAxisDisplay = null;
-            String format = "";
-
-            for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
-                WidgetColumn column = iterator.next();
-                if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
-                    System.out.println("SORT ORDER ======> " + column.getSortOrder());
-                    sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
-                }
-                if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
-                    aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
-                }
-                if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
-                    firstAxis.add(new FirstAxis(column.getFieldName(), column.getDisplayName()));
-                }
-                if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) > 1) {
-                    secondAxis.add(new SecondAxis(column.getFieldName(), column.getDisplayName()));
-                    combinationType.add(new CombinationalType(column.getFieldName(), column.getCombinationType(), column.getyAxis()));
-                }
-                if (column.getxAxis() != null) {
-                    xAxis = column.getFieldName();
-                    xAxisDisplay = column.getDisplayName();
-                    System.out.println("XAxisDisplay: " + xAxisDisplay);
-                }
-                if (column.getDisplayFormat() != null) {
-                    format = column.getDisplayFormat();
-                }
-            }
-
-            System.out.println("sortFields size: " + sortFields.size());
-
-            if (sortFields.size() > 0) {
-                data = sortData(data, sortFields);
-            }
-
-            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
-            }
-
-            System.out.println("FirstAxis: " + firstAxis);
-            System.out.println("SecondAxis: " + secondAxis.size());
-
-            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
-            long firstAxisCount = firstAxiss.count();
-
-            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
-            long secondAxisCount = secondAxiss.count();
-
-            long totalCount = firstAxisCount + secondAxisCount;
-            CategoryPlot plot = null;
-            CategoryItemRenderer renderer = null;
-            CategoryDataset dataset1 = null;
-            int count = 0;
-            int first = 0;
-            int second = 1;
-            int a = 0;
-
-//            NumberAxis axis1 = new NumberAxis();
-//            ValueAxis axis2 = new NumberAxis();
-            for (Iterator<CombinationalType> combination = combinationType.iterator(); combination.hasNext();) {
-                CombinationalType combinational = combination.next();
-                System.out.println("Combinational Combination Names -----> " + combinational.getCombinationType());
-                System.out.println("Combinational Field Names -----> " + combinational.getFieldName());
-                System.out.println("Combinational Y columns ---->  " + combinational.getyAxis());
-                if (combinational.getCombinationType() == null || combinational.getCombinationType().isEmpty()) {
-                    if (tabWidget.getChartType().equalsIgnoreCase("line")) {
-                        System.out.println("None line---->");
-                        renderer = new LineAndShapeRenderer();
-                    } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
-                        System.out.println("None bar---->");
-
-                        renderer = new BarRenderer();
-                    } else {
-                        System.out.println("None Area---->");
-                        renderer = new AreaRenderer();
-                    }
-                } else if (combinational.getCombinationType().equalsIgnoreCase("line")) {
-                    System.out.println("line---->");
-                    renderer = new LineAndShapeRenderer();
-                } else if (combinational.getCombinationType().equalsIgnoreCase("bar")) {
-                    System.out.println("bar---->");
-                    renderer = new BarRenderer();
-                } else if (combinational.getCombinationType().equalsIgnoreCase("area")) {
-                    System.out.println("area---->");
-                    renderer = new AreaRenderer();
-                }
-                renderer.setItemLabelsVisible(true);
-                if (combinational.getyAxis().equalsIgnoreCase("1")) {
-                    plot = new CategoryPlot();
-                    System.out.println("get y Axis 1 ----> ");
-                    dataset1 = createDataset4(data, combinational.getFieldName(), null, xAxis);
-                    System.out.println("dataset 1 ----> " + dataset1);
-                    System.out.println("count -----> " + count);
-                    plot.setDataset(count, dataset1);
-                    plot.setRenderer(count, renderer);
-                    plot.setRangeAxis(count, new NumberAxis("Value"));
-
-                } else if (combinational.getyAxis().equalsIgnoreCase("2")) {
-                    plot = new CategoryPlot();
-                    System.out.println("get y Axis 2 ----> ");
-                    dataset1 = createDataset3(data, null, combinational.getFieldName(), xAxis);
-                    plot.setDataset(count, dataset1);
-                    plot.setRenderer(count, renderer);
-                    if (a == 0) {
-                        plot.setRangeAxis(count, new NumberAxis("axis2"));
-                        a++;
-                    } else {
-                        plot.mapDatasetToRangeAxis(count, second);
-                    }
-                }
-                count++;
-            }
-
-//            CategoryDataset dataset2 = null;
-//            if (secondAxis.size() != 0) {
-//                System.out.println("inside if...");
-//                dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+//    public Image multiAxisCombinationalChart(PdfWriter writer, TabWidget tabWidget) {
+//        System.out.println("Start function of multiAxisBarChart");
+//        try {
+//            List<WidgetColumn> columns = tabWidget.getColumns();
+//
+//            List<Map<String, Object>> originalData = tabWidget.getData();
+//            if (originalData == null || originalData.isEmpty()) {
+//                return null;
 //            }
-//            System.out.println("Dataset1 bar data: " + data);
-//            System.out.println("Dataset1 bar first Axis: " + firstAxis);
-//            System.out.println("Dataset1 bar Second Axis: " + secondAxis);
-//            System.out.println("Dataset1 bar X Axis: " + xAxis);
+//            List<Map<String, Object>> data = new ArrayList<>(originalData);
 //
-//            final CategoryAxis domainAxis = new CategoryAxis();
-//            //final NumberAxis rangeAxis = new NumberAxis("Value");
-//            final NumberAxis rangeAxis = new NumberAxis();
-//            final StackedBarRenderer renderer1 = new StackedBarRenderer();
-//            final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
+//            List<Map<String, Object>> tempData = tabWidget.getData();
 //
-//                /**
-//                 * Override the getLegendItems() method to handle special case.
-//                 *
-//                 * @return the legend items.
-//                 */
-//                public LegendItemCollection getLegendItems() {
+//            List<SortType> sortFields = new ArrayList<>();
+//            List<Aggregation> aggreagtionList = new ArrayList<>();
+//            List<FirstAxis> firstAxis = new ArrayList<>();
+//            List<SecondAxis> secondAxis = new ArrayList<>();
+//            List<CombinationalType> combinationType = new ArrayList<>();
+//            String xAxis = null;
+//            String xAxisDisplay = null;
+//            String format = "";
 //
-//                    final LegendItemCollection result = new LegendItemCollection();
+//            for (Iterator<WidgetColumn> iterator = columns.iterator(); iterator.hasNext();) {
+//                WidgetColumn column = iterator.next();
+//                if (column.getSortOrder() != null && !column.getSortOrder().trim().isEmpty()) {
+//                    System.out.println("SORT ORDER ======> " + column.getSortOrder());
+//                    sortFields.add(new SortType(column.getFieldName(), column.getSortOrder(), column.getFieldType()));
+//                }
+//                if (column.getAgregationFunction() != null && !column.getAgregationFunction().trim().isEmpty()) {
+//                    aggreagtionList.add(new Aggregation(column.getFieldName(), column.getAgregationFunction()));
+//                }
+//                if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) == 1) {
+//                    firstAxis.add(new FirstAxis(column.getFieldName(), column.getDisplayName()));
+//                }
+//                if (column.getyAxis() != null && ApiUtils.toDouble(column.getyAxis()) > 1) {
+//                    secondAxis.add(new SecondAxis(column.getFieldName(), column.getDisplayName()));
+//                    combinationType.add(new CombinationalType(column.getFieldName(), column.getCombinationType(), column.getyAxis()));
+//                }
+//                if (column.getxAxis() != null) {
+//                    xAxis = column.getFieldName();
+//                    xAxisDisplay = column.getDisplayName();
+//                    System.out.println("XAxisDisplay: " + xAxisDisplay);
+//                }
+//                if (column.getDisplayFormat() != null) {
+//                    format = column.getDisplayFormat();
+//                }
+//            }
 //
-//                    if (firstAxis.isEmpty()) {
+//            System.out.println("sortFields size: " + sortFields.size());
+//
+//            if (sortFields.size() > 0) {
+//                data = sortData(data, sortFields);
+//            }
+//
+//            if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+//                data = data.subList(0, tabWidget.getMaxRecord());
+//            }
+//
+//            System.out.println("FirstAxis: " + firstAxis);
+//            System.out.println("SecondAxis: " + secondAxis.size());
+//
+//            Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
+//            long firstAxisCount = firstAxiss.count();
+//
+//            Stream<SecondAxis> secondAxiss = secondAxis.stream().distinct();
+//            long secondAxisCount = secondAxiss.count();
+//
+//            long totalCount = firstAxisCount + secondAxisCount;
+//            CategoryPlot plot = null;
+//            CategoryItemRenderer renderer = null;
+//            CategoryDataset dataset1 = null;
+//            int count = 0;
+//            int first = 0;
+//            int second = 1;
+//            int a = 0;
+//
+////            NumberAxis axis1 = new NumberAxis();
+////            ValueAxis axis2 = new NumberAxis();
+//            for (Iterator<CombinationalType> combination = combinationType.iterator(); combination.hasNext();) {
+//                CombinationalType combinational = combination.next();
+//                System.out.println("Combinational Combination Names -----> " + combinational.getCombinationType());
+//                System.out.println("Combinational Field Names -----> " + combinational.getFieldName());
+//                System.out.println("Combinational Y columns ---->  " + combinational.getyAxis());
+//                if (combinational.getCombinationType() == null || combinational.getCombinationType().isEmpty()) {
+//                    if (tabWidget.getChartType().equalsIgnoreCase("line")) {
+//                        System.out.println("None line---->");
+//                        renderer = new LineAndShapeRenderer();
+//                    } else if (tabWidget.getChartType().equalsIgnoreCase("bar")) {
+//                        System.out.println("None bar---->");
+//
+//                        renderer = new BarRenderer();
 //                    } else {
-//                        final CategoryDataset data = getDataset();
-//                        if (data != null) {
-//                            final CategoryItemRenderer r = getRenderer();
-//                            r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-//                            r.setBaseItemLabelsVisible(true);
-//                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-//                                    TextAnchor.BASELINE_CENTER);
-//                            r.setBasePositiveItemLabelPosition(position);
-//                            if (r != null) {
-////                                for (long i = 0; i < firstAxisCount; i++) {
-//                                final LegendItem item = r.getLegendItem(0, 1);
-//                                result.add(item);
+//                        System.out.println("None Area---->");
+//                        renderer = new AreaRenderer();
+//                    }
+//                } else if (combinational.getCombinationType().equalsIgnoreCase("line")) {
+//                    System.out.println("line---->");
+//                    renderer = new LineAndShapeRenderer();
+//                } else if (combinational.getCombinationType().equalsIgnoreCase("bar")) {
+//                    System.out.println("bar---->");
+//                    renderer = new BarRenderer();
+//                } else if (combinational.getCombinationType().equalsIgnoreCase("area")) {
+//                    System.out.println("area---->");
+//                    renderer = new AreaRenderer();
+//                }
+//                renderer.setItemLabelsVisible(true);
+//                if (combinational.getyAxis().equalsIgnoreCase("1")) {
+//                    plot = new CategoryPlot();
+//                    System.out.println("get y Axis 1 ----> ");
+//                    dataset1 = createDataset4(data, combinational.getFieldName(), null, xAxis);
+//                    System.out.println("dataset 1 ----> " + dataset1);
+//                    System.out.println("count -----> " + count);
+//                    plot.setDataset(count, dataset1);
+//                    plot.setRenderer(count, renderer);
+//                    plot.setRangeAxis(count, new NumberAxis("Value"));
+//
+//                } else if (combinational.getyAxis().equalsIgnoreCase("2")) {
+//                    plot = new CategoryPlot();
+//                    System.out.println("get y Axis 2 ----> ");
+//                    dataset1 = createDataset3(data, null, combinational.getFieldName(), xAxis);
+//                    plot.setDataset(count, dataset1);
+//                    plot.setRenderer(count, renderer);
+//                    if (a == 0) {
+//                        plot.setRangeAxis(count, new NumberAxis("axis2"));
+//                        a++;
+//                    } else {
+//                        plot.mapDatasetToRangeAxis(count, second);
+//                    }
+//                }
+//                count++;
+//            }
+//
+////            CategoryDataset dataset2 = null;
+////            if (secondAxis.size() != 0) {
+////                System.out.println("inside if...");
+////                dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+////            }
+////            System.out.println("Dataset1 bar data: " + data);
+////            System.out.println("Dataset1 bar first Axis: " + firstAxis);
+////            System.out.println("Dataset1 bar Second Axis: " + secondAxis);
+////            System.out.println("Dataset1 bar X Axis: " + xAxis);
+////
+////            final CategoryAxis domainAxis = new CategoryAxis();
+////            //final NumberAxis rangeAxis = new NumberAxis("Value");
+////            final NumberAxis rangeAxis = new NumberAxis();
+////            final StackedBarRenderer renderer1 = new StackedBarRenderer();
+////            final CategoryPlot plot = new CategoryPlot(dataset1, domainAxis, rangeAxis, renderer1) {
+////
+////                /**
+////                 * Override the getLegendItems() method to handle special case.
+////                 *
+////                 * @return the legend items.
+////                 */
+////                public LegendItemCollection getLegendItems() {
+////
+////                    final LegendItemCollection result = new LegendItemCollection();
+////
+////                    if (firstAxis.isEmpty()) {
+////                    } else {
+////                        final CategoryDataset data = getDataset();
+////                        if (data != null) {
+////                            final CategoryItemRenderer r = getRenderer();
+////                            r.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+////                            r.setBaseItemLabelsVisible(true);
+////                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+////                                    TextAnchor.BASELINE_CENTER);
+////                            r.setBasePositiveItemLabelPosition(position);
+////                            if (r != null) {
+//////                                for (long i = 0; i < firstAxisCount; i++) {
+////                                final LegendItem item = r.getLegendItem(0, 1);
+////                                result.add(item);
+//////                                }
+////                            }
+////                        }
+////                    }
+////
+////                    // the JDK 1.2.2 compiler complained about the name of this
+////                    // variable 
+////                    if (secondAxis.isEmpty()) {
+////                    } else {
+////                        final CategoryDataset dset2 = getDataset(1);
+////                        if (dset2 != null) {
+////                            System.out.println("dset2");
+////                            final CategoryItemRenderer renderer2 = getRenderer(1);
+////                            renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+////                            renderer2.setBaseItemLabelsVisible(true);
+////                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
+////                                    TextAnchor.BASELINE_CENTER);
+////                            renderer2.setBasePositiveItemLabelPosition(position);
+////                            if (renderer2 != null) {
+////                                for (long i = firstAxisCount; i < totalCount; i++) {
+////                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
+////                                    result.add(item);
 ////                                }
-//                            }
-//                        }
-//                    }
+////                            }
+////                        }
+////                    }
+////                    return result;
+////                }
+////
+////            };
+//            plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
+//            plot.setRangeGridlinesVisible(true);
+//            plot.setDomainGridlinesVisible(true);
+//            plot.setOrientation(PlotOrientation.VERTICAL);
+////            // final JFreeChart chart = new JFreeChart(tabWidget.getWidgetTitle(), plot);
+//            final JFreeChart chart = new JFreeChart(plot);
+//            CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
+////            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+////            chart.setBackgroundPaint(Color.white);
+//            plot.setBackgroundPaint(Color.white);
+//            plot.setRowRenderingOrder(SortOrder.ASCENDING);
+//            plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
+////            if (dataset2 != null) {
+////                System.out.println("inside if dataset2...");
+////                plot.setDataset(1, dataset2);
+////                plot.mapDatasetToRangeAxis(1, 1);
+////                final ValueAxis axis2 = new NumberAxis();
+////                plot.setRangeAxis(1, axis2);
+////                plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
+////            }
 //
-//                    // the JDK 1.2.2 compiler complained about the name of this
-//                    // variable 
-//                    if (secondAxis.isEmpty()) {
-//                    } else {
-//                        final CategoryDataset dset2 = getDataset(1);
-//                        if (dset2 != null) {
-//                            System.out.println("dset2");
-//                            final CategoryItemRenderer renderer2 = getRenderer(1);
-//                            renderer2.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-//                            renderer2.setBaseItemLabelsVisible(true);
-//                            ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-//                                    TextAnchor.BASELINE_CENTER);
-//                            renderer2.setBasePositiveItemLabelPosition(position);
-//                            if (renderer2 != null) {
-//                                for (long i = firstAxisCount; i < totalCount; i++) {
-//                                    final LegendItem item = renderer2.getLegendItem(0, (int) i);
-//                                    result.add(item);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    return result;
-//                }
+////            final StackedBarRenderer renderer2 = new StackedBarRenderer();
+////            Paint[] paint = new Paint[]{
+////                new Color(98, 203, 49),
+////                new Color(85, 85, 85),
+////                new Color(161, 225, 132),
+////                new Color(102, 102, 102)
+////            };
+////            int j = 0;
+////            for (long i = 0; i < totalCount; i++) {
+////                if (i == 4) {
+////                    j = 0;
+////                }
+////                renderer.setSeriesPaint((int) i, paint[j++]);
+////                plot.setRenderer((int) i, renderer);
+////            }
+////            plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+////
+////            // OPTIONAL CUSTOMISATION COMPLETED.
+//            plot.setDrawingSupplier(new ChartDrawingSupplier());
+//            PdfContentByte contentByte = writer.getDirectContent();
 //
-//            };
-            plot.setDatasetRenderingOrder(DatasetRenderingOrder.FORWARD);
-            plot.setRangeGridlinesVisible(true);
-            plot.setDomainGridlinesVisible(true);
-            plot.setOrientation(PlotOrientation.VERTICAL);
-//            // final JFreeChart chart = new JFreeChart(tabWidget.getWidgetTitle(), plot);
-            final JFreeChart chart = new JFreeChart(plot);
-            CategoryAxis axis = chart.getCategoryPlot().getDomainAxis();
-//            axis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-//            chart.setBackgroundPaint(Color.white);
-            plot.setBackgroundPaint(Color.white);
-            plot.setRowRenderingOrder(SortOrder.ASCENDING);
-            plot.setDomainAxisLocation(AxisLocation.BOTTOM_OR_RIGHT);
-//            if (dataset2 != null) {
-//                System.out.println("inside if dataset2...");
-//                plot.setDataset(1, dataset2);
-//                plot.mapDatasetToRangeAxis(1, 1);
-//                final ValueAxis axis2 = new NumberAxis();
-//                plot.setRangeAxis(1, axis2);
-//                plot.setRangeAxisLocation(1, AxisLocation.BOTTOM_OR_RIGHT);
-//            }
-
-//            final StackedBarRenderer renderer2 = new StackedBarRenderer();
-//            Paint[] paint = new Paint[]{
-//                new Color(98, 203, 49),
-//                new Color(85, 85, 85),
-//                new Color(161, 225, 132),
-//                new Color(102, 102, 102)
-//            };
-//            int j = 0;
-//            for (long i = 0; i < totalCount; i++) {
-//                if (i == 4) {
-//                    j = 0;
-//                }
-//                renderer.setSeriesPaint((int) i, paint[j++]);
-//                plot.setRenderer((int) i, renderer);
-//            }
-//            plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
+//            PdfTemplate templatePie = contentByte.createTemplate(widgetWidth, widgetHeight);
+//            System.out.println("templatePie ----> " + templatePie);
+//            Graphics2D graphics2dPie = templatePie.createGraphics(widgetWidth, widgetHeight,
+//                    new DefaultFontMapper());
+//            System.out.println("graphics2dpie ----> " + graphics2dPie);
+//            Rectangle2D rectangle2dPie = new Rectangle2D.Double(0, 0, widgetWidth,
+//                    widgetHeight);
+//            System.out.println("rectangle2dpie -----> " + rectangle2dPie);
+//            System.out.println("chart ----> " + chart);
+//            chart.draw(graphics2dPie, rectangle2dPie);
 //
-//            // OPTIONAL CUSTOMISATION COMPLETED.
-            plot.setDrawingSupplier(new ChartDrawingSupplier());
-            PdfContentByte contentByte = writer.getDirectContent();
-
-            PdfTemplate templatePie = contentByte.createTemplate(widgetWidth, widgetHeight);
-            System.out.println("templatePie ----> " + templatePie);
-            Graphics2D graphics2dPie = templatePie.createGraphics(widgetWidth, widgetHeight,
-                    new DefaultFontMapper());
-            System.out.println("graphics2dpie ----> " + graphics2dPie);
-            Rectangle2D rectangle2dPie = new Rectangle2D.Double(0, 0, widgetWidth,
-                    widgetHeight);
-            System.out.println("rectangle2dpie -----> " + rectangle2dPie);
-            System.out.println("chart ----> " + chart);
-            chart.draw(graphics2dPie, rectangle2dPie);
-
-            graphics2dPie.dispose();
-
-//             contentByte.addTemplate(templatePie, 30, 30);
-            Image img = Image.getInstance(templatePie);
-            return img;
-        } catch (BadElementException ex) {
-            log.error("BadElementException in multiAxisCombinationalChart Function: " + ex);
-            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("End function of multiAxisCombinationalChart");
-        return null;
-    }
-
+//            graphics2dPie.dispose();
+//
+////             contentByte.addTemplate(templatePie, 30, 30);
+//            Image img = Image.getInstance(templatePie);
+//            return img;
+//        } catch (BadElementException ex) {
+//            log.error("BadElementException in multiAxisCombinationalChart Function: " + ex);
+//            //Logger.getLogger(CustomReportDesigner.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        System.out.println("End function of multiAxisCombinationalChart");
+//        return null;
+//    }
     public JFreeChart multiAxisStackedBarJFreeChart(TabWidget tabWidget) {
         System.out.println("Start function of multiAxisBarJFreeChart");
 
