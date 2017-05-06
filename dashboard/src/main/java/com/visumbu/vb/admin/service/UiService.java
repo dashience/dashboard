@@ -194,6 +194,7 @@ public class UiService {
 
         String dateRangeName = tabWidgetBean.getDateRangeName();
         System.out.println("dataRangeName -----> " + dateRangeName);
+        System.out.println("tabWidgetBean.getLastNdays() ----> " + tabWidgetBean.getLastNdays());
         DateRange dateRange = null;
         String startDate = null;
         String endDate = null;
@@ -205,7 +206,8 @@ public class UiService {
         if (dateRangeName == null || dateRangeName.isEmpty()) {
             startDate = null;
             endDate = null;
-        } else {
+        } else if (dateRangeName != null) {
+            System.out.println("tabWidgetBean.getLastNdays() ----> " + tabWidgetBean.getLastNdays());
             if (tabWidgetBean.getLastNdays() != null) {
                 lastNdays = tabWidgetBean.getLastNdays();
                 System.out.println("Last N days ----> " + lastNdays);
@@ -235,23 +237,23 @@ public class UiService {
             System.out.println("dateRangename ----> " + dateRangeName);
 
             Range dateRangeSelect = null;
-            if (dateRangeName.equalsIgnoreCase("Today")) {
-                dateRangeSelect = Range.TODAY;
-            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
-                dateRangeSelect = Range.YESTERDAY;
-            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
-                dateRangeSelect = Range.THIS_WEEK;
-            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
-                dateRangeSelect = Range.LAST_WEEK;
-            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
-                dateRangeSelect = Range.THIS_MONTH;
-            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
-                dateRangeSelect = Range.LAST_MONTH;
-            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
-                dateRangeSelect = Range.THIS_YEAR;
-            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
-                dateRangeSelect = Range.LAST_YEAR;
-            }
+//            if (dateRangeName.equalsIgnoreCase("Today")) {
+//                dateRangeSelect = Range.TODAY;
+//            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
+//                dateRangeSelect = Range.YESTERDAY;
+//            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
+//                dateRangeSelect = Range.THIS_WEEK;
+//            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
+//                dateRangeSelect = Range.LAST_WEEK;
+//            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
+//                dateRangeSelect = Range.THIS_MONTH;
+//            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
+//                dateRangeSelect = Range.LAST_MONTH;
+//            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
+//                dateRangeSelect = Range.THIS_YEAR;
+//            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
+//                dateRangeSelect = Range.LAST_YEAR;
+//            }
             if (dateRangeName.equalsIgnoreCase("Custom")) {
                 dateRangeSelect = null;
             } else if (lastNdays != null) {
@@ -746,5 +748,9 @@ public class UiService {
 
     public AdwordsCriteria getAdwordsCriteria(Integer criteriaId) {
         return uiDao.getAdwordsCriteria(criteriaId);
+    }
+
+    public TabWidget getWidgetById(Integer widgetId) {
+        return uiDao.getTabWidgetById(widgetId);
     }
 }
