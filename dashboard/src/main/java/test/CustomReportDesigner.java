@@ -45,9 +45,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 import static java.util.stream.Stream.builder;
@@ -3301,11 +3305,11 @@ public class CustomReportDesigner {
             long secondAxisCount = secondAxiss.count();
 
             long totalCount = firstAxisCount + secondAxisCount;
-            final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
+            final CategoryDataset dataset1 = createDataset5(data, firstAxis, secondAxis, xAxis);
             CategoryDataset dataset2 = null;
             if (secondAxis.size() != 0) {
                 System.out.println("inside if...");
-                dataset2 = createDataset2(data, secondAxis, firstAxis, xAxis);
+                dataset2 = createDataset6(data, secondAxis, firstAxis, xAxis);
             }
             System.out.println("Dataset1 bar data: " + data);
             System.out.println("Dataset1 bar first Axis: " + firstAxis);
@@ -3338,7 +3342,9 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_CENTER);
                             r.setBasePositiveItemLabelPosition(position);
                             if (r != null) {
+                                System.out.println("firstAxisCount ---> " + firstAxisCount);
                                 for (long i = 0; i < firstAxisCount; i++) {
+                                    System.out.println("count --- > " + i);
                                     final LegendItem item = r.getLegendItem(0, (int) i);
                                     result.add(item);
                                 }
@@ -3360,7 +3366,10 @@ public class CustomReportDesigner {
                                     TextAnchor.BASELINE_CENTER);
                             renderer2.setBasePositiveItemLabelPosition(position);
                             if (renderer2 != null) {
+                                System.out.println("firstAxisCount ---> " + firstAxisCount);
+                                System.out.println("totalCount ---> " + totalCount);
                                 for (long i = firstAxisCount; i < totalCount; i++) {
+                                    System.out.println("count --- > " + i);
                                     final LegendItem item = renderer2.getLegendItem(0, (int) i);
                                     result.add(item);
                                 }
@@ -3397,11 +3406,12 @@ public class CustomReportDesigner {
                 new Color(98, 203, 49),
                 new Color(85, 85, 85),
                 new Color(161, 225, 132),
-                new Color(102, 102, 102)
+                new Color(102, 102, 102),
+                new Color(117, 204, 208)
             };
             int j = 0;
             for (long i = 0; i < totalCount; i++) {
-                if (i == 4) {
+                if (i == 5) {
                     j = 0;
                 }
                 renderer2.setSeriesPaint((int) i, paint[j++]);
@@ -4261,6 +4271,159 @@ public class CustomReportDesigner {
                 FirstAxis axis = iterator1.next();
                 System.out.println(null + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
                 dataset.addValue(null, axis.getDisplayName(), dataMap.get(xAxis) + "");
+            }
+        }
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+
+            for (Iterator<SecondAxis> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
+                SecondAxis axis = iterator1.next();
+                if (dataMap.get(axis.getFieldName()) == null) {
+                    value = "0.00";
+                    String data1 = value.getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                } else {
+                    String data1 = dataMap.get(axis.getFieldName()).getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    } else {
+                        System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                }
+            }
+        }
+        System.out.println("End function of createDataset2");
+
+        return dataset;
+    }
+
+    private CategoryDataset createDataset5(List<Map<String, Object>> data, List<FirstAxis> firstAxis, List<SecondAxis> secondAxis, String xAxis) {
+        System.out.println("Start function of createDataset1");
+
+        // create the dataset...
+        DecimalFormat df = new DecimalFormat(".##");
+        String value;
+        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            for (Iterator<FirstAxis> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
+                FirstAxis axis = iterator1.next();
+                System.out.println("-----> " + dataMap.get(axis.getFieldName()));
+                if (dataMap.get(axis.getFieldName()) == null) {
+                    value = "0.00";
+                    String data1 = value.getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                } else {
+                    String data1 = dataMap.get(axis.getFieldName()).getClass().getSimpleName();
+                    System.out.println("******");
+                    System.out.println("Type: " + data1);
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    } else {
+                        System.out.println("else");
+                        System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                }
+            }
+        }
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+
+            for (Iterator<SecondAxis> iterator1 = secondAxis.iterator(); iterator1.hasNext();) {
+                SecondAxis axis = iterator1.next();
+                if (dataMap.get(axis.getFieldName()) == null) {
+                    value = "0.00";
+                    String data1 = value.getClass().getSimpleName();
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(value)) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                } else {
+                    String data1 = dataMap.get(axis.getFieldName()).getClass().getSimpleName();
+                    System.out.println("******");
+                    System.out.println("Type: " + data1);
+                    if (data1.equalsIgnoreCase("String")) {
+                        System.out.println("if");
+                        System.out.println(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                        dataset.addValue(ApiUtils.toDouble(df.format(Float.parseFloat(dataMap.get(axis.getFieldName()).toString())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(dataMap.get(axis.getFieldName()).toString() + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    } else {
+                        System.out.println("else");
+                        System.out.println(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + "") + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+                        dataset.addValue(ApiUtils.toDouble(df.format(dataMap.get(axis.getFieldName())) + ""), axis.getDisplayName(), dataMap.get(xAxis) + "");
+                    }
+                }
+            }
+        }
+        System.out.println("End function of createDataset1");
+
+        System.out.println("dataset ---> " + dataset.getRowCount());
+
+        final DefaultCategoryDataset dataset2 = new DefaultCategoryDataset();
+        for (int i = 0; i < dataset.getColumnCount(); i++) {
+            List<Double> list = new ArrayList<Double>();
+            List<Double> list1 = new ArrayList<Double>();
+
+            for (int j = 0; j < dataset.getRowCount(); j++) {
+                System.out.println(dataset.getRowKey(j) + "---->" + ApiUtils.toDouble(dataset.getValue(j, i) + ""));
+                list.add(ApiUtils.toDouble(dataset.getValue(j, i) + ""));
+//                hm.put((String) dataset.getRowKey(j),ApiUtils.toDouble(dataset.getValue(j, i) + ""));
+            }
+            Collections.sort(list);
+            Set<Double> uniqueValues = new HashSet<>(list);
+            for (Double uniqueValue : uniqueValues) {
+                list1.add(uniqueValue);
+            }
+            Collections.sort(list1);
+            System.out.println("list size() " + list1.size());
+            for (int k = 0; k < list1.size(); k++) {
+                System.out.println("1---->");
+                System.out.println(list1.get(k));
+                for (int j = 0; j < dataset.getRowCount(); j++) {
+                    System.out.println("2---->");
+                    System.out.println(dataset.getValue(j, i) + " : " + dataset.getRowKey(j));
+                    System.out.println(list1.get(k).getClass().getSimpleName());
+                    System.out.println(dataset.getValue(j, i).getClass().getSimpleName());
+                    Double val = list1.get(k);
+                    System.out.println("val ---> " + val);
+                    Double val1 = ApiUtils.toDouble(dataset.getValue(j, i) + "");
+                    System.out.println("val1 ---> " + val1);
+                    if (Objects.equals(val, val1)) {
+                        System.out.println(ApiUtils.toDouble(dataset.getValue(j, i) + "") + "----- " + dataset.getRowKey(j) + "----- " + dataset.getColumnKey(i) + "");
+                        dataset2.addValue(ApiUtils.toDouble(dataset.getValue(j, i) + ""), dataset.getRowKey(j) + "", dataset.getColumnKey(i) + "");
+                    }
+                }
+            }
+        }
+
+        return dataset2;
+    }
+
+    private CategoryDataset createDataset6(List<Map<String, Object>> data, List<SecondAxis> secondAxis, List<FirstAxis> firstAxis, String xAxis) {
+        System.out.println("Start function of createDataset2");
+        // create the dataset...
+        DecimalFormat df = new DecimalFormat(".##");
+        String value;
+        final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            for (Iterator<FirstAxis> iterator1 = firstAxis.iterator(); iterator1.hasNext();) {
+                FirstAxis axis = iterator1.next();
+                System.out.println(null + "---" + axis.getDisplayName() + "----" + dataMap.get(xAxis) + "");
+//                dataset.addValue(null, axis.getDisplayName(), dataMap.get(xAxis) + "");
             }
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {

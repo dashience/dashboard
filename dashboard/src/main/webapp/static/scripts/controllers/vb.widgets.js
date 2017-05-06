@@ -1,10 +1,23 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
 
+    $scope.widgets = []
     $scope.dragEnabled = true;
-
     $scope.toggleDragging = function () {
         $scope.dragEnabled = !$scope.dragEnabled;
     };
+
+    $http.get("admin/report/reportWidget").success(function (response) {
+        $scope.reportWidgets = response;
+    });
+
+    $http.get('admin/report/getReport').success(function (response) {
+        $scope.reportList = response;
+    });
+
+    $scope.tags = [];
+    $http.get('admin/tag').success(function (response) {
+        $scope.tags = response;
+    });
 
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
@@ -35,7 +48,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $stateParams.tabId = 0;
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            $scope.widgets = response;
+            var widgetItems = [];
+            console.log(response);
+            widgetItems = response;
+            widgetItems.forEach(function (value, key) {
+                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
+                    console.log(response)
+                    if (response.length == 0) {
+                        var tagsList = $scope.tags[0]
+                        console.log($scope.tags[0])
+                        tagsList.status = 'InActive';
+                        value.tags = tagsList;
+                        console.log(value)
+                    }
+                    response.forEach(function (val, k) {
+                        if (value.id == val.widgetId.id) {
+                            val.tagId.status = value.status ? val.status : 'InActive';
+                            value.tags = val.tagId;
+                        }
+                    });
+                });
+            });
+            $scope.widgets = widgetItems;
         });
     }
     getWidgetItem();
@@ -73,7 +107,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(widgetData.widgetId + " : " + widgetData.tabId);
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             console.log(response);
-            $scope.widgets.push(response);
+            $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
+                response["tags"] = dataTag[0];
+                $scope.widgets.push(response);
+                console.log($scope.widgets);
+            });
         });
     }
 
@@ -85,14 +123,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         return list;
     };
 
-    $http.get("admin/report/reportWidget").success(function (response) {
-        $scope.reportWidgets = response;
-    });
-
-    $http.get('admin/report/getReport').success(function (response) {
-        $scope.reportList = response;
-    });
-
     $scope.addWidgetToReport = function (widget) {
         var data = {};
         data.widgetId = widget.id;
@@ -103,6 +133,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportDescription = "";
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
+        $scope.showReportEmptyMessage = false;
     };
 
     $scope.clearReport = function () {
@@ -111,20 +142,35 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
     };
-
     $scope.favourites = false;
 
-    $scope.favouritesNew = function (favourites) {
-        if (favourites == "true")
-        {
-//            alert(favourites);
-        } else {
-//            alert(favourites);
-        }
-        // alert(favourites);
+    $scope.favouritesNew = function (favourites, widget) {
+        alert(widget.id);
+        console.log(widget.id);
+        console.log(favourites);
+        console.log(widget);
+        console.log(widget.tags.status);
+        console.log(widget.tags.tagName);
+        if (widget.id) {
+            alert("null")
 
-        // console.log($scope.favourites);
-    }
+            if (favourites === true) {
+                alert("active")
+                widget.tags.status = "Active";
+            } else {
+                alert("inactive")
+                widget.tags.status = "InActive";
+            }
+            var tagData = {
+                tagName: widget.tags.tagName,
+                widgetId: widget.id,
+                status: widget.tags.status
+            }
+            console.log(tagData)
+            $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData})
+        }
+
+    };
 
 
     $scope.goReport = function () {
@@ -197,7 +243,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setPieChartFn = function (pieFn) {
         $scope.directivePieFn = pieFn;
     };
-    $scope.setStackedChartFn = function (stackedBarChartFn) {
+    $scope.setStackedBarChartFn = function (stackedBarChartFn) {
         $scope.directiveStackedBarChartFn = stackedBarChartFn;
     };
     $scope.setTableChartFn = function (tableFn) {
@@ -1302,7 +1348,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
-//            alert(scope.widgetId)
+            console.log(scope.widgetObj)
             var labels = {format: {}};
             scope.loadingBar = true;
             var yAxis = [];
@@ -1853,7 +1899,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                         }
                     });
                 }
-                scope.setPieChartFn({pieChartFn: scope.refreshPieChart});
+                scope.setPieChartFn({pieFn: scope.refreshPieChart});
                 scope.refreshPieChart();
             }
         }
@@ -2131,7 +2177,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                         }
                     });
                 }
-                scope.setAreaChartFn({areaChartFn: scope.refreshAreaChart});
+                scope.setAreaChartFn({areaFn: scope.refreshAreaChart});
                 scope.refreshAreaChart();
             }
         }
@@ -2152,7 +2198,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
-            scope.loadingBar = true;
+            scope.loadingStackedBar = true;
             var yAxis = [];
             var columns = [];
             var xAxis;
@@ -2395,7 +2441,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31', '#666666', '#a5d169', '#75ccd0']
+                                    pattern: ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169']
 
                                 },
                                 tooltip: {show: false},
@@ -2421,7 +2467,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                         }
                     });
                 }
-                scope.setStackedBarChartFn({stackedBarFn: scope.refreshStackedBarChart});
+                scope.setStackedBarChartFn({stackedBarChartFn: scope.refreshStackedBarChart});
                 scope.refreshStackedBarChart();
 
             }

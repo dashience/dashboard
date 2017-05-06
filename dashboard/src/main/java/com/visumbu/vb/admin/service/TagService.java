@@ -94,7 +94,38 @@ public class TagService {
     public WidgetTag deleteWidgetTag(Integer widgetTagId) {
         return tagDao.deleteWidgetTag(widgetTagId);
     }
-    
+
+    public WidgetTag selectWidgetTag(TagWidgetBean tagWidgetBean) {
+        String[] tagArray = tagWidgetBean.getTagName().split(",");
+//        String status = "InActive";
+        for (int i = 0; i < tagArray.length; i++) {
+            WidgetTag widgetTag = new WidgetTag();
+            String widgetTagName = tagArray[i];
+            Tag tag = tagDao.findTagName(widgetTagName);
+            System.out.println("tag Id ---> " + tag.getId());
+
+            widgetTag.setTagId(tag);
+            Integer widgetId = tagWidgetBean.getWidgetId();
+            System.out.println("widgetID ---> " + widgetId);
+            TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
+            System.out.println("tabWidgetId ---> " + tabWidget.getId());
+
+            widgetTag.setWidgetId(tabWidget);
+            widgetTag.setStatus(tagWidgetBean.getStatus());
+
+            WidgetTag tagWidget = tagDao.findWidgetTagByWidget(tag.getId(), tabWidget.getId());
+            if (tagWidget == null) {
+                tagDao.create(widgetTag);
+            } else {
+                widgetTag.setId(tagWidget.getId());
+                tagDao.update(widgetTag);
+            }
+        }
+        return null;
+//        widgetTag.setWidgetId(tabWidget);
+
+    }
+
 //     public WidgetTag readWidgetTag(Integer id) {
 //        return (WidgetTag) tagDao.read(Tag.class, id);
 //    }
@@ -104,5 +135,4 @@ public class TagService {
 //        return (WidgetTag) tagDao.delete(id);
 //        //return dealer;
 //    }
-
 }

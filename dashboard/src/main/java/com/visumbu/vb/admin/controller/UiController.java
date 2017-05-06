@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
+import com.visumbu.vb.model.WidgetTag;
 
 import com.visumbu.vb.utils.Rest;
 import java.io.InputStream;
@@ -163,6 +164,12 @@ public class UiController extends BaseController {
     public @ResponseBody
     TabWidget getWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId,  @PathVariable Integer tabId) {
         return uiService.getWidget(widgetId, tabId);
+    }
+    
+    @RequestMapping(value = "dbDuplicateTag/{widgetId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<WidgetTag> getTagWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
+        return uiService.getTagWidget(widgetId);
     }
     
     @RequestMapping(value = "dbWidgetUpdateOrder/{tabId}", method = RequestMethod.GET, produces = "application/json")

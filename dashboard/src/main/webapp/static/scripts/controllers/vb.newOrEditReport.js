@@ -109,7 +109,6 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
 
     $scope.saveReportData = function () {
         if (0 == $stateParams.reportId) {
-            alert($stateParams.reportId)
             $scope.selectReportId = "";
         } else {
             $scope.selectReportId = $stateParams.reportId;
@@ -346,11 +345,15 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         reportWidget.widgetTitle = reportWidget.previewTitle ? reportWidget.previewTitle : reportWidget.widgetTitle;
         reportWidget.reportColumns = reportWidget.columns;
     };
-
+    $scope.moveWidget = function (list, from, to) {
+        list.splice(to, 0, list.splice(from, 1)[0]);
+        return list;
+    };
     $scope.onDropComplete = function (index, reportWidget, evt) {
         if (reportWidget !== "" && reportWidget !== null) {
             var otherObj = $scope.reportWidgets[index];
             var otherIndex = $scope.reportWidgets.indexOf(reportWidget);
+//            $scope.reportWidgets = $scope.moveWidget($scope.reportWidgets, otherIndex, index);
             $scope.reportWidgets[index] = reportWidget;
             $scope.reportWidgets[otherIndex] = otherObj;
             var widgetOrder = $scope.reportWidgets.map(function (value, key) {
@@ -360,7 +363,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 return value.id;
             }).join(',');
             if (widgetOrder) {
-                $http({method: 'GET', url: 'admin/report/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
+                $http({method: 'GET', url: 'admin/ui/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
             }
         }
         ;

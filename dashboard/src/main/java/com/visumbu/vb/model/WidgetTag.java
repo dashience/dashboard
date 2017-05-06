@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -28,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "WidgetTag.findAll", query = "SELECT w FROM WidgetTag w")
+    , @NamedQuery(name = "WidgetTag.findByWidgetId", query = "SELECT w FROM WidgetTag w WHERE w.widgetId.id = :id")
     , @NamedQuery(name = "WidgetTag.findById", query = "SELECT w FROM WidgetTag w WHERE w.id = :id")})
 public class WidgetTag implements Serializable {
 
@@ -37,6 +39,9 @@ public class WidgetTag implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Size(max = 45)
+    @Column(name = "status")
+    private String status;
     @JoinColumn(name = "widget_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private TabWidget widgetId;
@@ -75,6 +80,14 @@ public class WidgetTag implements Serializable {
         this.tagId = tagId;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -99,5 +112,5 @@ public class WidgetTag implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.WidgetTag[ id=" + id + " ]";
     }
-    
+
 }

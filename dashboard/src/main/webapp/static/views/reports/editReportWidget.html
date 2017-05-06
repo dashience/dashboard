@@ -552,7 +552,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
+<!--                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
                                             <label>Grouping</label>
                                             <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
                                                 <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
@@ -560,7 +560,7 @@
                                                     {{group.displayName}}
                                                 </ui-select-choices>
                                             </ui-select>
-                                        </div>
+                                        </div>-->
 
                                         <div ng-if="editChartType === 'ticker'">
                                             <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>

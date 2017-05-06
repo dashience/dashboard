@@ -462,9 +462,11 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 if (val.fieldName === value.fieldName) {
                     exists = true;
                     val.yAxis = 1;
+                    val.groupField = y1data.indexOf(value) + 1;
                 } else {
                     if (val.fieldName == y1data.removeItem) {
                         val.yAxis = null;
+                        val.groupField=null;
                     }
                 }
             });
@@ -492,9 +494,11 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 if (val.fieldName === value.fieldName) {
                     exists = true;
                     val.yAxis = 2;
+                    val.groupField = y2data.indexOf(value) + 1;
                 } else {
                     if (val.fieldName == y2data.removeItem) {
                         val.yAxis = null;
+                        val.groupField=null;
                     }
                 }
             });

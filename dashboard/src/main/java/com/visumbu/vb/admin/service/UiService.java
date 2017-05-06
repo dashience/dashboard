@@ -29,6 +29,7 @@ import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
+import com.visumbu.vb.model.WidgetTag;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -399,8 +400,11 @@ public class UiService {
         System.out.println("-------------->1");
         List<WidgetColumn> widgetColumns = uiDao.getWidgetColumnsByWidgetId(widgetId);
         System.out.println("widgetColumns ----> " + widgetColumns);
-//        uiDao.deleteWidgetColumns(tabWidget.getId());
 
+        List<WidgetTag> widgetTags = uiDao.getWidgetTagsByWidgetId(widgetId);
+        System.out.println("widgetTags ----> " + widgetTags);
+
+//        uiDao.deleteWidgetColumns(tabWidget.getId());
         for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
             System.out.println("-------------->2");
             WidgetColumn widgetColumnBean = iterate.next();
@@ -432,17 +436,22 @@ public class UiService {
             widgetColumn.setWidgetId(savedTabWidget);
             uiDao.saveOrUpdate(widgetColumn);
         }
+
+        for (Iterator<WidgetTag> iterate = widgetTags.iterator(); iterate.hasNext();) {
+            WidgetTag tagWidgetBean = iterate.next();
+            WidgetTag widgetTag = new WidgetTag();
+            widgetTag.setStatus(tagWidgetBean.getStatus());
+            widgetTag.setTagId(tagWidgetBean.getTagId());
+            widgetTag.setWidgetId(savedTabWidget);
+            widgetTag.setStatus(tagWidgetBean.getStatus());
+            uiDao.saveOrUpdate(widgetTag);
+        }
+
         return uiDao.getTabWidgetById(id);
     }
-
-    public String getStartDateByWidgetId(Integer widgetId) {
-        List StartDate = uiDao.getStartDateByWidgetId(widgetId);
-        return (String) StartDate.get(0);
-    }
-
-    public String getEndDateByWidgetId(Integer widgetId) {
-        List EndDate = uiDao.getEndDateByWidgetId(widgetId);
-        return (String) EndDate.get(0);
+    
+    public List<WidgetTag> getTagWidget(Integer widgetId) {
+        return uiDao.getTagWidgetByWidgetId(widgetId);
     }
 
     public ReportType addReportType(ReportType reportTypes) {
