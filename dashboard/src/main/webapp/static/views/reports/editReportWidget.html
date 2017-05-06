@@ -448,7 +448,7 @@
                                         </div>
 
                                         <div class="form-group" ng-if="showAdvanceOptions == true">
-                                            <div class="col-md-12">
+                                            <div class="col-md-9">
                                                 <label>Format</label>                                 
                                                 <table class="table table-bordered table-responsive">
                                                     <thead>
@@ -493,6 +493,12 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                        </div>
+                                        <div class="col-md-3" ng-if="editChartType != 'pie'">
+                                            <label>Grid Line</label>
+                                            <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='widget.isGridLine' ng-change="setGridLine(widget)">
+                                                <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
+                                            </select> 
                                         </div>
                                     </div>
                                     <div class="col-md-4" ng-show="editChartType == 'ticker'">
@@ -546,15 +552,15 @@
                                             </div>
                                         </div>
 
-<!--                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
-                                            <label>Grouping</label>
-                                            <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
-                                                <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
-                                                <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
-                                                    {{group.displayName}}
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>-->
+                                        <!--                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
+                                                                                    <label>Grouping</label>
+                                                                                    <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
+                                                                                        <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
+                                                                                        <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
+                                                                                            {{group.displayName}}
+                                                                                        </ui-select-choices>
+                                                                                    </ui-select>
+                                                                                </div>-->
 
                                         <div ng-if="editChartType === 'ticker'">
                                             <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
@@ -599,28 +605,28 @@
 
                     </div>
                 </div>
-<!--                <div class="row edit-widget" ng-if="editChartType === 'table'">
-                    <div class="col-lg-12">
-                        <div class="preview-table">
-                            <div widget-Preview-Table 
-                                 preview-Table-List='{{collectionFields}}'
-                                 preview-Urls='{{previewChartUrl}}' 
-                                 preview-Columns='{{widget.columns}}' 
-                                 preview-Widget="{{previewColumn}}" 
-                                 preview-Widget-Table="{{widget}}"
-                                 aggregations-Types="{{selectAggregations}}"
-                                 group-Priorities="{{selectGroupPriorities}}"
-                                 sorting-Fields="{{sorting}}"
-                                 display-Formats="{{formats}}"
-                                 display-Alignments="{{alignments}}"
-                                 hide-Options="{{hideOptions}}"
-                                 field-Types="{{fieldTypes}}"
-                                 reload-url="{{currentLocation}}">
-                            </div>
-                        </div>
-                    </div>
-
-                </div>-->
+                <!--                <div class="row edit-widget" ng-if="editChartType === 'table'">
+                                    <div class="col-lg-12">
+                                        <div class="preview-table">
+                                            <div widget-Preview-Table 
+                                                 preview-Table-List='{{collectionFields}}'
+                                                 preview-Urls='{{previewChartUrl}}' 
+                                                 preview-Columns='{{widget.columns}}' 
+                                                 preview-Widget="{{previewColumn}}" 
+                                                 preview-Widget-Table="{{widget}}"
+                                                 aggregations-Types="{{selectAggregations}}"
+                                                 group-Priorities="{{selectGroupPriorities}}"
+                                                 sorting-Fields="{{sorting}}"
+                                                 display-Formats="{{formats}}"
+                                                 display-Alignments="{{alignments}}"
+                                                 hide-Options="{{hideOptions}}"
+                                                 field-Types="{{fieldTypes}}"
+                                                 reload-url="{{currentLocation}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                </div>-->
                 <div class="row edit-widget" ng-if="editChartType === 'table'">
                     <div class="col-lg-12">
                         <div class="preview-table">
@@ -673,7 +679,7 @@
                     </div>
                 </div>
             </div>
-           <div ng-show="isSet(2)" class="license">
+            <div ng-show="isSet(2)" class="license">
                 <div class="col-lg-12">
                     <div class="alert alert-info">
                         <strong>Output</strong><br>

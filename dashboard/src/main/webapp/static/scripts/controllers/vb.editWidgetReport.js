@@ -118,6 +118,10 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         {name: 'Bar Chart', value: "bar"}
 
     ];
+    $scope.gridLine=[
+        {name: 'yes', value: "Yes"},
+        {name: 'No', value: "No"}
+    ]
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
@@ -625,35 +629,42 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 
 
     //Stacked Bar Grouping
-    $scope.selectGrouping = function (widget, groupingFields) {
+//    $scope.selectGrouping = function (widget, groupingFields) {
+//        $scope.editChartType = null;
+//        var groups = [];
+//        angular.forEach(groupingFields, function (value, key) {
+//            $scope.fieldNames = value.fieldName;
+//            groups.push($scope.fieldNames);
+//        });
+//        angular.forEach(groupingFields, function (value, key) {
+//            angular.forEach(widget.columns, function (val, header) {
+//                if (value.fieldName === val.fieldName) {
+//                    val.groupField = groups.indexOf(value.fieldName) + 1;
+//                }
+//            });
+//        });
+//        var chartType = widget;
+//        $timeout(function () {
+//            $scope.previewChart(chartType, widget)
+//        }, 50);
+//    };
+
+    //Removed Grouping
+//    $scope.removedByGrouping = function (widget, column, groupList) {
+//        angular.forEach(widget.columns, function (value, key) {
+//            if (value.fieldName == column.fieldName) {
+//                value.groupField = "";
+//            }
+//        })
+//        $scope.selectGrouping(widget, groupList)
+//    };
+    $scope.setGridLine=function(widget){
         $scope.editChartType = null;
-        var groups = [];
-        angular.forEach(groupingFields, function (value, key) {
-            $scope.fieldNames = value.fieldName;
-            groups.push($scope.fieldNames);
-        });
-        angular.forEach(groupingFields, function (value, key) {
-            angular.forEach(widget.columns, function (val, header) {
-                if (value.fieldName === val.fieldName) {
-                    val.groupField = groups.indexOf(value.fieldName) + 1;
-                }
-            });
-        });
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
         }, 50);
-    };
-
-    //Removed Grouping
-    $scope.removedByGrouping = function (widget, column, groupList) {
-        angular.forEach(widget.columns, function (value, key) {
-            if (value.fieldName == column.fieldName) {
-                value.groupField = "";
-            }
-        })
-        $scope.selectGrouping(widget, groupList)
-    };
+    }
 
     $scope.tags = [];
     $http.get('admin/tag').success(function (response) {
@@ -750,7 +761,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
-            customEndDate: $scope.customEndDate//widget.customEndDate
+            customEndDate: $scope.customEndDate,//widget.customEndDate
+            isGridLine:widget.isGridLine
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             if (widget.tagName) {

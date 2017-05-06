@@ -6,8 +6,12 @@
 package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.TagService;
+import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.TagWidgetBean;
+import com.visumbu.vb.controller.BaseController;
+import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Tag;
+import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetTag;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +30,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("tag")
-public class TagController {
+public class TagController extends BaseController {
 
     @Autowired
     private TagService tagService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
@@ -66,7 +72,7 @@ public class TagController {
     WidgetTag createWidgetTag(HttpServletRequest request, HttpServletResponse response, @RequestBody TagWidgetBean tagWidgetBean) {
         return tagService.createWidgetTag(tagWidgetBean);
     }
-    
+
     @RequestMapping(value = "widgetTag/{tagWidgetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getWidgetTagById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tagWidgetId) {
@@ -78,14 +84,39 @@ public class TagController {
     WidgetTag deleteWidgetTag(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetTagId) {
         return tagService.deleteWidgetTag(widgetTagId);
     }
-    
-    
+
     @RequestMapping(value = "selectedTag", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     WidgetTag selectWidgetTag(HttpServletRequest request, HttpServletResponse response, @RequestBody TagWidgetBean tagWidgetBean) {
         return tagService.selectWidgetTag(tagWidgetBean);
     }
-    
+
+    @RequestMapping(value = "removeFav/{widgetId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Boolean removeFav(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
+        String username = getUser(request);
+        VbUser user = userService.findByUsername(username);
+
+        return tagService.removeFav(widgetId, user);
+    }
+
+    @RequestMapping(value = "setFav/{widgetId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    Boolean setFav(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
+        String username = getUser(request);
+        VbUser user = userService.findByUsername(username);
+
+        return tagService.setFav(widgetId, user);
+    }
+
+    @RequestMapping(value = "getAllFav", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<TabWidget> getAllFav(HttpServletRequest request, HttpServletResponse response) {
+        String username = getUser(request);
+        VbUser user = userService.findByUsername(username);
+        return tagService.getAllFav(user);
+    }
+
 //    @RequestMapping(value = "widgetTag/{widgetTagId}", method = RequestMethod.DELETE, produces = "application/json")
 //    public @ResponseBody
 //    WidgetTag deleteWidgetTag(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetTagId) {

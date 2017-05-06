@@ -51,24 +51,36 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             var widgetItems = [];
             console.log(response);
             widgetItems = response;
-            widgetItems.forEach(function (value, key) {
-                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
-                    console.log(response)
-                    if (response.length == 0) {
-                        var tagsList = $scope.tags[0]
-                        console.log($scope.tags[0])
-                        tagsList.status = 'InActive';
-                        value.tags = tagsList;
-                        console.log(value)
-                    }
-                    response.forEach(function (val, k) {
-                        if (value.id == val.widgetId.id) {
-                            val.tagId.status = value.status ? val.status : 'InActive';
-                            value.tags = val.tagId;
-                        }
+            $http.get("admin/tag/getAllFav/").success(function (favResponse) {
+                widgetItems.forEach(function (value, key) {
+                    favWidget = $.grep(favResponse, function (b) {
+                        return b.id === value.id;
                     });
+                    if (favWidget.length > 0) {
+                        value.isFav = true;
+                    } else {
+                        value.isFav = false;
+                    }
                 });
-            });
+            })
+//            widgetItems.forEach(function (value, key) {
+//                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
+//                    console.log(response)
+//                    if (response.length == 0) {
+//                        var tagsList = $scope.tags[0]
+//                        console.log($scope.tags[0])
+//                        tagsList.status = 'InActive';
+//                        value.tags = tagsList;
+//                        console.log(value)
+//                    }
+//                    response.forEach(function (val, k) {
+//                        if (value.id == val.widgetId.id) {
+//                            val.tagId.status = val.status ? val.status : 'InActive';
+//                            value.tags = val.tagId;
+//                        }
+//                    });
+//                });
+//            });
             $scope.widgets = widgetItems;
         });
     }
@@ -144,33 +156,40 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.favourites = false;
 
-    $scope.favouritesNew = function (favourites, widget) {
-        alert(widget.id);
-        console.log(widget.id);
-        console.log(favourites);
-        console.log(widget);
-        console.log(widget.tags.status);
-        console.log(widget.tags.tagName);
-        if (widget.id) {
-            alert("null")
-
-            if (favourites === true) {
-                alert("active")
-                widget.tags.status = "Active";
-            } else {
-                alert("inactive")
-                widget.tags.status = "InActive";
-            }
-            var tagData = {
-                tagName: widget.tags.tagName,
-                widgetId: widget.id,
-                status: widget.tags.status
-            }
-            console.log(tagData)
-            $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData})
+    $scope.toggleFavourite = function (widget) {
+        var isFav = widget.isFav;
+        if (isFav) {
+            $http({method: 'POST', url: "admin/tag/removeFav/" + widget.id});
+            widget.isFav = false;
+        } else {
+            $http({method: 'POST', url: "admin/tag/setFav/" + widget.id});
+            widget.isFav = true;
         }
+        console.log(widget)
+    }
 
-    };
+//    $scope.favouritesNew = function (favourites, widget) {
+//        alert(widget.id);
+//        console.log(widget.id);
+//        console.log(favourites);
+//        console.log(widget);
+//        console.log(widget.tags.status);
+//        console.log(widget.tags.tagName);
+//
+//        if (favourites === true) {
+//            alert("active")
+//            widget.tags.status = "Active";
+//        } else {
+//            alert("inactive")
+//            widget.tags.status = "InActive";
+//        }
+//        var tagData = {
+//            tagName: widget.tags.tagName,
+//            widgetId: widget.id,
+//            status: widget.tags.status
+//        }
+//        $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData});
+//    };
 
 
     $scope.goReport = function () {
@@ -1231,6 +1250,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -1284,7 +1304,15 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
 
+
+                            console.log(gridLine)
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -1311,10 +1339,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });
@@ -1521,6 +1549,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj)
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -1571,6 +1600,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -1598,10 +1633,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });
@@ -2081,6 +2116,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -2128,6 +2164,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -2155,10 +2197,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });
@@ -2363,6 +2405,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -2415,6 +2458,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -2443,10 +2492,10 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });

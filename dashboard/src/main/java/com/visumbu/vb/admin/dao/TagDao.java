@@ -6,7 +6,9 @@
 package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Tag;
+import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetTag;
 import java.util.List;
 import org.hibernate.Query;
@@ -60,6 +62,18 @@ public class TagDao extends BaseDao {
         }
         return null;
     }
+    public WidgetTag findWidgetTagByUserNTag(Integer tagId, Integer widgetId, VbUser user) {
+        String queryStr = "select t from WidgetTag t where t.tagId.id = :tagId and t.widgetId.id = :widgetId and t.userId = :user";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("tagId", tagId);
+        query.setParameter("widgetId", widgetId);
+        query.setParameter("user", user);
+        List<WidgetTag> widgetTagList = (List<WidgetTag>) query.list();
+        if (widgetTagList != null && !widgetTagList.isEmpty()) {
+            return widgetTagList.get(0);
+        }
+        return null;
+    }
     
     public WidgetTag findWidgetTagByWidgetId(Integer widgetId) {
         String queryStr = "select t from WidgetTag t where t.widgetId.id = :widgetId";
@@ -78,6 +92,14 @@ public class TagDao extends BaseDao {
         query.setParameter("widgetTagId", widgetTagId);
         query.executeUpdate();
         return null;
+    }
+
+    public List<TabWidget> findAllWidgetsByTag(VbUser user, Tag tag) {
+        String queryStr = "select w.widgetId from WidgetTag w where w.userId = :user and w.tagId = :tag";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("tag", tag);
+        query.setParameter("user", user);
+        return query.list();
     }
 
 }

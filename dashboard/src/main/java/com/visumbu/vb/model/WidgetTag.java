@@ -48,6 +48,9 @@ public class WidgetTag implements Serializable {
     @JoinColumn(name = "tag_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Tag tagId;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne
+    private VbUser userId;
 
     public WidgetTag() {
     }
@@ -86,6 +89,14 @@ public class WidgetTag implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public VbUser getUserId() {
+        return userId;
+    }
+
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
     }
 
     @Override

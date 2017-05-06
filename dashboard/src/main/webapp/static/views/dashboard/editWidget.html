@@ -456,8 +456,8 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-if="showAdvanceOptions == true">
-                                            <div class="col-md-12">
+                                        <div class="form-group" >
+                                            <div class="col-md-9" ng-if="showAdvanceOptions == true">
                                                 <label>Format</label>                                 
                                                 <table class="table table-bordered table-responsive">
                                                     <thead>
@@ -502,12 +502,14 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <div class="col-md-3" ng-if="editChartType != 'pie'">
+                                                <label>Grid Line</label>
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='widget.isGridLine' ng-change="setGridLine(widget)">
+                                                    <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
+                                                </select> 
+                                            </div>
                                         </div>
-                                        <div class="form-group" ng-if="editChartType != 'pie'">
-                                            <select class='form-control' ng-model='widget.isGridLine' ng-change="">
-                                                <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
-                                            </select> 
-                                        </div>
+
                                     </div>
                                     <div class="col-md-4" ng-show="editChartType == 'ticker'">
                                         <div class="form-group">

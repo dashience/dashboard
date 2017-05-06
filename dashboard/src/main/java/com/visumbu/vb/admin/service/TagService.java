@@ -11,6 +11,7 @@ import com.visumbu.vb.bean.TagWidgetBean;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Tag;
+import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetTag;
 import java.util.Iterator;
 import java.util.List;
@@ -97,19 +98,14 @@ public class TagService {
 
     public WidgetTag selectWidgetTag(TagWidgetBean tagWidgetBean) {
         String[] tagArray = tagWidgetBean.getTagName().split(",");
-//        String status = "InActive";
         for (int i = 0; i < tagArray.length; i++) {
             WidgetTag widgetTag = new WidgetTag();
             String widgetTagName = tagArray[i];
             Tag tag = tagDao.findTagName(widgetTagName);
-            System.out.println("tag Id ---> " + tag.getId());
-
+            
             widgetTag.setTagId(tag);
             Integer widgetId = tagWidgetBean.getWidgetId();
-            System.out.println("widgetID ---> " + widgetId);
             TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
-            System.out.println("tabWidgetId ---> " + tabWidget.getId());
-
             widgetTag.setWidgetId(tabWidget);
             widgetTag.setStatus(tagWidgetBean.getStatus());
 
@@ -126,6 +122,7 @@ public class TagService {
 
     }
 
+
 //     public WidgetTag readWidgetTag(Integer id) {
 //        return (WidgetTag) tagDao.read(Tag.class, id);
 //    }
@@ -135,4 +132,33 @@ public class TagService {
 //        return (WidgetTag) tagDao.delete(id);
 //        //return dealer;
 //    }
+
+    public Boolean removeFav(Integer widgetId, VbUser user) {
+        Tag tag = tagDao.findTagName("Fav");
+        WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
+        if(widgetTag != null) {
+            tagDao.delete(widgetTag);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean setFav(Integer widgetId, VbUser user) {
+        Tag tag = tagDao.findTagName("Fav");
+        WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
+        if(widgetTag != null) {
+            return false;
+        }
+        widgetTag = new WidgetTag();
+        widgetTag.setTagId(tag);
+        widgetTag.setWidgetId(uiDao.getTabWidgetById(widgetId));
+        widgetTag.setUserId(user);
+        tagDao.create(widgetTag);
+        return true;
+    }
+
+    public List<TabWidget> getAllFav(VbUser user) {
+        Tag tag = tagDao.findTagName("Fav");
+        return tagDao.findAllWidgetsByTag(user, tag);
+    }
 }

@@ -312,6 +312,7 @@ public class UiService {
         tabWidget.setLastNmonths(lastNmonths);
         tabWidget.setLastNweeks(lastNweeks);
         tabWidget.setLastNyears(lastNyears);
+        tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -392,6 +393,7 @@ public class UiService {
         tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
         tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
         tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
+        tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
         System.out.println("new Widget id ----> " + id);
