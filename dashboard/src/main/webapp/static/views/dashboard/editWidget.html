@@ -153,7 +153,7 @@
     .ui-sortable-placeholder * { 
         opacity: 0.0; visibility: hidden; 
     }
-   .group{
+    .group{
         background-color: #fff;
         padding: 15px;
         border-radius: 5px;
@@ -263,7 +263,7 @@
         <div class="row col-md-12">
             <div class="col-md-4">
                 <label>Date Range</label>
-               
+
                 <div>
                     <div class="dropdown editWidgetDropDown">
                         <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
@@ -503,6 +503,11 @@
                                                 </table>
                                             </div>
                                         </div>
+                                        <div class="form-group" ng-if="editChartType != 'pie'">
+                                            <select class='form-control' ng-model='widget.isGridLine' ng-change="">
+                                                <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
+                                            </select> 
+                                        </div>
                                     </div>
                                     <div class="col-md-4" ng-show="editChartType == 'ticker'">
                                         <div class="form-group">
@@ -555,15 +560,15 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
-                                            <label>Grouping</label>
-                                            <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
-                                                <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
-                                                <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
-                                                    {{group.displayName}}
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
+                                        <!--                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
+                                                                                    <label>Grouping</label>
+                                                                                    <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
+                                                                                        <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
+                                                                                        <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
+                                                                                            {{group.displayName}}
+                                                                                        </ui-select-choices>
+                                                                                    </ui-select>
+                                                                                </div>-->
 
                                         <div ng-if="editChartType === 'ticker'">
                                             <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>

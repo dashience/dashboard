@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "WidgetTag.findAll", query = "SELECT w FROM WidgetTag w")
+    , @NamedQuery(name = "WidgetTag.findByWidgetId", query = "SELECT w FROM WidgetTag w WHERE w.widgetId.id = :id")
     , @NamedQuery(name = "WidgetTag.findById", query = "SELECT w FROM WidgetTag w WHERE w.id = :id")})
 public class WidgetTag implements Serializable {
 
@@ -85,7 +86,7 @@ public class WidgetTag implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
-    }    
+    }
 
     @Override
     public int hashCode() {
@@ -111,5 +112,5 @@ public class WidgetTag implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.WidgetTag[ id=" + id + " ]";
     }
-    
+
 }

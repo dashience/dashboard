@@ -24,6 +24,7 @@ import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
+import com.visumbu.vb.model.WidgetTag;
 import java.util.Iterator;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -168,6 +169,12 @@ public class UiDao extends BaseDao {
         query.setParameter("id", widgetId);
         return query.list();
     }
+    
+    public List<WidgetTag> getWidgetTagsByWidgetId(Integer widgetId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetTag.findByWidgetId");
+        query.setParameter("id", widgetId);
+        return query.list();
+    }
 
     public WidgetColumn addWidgetColumn(Integer widgetId, WidgetColumn widgetColumn) {
         widgetColumn.setWidgetId(getTabWidgetById(widgetId));
@@ -200,6 +207,11 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("widgetId", id);
         query.executeUpdate();
+        
+        String queryTag = "delete from WidgetTag d where d.widgetId.id = :widgetId";
+        Query querys = sessionFactory.getCurrentSession().createQuery(queryTag);
+        querys.setParameter("widgetId", id);
+        querys.executeUpdate();
 
         delete(getTabWidgetById(id));
         return null;
@@ -531,7 +543,10 @@ public class UiDao extends BaseDao {
 //        query.setParameter("agencyId", user.getAgencyId().getId());
 //        return query.list();
 //    }    
-    
-    
 
+    public List<WidgetTag> getTagWidgetByWidgetId(Integer widgetId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetTag.findByWidgetId");
+        query.setParameter("id", widgetId);
+        return query.list();
+    }
 }

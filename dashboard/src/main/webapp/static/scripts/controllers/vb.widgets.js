@@ -49,18 +49,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
             var widgetItems = [];
+            console.log(response);
             widgetItems = response;
             widgetItems.forEach(function (value, key) {
                 $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
                     console.log(response)
                     if (response.length == 0) {
                         var tagsList = $scope.tags[0]
+                        console.log($scope.tags[0])
                         tagsList.status = 'InActive';
                         value.tags = tagsList;
+                        console.log(value)
                     }
                     response.forEach(function (val, k) {
                         if (value.id == val.widgetId.id) {
-                            val.tagId.status = val.status ? val.status : 'InActive';
+                            val.tagId.status = value.status ? val.status : 'InActive';
                             value.tags = val.tagId;
                         }
                     });
@@ -104,7 +107,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(widgetData.widgetId + " : " + widgetData.tabId);
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             console.log(response);
-            $scope.widgets.push(response);
+            $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
+                response["tags"] = dataTag[0];
+                $scope.widgets.push(response);
+                console.log($scope.widgets);
+            });
         });
     }
 
@@ -126,6 +133,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportDescription = "";
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
+        $scope.showReportEmptyMessage = false;
     };
 
     $scope.clearReport = function () {
@@ -134,21 +142,34 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
     };
-
     $scope.favourites = false;
 
     $scope.favouritesNew = function (favourites, widget) {
-        if (favourites === true) {
-            widget.tags.status = "Active";
-        } else {
-            widget.tags.status = "InActive";
+        alert(widget.id);
+        console.log(widget.id);
+        console.log(favourites);
+        console.log(widget);
+        console.log(widget.tags.status);
+        console.log(widget.tags.tagName);
+        if (widget.id) {
+            alert("null")
+
+            if (favourites === true) {
+                alert("active")
+                widget.tags.status = "Active";
+            } else {
+                alert("inactive")
+                widget.tags.status = "InActive";
+            }
+            var tagData = {
+                tagName: widget.tags.tagName,
+                widgetId: widget.id,
+                status: widget.tags.status
+            }
+            console.log(tagData)
+            $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData})
         }
-        var tagData = {
-            tagName: widget.tags.tagName,
-            widgetId: widget.id,
-            status: widget.tags.status
-        }
-        $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData});
+
     };
 
 
@@ -1321,6 +1342,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
+            console.log(scope.widgetObj)
             var labels = {format: {}};
             scope.loadingBar = true;
             var yAxis = [];
@@ -2164,7 +2186,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
-            scope.loadingBar = true;
+            scope.loadingStackedBar = true;
             var yAxis = [];
             var columns = [];
             var xAxis;
@@ -2405,7 +2427,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31','#75ccd0','#666666', '#a5d169']
+                                    pattern: ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169']
 
                                 },
                                 tooltip: {show: false},

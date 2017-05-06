@@ -97,14 +97,19 @@ public class TagService {
 
     public WidgetTag selectWidgetTag(TagWidgetBean tagWidgetBean) {
         String[] tagArray = tagWidgetBean.getTagName().split(",");
+//        String status = "InActive";
         for (int i = 0; i < tagArray.length; i++) {
             WidgetTag widgetTag = new WidgetTag();
             String widgetTagName = tagArray[i];
             Tag tag = tagDao.findTagName(widgetTagName);
-            
+            System.out.println("tag Id ---> " + tag.getId());
+
             widgetTag.setTagId(tag);
             Integer widgetId = tagWidgetBean.getWidgetId();
+            System.out.println("widgetID ---> " + widgetId);
             TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
+            System.out.println("tabWidgetId ---> " + tabWidget.getId());
+
             widgetTag.setWidgetId(tabWidget);
             widgetTag.setStatus(tagWidgetBean.getStatus());
 

@@ -29,6 +29,7 @@ import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
+import com.visumbu.vb.model.WidgetTag;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -157,7 +158,6 @@ public class UiService {
 //    public WidgetColumn getWidgetColumn(Integer widgetId) {
 //        return uiDao.getWidgetColumn(widgetId);
 //    }
-
     public WidgetColumn updateWidgetColumn(Integer widgetId, WidgetColumn widgetColumn) {
         return (WidgetColumn) uiDao.updateWidgetColumn(widgetId, widgetColumn);
     }
@@ -398,8 +398,11 @@ public class UiService {
         System.out.println("-------------->1");
         List<WidgetColumn> widgetColumns = uiDao.getWidgetColumnsByWidgetId(widgetId);
         System.out.println("widgetColumns ----> " + widgetColumns);
-//        uiDao.deleteWidgetColumns(tabWidget.getId());
 
+        List<WidgetTag> widgetTags = uiDao.getWidgetTagsByWidgetId(widgetId);
+        System.out.println("widgetTags ----> " + widgetTags);
+
+//        uiDao.deleteWidgetColumns(tabWidget.getId());
         for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
             System.out.println("-------------->2");
             WidgetColumn widgetColumnBean = iterate.next();
@@ -431,7 +434,22 @@ public class UiService {
             widgetColumn.setWidgetId(savedTabWidget);
             uiDao.saveOrUpdate(widgetColumn);
         }
+
+        for (Iterator<WidgetTag> iterate = widgetTags.iterator(); iterate.hasNext();) {
+            WidgetTag tagWidgetBean = iterate.next();
+            WidgetTag widgetTag = new WidgetTag();
+            widgetTag.setStatus(tagWidgetBean.getStatus());
+            widgetTag.setTagId(tagWidgetBean.getTagId());
+            widgetTag.setWidgetId(savedTabWidget);
+            widgetTag.setStatus(tagWidgetBean.getStatus());
+            uiDao.saveOrUpdate(widgetTag);
+        }
+
         return uiDao.getTabWidgetById(id);
+    }
+    
+    public List<WidgetTag> getTagWidget(Integer widgetId) {
+        return uiDao.getTagWidgetByWidgetId(widgetId);
     }
 
     public ReportType addReportType(ReportType reportTypes) {
@@ -457,16 +475,13 @@ public class UiService {
 //    public Report updateReport(Report report) {
 //        return (Report) uiDao.update(report);
 //    }
-
 //    public String updateReportOrder(Integer reportId, String widgetOrder) {
 //        return uiDao.updateReportOrder(reportId, widgetOrder);
 //    }
-
 //    public Report deleteReport(Integer reportId) {
 //        return uiDao.deleteReport(reportId);
 //        //return (Report) uiDao.delete(reportId);
 //    }
-
     public List getReport() {
         List<Report> report = uiDao.read(Report.class);
         return report;
@@ -479,7 +494,6 @@ public class UiService {
 //        }
 //        return uiDao.getAgencyReport(user);
 //    }
-
     public ReportWidget createReportWidget(ReportWidget reportWidget) {
         return (ReportWidget) uiDao.create(reportWidget);
     }
@@ -547,15 +561,12 @@ public class UiService {
 //    public List<ReportWidget> getReportWidget(Integer reportId) {
 //        return uiDao.getReportWidget(reportId);
 //    }
-
 //    public ReportWidget deleteReportWidget(Integer reportId) {
 //        return uiDao.deleteReportWidget(reportId);
 //    }
-
 //    public Report getReportById(Integer reportId) {
 //        return uiDao.getReportById(reportId);
 //    }
-
     public DataSource create(DataSource dataSource) {
         return (DataSource) uiDao.create(dataSource);
     }

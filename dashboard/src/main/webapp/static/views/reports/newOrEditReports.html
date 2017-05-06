@@ -187,7 +187,7 @@
 </div>
 <div class="row content">
     <div ng-repeat="reportWidget in reportWidgets">
-        <div class="col-md-{{reportWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
+        <div class="col-md-{{reportWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
             <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
                 <div class="panel-heading">
                     <div class="panel-tools">
@@ -225,21 +225,23 @@
                     <span class="{{reportWidget.icon}}"></span> 
                     <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle}}</span>
                 </div>
+                
+                <!--{{reportWidget.widgetId}}-->
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'line'">
-                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'bar'">
-                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
-                    <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area'">
-                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                 </div> 
                 <div class="box-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
                     <div>
-                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                     </div>
                 </div>
                 <div class="box-body list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
