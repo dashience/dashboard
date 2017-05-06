@@ -101,6 +101,8 @@ public class VbUser implements Serializable {
     private Collection<ReportType> reportTypesCollection1;
     @OneToMany(mappedBy = "userId")
     private Collection<Dashboard> dashboardCollection;
+    @OneToMany(mappedBy = "userId")
+    private Collection<WidgetTag> widgetTagCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -395,6 +397,19 @@ public class VbUser implements Serializable {
         this.dashboardCollection = dashboardCollection;
     }
 
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<WidgetTag> getWidgetTagCollection() {
+        return widgetTagCollection;
+    }
+
+    public void setWidgetTagCollection(Collection<WidgetTag> widgetTagCollection) {
+        this.widgetTagCollection = widgetTagCollection;
+    }
+
+    
+    
     @XmlTransient
     @JsonIgnore
     public Collection<DataSet> getDataSetCollection() {

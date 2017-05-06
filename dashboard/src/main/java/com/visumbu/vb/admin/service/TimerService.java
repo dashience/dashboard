@@ -68,6 +68,7 @@ public class TimerService {
             System.out.println("Last Execution Status -----> " + scheduler.getLastExecutionStatus());
             String dateRangeName = scheduler.getDateRangeName();
             System.out.println("Date Range Name ----> " + dateRangeName);
+            System.out.println("scheduler lastndays ----> "+scheduler.getLastNdays());
             String currentDateStr = null;
             schedulerHistory.setExecutionStartTime(schedulerStartTime);
             currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
@@ -77,10 +78,14 @@ public class TimerService {
             Date endDate = null;
             SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
             Integer lastNdays = null;
+            Integer lastNmonths = null;
+            Integer lastNweeks = null;
+            Integer lastNyears = null;
+
             if (dateRangeName == null || dateRangeName.isEmpty()) {
                 startDate = null;
                 endDate = null;
-            } else {
+            } else if(dateRangeName != null){
                 if (scheduler.getLastNdays() != null) {
                     lastNdays = scheduler.getLastNdays();
                     System.out.println("Last N days ----> " + lastNdays);
@@ -88,7 +93,6 @@ public class TimerService {
                 if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
                     lastNdays = 0;
                 }
-                Integer lastNmonths = null;
                 if (scheduler.getLastNmonths() != null) {
                     lastNmonths = scheduler.getLastNmonths();
                     System.out.println("Last N months ----> " + lastNmonths);
@@ -96,16 +100,13 @@ public class TimerService {
                 if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
                     lastNmonths = 0;
                 }
-                Integer lastNweeks = null;
                 if (scheduler.getLastNweeks() != null) {
                     lastNweeks = scheduler.getLastNweeks();
                     System.out.println("Last N weeks ----> " + lastNweeks);
-
                 }
                 if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
                     lastNweeks = 0;
                 }
-                Integer lastNyears = null;
                 if (scheduler.getLastNyears() != null) {
                     lastNyears = scheduler.getLastNyears();
                     System.out.println("Last N years ----> " + lastNyears);

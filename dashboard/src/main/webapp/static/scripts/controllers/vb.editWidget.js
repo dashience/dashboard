@@ -116,6 +116,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Bar Chart', value: "bar"}
 
     ];
+    $scope.gridLine=[
+        {name: 'yes', value: "Yes"},
+        {name: 'No', value: "No"}
+    ]
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
@@ -436,6 +440,42 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }, 50);
     };
     $scope.selectY1Axis = function (widget, y1data) {
+        var groupVar = [];
+        console.log(y1data);
+
+        if (widget.chartType == 'stackedbar') {
+            $scope.editChartType = null;
+            angular.forEach(y1data, function (value, key) {
+                if (!value) {
+                    return;
+                }
+                var exists = false;
+                angular.forEach(widget.columns, function (val, key) {
+                    if (val.fieldName === value.fieldName) {
+                        exists = true;
+                        val.yAxis = 1;
+//                        val.groupField = widget.columns.indexOf(val.fieldName) + 1;
+                        val.groupField = y1data.indexOf(value) + 1;
+                        console.log(val.groupField);
+                    } else {
+                        if (val.fieldName == y1data.removeItem) {
+                            val.yAxis = null;
+                            val.groupField = null;
+                        }
+                    }
+                });
+                if (exists == false) {
+                    if (value.displayName) {
+                        value.yAxis = 1;
+                        widget.columns.push(value);
+                    }
+                }
+            });
+            var chartType = widget;
+            $timeout(function () {
+                $scope.previewChart(chartType, widget)
+            }, 50);
+        }
         $scope.editChartType = null;
         angular.forEach(y1data, function (value, key) {
             if (!value) {
@@ -465,6 +505,38 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }, 50);
     };
     $scope.selectY2Axis = function (widget, y2data) {
+        if (widget.chartType == 'stackedbar') {
+            $scope.editChartType = null;
+            angular.forEach(y2data, function (value, key) {
+                if (!value) {
+                    return;
+                }
+                var exists = false;
+                angular.forEach(widget.columns, function (val, key) {
+                    if (val.fieldName === value.fieldName) {
+                        exists = true;
+                        val.yAxis = 2;
+                        val.groupField = y2data.indexOf(value) + 1;
+                        console.log(val.groupField);
+                    } else {
+                        if (val.fieldName == y2data.removeItem) {
+                            val.yAxis = null;
+                            val.groupField = null;
+                        }
+                    }
+                });
+                if (exists == false) {
+                    if (value.displayName) {
+                        value.yAxis = 2;
+                        widget.columns.push(value);
+                    }
+                }
+            });
+            var chartType = widget;
+            $timeout(function () {
+                $scope.previewChart(chartType, widget)
+            }, 50);
+        }
         $scope.editChartType = null;
         angular.forEach(y2data, function (value, key) {
             if (!value) {
@@ -604,7 +676,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     }
-
+    $scope.setGridLine=function(widget){
+        $scope.editChartType = null;
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    }
     $scope.tickerFormat = function (widget, format) {
         $scope.setFormat(widget, format)
     };
@@ -697,10 +775,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    function filterHtmlTag(text) {
 //        return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
 //    }
-   
 
-    $scope.save=function(widget){
 
+    $scope.save = function (widget) {
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -774,6 +851,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
+            isGridLine:widget.isGridLine,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate, //widget.customEndDate
             queryFilter: $scope.buildQuery
@@ -809,8 +887,29 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         });
     };
+
 //    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
-//    $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
+    $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
+    $scope.selectDateRangeName = function (widget) {
+        $scope.editChart=widget;
+        widget.dateRangeName = "Custom";
+        widget.lastNdays = "";
+        widget.lastNweeks = "";
+        widget.lastNmonths = "";
+        widget.lastNyears = "";
+    };
+//    $scope.selectCustomRange = function (isRange) {alert()
+//        if (isRange == true) {
+//            $scope.editChartType = null;
+//            var chartType =$scope.editChart;
+//            console.log()
+//            console.log(chartType)
+//            $timeout(function () {
+//                $scope.previewChart(chartType, $scope.editChart)
+//            }, 50);
+//        }
+//    }
+//  
 });
 app.directive('queryBuilder', ['$compile', function ($compile) {
         return {
@@ -901,6 +1000,7 @@ app.filter('hideColumn', [function () {
             return hideColumn[chartYAxis];
         };
     }]);
+
 app.directive('widgetPreviewTable', function ($http, $stateParams, $state, orderByFilter) {
     return{
         restrict: 'AE',
@@ -918,7 +1018,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             displayAlignments: '@',
             hideOptions: '@',
             currentUrl: '@',
-            reloadUrl: '@'
+            reloadUrl: '@',
+            lastNDays: '@',
+            lastNWeeks: '@',
+            lastNMonths: '@',
+            lastNYears: '@'
         },
         template:
                 "<div class='panel-head'>" +
@@ -986,7 +1090,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "<div class='triangle'></div>" +
                 "<div class='ns-popover-tooltip'>" +
                 "<form class='form-inline'>" +
-                "<ul class='scheduler-list-style'>" +
+                "<ul>" +
                 //Aggregation Function
                 "<li class='input-group col-sm-12'>" +
                 "<label>Aggregation function</label>" +
@@ -1086,6 +1190,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.listColumns = JSON.parse(scope.previewColumns);
             scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
             var widget = JSON.parse(scope.previewWidget);
+            console.log(widget);
+            console.log(widget.customStartDate);
             scope.addList = function (list) {
                 list.isEdit = true;
                 scope.previewTableHeader.push(list);
@@ -1121,6 +1227,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             } else {
                 dataSourcePassword = '';
             }
+
             $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                     "&dataSetId=" + tableDataSource.id +
                     "&driver=" + tableDataSource.dataSourceId.sqlDriver +
@@ -1129,10 +1236,13 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     "&endDate=" + $stateParams.endDate +
                     '&username=' + tableDataSource.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
+                    '&widgetId=' + widget.id +
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
+                console.log(response)
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
             });
+            console.log(scope.tableData);
             console.log(scope.previewTableHeader);
             console.log(scope.filterReturnItem);
             $(document).ready(function () {
@@ -1190,7 +1300,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 console.log(scope.previewTableHeader);
                 var index = scope.previewTableHeader.indexOf(collectionField);
                 //scope.previewTableHeader.splice(index, 1);
-                alert(index);
+//                alert(index);
                 console.log(scope.previewTableHeader);
                 return;
                 console.log($index);
@@ -1207,7 +1317,16 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             };
             scope.save = function (column) {
                 widget.dateRangeName = $("#dateRangeName").text().trim();
+                if (widget.dateRangeName === "Custom") {
+                    alert('');
+                    console.log("---->");
+                    scope.lastNDays = "";
+                    scope.lastNWeeks = "";
+                    scope.lastNMonths = "";
+                    scope.lastNYears = "";
+                }
                 console.log(scope.reloadUrl)
+                console.log(scope.lastNDays);
                 try {
                     scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -1218,7 +1337,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 var widgetColumnsData = [];
 //                console.log(scope.filterReturnItem)
                 var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeader;
-//                console.log(saveWidgetColumnList)
+                console.log(saveWidgetColumnList)
                 angular.forEach(saveWidgetColumnList, function (value, key) {
                     var hideColumn = value.columnHide;
                     if (value.groupPriority > 0) {
@@ -1268,6 +1387,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     maxRecord: JSON.parse(scope.previewWidgetTable).maxRecord,
                     dateDuration: widget.dateDuration,
                     dateRangeName: widget.dateRangeName,
+                    lastNdays: scope.lastNDays,
+                    lastNweeks: scope.lastNWeeks,
+                    lastNmonths: scope.lastNMonths,
+                    lastNyears: scope.lastNYears,
                     customStartDate: scope.customStartDate,
                     customEndDate: scope.customEndDate,
                     content: widget.content,
@@ -1279,7 +1402,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
 //                    console.log(scope.reloadUrl)
                     $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
 
-                });                
+                });
             };
             if (widget.isFilter == true) {
                 scope.setQueryFn({queryFn: scope.save()});
@@ -1312,25 +1435,26 @@ app.directive('ckEditor', function () {
         }
     };
 });
-app.directive('customWidgetDateRange', function ($stateParams) {
+app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
     return{
         restrict: 'A',
+        scope: {
+            widgetTableDateRange: '@',
+//            selectCustomRange: "&"
+        },
         link: function (scope, element, attr) {
             $(document).ready(function (e) {
                 $(".scheduler-list-style").click(function (e) {
-
                     e.stopPropagation();
                 });
-                var start = moment().subtract(29, 'days');
-                var end = moment();
-                function cb(start, end) {
-                    $('#widgetDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-                }
+                console.log(JSON.parse(scope.widgetTableDateRange).customStartDate);
+                console.log(JSON.parse(scope.widgetTableDateRange).customEndDate);
+                var widget = JSON.parse(scope.widgetTableDateRange);
+                var widgetStartDate = widget.customStartDate;//JSON.parse(scope.widgetTableDateRange).customStartDate;
+                var widgetEndDate = widget.customEndDate;//JSON.parse(scope.widgetTableDateRange).customEndDate;
                 //Date range as a button
                 $(element[0]).daterangepicker(
                         {
-                            startDate: start,
-                            endDate: end,
                             ranges: {
                                 'Today': [moment(), moment()],
                                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -1352,20 +1476,22 @@ app.directive('customWidgetDateRange', function ($stateParams) {
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                             },
+
+                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
+                            endDate: widgetEndDate ? widgetEndDate : moment(),
                             maxDate: new Date()
-                        }, cb);
-                cb(start, end);
+                        },
+                        function (startDate, endDate) {
+                            $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                        }
+                );
                 $(".ranges ul").find("li").addClass("custom-picker");
                 $(".custom-picker").click(function (e) {
-                    var widget = scope.previewColumn;
-                    widget.dateRangeName = "Custom";
-                    widget.chartType = scope.selectedRow;
-                    widget.customStartDate = scope.customStartDate;
-                    widget.customEndDate = scope.customEndDate;
-                    console.log(widget);
-//                    $(".scheduler-list-style").hide();
-                    var chartType = widget;
-                    scope.selectWidgetDuration('Custom', widget);
+
+                    $(".scheduler-list-style").hide();
+//                    scope.selectCustomRange({range: 'Custom'});
+//                    var chartType = widget;
+                    scope.$apply();
 //                e.bind();
                 });
                 $(".editWidgetDropDown").click(function (e) {
@@ -1396,23 +1522,18 @@ app.directive('customWidgetDateRange', function ($stateParams) {
                 $(".applyBtn").click(function (e) {
                     console.log("apply button click event triggered");
                     try {
-                        $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
-                        $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                        scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                        scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
                     } catch (e) {
                     }
-                    alert("");
-                    var widget = scope.previewColumn;
-                    widget.dateRangeName = "Custom";
-                    widget.chartType = scope.selectedRow;
-                    widget.customStartDate = scope.customStartDate;
-                    widget.customEndDate = scope.customEndDate;
-                    console.log(widget);
+
                     $(".scheduler-list-style").hide();
-                    var chartType = widget;
-                    scope.$apply();
+//                    var chartType = widget;
+//                    scope.$apply();
 //                    scope.selectWidgetDuration('Custom', widget);
 //                    $timeout(function () {
 //                    }, 50);
+//                    scope.editChartType = null;
                 });
             });
         }//end of link function
