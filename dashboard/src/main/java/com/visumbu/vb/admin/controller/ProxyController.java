@@ -92,7 +92,7 @@ public class ProxyController {
 
     @Autowired
     private BingService bingService;
-    
+
     @Autowired
     private ReportService reportService;
 
@@ -158,6 +158,23 @@ public class ProxyController {
             Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
             Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
             String fieldsOnly = request.getParameter("fieldsOnly");
+
+            String widgetIdStr = request.getParameter("widgetId");
+       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            System.out.println("widgetId ----> " + widgetId);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+
+            String start = widget.getCustomStartDate();
+            String end = widget.getCustomEndDate();
+
+                if (start != null) {
+                    startDate = DateUtils.getStartDate(start);
+                }
+                if (end != null) {
+                    endDate = DateUtils.getEndDate(end);
+                }
+            }
 
             Integer accountId = Integer.parseInt(accountIdStr);
             Account account = userService.getAccountId(accountId);
@@ -226,8 +243,29 @@ public class ProxyController {
         }
         String accountIdStr = request.getParameter("accountId");
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
         String fieldsOnly = request.getParameter("fieldsOnly");
+
+        String widgetIdStr = request.getParameter("widgetId");
+       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            System.out.println("widgetId ----> " + widgetId);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+
+            String start = widget.getCustomStartDate();
+            String end = widget.getCustomEndDate();
+
+            if (start != null) {
+                startDate = DateUtils.getStartDate(start);
+                System.out.println("startDate 2----> " + startDate);
+            }
+            if (end != null) {
+                endDate = DateUtils.getEndDate(end);
+                System.out.println("endDate 2----> " + endDate);
+            }
+        }
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
@@ -267,9 +305,31 @@ public class ProxyController {
             }
         }
         String accountIdStr = request.getParameter("accountId");
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String fieldsOnly = request.getParameter("fieldsOnly");
+
+        String widgetIdStr = request.getParameter("widgetId");
+        System.out.println("widgetID ---> " + widgetIdStr);
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            System.out.println("widgetId ----> " + widgetId);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+
+            String start = widget.getCustomStartDate();
+            String end = widget.getCustomEndDate();
+
+            if (start != null) {
+                startDate = DateUtils.getStartDate(start);
+                System.out.println("startDate 2 ----> " + startDate);
+            }
+            if (end != null) {
+                endDate = DateUtils.getEndDate(end);
+                System.out.println("endDate 2 ----> " + endDate);
+            }
+        }
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
@@ -277,6 +337,7 @@ public class ProxyController {
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
         System.out.println("Report Name " + dataSetReportName);
+        System.out.println("data---->");
         return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment);
     }
 
@@ -308,8 +369,29 @@ public class ProxyController {
         }
         String accountIdStr = request.getParameter("accountId");
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
+
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
         String fieldsOnly = request.getParameter("fieldsOnly");
+        String widgetIdStr = request.getParameter("widgetId");
+       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            System.out.println("widgetId ----> " + widgetId);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+
+            String start = widget.getCustomStartDate();
+            String end = widget.getCustomEndDate();
+
+            if (start != null) {
+                startDate = DateUtils.getStartDate(start);
+                System.out.println("startDate 2 ----> " + startDate);
+            }
+            if (end != null) {
+                endDate = DateUtils.getEndDate(end);
+                System.out.println("endDate 2 ----> " + endDate);
+            }
+        }
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
@@ -448,9 +530,29 @@ public class ProxyController {
         }
         String accountIdStr = request.getParameter("accountId");
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        String fieldsOnly = request.getParameter("fieldsOnly");
+        System.out.println("startDate 1 ----> " + startDate);
 
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
+        String fieldsOnly = request.getParameter("fieldsOnly");
+String widgetIdStr = request.getParameter("widgetId");
+       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            System.out.println("widgetId ----> " + widgetId);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+
+            String start = widget.getCustomStartDate();
+            String end = widget.getCustomEndDate();
+
+            if (start != null) {
+                startDate = DateUtils.getStartDate(start);
+                System.out.println("startDate 2 ----> " + startDate);
+            }
+            if (end != null) {
+                endDate = DateUtils.getEndDate(end);
+                System.out.println("endDate 2 ----> " + endDate);
+            }
+        }
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
@@ -681,8 +783,27 @@ public class ProxyController {
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
+       String widgetIdStr = request.getParameter("widgetId");
+       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            System.out.println("widgetId ----> " + widgetId);
+            TabWidget widget = uiService.getWidgetById(widgetId);
 
+            String start = widget.getCustomStartDate();
+            String end = widget.getCustomEndDate();
+
+            if (start != null) {
+                startDate = DateUtils.getStartDate(start);
+                System.out.println("startDate 2 ----> " + startDate);
+            }
+            if (end != null) {
+                endDate = DateUtils.getEndDate(end);
+                System.out.println("endDate 2 ----> " + endDate);
+            }
+        }
         String start_date = month_date.format(startDate);
         String end_date = month_date.format(endDate);
         String selectDate;
@@ -733,8 +854,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-//                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
-                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+//                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -745,13 +866,13 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-//                    url = "../dashboard/admin/proxy/getData?";
-                    url = "../admin/proxy/getData?";
+                    url = "../dashboard/admin/proxy/getData?";
+//                    url = "../admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 
@@ -814,8 +935,28 @@ public class ProxyController {
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
 
+        String widgetIdStr = request.getParameter("widgetId");
+       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            System.out.println("widgetId ----> " + widgetId);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+
+            String start = widget.getCustomStartDate();
+            String end = widget.getCustomEndDate();
+
+            if (start != null) {
+                startDate = DateUtils.getStartDate(start);
+                System.out.println("startDate 2 ----> " + startDate);
+            }
+            if (end != null) {
+                endDate = DateUtils.getEndDate(end);
+                System.out.println("endDate 2 ----> " + endDate);
+            }
+        }
         String start_date = month_date.format(startDate);
         String end_date = month_date.format(endDate);
         String selectDate;

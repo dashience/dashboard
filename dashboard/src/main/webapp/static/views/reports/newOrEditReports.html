@@ -226,20 +226,20 @@
                     <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle}}</span>
                 </div>
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'line'">
-                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'bar'">
-                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
-                    <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area'">
-                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                 </div> 
                 <div class="box-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
                     <div>
-                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
+                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget}}"></div>
                     </div>
                 </div>
                 <div class="box-body list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>

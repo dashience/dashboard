@@ -268,18 +268,25 @@
                 <label>Date Range</label>
                 <div>
                     <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
+                            {{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style">
-                            <li ng-click="selectWidgetDuration('None', widget)"><a>None</a></li>
-                            <li ng-click="selectWidgetDuration('Today', widget)"><a>Today</a></li>
-                            <li ng-click="selectWidgetDuration('Yesterday', widget)"><a>Yesterday</a></li>
-                            <li ng-click="selectWidgetDuration('This Week', widget)"><a>This Week</a></li>
-                            <li ng-click="selectWidgetDuration('Last Week', widget)"><a>Last Week</a></li>
-                            <li ng-click="selectWidgetDuration('This Month', widget)"><a>This Month</a></li>
-                            <li ng-click="selectWidgetDuration('Last Month', widget)"><a>Last Month</a></li>
-                            <li ng-click="selectWidgetDuration('This Year', widget)"><a>This Year</a></li>
-                            <li ng-click="selectWidgetDuration('Last Year', widget)"><a>Last Year</a></li>
+                                                       <li>
+                                <!--<a>Custom</a>-->
+                                <!--<div ng-show="widget.dateRangeName === 'Custom'">-->
+                                    <div class="col-md-12">
+<!--                                        <label>Custom Range</label>-->
+                                        <div>
+                                            <a class="pull-right custom-daterange-box" custom-Report-Widget-Date-Range ng-click="selectDateRangeName(widget)" widget-Table-Date-Range="{{widget}}" id="widgetDateRange">
+                                                <span class="date-border">
+                                                    {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                                </span>
+                                            </a> 
+                                        </div>
+                                    </div>
+                                <!--</div>-->    
+                            </li>
                             <li ng-click="selectWidgetDuration('Last N Days', widget)">
                                 <a>Last <input type="text"
                                                ng-model="widget.lastNdays" 
@@ -320,23 +327,22 @@
                                     Years
                                 </a>
                             </li>
-                            <li ng-click="selectWidgetDuration('Custom', widget)"><a>Custom</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <div ng-show="widget.dateRangeName === 'Custom'">
-                <div class="col-md-4">
-                    <label>Custom Range</label>
-                    <div>
-                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
-                            <span class="date-border">
-                                {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                            </span>
-                        </a> 
-                    </div>
-                </div>
-            </div>    
+            <!--            <div ng-show="widget.dateRangeName === 'Custom'">
+                            <div class="col-md-4">
+                                <label>Custom Range</label>
+                                <div>
+                                    <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                                        <span class="date-border">
+                                            {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                        </span>
+                                    </a> 
+                                </div>
+                            </div>
+                        </div>    -->
 
             <div class="col-md-4">
                 <label>Tags</label>
@@ -561,27 +567,27 @@
                                         </div>
                                         <div ng-if="editChartType === 'line'">
                                             <div>
-                                                <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div line-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'area'">
                                             <div>
-                                                <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div area-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}"  widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'bar'">
                                             <div>
-                                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'pie'">
                                             <div>
-                                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>                            
                                         </div> 
                                         <div ng-if="editChartType === 'stackedbar'">
                                             <div>
-                                                <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>                            
                                         </div>
                                     </div>
@@ -599,28 +605,28 @@
 
                     </div>
                 </div>
-<!--                <div class="row edit-widget" ng-if="editChartType === 'table'">
-                    <div class="col-lg-12">
-                        <div class="preview-table">
-                            <div widget-Preview-Table 
-                                 preview-Table-List='{{collectionFields}}'
-                                 preview-Urls='{{previewChartUrl}}' 
-                                 preview-Columns='{{widget.columns}}' 
-                                 preview-Widget="{{previewColumn}}" 
-                                 preview-Widget-Table="{{widget}}"
-                                 aggregations-Types="{{selectAggregations}}"
-                                 group-Priorities="{{selectGroupPriorities}}"
-                                 sorting-Fields="{{sorting}}"
-                                 display-Formats="{{formats}}"
-                                 display-Alignments="{{alignments}}"
-                                 hide-Options="{{hideOptions}}"
-                                 field-Types="{{fieldTypes}}"
-                                 reload-url="{{currentLocation}}">
-                            </div>
-                        </div>
-                    </div>
-
-                </div>-->
+                <!--                <div class="row edit-widget" ng-if="editChartType === 'table'">
+                                    <div class="col-lg-12">
+                                        <div class="preview-table">
+                                            <div widget-Preview-Table 
+                                                 preview-Table-List='{{collectionFields}}'
+                                                 preview-Urls='{{previewChartUrl}}' 
+                                                 preview-Columns='{{widget.columns}}' 
+                                                 preview-Widget="{{previewColumn}}" 
+                                                 preview-Widget-Table="{{widget}}"
+                                                 aggregations-Types="{{selectAggregations}}"
+                                                 group-Priorities="{{selectGroupPriorities}}"
+                                                 sorting-Fields="{{sorting}}"
+                                                 display-Formats="{{formats}}"
+                                                 display-Alignments="{{alignments}}"
+                                                 hide-Options="{{hideOptions}}"
+                                                 field-Types="{{fieldTypes}}"
+                                                 reload-url="{{currentLocation}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                </div>-->
                 <div class="row edit-widget" ng-if="editChartType === 'table'">
                     <div class="col-lg-12">
                         <div class="preview-table">
@@ -635,7 +641,11 @@
                                  report-Display-Formats="{{formats}}"
                                  report-Display-Alignments="{{alignments}}"
                                  report-Hide-Options="{{hideOptions}}"
-                                 report-Field-Types="{{fieldTypes}}">
+                                 report-Field-Types="{{fieldTypes}}"
+                                 last-N-Days="{{widget.lastNdays}}"
+                                 last-N-Weeks="{{widget.lastNweeks}}"
+                                 last-N-Months="{{widget.lastNmonths}}"
+                                 last-N-Years="{{widget.lastNyears}}">
                             </div>
                         </div>
                     </div>
@@ -673,7 +683,7 @@
                     </div>
                 </div>
             </div>
-           <div ng-show="isSet(2)" class="license">
+            <div ng-show="isSet(2)" class="license">
                 <div class="col-lg-12">
                     <div class="alert alert-info">
                         <strong>Output</strong><br>

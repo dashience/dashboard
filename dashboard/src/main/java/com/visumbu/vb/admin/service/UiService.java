@@ -157,7 +157,6 @@ public class UiService {
 //    public WidgetColumn getWidgetColumn(Integer widgetId) {
 //        return uiDao.getWidgetColumn(widgetId);
 //    }
-
     public WidgetColumn updateWidgetColumn(Integer widgetId, WidgetColumn widgetColumn) {
         return (WidgetColumn) uiDao.updateWidgetColumn(widgetId, widgetColumn);
     }
@@ -194,6 +193,7 @@ public class UiService {
 
         String dateRangeName = tabWidgetBean.getDateRangeName();
         System.out.println("dataRangeName -----> " + dateRangeName);
+        System.out.println("tabWidgetBean.getLastNdays() ----> " + tabWidgetBean.getLastNdays());
         DateRange dateRange = null;
         String startDate = null;
         String endDate = null;
@@ -205,7 +205,8 @@ public class UiService {
         if (dateRangeName == null || dateRangeName.isEmpty()) {
             startDate = null;
             endDate = null;
-        } else {
+        } else if (dateRangeName != null) {
+            System.out.println("tabWidgetBean.getLastNdays() ----> " + tabWidgetBean.getLastNdays());
             if (tabWidgetBean.getLastNdays() != null) {
                 lastNdays = tabWidgetBean.getLastNdays();
                 System.out.println("Last N days ----> " + lastNdays);
@@ -235,23 +236,23 @@ public class UiService {
             System.out.println("dateRangename ----> " + dateRangeName);
 
             Range dateRangeSelect = null;
-            if (dateRangeName.equalsIgnoreCase("Today")) {
-                dateRangeSelect = Range.TODAY;
-            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
-                dateRangeSelect = Range.YESTERDAY;
-            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
-                dateRangeSelect = Range.THIS_WEEK;
-            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
-                dateRangeSelect = Range.LAST_WEEK;
-            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
-                dateRangeSelect = Range.THIS_MONTH;
-            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
-                dateRangeSelect = Range.LAST_MONTH;
-            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
-                dateRangeSelect = Range.THIS_YEAR;
-            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
-                dateRangeSelect = Range.LAST_YEAR;
-            }
+//            if (dateRangeName.equalsIgnoreCase("Today")) {
+//                dateRangeSelect = Range.TODAY;
+//            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
+//                dateRangeSelect = Range.YESTERDAY;
+//            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
+//                dateRangeSelect = Range.THIS_WEEK;
+//            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
+//                dateRangeSelect = Range.LAST_WEEK;
+//            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
+//                dateRangeSelect = Range.THIS_MONTH;
+//            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
+//                dateRangeSelect = Range.LAST_MONTH;
+//            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
+//                dateRangeSelect = Range.THIS_YEAR;
+//            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
+//                dateRangeSelect = Range.LAST_YEAR;
+//            }
             if (dateRangeName.equalsIgnoreCase("Custom")) {
                 dateRangeSelect = null;
             } else if (lastNdays != null) {
@@ -418,6 +419,7 @@ public class UiService {
             widgetColumn.setAlignment(widgetColumnBean.getAlignment());
             widgetColumn.setFieldType(widgetColumnBean.getFieldType());
             widgetColumn.setGroupField(widgetColumnBean.getGroupField());
+            widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
 //                widgetColumn.setWidgetId(tabWidget);
             Integer columnHide = null;
             if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
@@ -431,6 +433,16 @@ public class UiService {
             uiDao.saveOrUpdate(widgetColumn);
         }
         return uiDao.getTabWidgetById(id);
+    }
+
+    public String getStartDateByWidgetId(Integer widgetId) {
+        List StartDate = uiDao.getStartDateByWidgetId(widgetId);
+        return (String) StartDate.get(0);
+    }
+
+    public String getEndDateByWidgetId(Integer widgetId) {
+        List EndDate = uiDao.getEndDateByWidgetId(widgetId);
+        return (String) EndDate.get(0);
     }
 
     public ReportType addReportType(ReportType reportTypes) {
@@ -456,16 +468,13 @@ public class UiService {
 //    public Report updateReport(Report report) {
 //        return (Report) uiDao.update(report);
 //    }
-
 //    public String updateReportOrder(Integer reportId, String widgetOrder) {
 //        return uiDao.updateReportOrder(reportId, widgetOrder);
 //    }
-
 //    public Report deleteReport(Integer reportId) {
 //        return uiDao.deleteReport(reportId);
 //        //return (Report) uiDao.delete(reportId);
 //    }
-
     public List getReport() {
         List<Report> report = uiDao.read(Report.class);
         return report;
@@ -478,7 +487,6 @@ public class UiService {
 //        }
 //        return uiDao.getAgencyReport(user);
 //    }
-
     public ReportWidget createReportWidget(ReportWidget reportWidget) {
         return (ReportWidget) uiDao.create(reportWidget);
     }
@@ -546,15 +554,12 @@ public class UiService {
 //    public List<ReportWidget> getReportWidget(Integer reportId) {
 //        return uiDao.getReportWidget(reportId);
 //    }
-
 //    public ReportWidget deleteReportWidget(Integer reportId) {
 //        return uiDao.deleteReportWidget(reportId);
 //    }
-
 //    public Report getReportById(Integer reportId) {
 //        return uiDao.getReportById(reportId);
 //    }
-
     public DataSource create(DataSource dataSource) {
         return (DataSource) uiDao.create(dataSource);
     }
@@ -732,5 +737,9 @@ public class UiService {
 
     public AdwordsCriteria getAdwordsCriteria(Integer criteriaId) {
         return uiDao.getAdwordsCriteria(criteriaId);
+    }
+
+    public TabWidget getWidgetById(Integer widgetId) {
+        return uiDao.getTabWidgetById(widgetId);
     }
 }

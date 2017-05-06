@@ -335,7 +335,7 @@
                     <div class="panel-heading">
                         <div class="panel-tools">
                             <div> 
-                                <i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>
+                                {{widget.id}}<i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>
                                 <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>

@@ -138,10 +138,11 @@ public class UiDao extends BaseDao {
             return null;
         }
         TabWidget tabWidget = (TabWidget) sessionFactory.getCurrentSession().get(TabWidget.class, widgetId);
+        System.out.println(tabWidget);
         tabWidget.setColumns(getColumns(tabWidget));
         return tabWidget;
     }
-   
+
     public Dashboard getDashboardById(Integer dashboardId) {
         return (Dashboard) sessionFactory.getCurrentSession().get(Dashboard.class, dashboardId);
     }
@@ -162,7 +163,7 @@ public class UiDao extends BaseDao {
         query.setParameter("id", widgetId);
         return query.list();
     }
-    
+
     public List<WidgetColumn> getWidgetColumnsByWidgetId(Integer widgetId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetColumn.findByWidgetId");
         query.setParameter("id", widgetId);
@@ -239,8 +240,8 @@ public class UiDao extends BaseDao {
 //        Query query = sessionFactory.getCurrentSession().createQuery(widgetCountQuery);
 //        query.setParameter("tabId", id);
 //        Integer count =at com.visumbu.vb.admin.dao.UiDao.getWidgetCount(UiDao.java:231) (Integer) query.list().get(0);
-        int count=(int) (long) query.list().get(0);
-        System.out.println("count ---> "+count);
+        int count = (int) (long) query.list().get(0);
+        System.out.println("count ---> " + count);
         return count;
     }
 
@@ -268,12 +269,10 @@ public class UiDao extends BaseDao {
 //        Report report = (Report) sessionFactory.getCurrentSession().get(Report.class, reportId);
 //        return report;
 //    }
-
 //    public ReportWidget getReportWidgetById(Integer reportId) {
 //        ReportWidget reportWidget = (ReportWidget) sessionFactory.getCurrentSession().get(ReportWidget.class, reportId);
 //        return reportWidget;
 //    }
-
     public ReportWidget saveReportWidget(ReportWidget reportWidget) {
         sessionFactory.getCurrentSession().saveOrUpdate(reportWidget);
         return reportWidget;
@@ -298,19 +297,16 @@ public class UiDao extends BaseDao {
 //        }
 //        return tabWidgets;
 //    }
-
 //    private List<WidgetColumn> getColumns(ReportWidget widget) {
 //        String queryStr = "select d from WidgetColumn d where d.widgetId = :widgetId";
 //        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
 //        query.setParameter("widgetId", widget);
 //        return query.list();
 //    }
-
 //    public ReportWidget deleteReportWidget(Integer id) {
 //        delete(getReportWidgetById(id));
 //        return null;
 //    }
-
     public String updateWidgetUpdateOrder(Integer tabId, String widgetOrder) {
         String[] widgetOrderArray = widgetOrder.split(",");
         for (int i = 0; i < widgetOrderArray.length; i++) {
@@ -333,7 +329,6 @@ public class UiDao extends BaseDao {
         return null;
     }
 
-
 //    public String updateReportOrder(Integer reportId, String widgetOrder) {
 //        System.out.println(widgetOrder);
 //        String[] reportOrderArray = widgetOrder.split(",");
@@ -346,7 +341,6 @@ public class UiDao extends BaseDao {
 //        }
 //        return null;
 //    }
-    
 //    public Report deleteReport(Integer reportId) {
 //        String queryString = "update Report d set status = 'Deleted' where d.id = :reportId";
 //        Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
@@ -354,7 +348,6 @@ public class UiDao extends BaseDao {
 //        querySess.executeUpdate();
 //        return null;
 //    }
-
     public DefaultFieldProperties getDefaultFieldProperties(String fieldName) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("DefaultFieldProperties.findByFieldName");
         query.setParameter("fieldName", fieldName);
@@ -531,7 +524,18 @@ public class UiDao extends BaseDao {
 //        query.setParameter("agencyId", user.getAgencyId().getId());
 //        return query.list();
 //    }    
-    
-    
+    public List getStartDateByWidgetId(Integer widgetId) {
+        String queryStr = "select t.customStartDate FROM TabWidget t WHERE t.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", widgetId);
+        return query.list();
+    }
+
+    public List getEndDateByWidgetId(Integer widgetId) {
+        String queryStr = "select t.customEndDate FROM TabWidget t WHERE t.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", widgetId);
+        return query.list();
+    }
 
 }

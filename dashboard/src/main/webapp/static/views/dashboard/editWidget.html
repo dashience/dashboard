@@ -270,10 +270,11 @@
                             {{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style">
-                            <li><a>Custom Range</a >
+                            <li>
+<!--                                <a>Custom</a>-->
                                 <div class="col-md-12">
                                     <div>
-                                        <a  class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widget)" widget-Table-Date-Range="{{widget}}" id="widgetDateRange">
                                             <span class="date-border">
                                                 {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
                                             </span>
@@ -570,27 +571,27 @@
                                         </div>
                                         <div ng-if="editChartType === 'line'">
                                             <div>
-                                                <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div line-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'area'">
                                             <div>
-                                                <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div area-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'bar'">
                                             <div>
-                                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'pie'">
                                             <div>
-                                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>                            
                                         </div> 
                                         <div ng-if="editChartType === 'stackedbar'">
                                             <div>
-                                                <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>                            
                                         </div>
                                     </div>
@@ -625,7 +626,12 @@
                                  display-Alignments="{{alignments}}"
                                  hide-Options="{{hideOptions}}"
                                  field-Types="{{fieldTypes}}"
-                                 reload-Url="{{currentLocation}}">
+                                 reload-Url="{{currentLocation}}"
+                                 last-N-Days="{{widget.lastNdays}}"
+                                 last-N-Weeks="{{widget.lastNweeks}}"
+                                 last-N-Months="{{widget.lastNmonths}}"
+                                 last-N-Years="{{widget.lastNyears}}"
+                                 >
                             </div>
                         </div>
                     </div>
