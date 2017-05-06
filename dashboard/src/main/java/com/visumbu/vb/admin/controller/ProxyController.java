@@ -160,13 +160,13 @@ public class ProxyController {
             String fieldsOnly = request.getParameter("fieldsOnly");
 
             String widgetIdStr = request.getParameter("widgetId");
-       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-            Integer widgetId = Integer.parseInt(widgetIdStr);
-            System.out.println("widgetId ----> " + widgetId);
-            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+                Integer widgetId = Integer.parseInt(widgetIdStr);
+                System.out.println("widgetId ----> " + widgetId);
+                TabWidget widget = uiService.getWidgetById(widgetId);
 
-            String start = widget.getCustomStartDate();
-            String end = widget.getCustomEndDate();
+                String start = widget.getCustomStartDate();
+                String end = widget.getCustomEndDate();
 
                 if (start != null) {
                     startDate = DateUtils.getStartDate(start);
@@ -249,7 +249,7 @@ public class ProxyController {
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String widgetIdStr = request.getParameter("widgetId");
-       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
@@ -375,7 +375,7 @@ public class ProxyController {
         System.out.println("endDate 1 ----> " + endDate);
         String fieldsOnly = request.getParameter("fieldsOnly");
         String widgetIdStr = request.getParameter("widgetId");
-       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
@@ -535,8 +535,8 @@ public class ProxyController {
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         System.out.println("endDate 1 ----> " + endDate);
         String fieldsOnly = request.getParameter("fieldsOnly");
-String widgetIdStr = request.getParameter("widgetId");
-       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+        String widgetIdStr = request.getParameter("widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
@@ -714,7 +714,7 @@ String widgetIdStr = request.getParameter("widgetId");
                         continue;
                     }
                     String url = "../dashboard/admin/proxy/getData?";
-//                    String url = "admin/proxy/getData?";
+//                    String url = "../admin/proxy/getData?";
                     log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                     if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                         url = "../dbApi/admin/dataSet/getData";
@@ -725,13 +725,13 @@ String widgetIdStr = request.getParameter("widgetId");
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                         System.out.println("DS TYPE ==>  CSV");
-//                        url = "../dashboard/admin/csv/getData";
+//                        url = "../admin/csv/getData";
                         url = "../dashboard/admin/csv/getData";
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
                         url = "../dashboard/admin/proxy/getData?";
-//                    url = "admin/proxy/getData?";
+//                    url = "../admin/proxy/getData?";
                     }
                     valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 //                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
@@ -786,8 +786,8 @@ String widgetIdStr = request.getParameter("widgetId");
         System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         System.out.println("endDate 1 ----> " + endDate);
-       String widgetIdStr = request.getParameter("widgetId");
-       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+        String widgetIdStr = request.getParameter("widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
@@ -940,7 +940,7 @@ String widgetIdStr = request.getParameter("widgetId");
         System.out.println("endDate 1 ----> " + endDate);
 
         String widgetIdStr = request.getParameter("widgetId");
-       if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
