@@ -47,14 +47,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        } else if (dataSource === "instagram")
+        }
+        else if (dataSource === "pinterest")
+        {
+            $scope.report = $scope.pinterestPerformance;
+            console.log($scope.report);
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+        }else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else if (dataSource === "linkedin")
         {
-            $scope.report = $scope.linkedinPerformance;
+//            $scope.report = $scope.linkedinPerformance;
+           
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else {
@@ -85,8 +93,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -125,8 +133,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -161,8 +169,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -197,8 +205,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -232,8 +240,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -267,8 +275,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -302,8 +310,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -337,8 +345,218 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
+        }, {
+            type: 'recentPostPerformance',
+            name: 'recentPostPerformance',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
+        }, {
+            type: 'totalOrganicLikes',
+            name: 'totalOrganicLikes',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
+        }, {
+            type: 'totalPageViews',
+            name: 'totalPageViews',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
+        }, {
+            type: 'totalEngagements',
+            name: 'totalEngagements',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
+        }, {
+            type: 'totalReach',
+            name: 'totalReach',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'device'
+                },
+                {
+                    type: 'none',
+                    name: 'none'
+                }
+            ]
+        }, {
+            type: 'pageLikesByCity',
+            name: 'pageLikesByCity',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'day'
+                },
+                {
+                    type: 'week',
+                    name: 'week'
+                },
+                {
+                    type: 'month',
+                    name: 'month'
+                },
+                {
+                    type: 'year',
+                    name: 'year'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -353,7 +571,135 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-
+    $scope.pinterestPerformance = [
+        {
+            type: 'getTopBoards',
+            name: 'getTopBoards',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                }
+//            ]
+        }, {
+            type: 'getTopPins',
+            name: 'getTopPins',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                }
+//            ]
+        }, {
+            type: 'getFollowingsCount',
+            name: 'getFollowingsCount',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                }
+//            ]
+        }, {
+            type: 'getPinsLikeCount',
+            name: 'getPinsLikeCount',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                }
+//            ]
+        }, {
+            type: 'getTotalBoards',
+            name: 'getTotalBoards',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                }
+//            ]
+        }, {
+            type: 'getTotalPins',
+            name: 'getTotalPins',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                }
+//            ]
+        }
+    ]
     $scope.instagramPerformance = [
         {
             type: 'instagramPerformance',
@@ -1314,7 +1660,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
             $scope.nwStatusFlag = false;
         }
-
+        if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.pinterestPerformance);
+            $scope.timeSegment = $scope.pinterestPerformance[index].timeSegments;
+            $scope.productSegment = $scope.pinterestPerformance[index].productSegments;
+            $scope.nwStatusFlag = false;
+        }
         if ($scope.dataSet.dataSourceId.dataSourceType == "adwords")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.adwordsPerformance);
@@ -1462,7 +1814,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.getTimeSegemens();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "adwords")
+        } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
+        {
+            $scope.report = $scope.pinterestPerformance;
+            $scope.getTimeSegemens();
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+        }
+        else if (dataSet.dataSourceId.dataSourceType === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
             $scope.getTimeSegemens();
@@ -1632,6 +1991,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     "&endDate=" + $stateParams.endDate +
                     '&username=' + dataSourcePath.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
+                    '&url=' + dataSourcePath.url +
                     '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;

@@ -1087,7 +1087,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" + //End Panel Title
                 "</div>" +
                 "</div>" +
-                //"<pre>{{previewTableHeader | json}}</pre>" +
+//                "<pre>{{previewTableHeader | json}}</pre>" +
 //                " <pre ng-repeat='header in previewTableHeader'>{{header.displayName}} </pre>" +
                 //Table
                 "<div class=''>" +
@@ -1294,6 +1294,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         scope.mapJson(table.sortOrder);
                     },
                     clickDelay: 200,
+
                     // restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
                 });
             });
@@ -1303,48 +1304,67 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $.each(object, function (key, value) {
                     scope.draggedObject[value] = key;
                 });
-                console.log(scope.draggedObject)
-//                angular.forEach(scope.previewTableHeader, function (value, key) {
-                scope.filterReturnItem = orderByFilter(scope.previewTableHeader, function (item) {
-                    return scope.draggedObject.indexOf(item.displayName)
-                });
-//                });
-//                scope.previewTableHeader = []
-                scope.$apply(function () {
-                    scope.previewTableHeader = scope.filterReturnItem;
-                });
-//                scope.$apply();
+                console.log(scope.draggedObject);
                 angular.forEach(scope.previewTableHeader, function (value, key) {
-                    console.log("Drag Data")
-                    console.log(value.fieldName)
-                    var indexid = scope.previewTableHeader.indexOf(value)
-//                    console.log(indexid)
+                    scope.filterReturnItem = orderByFilter(scope.previewTableHeader, function (item) {
+                        return scope.draggedObject.indexOf(item.displayName)
+                    });
                 });
+                console.log(scope.filterReturnItem);
+
+//                scope.previewTableHeader = []
+//                scope.$apply(function () {
+//                    scope.previewTableHeader = scope.filterReturnItem;
+//                });
+////                scope.$apply();
+//                angular.forEach(scope.previewTableHeader, function (value, key) {
+//                    console.log("Drag Data")
+//                    console.log(value.fieldName)
+//                    var indexid = scope.previewTableHeader.indexOf(value)
+////                    console.log(indexid)
+//                });
 //                sessionStorage.clear();
             };
             scope.deleteColumn = function (collectionField, $index) {
-                angular.forEach(scope.previewTableHeader, function (value, key) {
-                    console.log("Drag Data")
-                    console.log(value.fieldName)
-                    var indexid = scope.previewTableHeader.indexOf(value)
-//                    console.log(indexid)
-                });
-                console.log(scope.previewTableHeader);
-                var index = scope.previewTableHeader.indexOf(collectionField);
-                //scope.previewTableHeader.splice(index, 1);
-//                alert(index);
-                console.log(scope.previewTableHeader);
-                return;
                 console.log($index);
+//                angular.forEach(scope.previewTableHeader, function (value, key) {
+//                    console.log("Drag Data")
+//                    console.log(value.fieldName)
+//                    var indexid = scope.previewTableHeader.indexOf(value)
+////                    console.log(indexid)
+//                });
+//                console.log(scope.previewTableHeader);
+//                var index = scope.previewTableHeader.indexOf(collectionField);
+//                //scope.previewTableHeader.splice(index, 1);
+//             
+//                console.log(scope.previewTableHeader);
+//                return;
                 if (typeof (scope.filterReturnItem) == "undefined")
                 {
                     scope.previewTableHeader.splice($index, 1);
                 } else {
-                    var previewHeaderObject = scope.previewTableHeader[$index];
-                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
-                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
-//                    scope.previewTableHeader = [];
+                    console.log("1----------------------------------");
+                    console.log(scope.previewTableHeader);
+                    var dragDeletedIndexPos = scope.filterReturnItem.indexOf(collectionField);
+                    console.log(dragDeletedIndexPos);
+                    scope.filterReturnItem.splice(dragDeletedIndexPos, 1);
                     scope.previewTableHeader = scope.filterReturnItem;
+
+                    console.log(scope.previewTableHeader);
+//                    var returnItems = scope.previewTableHeader;
+//                    scope.previewTableHeader = ""
+//                    scope.previewTableHeader = returnItems;
+//                    scope.$apply();
+//                    var previewHeaderObject = scope.previewTableHeader[$index];
+//                    console.log(previewHeaderObject);
+//                    console.log(scope.filterReturnItem);
+//                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
+//                    console.log("dragableHeaderIndex="+dragableHeaderIndex);
+//                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
+////                    scope.previewTableHeader = [];
+//                    console.log(scope.filterReturnItem);
+//                    scope.previewTableHeader = scope.filterReturnItem;
+//                    console.log(scope.previewTableHeader);
                 }
             };
             scope.save = function (column) {
@@ -1431,9 +1451,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
-//                    console.log(scope.reloadUrl)
-                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-
                 });
             };
             if (widget.isFilter == true) {
@@ -1519,11 +1536,18 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                 );
                 $(".ranges ul").find("li").addClass("custom-picker");
                 $(".custom-picker").click(function (e) {
-
-                    $(".scheduler-list-style").hide();
-//                    scope.selectCustomRange({range: 'Custom'});
-//                    var chartType = widget;
-                    scope.$apply();
+                angular.forEach(scope.previewTableHeader, function (value, key) {
+                    console.log("Drag Data")
+                    console.log(value.fieldName)
+                    var indexid = scope.previewTableHeader.indexOf(value)
+//                    console.log(indexid)
+                });
+                console.log(scope.previewTableHeader);
+                var index = scope.previewTableHeader.indexOf(collectionField);
+                //scope.previewTableHeader.splice(index, 1);
+//                alert(index);
+                console.log(scope.previewTableHeader);
+                return;
 //                e.bind();
                 });
                 $(".editWidgetDropDown").click(function (e) {
@@ -1560,14 +1584,26 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                     }
 
                     $(".scheduler-list-style").hide();
-//                    var chartType = widget;
-//                    scope.$apply();
-//                    scope.selectWidgetDuration('Custom', widget);
+//                    console.log(scope.reloadUrl)
+                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+
 //                    $timeout(function () {
 //                    }, 50);
 //                    scope.editChartType = null;
                 });
+
+
             });
         }//end of link function
     };
 });
+                    var widget = scope.previewColumn;
+                    widget.dateRangeName = "Custom";
+                    widget.chartType = scope.selectedRow;
+                    widget.customStartDate = scope.customStartDate;
+                    widget.customEndDate = scope.customEndDate;
+                    console.log(widget);
+//                    $(".scheduler-list-style").hide();
+                    var chartType = widget;
+                    scope.$apply();
+//                    selectWidgetDuration('Custom', widget);
