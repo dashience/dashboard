@@ -1370,7 +1370,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.save = function (column) {
                 widget.dateRangeName = $("#dateRangeName").text().trim();
                 if (widget.dateRangeName === "Custom") {
-                    alert('');
                     console.log("---->");
                     scope.lastNDays = "";
                     scope.lastNWeeks = "";
@@ -1451,6 +1450,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
+                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
             };
             if (widget.isFilter == true) {
@@ -1536,18 +1536,18 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                 );
                 $(".ranges ul").find("li").addClass("custom-picker");
                 $(".custom-picker").click(function (e) {
-                angular.forEach(scope.previewTableHeader, function (value, key) {
-                    console.log("Drag Data")
-                    console.log(value.fieldName)
-                    var indexid = scope.previewTableHeader.indexOf(value)
+                    angular.forEach(scope.previewTableHeader, function (value, key) {
+                        console.log("Drag Data")
+                        console.log(value.fieldName)
+                        var indexid = scope.previewTableHeader.indexOf(value)
 //                    console.log(indexid)
-                });
-                console.log(scope.previewTableHeader);
-                var index = scope.previewTableHeader.indexOf(collectionField);
-                //scope.previewTableHeader.splice(index, 1);
+                    });
+                    console.log(scope.previewTableHeader);
+                    var index = scope.previewTableHeader.indexOf(collectionField);
+                    //scope.previewTableHeader.splice(index, 1);
 //                alert(index);
-                console.log(scope.previewTableHeader);
-                return;
+                    console.log(scope.previewTableHeader);
+                    return;
 //                e.bind();
                 });
                 $(".editWidgetDropDown").click(function (e) {
@@ -1597,13 +1597,13 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
         }//end of link function
     };
 });
-                    var widget = scope.previewColumn;
-                    widget.dateRangeName = "Custom";
-                    widget.chartType = scope.selectedRow;
-                    widget.customStartDate = scope.customStartDate;
-                    widget.customEndDate = scope.customEndDate;
-                    console.log(widget);
+var widget = scope.previewColumn;
+widget.dateRangeName = "Custom";
+widget.chartType = scope.selectedRow;
+widget.customStartDate = scope.customStartDate;
+widget.customEndDate = scope.customEndDate;
+console.log(widget);
 //                    $(".scheduler-list-style").hide();
-                    var chartType = widget;
-                    scope.$apply();
+var chartType = widget;
+scope.$apply();
 //                    selectWidgetDuration('Custom', widget);
