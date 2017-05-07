@@ -1597,13 +1597,5 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
         }//end of link function
     };
 });
-var widget = scope.previewColumn;
-widget.dateRangeName = "Custom";
-widget.chartType = scope.selectedRow;
-widget.customStartDate = scope.customStartDate;
-widget.customEndDate = scope.customEndDate;
-console.log(widget);
-//                    $(".scheduler-list-style").hide();
-var chartType = widget;
-scope.$apply();
+
 //                    selectWidgetDuration('Custom', widget);
