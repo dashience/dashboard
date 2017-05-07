@@ -641,6 +641,24 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             scope.refreshTable = function () {
                 console.log(tableDataSource.id);
                 console.log(scope.widgetId);
+                console.log(tableDataSource);
+                
+                scope.connectionTestUrl=url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + tableDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + tableDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + tableDataSource.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&dataSetReportName='+tableDataSource.reportName+
+                        '&widgetId=' + scope.widgetId +
+                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query);
+                console.log("***************************************");
+                console.log(scope.connectionTestUrl);
+                
+                
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
                         "&accountId=" + $stateParams.accountId +
@@ -650,10 +668,13 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
+                        '&dataSetReportName='+tableDataSource.reportName+
                         '&widgetId=' + scope.widgetId +
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
+                    console.log(response);
+                    
                     if (!response.data) {
                         return;
                     }

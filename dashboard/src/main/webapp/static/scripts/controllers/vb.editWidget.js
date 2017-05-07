@@ -1055,7 +1055,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" + //End Panel Title
                 "</div>" +
                 "</div>" +
-                "<pre>{{previewTableHeader | json}}</pre>" +
+//                "<pre>{{previewTableHeader | json}}</pre>" +
 //                " <pre ng-repeat='header in previewTableHeader'>{{header.displayName}} </pre>" +
                 //Table
                 "<div class=''>" +

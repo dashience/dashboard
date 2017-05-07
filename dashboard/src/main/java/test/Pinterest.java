@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -30,9 +32,53 @@ public class Pinterest {
 
         List<Map<String, String>> totalBoards = getFollowingsCount();
         System.out.println("-------------------------------------------------------");
-//        System.out.println(totalBoards);
+        System.out.println(totalBoards);
 
     }
+
+    public static List<Map<String, String>> getTopPinsTestMethod() {
+        try {
+            String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
+            String data = Rest.getData(fbUrl);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+            Map returnMap = new HashMap<>();
+            List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
+            List<Map<String, String>> returnData = new ArrayList<>();
+            for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
+                Map<String, Object> fbDataMap = iterator.next();
+                Map<String, String> returnDataMap = new HashMap<>();
+                returnDataMap.put("note", fbDataMap.get("note") + "");
+                returnDataMap.put("url", fbDataMap.get("url") + "");
+               
+                returnData.add(returnDataMap);
+
+            }
+            System.out.println("********************&&&&&&&&&&&&&&&&&&&&&&&&&&*************************");
+            System.out.println(returnData);
+            System.out.println("********************&&&&&&&&&&&&&&&&&&&&&&&&&&*************************");
+        } catch (ParseException ex) {
+            Logger.getLogger(Pinterest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
+        List<ColumnDef> columnDefs = new ArrayList<>();
+        for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, String> mapData = iterator.next();
+            for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
+                String key = entrySet.getKey();
+                String value = entrySet.getValue();
+                columnDefs.add(new ColumnDef(key, "string", key));
+            }
+            return columnDefs;
+        }
+        return columnDefs;
+    }
+    // getTopBoards,getTopPins,getFollowingsCount,getPinsLikeCount,getTotalBoards,getTotalPins
 
     public static List<Map<String, String>> getTopBoards() throws ParseException {
 
@@ -44,15 +90,20 @@ public class Pinterest {
         Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
         Map returnMap = new HashMap<>();
         List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
-        List<ColumnDef> columnDefObject = getColumnDefObject(fbData);
-        returnMap.put("columnDef", columnDefObject);
-        returnMap.put("data", fbData);
-        List<Map<String, String>> listData = new ArrayList<>();
-        listData.add(returnMap);
-        return listData;
+        List<Map<String, String>> returnData = new ArrayList<>();
+        for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
+            Map<String, Object> fbDataMap = iterator.next();
+            Map<String, String> returnDataMap = new HashMap<>();
+            returnDataMap.put("name", fbDataMap.get("name") + "");
+            returnDataMap.put("description", fbDataMap.get("description") + "");
+            returnDataMap.put("counts", ((Map) fbDataMap.get("counts")).get("pins") + "");
+            returnData.add(returnDataMap);
+
+        }
+        return returnData;
     }
 
-    public static List<Map<String, String>> getTopPins() throws ParseException {
+    public static List<Map<String, Object>> getTopPins() throws ParseException {
 
         String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
         String data = Rest.getData(fbUrl);
@@ -62,12 +113,8 @@ public class Pinterest {
         Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
         Map returnMap = new HashMap<>();
         List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
-        List<ColumnDef> columnDefObject = getColumnDefObject(fbData);
-        returnMap.put("columnDef", columnDefObject);
-        returnMap.put("data", fbData);
-        List<Map<String, String>> listData = new ArrayList<>();
-        listData.add(returnMap);
-        return listData;
+
+        return fbData;
     }
 
     public static List<Map<String, String>> getFollowingsCount() throws ParseException {
@@ -86,8 +133,13 @@ public class Pinterest {
             int getFollowingsCount = processFollowings(followingsApiUrls.get(i));
             maxCount = maxCount + getFollowingsCount;
         }
+        System.out.println("*******************Start*****************************");
+        System.out.println(maxCount);
+        System.out.println("****************End********************************");
+        
+        
         Map returnMap = new HashMap<>();
-        returnMap.put("followings_count",maxCount);
+        returnMap.put("followings_count", maxCount);
         List<Map<String, String>> listData = new ArrayList<>();
         listData.add(returnMap);
         return listData;
