@@ -223,11 +223,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
                 "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + widget.dataSetId.reportName +
                 "&driver=" + widget.dataSetId.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
                 "&endDate=" + $stateParams.endDate +
                 '&username=' + widget.dataSetId.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
+                '&url=' + widget.dataSetId.url +
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
@@ -313,11 +315,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
                 "&dataSetId=" + dataSet.id +
                 "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + dataSet.reportName +
                 "&driver=" + dataSet.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
                 "&endDate=" + $stateParams.endDate +
                 '&username=' + dataSet.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
+                '&url=' + dataSet.url +
                 '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
@@ -1266,9 +1270,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     "&accountId=" + $stateParams.accountId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate +
+                    "&dataSetReportName" + tableDataSource.reportName +
                     '&username=' + tableDataSource.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
                     '&widgetId=' + widget.id +
+                    '&url=' + tableDataSource.url +
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 console.log(response)
                 scope.tableData = response.data;
