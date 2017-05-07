@@ -116,7 +116,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Bar Chart', value: "bar"}
 
     ];
-    $scope.gridLine=[
+    $scope.gridLine = [
         {name: 'yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
@@ -676,7 +676,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     }
-    $scope.setGridLine=function(widget){
+    $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
@@ -851,7 +851,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            isGridLine:widget.isGridLine,
+            isGridLine: widget.isGridLine,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate, //widget.customEndDate
             queryFilter: $scope.buildQuery
@@ -891,7 +891,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
     $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
     $scope.selectDateRangeName = function (widget) {
-        $scope.editChart=widget;
+        $scope.editChart = widget;
         widget.dateRangeName = "Custom";
         widget.lastNdays = "";
         widget.lastNweeks = "";
@@ -960,6 +960,38 @@ app.directive('queryBuilder', ['$compile', function ($compile) {
                             data: ''
                         });
                     };
+//                    console.log(scope.group)
+//                    console.log(JSON.parse(scope.collection))
+//                    var columnFieldType = JSON.parse(scope.collection);
+//                    angular.forEach(columnFieldType, function (value, key) {
+//                        angular.forEach(scope.group, function (val, key) {
+//                            angular.forEach(val.rules, function (rule, key) {
+//                            console.log(value.fieldName)
+//                            console.log(value.rules);
+//                            if (value.fieldName == val.field)
+//                                if (value.fieldType == 'Number') {
+//                                    scope.conditions = [
+//                                        {name: '='},
+//                                        {name: '<>'},
+//                                        {name: '<'},
+//                                        {name: '<='},
+//                                        {name: '>'},
+//                                        {name: '>='}
+//                                    ];
+//                                } else {
+//                                    scope.conditions = [
+//                                        {name: '='},
+//                                        {name: '<>'},
+//                                        {name: '<'},
+//                                        {name: '<='},
+//                                        {name: '>'},
+//                                        {name: '>='},
+//                                        {name: 'contains'}
+//                                    ];
+//                                }
+//                            });
+//                        });
+//                    });
                     scope.removeCondition = function (index) {
                         scope.group.rules.splice(index, 1);
                     };
