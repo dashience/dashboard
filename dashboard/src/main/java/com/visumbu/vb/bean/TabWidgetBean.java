@@ -63,6 +63,8 @@ public class TabWidgetBean {
     private Integer lastNmonths;
     private Integer lastNweeks;
     private Integer lastNyears;
+    private String queryFilter;
+    private String isGridLine;
     private List<WidgetColumnBean> widgetColumns;
 
     public Integer getId() {
@@ -401,6 +403,23 @@ public class TabWidgetBean {
     public void setLastNyears(Integer lastNyears) {
         this.lastNyears = lastNyears;
     }
+
+    public String getQueryFilter() {
+        return queryFilter;
+    }
+
+    public void setQueryFilter(String queryFilter) {
+        this.queryFilter = queryFilter;
+    }    
+//
+    public String getIsGridLine() {
+        return isGridLine;
+    }
+
+    public void setIsGridLine(String isGridLine) {
+        this.isGridLine = isGridLine;
+    }
+    
 
     @Override
     public String toString() {

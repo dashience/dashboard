@@ -39,4 +39,7 @@ app.controller('TagController', function ($scope, $http, $stateParams, $filter, 
             $scope.tagData();
         });
     };
+    $scope.clearTag = function(){
+        $scope.tag = "";
+    }
 });

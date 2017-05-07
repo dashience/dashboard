@@ -153,7 +153,7 @@
     .ui-sortable-placeholder * { 
         opacity: 0.0; visibility: hidden; 
     }
-   .group{
+    .group{
         background-color: #fff;
         padding: 15px;
         border-radius: 5px;
@@ -263,16 +263,18 @@
         <div class="row col-md-12">
             <div class="col-md-4">
                 <label>Date Range</label>
+
                 <div>
                     <div class="dropdown editWidgetDropDown">
-                        <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                        <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
                             {{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style">
-                            <li><a>Custom Range</a >
+                            <li>
+<!--                                <a>Custom</a>-->
                                 <div class="col-md-12">
                                     <div>
-                                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range id="widgetDateRange">
+                                        <a class="pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widget)" widget-Table-Date-Range="{{widget}}" id="widgetDateRange">
                                             <span class="date-border">
                                                 {{widget.customStartDate ? widget.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widget.customEndDate ? widget.customEndDate : endDate| date: "MM/dd/yyyy"}} 
                                             </span>
@@ -454,8 +456,8 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-if="showAdvanceOptions == true">
-                                            <div class="col-md-12">
+                                        <div class="form-group" >
+                                            <div class="col-md-9" ng-if="showAdvanceOptions == true">
                                                 <label>Format</label>                                 
                                                 <table class="table table-bordered table-responsive">
                                                     <thead>
@@ -465,7 +467,7 @@
                                                             <th>Format</th>
                                                             <th>Sort</th>
                                                             <th>Field Type</th>
-                                                            <th>Combination Type</th>
+                                                            <th ng-if="editChartType !== 'pie'">Combination Type</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -491,7 +493,7 @@
                                                                     <option ng-repeat='fieldType in fieldTypes' value='{{fieldType.value}}'>{{fieldType.name}}</option>
                                                                 </select>
                                                             </td>
-                                                            <td>
+                                                            <td ng-if="editChartType !== 'pie'">
                                                                 <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='columnList.combinationType' ng-change="setCombinationChartType(widget, columnList)">
                                                                     <option ng-repeat=' combinationChartType in combinationChartTypes' value='{{combinationChartType.value}}'>{{combinationChartType.name}}</option>
                                                                 </select> 
@@ -500,7 +502,14 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <div class="col-md-3" ng-if="editChartType != 'pie'">
+                                                <label>Grid Line</label>
+                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='widget.isGridLine' ng-change="setGridLine(widget)">
+                                                    <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
+                                                </select> 
+                                            </div>
                                         </div>
+
                                     </div>
                                     <div class="col-md-4" ng-show="editChartType == 'ticker'">
                                         <div class="form-group">
@@ -553,42 +562,42 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
-                                            <label>Grouping</label>
-                                            <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
-                                                <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
-                                                <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
-                                                    {{group.displayName}}
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
+                                        <!--                                        <div class="form-group" ng-show="editChartType == 'stackedbar'">
+                                                                                    <label>Grouping</label>
+                                                                                    <ui-select multiple ng-model="groupingFields" theme="bootstrap" on-select="selectGrouping(widget, groupingFields)" on-remove="removedByGrouping(widget,$item, grouping)">
+                                                                                        <ui-select-match placeholder=" group...">{{$item.displayName}}</ui-select-match>
+                                                                                        <ui-select-choices repeat="group in collectionFields  | filter:$select.search">
+                                                                                            {{group.displayName}}
+                                                                                        </ui-select-choices>
+                                                                                    </ui-select>
+                                                                                </div>-->
 
                                         <div ng-if="editChartType === 'ticker'">
                                             <div ticker-Directive ticker-Source="{{previewChartUrl}}" ticker-Id="{{widget.id}}" ticker-Columns="{{previewColumn.columns}}"></div>
                                         </div>
                                         <div ng-if="editChartType === 'line'">
                                             <div>
-                                                <div line-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div line-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" line-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'area'">
                                             <div>
-                                                <div area-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div area-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" area-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'bar'">
                                             <div>
-                                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div bar-Chart-Directive bar-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>
                                         </div>
                                         <div ng-if="editChartType === 'pie'">
                                             <div>
-                                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div pie-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" pie-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>                            
                                         </div> 
                                         <div ng-if="editChartType === 'stackedbar'">
                                             <div>
-                                                <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
+                                                <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                             </div>                            
                                         </div>
                                     </div>
@@ -610,6 +619,7 @@
                     <div class="col-lg-12">
                         <div class="preview-table">
                             <div widget-Preview-Table 
+                                 set-Query-Fn="setQueryFn(queryFn)"
                                  preview-Table-List='{{collectionFields}}'
                                  preview-Urls='{{previewChartUrl}}' 
                                  preview-Columns='{{widget.columns}}' 
@@ -622,7 +632,12 @@
                                  display-Alignments="{{alignments}}"
                                  hide-Options="{{hideOptions}}"
                                  field-Types="{{fieldTypes}}"
-                                 reload-Url="{{currentLocation}}">
+                                 reload-Url="{{currentLocation}}"
+                                 last-N-Days="{{widget.lastNdays}}"
+                                 last-N-Weeks="{{widget.lastNweeks}}"
+                                 last-N-Months="{{widget.lastNmonths}}"
+                                 last-N-Years="{{widget.lastNyears}}"
+                                 >
                             </div>
                         </div>
                     </div>
@@ -664,9 +679,13 @@
                 <div class="col-lg-12">
                     <div class="alert alert-info">
                         <strong>Output</strong><br>
-                        <span ng-bind-html="output"></span>
+                        <span ng-bind-html="buildQuery"></span>
                     </div>
                     <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>
+                    <div>
+                        <button ng-if="widget.chartType == 'table'" class="btn btn-success" ng-click="setFilterType(widget);">Save</button>
+                        <button ng-if="widget.chartType != 'table'" class="btn btn-success" ng-click="save(widget);">Save</button>
+                    </div>                    
                 </div>
             </div>
         </div>

@@ -11,6 +11,7 @@ import com.visumbu.vb.bean.TagWidgetBean;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Tag;
+import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetTag;
 import java.util.Iterator;
 import java.util.List;
@@ -94,7 +95,34 @@ public class TagService {
     public WidgetTag deleteWidgetTag(Integer widgetTagId) {
         return tagDao.deleteWidgetTag(widgetTagId);
     }
-    
+
+    public WidgetTag selectWidgetTag(TagWidgetBean tagWidgetBean) {
+        String[] tagArray = tagWidgetBean.getTagName().split(",");
+        for (int i = 0; i < tagArray.length; i++) {
+            WidgetTag widgetTag = new WidgetTag();
+            String widgetTagName = tagArray[i];
+            Tag tag = tagDao.findTagName(widgetTagName);
+            
+            widgetTag.setTagId(tag);
+            Integer widgetId = tagWidgetBean.getWidgetId();
+            TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
+            widgetTag.setWidgetId(tabWidget);
+            widgetTag.setStatus(tagWidgetBean.getStatus());
+
+            WidgetTag tagWidget = tagDao.findWidgetTagByWidget(tag.getId(), tabWidget.getId());
+            if (tagWidget == null) {
+                tagDao.create(widgetTag);
+            } else {
+                widgetTag.setId(tagWidget.getId());
+                tagDao.update(widgetTag);
+            }
+        }
+        return null;
+//        widgetTag.setWidgetId(tabWidget);
+
+    }
+
+
 //     public WidgetTag readWidgetTag(Integer id) {
 //        return (WidgetTag) tagDao.read(Tag.class, id);
 //    }
@@ -105,4 +133,32 @@ public class TagService {
 //        //return dealer;
 //    }
 
+    public Boolean removeFav(Integer widgetId, VbUser user) {
+        Tag tag = tagDao.findTagName("Favourite");
+        WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
+        if(widgetTag != null) {
+            tagDao.delete(widgetTag);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean setFav(Integer widgetId, VbUser user) {
+        Tag tag = tagDao.findTagName("Favourite");
+        WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
+        if(widgetTag != null) {
+            return false;
+        }
+        widgetTag = new WidgetTag();
+        widgetTag.setTagId(tag);
+        widgetTag.setWidgetId(uiDao.getTabWidgetById(widgetId));
+        widgetTag.setUserId(user);
+        tagDao.create(widgetTag);
+        return true;
+    }
+
+    public List<TabWidget> getAllFav(VbUser user) {
+        Tag tag = tagDao.findTagName("Favourite");
+        return tagDao.findAllWidgetsByTag(user, tag);
+    }
 }
