@@ -1098,6 +1098,13 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
+            function formatBySecond(second) {
+                var minutes = "0" + Math.floor(second / 60);
+                var seconds = "0" + (second - minutes * 60);
+                var hours = "0" + Math.floor(minutes / 60);
+                return hours.substr(-2) + " : " + minutes.substr(-2) + " : " + seconds.substr(-2);
+            }
+
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1105,12 +1112,21 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -1406,12 +1422,21 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -1700,12 +1725,21 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -1987,12 +2021,21 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -2275,12 +2318,21 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
