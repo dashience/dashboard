@@ -143,16 +143,16 @@
                                         {{reportPerformances.name}}</option>
                                 </select>
 
-                                <label>Time Segments</label>
+                                <label ng-show="timeSegFlag">Time Segments</label>
 
-                                <select class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
+                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
                                     <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
                                         {{timeSegments.name}}</option>
                                 </select>
-                                <label ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram')">Product Segments</label>
+                                <label ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>
 
-                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet)" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram')">
+                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet)" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">
                                     <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
                                 </select>
@@ -177,7 +177,7 @@
                             <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
                         </div>
 
-                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https'">
+                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter' || dataSet.dataSourceId.dataSourceType === 'linkedin'">
                             <label>File Url</label>
                             <div>
                                 <input type="text" class="form-control" ng-model="dataSet.url">

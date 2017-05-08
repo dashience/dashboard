@@ -1,6 +1,7 @@
 app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout) {
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
+    $scope.timeSegFlag = false;
     /*
      * 
      * All
@@ -36,11 +37,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.report = $scope.adwordsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
         } else if (dataSource === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = true;
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
@@ -59,17 +62,41 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        } else if (dataSource === "linkedin")
+            $scope.timeSegFlag = false;
+        } else if (dataSource === "pinterest")
         {
-//            $scope.report = $scope.linkedinPerformance;
-           
+            $scope.report = $scope.pinterestPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+        } else if (dataSource === "linkedin")
+        {
+            $scope.report = $scope.linkedinPerformance;
+            $scope.dataSetFlag = false;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
         }
     };
+
+
+    $scope.pinterestPerformance = [
+        {
+            type: 'getTopBoards',
+            name: 'getTopBoards',
+        }, {
+            type: 'getTopPins',
+            name: 'getTopPins',
+
+        }, {
+            type: 'getOrganicData',
+            name: 'getOrganicData',
+
+        }
+    ]
+
 
     $scope.facebookPerformance = [
         {
@@ -571,135 +598,135 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-    $scope.pinterestPerformance = [
-        {
-            type: 'getTopBoards',
-            name: 'getTopBoards',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getTopPins',
-            name: 'getTopPins',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getFollowingsCount',
-            name: 'getFollowingsCount',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getPinsLikeCount',
-            name: 'getPinsLikeCount',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getTotalBoards',
-            name: 'getTotalBoards',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getTotalPins',
-            name: 'getTotalPins',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }
-    ]
+//    $scope.pinterestPerformance = [
+//        {
+//            type: 'getTopBoards',
+//            name: 'getTopBoards',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getTopPins',
+//            name: 'getTopPins',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getFollowingsCount',
+//            name: 'getFollowingsCount',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getPinsLikeCount',
+//            name: 'getPinsLikeCount',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getTotalBoards',
+//            name: 'getTotalBoards',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getTotalPins',
+//            name: 'getTotalPins',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }
+//    ]
     $scope.instagramPerformance = [
         {
             type: 'instagramPerformance',
@@ -1688,6 +1715,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
             $scope.nwStatusFlag = false;
+        }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.pinterestPerformance);
+//            $scope.timeSegment = $scope.pinterestPerformance[index].timeSegments;
+            $scope.productSegment = $scope.pinterestPerformance[index].productSegments;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+
         }
 
         function getIndex(data, object)

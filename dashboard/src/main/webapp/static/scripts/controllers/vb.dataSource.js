@@ -42,6 +42,15 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: 'analytics',
                 name: 'Google Analytics'
+            
+            },
+            {
+                type: 'pinterest',
+                name: 'Pinterest'
+            },
+            {
+                type: 'twitter',
+                name: 'Twitter'
             }
         ];
         function getItems() {
