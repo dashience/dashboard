@@ -36,7 +36,8 @@ import org.json.simple.parser.ParseException;
 public class FacebookService {
 
 //    public final String ACCESS_TOKEN = ExampleConfig.ACCESS_TOKEN;
-    public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
+//   old-- public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
+    public String ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
 //    public final String APP_SECRET = ExampleConfig.APP_SECRET;

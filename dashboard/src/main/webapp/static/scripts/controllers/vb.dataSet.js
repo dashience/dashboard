@@ -71,9 +71,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
         } else if (dataSource === "linkedin")
         {
-//            $scope.report = $scope.linkedinPerformance;
-           
-            $scope.dataSetFlag = true;
+            $scope.report = $scope.linkedinPerformance;
+            $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
         } else {
