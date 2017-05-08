@@ -1,6 +1,7 @@
 app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout) {
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
+    $scope.timeSegFlag = false;
     /*
      * 
      * All
@@ -36,32 +37,72 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.report = $scope.adwordsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
         } else if (dataSource === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = true;
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = true;
         } else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+        } else if (dataSource === "pinterest")
+        {
+            $scope.report = $scope.pinterestPerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
         } else if (dataSource === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
         }
     };
+
+
+    $scope.pinterestPerformance = [
+        {
+            type: 'getTopBoards',
+            name: 'getTopBoards',
+        }, {
+            type: 'getTopPins',
+            name: 'getTopPins',
+
+        }, {
+            type: 'getFollowingsCount',
+            name: 'getFollowingsCount',
+
+        }, {
+            type: 'getPinsLikeCount',
+            name: 'getPinsLikeCount',
+
+        }, {
+            type: 'getTotalBoards',
+            name: 'getTotalBoards',
+
+        }, {
+            type: 'getTotalPins',
+            name: 'getTotalPins',
+
+        }
+    ]
+
 
     $scope.facebookPerformance = [
         {
@@ -85,8 +126,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -125,8 +166,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -161,8 +202,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -197,8 +238,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -232,8 +273,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -267,8 +308,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -302,8 +343,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -337,8 +378,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'year'
                 },
                 {
-                  type: 'none',
-                  name: 'None'  
+                    type: 'none',
+                    name: 'None'
                 }
             ],
             productSegments: [
@@ -1337,6 +1378,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
             $scope.nwStatusFlag = false;
         }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.pinterestPerformance);
+//            $scope.timeSegment = $scope.pinterestPerformance[index].timeSegments;
+            $scope.productSegment = $scope.pinterestPerformance[index].productSegments;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+
+        }
 
         function getIndex(data, object)
         {
@@ -1632,6 +1682,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     "&endDate=" + $stateParams.endDate +
                     '&username=' + dataSourcePath.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
+                    '&url=' + dataSourcePath.url +
                     '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;

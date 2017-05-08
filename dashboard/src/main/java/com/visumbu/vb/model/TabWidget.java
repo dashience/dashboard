@@ -26,6 +26,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -41,7 +42,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "TabWidget.findAll", query = "SELECT t FROM TabWidget t")
     , @NamedQuery(name = "TabWidget.findById", query = "SELECT t FROM TabWidget t WHERE t.id = :id")
-        , @NamedQuery(name = "TabWidget.findByTabId", query = "SELECT count(t.id) FROM TabWidget t WHERE t.tabId.id = :tabId")
+    , @NamedQuery(name = "TabWidget.findByTabId", query = "SELECT count(t.id) FROM TabWidget t WHERE t.tabId.id = :tabId")
     , @NamedQuery(name = "TabWidget.findByChartType", query = "SELECT t FROM TabWidget t WHERE t.chartType = :chartType")
     , @NamedQuery(name = "TabWidget.findByClosable", query = "SELECT t FROM TabWidget t WHERE t.closable = :closable")
     , @NamedQuery(name = "TabWidget.findByCol", query = "SELECT t FROM TabWidget t WHERE t.col = :col")
@@ -185,7 +186,10 @@ public class TabWidget implements Serializable {
     private Integer lastNweeks;
     @Column(name = "last_nyears")
     private Integer lastNyears;
-
+    @Size(max = 45)
+    @Column(name = "is_grid_line")
+    private String isGridLine;
+    
     @Lob
     @Size(max = 65535)
     @Column(name = "content")
@@ -602,7 +606,15 @@ public class TabWidget implements Serializable {
     public void setQueryFilter(String queryFilter) {
         this.queryFilter = queryFilter;
     }
-   
+
+    public String getIsGridLine() {
+        return isGridLine;
+    }
+
+    public void setIsGridLine(String isGridLine) {
+        this.isGridLine = isGridLine;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -637,5 +649,7 @@ public class TabWidget implements Serializable {
     public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
         this.reportWidgetCollection = reportWidgetCollection;
     }
+
+   
 
 }

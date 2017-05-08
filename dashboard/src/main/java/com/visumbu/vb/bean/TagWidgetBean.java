@@ -11,6 +11,7 @@ package com.visumbu.vb.bean;
  */
 public class TagWidgetBean {
     private String tagName;
+    private Boolean favourites;
     private String description;
     private String status;
     private Integer widgetId;
@@ -23,6 +24,15 @@ public class TagWidgetBean {
         this.tagName = tagName;
     }
 
+    public Boolean getFavourites() {
+        return favourites;
+    }
+
+    public void setFavourites(Boolean favourites) {
+        this.favourites = favourites;
+    }
+
+    
     public String getDescription() {
         return description;
     }
