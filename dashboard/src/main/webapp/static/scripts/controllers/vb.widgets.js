@@ -541,7 +541,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 });
                 return zeroRow;
             }
-            
+
             scope.format = function (column, value) {
                 if (!value) {
                     return "-";
@@ -649,8 +649,10 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
+                        "&dataSetReportName=" + tableDataSource.reportName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.widgetId +
+                        '&url=' + tableDataSource.url +
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
@@ -1015,17 +1017,19 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 dataSourcePassword = '';
             }
             scope.refreshTicker = function () {
-                                    console.log("ticker --- > "+scope.tickerId);
+                console.log("ticker --- > " + scope.tickerId);
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
                         "&accountId=" + $stateParams.accountId +
                         "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
+                        "&dataSetReportName=" + tickerDataSource.reportName +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
+                        '&url=' + tickerDataSource.url +
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                     scope.tickers = [];
                     scope.loadingTicker = false;
@@ -1234,7 +1238,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     dataSourcePassword = '';
                 }
                 scope.refreshLineChart = function () {
-                    console.log("line --- > "+scope.widgetId);
+                    console.log("line --- > " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
@@ -1244,7 +1248,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&endDate=" + $stateParams.endDate +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
+                            "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&widgetId=' + scope.widgetId +
+                            '&url=' + lineChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
                         scope.loadingLine = false;
                         if (!response.data) {
@@ -1402,7 +1408,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -1535,10 +1541,11 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     dataSourcePassword = '';
                 }
                 scope.refreshBarChart = function () {
-                    console.log("bar -----> "+scope.widgetId);
+                    console.log("bar -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -1546,6 +1553,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             '&username=' + barChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
+                            '&url=' + barChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                         scope.loadingBar = false;
                         if (!response) {
@@ -1694,7 +1702,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -1822,10 +1830,11 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 scope.refreshPieChart = function () {
-                   console.log("pie -----> "+scope.widgetId);
+                    console.log("pie -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -1833,6 +1842,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             '&username=' + pieChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
+                            '&url=' + pieChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                         scope.loadingPie = false;
                         if (!response) {
@@ -1979,7 +1989,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -2109,10 +2119,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     dataSourcePassword = '';
                 }
                 scope.refreshAreaChart = function () {
-                    console.log("Area -----> "+scope.widgetId);
+                    console.log("Area -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -2120,6 +2131,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&username=' + areaChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
+                            '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                         scope.loadingArea = false;
                         if (response.data.length === 0) {
@@ -2265,7 +2277,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -2400,10 +2412,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 scope.refreshStackedBarChart = function () {
-                    console.log("Stacked Bar -----> "+scope.widgetId);
+                    console.log("Stacked Bar -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -2411,6 +2424,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             '&username=' + stackedBarChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
+                            '&url=' + stackedBarChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
                         scope.loadingStackedBar = false;
                         if (response.data.length === 0) {
