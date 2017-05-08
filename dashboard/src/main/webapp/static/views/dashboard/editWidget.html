@@ -271,7 +271,7 @@
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style">
                             <li>
-<!--                                <a>Custom</a>-->
+                                <!--                                <a>Custom</a>-->
                                 <div class="col-md-12">
                                     <div>
                                         <a class="pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widget)" widget-Table-Date-Range="{{widget}}" id="widgetDateRange">
@@ -452,9 +452,15 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <div class="col-md-12">
-                                                <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
-                                            </div>
+                                                <div class="col-md-6">
+                                                    <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
+                                                </div>
+                                                <div class="col-md-6" ng-if="editChartType != 'pie'">
+                                                    <label>Grid Line</label>
+                                                    <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='widget.isGridLine' ng-change="setGridLine(widget)">
+                                                        <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
+                                                    </select> 
+                                                </div>
                                         </div>
 
                                         <div class="form-group" >
@@ -502,12 +508,6 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                            </div>
-                                            <div class="col-md-3" ng-if="editChartType != 'pie'">
-                                                <label>Grid Line</label>
-                                                <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='widget.isGridLine' ng-change="setGridLine(widget)">
-                                                    <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
-                                                </select> 
                                             </div>
                                         </div>
 
