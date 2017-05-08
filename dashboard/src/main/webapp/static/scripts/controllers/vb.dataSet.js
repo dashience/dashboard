@@ -66,7 +66,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else if (dataSource === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
-            $scope.dataSetFlag = true;
+            $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
         } else {
