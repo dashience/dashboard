@@ -3337,7 +3337,7 @@ public class CustomReportDesigner {
             };
             int j = 0;
             for (long i = 0; i < totalCount; i++) {
-                if (i == 5) {
+                if (i == 4) {
                     j = 0;
                 }
                 renderer2.setSeriesPaint((int) i, paint[j++]);

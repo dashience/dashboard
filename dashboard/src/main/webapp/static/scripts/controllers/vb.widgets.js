@@ -649,7 +649,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
-                        "&dataSetReportName" + tableDataSource.reportName +
+                        "&dataSetReportName=" + tableDataSource.reportName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.widgetId +
                         '&url=' + tableDataSource.url +
@@ -1022,7 +1022,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&dataSetId=" + tickerDataSource.id +
                         "&accountId=" + $stateParams.accountId +
                         "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
-                        "&dataSetReportName" + tickerDataSource.reportName +
+                        "&dataSetReportName=" + tickerDataSource.reportName +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
@@ -1248,7 +1248,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&endDate=" + $stateParams.endDate +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
-                            "&dataSetReportName" + lineChartDataSource.reportName +
+                            "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&widgetId=' + scope.widgetId +
                             '&url=' + lineChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
@@ -1408,7 +1408,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -1545,7 +1545,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
-                            "&dataSetReportName" + barChartDataSource.reportName +
+                            "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -1702,7 +1702,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -1834,7 +1834,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
-                            "&dataSetReportName" + pieChartDataSource.reportName +
+                            "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -1989,7 +1989,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -2123,7 +2123,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
-                            "&dataSetReportName" + areaChartDataSource.reportName +
+                            "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -2277,7 +2277,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
                         if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
+                            return d3.format(format)(value / 100);
                         }
                         return d3.format(format)(value);
                     };
@@ -2416,7 +2416,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
-                            "&dataSetReportName" + stackedBarChartDataSource.reportName +
+                            "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
