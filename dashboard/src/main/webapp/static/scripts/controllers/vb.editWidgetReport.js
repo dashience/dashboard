@@ -119,7 +119,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 
     ];
     $scope.gridLine=[
-        {name: 'yes', value: "Yes"},
+        {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
     $scope.selectWidgetDuration = function (dateRangeName, widget) {

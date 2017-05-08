@@ -103,7 +103,11 @@ public class DateRangeFactory {
             System.out.println("day and count ----> " + count);
             dateRange.setEndDate(calendar.getTime());
             calendar.setTime(new Date());
-            calendar.add(Calendar.DAY_OF_MONTH, count * (-1));
+            if (count == 0) {
+                calendar.add(Calendar.DAY_OF_MONTH, count * (-1));
+            } else {
+                calendar.add(Calendar.DAY_OF_MONTH, (count - 1) * (-1));
+            }
             //	System.out.println(Calendar.WEEK_OF_YEAR + "....");
             dateRange.setStartDate(calendar.getTime());
             return dateRange;
