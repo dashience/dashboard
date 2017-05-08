@@ -145,6 +145,12 @@ public class TagService {
 
     public Boolean setFav(Integer widgetId, VbUser user) {
         Tag tag = tagDao.findTagName("Favourite");
+        if(tag == null) {
+            tag = new Tag();
+            tag.setTagName("Favourite");
+            tag.setDescription("Favourite Widgets");
+            tag = (Tag) tagDao.create(tag);
+        }
         WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
         if(widgetTag != null) {
             return false;

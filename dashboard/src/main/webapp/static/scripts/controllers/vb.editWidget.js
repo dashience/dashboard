@@ -116,7 +116,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Bar Chart', value: "bar"}
 
     ];
-    $scope.gridLine=[
+    $scope.gridLine = [
         {name: 'yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
@@ -223,11 +223,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
                 "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + widget.dataSetId.reportName +
                 "&driver=" + widget.dataSetId.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
                 "&endDate=" + $stateParams.endDate +
                 '&username=' + widget.dataSetId.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
+                '&url=' + widget.dataSetId.url +
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
@@ -313,11 +315,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
                 "&dataSetId=" + dataSet.id +
                 "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + dataSet.reportName +
                 "&driver=" + dataSet.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
                 "&endDate=" + $stateParams.endDate +
                 '&username=' + dataSet.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
+                '&url=' + dataSet.url +
                 '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
@@ -676,7 +680,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     }
-    $scope.setGridLine=function(widget){
+    $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
@@ -851,7 +855,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            isGridLine:widget.isGridLine,
+            isGridLine: widget.isGridLine,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate, //widget.customEndDate
             queryFilter: $scope.buildQuery
@@ -891,7 +895,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
     $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
     $scope.selectDateRangeName = function (widget) {
-        $scope.editChart=widget;
+        $scope.editChart = widget;
         widget.dateRangeName = "Custom";
         widget.lastNdays = "";
         widget.lastNweeks = "";
@@ -960,6 +964,38 @@ app.directive('queryBuilder', ['$compile', function ($compile) {
                             data: ''
                         });
                     };
+//                    console.log(scope.group)
+//                    console.log(JSON.parse(scope.collection))
+//                    var columnFieldType = JSON.parse(scope.collection);
+//                    angular.forEach(columnFieldType, function (value, key) {
+//                        angular.forEach(scope.group, function (val, key) {
+//                            angular.forEach(val.rules, function (rule, key) {
+//                            console.log(value.fieldName)
+//                            console.log(value.rules);
+//                            if (value.fieldName == val.field)
+//                                if (value.fieldType == 'Number') {
+//                                    scope.conditions = [
+//                                        {name: '='},
+//                                        {name: '<>'},
+//                                        {name: '<'},
+//                                        {name: '<='},
+//                                        {name: '>'},
+//                                        {name: '>='}
+//                                    ];
+//                                } else {
+//                                    scope.conditions = [
+//                                        {name: '='},
+//                                        {name: '<>'},
+//                                        {name: '<'},
+//                                        {name: '<='},
+//                                        {name: '>'},
+//                                        {name: '>='},
+//                                        {name: 'contains'}
+//                                    ];
+//                                }
+//                            });
+//                        });
+//                    });
                     scope.removeCondition = function (index) {
                         scope.group.rules.splice(index, 1);
                     };
@@ -1234,9 +1270,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     "&accountId=" + $stateParams.accountId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate +
+                    "&dataSetReportName" + tableDataSource.reportName +
                     '&username=' + tableDataSource.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
                     '&widgetId=' + widget.id +
+                    '&url=' + tableDataSource.url +
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 console.log(response)
                 scope.tableData = response.data;
@@ -1338,7 +1376,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.save = function (column) {
                 widget.dateRangeName = $("#dateRangeName").text().trim();
                 if (widget.dateRangeName === "Custom") {
-                    alert('');
                     console.log("---->");
                     scope.lastNDays = "";
                     scope.lastNWeeks = "";
@@ -1419,6 +1456,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
+                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
             };
             if (widget.isFilter == true) {
@@ -1504,18 +1542,18 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                 );
                 $(".ranges ul").find("li").addClass("custom-picker");
                 $(".custom-picker").click(function (e) {
-                angular.forEach(scope.previewTableHeader, function (value, key) {
-                    console.log("Drag Data")
-                    console.log(value.fieldName)
-                    var indexid = scope.previewTableHeader.indexOf(value)
+                    angular.forEach(scope.previewTableHeader, function (value, key) {
+                        console.log("Drag Data")
+                        console.log(value.fieldName)
+                        var indexid = scope.previewTableHeader.indexOf(value)
 //                    console.log(indexid)
-                });
-                console.log(scope.previewTableHeader);
-                var index = scope.previewTableHeader.indexOf(collectionField);
-                //scope.previewTableHeader.splice(index, 1);
+                    });
+                    console.log(scope.previewTableHeader);
+                    var index = scope.previewTableHeader.indexOf(collectionField);
+                    //scope.previewTableHeader.splice(index, 1);
 //                alert(index);
-                console.log(scope.previewTableHeader);
-                return;
+                    console.log(scope.previewTableHeader);
+                    return;
 //                e.bind();
                 });
                 $(".editWidgetDropDown").click(function (e) {
@@ -1565,13 +1603,5 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
         }//end of link function
     };
 });
-                    var widget = scope.previewColumn;
-                    widget.dateRangeName = "Custom";
-                    widget.chartType = scope.selectedRow;
-                    widget.customStartDate = scope.customStartDate;
-                    widget.customEndDate = scope.customEndDate;
-                    console.log(widget);
-//                    $(".scheduler-list-style").hide();
-                    var chartType = widget;
-                    scope.$apply();
+
 //                    selectWidgetDuration('Custom', widget);
