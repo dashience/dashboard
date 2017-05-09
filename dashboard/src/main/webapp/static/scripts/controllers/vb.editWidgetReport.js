@@ -470,7 +470,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 } else {
                     if (val.fieldName == y1data.removeItem) {
                         val.yAxis = null;
-                        val.groupField=null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -502,7 +502,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 } else {
                     if (val.fieldName == y2data.removeItem) {
                         val.yAxis = null;
-                        val.groupField=null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -658,7 +658,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 //        })
 //        $scope.selectGrouping(widget, groupList)
 //    };
-    $scope.setGridLine=function(widget){
+    $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
@@ -761,8 +761,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
-            customEndDate: $scope.customEndDate,//widget.customEndDate
-            isGridLine:widget.isGridLine
+            customEndDate: $scope.customEndDate, //widget.customEndDate
+            isGridLine: widget.isGridLine
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             if (widget.tagName) {
@@ -1336,7 +1336,6 @@ app.directive('customReportWidgetDateRange', function ($stateParams) {
                 $(".scheduler-list-style").click(function (e) {
                     e.stopPropagation();
                 });
-
                 console.log(JSON.parse(scope.widgetTableDateRange).customStartDate);
                 console.log(JSON.parse(scope.widgetTableDateRange).customEndDate);
                 var widget = JSON.parse(scope.widgetTableDateRange);

@@ -4,6 +4,7 @@
  */
 package com.visumbu.mail;
 
+import com.visumbu.vb.utils.PropertyReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,6 +22,15 @@ import org.apache.commons.mail.MultiPartEmail;
 public class TextMailWithAttachment {
 
     private MailProperties props = null;
+    
+    PropertyReader propReader = new PropertyReader();
+    
+    private String hostName = "smtp.hostname";
+    private String setPort = "smtp.port";
+    private String authUser = "smtp.authuser";
+    private String authPass = "smtp.authpass";
+    private String fromAddress = "smtp.fromaddress";
+
 
     public TextMailWithAttachment(MailProperties props) {
         this.props = props;
@@ -43,11 +53,12 @@ public class TextMailWithAttachment {
             mailAttachment.setAttachmentPath(attachment);
             mailAttachments.add(mailAttachment);
         }
-        this.props.setHostName("gator3272.hostgator.com");
-        this.props.setPort(587);
-        this.props.setAuthUser("jp@digitalanalystteam.com");
-        this.props.setAuthPasswd("d@tjp527");
-        this.props.setFrom("jp@digitalanalystteam.com");
+        this.props.setHostName(propReader.ReadProperties(hostName));
+        int portNo = Integer.parseInt(propReader.ReadProperties(setPort));
+        this.props.setPort(portNo);
+        this.props.setAuthUser(propReader.ReadProperties(authUser));
+        this.props.setAuthPasswd(propReader.ReadProperties(authPass));
+        this.props.setFrom(propReader.ReadProperties(fromAddress));
         this.props.setHtmlMessage(message);
         this.props.setTxtMessage(message);
         this.props.setSubject(subject);

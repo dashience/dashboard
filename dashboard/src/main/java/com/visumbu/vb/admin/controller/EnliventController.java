@@ -138,13 +138,15 @@ public class EnliventController extends BaseController {
     public @ResponseBody
     Map getTwitter(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1494154268&oauth_nonce=3497952986&oauth_version=1.0&oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&oauth_signature=wgBsFf%2FgVeO5t6b6%2BxOzIa1c70U%3D";
+            
+            String url="https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1494260023&oauth_nonce=-242141800&oauth_version=1.0&oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&oauth_signature=%2Bhm2aCgnsjQ6YW%2B5isNho9%2B6OvM%3D";
+//            String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1494154268&oauth_nonce=3497952986&oauth_version=1.0&oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&oauth_signature=wgBsFf%2FgVeO5t6b6%2BxOzIa1c70U%3D";
 
             MultiValueMap<String, String> valueMap = null;
             String data = Rest.getData(url, valueMap);
 
             JSONParser parser = new JSONParser();
-            JSONArray jsonArray = (JSONArray) parser.parse(data);
+            JSONArray jsonArray = (JSONArray) parser.parse(data);                                                                                                                                                                                                                                                                                                                                                                                                                                           
 
             List<Map<String, Object>> myData = (List<Map<String, Object>>) jsonArray;
             List<Map<String, Object>> twitterData = new ArrayList<>();
@@ -159,13 +161,13 @@ public class EnliventController extends BaseController {
                 twitterMapData.put("favourites_count", mapData.get("favourites_count"));
 
                 twitterData.add(twitterMapData);
-
+                                                                                                                                                                                                                                                                                
             }
             List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
             Map returnMap = new HashMap();
             returnMap.put("columnDefs", columnDefObject);
             returnMap.put("data", twitterData);
-            return returnMap;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            return returnMap;
         } catch (ParseException ex) {
             Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
         }
