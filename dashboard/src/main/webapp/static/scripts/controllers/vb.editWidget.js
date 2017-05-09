@@ -117,7 +117,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
     ];
     $scope.gridLine = [
-        {name: 'yes', value: "Yes"},
+        {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
@@ -1070,7 +1070,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "<button class='btn btn-info' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-list'></i> List" +
                 "</button>" +
                 //list columns
-                "<ul class='dropdown-menu list-unstyled'>" +
+                "<ul class='dropdown-menu'>" +
                 "<li ng-repeat='column in tableList'>" +
                 "<button class='btn btn-link dropdown-item' ng-click='addList(column)'>" +
                 "{{column.displayName}}" +
@@ -1271,7 +1271,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     "&accountId=" + $stateParams.accountId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate +
-                    "&dataSetReportName" + tableDataSource.reportName +
+                    "&dataSetReportName=" + tableDataSource.reportName +
                     '&username=' + tableDataSource.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
                     '&widgetId=' + widget.id +
@@ -1543,18 +1543,11 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                 );
                 $(".ranges ul").find("li").addClass("custom-picker");
                 $(".custom-picker").click(function (e) {
-                    angular.forEach(scope.previewTableHeader, function (value, key) {
-                        console.log("Drag Data")
-                        console.log(value.fieldName)
-                        var indexid = scope.previewTableHeader.indexOf(value)
-//                    console.log(indexid)
-                    });
-                    console.log(scope.previewTableHeader);
-                    var index = scope.previewTableHeader.indexOf(collectionField);
-                    //scope.previewTableHeader.splice(index, 1);
-//                alert(index);
-                    console.log(scope.previewTableHeader);
-                    return;
+
+                    $(".scheduler-list-style").hide();
+//                    scope.selectCustomRange({range: 'Custom'});
+//                    var chartType = widget;
+                    scope.$apply();
 //                e.bind();
                 });
                 $(".editWidgetDropDown").click(function (e) {
@@ -1592,7 +1585,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
 
                     $(".scheduler-list-style").hide();
 //                    console.log(scope.reloadUrl)
-                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+//                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
 
 //                    $timeout(function () {
 //                    }, 50);
