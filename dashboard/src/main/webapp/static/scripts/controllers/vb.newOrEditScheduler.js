@@ -90,7 +90,6 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         };
         console.log($scope.scheduler);
     });
-
     $scope.addNewScheduler = function () {
         $scope.scheduler = "";
     };
@@ -290,8 +289,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                         endDate: $scope.scheduler.customEndDate ? $scope.scheduler.customEndDate : moment(),
                         maxDate: new Date()
                     },
-                    function (start, end) {
-                        $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+                    function (startDate, endDate) {
+                        $('#customDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
                     }
             );
             //Date picker

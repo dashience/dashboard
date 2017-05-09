@@ -118,6 +118,10 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         {name: 'Bar Chart', value: "bar"}
 
     ];
+    $scope.gridLine=[
+        {name: 'Yes', value: "Yes"},
+        {name: 'No', value: "No"}
+    ]
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
         //scheduler.dateRangeName = dateRangeName;
         console.log(dateRangeName)
@@ -462,9 +466,11 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 if (val.fieldName === value.fieldName) {
                     exists = true;
                     val.yAxis = 1;
+                    val.groupField = y1data.indexOf(value) + 1;
                 } else {
                     if (val.fieldName == y1data.removeItem) {
                         val.yAxis = null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -492,9 +498,11 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 if (val.fieldName === value.fieldName) {
                     exists = true;
                     val.yAxis = 2;
+                    val.groupField = y2data.indexOf(value) + 1;
                 } else {
                     if (val.fieldName == y2data.removeItem) {
                         val.yAxis = null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -621,35 +629,42 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 
 
     //Stacked Bar Grouping
-    $scope.selectGrouping = function (widget, groupingFields) {
+//    $scope.selectGrouping = function (widget, groupingFields) {
+//        $scope.editChartType = null;
+//        var groups = [];
+//        angular.forEach(groupingFields, function (value, key) {
+//            $scope.fieldNames = value.fieldName;
+//            groups.push($scope.fieldNames);
+//        });
+//        angular.forEach(groupingFields, function (value, key) {
+//            angular.forEach(widget.columns, function (val, header) {
+//                if (value.fieldName === val.fieldName) {
+//                    val.groupField = groups.indexOf(value.fieldName) + 1;
+//                }
+//            });
+//        });
+//        var chartType = widget;
+//        $timeout(function () {
+//            $scope.previewChart(chartType, widget)
+//        }, 50);
+//    };
+
+    //Removed Grouping
+//    $scope.removedByGrouping = function (widget, column, groupList) {
+//        angular.forEach(widget.columns, function (value, key) {
+//            if (value.fieldName == column.fieldName) {
+//                value.groupField = "";
+//            }
+//        })
+//        $scope.selectGrouping(widget, groupList)
+//    };
+    $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
-        var groups = [];
-        angular.forEach(groupingFields, function (value, key) {
-            $scope.fieldNames = value.fieldName;
-            groups.push($scope.fieldNames);
-        });
-        angular.forEach(groupingFields, function (value, key) {
-            angular.forEach(widget.columns, function (val, header) {
-                if (value.fieldName === val.fieldName) {
-                    val.groupField = groups.indexOf(value.fieldName) + 1;
-                }
-            });
-        });
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
         }, 50);
-    };
-
-    //Removed Grouping
-    $scope.removedByGrouping = function (widget, column, groupList) {
-        angular.forEach(widget.columns, function (value, key) {
-            if (value.fieldName == column.fieldName) {
-                value.groupField = "";
-            }
-        })
-        $scope.selectGrouping(widget, groupList)
-    };
+    }
 
     $scope.tags = [];
     $http.get('admin/tag').success(function (response) {
@@ -746,7 +761,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
-            customEndDate: $scope.customEndDate//widget.customEndDate
+            customEndDate: $scope.customEndDate, //widget.customEndDate
+            isGridLine: widget.isGridLine
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             if (widget.tagName) {
@@ -804,9 +820,15 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.json = JSON.stringify(newValue, null, 2);
         $scope.output = computed(newValue.group);
     }, true);
-    $scope.currentLocation= "index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
-    
-    
+    $scope.currentLocation = "index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
+    $scope.selectDateRangeName = function (widget) {
+        widget.dateRangeName = "Custom";
+        widget.lastNdays = "";
+        widget.lastNweeks = "";
+        widget.lastNmonths = "";
+        widget.lastNyears = "";
+    };
+
 });
 
 
@@ -911,7 +933,11 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
             reportFieldTypes: '@',
             reportDisplayFormats: '@',
             reportDisplayAlignments: '@',
-            reportHideOptions: '@'
+            reportHideOptions: '@',
+            lastNDays: '@',
+            lastNWeeks: '@',
+            lastNMonths: '@',
+            lastNYears: '@'
         },
         template:
                 "<div class='panel-head'>" +
@@ -1070,6 +1096,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
             scope.previewWidgetTitle = JSON.parse(scope.reportWidget).widgetTitle ? JSON.parse(scope.reportWidget).widgetTitle : "Widget Title";
             var widget = JSON.parse(scope.reportWidget);
             console.log(widget)
+            console.log(widget.id);
             scope.widgetTableSave = function () {
                 scope.editPreviewTitle = false;
             };
@@ -1119,6 +1146,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                     "&endDate=" + $stateParams.endDate +
                     '&username=' + tableDataSource.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
+                    '&widgetId=' + widget.id +
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
@@ -1252,6 +1280,13 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                     zeroSuppression: JSON.parse(scope.reportTable).zeroSuppression,
                     maxRecord: JSON.parse(scope.reportTable).maxRecord,
                     dateDuration: widget.dateDuration,
+                    dateRangeName: widget.dateRangeName,
+                    lastNdays: scope.lastNDays,
+                    lastNweeks: scope.lastNWeeks,
+                    lastNmonths: scope.lastNMonths,
+                    lastNyears: scope.lastNYears,
+                    customStartDate: scope.customStartDate,
+                    customEndDate: scope.customEndDate,
                     content: widget.content,
                     width: widget.width
                 };
@@ -1288,31 +1323,106 @@ app.directive('ckEditor', function () {
         }
     };
 });
-app.directive('customWidgetDateRange', function ($stateParams) {
+app.directive('customReportWidgetDateRange', function ($stateParams) {
     return{
         restrict: 'A',
+        scope: {
+            widgetTableDateRange: '@'
+//            selectCustomRange: "&"
+        },
         link: function (scope, element, attr) {
             //Date range as a button
-            $(element[0]).daterangepicker(
-                    {
-                        ranges: {
+            $(document).ready(function (e) {
+                $(".scheduler-list-style").click(function (e) {
+                    e.stopPropagation();
+                });
+                console.log(JSON.parse(scope.widgetTableDateRange).customStartDate);
+                console.log(JSON.parse(scope.widgetTableDateRange).customEndDate);
+                var widget = JSON.parse(scope.widgetTableDateRange);
+                var widgetStartDate = widget.customStartDate;//JSON.parse(scope.widgetTableDateRange).customStartDate;
+                var widgetEndDate = widget.customEndDate;//JSON.parse(scope.widgetTableDateRange).customEndDate;
+                $(element[0]).daterangepicker(
+                        {
+                            ranges: {
 //                        'Today': [moment(), moment()],
-//                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-//                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-//                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                                'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
+                                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                                'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+//                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                                'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
+//                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
+                                'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                                'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+//                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+//                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                            },
+                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
+                            endDate: widgetEndDate ? widgetEndDate : moment(),
+                            maxDate: new Date(),
                         },
-                        startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
-                        endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
-                        maxDate: new Date(),
-                    },
-                    function (start, end) {
-                        $('#widgetDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+                        function (startDate, endDate) {
+                            $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                        }
+                );
+                $(".ranges ul").find("li").addClass("custom-picker");
+                $(".custom-picker").click(function (e) {
+
+                    $(".scheduler-list-style").hide();
+//                    scope.selectCustomRange({range: 'Custom'});
+//                    var chartType = widget;
+                    scope.$apply();
+//                e.bind();
+                });
+                $(".editWidgetDropDown").click(function (e) {
+                    console.log("dropdown click event")
+                    $(".scheduler-list-style").removeAttr("style");
+                    $(".scheduler-list-style").css("display", "block");
+                    $(".daterangepicker").css("display", "none");
+//                        e.bind();
+                });
+                $(document).on("click", function (e) {
+                    var selectedElement = e.target.className;
+                    console.log(e.target.className);
+                    console.log(selectedElement);
+                    if (selectedElement == "custom-picker" ||
+                            selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
+                            selectedElement == "month" ||
+                            selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
+                            selectedElement == "next available" ||
+                            selectedElement == "input-mini form-control active" ||
+                            selectedElement == "calendar-table" || selectedElement == "table-condensed" ||
+                            selectedElement == "daterangepicker_input")
+                    {
+                        $(".scheduler-list-style").css("display", "block");
+                    } else {
+                        $(".scheduler-list-style").css("display", "none");
                     }
-            );
+                });
+                $(".applyBtn").click(function (e) {
+                    console.log("apply button click event triggered");
+                    try {
+                        scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                        scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                    } catch (e) {
+                    }
+
+                    $(".scheduler-list-style").hide();
+//                    var chartType = widget;
+//                    scope.$apply();
+//                    scope.selectWidgetDuration('Custom', widget);
+//                    $timeout(function () {
+//                    }, 50);
+                });
+            });
         }
     };
-})
-        ;
+});
 

@@ -11,6 +11,7 @@ import com.visumbu.vb.bean.TagWidgetBean;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Tag;
+import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetTag;
 import java.util.Iterator;
 import java.util.List;
@@ -121,6 +122,7 @@ public class TagService {
 
     }
 
+
 //     public WidgetTag readWidgetTag(Integer id) {
 //        return (WidgetTag) tagDao.read(Tag.class, id);
 //    }
@@ -130,4 +132,39 @@ public class TagService {
 //        return (WidgetTag) tagDao.delete(id);
 //        //return dealer;
 //    }
+
+    public Boolean removeFav(Integer widgetId, VbUser user) {
+        Tag tag = tagDao.findTagName("Favourite");
+        WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
+        if(widgetTag != null) {
+            tagDao.delete(widgetTag);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean setFav(Integer widgetId, VbUser user) {
+        Tag tag = tagDao.findTagName("Favourite");
+        if(tag == null) {
+            tag = new Tag();
+            tag.setTagName("Favourite");
+            tag.setDescription("Favourite Widgets");
+            tag = (Tag) tagDao.create(tag);
+        }
+        WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
+        if(widgetTag != null) {
+            return false;
+        }
+        widgetTag = new WidgetTag();
+        widgetTag.setTagId(tag);
+        widgetTag.setWidgetId(uiDao.getTabWidgetById(widgetId));
+        widgetTag.setUserId(user);
+        tagDao.create(widgetTag);
+        return true;
+    }
+
+    public List<TabWidget> getAllFav(VbUser user) {
+        Tag tag = tagDao.findTagName("Favourite");
+        return tagDao.findAllWidgetsByTag(user, tag);
+    }
 }

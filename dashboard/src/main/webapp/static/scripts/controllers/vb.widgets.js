@@ -49,23 +49,38 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
             var widgetItems = [];
+            console.log(response);
             widgetItems = response;
-            widgetItems.forEach(function (value, key) {
-                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
-                    console.log(response)
-                    if (response.length == 0) {
-                        var tagsList = $scope.tags[0]
-                        tagsList.status = 'InActive';
-                        value.tags = tagsList;
-                    }
-                    response.forEach(function (val, k) {
-                        if (value.id == val.widgetId.id) {
-                            val.tagId.status = val.status ? val.status : 'InActive';
-                            value.tags = val.tagId;
-                        }
+            $http.get("admin/tag/getAllFav/").success(function (favResponse) {
+                widgetItems.forEach(function (value, key) {
+                    favWidget = $.grep(favResponse, function (b) {
+                        return b.id === value.id;
                     });
+                    if (favWidget.length > 0) {
+                        value.isFav = true;
+                    } else {
+                        value.isFav = false;
+                    }
                 });
-            });
+            })
+//            widgetItems.forEach(function (value, key) {
+//                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
+//                    console.log(response)
+//                    if (response.length == 0) {
+//                        var tagsList = $scope.tags[0]
+//                        console.log($scope.tags[0])
+//                        tagsList.status = 'InActive';
+//                        value.tags = tagsList;
+//                        console.log(value)
+//                    }
+//                    response.forEach(function (val, k) {
+//                        if (value.id == val.widgetId.id) {
+//                            val.tagId.status = val.status ? val.status : 'InActive';
+//                            value.tags = val.tagId;
+//                        }
+//                    });
+//                });
+//            });
             $scope.widgets = widgetItems;
         });
     }
@@ -104,7 +119,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(widgetData.widgetId + " : " + widgetData.tabId);
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             console.log(response);
-            $scope.widgets.push(response);
+            $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
+                response["tags"] = dataTag[0];
+                $scope.widgets.push(response);
+                console.log($scope.widgets);
+            });
         });
     }
 
@@ -126,6 +145,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportDescription = "";
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
+        $scope.showReportEmptyMessage = false;
     };
 
     $scope.clearReport = function () {
@@ -134,22 +154,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
     };
-
     $scope.favourites = false;
 
-    $scope.favouritesNew = function (favourites, widget) {
-        if (favourites === true) {
-            widget.tags.status = "Active";
+    $scope.toggleFavourite = function (widget) {
+        var isFav = widget.isFav;
+        if (isFav) {
+            $http({method: 'POST', url: "admin/tag/removeFav/" + widget.id});
+            widget.isFav = false;
         } else {
-            widget.tags.status = "InActive";
+            $http({method: 'POST', url: "admin/tag/setFav/" + widget.id});
+            widget.isFav = true;
         }
-        var tagData = {
-            tagName: widget.tags.tagName,
-            widgetId: widget.id,
-            status: widget.tags.status
-        }
-        $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData});
-    };
+        console.log(widget)
+    }
+
+//    $scope.favouritesNew = function (favourites, widget) {
+//        alert(widget.id);
+//        console.log(widget.id);
+//        console.log(favourites);
+//        console.log(widget);
+//        console.log(widget.tags.status);
+//        console.log(widget.tags.tagName);
+//
+//        if (favourites === true) {
+//            alert("active")
+//            widget.tags.status = "Active";
+//        } else {
+//            alert("inactive")
+//            widget.tags.status = "InActive";
+//        }
+//        var tagData = {
+//            tagName: widget.tags.tagName,
+//            widgetId: widget.id,
+//            status: widget.tags.status
+//        }
+//        $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData});
+//    };
 
 
     $scope.goReport = function () {
@@ -487,7 +527,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
 
             scope.isZeroRow = function (row, col) {
                 var widgetData = JSON.parse(scope.widgetObj);
-                if (widgetData.zeroSuppression == false) {
+                if (!widgetData.zeroSuppression || widgetData.zeroSuppression == false) {
                     return false;
                 }
                 var zeroRow = true;
@@ -599,7 +639,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             }
 
             scope.refreshTable = function () {
-                $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
+                console.log(tableDataSource.id);
+                console.log(scope.widgetId);
+                console.log(tableDataSource);
+
+                scope.connectionTestUrl = url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
                         "&accountId=" + $stateParams.accountId +
                         "&driver=" + tableDataSource.dataSourceId.sqlDriver +
@@ -608,9 +652,31 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
+                        '&dataSetReportName=' + tableDataSource.reportName +
+                        '&widgetId=' + scope.widgetId +
+                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query);
+                console.log("***************************************");
+                console.log(scope.connectionTestUrl);
+
+
+                $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + tableDataSource.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&driver=" + tableDataSource.dataSourceId.sqlDriver +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + tableDataSource.dataSourceId.userName +
+                        "&dataSetReportName=" + tableDataSource.reportName +
+                        '&password=' + dataSourcePassword +
+                        '&dataSetReportName=' + tableDataSource.reportName +
+                        '&widgetId=' + scope.widgetId +
+                        '&url=' + tableDataSource.url +
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
+                    console.log(response);
+
                     if (!response.data) {
                         return;
                     }
@@ -650,8 +716,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                             scope.groupingData = dataToPush;
                         }
                     }
-                    //alert("CAlling");
-                    scope.pdfFunction({test: pdfData});
                 });
             }
             scope.setTableChartFn({tableFn: scope.refreshTable});
@@ -972,15 +1036,19 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 dataSourcePassword = '';
             }
             scope.refreshTicker = function () {
+                console.log("ticker --- > " + scope.tickerId);
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
                         "&accountId=" + $stateParams.accountId +
                         "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
+                        "&dataSetReportName=" + tickerDataSource.reportName +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
+                        '&widgetId=' + scope.tickerId +
+                        '&url=' + tickerDataSource.url +
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                     scope.tickers = [];
                     scope.loadingTicker = false;
@@ -1032,7 +1100,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
-
             var labels = {format: {}};
             scope.loadingLine = true;
             var yAxis = [];
@@ -1050,6 +1117,13 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
+            function formatBySecond(second) {
+                var minutes = "0" + Math.floor(second / 60);
+                var seconds = "0" + (second - minutes * 60);
+                var hours = "0" + Math.floor(minutes / 60);
+                return hours.substr(-2) + " : " + minutes.substr(-2) + " : " + seconds.substr(-2);
+            }
+
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1057,12 +1131,21 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -1190,6 +1273,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     dataSourcePassword = '';
                 }
                 scope.refreshLineChart = function () {
+                    console.log("line --- > " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
@@ -1199,6 +1283,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&endDate=" + $stateParams.endDate +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
+                            "&dataSetReportName=" + lineChartDataSource.reportName +
+                            '&widgetId=' + scope.widgetId +
+                            '&url=' + lineChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
                         scope.loadingLine = false;
                         if (!response.data) {
@@ -1210,6 +1297,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -1263,7 +1351,15 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
 
+
+                            console.log(gridLine)
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -1290,10 +1386,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });
@@ -1321,6 +1417,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
+            console.log(scope.widgetObj)
             var labels = {format: {}};
             scope.loadingBar = true;
             var yAxis = [];
@@ -1344,12 +1441,21 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -1479,15 +1585,19 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     dataSourcePassword = '';
                 }
                 scope.refreshBarChart = function () {
+                    console.log("bar -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
                             "&endDate=" + $stateParams.endDate +
                             '&username=' + barChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
+                            '&widgetId=' + scope.widgetId +
+                            '&url=' + barChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                         scope.loadingBar = false;
                         if (!response) {
@@ -1499,6 +1609,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj)
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -1549,6 +1660,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -1576,10 +1693,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });
@@ -1627,12 +1744,21 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -1757,15 +1883,19 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 scope.refreshPieChart = function () {
+                    console.log("pie -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
                             "&endDate=" + $stateParams.endDate +
                             '&username=' + pieChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
+                            '&widgetId=' + scope.widgetId +
+                            '&url=' + pieChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                         scope.loadingPie = false;
                         if (!response) {
@@ -1910,12 +2040,21 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -2042,15 +2181,19 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     dataSourcePassword = '';
                 }
                 scope.refreshAreaChart = function () {
+                    console.log("Area -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
                             "&endDate=" + $stateParams.endDate +
                             '&username=' + areaChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
+                            '&widgetId=' + scope.widgetId +
+                            '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                         scope.loadingArea = false;
                         if (response.data.length === 0) {
@@ -2059,6 +2202,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -2106,6 +2250,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -2133,10 +2283,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });
@@ -2164,7 +2314,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
-            scope.loadingBar = true;
+            scope.loadingStackedBar = true;
             var yAxis = [];
             var columns = [];
             var xAxis;
@@ -2187,12 +2337,21 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
-                        if (format.indexOf("%") > -1) {
-                            //return d3.format(format)(value / 100);
-                        }
-                        return d3.format(format)(value);
-                    };
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            // alert(format);
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                            console.log(formatBySecond(parseInt(value)))
+                        };
+                    }
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
@@ -2324,15 +2483,19 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 scope.refreshStackedBarChart = function () {
+                    console.log("Stacked Bar -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
+                            "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
                             "&endDate=" + $stateParams.endDate +
                             '&username=' + stackedBarChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
+                            '&widgetId=' + scope.widgetId +
+                            '&url=' + stackedBarChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
                         scope.loadingStackedBar = false;
                         if (response.data.length === 0) {
@@ -2341,6 +2504,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
                             var chartData = response.data;
                             if (sortFields.length > 0) {
@@ -2393,6 +2557,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            var gridLine = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridLine = true;
+                            } else {
+                                gridLine = false;
+                            }
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -2405,7 +2575,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31','#75ccd0','#666666', '#a5d169']
+                                    pattern: ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169']
 
                                 },
                                 tooltip: {show: false},
@@ -2421,10 +2591,10 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 },
                                 grid: {
                                     x: {
-                                        show: false
+                                        show: gridLine
                                     },
                                     y: {
-                                        show: false
+                                        show: gridLine
                                     }
                                 }
                             });
