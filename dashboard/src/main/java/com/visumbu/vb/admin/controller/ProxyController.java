@@ -197,7 +197,7 @@ public class ProxyController {
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
             if (dataSet != null) {
                 if (url == null) {
-                    url = dataSet.getQuery();
+                    url = dataSet.getUrl();
                 }
             }
         }
