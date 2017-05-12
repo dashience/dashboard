@@ -668,7 +668,13 @@ public class CustomReportDesigner {
 
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originalData = tabWidget.getData();
-        List<Map<String, Object>> data = new ArrayList<>(originalData);
+        List<Map<String, Object>> data;
+        if (originalData == null || originalData.isEmpty()) {
+            data = new ArrayList<>();
+            return null;
+        } else {
+            data = new ArrayList<>(originalData);
+        }
         // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
         List<Map<String, Object>> tempData = new ArrayList<>();
         System.out.println("columns size : " + columns.size());
@@ -2778,6 +2784,9 @@ public class CustomReportDesigner {
             List<WidgetColumn> columns = tabWidget.getColumns();
 
             List<Map<String, Object>> originalData = tabWidget.getData();
+            if (originalData == null || originalData.isEmpty()) {
+                return null;
+            }
             List<Map<String, Object>> data = new ArrayList<>(originalData);
             List<SortType> sortFields = new ArrayList<>();
             List<Aggregation> aggreagtionList = new ArrayList<>();
@@ -3643,6 +3652,9 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
 
         List<Map<String, Object>> originalData = tabWidget.getData();
+        if (originalData == null || originalData.isEmpty()) {
+            return null;
+        }
         List<Map<String, Object>> data = new ArrayList<>(originalData);
 
         List<Map<String, Object>> tempData = tabWidget.getData();
@@ -3806,8 +3818,10 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
 
         List<Map<String, Object>> originalData = tabWidget.getData();
+        if (originalData == null || originalData.isEmpty()) {
+            return null;
+        }
         List<Map<String, Object>> data = new ArrayList<>(originalData);
-
         List<Map<String, Object>> tempData = tabWidget.getData();
 
         List<SortType> sortFields = new ArrayList<>();
@@ -3967,8 +3981,10 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
 
         List<Map<String, Object>> originalData = tabWidget.getData();
+        if (originalData == null || originalData.isEmpty()) {
+            return null;
+        }
         List<Map<String, Object>> data = new ArrayList<>(originalData);
-
         List<Map<String, Object>> tempData = tabWidget.getData();
 
         List<SortType> sortFields = new ArrayList<>();

@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
+import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.bean.TabWidgetBean;
@@ -18,6 +19,7 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
@@ -451,7 +453,7 @@ public class UiService {
 
         return uiDao.getTabWidgetById(id);
     }
-    
+
     public List<WidgetTag> getTagWidget(Integer widgetId) {
         return uiDao.getTagWidgetByWidgetId(widgetId);
     }
@@ -752,5 +754,13 @@ public class UiService {
 
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
+    }
+
+    public DatasetColumns createColumns(DatasetColumnBean dataSet) {
+        return uiDao.createColumns(dataSet);
+    }
+
+    public DatasetColumns updateColumns(DatasetColumnBean dataSet) {
+        return uiDao.updateColumns(dataSet);
     }
 }

@@ -62,6 +62,7 @@ public class FacebookOrganic {
     }
 
     public static void main(String[] argv) throws ParseException {
+//        List<Map<String, String>> recentPosts = getTotalOrganicLikes();
         List<Map<String, String>> recentPosts = getTotalEngagements();
         System.out.println(recentPosts);
     }

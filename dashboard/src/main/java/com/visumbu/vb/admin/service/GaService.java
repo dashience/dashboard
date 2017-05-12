@@ -61,10 +61,16 @@ import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.bean.GaReport;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.utils.ApiUtils;
+import com.visumbu.vb.utils.DerivedColumnFormulae;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.StringTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
+import test.InToPost;
 
 /**
  *
@@ -89,7 +95,7 @@ public class GaService {
     private static AnalyticsReporting analyticsReporting = initializeAnalyticsReporting();
 
     private static Analytics initializeAnalytics() throws Exception {
-    // Initializes an authorized analytics service object.
+        // Initializes an authorized analytics service object.
 
         // Construct a GoogleCredential object with the service account email
         // and p12 file downloaded from the developer console.
@@ -99,7 +105,7 @@ public class GaService {
         GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com", "xXIHWHPBQ9B9KpkFs_1tmniu",
                 Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                        dataStoreFactory).build();
+                dataStoreFactory).build();
         // Authorize.
         Credential credential = new AuthorizationCodeInstalledApp(flow1,
                 new LocalServerReceiver()).authorize("user");
@@ -135,7 +141,7 @@ public class GaService {
             GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
                     httpTransport, JSON_FACTORY, "384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com", "1nJygCmZKdFCOykaGmbjBpKy",
                     Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                            dataStoreFactory).build();
+                    dataStoreFactory).build();
             // Authorize.
             Credential credential = new AuthorizationCodeInstalledApp(flow1,
                     new LocalServerReceiver()).authorize("user");
@@ -150,7 +156,7 @@ public class GaService {
         return null;
     }
 
-    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments) {
+    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
@@ -168,6 +174,63 @@ public class GaService {
         String filter = gaReport.getDefaultFilter();
         System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
+
+        HashMap<String, List<Map<String, Object>>> dataMap = (HashMap) getResponseAsMap(gaData);
+        Iterator it = dataMap.entrySet().iterator();
+
+        List column = new ArrayList<>();
+        List columnData = new ArrayList<>();
+
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            if (pair.getKey().equals("data")) {
+                columnData.add(pair.getValue());
+            } else {
+                column.add(pair.getValue());
+            }
+        }
+        List data = (List) columnData.get(0);
+        for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+            Object dataPair = iterator.next();
+            System.out.println("visits value -----> "+dataPair);
+        }
+
+        System.out.println("dataSetId ---> " + dataSetId);
+        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetId);
+        String fieldName;
+        String displayName;
+        String fieldType;
+        String formula;
+
+        System.out.println("datasetColumnList --> " + datasetColumnList);
+        for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
+            DatasetColumns datasetColumn = datasetColumns.next();
+
+            if (datasetColumn.getFormula() != null) {
+
+                fieldName = datasetColumn.getFieldName();
+                displayName = datasetColumn.getDisplayName();
+                fieldType = datasetColumn.getFieldType();
+                formula = datasetColumn.getFormula();
+                StringTokenizer tokenizer = new StringTokenizer(formula, "(?=[+*/-()1234567890])");
+                String[] tokenArray = new String[tokenizer.countTokens()];
+                int i = -1;
+                while (tokenizer.hasMoreTokens()) {
+                    String token = (String) tokenizer.nextToken();
+                    System.out.println("token name ---> "+token);
+                    tokenArray[++i] = token;
+                }
+
+                InToPost theTrans = new InToPost(formula);
+                String output = theTrans.doTrans();
+                System.out.println("final output ----> " + output);
+//                String[] value_split = formula.split("\\+");
+//                for(int i = 0; i < value_split.length; i++){
+//                    System.out.println(value_split[i]);
+//                }
+            }
+        }
+
         return getResponseAsMap(gaData);
     }
 
@@ -414,7 +477,6 @@ public class GaService {
                     }
                 }
                 data.add(dataMap);
-
             }
             returnMap.put("data", data);
         }

@@ -238,7 +238,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         });
     }
 
-    $scope.editWidget = function (widget) {    //Edit widget
+    $scope.editWidget = function (widget) {  
+        console.log(widget)//Edit widget
         tagWidgetId(widget)
         $scope.editPreviewTitle = false;
         $scope.y1Column = [];

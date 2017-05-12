@@ -1,6 +1,7 @@
 app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout) {
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
+    $scope.timeSegFlag = false;
     /*
      * 
      * All
@@ -36,40 +37,65 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.report = $scope.adwordsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
         } else if (dataSource === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = true;
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        }
-        else if (dataSource === "pinterest")
+        } else if (dataSource === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        }else if (dataSource === "instagram")
+        } else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        } else if (dataSource === "linkedin")
+            $scope.timeSegFlag = false;
+        } else if (dataSource === "pinterest")
         {
-//            $scope.report = $scope.linkedinPerformance;
-           
+            $scope.report = $scope.pinterestPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+        } else if (dataSource === "linkedin")
+        {
+            $scope.report = $scope.linkedinPerformance;
+            $scope.dataSetFlag = false;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
         }
     };
+
+
+    $scope.pinterestPerformance = [
+        {
+            type: 'getTopBoards',
+            name: 'getTopBoards',
+        }, {
+            type: 'getTopPins',
+            name: 'getTopPins',
+
+        }, {
+            type: 'getOrganicData',
+            name: 'getOrganicData',
+
+        }
+    ]
+
 
     $scope.facebookPerformance = [
         {
@@ -571,135 +597,135 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-    $scope.pinterestPerformance = [
-        {
-            type: 'getTopBoards',
-            name: 'getTopBoards',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getTopPins',
-            name: 'getTopPins',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getFollowingsCount',
-            name: 'getFollowingsCount',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getPinsLikeCount',
-            name: 'getPinsLikeCount',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getTotalBoards',
-            name: 'getTotalBoards',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }, {
-            type: 'getTotalPins',
-            name: 'getTotalPins',
-//            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                }
-//            ]
-        }
-    ]
+//    $scope.pinterestPerformance = [
+//        {
+//            type: 'getTopBoards',
+//            name: 'getTopBoards',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getTopPins',
+//            name: 'getTopPins',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getFollowingsCount',
+//            name: 'getFollowingsCount',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getPinsLikeCount',
+//            name: 'getPinsLikeCount',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getTotalBoards',
+//            name: 'getTotalBoards',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }, {
+//            type: 'getTotalPins',
+//            name: 'getTotalPins',
+////            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                }
+////            ]
+//        }
+//    ]
     $scope.instagramPerformance = [
         {
             type: 'instagramPerformance',
@@ -1689,6 +1715,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
             $scope.nwStatusFlag = false;
         }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.pinterestPerformance);
+//            $scope.timeSegment = $scope.pinterestPerformance[index].timeSegments;
+            $scope.productSegment = $scope.pinterestPerformance[index].productSegments;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+
+        }
 
         function getIndex(data, object)
         {
@@ -1820,8 +1855,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.getTimeSegemens();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        }
-        else if (dataSet.dataSourceId.dataSourceType === "adwords")
+        } else if (dataSet.dataSourceId.dataSourceType === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
             $scope.getTimeSegemens();
@@ -1979,6 +2013,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
+                    "&dataSetId=" + dataSourcePath.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +
@@ -1997,6 +2032,26 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;
                 scope.tableRows = response.data;
+                console.log(scope.tableColumns);
+
+//                scope.columns = [];
+//                console.log(scope.tableColumns.length);
+//                for (var i = 0; i < scope.tableColumns.length; i++) {
+//                    console.log(scope.tableColumns[i]);
+//                    scope.columns.push({fieldName: scope.tableColumns[i].fieldName, displayName: scope.tableColumns[i].displayName, fieldType: scope.tableColumns[i].type});
+//                }
+//                console.log(scope.columns)
+//                var tableColumnsData = {
+//                    datasetId: dataSourcePath.id,
+//                    tableColumns: scope.columns,
+//                    fieldType: "string",
+//                    formula: "yoy(sessions)",
+//                    column: "YOY(sessions)"
+//                };
+//                console.log(tableColumnsData);
+//                $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: tableColumnsData}).success(function (response) {
+//                    console.log(response);
+//                });
             });
         }
     };
