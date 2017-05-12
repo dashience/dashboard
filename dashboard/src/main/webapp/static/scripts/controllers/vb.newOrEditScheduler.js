@@ -1,4 +1,133 @@
 app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter) {
+
+    $(document).ready(function (e) {
+
+        var start = moment();
+        var end = moment();
+        function cb(start, end) {
+            $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
+        }
+        //Initialize Select2 Elementsmouseenter
+        $(".select2").select2();
+        //Datemask dd/mm/yyyy
+        $("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
+        //Datemask2 mm/dd/yyyy
+        $("#datemask2").inputmask("mm/dd/yyyy", {"placeholder": "mm/dd/yyyy"});
+        //Money Euro
+        $("[data-mask]").inputmask();
+        //Date range picker
+        $('#reservation').daterangepicker();
+        //Date range picker with time picker
+        $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
+        //Date range as a button
+        $('#customDateRange').daterangepicker(
+                {
+                    startDate: start,
+                    endDate: end,
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+//                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                        'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
+//                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
+                        'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                        'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+//                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+//                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                    },
+                    maxDate: new Date()
+                }, cb);
+        cb(start, end);
+        //Date picker
+        $('#datepicker').datepicker({
+            autoclose: true
+        });
+        //iCheck for checkbox and radio inputs
+        $('input[type="checkbox"].minimal,  input[type="radio"].minimal').iCheck({
+            checkboxClass: 'icheckbox_minimal-bluee',
+            radioClass: 'iradio_minimal-blue'
+        });
+        //Red color scheme for iCheck
+        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
+            checkboxClass: 'icheckbox_minimal-red',
+            radioClass: 'iradio_minimal-red'
+        });
+        //Flat red color scheme for iCheck
+        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass: 'iradio_flat-green'
+        });
+        //Colorpicker
+        $(".my-colorpicker1").colorpicker();
+        //color picker with addon
+        $(".my-colorpicker2").colorpicker();
+        //Timepicker
+        $(".timepicker").timepicker({
+            showInputs: false
+        });
+
+        //$("#config-demo").click(function (e) {       
+
+        //picker code added 
+        
+        $(".ranges ul").find("li").addClass("custom-picker");
+        $(".drop").click(function (e) {
+            e.stopPropagation();
+            $(".scheduler-list-style").not($(this).next()).hide();
+            $(this).next().toggle();
+        });
+
+        $(".scheduler-list-style").find("li").click(function (e) {
+            e.stopPropagation();
+        });
+
+        $(document).click(function (e) {
+            console.log(e.target.className);
+            var selectedElement = e.target.className;
+            if (selectedElement != 'fa fa-chevron-left glyphicon glyphicon-chevron-left' &&
+                    selectedElement != 'prev available' && selectedElement != 'next available' &&
+                    selectedElement != 'input-mini form-control active' &&
+                    selectedElement != 'daterangepicker_input' && selectedElement != 'calendar-table' &&
+                    selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar' &&
+                    selectedElement != 'fa fa-chevron-right glyphicon glyphicon-chevron-right' &&
+                    selectedElement != "custom-picker" && selectedElement != 'month' &&
+                    selectedElement != 'daterangepicker dropdown-menu ltr opensleft show-calendar')
+            {
+                console.log("1");
+                $(".scheduler-list-style").hide();
+            }
+        });
+
+        $(".applyBtn").click(function (e) {
+            console.log("apply buton click event");
+            console.log($scope.selectedRow)
+            try {
+                $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+            } catch (e) {
+
+            }
+
+//            var widget = $scope.previewColumn;
+//            widget.chartType = $scope.selectedRow;
+//            widget.customStartDate = $scope.customStartDate;
+//            widget.customEndDate = $scope.customEndDate;
+//            $scope.selectWidgetDuration('Custom', widget);
+//            console.log($scope.customStartDate);
+//            console.log(widget);
+        });
+    });
+
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -173,6 +302,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         if (scheduler.schedulerRepeatType === "Now") {
             scheduler.schedulerNow = new Date();
             scheduler.schedulerTime = null;
+            scheduler.startDate = null;
+            scheduler.endDate = null;
             scheduler.schedulerWeekly = null;
             scheduler.schedulerMonthly = null;
             scheduler.schedulerYearly = null;
@@ -242,71 +373,6 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         });
         $scope.scheduler = "";
     };
-
-    $(function () {
-        //Initialize Select2 Elements
-        $(".select2").select2();
-        //Datemask dd/mm/yyyy
-        $("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
-        //Datemask2 mm/dd/yyyy
-        $("#datemask2").inputmask("mm/dd/yyyy", {"placeholder": "mm/dd/yyyy"});
-        //Money Euro
-        $("[data-mask]").inputmask();
-        //Date range picker
-        $('#reservation').daterangepicker();
-        //Date range picker with time picker
-        $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
-        //Date range as a button
-        $('#customDateRange').daterangepicker(
-                {
-                    ranges: {
-//                        'Today': [moment(), moment()],
-//                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-//                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-//                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                    },
-                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
-                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
-                    maxDate: new Date()
-                },
-                function (start, end) {
-
-                    $('#customDateRange span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-                }
-        );
-        //Date picker
-        $('#datepicker').datepicker({
-            autoclose: true
-        });
-        //iCheck for checkbox and radio inputs
-        $('input[type="checkbox"].minimal,  input[type="radio"].minimal').iCheck({
-            checkboxClass: 'icheckbox_minimal-blue',
-            radioClass: 'iradio_minimal-blue'
-        });
-        //Red color scheme for iCheck
-        $('input[type="checkbox"].minimal-red, input[type="radio"].minimal-red').iCheck({
-            checkboxClass: 'icheckbox_minimal-red',
-            radioClass: 'iradio_minimal-red'
-        });
-        //Flat red color scheme for iCheck
-        $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-            checkboxClass: 'icheckbox_flat-green',
-            radioClass: 'iradio_flat-green'
-        });
-        //Colorpicker
-        $(".my-colorpicker1").colorpicker();
-        //color picker with addon
-        $(".my-colorpicker2").colorpicker();
-        //Timepicker
-        $(".timepicker").timepicker({
-            showInputs: false
-        });
-
-        //$("#config-demo").click(function (e) {       
-
-    });
 });
 app.directive('jqdatepicker', function () {
     return {

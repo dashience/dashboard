@@ -1,13 +1,9 @@
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
 
     $scope.dragEnabled = true;
-
     $scope.toggleDragging = function () {
         $scope.dragEnabled = !$scope.dragEnabled;
     };
-
-
-
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -15,7 +11,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
-
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
@@ -26,12 +21,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
     };
-
     $scope.downloadPpt = function () {
         var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
         $window.open(url);
     };
-
     function getWidgetItem() {      //Default Loading Items
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
@@ -41,7 +34,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
     getWidgetItem();
-
     $scope.addWidget = function (newWidget) {       //Add Widget
 //        var data = {
 //            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
@@ -63,12 +55,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $('.modal-backdrop').remove();
         $state.go('index.dataSource', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
-
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
     };
+    $scope.widgetDuplicate = function (widgetData) {
+        console.log(widgetData);
+        console.log(widgetData.widgetId+" : "+widgetData.tabId);
+        $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId+ "/"+ widgetData.tabId).success(function (response) {
+            console.log(response);
+            $scope.widgets.push(response);
+        });
+    }
 
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();
@@ -77,15 +76,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         list.splice(to, 0, list.splice(from, 1)[0]);
         return list;
     };
-
     $http.get("admin/ui/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
     });
-
     $http.get('admin/ui/report').success(function (response) {
         $scope.reportList = response;
     });
-
     $scope.addWidgetToReport = function (widget) {
         var data = {};
         data.widgetId = widget.id;
@@ -97,16 +93,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
     };
-
     $scope.clearReport = function () {
         $scope.reportLogo = "";
         $scope.reportDescription = "";
         $scope.reportWidgetTitle = "";
         $scope.showReportWidgetName = false;
     };
-
     $scope.favourites = false;
-
     $scope.favouritesNew = function (favourites) {
         if (favourites == "true")
         {
@@ -123,7 +116,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.goReport = function () {
         $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
-
     $scope.onDropComplete = function (index, widget, evt) {
 
         if (widget !== "" && widget !== null) {
@@ -144,7 +136,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
-
     function splitCamelCase(s) {
         return s.split(/(?=[A-Z])/).join(' ');
     }
@@ -227,16 +218,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 content: widget.content,
                 width: widget.width
             };
-
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             });
         }, 50);
-
     };
     $scope.reduceWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
-
         if (widget.width == 12) {
             widget.width = widget.width - 4;
         } else if (widget.width == 8) {
@@ -263,15 +251,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 content: widget.content,
                 width: widget.width
             };
-
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             });
         }, 50);
-
     }
 });
-
-
 app.directive('dateRangePicker', function () {
     return{
         restrict: 'A',
@@ -292,7 +276,6 @@ app.directive('dateRangePicker', function () {
         }
     };
 });
-
 app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFilter) {
     return{
         restrict: 'A',
@@ -409,21 +392,18 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     //value.data.$hideRows = true;
                 });
             };
-
             scope.hideChild = function (item, hideStatus) {
                 // console.log(item);
                 if (!item)
                     return;
                 angular.forEach(item, function (value, key) {
                     value.$hideRows = hideStatus;
-
                     if (hideStatus == false) {
                         scope.hideChild(value, hideStatus);
                     }
                     //value.data.$hideRows = true;
                 });
             };
-
             scope.hideAll = function (grouping, hideStatus) {
                 if (!grouping)
                     return;
@@ -440,7 +420,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             scope.doSomething = function (ev) {
                 var element = ev.srcElement ? ev.srcElement : ev.target;
             };
-
             //scope.currentPage = 1;
             //scope.pageSize = 10;
             // console.log
@@ -448,7 +427,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 scope.columns.push(value);
             });
-
             scope.isZeroRow = function (row, col) {
                 var widgetData = JSON.parse(scope.widgetObj);
                 if (widgetData.zeroSuppression == false) {
@@ -484,7 +462,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return value;
             };
-
             function sortByDay(list, sortFields) {
                 var returnSortDay;
                 var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -580,7 +557,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         angular.forEach(sortFields, function (value, key) {
                             if (value.fieldType != 'day') {
                                 responseData = scope.orderData(responseData, sortFields);
-
                             } else {
                                 responseData = sortByDay(responseData, sortFields)//                                
                             }
@@ -624,7 +600,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 var sortFields = [];
                 sortFields.push({fieldName: col.fieldName, sortOrder: col.sortOrder, fieldType: col.fieldType});
                 var responseData = scope.orignalData;
-
                 angular.forEach(sortFields, function (value, key) {
                     if (value.fieldType != 'day') {
                         responseData = scope.orderData(responseData, sortFields);
@@ -633,7 +608,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         responseData = sortByDay(responseData, sortFields)
                     }
                 });
-
                 var widgetData = JSON.parse(scope.widgetObj);
                 if (widgetData.maxRecord > 0) {
                     responseData = responseData.slice(0, widgetData.maxRecord);
@@ -664,12 +638,10 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 scope.sortColumn = scope.objectHeader[index];
             };
-
 //Dir-Paginations
             scope.pageChangeHandler = function (num) {
                 console.log('reports page changed to ' + num);
             };
-
             scope.sum = function (list, fieldname) {
                 var sum = 0;
                 for (var i in list)
@@ -682,7 +654,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return sum;
             };
-
             scope.calculatedMetric = function (list, name, field1, field2) {
                 var value1 = scope.sum(list, field1);
                 var value2 = scope.sum(list, field2);
@@ -695,7 +666,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 return returnValue;
             };
-
             listOfCalculatedFunction = [
                 {name: 'ctr', field1: 'clicks', field2: 'impressions'},
                 {name: 'cpa', field1: 'cost', field2: 'conversions'},
@@ -710,7 +680,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 {name: 'cpagee', field1: 'spend', field2: 'actions_page_engagement'},
                 {name: 'cpp', field1: 'spend', field2: 'actions_post'}
             ];
-
             function aggregate(list, aggreationList) {
                 var returnValue = {};
                 angular.forEach(aggreationList, function (value, key) {
@@ -839,7 +808,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
         }
     };
 });
-
 app.directive('tickerDirective', function ($http, $stateParams) {
     return{
         restrict: 'AE',
@@ -889,7 +857,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 }
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
-
             var format = function (column, value) {
                 if (!value) {
                     return "-";
@@ -905,7 +872,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 }
                 return value;
             };
-
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
@@ -971,7 +937,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
         }
     };
 });
-
 app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter) {
     return{
         restrict: 'A',
@@ -1198,7 +1163,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 return a[xAxis.fieldName];
                             });
                             columns.push(xTicks);
-
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -1247,7 +1211,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
         }
     };
 });
-
 app.directive('barChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
     return{
         restrict: 'A',
@@ -1276,7 +1239,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var startDate = "";
             var endDate = "";
             var sortFields = [];
-
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1457,7 +1419,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                                 return dateOrders.indexOf(item[value.fieldName] * -1);
                                             }
                                         });
-
                                         if (chartMaxRecord.maxRecord) {
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
                                         } else {
@@ -1473,9 +1434,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
-
                             columns.push(xTicks);
-
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -1812,7 +1771,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
         template: '<div ng-show="loadingArea" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
         scope: {
-            setAreaChartFn:'&',
+            setAreaChartFn: '&',
             widgetId: '@',
             areaChartSource: '@',
             widgetColumns: '@',
@@ -1969,106 +1928,106 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     dataSourcePassword = '';
                 }
-                scope.refreshAreaChart=function(){
-                $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
-                        "&dataSetId=" + areaChartDataSource.id +
-                        "&accountId=" + $stateParams.accountId +
-                        "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
-                        "&location=" + $stateParams.locationId +
-                        "&startDate=" + $stateParams.startDate +
-                        "&endDate=" + $stateParams.endDate +
-                        '&username=' + areaChartDataSource.dataSourceId.userName +
-                        '&password=' + dataSourcePassword +
-                        '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
-                    scope.loadingArea = false;
-                    if (response.data.length === 0) {
-                        scope.areaEmptyMessage = "No Data Found";
-                        scope.hideEmptyArea = true;
-                    } else {
-                        var loopCount = 0;
-                        var sortingObj;
-                        var chartMaxRecord = JSON.parse(scope.widgetObj)
-                        var chartData = response.data;
-                        if (sortFields.length > 0) {
-                            angular.forEach(sortFields, function (value, key) {
-                                if (value.fieldType != 'day') {
-                                    sortingObj = scope.orderData(chartData, sortFields);
-                                    if (chartMaxRecord.maxRecord) {
-                                        chartData = maximumRecord(chartMaxRecord, sortingObj)
-                                    } else {
-                                        chartData = sortingObj;
-                                    }
-                                } else {
-                                    var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                                    sortingObj = orderByFilter(chartData, function (item) {
-                                        if (value.sortOrder === 'asc') {
-                                            return dateOrders.indexOf(item[value.fieldName]);
-                                        } else if (value.sortOrder === 'desc') {
-                                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                scope.refreshAreaChart = function () {
+                    $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
+                            "&dataSetId=" + areaChartDataSource.id +
+                            "&accountId=" + $stateParams.accountId +
+                            "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
+                            "&location=" + $stateParams.locationId +
+                            "&startDate=" + $stateParams.startDate +
+                            "&endDate=" + $stateParams.endDate +
+                            '&username=' + areaChartDataSource.dataSourceId.userName +
+                            '&password=' + dataSourcePassword +
+                            '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
+                        scope.loadingArea = false;
+                        if (response.data.length === 0) {
+                            scope.areaEmptyMessage = "No Data Found";
+                            scope.hideEmptyArea = true;
+                        } else {
+                            var loopCount = 0;
+                            var sortingObj;
+                            var chartMaxRecord = JSON.parse(scope.widgetObj)
+                            var chartData = response.data;
+                            if (sortFields.length > 0) {
+                                angular.forEach(sortFields, function (value, key) {
+                                    if (value.fieldType != 'day') {
+                                        sortingObj = scope.orderData(chartData, sortFields);
+                                        if (chartMaxRecord.maxRecord) {
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        } else {
+                                            chartData = sortingObj;
                                         }
-                                    });
-                                    if (chartMaxRecord.maxRecord) {
-                                        chartData = maximumRecord(chartMaxRecord, sortingObj)
                                     } else {
-                                        chartData = sortingObj;
-                                    }
-                                }
-                            })
-                            //chartData = scope.orderData(chartData, sortFields);
-                        }
-
-                        xTicks = [xAxis.fieldName];
-                        xData = chartData.map(function (a) {
-                            xTicks.push(loopCount);
-                            loopCount++;
-                            return a[xAxis.fieldName];
-                        });
-                        columns.push(xTicks);
-                        angular.forEach(yAxis, function (value, key) {
-                            ySeriesData = chartData.map(function (a) {
-                                return a[value.fieldName] || "0";
-                            });
-                            ySeriesData.unshift(value.displayName);
-                            columns.push(ySeriesData);
-                        });
-                        var chart = c3.generate({
-                            bindto: element[0],
-                            data: {
-                                x: xAxis.fieldName,
-                                columns: columns,
-                                labels: labels,
-                                type: 'area',
-                                axes: axes
-                            },
-                            color: {
-                                pattern: ['#62cb31', '#555555']
-
-                            },
-                            tooltip: {show: false},
-                            axis: {
-                                x: {
-                                    tick: {
-                                        format: function (x) {
-                                            return xData[x];
+                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                        sortingObj = orderByFilter(chartData, function (item) {
+                                            if (value.sortOrder === 'asc') {
+                                                return dateOrders.indexOf(item[value.fieldName]);
+                                            } else if (value.sortOrder === 'desc') {
+                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                            }
+                                        });
+                                        if (chartMaxRecord.maxRecord) {
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        } else {
+                                            chartData = sortingObj;
                                         }
                                     }
-                                },
-                                y2: y2
-                            },
-                            grid: {
-                                x: {
-                                    show: false
-                                },
-                                y: {
-                                    show: false
-                                }
+                                })
+                                //chartData = scope.orderData(chartData, sortFields);
                             }
-                        });
-                    }
-                });
-            }
-            scope.setAreaChartFn({areaChartFn: scope.refreshAreaChart});
-            scope.refreshAreaChart();
+
+                            xTicks = [xAxis.fieldName];
+                            xData = chartData.map(function (a) {
+                                xTicks.push(loopCount);
+                                loopCount++;
+                                return a[xAxis.fieldName];
+                            });
+                            columns.push(xTicks);
+                            angular.forEach(yAxis, function (value, key) {
+                                ySeriesData = chartData.map(function (a) {
+                                    return a[value.fieldName] || "0";
+                                });
+                                ySeriesData.unshift(value.displayName);
+                                columns.push(ySeriesData);
+                            });
+                            var chart = c3.generate({
+                                bindto: element[0],
+                                data: {
+                                    x: xAxis.fieldName,
+                                    columns: columns,
+                                    labels: labels,
+                                    type: 'area',
+                                    axes: axes
+                                },
+                                color: {
+                                    pattern: ['#62cb31', '#555555']
+
+                                },
+                                tooltip: {show: false},
+                                axis: {
+                                    x: {
+                                        tick: {
+                                            format: function (x) {
+                                                return xData[x];
+                                            }
+                                        }
+                                    },
+                                    y2: y2
+                                },
+                                grid: {
+                                    x: {
+                                        show: false
+                                    },
+                                    y: {
+                                        show: false
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                scope.setAreaChartFn({areaChartFn: scope.refreshAreaChart});
+                scope.refreshAreaChart();
             }
         }
     };
@@ -2242,113 +2201,112 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 } else {
                     dataSourcePassword = '';
                 }
-                scope.refreshStackedBarChart=function(){
-                $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
-                        "&dataSetId=" + stackedBarChartDataSource.id +
-                        "&accountId=" + $stateParams.accountId +
-                        "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
-                        "&location=" + $stateParams.locationId +
-                        "&startDate=" + $stateParams.startDate +
-                        "&endDate=" + $stateParams.endDate +
-                        '&username=' + stackedBarChartDataSource.dataSourceId.userName +
-                        '&password=' + dataSourcePassword +
-                        '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
-                    scope.loadingStackedBar = false;
-                    if (response.data.length === 0) {
-                        scope.stackedBarEmptyMessage = "No Data Found";
-                        scope.hideEmptyStackedBar = true;
-                    } else {
-                        var loopCount = 0;
-                        var sortingObj;
-                        var chartMaxRecord = JSON.parse(scope.widgetObj)
-                        var chartData = response.data;
-                        if (sortFields.length > 0) {
-                            angular.forEach(sortFields, function (value, key) {
-                                if (value.fieldType != 'day') {
+                scope.refreshStackedBarChart = function () {
+                    $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
+                            "&dataSetId=" + stackedBarChartDataSource.id +
+                            "&accountId=" + $stateParams.accountId +
+                            "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
+                            "&location=" + $stateParams.locationId +
+                            "&startDate=" + $stateParams.startDate +
+                            "&endDate=" + $stateParams.endDate +
+                            '&username=' + stackedBarChartDataSource.dataSourceId.userName +
+                            '&password=' + dataSourcePassword +
+                            '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
+                        scope.loadingStackedBar = false;
+                        if (response.data.length === 0) {
+                            scope.stackedBarEmptyMessage = "No Data Found";
+                            scope.hideEmptyStackedBar = true;
+                        } else {
+                            var loopCount = 0;
+                            var sortingObj;
+                            var chartMaxRecord = JSON.parse(scope.widgetObj)
+                            var chartData = response.data;
+                            if (sortFields.length > 0) {
+                                angular.forEach(sortFields, function (value, key) {
+                                    if (value.fieldType != 'day') {
 //                                    chartData = scope.orderData(chartData, sortFields);
-                                    sortingObj = scope.orderData(chartData, sortFields);
-                                    if (chartMaxRecord.maxRecord) {
-                                        console.log(chartMaxRecord.maxRecord)
-                                        chartData = maximumRecord(chartMaxRecord, sortingObj)
-                                    } else {
-                                        chartData = sortingObj;
-                                    }
-                                } else {
-                                    var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                                    sortingObj = orderByFilter(chartData, function (item) {
-                                        if (value.sortOrder === 'asc') {
-                                            return dateOrders.indexOf(item[value.fieldName]);
-                                        } else if (value.sortOrder === 'desc') {
-                                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                                        sortingObj = scope.orderData(chartData, sortFields);
+                                        if (chartMaxRecord.maxRecord) {
+                                            console.log(chartMaxRecord.maxRecord)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        } else {
+                                            chartData = sortingObj;
                                         }
-                                    });
-                                    if (chartMaxRecord.maxRecord) {
-                                        chartData = maximumRecord(chartMaxRecord, sortingObj)
                                     } else {
-                                        chartData = sortingObj;
+                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                        sortingObj = orderByFilter(chartData, function (item) {
+                                            if (value.sortOrder === 'asc') {
+                                                return dateOrders.indexOf(item[value.fieldName]);
+                                            } else if (value.sortOrder === 'desc') {
+                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                            }
+                                        });
+                                        if (chartMaxRecord.maxRecord) {
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        } else {
+                                            chartData = sortingObj;
+                                        }
+                                    }
+                                });
+                            }
+//                        chartData = orderData(chartData, sortFields);
+                            xTicks = [xAxis.fieldName];
+                            xData = chartData.map(function (a) {
+                                xTicks.push(loopCount);
+                                loopCount++;
+                                return a[xAxis.fieldName];
+                            });
+                            columns.push(xTicks);
+                            angular.forEach(yAxis, function (value, key) {
+                                ySeriesData = chartData.map(function (a) {
+                                    return a[value.fieldName] || "0";
+                                });
+                                ySeriesData.unshift(value.displayName);
+                                columns.push(ySeriesData);
+                            });
+                            var groupingNames = []
+                            angular.forEach(groupingFields, function (value, key) {
+                                groupingNames.push(value.fieldName)
+                            })
+                            var chart = c3.generate({
+                                bindto: element[0],
+                                data: {
+                                    x: xAxis.fieldName,
+                                    columns: columns,
+                                    labels: labels,
+                                    type: 'bar',
+                                    groups: [groupingNames],
+                                    axes: axes
+                                },
+                                color: {
+                                    pattern: ['#555555', '#62cb31', '#666666', '#a5d169', '#75ccd0']
+
+                                },
+                                tooltip: {show: false},
+                                axis: {
+                                    x: {
+                                        tick: {
+                                            format: function (x) {
+                                                return xData[x];
+                                            }
+                                        }
+                                    },
+                                    y2: y2
+                                },
+                                grid: {
+                                    x: {
+                                        show: false
+                                    },
+                                    y: {
+                                        show: false
                                     }
                                 }
                             });
                         }
-//                        chartData = orderData(chartData, sortFields);
-                        xTicks = [xAxis.fieldName];
-                        xData = chartData.map(function (a) {
-                            xTicks.push(loopCount);
-                            loopCount++;
-                            return a[xAxis.fieldName];
-                        });
-                        columns.push(xTicks);
-                        angular.forEach(yAxis, function (value, key) {
-                            ySeriesData = chartData.map(function (a) {
-                                return a[value.fieldName] || "0";
-                            });
-                            ySeriesData.unshift(value.displayName);
-                            columns.push(ySeriesData);
-                        });
-                        var groupingNames = []
-                        angular.forEach(groupingFields, function (value, key) {
-                            groupingNames.push(value.fieldName)
-                        })
-                        var chart = c3.generate({
-                            bindto: element[0],
-                            data: {
-                                x: xAxis.fieldName,
-                                columns: columns,
-                                labels: labels,
-                                type: 'bar',
-                                groups: [groupingNames],
-                                axes: axes
-                            },
-                            color: {
-                                pattern: ['#555555','#62cb31', '#666666', '#a5d169', '#75ccd0']
-
-                            },
-                            tooltip: {show: false},
-                            axis: {
-                                x: {
-                                    tick: {
-                                        format: function (x) {
-                                            return xData[x];
-                                        }
-                                    }
-                                },
-                                y2: y2
-                            },
-                            grid: {
-                                x: {
-                                    show: false
-                                },
-                                y: {
-                                    show: false
-                                }
-                            }
-                        });
-                    }
-                });
+                    });
                 }
-            scope.setStackedBarChartFn({stackedBarFn: scope.refreshStackedBarChart});
-            scope.refreshStackedBarChart();
-                
+                scope.setStackedBarChartFn({stackedBarFn: scope.refreshStackedBarChart});
+                scope.refreshStackedBarChart();
             }
         }
     };

@@ -156,10 +156,17 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
+       System.out.println("save tab widget");
         return uiService.saveTabWidget(tabId, tabWidget);
         //return null; //uiService.createTabWidget(tabId, tabWidget);
     }
-
+    
+    @RequestMapping(value = "dbWidgetDuplicate/{widgetId}/{tabId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    TabWidget getWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId,  @PathVariable Integer tabId) {
+        return uiService.getWidget(widgetId, tabId);
+    }
+    
     @RequestMapping(value = "dbWidgetUpdateOrder/{tabId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object updateWidgetUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
@@ -173,7 +180,7 @@ public class UiController extends BaseController {
     List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         return uiService.getTabWidget(tabId);
     }
-
+    
     @RequestMapping(value = "reportWidgetByWidgetId/{widgetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReportWidgetByWidgetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
@@ -191,13 +198,19 @@ public class UiController extends BaseController {
     WidgetColumn addWidgetColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @RequestBody WidgetColumn widgetColumn) {
         return uiService.addWidgetColumn(widgetId, widgetColumn);
     }
+    
+//    @RequestMapping(value = "widgetColumn/{widgetId}", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    WidgetColumn getWidgetColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @RequestBody WidgetColumn widgetColumn) {
+//        return uiService.getWidgetColumn(widgetId);
+//    }
 
     @RequestMapping(value = "widgetColumn/{widgetId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     WidgetColumn update(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @RequestBody WidgetColumn widgetColumn) {
         return uiService.updateWidgetColumn(widgetId, widgetColumn);
     }
-
+    
     @RequestMapping(value = "widgetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     WidgetColumn deleteWidgetColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
