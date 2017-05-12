@@ -90,7 +90,6 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         };
         console.log($scope.scheduler);
     });
-
     $scope.addNewScheduler = function () {
         $scope.scheduler = "";
     };

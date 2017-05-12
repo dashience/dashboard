@@ -17,12 +17,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         return $scope.tab === tabNum;
     };
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+//        $scope.widgets = response;
+//        if ($stateParams.widgetId) {
+//            $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
+//            angular.forEach($scope.editWidgetData, function (value, key) {
+//                $scope.editWidget(value)
+//            })
+//        }
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
-                $scope.buildQuery = value.queryFilter;
+//                $scope.buildQuery = value.queryFilter;
             });
         } else {
             $scope.editWidgetData.push({width: 12, columns: []})
@@ -116,8 +123,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'Bar Chart', value: "bar"}
 
     ];
-    $scope.gridLine=[
-        {name: 'yes', value: "Yes"},
+    $scope.gridLine = [
+        {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
@@ -223,11 +230,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
                 "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + widget.dataSetId.reportName +
                 "&driver=" + widget.dataSetId.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
                 "&endDate=" + $stateParams.endDate +
                 '&username=' + widget.dataSetId.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
+                '&url=' + widget.dataSetId.url +
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
@@ -236,7 +245,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         });
     }
 
-    $scope.editWidget = function (widget) {    //Edit widget
+    $scope.editWidget = function (widget) {
+        console.log(widget)//Edit widget
         tagWidgetId(widget)
         $scope.editPreviewTitle = false;
         $scope.y1Column = [];
@@ -313,11 +323,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
                 "&dataSetId=" + dataSet.id +
                 "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + dataSet.reportName +
                 "&driver=" + dataSet.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
                 "&endDate=" + $stateParams.endDate +
                 '&username=' + dataSet.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
+                '&url=' + dataSet.url +
                 '&port=3306&schema=vb&query=' + encodeURI(dataSet.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
@@ -676,7 +688,15 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     }
-    $scope.setGridLine=function(widget){
+    $scope.filterData = function (filterQuery) {
+        console.log(filterQuery)
+        $scope.jsonRules = filterQuery[0].list;
+
+        $scope.sqlQuery = filterQuery[0].query.sql;
+        console.log($scope.jsonRules)
+        console.log($scope.sqlQuery)
+    }
+    $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
@@ -735,43 +755,50 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     }
 
 //Query Builder
-    var data = '{"group": {"operator": "AND","rules": []}}';
-    function htmlEntities(str) {
-        console.log(str)
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-    function computed(group) {
-        if (!group)
-            return "";
-        for (var str = "(", i = 0; i < group.rules.length; i++) {
-            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-            str += group.rules[i].group ?
-                    computed(group.rules[i].group) :
-                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-        }
-        return str + ")";
-    }
-    $scope.json = null;
-    $scope.filter = JSON.parse(data);
-    $scope.$watch('filter', function (newValue) {
-        $scope.json = JSON.stringify(newValue, null, 2);
-        $scope.buildQuery = computed(newValue.group);
-//        console.log(filterHtmlTag($scope.buildQuery))
-    }, true);
-    $scope.setFilterType = function (widget) {
-        console.log($scope.buildQuery)
-        $scope.editChartType = null;
-        widget.queryFilter = $scope.buildQuery;
-        widget.isFilter = true;
-        var chartType = widget;
-        $timeout(function () {
-            $scope.previewChart(chartType, widget)
-//            $scope.directiveQueryFn()
-        }, 10);
-    }
-    $scope.setQueryFn = function (queryFn) {
-        $scope.directiveQueryFn = queryFn;
-    };
+
+//    var data = '{"group": {"operator": "AND","rules": []}}';
+//    function htmlEntities(str) {
+//        console.log(str)
+//        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+//    }
+//    function computed(group) {
+//
+//        console.log(group)
+//
+//
+//        if (!group)
+//            return "";
+//        for (var str = "(", i = 0; i < group.rules.length; i++) {
+//            i > 0 && (str += " <strong>" + group.operator + "</strong>");
+//            str += group.rules[i].group ?
+//                    computed(group.rules[i].group) :
+//                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+//        }
+//        return str + ")";
+//    }
+//    $scope.json = null;
+//    $scope.filter = JSON.parse(data);
+//    console.log(data)
+//    console.log($scope.filter)
+//    $scope.$watch('filter', function (newValue) {
+//        $scope.json = JSON.stringify(newValue, null, 2);
+//        $scope.buildQuery = computed(newValue.group);
+//        //        console.log(filterHtmlTag($scope.buildQuery))
+//    }, true);
+//    $scope.setFilterType = function (widget) {
+//        console.log($scope.buildQuery)
+//        $scope.editChartType = null;
+//        widget.queryFilter = $scope.buildQuery;
+//        widget.isFilter = true;
+//        var chartType = widget;
+//        $timeout(function () {
+//            $scope.previewChart(chartType, widget)
+////            $scope.directiveQueryFn()
+//        }, 10);
+//    }
+//    $scope.setQueryFn = function (queryFn) {
+//        $scope.directiveQueryFn = queryFn;
+//    };
 //    function filterHtmlTag(text) {
 //        return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
 //    }
@@ -851,10 +878,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            isGridLine:widget.isGridLine,
+            isGridLine: widget.isGridLine,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate, //widget.customEndDate
-            queryFilter: $scope.buildQuery
+            jsonData: $scope.jsonRules,
+            queryFilter: $scope.sqlQuery
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             if (widget.tagName) {
@@ -891,13 +919,15 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    $scope.currentLocation = "index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
     $scope.currentLocation = "\"index.dashboard.widget\", {productId:" + $stateParams.productId + ", accountId:" + $stateParams.accountId + ", accountName:" + $stateParams.accountName + ", tabId:" + $stateParams.tabId + ", startDate:" + $stateParams.startDate + ", endDate:" + $stateParams.endDate + "}";
     $scope.selectDateRangeName = function (widget) {
-        $scope.editChart=widget;
+        $scope.editChart = widget;
         widget.dateRangeName = "Custom";
         widget.lastNdays = "";
         widget.lastNweeks = "";
         widget.lastNmonths = "";
         widget.lastNyears = "";
     };
+
+
 //    $scope.selectCustomRange = function (isRange) {alert()
 //        if (isRange == true) {
 //            $scope.editChartType = null;
@@ -911,77 +941,109 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    }
 //  
 });
-app.directive('queryBuilder', ['$compile', function ($compile) {
-        return {
-            restrict: 'E',
-            scope: {
-                group: '=',
-                collection: '@'
-            },
-            templateUrl: '/queryBuilderDirective.html',
-            compile: function (element, attrs) {
-                var content, directive;
-                content = element.contents().remove();
-                return function (scope, element, attrs) {
-                    scope.operators = [
-                        {name: 'AND'},
-                        {name: 'OR'}
-                    ];
-//                    console.log(scope.collection)
-                    scope.columns = scope.collection;
-                    var columnList = JSON.parse(scope.collection);
-                    var filterList = [];
-                    columnList.forEach(function (value, key) {
-                        filterList.push({name: value.fieldName, type: value.fieldType})
-                    });
-//                    console.log(filterList)
-                    scope.fields = filterList;
-//                    scope.fields = [
-//                        {name: 'Firstname', type: ''},
-//                        {name: 'Lastname', type: ''},
-//                        {name: 'Birthdate', type: ''},
-//                        {name: 'City', type: ''},
-//                        {name: 'Country', type: ''}
+//app.directive('queryBuilder', ['$compile', function ($compile) {
+//        return {
+//            restrict: 'E',
+//            scope: {
+//                group: '=',
+//                collection: '@'
+//            },
+//            templateUrl: '/queryBuilderDirective.html',
+//            compile: function (element, attrs) {
+//                var content, directive;
+//                content = element.contents().remove();
+//                return function (scope, element, attrs) {
+//                    scope.operators = [
+//                        {name: 'AND'},
+//                        {name: 'OR'}
 //                    ];
-
-                    scope.conditions = [
-                        {name: '='},
-                        {name: '<>'},
-                        {name: '<'},
-                        {name: '<='},
-                        {name: '>'},
-                        {name: '>='},
-                        {name: 'contains'}
-                    ];
-                    scope.addCondition = function () {
-                        scope.group.rules.push({
-                            condition: '=',
-                            field: filterList[0].name,
-                            data: ''
-                        });
-                    };
-                    scope.removeCondition = function (index) {
-                        scope.group.rules.splice(index, 1);
-                    };
-                    scope.addGroup = function () {
-                        scope.group.rules.push({
-                            group: {
-                                operator: 'AND',
-                                rules: []
-                            }
-                        });
-                    };
-                    scope.removeGroup = function () {
-                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
-                    };
-                    directive || (directive = $compile(content));
-                    element.append(directive(scope, function ($compile) {
-                        return $compile;
-                    }));
-                };
-            }
-        };
-    }]);
+////                    console.log(scope.collection)
+//                    scope.columns = scope.collection;
+//                    var columnList = JSON.parse(scope.collection);
+//                    var filterList = [];
+//                    columnList.forEach(function (value, key) {
+//                        filterList.push({name: value.fieldName, type: value.fieldType})
+//                    });
+////                    console.log(filterList)
+//                    scope.fields = filterList;
+////                    scope.fields = [
+////                        {name: 'Firstname', type: ''},
+////                        {name: 'Lastname', type: ''},
+////                        {name: 'Birthdate', type: ''},
+////                        {name: 'City', type: ''},
+////                        {name: 'Country', type: ''}
+////                    ];
+//
+//                    scope.conditions = [
+//                        {name: '='},
+//                        {name: '<>'},
+//                        {name: '<'},
+//                        {name: '<='},
+//                        {name: '>'},
+//                        {name: '>='},
+//                        {name: 'contains'}
+//                    ];
+//                    scope.addCondition = function () {
+//                        scope.group.rules.push({
+//                            condition: '=',
+//                            field: filterList[0].name,
+//                            data: ''
+//                        });
+//                    };
+////                    console.log(scope.group)
+////                    console.log(JSON.parse(scope.collection))
+////                    var columnFieldType = JSON.parse(scope.collection);
+////                    angular.forEach(columnFieldType, function (value, key) {
+////                        angular.forEach(scope.group, function (val, key) {
+////                            angular.forEach(val.rules, function (rule, key) {
+////                            console.log(value.fieldName)
+////                            console.log(value.rules);
+////                            if (value.fieldName == val.field)
+////                                if (value.fieldType == 'Number') {
+////                                    scope.conditions = [
+////                                        {name: '='},
+////                                        {name: '<>'},
+////                                        {name: '<'},
+////                                        {name: '<='},
+////                                        {name: '>'},
+////                                        {name: '>='}
+////                                    ];
+////                                } else {
+////                                    scope.conditions = [
+////                                        {name: '='},
+////                                        {name: '<>'},
+////                                        {name: '<'},
+////                                        {name: '<='},
+////                                        {name: '>'},
+////                                        {name: '>='},
+////                                        {name: 'contains'}
+////                                    ];
+////                                }
+////                            });
+////                        });
+////                    });
+//                    scope.removeCondition = function (index) {
+//                        scope.group.rules.splice(index, 1);
+//                    };
+//                    scope.addGroup = function () {
+//                        scope.group.rules.push({
+//                            group: {
+//                                operator: 'AND',
+//                                rules: []
+//                            }
+//                        });
+//                    };
+//                    scope.removeGroup = function () {
+//                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+//                    };
+//                    directive || (directive = $compile(content));
+//                    element.append(directive(scope, function ($compile) {
+//                        return $compile;
+//                    }));
+//                };
+//            }
+//        };
+//    }]);
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
             var xAxis = ['', 'x-1'];
@@ -1033,7 +1095,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "<button class='btn btn-info' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-list'></i> List" +
                 "</button>" +
                 //list columns
-                "<ul class='dropdown-menu list-unstyled'>" +
+                "<ul class='dropdown-menu'>" +
                 "<li ng-repeat='column in tableList'>" +
                 "<button class='btn btn-link dropdown-item' ng-click='addList(column)'>" +
                 "{{column.displayName}}" +
@@ -1055,7 +1117,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" + //End Panel Title
                 "</div>" +
                 "</div>" +
-                //"<pre>{{previewTableHeader | json}}</pre>" +
+//                "<pre>{{previewTableHeader | json}}</pre>" +
 //                " <pre ng-repeat='header in previewTableHeader'>{{header.displayName}} </pre>" +
                 //Table
                 "<div class=''>" +
@@ -1234,9 +1296,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     "&accountId=" + $stateParams.accountId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate +
+                    "&dataSetReportName=" + tableDataSource.reportName +
                     '&username=' + tableDataSource.dataSourceId.userName +
                     '&password=' + dataSourcePassword +
                     '&widgetId=' + widget.id +
+                    '&url=' + tableDataSource.url +
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                 console.log(response)
                 scope.tableData = response.data;
@@ -1262,6 +1326,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                         scope.mapJson(table.sortOrder);
                     },
                     clickDelay: 200,
+
                     // restoreState: eval('(' + window.sessionStorage.getItem('tableorder') + ')')
                 });
             });
@@ -1271,54 +1336,72 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $.each(object, function (key, value) {
                     scope.draggedObject[value] = key;
                 });
-                console.log(scope.draggedObject)
-//                angular.forEach(scope.previewTableHeader, function (value, key) {
-                scope.filterReturnItem = orderByFilter(scope.previewTableHeader, function (item) {
-                    return scope.draggedObject.indexOf(item.displayName)
-                });
-//                });
-//                scope.previewTableHeader = []
-                scope.$apply(function () {
-                    scope.previewTableHeader = scope.filterReturnItem;
-                });
-//                scope.$apply();
+                console.log(scope.draggedObject);
                 angular.forEach(scope.previewTableHeader, function (value, key) {
-                    console.log("Drag Data")
-                    console.log(value.fieldName)
-                    var indexid = scope.previewTableHeader.indexOf(value)
-//                    console.log(indexid)
+                    scope.filterReturnItem = orderByFilter(scope.previewTableHeader, function (item) {
+                        return scope.draggedObject.indexOf(item.displayName)
+                    });
                 });
+                console.log(scope.filterReturnItem);
+
+//                scope.previewTableHeader = []
+//                scope.$apply(function () {
+//                    scope.previewTableHeader = scope.filterReturnItem;
+//                });
+////                scope.$apply();
+//                angular.forEach(scope.previewTableHeader, function (value, key) {
+//                    console.log("Drag Data")
+//                    console.log(value.fieldName)
+//                    var indexid = scope.previewTableHeader.indexOf(value)
+////                    console.log(indexid)
+//                });
 //                sessionStorage.clear();
             };
             scope.deleteColumn = function (collectionField, $index) {
-                angular.forEach(scope.previewTableHeader, function (value, key) {
-                    console.log("Drag Data")
-                    console.log(value.fieldName)
-                    var indexid = scope.previewTableHeader.indexOf(value)
-//                    console.log(indexid)
-                });
-                console.log(scope.previewTableHeader);
-                var index = scope.previewTableHeader.indexOf(collectionField);
-                //scope.previewTableHeader.splice(index, 1);
-//                alert(index);
-                console.log(scope.previewTableHeader);
-                return;
                 console.log($index);
+//                angular.forEach(scope.previewTableHeader, function (value, key) {
+//                    console.log("Drag Data")
+//                    console.log(value.fieldName)
+//                    var indexid = scope.previewTableHeader.indexOf(value)
+////                    console.log(indexid)
+//                });
+//                console.log(scope.previewTableHeader);
+//                var index = scope.previewTableHeader.indexOf(collectionField);
+//                //scope.previewTableHeader.splice(index, 1);
+//             
+//                console.log(scope.previewTableHeader);
+//                return;
                 if (typeof (scope.filterReturnItem) == "undefined")
                 {
                     scope.previewTableHeader.splice($index, 1);
                 } else {
-                    var previewHeaderObject = scope.previewTableHeader[$index];
-                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
-                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
-//                    scope.previewTableHeader = [];
+                    console.log("1----------------------------------");
+                    console.log(scope.previewTableHeader);
+                    var dragDeletedIndexPos = scope.filterReturnItem.indexOf(collectionField);
+                    console.log(dragDeletedIndexPos);
+                    scope.filterReturnItem.splice(dragDeletedIndexPos, 1);
                     scope.previewTableHeader = scope.filterReturnItem;
+
+                    console.log(scope.previewTableHeader);
+//                    var returnItems = scope.previewTableHeader;
+//                    scope.previewTableHeader = ""
+//                    scope.previewTableHeader = returnItems;
+//                    scope.$apply();
+//                    var previewHeaderObject = scope.previewTableHeader[$index];
+//                    console.log(previewHeaderObject);
+//                    console.log(scope.filterReturnItem);
+//                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
+//                    console.log("dragableHeaderIndex="+dragableHeaderIndex);
+//                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
+////                    scope.previewTableHeader = [];
+//                    console.log(scope.filterReturnItem);
+//                    scope.previewTableHeader = scope.filterReturnItem;
+//                    console.log(scope.previewTableHeader);
                 }
             };
             scope.save = function (column) {
                 widget.dateRangeName = $("#dateRangeName").text().trim();
                 if (widget.dateRangeName === "Custom") {
-                    alert('');
                     console.log("---->");
                     scope.lastNDays = "";
                     scope.lastNWeeks = "";
@@ -1399,9 +1482,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
-//                    console.log(scope.reloadUrl)
                     $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-
                 });
             };
             if (widget.isFilter == true) {
@@ -1528,14 +1609,110 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                     }
 
                     $(".scheduler-list-style").hide();
-//                    var chartType = widget;
-//                    scope.$apply();
-//                    scope.selectWidgetDuration('Custom', widget);
+//                    console.log(scope.reloadUrl)
+//                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+
 //                    $timeout(function () {
 //                    }, 50);
 //                    scope.editChartType = null;
                 });
+
+
             });
+        }//end of link function
+    };
+});
+
+//                    selectWidgetDuration('Custom', widget);
+app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
+    return{
+        restrict: 'A',
+        scope: {
+            queryData: '@',
+            filterData: '&',
+//            selectCustomRange: "&"
+        },
+        link: function (scope, element, attr) {
+            scope.columns = scope.queryData;
+            var jsonFilter = JSON.parse(scope.queryData);
+            console.log(jsonFilter);
+            var columnList = JSON.parse(scope.queryData);
+            var filterList = [];
+            columnList.columns.forEach(function (value, key) {
+                if (value.fieldType == 'number' || value.format == 'integer') {
+//                            scope.inputType="textBox";
+                    scope.fieldsType = "integer";
+                } else if (value.fieldType == 'string') {
+                    scope.fieldsType = "string";
+                } else if (value.fieldType == 'Date') {
+                    scope.fieldsType = "date";
+                } else if (value.format == 'Time') {
+                    scope.fieldsType = "time";
+                } else {
+                    scope.fieldsType = value.fieldType;
+                }
+                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
+            });
+            scope.buildQuery = filterList;
+
+            scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+            console.log(scope.jsonBuild)
+
+            console.log(filterList)
+            console.log(scope.buildQuery)
+            $(document).ready(function ()
+            {
+                var rules_basic = {
+                    condition: 'AND',
+                    rules: [{
+                            id: filterList[0].id,
+                            operator: 'equal',
+                            value: 10.25
+                        }]
+                };
+//                $(element[0]).queryBuilder = scope.jsonBuild;
+
+                $(element[0]).queryBuilder(
+                        {
+                            plugins: ['bt-tooltip-errors'],
+                            filters: filterList,
+                            rules: rules_basic
+                        });
+                console.log(element[0]);
+                $('#btn-clear').on('click', function () {
+                    $(element[0]).queryBuilder('reset');
+                });
+                $('#btn-reset').on('click', function () {
+                    if (scope.jsonBuild != null) {
+                        $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                    } else {
+                        $(element[0]).queryBuilder('setRules', rules_basic);
+                    }
+                });
+                $('#btn-set').on('click', function () {
+                    if (scope.jsonBuild != null) {
+                        $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                    } else {
+                        $(element[0]).queryBuilder('setRules', rules_basic);
+                    }
+                });
+                var result = null;
+                $('#btn-get').on('click', function () {
+                    result = $(element[0]).queryBuilder('getRules');
+                    console.log(JSON.stringify(result));
+                    scope.buildJson = JSON.stringify(result);
+                    if (!$.isEmptyObject(result)) {
+                        var dialog = bootbox.dialog({
+                            title: 'Rules',
+                            message: JSON.stringify(result, null, 2)
+                        });
+
+//                        alert(JSON.stringify(result, null, 2));
+                    }
+                    var sql_raw = $(element[0]).queryBuilder('getSQL', false, true);
+                    scope.filterData({filterQuery: [{list: scope.buildJson, query: sql_raw}]});
+                });
+            })
         }//end of link function
     };
 });

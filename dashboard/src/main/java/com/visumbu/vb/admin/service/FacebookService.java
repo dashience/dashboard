@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.DateUtils;
+import com.visumbu.vb.utils.JsonSimpleUtils;
 //import com.visumbu.vb.utils.ExampleConfig;
 import com.visumbu.vb.utils.Rest;
 import java.util.ArrayList;
@@ -35,7 +36,10 @@ import org.json.simple.parser.ParseException;
 public class FacebookService {
 
 //    public final String ACCESS_TOKEN = ExampleConfig.ACCESS_TOKEN;
-    public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
+//   old-- public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
+    public String ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
+    public String ORGANIC_ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
+
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
 //    public final String APP_SECRET = ExampleConfig.APP_SECRET;
@@ -43,7 +47,7 @@ public class FacebookService {
     public final String BASE_URL_FEED = "https://graph.facebook.com/v2.8/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
 
-    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation) {
         this.ACCESS_TOKEN = accessToken;
         if (aggregation == null) {
             aggregation = "";
@@ -75,6 +79,25 @@ public class FacebookService {
         if (dataSet.equalsIgnoreCase("instagramPerformance")) {
             return getInstagramPerformance(accountId, startDate, endDate, aggregation);
         }
+        if (dataSet.equalsIgnoreCase("recentPostPerformance")) {
+            return getRecentPostPerformance(organicAccountId, startDate, endDate, aggregation);
+        }
+        if (dataSet.equalsIgnoreCase("totalOrganicLikes")) {
+            return getTotalOrganicLikes(organicAccountId, startDate, endDate, aggregation);
+        }
+        if (dataSet.equalsIgnoreCase("totalPageViews")) {
+            return getTotalPageViews(organicAccountId, startDate, endDate, aggregation);
+        }
+        if (dataSet.equalsIgnoreCase("totalEngagements")) {
+            return getTotalEngagements(organicAccountId, startDate, endDate, aggregation);
+        }
+        if (dataSet.equalsIgnoreCase("totalReach")) {
+            return getTotalReach(organicAccountId, startDate, endDate, aggregation);
+        }
+        if (dataSet.equalsIgnoreCase("pageLikesByCity")) {
+            return getPageLikesByCity(organicAccountId, startDate, endDate, aggregation);
+        }
+        //getTotalOrganicLikes
 
         return null;
     }
@@ -82,6 +105,181 @@ public class FacebookService {
     public String getFbPublishedPosts(Long accountId) {
         String url = BASE_URL + accountId + "/insights?fields=adset_name%2Cclicks%2Cimpressions&date_preset=today&access_token=" + ACCESS_TOKEN;
         return Rest.getData(url);
+    }
+
+    public List<Map<String,String>>  getPageLikesByCity(Long accountId, Date startDate, Date endDate, String aggregation)  {
+        try {
+//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_fans_city?access_token=" + ACCESS_TOKEN;
+            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_fans_city?access_token="+ORGANIC_ACCESS_TOKEN; 
+            String data = Rest.getData(fbUrl);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+            Map returnMap = new HashMap<>();
+            List<Map> fbData = (List<Map>)jsonToMap.get("data");
+            List<Map<String,String>> listData = new ArrayList<>();
+            Map fbFansData = (Map)fbData.get(0);
+            List fbLikesList = (List)fbFansData.get("values");
+            System.out.print("**************** City by likes --------------------");
+            Map<String,Object> values = (Map<String,Object>)((Map)fbLikesList.get(0)).get("value");
+            System.out.print(values);
+            
+            
+            for (Map.Entry<String, Object> entry : values.entrySet()) {
+                String key = entry.getKey();
+                System.out.print("key--->"+key);
+                Object value = entry.getValue();
+                System.out.print("values ----->");
+                System.out.print(value);
+                Map<String, String> dataMap = new HashMap<>();
+                dataMap.put("city", key + "");
+                dataMap.put("likes", value + "");
+                listData.add(dataMap);
+            }
+            
+            return listData;
+        } catch (ParseException ex) {
+            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    
+    public List<Map<String, String>> getTotalReach(Long accountId, Date startDate, Date endDate, String aggregation) {
+        try {
+//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_impressions_organic_unique?access_token=" + ACCESS_TOKEN;
+            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_impressions_organic_unique?access_token="+ORGANIC_ACCESS_TOKEN; 
+            String data = Rest.getData(fbUrl);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+            Map returnMap = new HashMap<>();
+            List fbData = (List<Map>) jsonToMap.get("data");
+            List<Map<String, String>> listData = new ArrayList<>();
+            Map fbFansData = (Map) fbData.get(2);
+            List fbLikesList = (List) fbFansData.get("values");
+            System.out.println("=====================");
+            System.out.println(fbLikesList.get(0));
+            String values = ((Map) fbLikesList.get(0)).get("value") + "";
+            Map<String, String> returnMapData = new HashMap<>();
+            returnMapData.put("reach", values);
+            listData.add(returnMapData);
+            return listData;
+        } catch (ParseException ex) {
+            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<Map<String, String>> getTotalEngagements(Long accountId, Date startDate, Date endDate, String aggregation) {
+        try {
+//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_engaged_users?access_token=" + ACCESS_TOKEN;
+            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_engaged_users?access_token="+ORGANIC_ACCESS_TOKEN; 
+            String data = Rest.getData(fbUrl);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+            Map returnMap = new HashMap<>();
+            List fbData = (List<Map>) jsonToMap.get("data");
+            List<Map<String, String>> listData = new ArrayList<>();
+            Map fbFansData = (Map) fbData.get(2);
+            List fbLikesList = (List) fbFansData.get("values");
+            String values = ((Map) fbLikesList.get(0)).get("value") + "";
+            Map<String, String> returnMapData = new HashMap<>();
+            returnMapData.put("engagements", values);
+            listData.add(returnMapData);
+            return listData;
+        } catch (ParseException ex) {
+            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<Map<String, String>> getTotalPageViews(Long accountId, Date startDate, Date endDate, String aggregation) {
+        try {
+            
+            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?access_token="+ORGANIC_ACCESS_TOKEN; 
+//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_views_total?access_token=" + ACCESS_TOKEN;
+            String data = Rest.getData(fbUrl);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+            Map returnMap = new HashMap<>();
+            List fbData = (List<Map>) jsonToMap.get("data");
+            List<Map<String, String>> listData = new ArrayList<>();
+            Map fbFansData = (Map) fbData.get(2);
+            List fbLikesList = (List) fbFansData.get("values");
+            System.out.println("=====================");
+            System.out.println(fbLikesList.get(0));
+            String values = ((Map) fbLikesList.get(0)).get("value") + "";
+            Map<String, String> returnMapData = new HashMap<>();
+            returnMapData.put("page_views", values);
+            listData.add(returnMapData);
+            return listData;
+        } catch (ParseException ex) {
+            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<Map<String, String>> getRecentPostPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
+        try {
+            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
+            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+//            String url = "https://graph.facebook.com/v2.9/" + accountId + "posts?fields=message,likes,comments"
+//                    + "&access_token=" + ACCESS_TOKEN;
+            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/posts?fields=message,likes,comments&access_token="+ORGANIC_ACCESS_TOKEN; 
+            String data = Rest.getData(fbUrl);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+            Map returnMap = new HashMap<>();
+            List<Map> fbData = (List<Map>) jsonToMap.get("data");
+            List<Map<String, String>> listData = new ArrayList<>();
+            for (Iterator<Map> iterator = fbData.iterator(); iterator.hasNext();) {
+                Map fbDataMap = iterator.next();
+                Map<String, String> fbDataObj = new HashMap<>();
+                fbDataObj.put("message", fbDataMap.get("message") + "");
+                fbDataObj.put("likes", ((List) ((Map) fbDataMap.get("likes")).get("data")).size() + "");
+                listData.add(fbDataObj);
+
+            }
+            return listData;
+        } catch (ParseException ex) {
+            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+    public List<Map<String, String>> getTotalOrganicLikes(Long accountId, Date startDate, Date endDate, String aggregation) {
+        try {
+           // String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_fans?access_token=" + ACCESS_TOKEN;
+           String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_fans?access_token="+ORGANIC_ACCESS_TOKEN; 
+           String data = Rest.getData(fbUrl);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+            Map returnMap = new HashMap<>();
+            List fbData = (List<Map>) jsonToMap.get("data");
+            List<Map<String, String>> listData = new ArrayList<>();
+            Map fbFansData = (Map) fbData.get(0);
+            List fbLikesList = (List) fbFansData.get("values");
+            String values = ((Map) fbLikesList.get(0)).get("value") + "";
+            Map<String, String> returnMapData = new HashMap<>();
+            returnMapData.put("page_fans", values);
+            listData.add(returnMapData);
+            return listData;
+        } catch (ParseException ex) {
+            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public List<Map<String, String>> getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {

@@ -119,7 +119,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 
     ];
     $scope.gridLine=[
-        {name: 'yes', value: "Yes"},
+        {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
     $scope.selectWidgetDuration = function (dateRangeName, widget) {
@@ -470,7 +470,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 } else {
                     if (val.fieldName == y1data.removeItem) {
                         val.yAxis = null;
-                        val.groupField=null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -502,7 +502,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 } else {
                     if (val.fieldName == y2data.removeItem) {
                         val.yAxis = null;
-                        val.groupField=null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -658,7 +658,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 //        })
 //        $scope.selectGrouping(widget, groupList)
 //    };
-    $scope.setGridLine=function(widget){
+    $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
@@ -761,8 +761,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
-            customEndDate: $scope.customEndDate,//widget.customEndDate
-            isGridLine:widget.isGridLine
+            customEndDate: $scope.customEndDate, //widget.customEndDate
+            isGridLine: widget.isGridLine
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             if (widget.tagName) {
@@ -948,7 +948,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                 "<button class='btn btn-info' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-list'></i> List" +
                 "</button>" +
                 //list columns
-                "<ul class='dropdown-menu list-unstyled'>" +
+                "<ul class='dropdown-menu'>" +
                 "<li ng-repeat='column in tableList'>" +
                 "<button class='btn btn-link dropdown-item' ng-click='addList(column)'>" +
                 "{{column.displayName}}" +
@@ -1003,7 +1003,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                 "<div class='triangle'></div>" +
                 "<div class='ns-popover-tooltip'>" +
                 "<form class='form-inline'>" +
-                "<ul class='scheduler-list-style'>" +
+                "<ul>" +
                 //Aggregation Function
                 "<li class='input-group col-sm-12'>" +
                 "<label>Aggregation function</label>" +
@@ -1336,7 +1336,6 @@ app.directive('customReportWidgetDateRange', function ($stateParams) {
                 $(".scheduler-list-style").click(function (e) {
                     e.stopPropagation();
                 });
-
                 console.log(JSON.parse(scope.widgetTableDateRange).customStartDate);
                 console.log(JSON.parse(scope.widgetTableDateRange).customEndDate);
                 var widget = JSON.parse(scope.widgetTableDateRange);

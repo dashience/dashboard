@@ -134,7 +134,7 @@ public class TagService {
 //    }
 
     public Boolean removeFav(Integer widgetId, VbUser user) {
-        Tag tag = tagDao.findTagName("Fav");
+        Tag tag = tagDao.findTagName("Favourite");
         WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
         if(widgetTag != null) {
             tagDao.delete(widgetTag);
@@ -144,7 +144,13 @@ public class TagService {
     }
 
     public Boolean setFav(Integer widgetId, VbUser user) {
-        Tag tag = tagDao.findTagName("Fav");
+        Tag tag = tagDao.findTagName("Favourite");
+        if(tag == null) {
+            tag = new Tag();
+            tag.setTagName("Favourite");
+            tag.setDescription("Favourite Widgets");
+            tag = (Tag) tagDao.create(tag);
+        }
         WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
         if(widgetTag != null) {
             return false;
@@ -158,7 +164,7 @@ public class TagService {
     }
 
     public List<TabWidget> getAllFav(VbUser user) {
-        Tag tag = tagDao.findTagName("Fav");
+        Tag tag = tagDao.findTagName("Favourite");
         return tagDao.findAllWidgetsByTag(user, tag);
     }
 }
