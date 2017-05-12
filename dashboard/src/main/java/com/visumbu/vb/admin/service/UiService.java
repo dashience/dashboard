@@ -315,6 +315,8 @@ public class UiService {
         tabWidget.setLastNweeks(lastNweeks);
         tabWidget.setLastNyears(lastNyears);
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
+        tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
+        tabWidget.setJsonData(tabWidgetBean.getJsonData());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());

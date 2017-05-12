@@ -17,12 +17,19 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         return $scope.tab === tabNum;
     };
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+//        $scope.widgets = response;
+//        if ($stateParams.widgetId) {
+//            $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
+//            angular.forEach($scope.editWidgetData, function (value, key) {
+//                $scope.editWidget(value)
+//            })
+//        }
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
-                $scope.buildQuery = value.queryFilter;
+//                $scope.buildQuery = value.queryFilter;
             });
         } else {
             $scope.editWidgetData.push({width: 12, columns: []})
@@ -238,7 +245,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         });
     }
 
-    $scope.editWidget = function (widget) {  
+    $scope.editWidget = function (widget) {
         console.log(widget)//Edit widget
         tagWidgetId(widget)
         $scope.editPreviewTitle = false;
@@ -681,6 +688,14 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     }
+    $scope.filterData = function (filterQuery) {
+        console.log(filterQuery)
+        $scope.jsonRules = filterQuery[0].list;
+
+        $scope.sqlQuery = filterQuery[0].query.sql;
+        console.log($scope.jsonRules)
+        console.log($scope.sqlQuery)
+    }
     $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
         var chartType = widget;
@@ -740,43 +755,50 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     }
 
 //Query Builder
-    var data = '{"group": {"operator": "AND","rules": []}}';
-    function htmlEntities(str) {
-        console.log(str)
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-    function computed(group) {
-        if (!group)
-            return "";
-        for (var str = "(", i = 0; i < group.rules.length; i++) {
-            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-            str += group.rules[i].group ?
-                    computed(group.rules[i].group) :
-                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-        }
-        return str + ")";
-    }
-    $scope.json = null;
-    $scope.filter = JSON.parse(data);
-    $scope.$watch('filter', function (newValue) {
-        $scope.json = JSON.stringify(newValue, null, 2);
-        $scope.buildQuery = computed(newValue.group);
-//        console.log(filterHtmlTag($scope.buildQuery))
-    }, true);
-    $scope.setFilterType = function (widget) {
-        console.log($scope.buildQuery)
-        $scope.editChartType = null;
-        widget.queryFilter = $scope.buildQuery;
-        widget.isFilter = true;
-        var chartType = widget;
-        $timeout(function () {
-            $scope.previewChart(chartType, widget)
-//            $scope.directiveQueryFn()
-        }, 10);
-    }
-    $scope.setQueryFn = function (queryFn) {
-        $scope.directiveQueryFn = queryFn;
-    };
+
+//    var data = '{"group": {"operator": "AND","rules": []}}';
+//    function htmlEntities(str) {
+//        console.log(str)
+//        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+//    }
+//    function computed(group) {
+//
+//        console.log(group)
+//
+//
+//        if (!group)
+//            return "";
+//        for (var str = "(", i = 0; i < group.rules.length; i++) {
+//            i > 0 && (str += " <strong>" + group.operator + "</strong>");
+//            str += group.rules[i].group ?
+//                    computed(group.rules[i].group) :
+//                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+//        }
+//        return str + ")";
+//    }
+//    $scope.json = null;
+//    $scope.filter = JSON.parse(data);
+//    console.log(data)
+//    console.log($scope.filter)
+//    $scope.$watch('filter', function (newValue) {
+//        $scope.json = JSON.stringify(newValue, null, 2);
+//        $scope.buildQuery = computed(newValue.group);
+//        //        console.log(filterHtmlTag($scope.buildQuery))
+//    }, true);
+//    $scope.setFilterType = function (widget) {
+//        console.log($scope.buildQuery)
+//        $scope.editChartType = null;
+//        widget.queryFilter = $scope.buildQuery;
+//        widget.isFilter = true;
+//        var chartType = widget;
+//        $timeout(function () {
+//            $scope.previewChart(chartType, widget)
+////            $scope.directiveQueryFn()
+//        }, 10);
+//    }
+//    $scope.setQueryFn = function (queryFn) {
+//        $scope.directiveQueryFn = queryFn;
+//    };
 //    function filterHtmlTag(text) {
 //        return  text ? String(text).replace(/<[^>]+>/gm, '') : '';
 //    }
@@ -859,7 +881,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             isGridLine: widget.isGridLine,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate, //widget.customEndDate
-            queryFilter: $scope.buildQuery
+            jsonData: $scope.jsonRules,
+            queryFilter: $scope.sqlQuery
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             if (widget.tagName) {
@@ -903,6 +926,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         widget.lastNmonths = "";
         widget.lastNyears = "";
     };
+
+
 //    $scope.selectCustomRange = function (isRange) {alert()
 //        if (isRange == true) {
 //            $scope.editChartType = null;
@@ -916,109 +941,109 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    }
 //  
 });
-app.directive('queryBuilder', ['$compile', function ($compile) {
-        return {
-            restrict: 'E',
-            scope: {
-                group: '=',
-                collection: '@'
-            },
-            templateUrl: '/queryBuilderDirective.html',
-            compile: function (element, attrs) {
-                var content, directive;
-                content = element.contents().remove();
-                return function (scope, element, attrs) {
-                    scope.operators = [
-                        {name: 'AND'},
-                        {name: 'OR'}
-                    ];
-//                    console.log(scope.collection)
-                    scope.columns = scope.collection;
-                    var columnList = JSON.parse(scope.collection);
-                    var filterList = [];
-                    columnList.forEach(function (value, key) {
-                        filterList.push({name: value.fieldName, type: value.fieldType})
-                    });
-//                    console.log(filterList)
-                    scope.fields = filterList;
-//                    scope.fields = [
-//                        {name: 'Firstname', type: ''},
-//                        {name: 'Lastname', type: ''},
-//                        {name: 'Birthdate', type: ''},
-//                        {name: 'City', type: ''},
-//                        {name: 'Country', type: ''}
+//app.directive('queryBuilder', ['$compile', function ($compile) {
+//        return {
+//            restrict: 'E',
+//            scope: {
+//                group: '=',
+//                collection: '@'
+//            },
+//            templateUrl: '/queryBuilderDirective.html',
+//            compile: function (element, attrs) {
+//                var content, directive;
+//                content = element.contents().remove();
+//                return function (scope, element, attrs) {
+//                    scope.operators = [
+//                        {name: 'AND'},
+//                        {name: 'OR'}
 //                    ];
-
-                    scope.conditions = [
-                        {name: '='},
-                        {name: '<>'},
-                        {name: '<'},
-                        {name: '<='},
-                        {name: '>'},
-                        {name: '>='},
-                        {name: 'contains'}
-                    ];
-                    scope.addCondition = function () {
-                        scope.group.rules.push({
-                            condition: '=',
-                            field: filterList[0].name,
-                            data: ''
-                        });
-                    };
-//                    console.log(scope.group)
-//                    console.log(JSON.parse(scope.collection))
-//                    var columnFieldType = JSON.parse(scope.collection);
-//                    angular.forEach(columnFieldType, function (value, key) {
-//                        angular.forEach(scope.group, function (val, key) {
-//                            angular.forEach(val.rules, function (rule, key) {
-//                            console.log(value.fieldName)
-//                            console.log(value.rules);
-//                            if (value.fieldName == val.field)
-//                                if (value.fieldType == 'Number') {
-//                                    scope.conditions = [
-//                                        {name: '='},
-//                                        {name: '<>'},
-//                                        {name: '<'},
-//                                        {name: '<='},
-//                                        {name: '>'},
-//                                        {name: '>='}
-//                                    ];
-//                                } else {
-//                                    scope.conditions = [
-//                                        {name: '='},
-//                                        {name: '<>'},
-//                                        {name: '<'},
-//                                        {name: '<='},
-//                                        {name: '>'},
-//                                        {name: '>='},
-//                                        {name: 'contains'}
-//                                    ];
-//                                }
-//                            });
-//                        });
+////                    console.log(scope.collection)
+//                    scope.columns = scope.collection;
+//                    var columnList = JSON.parse(scope.collection);
+//                    var filterList = [];
+//                    columnList.forEach(function (value, key) {
+//                        filterList.push({name: value.fieldName, type: value.fieldType})
 //                    });
-                    scope.removeCondition = function (index) {
-                        scope.group.rules.splice(index, 1);
-                    };
-                    scope.addGroup = function () {
-                        scope.group.rules.push({
-                            group: {
-                                operator: 'AND',
-                                rules: []
-                            }
-                        });
-                    };
-                    scope.removeGroup = function () {
-                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
-                    };
-                    directive || (directive = $compile(content));
-                    element.append(directive(scope, function ($compile) {
-                        return $compile;
-                    }));
-                };
-            }
-        };
-    }]);
+////                    console.log(filterList)
+//                    scope.fields = filterList;
+////                    scope.fields = [
+////                        {name: 'Firstname', type: ''},
+////                        {name: 'Lastname', type: ''},
+////                        {name: 'Birthdate', type: ''},
+////                        {name: 'City', type: ''},
+////                        {name: 'Country', type: ''}
+////                    ];
+//
+//                    scope.conditions = [
+//                        {name: '='},
+//                        {name: '<>'},
+//                        {name: '<'},
+//                        {name: '<='},
+//                        {name: '>'},
+//                        {name: '>='},
+//                        {name: 'contains'}
+//                    ];
+//                    scope.addCondition = function () {
+//                        scope.group.rules.push({
+//                            condition: '=',
+//                            field: filterList[0].name,
+//                            data: ''
+//                        });
+//                    };
+////                    console.log(scope.group)
+////                    console.log(JSON.parse(scope.collection))
+////                    var columnFieldType = JSON.parse(scope.collection);
+////                    angular.forEach(columnFieldType, function (value, key) {
+////                        angular.forEach(scope.group, function (val, key) {
+////                            angular.forEach(val.rules, function (rule, key) {
+////                            console.log(value.fieldName)
+////                            console.log(value.rules);
+////                            if (value.fieldName == val.field)
+////                                if (value.fieldType == 'Number') {
+////                                    scope.conditions = [
+////                                        {name: '='},
+////                                        {name: '<>'},
+////                                        {name: '<'},
+////                                        {name: '<='},
+////                                        {name: '>'},
+////                                        {name: '>='}
+////                                    ];
+////                                } else {
+////                                    scope.conditions = [
+////                                        {name: '='},
+////                                        {name: '<>'},
+////                                        {name: '<'},
+////                                        {name: '<='},
+////                                        {name: '>'},
+////                                        {name: '>='},
+////                                        {name: 'contains'}
+////                                    ];
+////                                }
+////                            });
+////                        });
+////                    });
+//                    scope.removeCondition = function (index) {
+//                        scope.group.rules.splice(index, 1);
+//                    };
+//                    scope.addGroup = function () {
+//                        scope.group.rules.push({
+//                            group: {
+//                                operator: 'AND',
+//                                rules: []
+//                            }
+//                        });
+//                    };
+//                    scope.removeGroup = function () {
+//                        "group" in scope.$parent && scope.$parent.group.rules.splice(scope.$parent.$index, 1);
+//                    };
+//                    directive || (directive = $compile(content));
+//                    element.append(directive(scope, function ($compile) {
+//                        return $compile;
+//                    }));
+//                };
+//            }
+//        };
+//    }]);
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
             var xAxis = ['', 'x-1'];
@@ -1599,3 +1624,95 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
 });
 
 //                    selectWidgetDuration('Custom', widget);
+app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
+    return{
+        restrict: 'A',
+        scope: {
+            queryData: '@',
+            filterData: '&',
+//            selectCustomRange: "&"
+        },
+        link: function (scope, element, attr) {
+            scope.columns = scope.queryData;
+            var jsonFilter = JSON.parse(scope.queryData);
+            console.log(jsonFilter);
+            var columnList = JSON.parse(scope.queryData);
+            var filterList = [];
+            columnList.columns.forEach(function (value, key) {
+                if (value.fieldType == 'number' || value.format == 'integer') {
+//                            scope.inputType="textBox";
+                    scope.fieldsType = "integer";
+                } else if (value.fieldType == 'string') {
+                    scope.fieldsType = "string";
+                } else if (value.fieldType == 'Date') {
+                    scope.fieldsType = "date";
+                } else if (value.format == 'Time') {
+                    scope.fieldsType = "time";
+                } else {
+                    scope.fieldsType = value.fieldType;
+                }
+                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
+            });
+            scope.buildQuery = filterList;
+
+            scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+            console.log(scope.jsonBuild)
+
+            console.log(filterList)
+            console.log(scope.buildQuery)
+            $(document).ready(function ()
+            {
+                var rules_basic = {
+                    condition: 'AND',
+                    rules: [{
+                            id: filterList[0].id,
+                            operator: 'equal',
+                            value: 10.25
+                        }]
+                };
+//                $(element[0]).queryBuilder = scope.jsonBuild;
+
+                $(element[0]).queryBuilder(
+                        {
+                            plugins: ['bt-tooltip-errors'],
+                            filters: filterList,
+                            rules: rules_basic
+                        });
+                console.log(element[0]);
+                $('#btn-clear').on('click', function () {
+                    $(element[0]).queryBuilder('reset');
+                });
+                $('#btn-reset').on('click', function () {
+                    if (scope.jsonBuild != null) {
+                        $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                    } else {
+                        $(element[0]).queryBuilder('setRules', rules_basic);
+                    }
+                });
+                $('#btn-set').on('click', function () {
+                    if (scope.jsonBuild != null) {
+                        $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                    } else {
+                        $(element[0]).queryBuilder('setRules', rules_basic);
+                    }
+                });
+                var result = null;
+                $('#btn-get').on('click', function () {
+                    result = $(element[0]).queryBuilder('getRules');
+                    console.log(JSON.stringify(result));
+                    scope.buildJson = JSON.stringify(result);
+                    if (!$.isEmptyObject(result)) {
+                        var dialog = bootbox.dialog({
+                            title: 'Rules',
+                            message: JSON.stringify(result, null, 2)
+                        });
+
+//                        alert(JSON.stringify(result, null, 2));
+                    }
+                    var sql_raw = $(element[0]).queryBuilder('getSQL', false, true);
+                    scope.filterData({filterQuery: [{list: scope.buildJson, query: sql_raw}]});
+                });
+            })
+        }//end of link function
+    };
+});

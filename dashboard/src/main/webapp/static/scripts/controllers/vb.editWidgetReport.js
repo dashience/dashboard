@@ -948,7 +948,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                 "<button class='btn btn-info' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-list'></i> List" +
                 "</button>" +
                 //list columns
-                "<ul class='dropdown-menu list-unstyled'>" +
+                "<ul class='dropdown-menu'>" +
                 "<li ng-repeat='column in tableList'>" +
                 "<button class='btn btn-link dropdown-item' ng-click='addList(column)'>" +
                 "{{column.displayName}}" +
@@ -1003,7 +1003,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                 "<div class='triangle'></div>" +
                 "<div class='ns-popover-tooltip'>" +
                 "<form class='form-inline'>" +
-                "<ul class='scheduler-list-style'>" +
+                "<ul>" +
                 //Aggregation Function
                 "<li class='input-group col-sm-12'>" +
                 "<label>Aggregation function</label>" +
