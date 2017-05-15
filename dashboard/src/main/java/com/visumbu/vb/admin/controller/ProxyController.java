@@ -809,6 +809,10 @@ public class ProxyController {
         log.debug("Start Date ---- " + startDate);
         List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, facebookOrganicAccountIdInt, startDate, endDate, timeSegment);
         log.debug(data);
+        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+        System.out.println(data);
+        
+        
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
@@ -861,7 +865,7 @@ public class ProxyController {
             Map<String, String> mapData = iterator.next();
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
-                String value = entrySet.getValue();
+                // String value = entrySet.getValue() + "";
                 columnDefs.add(new ColumnDef(key, "string", key));
             }
             return columnDefs;
