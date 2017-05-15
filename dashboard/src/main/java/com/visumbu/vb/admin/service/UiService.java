@@ -14,6 +14,7 @@ import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
@@ -25,6 +26,7 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
@@ -752,5 +754,12 @@ public class UiService {
 
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
+    }
+    public List<Currency> getCurrencies() {
+        return uiDao.getCurrenciesTypes();
+    }
+    
+     public List<Timezone> getTimeZones() {
+        return uiDao.getTimezoneTypes();
     }
 }
