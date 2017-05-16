@@ -142,8 +142,8 @@ public class SchedulerService {
                 customStartDate = schedulerBean.getCustomStartDate();
                 customEndDate = schedulerBean.getCustomEndDate();
             } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
-                customStartDate = null;
-                customEndDate = null;
+                customStartDate = schedulerBean.getCustomStartDate();
+                customEndDate = schedulerBean.getCustomEndDate();
             } else if (dateRangeSelect.equals(Range.DAY)) {
                 dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
             } else if (dateRangeSelect.equals(Range.WEEK)) {
@@ -214,11 +214,7 @@ public class SchedulerService {
         Integer lastNmonths = null;
         Integer lastNweeks = null;
         Integer lastNyears = null;
-        if (dateRangeName == null || dateRangeName.isEmpty()) {
-            System.out.println("if");
-            customStartDate = null;
-            customEndDate = null;
-        } else if (dateRangeName != null) {
+        if (dateRangeName != null) {
             System.out.println("else if");
             if (schedulerBean.getLastNdays() != null) {
                 lastNdays = schedulerBean.getLastNdays();
@@ -272,10 +268,7 @@ public class SchedulerService {
 //            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
 //                dateRangeSelect = Range.LAST_YEAR;
 //            } 
-            if (dateRangeName.equalsIgnoreCase("Custom")) {
-                System.out.println("custom");
-                dateRangeSelect = null;
-            } else if (lastNdays != null) {
+            if (lastNdays != null) {
                 System.out.println("last days");
                 dateRangeSelect = Range.DAY;
             } else if (lastNweeks != null) {
@@ -286,7 +279,10 @@ public class SchedulerService {
                 dateRangeSelect = Range.YEAR;
             }
 
-            if (dateRangeSelect == null) {
+            if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
+                customStartDate = schedulerBean.getCustomStartDate();
+                customEndDate = schedulerBean.getCustomEndDate();
+            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
                 customStartDate = schedulerBean.getCustomStartDate();
                 customEndDate = schedulerBean.getCustomEndDate();
             } else if (dateRangeSelect.equals(Range.DAY)) {

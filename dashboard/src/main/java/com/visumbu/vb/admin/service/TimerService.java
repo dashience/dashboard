@@ -53,6 +53,7 @@ public class TimerService {
     private SchedulerDao schedulerDao;
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
+        System.out.println("Executing Tasks " + scheduledTasks);
         Date today = new Date();
 //        DateRangeFactory dateRangeFactory = new DateRangeFactory();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
@@ -81,7 +82,7 @@ public class TimerService {
             Integer lastNmonths = null;
             Integer lastNweeks = null;
             Integer lastNyears = null;
-
+            System.out.println("startdate ----> "+scheduler.getCustomStartDate());
             if (dateRangeName != null) {
 
                 System.out.println("scheduler.getLastNdays() ----> " + scheduler.getLastNdays());
@@ -149,8 +150,12 @@ public class TimerService {
                         Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
-                    startDate = null;
-                    endDate = null;
+                    try {
+                        startDate = df.parse(scheduler.getCustomStartDate());
+                        endDate = df.parse(scheduler.getCustomEndDate());
+                    } catch (ParseException ex) {
+                        Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else if (dateRangeSelect.equals(Range.DAY)) {
                     dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
                 } else if (dateRangeSelect.equals(Range.WEEK)) {
@@ -202,12 +207,21 @@ public class TimerService {
             schedulerService.createSchedulerHistory(schedulerHistory);
         }
     }
-
+    
+//    @Scheduled(cron = "0/5 * * * * *")
+//    public void testScheduler() {
+//        System.out.println("Test Scheduler...");
+//        System.out.println("Success....");
+//    }
+//    
+    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
+        System.out.println("Executing daily Tasks....");
         Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();
         List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today); //schedulerDao.getScheduledTasks("Daily");
+        System.out.println("Executing tasks count " + scheduledTasks.size());
         executeTasks(scheduledTasks);
     }
 
@@ -269,7 +283,7 @@ public class TimerService {
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-//            String urlStr = "http://192.168.0.100:8080/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
+//            String urlStr = "http://dashience.com/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
             String urlStr = "http://localhost:8084/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
             System.out.println(urlStr);
             URL website = new URL(urlStr);
