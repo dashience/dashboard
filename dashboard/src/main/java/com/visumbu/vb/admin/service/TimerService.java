@@ -53,6 +53,7 @@ public class TimerService {
     private SchedulerDao schedulerDao;
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
+        System.out.println("Executing Tasks " + scheduledTasks);
         Date today = new Date();
 //        DateRangeFactory dateRangeFactory = new DateRangeFactory();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
@@ -68,7 +69,7 @@ public class TimerService {
             System.out.println("Last Execution Status -----> " + scheduler.getLastExecutionStatus());
             String dateRangeName = scheduler.getDateRangeName();
             System.out.println("Date Range Name ----> " + dateRangeName);
-            System.out.println("scheduler lastndays ----> "+scheduler.getLastNdays());
+            System.out.println("scheduler lastndays ----> " + scheduler.getLastNdays());
             String currentDateStr = null;
             schedulerHistory.setExecutionStartTime(schedulerStartTime);
             currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
@@ -81,44 +82,38 @@ public class TimerService {
             Integer lastNmonths = null;
             Integer lastNweeks = null;
             Integer lastNyears = null;
+            System.out.println("startdate ----> "+scheduler.getCustomStartDate());
+            if (dateRangeName != null) {
 
-            if (dateRangeName == null || dateRangeName.isEmpty()) {
-                startDate = null;
-                endDate = null;
-            } else if(dateRangeName != null){
+                System.out.println("scheduler.getLastNdays() ----> " + scheduler.getLastNdays());
                 if (scheduler.getLastNdays() != null) {
                     lastNdays = scheduler.getLastNdays();
                     System.out.println("Last N days ----> " + lastNdays);
-                }
-                if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
+                } else if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
                     lastNdays = 0;
                 }
                 if (scheduler.getLastNmonths() != null) {
                     lastNmonths = scheduler.getLastNmonths();
                     System.out.println("Last N months ----> " + lastNmonths);
-                }
-                if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
+                } else if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
                     lastNmonths = 0;
                 }
                 if (scheduler.getLastNweeks() != null) {
                     lastNweeks = scheduler.getLastNweeks();
                     System.out.println("Last N weeks ----> " + lastNweeks);
-                }
-                if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
+
+                } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
                     lastNweeks = 0;
                 }
                 if (scheduler.getLastNyears() != null) {
                     lastNyears = scheduler.getLastNyears();
                     System.out.println("Last N years ----> " + lastNyears);
-                }
-                if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
+                } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
                     lastNyears = 0;
                 }
 
-//            Date startDate = DateUtils.getSixMonthsBack(today);
-//            System.out.println("Start Date -----> " + startDate);
-//            Date endDate = today;
-//            System.out.println("End Date -----> " + endDate);
+                System.out.println("dateRangename ----> " + dateRangeName);
+
                 Range dateRangeSelect = null;
 //            if (dateRangeName.equalsIgnoreCase("Today")) {
 //                dateRangeSelect = Range.TODAY;
@@ -136,12 +131,8 @@ public class TimerService {
 //                dateRangeSelect = Range.THIS_YEAR;
 //            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
 //                dateRangeSelect = Range.LAST_YEAR;
-//            } 
-                if (dateRangeName.equalsIgnoreCase("Custom")) {
-                    System.out.println("custom");
-                    dateRangeSelect = null;
-                } else if (lastNdays != null) {
-                    System.out.println("last days");
+//            }
+                if (lastNdays != null) {
                     dateRangeSelect = Range.DAY;
                 } else if (lastNweeks != null) {
                     dateRangeSelect = Range.WEEK;
@@ -151,7 +142,14 @@ public class TimerService {
                     dateRangeSelect = Range.YEAR;
                 }
 
-                if (dateRangeSelect == null) {
+                if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
+                    try {
+                        startDate = df.parse(scheduler.getCustomStartDate());
+                        endDate = df.parse(scheduler.getCustomEndDate());
+                    } catch (ParseException ex) {
+                        Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
                     try {
                         startDate = df.parse(scheduler.getCustomStartDate());
                         endDate = df.parse(scheduler.getCustomEndDate());
@@ -209,12 +207,21 @@ public class TimerService {
             schedulerService.createSchedulerHistory(schedulerHistory);
         }
     }
-
+    
+//    @Scheduled(cron = "0/5 * * * * *")
+//    public void testScheduler() {
+//        System.out.println("Test Scheduler...");
+//        System.out.println("Success....");
+//    }
+//    
+    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
+        System.out.println("Executing daily Tasks....");
         Integer hour = DateUtils.getCurrentHour();
         Date today = new Date();
         List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today); //schedulerDao.getScheduledTasks("Daily");
+        System.out.println("Executing tasks count " + scheduledTasks.size());
         executeTasks(scheduledTasks);
     }
 

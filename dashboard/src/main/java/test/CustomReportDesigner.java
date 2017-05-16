@@ -668,7 +668,13 @@ public class CustomReportDesigner {
 
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originalData = tabWidget.getData();
-        List<Map<String, Object>> data = new ArrayList<>(originalData);
+        List<Map<String, Object>> data;
+        if (originalData == null || originalData.isEmpty()) {
+            data = new ArrayList<>();
+            return null;
+        } else {
+            data = new ArrayList<>(originalData);
+        }
         // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
         List<Map<String, Object>> tempData = new ArrayList<>();
         System.out.println("columns size : " + columns.size());
@@ -759,7 +765,11 @@ public class CustomReportDesigner {
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-            data = data.subList(0, tabWidget.getMaxRecord());
+            System.out.println("data length ---> " + data.size());
+            System.out.println("tabWiget index ---> " + tabWidget.getMaxRecord());
+            if (data.size() >= tabWidget.getMaxRecord()) {
+                data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
         Map groupedMapData = new HashMap();
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****1 " + data.size());
@@ -926,7 +936,9 @@ public class CustomReportDesigner {
         }
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+             if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
 
         //XSLFTableRow titleRow = tbl.addRow();
@@ -1245,7 +1257,9 @@ public class CustomReportDesigner {
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+             if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
         Map groupedMapData = new HashMap();
         List<String> originalGroupByFields = new ArrayList<>(groupByFields);
@@ -1314,7 +1328,9 @@ public class CustomReportDesigner {
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+            if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
 
         PdfPTable table = new PdfPTable(noOfColumns);
@@ -2039,7 +2055,9 @@ public class CustomReportDesigner {
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****2 " + data.size());
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+             if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
         Map groupedMapData = new HashMap();
         // System.out.println(tabWidget.getWidgetTitle() + " Grouped Data Size****1 " + data.size());
@@ -2468,7 +2486,9 @@ public class CustomReportDesigner {
             }
 
             if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
+                 if(data.size() >= tabWidget.getMaxRecord()){
+                     data = data.subList(0, tabWidget.getMaxRecord());
+            }
             }
 
 //            final CategoryDataset dataset1 = createDataset3();
@@ -2659,7 +2679,9 @@ public class CustomReportDesigner {
         }
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+             if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
@@ -2778,6 +2800,9 @@ public class CustomReportDesigner {
             List<WidgetColumn> columns = tabWidget.getColumns();
 
             List<Map<String, Object>> originalData = tabWidget.getData();
+            if (originalData == null || originalData.isEmpty()) {
+                return null;
+            }
             List<Map<String, Object>> data = new ArrayList<>(originalData);
             List<SortType> sortFields = new ArrayList<>();
             List<Aggregation> aggreagtionList = new ArrayList<>();
@@ -2814,7 +2839,9 @@ public class CustomReportDesigner {
             }
 
             if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
+                 if(data.size() >= tabWidget.getMaxRecord()){
+            data = data.subList(0, tabWidget.getMaxRecord());
+            }
             }
 
             final CategoryDataset dataset1 = createDataset1(data, firstAxis, secondAxis, xAxis);
@@ -3007,7 +3034,9 @@ public class CustomReportDesigner {
             }
 
             if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
+                 if(data.size() >= tabWidget.getMaxRecord()){
+            data = data.subList(0, tabWidget.getMaxRecord());
+            }
             }
 
             System.out.println("FirstAxis: " + firstAxis);
@@ -3217,7 +3246,9 @@ public class CustomReportDesigner {
             }
 
             if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
-                data = data.subList(0, tabWidget.getMaxRecord());
+                 if(data.size() >= tabWidget.getMaxRecord()){
+            data = data.subList(0, tabWidget.getMaxRecord());
+            }
             }
 
             System.out.println("FirstAxis: " + firstAxis);
@@ -3643,6 +3674,9 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
 
         List<Map<String, Object>> originalData = tabWidget.getData();
+        if (originalData == null || originalData.isEmpty()) {
+            return null;
+        }
         List<Map<String, Object>> data = new ArrayList<>(originalData);
 
         List<Map<String, Object>> tempData = tabWidget.getData();
@@ -3682,7 +3716,9 @@ public class CustomReportDesigner {
         }
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+             if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
 
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
@@ -3806,8 +3842,10 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
 
         List<Map<String, Object>> originalData = tabWidget.getData();
+        if (originalData == null || originalData.isEmpty()) {
+            return null;
+        }
         List<Map<String, Object>> data = new ArrayList<>(originalData);
-
         List<Map<String, Object>> tempData = tabWidget.getData();
 
         List<SortType> sortFields = new ArrayList<>();
@@ -3845,7 +3883,9 @@ public class CustomReportDesigner {
         }
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+             if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();
         long firstAxisCount = firstAxiss.count();
@@ -3967,8 +4007,10 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
 
         List<Map<String, Object>> originalData = tabWidget.getData();
+        if (originalData == null || originalData.isEmpty()) {
+            return null;
+        }
         List<Map<String, Object>> data = new ArrayList<>(originalData);
-
         List<Map<String, Object>> tempData = tabWidget.getData();
 
         List<SortType> sortFields = new ArrayList<>();
@@ -4006,7 +4048,9 @@ public class CustomReportDesigner {
         }
 
         if (tabWidget.getMaxRecord() != null && tabWidget.getMaxRecord() > 0) {
+             if(data.size() >= tabWidget.getMaxRecord()){
             data = data.subList(0, tabWidget.getMaxRecord());
+            }
         }
 
         Stream<FirstAxis> firstAxiss = firstAxis.stream().distinct();

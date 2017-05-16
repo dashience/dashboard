@@ -537,8 +537,9 @@ public class ProxyController {
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
+        Integer dataSetIdInt = null;
         if (dataSetId != null) {
-            Integer dataSetIdInt = Integer.parseInt(dataSetId);
+            dataSetIdInt = Integer.parseInt(dataSetId);
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
             if (dataSet != null) {
                 dataSetReportName = dataSet.getReportName();
@@ -579,8 +580,9 @@ public class ProxyController {
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
         System.out.println("Report Name " + dataSetReportName);
-        System.out.println("data---->");
-        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment);
+        System.out.println("datasetId ---->" + dataSetId);
+        System.out.println("datasetIdInt ---->" + dataSetIdInt);
+        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
     }
 
     private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
@@ -749,7 +751,7 @@ public class ProxyController {
         System.out.println("Time Segment" + request.getParameter("timeSegment"));
         System.out.println("Product Segment" + request.getParameter("productSegment"));
         System.out.println("filter " + request.getParameter("filter"));
-        return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"));
+        return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null);
     }
 
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
@@ -1246,8 +1248,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-//                String url = "../dashboard/admin/proxy/getData?";
-                String url = "../admin/proxy/getData?";
+                String url = "../dashboard/admin/proxy/getData?";
+//                String url = "../admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -1258,13 +1260,13 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "../admin/proxy/getData?";
-//                    url = "../dashboard/admin/proxy/getData?";
+//                    url = "../admin/proxy/getData?";
+                    url = "../dashboard/admin/proxy/getData?";
 
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));

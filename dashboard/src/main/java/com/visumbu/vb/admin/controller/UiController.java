@@ -36,6 +36,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
+import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.WidgetTag;
 
 import com.visumbu.vb.utils.Rest;
@@ -384,6 +386,18 @@ public class UiController extends BaseController {
     public @ResponseBody
     DataSet update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         return uiService.update(dataSet);
+    }
+    
+    @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns createColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
+        return uiService.createColumns(dataSet);
+    }
+    
+    @RequestMapping(value = "dataSetColumns", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns updateColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
+        return uiService.updateColumns(dataSet);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")

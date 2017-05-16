@@ -50,14 +50,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        }
-        else if (dataSource === "pinterest")
+        } else if (dataSource === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        }else if (dataSource === "instagram")
+        } else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
@@ -1856,8 +1855,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.getTimeSegemens();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        }
-        else if (dataSet.dataSourceId.dataSourceType === "adwords")
+        } else if (dataSet.dataSourceId.dataSourceType === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
             $scope.getTimeSegemens();
@@ -2015,6 +2013,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
+                    "&dataSetId=" + dataSourcePath.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
                     "&timeSegment=" + dataSourcePath.timeSegment +
@@ -2033,6 +2032,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.loadingTable = false;
                 scope.tableColumns = response.columnDefs;
                 scope.tableRows = response.data;
+                console.log(scope.tableColumns);
             });
         }
     };
