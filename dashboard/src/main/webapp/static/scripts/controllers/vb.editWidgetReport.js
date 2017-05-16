@@ -1003,7 +1003,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                 "<div class='triangle'></div>" +
                 "<div class='ns-popover-tooltip'>" +
                 "<form class='form-inline'>" +
-                "<ul class='scheduler-list-style'>" +
+                "<ul>" +
                 //Aggregation Function
                 "<li class='input-group col-sm-12'>" +
                 "<label>Aggregation function</label>" +

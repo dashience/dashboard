@@ -69,8 +69,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import test.InToPost;
+import test.ParsePost;
 
 /**
  *
@@ -174,63 +176,6 @@ public class GaService {
         String filter = gaReport.getDefaultFilter();
         System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
-
-        HashMap<String, List<Map<String, Object>>> dataMap = (HashMap) getResponseAsMap(gaData);
-        Iterator it = dataMap.entrySet().iterator();
-
-        List column = new ArrayList<>();
-        List columnData = new ArrayList<>();
-
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            if (pair.getKey().equals("data")) {
-                columnData.add(pair.getValue());
-            } else {
-                column.add(pair.getValue());
-            }
-        }
-        List data = (List) columnData.get(0);
-        for (Iterator iterator = data.iterator(); iterator.hasNext();) {
-            Object dataPair = iterator.next();
-            System.out.println("visits value -----> "+dataPair);
-        }
-
-        System.out.println("dataSetId ---> " + dataSetId);
-        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetId);
-        String fieldName;
-        String displayName;
-        String fieldType;
-        String formula;
-
-        System.out.println("datasetColumnList --> " + datasetColumnList);
-        for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
-            DatasetColumns datasetColumn = datasetColumns.next();
-
-            if (datasetColumn.getFormula() != null) {
-
-                fieldName = datasetColumn.getFieldName();
-                displayName = datasetColumn.getDisplayName();
-                fieldType = datasetColumn.getFieldType();
-                formula = datasetColumn.getFormula();
-                StringTokenizer tokenizer = new StringTokenizer(formula, "(?=[+*/-()1234567890])");
-                String[] tokenArray = new String[tokenizer.countTokens()];
-                int i = -1;
-                while (tokenizer.hasMoreTokens()) {
-                    String token = (String) tokenizer.nextToken();
-                    System.out.println("token name ---> "+token);
-                    tokenArray[++i] = token;
-                }
-
-                InToPost theTrans = new InToPost(formula);
-                String output = theTrans.doTrans();
-                System.out.println("final output ----> " + output);
-//                String[] value_split = formula.split("\\+");
-//                for(int i = 0; i < value_split.length; i++){
-//                    System.out.println(value_split[i]);
-//                }
-            }
-        }
-
         return getResponseAsMap(gaData);
     }
 

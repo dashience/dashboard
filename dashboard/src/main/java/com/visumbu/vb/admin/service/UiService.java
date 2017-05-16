@@ -205,10 +205,8 @@ public class UiService {
         Integer lastNmonths = null;
         Integer lastNweeks = null;
         Integer lastNyears = null;
-        if (dateRangeName == null || dateRangeName.isEmpty()) {
-            startDate = null;
-            endDate = null;
-        } else if (dateRangeName != null) {
+        if (dateRangeName != null) {
+
             System.out.println("tabWidgetBean.getLastNdays() ----> " + tabWidgetBean.getLastNdays());
             if (tabWidgetBean.getLastNdays() != null) {
                 lastNdays = tabWidgetBean.getLastNdays();
@@ -256,9 +254,7 @@ public class UiService {
 //            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
 //                dateRangeSelect = Range.LAST_YEAR;
 //            }
-            if (dateRangeName.equalsIgnoreCase("Custom")) {
-                dateRangeSelect = null;
-            } else if (lastNdays != null) {
+            if (lastNdays != null) {
                 dateRangeSelect = Range.DAY;
             } else if (lastNweeks != null) {
                 dateRangeSelect = Range.WEEK;
@@ -268,9 +264,12 @@ public class UiService {
                 dateRangeSelect = Range.YEAR;
             }
 
-            if (dateRangeSelect == null) {
+            if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
                 startDate = tabWidgetBean.getCustomStartDate();
                 endDate = tabWidgetBean.getCustomEndDate();
+            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
+                startDate = null;
+                endDate = null;
             } else if (dateRangeSelect.equals(Range.DAY)) {
                 dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
             } else if (dateRangeSelect.equals(Range.WEEK)) {

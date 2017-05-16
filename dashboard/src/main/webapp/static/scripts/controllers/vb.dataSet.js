@@ -2033,25 +2033,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.tableColumns = response.columnDefs;
                 scope.tableRows = response.data;
                 console.log(scope.tableColumns);
-
-//                scope.columns = [];
-//                console.log(scope.tableColumns.length);
-//                for (var i = 0; i < scope.tableColumns.length; i++) {
-//                    console.log(scope.tableColumns[i]);
-//                    scope.columns.push({fieldName: scope.tableColumns[i].fieldName, displayName: scope.tableColumns[i].displayName, fieldType: scope.tableColumns[i].type});
-//                }
-//                console.log(scope.columns)
-//                var tableColumnsData = {
-//                    datasetId: dataSourcePath.id,
-//                    tableColumns: scope.columns,
-//                    fieldType: "string",
-//                    formula: "yoy(sessions)",
-//                    column: "YOY(sessions)"
-//                };
-//                console.log(tableColumnsData);
-//                $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: tableColumnsData}).success(function (response) {
-//                    console.log(response);
-//                });
             });
         }
     };
