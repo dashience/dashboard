@@ -16,6 +16,7 @@ import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
@@ -213,13 +214,14 @@ public class TimerService {
 
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
-        Integer hour = DateUtils.getCurrentHour();
         List<Agency> allAgencies = schedulerDao.getAllAgency();
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
             Agency agency = iterator.next();
-            String timezone = "IST";
+            AgencySettings agencySettings = userDao.getAgencySettingsById(agency.getId());
+            String timezone = agencySettings.getTimeZoneId().getShortDescription();
             Date today = DateUtils.convertCurrentTimeToTz(timezone, new Date());
             // Date today = new Date();
+            Integer hour = DateUtils.getHour(today);
             List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today, agency); //schedulerDao.getScheduledTasks("Daily");
             executeTasks(scheduledTasks);
         }

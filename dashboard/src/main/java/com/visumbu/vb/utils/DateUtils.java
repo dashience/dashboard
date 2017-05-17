@@ -343,6 +343,12 @@ public class DateUtils {
         calendar.setTime(date);
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
+    
+    public static Integer getHour(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
 
     public static Integer getCurrentWeekDay() {
         Date date = new Date();

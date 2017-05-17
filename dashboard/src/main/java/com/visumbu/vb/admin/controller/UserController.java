@@ -556,22 +556,22 @@ public class UserController extends BaseController {
         return userService.deleteAgencyProductId(agencyProductId);
     }
 
-    @RequestMapping(value = "agencysettings", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "agencySetting", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     AgencySettings createAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
      
         return userService.createAgencySettings(agencySettings);
     }
 
-    @RequestMapping(value = "agencysettings", method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "agencySetting", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     AgencySettings updateAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
         return userService.updateAgencySettings(agencySettings);
     }
     
-    @RequestMapping(value = "agencysettings/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "agencySetting/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getAgencySettingsById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+    AgencySettings getAgencySettingsById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
         return userService.getAgencySettingsById(agencyId);
     }
 

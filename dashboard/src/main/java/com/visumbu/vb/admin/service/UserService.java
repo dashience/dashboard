@@ -349,7 +349,7 @@ public class UserService {
         return (AgencySettings) userDao.update(agencysettings);
     }
      
-    public List getAgencySettingsById(Integer agencyId) {
+    public AgencySettings getAgencySettingsById(Integer agencyId) {
         return userDao.getAgencySettingsById(agencyId);
     }
 
