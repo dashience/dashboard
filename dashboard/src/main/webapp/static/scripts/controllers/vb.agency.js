@@ -12,7 +12,7 @@ app.controller('AgencyController', function ($scope, $http) {
             });
 //    };  
 //    
-    
+
 //    $scope.getTimezoneDataFromServer = function() {
     $http.get('admin/ui/timezones/').
             success(function (data, status, headers, config) {
@@ -23,8 +23,8 @@ app.controller('AgencyController', function ($scope, $http) {
 //                alert("error!");
             });
 //    }; 
-    
-    
+
+
     //currency-format
 
 //    $scope.currencies = [
@@ -90,13 +90,13 @@ app.controller('AgencyController', function ($scope, $http) {
             logo: $scope.agency.logo
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
-       $scope.agencyById=data;
-    
+            $scope.agencyById = data;
+
             getAgency();
             if (response.status == true) {
                 $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
-               
-               
+
+
             } else {
                 var dialog = bootbox.dialog({
                     title: 'Alert',
@@ -115,7 +115,7 @@ app.controller('AgencyController', function ($scope, $http) {
     $scope.editAgency = function (agency, index) {
         getAgencyLicence(agency)
         $scope.agencyById = agency;
-      
+
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
@@ -157,16 +157,16 @@ app.controller('AgencyController', function ($scope, $http) {
         $http.get('admin/user/agencyProduct/' + agency.id).success(function (response) {
             $scope.agencyProducts = response;
         });
-        
-        $http.get('admin/user/agencysettings/' + agency.id).success(function (response) {
+
+        $http.get('admin/user/agencySetting/' + agency.id).success(function (response) {
             $scope.agencySetting = {}
             $scope.agencysettings = response;
-            
-            $scope.agencysettings.forEach(function(value, key){
-                $scope.agencySetting.id = value.id;
-                $scope.agencySetting.currencyId = value.currencyId;
-                $scope.agencySetting.timeZoneId = value.timeZoneId;
-            })
+
+
+            $scope.agencySetting.id = response.id;
+            $scope.agencySetting.currencyId = response.currencyId;
+            $scope.agencySetting.timeZoneId = response.timeZoneId;
+
         });
     }
 
@@ -198,8 +198,8 @@ app.controller('AgencyController', function ($scope, $http) {
         }
     };
 
-     $scope.saveAgencySettings = function (agencySettings) {
-         console.log(agencySettings);
+    $scope.saveAgencySettings = function (agencySettings) {
+        console.log(agencySettings);
         if (!$scope.agencyById) {
             var dialog = bootbox.dialog({
                 title: 'Alert',
@@ -217,13 +217,13 @@ app.controller('AgencyController', function ($scope, $http) {
                 currencyId: agencySettings.currencyId,
                 timeZoneId: agencySettings.timeZoneId
             };
-            
+
             console.log(data)
-            $http({method: agencySettings.id ? 'PUT' : 'POST', url: 'admin/user/agencysettings', data: data}).success(function (response) {
+            $http({method: agencySettings.id ? 'PUT' : 'POST', url: 'admin/user/agencySetting', data: data}).success(function (response) {
                 console.log(data)
                 $scope.agencySettings = response;
             });
-            
+
             $scope.agencySetting = ""
         }
     };

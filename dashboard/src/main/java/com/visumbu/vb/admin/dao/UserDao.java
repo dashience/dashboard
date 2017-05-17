@@ -9,6 +9,7 @@ import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.Property;
@@ -365,11 +366,15 @@ public class UserDao extends BaseDao {
         return null;
     }
     
-    public List getAgencySettingsById(Integer agencyId) {
+    public AgencySettings getAgencySettingsById(Integer agencyId) {
         String queryStr = "select d from AgencySettings d where d.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", agencyId);
-        return query.list();
+        List<AgencySettings> settingsList = query.list();
+        if(settingsList != null && settingsList.size() > 0) {
+            return settingsList.get(0);
+        }
+        return null;
     }
 
 
