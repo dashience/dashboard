@@ -107,9 +107,16 @@ public class ProxyController {
         String dataSourceType = request.getParameter("dataSourceType");
         String dataSetId = request.getParameter("dataSetId");
         if (dataSetId != null) {
-            Integer dataSetIdInt = Integer.parseInt(dataSetId);
-            DataSet dataSet = uiService.readDataSet(dataSetIdInt);
-            dataSourceType = dataSet.getDataSourceId().getDataSourceType();
+            Integer dataSetIdInt = null;
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+                dataSourceType = dataSet.getDataSourceId().getDataSourceType();
+            }
         }
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             return getFbData(request, response);
@@ -1032,24 +1039,24 @@ public class ProxyController {
         System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         System.out.println("endDate 1 ----> " + endDate);
-        String widgetIdStr = request.getParameter("widgetId");
-        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-            Integer widgetId = Integer.parseInt(widgetIdStr);
-            System.out.println("widgetId ----> " + widgetId);
-            TabWidget widget = uiService.getWidgetById(widgetId);
-
-            String start = widget.getCustomStartDate();
-            String end = widget.getCustomEndDate();
-
-            if (start != null) {
-                startDate = DateUtils.getStartDate(start);
-                System.out.println("startDate 2 ----> " + startDate);
-            }
-            if (end != null) {
-                endDate = DateUtils.getEndDate(end);
-                System.out.println("endDate 2 ----> " + endDate);
-            }
-        }
+//        String widgetIdStr = request.getParameter("widgetId");
+//        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+//            Integer widgetId = Integer.parseInt(widgetIdStr);
+//            System.out.println("widgetId ----> " + widgetId);
+//            TabWidget widget = uiService.getWidgetById(widgetId);
+//
+//            String start = widget.getCustomStartDate();
+//            String end = widget.getCustomEndDate();
+//
+//            if (start != null) {
+//                startDate = DateUtils.getStartDate(start);
+//                System.out.println("startDate 2 ----> " + startDate);
+//            }
+//            if (end != null) {
+//                endDate = DateUtils.getEndDate(end);
+//                System.out.println("endDate 2 ----> " + endDate);
+//            }
+//        }
         String start_date = month_date.format(startDate);
         String end_date = month_date.format(endDate);
         String selectDate;
@@ -1126,6 +1133,21 @@ public class ProxyController {
 //                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
 //                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
+
+                String start = tabWidget.getCustomStartDate();
+                String end = tabWidget.getCustomEndDate();
+
+                if (start != null) {
+                    startDate = DateUtils.getStartDate(start);
+                    System.out.println("startDate 2 ----> " + startDate);
+                }
+                if (end != null) {
+                    endDate = DateUtils.getEndDate(end);
+                    System.out.println("endDate 2 ----> " + endDate);
+                }
+                valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
+                valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
+
                 Integer port = request.getServerPort();
 
                 int id = Integer.parseInt(request.getParameter("accountId"));
@@ -1185,24 +1207,24 @@ public class ProxyController {
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         System.out.println("endDate 1 ----> " + endDate);
 
-        String widgetIdStr = request.getParameter("widgetId");
-        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-            Integer widgetId = Integer.parseInt(widgetIdStr);
-            System.out.println("widgetId ----> " + widgetId);
-            TabWidget widget = uiService.getWidgetById(widgetId);
-
-            String start = widget.getCustomStartDate();
-            String end = widget.getCustomEndDate();
-
-            if (start != null) {
-                startDate = DateUtils.getStartDate(start);
-                System.out.println("startDate 2 ----> " + startDate);
-            }
-            if (end != null) {
-                endDate = DateUtils.getEndDate(end);
-                System.out.println("endDate 2 ----> " + endDate);
-            }
-        }
+//        String widgetIdStr = request.getParameter("widgetId");
+//        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+//            Integer widgetId = Integer.parseInt(widgetIdStr);
+//            System.out.println("widgetId ----> " + widgetId);
+//            TabWidget widget = uiService.getWidgetById(widgetId);
+//
+//            String start = widget.getCustomStartDate();
+//            String end = widget.getCustomEndDate();
+//
+//            if (start != null) {
+//                startDate = DateUtils.getStartDate(start);
+//                System.out.println("startDate 2 ----> " + startDate);
+//            }
+//            if (end != null) {
+//                endDate = DateUtils.getEndDate(end);
+//                System.out.println("endDate 2 ----> " + endDate);
+//            }
+//        }
         String start_date = month_date.format(startDate);
         String end_date = month_date.format(endDate);
         String selectDate;
@@ -1227,12 +1249,14 @@ public class ProxyController {
         for (Map.Entry<String, String> entrySet : dealerAccountDetails.entrySet()) {
             String key = entrySet.getKey();
             String value = entrySet.getValue();
+            System.out.println("key ---> " + key + " value ---> " + value);
             valueMap.put(key, Arrays.asList(value));
         }
         Map<String, String[]> parameterMap = request.getParameterMap();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
             String[] value = entrySet.getValue();
+            System.out.println("key ---> " + key + " value ---> " + value);
             valueMap.put(key, Arrays.asList(value));
         }
 
@@ -1268,6 +1292,20 @@ public class ProxyController {
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
+
+                String start = tabWidget.getCustomStartDate();
+                String end = tabWidget.getCustomEndDate();
+
+                if (start != null) {
+                    startDate = DateUtils.getStartDate(start);
+                    System.out.println("startDate 2 ----> " + startDate);
+                }
+                if (end != null) {
+                    endDate = DateUtils.getEndDate(end);
+                    System.out.println("endDate 2 ----> " + endDate);
+                }
+                valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
+                valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
 
                 Integer port = request.getServerPort();
 
