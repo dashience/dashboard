@@ -22,15 +22,15 @@ import org.apache.commons.mail.MultiPartEmail;
 public class TextMailWithAttachment {
 
     private MailProperties props = null;
-    
+
     PropertyReader propReader = new PropertyReader();
-    
+
     private String hostName = "smtp.hostname";
     private String setPort = "smtp.port";
     private String authUser = "smtp.authuser";
     private String authPass = "smtp.authpass";
     private String fromAddress = "smtp.fromaddress";
-
+    private String tlsSslRequired = "smtp.tls.ssl.required";
 
     public TextMailWithAttachment(MailProperties props) {
         this.props = props;
@@ -59,6 +59,7 @@ public class TextMailWithAttachment {
         this.props.setAuthUser(propReader.ReadProperties(authUser));
         this.props.setAuthPasswd(propReader.ReadProperties(authPass));
         this.props.setFrom(propReader.ReadProperties(fromAddress));
+        this.props.setSetSSLOnConnect(Boolean.parseBoolean(propReader.ReadProperties(tlsSslRequired)));
         this.props.setHtmlMessage(message);
         this.props.setTxtMessage(message);
         this.props.setSubject(subject);
@@ -74,7 +75,7 @@ public class TextMailWithAttachment {
             email.setHostName(props.getHostName());
             email.setSmtpPort(props.getPort());
             email.setAuthentication(props.getAuthUser(), props.getAuthPasswd());
-            //email.setSSLOnConnect(props.isSetSSLOnConnect());
+            email.setSSLOnConnect(props.isSetSSLOnConnect());
             email.setFrom(props.getFrom());
             email.setSubject(props.getSubject());
             email.setMsg(props.getTxtMessage());

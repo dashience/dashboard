@@ -165,11 +165,16 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         console.log(scheduler)
     }
     $scope.saveScheduler = function (scheduler) {
+
+
+        scheduler.dateRangeName = $("#customDateRangeName").text();
+
+
         console.log(scheduler);
         try {
-            $scope.customStartDate = scheduler.dateRangeName !== null ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+            $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
-            $scope.customEndDate = scheduler.dateRangeName !== null ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+            $scope.customEndDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
         } catch (e) {
 
         }
@@ -236,8 +241,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         if (scheduler.dateRangeName === 'Custom') {
             scheduler.customStartDate = $scope.customStartDate;
             scheduler.customEndDate = $scope.customEndDate;
-        } else if (scheduler.dateRangeName === null) {
-            scheduler.dateRangeName = "Select Date Duration";
+        } else if (scheduler.dateRangeName === "Select Date Duration") {
             scheduler.customStartDate = $scope.customStartDate;
             scheduler.customEndDate = $scope.customEndDate;
         } else {
