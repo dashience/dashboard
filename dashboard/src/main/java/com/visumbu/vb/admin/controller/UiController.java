@@ -38,6 +38,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.model.DatasetColumns;
+
+import com.visumbu.vb.model.Currency;
+import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.WidgetTag;
 
 import com.visumbu.vb.utils.Rest;
@@ -157,23 +160,23 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
-       System.out.println("save tab widget");
+        System.out.println("save tab widget");
         return uiService.saveTabWidget(tabId, tabWidget);
         //return null; //uiService.createTabWidget(tabId, tabWidget);
     }
-    
+
     @RequestMapping(value = "dbWidgetDuplicate/{widgetId}/{tabId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    TabWidget getWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId,  @PathVariable Integer tabId) {
+    TabWidget getWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @PathVariable Integer tabId) {
         return uiService.getWidget(widgetId, tabId);
     }
-    
+
     @RequestMapping(value = "dbDuplicateTag/{widgetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<WidgetTag> getTagWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
         return uiService.getTagWidget(widgetId);
     }
-    
+
     @RequestMapping(value = "dbWidgetUpdateOrder/{tabId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object updateWidgetUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
@@ -187,7 +190,7 @@ public class UiController extends BaseController {
     List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         return uiService.getTabWidget(tabId);
     }
-    
+
     @RequestMapping(value = "reportWidgetByWidgetId/{widgetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReportWidgetByWidgetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
@@ -205,19 +208,18 @@ public class UiController extends BaseController {
     WidgetColumn addWidgetColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @RequestBody WidgetColumn widgetColumn) {
         return uiService.addWidgetColumn(widgetId, widgetColumn);
     }
-    
+
 //    @RequestMapping(value = "widgetColumn/{widgetId}", method = RequestMethod.POST, produces = "application/json")
 //    public @ResponseBody
 //    WidgetColumn getWidgetColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @RequestBody WidgetColumn widgetColumn) {
 //        return uiService.getWidgetColumn(widgetId);
 //    }
-
     @RequestMapping(value = "widgetColumn/{widgetId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     WidgetColumn update(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @RequestBody WidgetColumn widgetColumn) {
         return uiService.updateWidgetColumn(widgetId, widgetColumn);
     }
-    
+
     @RequestMapping(value = "widgetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     WidgetColumn deleteWidgetColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
@@ -239,7 +241,6 @@ public class UiController extends BaseController {
 //        report.setAgencyId(user.getAgencyId());
 //        return uiService.updateReport(report);
 //    }
-
 //    @RequestMapping(value = "dbReportUpdateOrder/{reportId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    Object updateReportUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
@@ -263,20 +264,17 @@ public class UiController extends BaseController {
 //        }
 //        return uiService.getAgencyReport(user);
 //    }
-    
 //    @RequestMapping(value = "report/{reportId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    Report getReportById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
 //        return uiService.getReportById(reportId);
 //    }
-
 //    @RequestMapping(value = "report/{reportId}", method = RequestMethod.DELETE, produces = "application/json")
 //    public @ResponseBody
 //    Report deleteReport(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
 //        return uiService.deleteReport(reportId);
 //    }
 //
-
 //    @RequestMapping(value = "reportWidget", method = RequestMethod.POST, produces = "application/json")
 //    public @ResponseBody
 //    ReportWidget createReportWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody ReportWidget reportWidget) {
@@ -290,7 +288,6 @@ public class UiController extends BaseController {
 //        return uiService.updateReportWidget(reportWidget);
 //    }
 //
-
     @RequestMapping(value = "reportWidget", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getReportWidget(HttpServletRequest request, HttpServletResponse response) {
@@ -309,7 +306,6 @@ public class UiController extends BaseController {
 //    ReportWidget deleteReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
 //        return uiService.deleteReportWidget(reportId);
 //    }
-
     @RequestMapping(value = "dataSource", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     DataSource create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
@@ -320,7 +316,8 @@ public class UiController extends BaseController {
     }
 
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
-    public @ResponseBody Object continueFileUpload(HttpServletRequest request, HttpServletResponse response) {
+    public @ResponseBody
+    Object continueFileUpload(HttpServletRequest request, HttpServletResponse response) {
         MultipartHttpServletRequest mRequest;
         String returnFilename = null;
         try {
@@ -586,10 +583,25 @@ public class UiController extends BaseController {
         return null;
     }
 
+    @RequestMapping(value = "currencies", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Currency> getCurrencies(HttpServletRequest request, HttpServletResponse response) {
+        List<Currency> currencies = uiService.getCurrencies();
+        System.out.println("latest size of currencies" + currencies.size());
+        return currencies;
+    }
+
+    @RequestMapping(value = "timezones", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<Timezone> getTimezones(HttpServletRequest request, HttpServletResponse response) {
+        List<Timezone> timezones = uiService.getTimeZones();
+        //System.out.println("size of currencies"+currencies.size());
+        return timezones;
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {
         e.printStackTrace();
     }
-
 }

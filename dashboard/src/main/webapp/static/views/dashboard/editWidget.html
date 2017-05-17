@@ -352,7 +352,21 @@
                         </ui-select-choices>
                     </ui-select>
                 </div>
+            </div> 
+            
+            <!-------------------Currency Format----------------------------->
+            <div class="col-md-4">
+                <label>Currency</label>
+                <div>
+                    <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.tagName"  on-remove="removedTags($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                        <ui-select-match placeholder="Tags...">{{$item}}</ui-select-match>
+                        <ui-select-choices repeat="tag in tags | filter:$select.search">
+                            {{tag}}
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
             </div>
+            <!---------------------------------------------------------------->
         </div>
 
         <div class="nav-tabs-custom col-md-12">

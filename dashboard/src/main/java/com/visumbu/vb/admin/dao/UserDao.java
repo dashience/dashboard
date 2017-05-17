@@ -364,5 +364,14 @@ public class UserDao extends BaseDao {
         query.executeUpdate();
         return null;
     }
+    
+    public List getAgencySettingsById(Integer agencyId) {
+        String queryStr = "select d from AgencySettings d where d.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", agencyId);
+        return query.list();
+    }
+
+
 
 }

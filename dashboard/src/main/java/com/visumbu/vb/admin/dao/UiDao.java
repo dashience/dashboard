@@ -10,6 +10,7 @@ import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
@@ -22,6 +23,7 @@ import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
@@ -601,5 +603,20 @@ public class UiDao extends BaseDao {
             saveOrUpdate(datasetFields);
         }
         return datasetColumns;
+    }
+
+    public List<Currency> getCurrenciesTypes() {
+        // System.out.println("dao is calling....");
+        String queryStr = "SELECT c FROM Currency c";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        return query.list();
+    }
+
+    public List<Timezone> getTimezoneTypes() {
+        // System.out.println("dao is calling....");
+        String queryStr = "SELECT t FROM Timezone t";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        return query.list();
+
     }
 }
