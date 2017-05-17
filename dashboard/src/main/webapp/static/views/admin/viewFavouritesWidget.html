@@ -1,0 +1,56 @@
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Favourites
+            </h2>               
+        </div>
+    </div>
+</div>
+
+
+<div class="row content">
+    <div ng-repeat="favouritesWidget in favouritesWidgets">
+        <div class="col-md-{{favouritesWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
+            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
+                <div class="panel-heading">
+                    <span class="{{favouritesWidget.widgetId.icon}}"></span> 
+                    <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>
+                </div>
+                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
+                    <div line-Chart-Directive line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'bar'">
+                    <div bar-Chart-Directive bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'pie'">
+                    <div pie-Chart-Directive pie-Chart-Source='{{favouritesWidget.widgetId.dataSetId}}' widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'area'">
+                    <div area-Chart-Directive area-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body"  ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'">
+                    <div>
+                        <div stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                    </div>
+                </div>
+                <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>
+                    <div class="table-responsive project-list">
+                        <div id="changes-height" class="project-list">
+                            <div dynamic-Table dynamic-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Obj="{{favouritesWidget.widgetId}}" table-Footer="{{favouritesWidget.widgetId.tableFooter}}" widget-Columns="{{favouritesWidget.widgetId.columns}}"></div> 
+                        </div> 
+                    </div>
+                </div>
+                <div class="panel-body"  ng-if="favouritesWidget.widgetId.chartType === 'text'">
+                    <div class="col-md-12">
+                        <div class="text-widget">
+                            <span ng-bind-html="favouritesWidget.widgetId.content"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
