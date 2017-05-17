@@ -122,7 +122,7 @@ public class ProxyController {
             }
         }
         System.out.println(dataSourceType);
-        
+
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             returnMap = (Map) getFbData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("csv")) {
@@ -162,9 +162,17 @@ public class ProxyController {
             if (connectionString == null) {
                 String dataSetId = request.getParameter("dataSetId");
 
+                Integer dataSetIdInt = null;
+                DataSet dataSet = null;
                 if (dataSetId != null) {
-                    Integer dataSetIdInt = Integer.parseInt(dataSetId);
-                    DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+                    try {
+                        dataSetIdInt = Integer.parseInt(dataSetId);
+                    } catch (Exception e) {
+
+                    }
+                    if (dataSetIdInt != null) {
+                        dataSet = uiService.readDataSet(dataSetIdInt);
+                    }
                     if (dataSet != null) {
                         connectionString = dataSet.getDataSourceId().getConnectionString();
                     }
@@ -1209,8 +1217,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-//                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
-                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+//                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -1221,13 +1229,13 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-//                    url = "../dashboard/admin/proxy/getData?";
-                    url = "../admin/proxy/getData?";
+                    url = "../dashboard/admin/proxy/getData?";
+//                    url = "../admin/proxy/getData?";
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 
@@ -1371,8 +1379,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-//                String url = "../dashboard/admin/proxy/getData?";
-                String url = "../admin/proxy/getData?";
+                String url = "../dashboard/admin/proxy/getData?";
+//                String url = "../admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -1383,13 +1391,13 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
                     System.out.println("DS TYPE ==>  CSV");
-                    url = "../admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
+//                    url = "../admin/csv/getData";
+                    url = "../dashboard/admin/csv/getData";
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
 //                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "../admin/proxy/getData?";
-//                    url = "../dashboard/admin/proxy/getData?";
+//                    url = "../admin/proxy/getData?";
+                    url = "../dashboard/admin/proxy/getData?";
 
                 }
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));

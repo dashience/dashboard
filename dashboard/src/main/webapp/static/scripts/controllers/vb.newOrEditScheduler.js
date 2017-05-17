@@ -165,12 +165,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         console.log(scheduler)
     }
     $scope.saveScheduler = function (scheduler) {
-
-
         scheduler.dateRangeName = $("#customDateRangeName").text();
-
-
-        console.log(scheduler);
         try {
             $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
