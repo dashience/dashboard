@@ -56,15 +56,8 @@ public class ShuntingYard {
         StringBuilder output = new StringBuilder();
         List<String> outputList = new ArrayList<>();
         Deque<String> stack = new LinkedList<>();
-        String input = infix;
-        input = input.replaceAll("\\(", "\\( ");
-        input = input.replaceAll("\\)", " \\)");
-        input = input.replaceAll("-", " - ");
-        input = input.replaceAll("\\+", " + ");
-        input = input.replaceAll("\\*", " * ");
-        input = input.replaceAll("/", " / ");
 
-        for (String token : input.split("\\s")) {
+        for (String token : infix.split("\\s")) {
             // operator
             if (ops.containsKey(token)) {
                 while (!stack.isEmpty() && isHigerPrec(token, stack.peek())) {

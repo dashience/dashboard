@@ -118,7 +118,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         {name: 'Bar Chart', value: "bar"}
 
     ];
-    $scope.gridLine=[
+    $scope.gridLine = [
         {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
@@ -219,12 +219,6 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
-        if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
-            url = "admin/csv/getData?";
-        }
-        if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
-            url = "admin/proxy/getData?";
-        }
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
                 "&accountId=" + $stateParams.accountId +
@@ -306,12 +300,6 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         var url = "admin/proxy/getData?";
         if (dataSet.dataSourceId.dataSourceType == "sql") {
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
-        if (dataSet.dataSourceId.dataSourceType == "csv") {
-            url = "admin/csv/getData?";
-        }
-        if (dataSet.dataSourceId.dataSourceType == "facebook") {
-            url = "admin/proxy/getData?";
         }
         var dataSourcePassword;
         if (dataSet.dataSourceId.password) {
@@ -799,27 +787,27 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     };
 
     //Query Builder
-    var data = '{"group": {"operator": "AND","rules": []}}';
-    function htmlEntities(str) {
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-    function computed(group) {
-        if (!group)
-            return "";
-        for (var str = "(", i = 0; i < group.rules.length; i++) {
-            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-            str += group.rules[i].group ?
-                    computed(group.rules[i].group) :
-                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-        }
-        return str + ")";
-    }
-    $scope.json = null;
-    $scope.filter = JSON.parse(data);
-    $scope.$watch('filter', function (newValue) {
-        $scope.json = JSON.stringify(newValue, null, 2);
-        $scope.output = computed(newValue.group);
-    }, true);
+//    var data = '{"group": {"operator": "AND","rules": []}}';
+//    function htmlEntities(str) {
+//        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+//    }
+//    function computed(group) {
+//        if (!group)
+//            return "";
+//        for (var str = "(", i = 0; i < group.rules.length; i++) {
+//            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+//            str += group.rules[i].group ?
+//                    computed(group.rules[i].group) :
+//                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+//        }
+//        return str + ")";
+//    }
+//    $scope.json = null;
+//    $scope.filter = JSON.parse(data);
+//    $scope.$watch('filter', function (newValue) {
+//        $scope.json = JSON.stringify(newValue, null, 2);
+//        $scope.output = computed(newValue.group);
+//    }, true);
     $scope.currentLocation = "index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
     $scope.selectDateRangeName = function (widget) {
         widget.dateRangeName = "Custom";
@@ -1125,13 +1113,6 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
             if (tableDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (tableDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
-
             var dataSourcePassword;
             if (tableDataSource.dataSourceId.password) {
                 dataSourcePassword = tableDataSource.dataSourceId.password;

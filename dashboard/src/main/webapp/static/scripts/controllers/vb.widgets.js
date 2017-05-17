@@ -297,7 +297,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 maxRecord: widget.maxRecord,
                 dateDuration: widget.dateDuration,
                 content: widget.content,
-                width: widget.width
+                width: widget.width,
+                jsonData:widget.jsonData,
+                queryFilter:widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -333,7 +335,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 maxRecord: widget.maxRecord,
                 dateDuration: widget.dateDuration,
                 content: widget.content,
-                width: widget.width
+                width: widget.width,
+                jsonData:widget.jsonData,
+                queryFilter:widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -623,12 +627,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             var url = "admin/proxy/getData?";
             if (tableDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
-            if (tableDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
             }
 
             var dataSourcePassword;
@@ -1023,12 +1021,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (tickerDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (tickerDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
             var dataSourcePassword;
             if (tickerDataSource.dataSourceId.password) {
                 dataSourcePassword = tickerDataSource.dataSourceId.password;
@@ -1259,12 +1251,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 var url = "admin/proxy/getData?";
                 if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
-                if (lineChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
                 }
                 var dataSourcePassword;
                 if (lineChartDataSource.dataSourceId.password) {
@@ -1572,12 +1558,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (barChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (barChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
                 var dataSourcePassword;
                 if (barChartDataSource.dataSourceId.password) {
                     dataSourcePassword = barChartDataSource.dataSourceId.password;
@@ -1869,12 +1849,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (pieChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (pieChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
+                
                 var dataSourcePassword;
                 if (pieChartDataSource.dataSourceId.password) {
                     dataSourcePassword = pieChartDataSource.dataSourceId.password;
@@ -2168,12 +2143,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (areaChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (areaChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
+                
                 var dataSourcePassword;
                 if (areaChartDataSource.dataSourceId.password) {
                     dataSourcePassword = areaChartDataSource.dataSourceId.password;
@@ -2470,12 +2440,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
+                
                 var dataSourcePassword;
                 if (stackedBarChartDataSource.dataSourceId.password) {
                     dataSourcePassword = stackedBarChartDataSource.dataSourceId.password;
