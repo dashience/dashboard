@@ -98,11 +98,21 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/fieldSettings/fieldSettings.html",
                 controller: 'FieldSettingsController'
             })
-            .state("index.tag", {
-                url: "/tag/:accountId/:accountName?:startDate/:endDate",
-                templateUrl: "static/views/tag/tag.html",
-                controller: 'TagController'
+            .state("index.favourites", {
+                url: "/favourites/:accountId/:accountName?:startDate/:endDate",
+                templateUrl: "static/views/admin/favourites.html",
+                controller: 'FavouritesController'
+            })
+            .state("index.viewFavouritesWidget", {
+                url: "/viewFavouritesWidget/:accountId/:accountName/:favouriteName?:startDate/:endDate",
+                templateUrl: "static/views/admin/viewFavouritesWidget.html",
+                controller: 'ViewFavouritesWidgetController'
             });
+//            .state("index.viewFavouritesWidget", {
+//                url: "/viewFavouritesWidget/:accountId/:accountName/:favouriteId/:favouriteName?:startDate/:endDate",
+//                templateUrl: "static/views/admin/viewFavouritesWidget.html",
+//                controller: 'ViewFavouritesWidgetController'
+//            });
 
 
     $urlRouterProvider.otherwise(function ($injector) {

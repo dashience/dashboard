@@ -194,12 +194,30 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
-            } else if ($scope.getCurrentPage() === "tag") {
-                $state.go("index.tag", {
+            }
+//            else if ($scope.getCurrentPage() === "tag") {
+//                $state.go("index.tag", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+//                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+//                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+//                });
+//            }
+            else if ($scope.getCurrentPage() === "favourites") {
+                $state.go("index.favourites", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+                $state.go("index.viewFavouritesWidget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+//                    favouriteId: $stateParams.favouriteId,
+                    favouriteName: $stateParams.favouriteName,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
                 });
             } else {
                 $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
@@ -356,10 +374,28 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
-        } else if ($scope.getCurrentPage() === "tag") {
-            $state.go("index.tag", {
+        }
+//        else if ($scope.getCurrentPage() === "tag") {
+//            $state.go("index.tag", {
+//                accountId: $stateParams.accountId,
+//                accountName: $stateParams.accountName,
+//                startDate: $stateParams.startDate,
+//                endDate: $stateParams.endDate
+//            });
+//        }
+        else if ($scope.getCurrentPage() === "favourites") {
+            $state.go("index.favourites", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+            $state.go("index.viewFavouritesWidget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                //favouriteId: $stateParams.favouriteId,
+                favouriteName: $stateParams.favouriteName,
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
@@ -414,9 +450,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("fieldSettings") > 0) {
             return "fieldSettings";
         }
-        if (url.indexOf("tag") > 0) {
-            return "tag";
+        if (url.indexOf("favourites") > 0) {
+            return "favourites";
         }
+        if (url.indexOf("viewFavouritesWidget") > 0) {
+            return "viewFavouritesWidget";
+        }
+//        if (url.indexOf("tag") > 0) {
+//            return "tag";
+//        }
         return "dashboard";
     };
     $scope.getCurrentTab = function () {
