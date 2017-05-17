@@ -816,8 +816,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
 
     $scope.save = function (widget) {
-        $scope.jsonData = JSON.stringify($('.query-builder').queryBuilder('getRules'));
-        $scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
+        if ($('.query-builder').queryBuilder('getRules')) {
+            $scope.jsonData = JSON.stringify($('.query-builder').queryBuilder('getRules'));
+            $scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
+        }
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
