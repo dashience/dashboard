@@ -355,7 +355,7 @@
             </div> 
             
             <!-------------------Currency Format----------------------------->
-            <div class="col-md-4">
+<!--            <div class="col-md-4">
                 <label>Currency</label>
                 <div>
                     <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.tagName"  on-remove="removedTags($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
@@ -365,8 +365,7 @@
                         </ui-select-choices>
                     </ui-select>
                 </div>
-            </div>
-            <!---------------------------------------------------------------->
+            </div>-->
         </div>
 
         <div class="nav-tabs-custom col-md-12">
@@ -617,7 +616,7 @@
                                 <div class='panel-footer'>
                                     <div>
                                         <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                                        <button class='btn btn-info' ng-click='save(widget)'><span class='fa fa-save'></span> Save</button>
+                                        <button class='btn btn-info' ng-click='widget.isQueryBuilder = false; save(widget)'><span class='fa fa-save'></span> Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -696,7 +695,8 @@
                         </div>
                         <div>
                             <!--<button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>-->
-                            <button class='btn btn-info' ng-click='save(widget)'>Apply Filter</button>
+                            <button class='btn btn-default' ng-click='setTab(1)'> Back</button>
+                            <button class='btn btn-info' ng-click='widget.isQueryBuilder = true; save(widget)'> Apply Filter</button>
                         </div>
                     </div>
                 </div>
