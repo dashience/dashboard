@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
@@ -165,7 +166,7 @@ public class SchedulerDao extends BaseDao {
             queryStr = "update Scheduler d set status = 'Active' where d.id = :schedulerId";
         } else {
             queryStr = "update Scheduler d set status = 'InActive' where d.id = :schedulerId";
-        }   
+        }
         System.out.println(queryStr);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerId", schedulerId);
@@ -173,4 +174,7 @@ public class SchedulerDao extends BaseDao {
         return null;
     }
 
+    public List<Agency> getAllAgency() {
+        return (List<Agency>) read(Agency.class);
+    }
 }

@@ -15,6 +15,7 @@ import com.visumbu.vb.admin.dao.SchedulerDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
@@ -68,7 +69,7 @@ public class TimerService {
             System.out.println("Last Execution Status -----> " + scheduler.getLastExecutionStatus());
             String dateRangeName = scheduler.getDateRangeName();
             System.out.println("Date Range Name ----> " + dateRangeName);
-            System.out.println("scheduler lastndays ----> "+scheduler.getLastNdays());
+            System.out.println("scheduler lastndays ----> " + scheduler.getLastNdays());
             String currentDateStr = null;
             schedulerHistory.setExecutionStartTime(schedulerStartTime);
             currentDateStr = DateUtils.dateToString(new Date(), "dd/MM/yyyy HH:mm:ss");
@@ -85,7 +86,7 @@ public class TimerService {
             if (dateRangeName == null || dateRangeName.isEmpty()) {
                 startDate = null;
                 endDate = null;
-            } else if(dateRangeName != null){
+            } else if (dateRangeName != null) {
                 if (scheduler.getLastNdays() != null) {
                     lastNdays = scheduler.getLastNdays();
                     System.out.println("Last N days ----> " + lastNdays);
@@ -213,9 +214,13 @@ public class TimerService {
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
         Integer hour = DateUtils.getCurrentHour();
-        Date today = new Date();
-        List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today); //schedulerDao.getScheduledTasks("Daily");
-        executeTasks(scheduledTasks);
+        List<Agency> allAgencies = schedulerDao.getAllAgency();
+        for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
+            Agency agency = iterator.next();
+            Date today = new Date();
+            List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today); //schedulerDao.getScheduledTasks("Daily");
+            executeTasks(scheduledTasks);
+        }
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
