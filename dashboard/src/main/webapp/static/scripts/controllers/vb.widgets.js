@@ -297,7 +297,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 maxRecord: widget.maxRecord,
                 dateDuration: widget.dateDuration,
                 content: widget.content,
-                width: widget.width
+                width: widget.width,
+                jsonData:widget.jsonData,
+                queryFilter:widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -333,7 +335,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 maxRecord: widget.maxRecord,
                 dateDuration: widget.dateDuration,
                 content: widget.content,
-                width: widget.width
+                width: widget.width,
+                jsonData:widget.jsonData,
+                queryFilter:widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
