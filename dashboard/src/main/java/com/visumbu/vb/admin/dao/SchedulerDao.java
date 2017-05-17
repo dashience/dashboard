@@ -52,16 +52,17 @@ public class SchedulerDao extends BaseDao {
         return query.list();
     }
 
-    public List<Scheduler> getDailyTasks(Integer hour, Date today) {
+    public List<Scheduler> getDailyTasks(Integer hour, Date today, Agency agency) {
 
         String scheduledHour = hour + ":00";
         if (hour < 10) {
             scheduledHour = "0" + hour + ":00";
         }
-        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour";
+        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour and agencyId := agency";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Daily");
         query.setParameter("hour", scheduledHour);
+        query.setParameter("agency", agency);
         return query.list();
     }
 

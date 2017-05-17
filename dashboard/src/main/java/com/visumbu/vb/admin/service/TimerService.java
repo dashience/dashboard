@@ -217,8 +217,10 @@ public class TimerService {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
             Agency agency = iterator.next();
-            Date today = new Date();
-            List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today); //schedulerDao.getScheduledTasks("Daily");
+            String timezone = "IST";
+            Date today = DateUtils.convertCurrentTimeToTz(timezone, new Date());
+            // Date today = new Date();
+            List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today, agency); //schedulerDao.getScheduledTasks("Daily");
             executeTasks(scheduledTasks);
         }
     }
