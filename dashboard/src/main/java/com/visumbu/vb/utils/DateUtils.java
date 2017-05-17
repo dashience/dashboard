@@ -356,6 +356,11 @@ public class DateUtils {
         calendar.setTime(date);
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
+    public static Integer getCurrentWeekDay(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
 
     public static String getDayOfWeek(Integer day) {
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
