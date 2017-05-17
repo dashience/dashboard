@@ -26,9 +26,11 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.ApiUtils;
+import com.visumbu.vb.utils.CsvDataSet;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
+import com.visumbu.vb.utils.ShuntingYard;
 import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -104,6 +106,7 @@ public class ProxyController {
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
         log.debug("Calling of getGenericData function in ProxyController class");
+        Map returnMap = new HashMap<>();
         String dataSourceType = request.getParameter("dataSourceType");
         String dataSetId = request.getParameter("dataSetId");
         if (dataSetId != null) {
@@ -111,20 +114,59 @@ public class ProxyController {
             DataSet dataSet = uiService.readDataSet(dataSetIdInt);
             dataSourceType = dataSet.getDataSourceId().getDataSourceType();
         }
+        System.out.println(dataSourceType);
+        
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
-            return getFbData(request, response);
+            returnMap = (Map) getFbData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("csv")) {
+            returnMap = (Map) getCsvData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("adwords")) {
-            return getAdwordsData(request, response);
+            returnMap = (Map) getAdwordsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("analytics")) {
-            return getAnalyticsData(request, response);
+            returnMap = (Map) getAnalyticsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("bing")) {
-            return getBingData(request, response);
+            returnMap = (Map) getBingData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("xls")) {
-            return getXlsData(request, response);
+            returnMap = (Map) getXlsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("pinterest")) {
-            return getPinterestData(request, response);
+            returnMap = (Map) getPinterestData(request, response);
+        }
+
+        String widgetIdStr = request.getParameter("widgetId");
+        System.out.println("WIDGET ID " + widgetIdStr);
+        if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget tabWidget = uiService.getWidgetById(widgetId);
+            String queryFilter = tabWidget.getQueryFilter();
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
+            returnMap.put("data", returnDataMap);
+        }
+        return returnMap;
+    }
+
+    @RequestMapping(value = "getCsvData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map getCsvData(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String connectionString = request.getParameter("connectionUrl");
+            if (connectionString == null) {
+                String dataSetId = request.getParameter("dataSetId");
+
+                if (dataSetId != null) {
+                    Integer dataSetIdInt = Integer.parseInt(dataSetId);
+                    DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+                    if (dataSet != null) {
+                        connectionString = dataSet.getDataSourceId().getConnectionString();
+                    }
+                }
+            }
+            Map dataSet = CsvDataSet.CsvDataSet(connectionString);
+            return dataSet;
+        } catch (IOException ex) {
+
         }
         return null;
     }
