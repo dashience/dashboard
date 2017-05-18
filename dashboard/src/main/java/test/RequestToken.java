@@ -3,7 +3,141 @@
 // * To change this template file, choose Tools | Templates
 // * and open the template in the editor.
 // */
-//package test;
+package test;
+
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+import sun.misc.BASE64Encoder;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.google.common.collect.HashBiMap;
+import com.visumbu.vb.utils.ApiUtils;
+import com.visumbu.vb.utils.JsonSimpleUtils;
+import com.visumbu.vb.utils.Rest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class RequestToken {
+
+    public static void main(String args[]) throws ParseException {
+        String screen_name = "Enlivant";
+        String user_id = "2964932975";
+        String consumer_key = "VVy4f3sW4ZCPNW33ejTBiIdxu";
+        String consumer_secret_key = "8zUdWToQYAvgGvLn7uQtlN5hFywYNogkcCCWUGV8cTompxXCQV";
+        String oauth_secret_token = "yS3JfmCcOQec97h8q6AERBZTv77qU4d5rA4Q2Tp9Fiw21";
+        String oauth_token = "2964932975-k4rUnSdpxutu5ndrCSKFteCtX4vCetQBN0yXoap";
+//        String signature_url = "https://api.twitter.com/1.1/statuses/update.json?include_entities=true&"
+//                + "status=" + "&"
+//                + "oauth_consumer_key=" + consumer_key + "&"
+//                + "oauth_signature_method=HMAC-SHA1&"
+//                + "oauth_version=1.0&"
+//                + "oauth_token=" + oauth_token + "&"
+//                + "oauth_timestamp=1495092516&"
+//                + "oauth_nonce=133041506";
+
+
+        String authurl = "GEThttps://api.twitter.com/1.1/users/lookup.json?oauth_consumer_key=VVy4f3sW4ZCPNW33ejTBiIdxu&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=2964932975-k4rUnSdpxutu5ndrCSKFteCtX4vCetQBN0yXoap&oauth_signature=LlLcNdFiv2n9JJiSUDHu6MxE2RE=&oauth_timestamp=1495092516&oauth_nonce=133041506";
+        String encodedUrl = encode(authurl);
+        
+        String signature_url=encodedUrl;
+//        String signature_url = "https://api.twitter.com/1.1/statuses/update.json";
+
+        String oauthSignature = generateSignature(signature_url, consumer_secret_key, oauth_token);
+//        System.out.println("**************************************");
+//        System.out.println(oauthSignature);
+
+        List<Map<String, String>> twitterResult = getTwitterOrganicData(screen_name, user_id, consumer_key, 
+                consumer_secret_key, oauth_token, oauth_secret_token, oauthSignature);
+    }
+
+    
+    private static String generateSignature(String signatueBaseStr, String oAuthConsumerSecret,
+            String oAuthTokenSecret) {
+        byte[] byteHMAC = null;
+        try {
+            Mac mac = Mac.getInstance("HmacSHA1");
+            SecretKeySpec spec;
+            if (null == oAuthTokenSecret) {
+                String signingKey = encode(oAuthConsumerSecret) + '&';
+                spec = new SecretKeySpec(signingKey.getBytes(), "HmacSHA1");
+            } else {
+                String signingKey = encode(oAuthConsumerSecret) + '&' + encode(oAuthTokenSecret);
+                spec = new SecretKeySpec(signingKey.getBytes(), "HmacSHA1");
+            }
+            mac.init(spec);
+            byteHMAC = mac.doFinal(signatueBaseStr.getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new BASE64Encoder().encode(byteHMAC);
+    }
+
+    private static String encode(String value) {
+        String encoded = "";
+        try {
+            encoded = URLEncoder.encode(value, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String sb = "";
+        char focus;
+        for (int i = 0; i < encoded.length(); i++) {
+            focus = encoded.charAt(i);
+            if (focus == '*') {
+                sb += "%2A";
+            } else if (focus == '+') {
+                sb += "%20";
+            } else if (focus == '%' && i + 1 < encoded.length()
+                    && encoded.charAt(i + 1) == '7' && encoded.charAt(i + 2) == 'E') {
+                sb += '~';
+                i += 2;
+            } else {
+                sb += focus;
+            }
+        }
+        return sb.toString();
+    }
+    
+    
+    
+    private static List<Map<String, String>> getTwitterOrganicData(String screenName, String userId, String consumerKey,
+            String consumerSecretKey, String oauthToken, String ouathTokenSecret, String oauthSignature)
+            throws ParseException {
+
+//        String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=" + screenName + "&user_id=" + userId + "&"
+//                + "oauth_consumer_key=" + consumerKey + "&"
+//                + "oauth_signature_method=HMAC-SHA1&"
+//                + "oauth_version=1.0&"
+//                + "oauth_token=" + oauthToken + "&"
+//                + "oauth_signature=" + oauthSignature + "&"
+//                + "oauth_timestamp=1495092516&"
+//                + "oauth_nonce=133041506";
+
+        String url="https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_version=1.0&oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&oauth_signature=Bce48DgotM5cIDhi11lxo9A8WHA%3D&oauth_timestamp=1495092516&oauth_nonce=133041506";
+        String twitterData = Rest.getData(url);
+        JSONParser parser = new JSONParser();
+        Object jsonObj = parser.parse(twitterData);
+
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        System.out.println(jsonObj);
+        return null;
+    }
+
+    
+}
+
 //
 ///**
 // *
