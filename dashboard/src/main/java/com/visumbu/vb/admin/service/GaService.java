@@ -61,10 +61,19 @@ import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.bean.GaReport;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.utils.ApiUtils;
+import com.visumbu.vb.utils.DerivedColumnFormulae;
+import static com.visumbu.vb.utils.ShuntingYard.postfix;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.StringTokenizer;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import test.InToPost;
+import test.ParsePost;
 
 /**
  *
@@ -89,7 +98,7 @@ public class GaService {
     private static AnalyticsReporting analyticsReporting = initializeAnalyticsReporting();
 
     private static Analytics initializeAnalytics() throws Exception {
-    // Initializes an authorized analytics service object.
+        // Initializes an authorized analytics service object.
 
         // Construct a GoogleCredential object with the service account email
         // and p12 file downloaded from the developer console.
@@ -99,7 +108,7 @@ public class GaService {
         GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com", "xXIHWHPBQ9B9KpkFs_1tmniu",
                 Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                        dataStoreFactory).build();
+                dataStoreFactory).build();
         // Authorize.
         Credential credential = new AuthorizationCodeInstalledApp(flow1,
                 new LocalServerReceiver()).authorize("user");
@@ -135,7 +144,7 @@ public class GaService {
             GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
                     httpTransport, JSON_FACTORY, "384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com", "1nJygCmZKdFCOykaGmbjBpKy",
                     Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                            dataStoreFactory).build();
+                    dataStoreFactory).build();
             // Authorize.
             Credential credential = new AuthorizationCodeInstalledApp(flow1,
                     new LocalServerReceiver()).authorize("user");
@@ -150,7 +159,7 @@ public class GaService {
         return null;
     }
 
-    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments) {
+    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
@@ -168,8 +177,115 @@ public class GaService {
         String filter = gaReport.getDefaultFilter();
         System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
+//        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetId);
+//        if (datasetColumnList.size() > 0) {
+//            System.out.println("datasetColumnList ---> " + datasetColumnList);
+//            Map<String, List<Map<String, Object>>> data = addDerivedColumn(gaData, dataSetId, startDate, endDate, analyticsProfileId, metricsList, dimensions, productSegments, filter);
+//            return data;
+//        }
         return getResponseAsMap(gaData);
     }
+
+//    public Map<String, List<Map<String, Object>>> addDerivedColumn(GetReportsResponse gaData, Integer dataSetId, Date startDate, Date endDate, String analyticsProfileId, String metricsList, String dimensions, String productSegments, String filter) {
+//        Map returnMap = new HashMap();
+//        HashMap<String, List<Map<String, Object>>> dataMap = (HashMap) getResponseAsMap(gaData);
+//        Iterator it = dataMap.entrySet().iterator();
+//
+//        List column = new ArrayList<>();
+//        List columnData = new ArrayList<>();
+//
+//        while (it.hasNext()) {
+//            Map.Entry pair = (Map.Entry) it.next();
+//            if (pair.getKey().equals("data")) {
+//                columnData.add(pair.getValue());
+//            } else {
+//                column.add(pair.getValue());
+//            }
+//        }
+//        List<ColumnDef> columnDefs = null;
+//        List<Map<String, Object>> data = null;
+//                System.out.println("column.size() ---> "+column.size());
+//        if (column.size() > 0) {
+//            columnDefs = (List<ColumnDef>) column.get(0);
+//        }
+//        System.out.println("columnData.size() ---> "+columnData.size());
+//        
+//        if (columnData.size() > 0) {
+//            data = (List) columnData.get(0);
+//        }
+//
+//        System.out.println("dataSetId ---> " + dataSetId);
+//        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetId);
+//        String fieldName;
+//        String displayName;
+//        String fieldType;
+//        String formula;
+//
+//        System.out.println("datasetColumnList --> " + datasetColumnList);
+//        for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
+//            DatasetColumns datasetColumn = datasetColumns.next();
+//            System.out.println("datasetcolumn.getFormula() ----> " + datasetColumn.getFormula());
+//            if (datasetColumn.getFormula() != null && !datasetColumn.getFormula().trim().isEmpty()) {
+//
+//                fieldName = datasetColumn.getFieldName();
+//                displayName = datasetColumn.getDisplayName();
+//                fieldType = datasetColumn.getFieldType();
+//                formula = datasetColumn.getFormula();
+//                StringTokenizer tokenizer = new StringTokenizer(formula, "([+*/-()1234567890])");
+//                String[] tokenArray = new String[tokenizer.countTokens()];
+//                int i = -1;
+//                while (tokenizer.hasMoreTokens()) {
+//                    String token = (String) tokenizer.nextToken();
+//                    System.out.println("token name ---> " + token);
+//                    if (token.equalsIgnoreCase("yoy")) {
+//                        System.out.println("given date : " + startDate);
+//                        Date strtDate = new DateTime(startDate).minusYears(1).toDate();
+//                        Date lastDate = new DateTime(endDate).minusYears(1).toDate();
+//                        System.out.println("yoy ---> ");
+//                        System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+//                    } else if (token.equalsIgnoreCase("mom")) {
+//                        Date strtDate = new DateTime(startDate).minusMonths(1).toDate();
+//                        Date lastDate = new DateTime(endDate).minusMonths(1).toDate();
+//                        System.out.println("mom --->");
+//                        System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+//                    }
+//                    tokenArray[++i] = token;
+//                }
+//
+//                String output;
+//                float result = 0;
+//                Map<String, Object> dataPair = null;
+//                if (columnData.size() > 0) {
+//                    for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+//                        dataPair = (Map<String, Object>) iterator.next();
+//                        String calculateFormula = datasetColumn.getFormula();
+//                        System.out.println("dataPair -----> " + dataPair);
+//                        System.out.println("formula ----> " + calculateFormula);
+//                        for (int j = 0; j < tokenArray.length; j++) {
+//                            System.out.println(tokenArray[j] + " value -----> " + dataPair.get(tokenArray[j]));
+//                            calculateFormula = calculateFormula.replaceAll(tokenArray[j], dataPair.get(tokenArray[j]) + "");
+//                            System.out.println("formulaaaaaaaaaa ----> " + calculateFormula);
+//                        }
+//                        if (calculateFormula != null) {
+////                        InToPost theTrans = new InToPost(calculateFormula);
+//                            output = postfix(calculateFormula);
+////                        output = theTrans.doTrans();
+//                            System.out.println("final output ----> " + output);
+//                            ParsePost aParser = new ParsePost(output);
+//                            result = aParser.doParse();
+//                            dataPair.put(fieldName, result);
+//                        }
+//                        System.out.println("field Name ---> " + fieldName);
+//                        System.out.println("result ---> " + result);
+//                    }
+//                    columnDefs.add(new ColumnDef(fieldName, fieldType, displayName));
+//                }
+//            }
+//        }
+//        returnMap.put("columnDefs", columnDefs);
+//        returnMap.put("data", data);
+//        return returnMap;
+//    }
 
     public GetReportsResponse getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2, String metrics, String dimentions, String productSegments, String filter) {
         System.out.println(viewId);
@@ -263,6 +379,7 @@ public class GaService {
                     .setReportRequests(requests);
 
             // Call the batchGet method.
+            System.out.println("get Report ---> "+getReport);
             GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
 
             // Return the response.
@@ -414,7 +531,6 @@ public class GaService {
                     }
                 }
                 data.add(dataMap);
-
             }
             returnMap.put("data", data);
         }

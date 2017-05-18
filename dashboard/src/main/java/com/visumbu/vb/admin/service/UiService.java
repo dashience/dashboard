@@ -8,16 +8,19 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
+import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
@@ -25,6 +28,7 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
@@ -203,10 +207,8 @@ public class UiService {
         Integer lastNmonths = null;
         Integer lastNweeks = null;
         Integer lastNyears = null;
-        if (dateRangeName == null || dateRangeName.isEmpty()) {
-            startDate = null;
-            endDate = null;
-        } else if (dateRangeName != null) {
+        if (dateRangeName != null) {
+
             System.out.println("tabWidgetBean.getLastNdays() ----> " + tabWidgetBean.getLastNdays());
             if (tabWidgetBean.getLastNdays() != null) {
                 lastNdays = tabWidgetBean.getLastNdays();
@@ -254,9 +256,7 @@ public class UiService {
 //            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
 //                dateRangeSelect = Range.LAST_YEAR;
 //            }
-            if (dateRangeName.equalsIgnoreCase("Custom")) {
-                dateRangeSelect = null;
-            } else if (lastNdays != null) {
+            if (lastNdays != null) {
                 dateRangeSelect = Range.DAY;
             } else if (lastNweeks != null) {
                 dateRangeSelect = Range.WEEK;
@@ -266,9 +266,12 @@ public class UiService {
                 dateRangeSelect = Range.YEAR;
             }
 
-            if (dateRangeSelect == null) {
+            if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
                 startDate = tabWidgetBean.getCustomStartDate();
                 endDate = tabWidgetBean.getCustomEndDate();
+            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
+                startDate = null;
+                endDate = null;
             } else if (dateRangeSelect.equals(Range.DAY)) {
                 dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
             } else if (dateRangeSelect.equals(Range.WEEK)) {
@@ -315,6 +318,8 @@ public class UiService {
         tabWidget.setLastNweeks(lastNweeks);
         tabWidget.setLastNyears(lastNyears);
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
+        tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
+        tabWidget.setJsonData(tabWidgetBean.getJsonData());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -451,7 +456,7 @@ public class UiService {
 
         return uiDao.getTabWidgetById(id);
     }
-    
+
     public List<WidgetTag> getTagWidget(Integer widgetId) {
         return uiDao.getTagWidgetByWidgetId(widgetId);
     }
@@ -752,5 +757,21 @@ public class UiService {
 
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
+    }
+
+    public DatasetColumns createColumns(DatasetColumnBean dataSet) {
+        return uiDao.createColumns(dataSet);
+    }
+
+    public DatasetColumns updateColumns(DatasetColumnBean dataSet) {
+        return uiDao.updateColumns(dataSet);
+    }
+    
+    public List<Currency> getCurrencies() {
+        return uiDao.getCurrenciesTypes();
+    }
+    
+     public List<Timezone> getTimeZones() {
+        return uiDao.getTimezoneTypes();
     }
 }

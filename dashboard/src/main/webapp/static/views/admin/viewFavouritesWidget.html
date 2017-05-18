@@ -1,0 +1,80 @@
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Favourites
+            </h2>               
+        </div>
+    </div>
+</div>
+
+
+<div class="row content">
+    <div ng-repeat="favouritesWidget in favouritesWidgets">
+        <div class="col-md-{{favouritesWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
+            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
+                <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="edit" ng-click="editReportWidget(reportWidget);"
+                           ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i>
+                        </a>
+                        <div id="delete{{reportWidget.id}}" class="modal">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color:#9DD6D7;color:black;">
+                                        <strong>Delete</strong>
+                                        <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                                    </div>
+                                    <div class="modal-body">
+                                        <span>Want to delete ? </span>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal">Yes</button>
+                                        <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
+                        <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                    </div>
+                    <span class="{{favouritesWidget.widgetId.icon}}"></span> 
+                    <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>
+                </div>
+                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
+                    <div line-Chart-Directive line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'bar'">
+                    <div bar-Chart-Directive bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'pie'">
+                    <div pie-Chart-Directive pie-Chart-Source='{{favouritesWidget.widgetId.dataSetId}}' widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'area'">
+                    <div area-Chart-Directive area-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                </div> 
+                <div class="box-body"  ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'">
+                    <div>
+                        <div stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                    </div>
+                </div>
+                <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>
+                    <div class="table-responsive project-list">
+                        <div id="changes-height" class="project-list">
+                            <div dynamic-Table dynamic-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Obj="{{favouritesWidget.widgetId}}" table-Footer="{{favouritesWidget.widgetId.tableFooter}}" widget-Columns="{{favouritesWidget.widgetId.columns}}"></div> 
+                        </div> 
+                    </div>
+                </div>
+                <div class="panel-body"  ng-if="favouritesWidget.widgetId.chartType === 'text'">
+                    <div class="col-md-12">
+                        <div class="text-widget">
+                            <span ng-bind-html="favouritesWidget.widgetId.content"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

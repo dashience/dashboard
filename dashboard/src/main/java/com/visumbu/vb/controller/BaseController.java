@@ -17,6 +17,7 @@ import org.apache.http.auth.AuthenticationException;
  * @author user
  */
 public class BaseController {
+
     public ReportPage getPage(HttpServletRequest request) {
         ReportPage reportPage = new ReportPage();
         if (request.getParameter("page") == null && request.getParameter("count") == null) {
@@ -36,9 +37,10 @@ public class BaseController {
         }
         return reportPage;
     }
+
     protected String getUser(HttpServletRequest request) {
         String username = (String) request.getSession().getAttribute("username");
-        if(username == null) {
+        if (username == null) {
             try {
                 throw new AuthenticationException("User not logged in");
             } catch (AuthenticationException ex) {

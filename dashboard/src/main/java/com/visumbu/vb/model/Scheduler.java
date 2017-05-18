@@ -383,7 +383,6 @@ public class Scheduler implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.Scheduler[ id=" + id + " ]";
+        return "Scheduler{" + "id=" + id + ", schedulerName=" + schedulerName + ", startDate=" + startDate + ", endDate=" + endDate + ", schedulerWeekly=" + schedulerWeekly + ", schedulerTime=" + schedulerTime + ", schedulerMonthly=" + schedulerMonthly + ", schedulerYearOfWeek=" + schedulerYearOfWeek + ", schedulerRepeatType=" + schedulerRepeatType + ", schedulerNow=" + schedulerNow + ", schedulerYearly=" + schedulerYearly + ", schedulerStatus=" + schedulerStatus + ", schedulerType=" + schedulerType + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", schedulerEmail=" + schedulerEmail + ", isAccountEmail=" + isAccountEmail + ", status=" + status + ", lastExecutionStatus=" + lastExecutionStatus + ", reportId=" + reportId + ", agencyId=" + agencyId + ", accountId=" + accountId + '}';
     }
-    
 }

@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.joda.time.LocalDate;
@@ -24,7 +25,46 @@ import org.joda.time.LocalDate;
  */
 public class DateUtils {
 
-    
+    // List of all date formats that we want to parse.
+    // Add your own format here.
+    private static List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>() {
+        {
+            add(new SimpleDateFormat("M/dd/yyyy"));
+            add(new SimpleDateFormat("dd.M.yyyy"));
+            add(new SimpleDateFormat("M/dd/yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.M.yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.MMM.yyyy"));
+            add(new SimpleDateFormat("dd-MMM-yyyy"));
+        }
+    };
+
+    /**
+     * Convert String with various formats into java.util.Date
+     *
+     * @param input Date as a string
+     * @return java.util.Date object if input string is parsed successfully else
+     * returns null
+     */
+    public static Date convertToDate(String input) {
+        Date date = null;
+        if (null == input) {
+            return null;
+        }
+        for (SimpleDateFormat format : dateFormats) {
+            try {
+                format.setLenient(false);
+                date = format.parse(input);
+            } catch (Exception e) {
+                //Shhh.. try other formats
+            }
+            if (date != null) {
+                break;
+            }
+        }
+
+        return date;
+    }
+
     public static String toAdWordsDate(Date date) {
         String format = "YYYYMMdd";
         return dateToString(date, format);
@@ -43,7 +83,7 @@ public class DateUtils {
         }
         return toAdWordsDate(endDate);
     }
-    
+
     public static Date get30DaysBack() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
         Calendar cal = Calendar.getInstance();
@@ -344,8 +384,20 @@ public class DateUtils {
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
 
+    public static Integer getHour(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.HOUR_OF_DAY);
+    }
+
     public static Integer getCurrentWeekDay() {
         Date date = new Date();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public static Integer getCurrentWeekDay(Date date) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
         return calendar.get(Calendar.DAY_OF_WEEK);
@@ -355,6 +407,7 @@ public class DateUtils {
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         return days[day - 1];
     }
+
     public static Date getStartDateOfWeek(Date currentStart) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -362,14 +415,15 @@ public class DateUtils {
     public static Date getNextWeek(Date weekStart) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     public static Integer getYearOfWeek() {
         Date date = new Date();
-        Calendar calendar =  new GregorianCalendar();    
+        Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        return  calendar.get(Calendar.WEEK_OF_YEAR);
+        return calendar.get(Calendar.WEEK_OF_YEAR);
     }
 
-     public static String getGaStartDate(Date startDate) {
+    public static String getGaStartDate(Date startDate) {
         if (startDate == null) {
             return "7DaysAgo";
         }
@@ -382,10 +436,58 @@ public class DateUtils {
         }
         return toGaDate(endDate);
     }
-    
+
     public static String toGaDate(Date date) {
         String format = "YYYY-MM-dd";
         return dateToString(date, format);
+    }
+
+    public static Date convertTime(String fromTz, String toTz, Date date) {
+
+        TimeZone fromTimezone = TimeZone.getTimeZone(fromTz);
+        TimeZone toTimezone = TimeZone.getTimeZone(toTz);
+        Calendar calendar = new GregorianCalendar();
+
+        long fromOffset = fromTimezone.getOffset(calendar.getTimeInMillis());
+        long toOffset = toTimezone.getOffset(calendar.getTimeInMillis());
+
+        long convertedTime = calendar.getTimeInMillis() - (fromOffset - toOffset);
+
+        System.out.println(new Date(convertedTime));
+
+        return new Date(convertedTime);
+    }
+
+    public static Date convertTimeFromTzToCurrent(String fromTz, Date date) {
+
+        TimeZone fromTimezone = TimeZone.getTimeZone(fromTz);
+        Calendar calendar = new GregorianCalendar();
+        Calendar cal = Calendar.getInstance();
+        long milliDiff = cal.get(Calendar.ZONE_OFFSET);
+        long fromOffset = fromTimezone.getOffset(calendar.getTimeInMillis());
+        long toOffset = milliDiff;
+
+        long convertedTime = calendar.getTimeInMillis() - (fromOffset - toOffset);
+
+        System.out.println(new Date(convertedTime));
+
+        return new Date(convertedTime);
+    }
+
+    public static Date convertCurrentTimeToTz(String toTz, Date date) {
+        Calendar cal = Calendar.getInstance();
+        long milliDiff = cal.get(Calendar.ZONE_OFFSET);
+        TimeZone toTimezone = TimeZone.getTimeZone(toTz);
+        Calendar calendar = new GregorianCalendar();
+
+        long fromOffset = milliDiff;
+        long toOffset = toTimezone.getOffset(calendar.getTimeInMillis());
+
+        long convertedTime = calendar.getTimeInMillis() - (fromOffset - toOffset);
+
+        System.out.println(new Date(convertedTime));
+
+        return new Date(convertedTime);
     }
 
 }

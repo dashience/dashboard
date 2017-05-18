@@ -14,6 +14,8 @@ import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.AgencySettings;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
@@ -23,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -337,4 +340,23 @@ public class UserService {
         return userDao.deleteAgencyProduct(agencyProductId);
     }
 
+     public AgencySettings createAgencySettings(AgencySettings agencySettings) {
+         System.out.println(agencySettings.getAgencyId()+"....."+agencySettings.getCurrencyId()+"....."+agencySettings.getTimeZoneId());
+        return (AgencySettings) userDao.create(agencySettings);
+    }
+     
+     public AgencySettings updateAgencySettings(AgencySettings agencysettings) {
+        return (AgencySettings) userDao.update(agencysettings);
+    }
+     
+    public AgencySettings getAgencySettingsById(Integer agencyId) {
+        return userDao.getAgencySettingsById(agencyId);
+    }
+
+     public Currency getCurrencyById(Integer id) {
+        return (Currency) userDao.read(Property.class, id);
+    }
+     public TimeZone getTimezoneById(Integer id) {
+        return (TimeZone) userDao.read(Property.class, id);
+    }
 }
