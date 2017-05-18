@@ -195,7 +195,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             return;
         }
         $http.get('admin/ui/dataSet').success(function (response) {
-            $scope.dataSets = []
+            $scope.dataSets = [];
             angular.forEach(response, function (value, key) {
                 if (value.dataSourceId.name == dataSourceName.name) {
                     $scope.dataSets.push(value);
