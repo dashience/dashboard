@@ -1269,7 +1269,7 @@ public class ProxyController {
 //                    url = "../dashboard/admin/proxy/getData?";
 ////                    url = "../admin/proxy/getData?";
 //                }
-                valueMap.put("widgetId", Arrays.asList(tabWidget.getId()));
+                valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 
 //                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -1423,7 +1423,7 @@ public class ProxyController {
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 }
-                valueMap.put("widgetId", Arrays.asList(tabWidget.getId()));
+                valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
