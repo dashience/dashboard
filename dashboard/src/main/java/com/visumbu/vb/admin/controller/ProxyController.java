@@ -983,7 +983,7 @@ public class ProxyController {
                     } else if (DateUtils.convertToDate(valueString) != null) {
                         columnDefs.add(new ColumnDef(key, "date", key));
                     } else {
-                        columnDefs.add(new ColumnDef(key, "number", key));
+                        columnDefs.add(new ColumnDef(key, "string", key));
                     }
                 }
             }
@@ -1005,7 +1005,7 @@ public class ProxyController {
                 } else if (DateUtils.convertToDate(value) != null) {
                     columnDefs.add(new ColumnDef(key, "date", key));
                 } else {
-                    columnDefs.add(new ColumnDef(key, "number", key));
+                    columnDefs.add(new ColumnDef(key, "string", key));
                 }
                 // columnDefs.add(new ColumnDef(key, "string", key));
             }
