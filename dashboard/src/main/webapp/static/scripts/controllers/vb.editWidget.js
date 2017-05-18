@@ -1265,7 +1265,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 } catch (e) {
 
                 }
-               
+
                 var widgetColumnsData = [];
                 var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeader;
                 angular.forEach(saveWidgetColumnList, function (value, key) {
@@ -1462,29 +1462,24 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
             var filterList = [];
-            if (columnList.columns && columnList.columns != '') {
-                columnList.columns.forEach(function (value, key) {
-                    if (value.fieldType == 'number' || value.format == 'integer') {
+            columnList.columns.forEach(function (value, key) {
+                if (value.fieldType == 'number' || value.format == 'integer') {
 //                            scope.inputType="textBox";
-                        scope.fieldsType = "integer";
-                    } else if (value.fieldType == 'string') {
-                        scope.fieldsType = "string";
-                    } else if (value.fieldType == 'Date') {
-                        scope.fieldsType = "date";
-                    } else if (value.format == 'Time') {
-                        scope.fieldsType = "time";
-                    } else {
-                        scope.fieldsType = value.fieldType;
-                    }
-                    filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
-                });
-                scope.buildQuery = filterList;
-                if (jsonFilter.jsonData != null) {
-                    scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+                    scope.fieldsType = "integer";
+                } else if (value.fieldType == 'string') {
+                    scope.fieldsType = "string";
+                } else if (value.fieldType == 'Date') {
+                    scope.fieldsType = "date";
+                } else if (value.format == 'Time') {
+                    scope.fieldsType = "time";
+                } else {
+                    scope.fieldsType = value.fieldType;
                 }
-            } else {
-                filterList = [{id: 'select', label: 'select', type: 'integer'}]
-
+                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
+            });
+            scope.buildQuery = filterList;
+            if (jsonFilter.jsonData != null) {
+                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
             }
             
             $(document).ready(function ()
