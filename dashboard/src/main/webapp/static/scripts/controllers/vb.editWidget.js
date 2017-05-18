@@ -195,7 +195,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             return;
         }
         $http.get('admin/ui/dataSet').success(function (response) {
-            $scope.dataSets = []
+            $scope.dataSets = [];
             angular.forEach(response, function (value, key) {
                 if (value.dataSourceId.name == dataSourceName.name) {
                     $scope.dataSets.push(value);
@@ -314,12 +314,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         if (dataSet.dataSourceId.dataSourceType == "sql") {
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
-        if (dataSet.dataSourceId.dataSourceType == "csv") {
-            url = "admin/csv/getData?";
-        }
-        if (dataSet.dataSourceId.dataSourceType == "facebook") {
-            url = "admin/proxy/getData?";
-        }
+//        if (dataSet.dataSourceId.dataSourceType == "csv") {
+//            url = "admin/csv/getData?";
+//        }
+//        if (dataSet.dataSourceId.dataSourceType == "facebook") {
+//            url = "admin/proxy/getData?";
+//        }
         var dataSourcePassword;
         if (dataSet.dataSourceId.password) {
             dataSourcePassword = dataSet.dataSourceId.password;
