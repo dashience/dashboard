@@ -159,8 +159,9 @@ public class Agency implements Serializable {
 
     @Override
     public String toString() {
-        return "Agency{" + "logo=" + logo + ", agencySettingsCollection=" + agencySettingsCollection + ", schedulerCollection=" + schedulerCollection + ", reportCollection=" + reportCollection + ", dataSetCollection=" + dataSetCollection + ", dataSourceCollection=" + dataSourceCollection + ", agencyProductCollection=" + agencyProductCollection + ", accountCollection=" + accountCollection + ", agencyUserCollection=" + agencyUserCollection + ", vbUserCollection=" + vbUserCollection + ", agencyLicenceCollection=" + agencyLicenceCollection + ", id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
+        return "Agency{" + "logo=" + logo + ", id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
     }
+
     
     @XmlTransient
     @JsonIgnore

@@ -48,6 +48,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -178,8 +179,11 @@ public class ProxyController {
                     }
                 }
             }
-            Map dataSet = CsvDataSet.CsvDataSet(connectionString);
-            return dataSet;
+            List<Map<String, String>> dataSet = CsvDataSet.CsvDataSet(connectionString);
+            Map returnMap = new HashMap<>();
+            returnMap.put("data", dataSet);
+            returnMap.put("columnDefs", getColumnDef(dataSet));
+            return returnMap;
         } catch (IOException ex) {
 
         }
@@ -447,7 +451,7 @@ public class ProxyController {
         return null;
     }
 
-    public Object getXlsData(HttpServletRequest request, HttpServletResponse response) {
+    public Map getXlsData(HttpServletRequest request, HttpServletResponse response) {
         try {
             String dataSetId = request.getParameter("dataSetId");
             String dataSetReportName = request.getParameter("dataSetReportName");
@@ -493,9 +497,17 @@ public class ProxyController {
             Integer accountId = Integer.parseInt(accountIdStr);
             Account account = userService.getAccountId(accountId);
             if (connectionUrl.endsWith("xlsx")) {
-                return XlsDataSet.XlsxDataSet(connectionUrl, dataSetReportName);
+                List<Map<String, String>> xlsxDataSet = XlsDataSet.XlsxDataSet(connectionUrl, dataSetReportName);
+                Map returnMap = new HashMap();
+                returnMap.put("data", xlsxDataSet);
+                returnMap.put("columnDefs", getColumnDef(xlsxDataSet));
+                return returnMap;
             } else if (connectionUrl.endsWith("xls")) {
-                return XlsDataSet.XlsDataSet(connectionUrl, dataSetReportName);
+                List<Map<String, String>> xlsDataSet = XlsDataSet.XlsDataSet(connectionUrl, dataSetReportName);
+                Map returnMap = new HashMap();
+                returnMap.put("data", xlsDataSet);
+                returnMap.put("columnDefs", getColumnDef(xlsDataSet));
+                return returnMap;
             }
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -964,8 +976,15 @@ public class ProxyController {
                     columnDefs.add(new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat()));
                 } else {
                     Object value = entrySet.getValue();
+                    String valueString = value + "";
                     System.out.println(value.getClass());
-                    columnDefs.add(new ColumnDef(key, "string", key));
+                    if (StringUtils.isNumeric(valueString)) {
+                        columnDefs.add(new ColumnDef(key, "number", key));
+                    } else if (DateUtils.convertToDate(valueString) != null) {
+                        columnDefs.add(new ColumnDef(key, "date", key));
+                    } else {
+                        columnDefs.add(new ColumnDef(key, "number", key));
+                    }
                 }
             }
             return columnDefs;
@@ -981,7 +1000,14 @@ public class ProxyController {
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
                 String value = entrySet.getValue();
-                columnDefs.add(new ColumnDef(key, "string", key));
+                if (StringUtils.isNumeric(value)) {
+                    columnDefs.add(new ColumnDef(key, "number", key));
+                } else if (DateUtils.convertToDate(value) != null) {
+                    columnDefs.add(new ColumnDef(key, "date", key));
+                } else {
+                    columnDefs.add(new ColumnDef(key, "number", key));
+                }
+                // columnDefs.add(new ColumnDef(key, "string", key));
             }
             return columnDefs;
         }
@@ -1227,16 +1253,18 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    System.out.println("DS TYPE ==>  CSV");
-//                    url = "../admin/csv/getData";
-                    url = "../dashboard/admin/csv/getData";
-                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-//                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "../dashboard/admin/proxy/getData?";
-//                    url = "../admin/proxy/getData?";
                 }
+//                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+//                    System.out.println("DS TYPE ==>  CSV");
+////                    url = "../admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
+//                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+////                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+//                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
+//                    url = "../dashboard/admin/proxy/getData?";
+////                    url = "../admin/proxy/getData?";
+//                }
+                valueMap.put("widgetId", Arrays.asList(tabWidget.getId()));
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 
 //                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -1389,17 +1417,8 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    System.out.println("DS TYPE ==>  CSV");
-//                    url = "../admin/csv/getData";
-                    url = "../dashboard/admin/csv/getData";
-                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-//                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-//                    url = "../admin/proxy/getData?";
-                    url = "../dashboard/admin/proxy/getData?";
-
                 }
+                valueMap.put("widgetId", Arrays.asList(tabWidget.getId()));
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 

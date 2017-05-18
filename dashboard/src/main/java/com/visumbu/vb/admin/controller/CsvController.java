@@ -42,18 +42,18 @@ public class CsvController {
     @Autowired
     private DealerService dealerService;
 
-    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object getData(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            String connectionString = request.getParameter("connectionUrl");
-            Map dataSet = CsvDataSet.CsvDataSet(connectionString);
-            return dataSet;
-        } catch (IOException ex) {
-            Logger.getLogger(CsvController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+//    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    Object getData(HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            String connectionString = request.getParameter("connectionUrl");
+//            Map dataSet = CsvDataSet.CsvDataSet(connectionString);
+//            return dataSet;
+//        } catch (IOException ex) {
+//            Logger.getLogger(CsvController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public @ResponseBody

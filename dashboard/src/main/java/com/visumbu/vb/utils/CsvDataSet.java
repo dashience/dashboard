@@ -24,7 +24,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 public class CsvDataSet {
 
-    public static Map CsvDataSet(String filename) throws FileNotFoundException, IOException {
+    public static List<Map<String,String>> CsvDataSet(String filename) throws FileNotFoundException, IOException {
 
         //Create the CSVFormat object
         CSVFormat format = CSVFormat.RFC4180.withHeader().withDelimiter(',');
@@ -54,7 +54,7 @@ public class CsvDataSet {
         returnMap.put("data", data);
         //close the parser
         parser.close();
-        return returnMap;
+        return data;
     }
 
     public static void main(String[] argv) {
