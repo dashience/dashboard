@@ -314,12 +314,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         if (dataSet.dataSourceId.dataSourceType == "sql") {
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
-        if (dataSet.dataSourceId.dataSourceType == "csv") {
-            url = "admin/csv/getData?";
-        }
-        if (dataSet.dataSourceId.dataSourceType == "facebook") {
-            url = "admin/proxy/getData?";
-        }
+//        if (dataSet.dataSourceId.dataSourceType == "csv") {
+//            url = "admin/csv/getData?";
+//        }
+//        if (dataSet.dataSourceId.dataSourceType == "facebook") {
+//            url = "admin/proxy/getData?";
+//        }
         var dataSourcePassword;
         if (dataSet.dataSourceId.password) {
             dataSourcePassword = dataSet.dataSourceId.password;
@@ -1510,18 +1510,18 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 $('#btn-set').on('click', function () {
                     $(element[0]).queryBuilder('setRules', scope.jsonBuild);
                 });
-                var result = null;
-                $('#btn-get').on('click', function () {
-                    result = $(element[0]).queryBuilder('getRules');
-                    scope.buildJson = JSON.stringify(result);
-                    if (!$.isEmptyObject(result)) {
-                        var dialog = bootbox.dialog({
-                            title: 'Rules',
-                            message: JSON.stringify(result, null, 2)
-                        });
-                    }
-                    var sql_raw = $(element[0]).queryBuilder('getSQL', false, true);
-                });
+//                var result = null;
+//                $('#btn-get').on('click', function () {
+//                    result = $(element[0]).queryBuilder('getRules');
+//                    scope.buildJson = JSON.stringify(result);
+//                    if (!$.isEmptyObject(result)) {
+//                        var dialog = bootbox.dialog({
+//                            title: 'Rules',
+//                            message: JSON.stringify(result, null, 2)
+//                        });
+//                    }
+//                    var sql_raw = $(element[0]).queryBuilder('getSQL', false, true);
+//                });
             });
         }
     };
