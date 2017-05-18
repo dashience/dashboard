@@ -847,15 +847,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 };
                 $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
             }
-            if (widget.isQueryBuilder != true) {
-                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-            } else {
-
+           
 //                $scope.editWidgetData = response;
 //                angular.$apply()
                 $rootScope.goBack()
                 //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-            }
         });
     }
 
@@ -1194,7 +1190,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 }
             };
             scope.save = function () {
-                if ($('.query-builder')) {
+                if ($('.query-builder').queryBuilder('getRules')) {
                     scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
                     scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
                 }
@@ -1277,6 +1273,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
                     $rootScope.goBack();
+                    alert()
                     //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
             };
