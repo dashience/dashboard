@@ -16,6 +16,30 @@
         <div class="col-md-{{favouritesWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
             <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
                 <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="edit" ng-click="editReportWidget(reportWidget);"
+                           ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i>
+                        </a>
+                        <div id="delete{{reportWidget.id}}" class="modal">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color:#9DD6D7;color:black;">
+                                        <strong>Delete</strong>
+                                        <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                                    </div>
+                                    <div class="modal-body">
+                                        <span>Want to delete ? </span>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal">Yes</button>
+                                        <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
+                        <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                    </div>
                     <span class="{{favouritesWidget.widgetId.icon}}"></span> 
                     <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>
                 </div>

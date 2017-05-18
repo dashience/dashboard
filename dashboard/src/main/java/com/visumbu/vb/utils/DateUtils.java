@@ -25,6 +25,46 @@ import org.joda.time.LocalDate;
  */
 public class DateUtils {
 
+    // List of all date formats that we want to parse.
+    // Add your own format here.
+    private static List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>() {
+        {
+            add(new SimpleDateFormat("M/dd/yyyy"));
+            add(new SimpleDateFormat("dd.M.yyyy"));
+            add(new SimpleDateFormat("M/dd/yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.M.yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.MMM.yyyy"));
+            add(new SimpleDateFormat("dd-MMM-yyyy"));
+        }
+    };
+
+    /**
+     * Convert String with various formats into java.util.Date
+     *
+     * @param input Date as a string
+     * @return java.util.Date object if input string is parsed successfully else
+     * returns null
+     */
+    public static Date convertToDate(String input) {
+        Date date = null;
+        if (null == input) {
+            return null;
+        }
+        for (SimpleDateFormat format : dateFormats) {
+            try {
+                format.setLenient(false);
+                date = format.parse(input);
+            } catch (Exception e) {
+                //Shhh.. try other formats
+            }
+            if (date != null) {
+                break;
+            }
+        }
+
+        return date;
+    }
+
     public static String toAdWordsDate(Date date) {
         String format = "YYYYMMdd";
         return dateToString(date, format);
@@ -343,7 +383,7 @@ public class DateUtils {
         calendar.setTime(date);
         return calendar.get(Calendar.HOUR_OF_DAY);
     }
-    
+
     public static Integer getHour(Date date) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -356,6 +396,7 @@ public class DateUtils {
         calendar.setTime(date);
         return calendar.get(Calendar.DAY_OF_WEEK);
     }
+
     public static Integer getCurrentWeekDay(Date date) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
