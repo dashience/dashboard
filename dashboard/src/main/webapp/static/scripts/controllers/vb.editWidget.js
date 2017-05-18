@@ -900,6 +900,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             queryFilter: $scope.queryFilter ? $scope.queryFilter : null
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+            console.log(response)
             if (widget.tagName) {
                 var tag = widget.tagName.map(function (value, key) {
                     if (value) {
@@ -914,6 +915,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
             if (widget.isQueryBuilder != true) {
                 $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+            } else {
+
+//                $scope.editWidgetData = response;
+//                angular.$apply()
             }
         });
     }
@@ -931,7 +936,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         });
     };
+    $scope.saveQuery = function () {
+        if ($('.query-builder').queryBuilder('getRules') != null) {
+            $scope.setTab(1);
+        }
 
+    }
     $scope.selectDateRangeName = function (widget) {
         $scope.editChart = widget;
         widget.dateRangeName = "Custom";
@@ -1481,7 +1491,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             if (jsonFilter.jsonData != null) {
                 scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
             }
-            
+
             $(document).ready(function ()
             {
 //                var rules_basic = {
