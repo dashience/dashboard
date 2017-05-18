@@ -1,4 +1,4 @@
-app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
+app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state, $rootScope) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -847,7 +847,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
             }
             if (widget.isQueryBuilder != true) {
-                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+                $rootScope.goBack()
+                //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
             }
         });
     }
@@ -895,7 +896,7 @@ app.filter('hideColumn', [function () {
         };
     }]);
 
-app.directive('widgetPreviewTable', function ($http, $stateParams, $state, orderByFilter) {
+app.directive('widgetPreviewTable', function ($http, $stateParams, $state, orderByFilter, $rootScope) {
     return{
         restrict: 'AE',
         scope: {
@@ -1182,7 +1183,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 }
             };
             scope.save = function () {
-                if ($('.query-builder').queryBuilder('getRules')) {
+                if ($('.query-builder')) {
                     scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
                     scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
                 }
@@ -1264,7 +1265,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
-                    $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+                    $rootScope.goBack();
+                    //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
             };
 //            scope.saveQueryFn({savequeryFn: scope.save});
