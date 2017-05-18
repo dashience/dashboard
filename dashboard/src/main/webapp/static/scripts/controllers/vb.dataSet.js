@@ -114,10 +114,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -142,22 +142,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'campaignPerformance',
             name: 'campaignPerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -178,22 +178,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'adPerformance',
             name: 'adPerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -214,22 +214,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'adSetPerformance',
             name: 'adSetPerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -250,22 +250,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'devicePerformance',
             name: 'devicePerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -285,22 +285,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'agePerformance',
             name: 'agePerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -320,22 +320,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'genderPerformance',
             name: 'genderPerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -355,22 +355,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'postPerformance',
             name: 'postPerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -386,7 +386,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'none'
                 }
             ]
-        }, 
+        },
 //        {
 //            type: 'postSummary',
 //            name: 'postSummary',
@@ -423,42 +423,43 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                }
 //            ]
 //        },
+//        {
+//            type: 'recentPostPerformance',
+//            name: 'recentPostPerformance',
+//            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                },
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
+//            ],
+//            productSegments: [
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
+//            ]
+//        },
          {
-            type: 'recentPostPerformance',
-            name: 'recentPostPerformance',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
             type: 'totalOrganicLikes',
             name: 'totalOrganicLikes',
             timeSegments: [
@@ -474,10 +475,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -509,10 +510,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -544,10 +545,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -579,10 +580,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -614,10 +615,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -649,10 +650,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -684,10 +685,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -719,10 +720,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -754,10 +755,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'month',
                     name: 'month'
                 },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+//                {
+//                    type: 'year',
+//                    name: 'year'
+//                },
                 {
                     type: 'none',
                     name: 'None'
@@ -1877,7 +1878,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             {
                 console.log("hello ");
                 $scope.timeSegFlag = false;
-            } else {
+            }else {
                 $scope.timeSegFlag = true;
             }
         }
@@ -2150,7 +2151,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     //setTableFn: '&',
                     // tableFooter:'@'
         },
-        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
+        template: '<div ng-show="showErrorMsg">{{errorMsg}}</div>'+
+                '<div ng-hide="showErrorMsg">'+
+                '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<table ng-if="ajaxLoadingCompleted" class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
                 '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
@@ -2163,7 +2166,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
-                '</table>',
+                '</table></div>',
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
@@ -2223,9 +2226,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     '&url=' + dataSourcePath.url +
                     '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
-                scope.loadingTable = false;
-                scope.tableColumns = response.columnDefs;
-                scope.tableRows = response.data;
+                if (!response)
+                {
+                    scope.errorMsg = "No Data Available...";
+                    scope.showErrorMsg=true;
+                } else {
+
+                    scope.loadingTable = false;
+                    scope.tableColumns = response.columnDefs;
+                    scope.tableRows = response.data;
+                    scope.showErrorMsg=false;
+                }
             });
         }
     };

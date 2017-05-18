@@ -759,6 +759,7 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
+        String productSegment=request.getParameter("productSegment");
         if (timeSegment == null) {
             timeSegment = "daily";
         }
@@ -807,7 +808,7 @@ public class ProxyController {
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
         log.debug("Start Date ---- " + startDate);
-        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, facebookOrganicAccountIdInt, startDate, endDate, timeSegment);
+        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, facebookOrganicAccountIdInt, startDate, endDate, timeSegment,productSegment);
         log.debug(data);
         System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         System.out.println(data);

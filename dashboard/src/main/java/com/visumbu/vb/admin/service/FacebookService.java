@@ -47,7 +47,7 @@ public class FacebookService {
     public final String BASE_URL_FEED = "https://graph.facebook.com/v2.8/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
 
-    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation,String productSegement) {
         this.ACCESS_TOKEN = accessToken;
         if (aggregation == null) {
             aggregation = "";
@@ -56,7 +56,7 @@ public class FacebookService {
             return getAccountPerformance(accountId, startDate, endDate, aggregation);
         }
         if (dataSet.equalsIgnoreCase("campaignPerformance")) {
-            return getCampaignPerformance(accountId, startDate, endDate, aggregation);
+            return getCampaignPerformance(accountId, startDate, endDate, aggregation,productSegement);
         }
         if (dataSet.equalsIgnoreCase("adPerformance")) {
             return getAdPerformance(accountId, startDate, endDate, aggregation);
@@ -260,8 +260,12 @@ public class FacebookService {
 
 //            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw&since=1460226600&until=1462818600&period=day&limit=50";
             String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_views_total?"
-                    + "access_token=" + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr + "&period=day&limit=50";
+                    + "access_token=" + ORGANIC_ACCESS_TOKEN + "&since="+startDateStr+"&until=" + endDateStr + "&period=day&limit=50";
 
+            //https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?
+            //access_token=&since=1460226600&until=1462818600&period=day&limit=50
+            
+            
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             System.out.println(fbUrl);
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -549,11 +553,11 @@ public class FacebookService {
                 url += "&time_increment=1";
             }
             if (aggregation.equalsIgnoreCase("month")) {
-                url += "&time_increment=30";
+                url += "&time_increment=monthly";
             }
-            if (aggregation.equalsIgnoreCase("year")) {
-                url += "&time_increment=365";
-            }
+//            if (aggregation.equalsIgnoreCase("year")) {
+//                url += "&time_increment=365";
+//            }
             
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             System.out.println(url);
@@ -589,7 +593,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getCampaignPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, String>> getCampaignPerformance(Long accountId, Date startDate, Date endDate, String aggregation,String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -597,13 +601,21 @@ public class FacebookService {
 
             String url = BASE_URL + accountId + "/insights?level=campaign&fields=account_name,impressions,clicks,ctr,cpc,spend,actions,reach,cost_per_action_type,campaign_name&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
-                    + "&access_token=" + ACCESS_TOKEN;
-            if (aggregation.equalsIgnoreCase("weekly")) {
+                    + "&access_token=" + ACCESS_TOKEN+"&limit=500";
+            if(productSegement.equalsIgnoreCase("device")){
+                 url += "&breakdowns=impression_device";
+            }
+            if (aggregation.equalsIgnoreCase("week")) {
                 url += "&time_increment=7";
             }
-            if (aggregation.equalsIgnoreCase("daily")) {
+            if (aggregation.equalsIgnoreCase("day")) {
                 url += "&time_increment=1";
             }
+            
+            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            System.out.println(url);
+            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(fbData);
@@ -1135,5 +1147,4 @@ public class FacebookService {
         }
         return null;
     }
-
 }

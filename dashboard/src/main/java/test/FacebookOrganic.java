@@ -60,61 +60,61 @@ public class FacebookOrganic {
        
     }
     
-    public static List<Map<String, String>> getAdName() throws ParseException {
-        String fbUrl = "https://graph.facebook.com/v2.9/act_10153963646170050/insights?fields=account_name%2Cimpressions%2Cclicks%2Cctr%2Ccpc%2Cspend%2Cactions%2Creach%2Ccost_per_action_type%2Cadset_name%2Cad_name%2Ccampaign_name&level=ad&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
-        String fbData = Rest.getData(fbUrl);
-            JSONParser parser = new JSONParser();
-            Object jsonObj = parser.parse(fbData);
-            JSONObject array = (JSONObject) jsonObj;
-            JSONArray dataArr = (JSONArray) array.get("data");
-            List<Map<String, String>> dataValueList = new ArrayList();
-            for (int i = 0; i < dataArr.size(); i++) {
-                JSONObject data = (JSONObject) dataArr.get(i);
-                JSONArray actionsArr = (JSONArray) data.get("actions");
-                //JSONObject actions = (JSONObject) actionsArr.get(0);
-                List<Map<String, String>> returnList = new ArrayList<>();
-                JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, String> dataList = getDataValue(data);
-                if (actionsArr != null) {
-                    dataList.putAll(getActionsData(actionsArr, "actions_"));
-                }
-                if (costPerActionTypeArr != null) {
-                    dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
-                }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
-                dataValueList.add(dataList);
-            }
-            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-            System.out.println(dataValueList);
-            return dataValueList;  //getActions(actionsArr);
-          
-//        String data = Rest.getData(fbUrl);
-//        JSONParser parser = new JSONParser();
-//        Object object = parser.parse(data);
-//        JSONObject jsonObject = (JSONObject) object;
-//        Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(jsonObject);
-//        List<Map> arrayData = (List<Map>) jsonToMap.get("data");
-//        List<Map<String,String>> listData=new ArrayList<>();
-//        for (Iterator<Map> iterator = arrayData.iterator(); iterator.hasNext();) {
-//            Map adObject = iterator.next();
-//            Map obj=new HashMap();
-//            obj.put("account_name",adObject.get("account_name"));
-//            obj.put("impressions",adObject.get("impressions"));
-//            obj.put("clicks",adObject.get("clicks"));
-//            obj.put("ctr",adObject.get("ctr"));
-//            obj.put("cpc",adObject.get("cpc"));
-//            obj.put("reach",adObject.get("reach"));
-//            obj.put("adset_name",adObject.get("adset_name"));
-//            obj.put("ad_name",adObject.get("ad_name"));
-//            obj.put("campaign_name",adObject.get("campaign_name"));
-//            List<Map> array=(List<Map>)adObject.get("actions");
-//            
-//            listData.add(obj);
-//        }
-//        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//        System.out.println(listData);
-//        return listData;
-    }
+//    public static List<Map<String, String>> getAdName() throws ParseException {
+//        String fbUrl = "https://graph.facebook.com/v2.9/act_10153963646170050/insights?fields=account_name%2Cimpressions%2Cclicks%2Cctr%2Ccpc%2Cspend%2Cactions%2Creach%2Ccost_per_action_type%2Cadset_name%2Cad_name%2Ccampaign_name&level=ad&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
+//        String fbData = Rest.getData(fbUrl);
+//            JSONParser parser = new JSONParser();
+//            Object jsonObj = parser.parse(fbData);
+//            JSONObject array = (JSONObject) jsonObj;
+//            JSONArray dataArr = (JSONArray) array.get("data");
+//            List<Map<String, String>> dataValueList = new ArrayList();
+//            for (int i = 0; i < dataArr.size(); i++) {
+//                JSONObject data = (JSONObject) dataArr.get(i);
+//                JSONArray actionsArr = (JSONArray) data.get("actions");
+//                //JSONObject actions = (JSONObject) actionsArr.get(0);
+//                List<Map<String, String>> returnList = new ArrayList<>();
+//                JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
+//                Map<String, String> dataList = getDataValue(data);
+//                if (actionsArr != null) {
+//                    dataList.putAll(getActionsData(actionsArr, "actions_"));
+//                }
+//                if (costPerActionTypeArr != null) {
+//                    dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+//                }
+//                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+//                dataValueList.add(dataList);
+//            }
+//            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//            System.out.println(dataValueList);
+//            return dataValueList;  //getActions(actionsArr);
+//          
+////        String data = Rest.getData(fbUrl);
+////        JSONParser parser = new JSONParser();
+////        Object object = parser.parse(data);
+////        JSONObject jsonObject = (JSONObject) object;
+////        Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(jsonObject);
+////        List<Map> arrayData = (List<Map>) jsonToMap.get("data");
+////        List<Map<String,String>> listData=new ArrayList<>();
+////        for (Iterator<Map> iterator = arrayData.iterator(); iterator.hasNext();) {
+////            Map adObject = iterator.next();
+////            Map obj=new HashMap();
+////            obj.put("account_name",adObject.get("account_name"));
+////            obj.put("impressions",adObject.get("impressions"));
+////            obj.put("clicks",adObject.get("clicks"));
+////            obj.put("ctr",adObject.get("ctr"));
+////            obj.put("cpc",adObject.get("cpc"));
+////            obj.put("reach",adObject.get("reach"));
+////            obj.put("adset_name",adObject.get("adset_name"));
+////            obj.put("ad_name",adObject.get("ad_name"));
+////            obj.put("campaign_name",adObject.get("campaign_name"));
+////            List<Map> array=(List<Map>)adObject.get("actions");
+////            
+////            listData.add(obj);
+////        }
+////        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+////        System.out.println(listData);
+////        return listData;
+//    }
     public static Map<String, String> getDataValue(JSONObject data) {
         List<Map<String, String>> returnList = new ArrayList<>();
         Set<String> keySet = data.keySet();
