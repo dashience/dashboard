@@ -1997,6 +1997,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
+                '<button type="button" class="btn btn-success" data-dismiss="modal">Save</button>'+
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
                 '</div>' +
                 '</div>' +
