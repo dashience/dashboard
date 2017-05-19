@@ -52,6 +52,7 @@ public class ColumnDef {
         this.type = type;
         this.displayName = displayName;
     }
+    
     public ColumnDef(String fieldName, String type, String displayName, Integer groupPriority) {
         this.fieldName = fieldName;
         this.type = type;
@@ -66,7 +67,7 @@ public class ColumnDef {
         this.displayName = displayName;
         this.displayFormat = displayFormat;
     }
-
+    
     public ColumnDef(String fieldName,String type, String displayName, String agregationFunction) {
         this.fieldName = fieldName;
         this.agregationFunction = agregationFunction;

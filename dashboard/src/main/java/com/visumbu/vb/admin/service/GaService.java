@@ -221,17 +221,19 @@ public class GaService {
         String displayName;
         String fieldType;
         String expression;
+        String displayFormat;
 
         System.out.println("datasetColumnList --> " + datasetColumnList);
         for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
             DatasetColumns datasetColumn = datasetColumns.next();
             System.out.println("datasetcolumn.getExpression() ----> " + datasetColumn.getExpression());
-            if (datasetColumn.getFormula() != null && !datasetColumn.getFormula().trim().isEmpty()) {
+            if (datasetColumn.getExpression() != null && !datasetColumn.getExpression().trim().isEmpty()) {
 
                 fieldName = datasetColumn.getFieldName();
                 displayName = datasetColumn.getDisplayName();
                 fieldType = datasetColumn.getFieldType();
                 expression = datasetColumn.getExpression();
+                displayFormat = datasetColumn.getDisplayFormat();
                 StringTokenizer tokenizer = new StringTokenizer(expression, "([+*/-()1234567890])");
                 String[] tokenArray = new String[tokenizer.countTokens()];
                 int i = -1;
@@ -250,7 +252,7 @@ public class GaService {
                 if (columnData.size() > 0) {
                     for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
                         dataPair = (Map<String, Object>) iterator.next();
-                        String valueExpression = datasetColumn.getFormula();
+                        String valueExpression = datasetColumn.getExpression();
                         System.out.println("dataPair -----> " + dataPair);
                         System.out.println("formula ----> " + valueExpression);
                         for (int j = 0; j < tokenArray.length; j++) {
@@ -270,7 +272,7 @@ public class GaService {
                         System.out.println("field Name ---> " + fieldName);
                         System.out.println("resultstr ---> " + resultStr);
                     }
-                    columnDefs.add(new ColumnDef(fieldName, fieldType, displayName));
+                    columnDefs.add(new ColumnDef(fieldName, fieldType, displayName, null, displayFormat));
                 }
             }
         }

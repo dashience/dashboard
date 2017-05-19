@@ -547,7 +547,8 @@ public class UiDao extends BaseDao {
     }
 
     public List<DatasetColumns> getDatasetColumnsByDatasetId(Integer datasetId) {
-        Query query = sessionFactory.getCurrentSession().getNamedQuery("DatasetColumns.findByDatasetId");
+        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", datasetId);
         return query.list();
     }
