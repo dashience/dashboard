@@ -403,12 +403,17 @@ public class FacebookService {
             List<Map<String, String>> listData = new ArrayList<>();
             Map fbFansData = (Map) fbData.get(2);
             List fbLikesList = (List) fbFansData.get("values");
-            System.out.println("=====================");
+//            System.out.println("=====================");
             System.out.println(fbLikesList.get(0));
             String values = ((Map) fbLikesList.get(0)).get("value") + "";
             Map<String, String> returnMapData = new HashMap<>();
             returnMapData.put("reach", values);
             listData.add(returnMapData);
+            System.out.println("=====================");
+            System.out.println(listData);
+            
+            
+            
             return listData;
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);

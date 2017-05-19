@@ -613,6 +613,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
+        
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY1Axis(widget, yAxisItems);
@@ -630,6 +631,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.removedByY2Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
+        console.log(widget.columns);
+        console.log(yAxisItems);
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY2Axis(widget, yAxisItems);
