@@ -2140,8 +2140,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<td ng-repeat="col in tableColumns">' +
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
-                '<td>' +
-                '</td>' +
                 '</tbody>' +
                 '</table></div>',
         link: function (scope, element, attr) {
@@ -2156,7 +2154,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            
+
             var dataSourcePassword;
             if (dataSourcePath.dataSourceId.password) {
                 dataSourcePassword = dataSourcePath.dataSourceId.password;
@@ -2185,11 +2183,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.headerColumn = true;
                 scope.addColumn = false;
             }
-            scope.EditColumnHeader=false;
-            scope.isEditColumn=true;
-            scope.EditColumnHeaders=function(){
-                scope.EditColumnHeader=true;
-                scope.isEditColumn=false;
+            scope.EditColumnHeader = false;
+            scope.isEditColumn = true;
+            scope.EditColumnHeaders = function () {
+                scope.EditColumnHeader = true;
+                scope.isEditColumn = false;
             }
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +

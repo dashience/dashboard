@@ -1235,7 +1235,7 @@ QueryBuilder.prototype.updateGroupCondition = function(group) {
     group.$el.find('>' + QueryBuilder.selectors.group_condition).each(function() {
         var $this = $(this);
         $this.prop('checked', $this.val() === group.condition);
-        $this.parent().toggleClass('active', $this.val() === group.condition);
+        $this.parent().toggleClass('builder', $this.val() === group.condition);
     });
 
     /**
@@ -2831,14 +2831,14 @@ QueryBuilder.templates.group = '\
         </button> \
       {{?}} \
       {{? it.level>1 }} \
-        <button type="button" class="btn btn-xs btn-danger" data-delete="group"> \
+        <button type="button" class="btn btn-xs btn-default" data-delete="group"> \
           <i class="{{= it.icons.remove_group }}"></i> {{= it.translate("delete_group") }} \
         </button> \
       {{?}} \
     </div> \
     <div class="btn-group group-conditions"> \
       {{~ it.conditions: condition }} \
-        <label class="btn btn-xs btn-primary"> \
+        <label class="btn btn-xs btn-default builderAnd"> \
           <input type="radio" name="{{= it.group_id }}_cond" value="{{= condition }}"> {{= it.translate("conditions", condition) }} \
         </label> \
       {{~}} \
@@ -2856,7 +2856,7 @@ QueryBuilder.templates.rule = '\
 <li id="{{= it.rule_id }}" class="rule-container"> \
   <div class="rule-header"> \
     <div class="btn-group pull-right rule-actions"> \
-      <button type="button" class="btn btn-xs btn-danger" data-delete="rule"> \
+      <button type="button" class="btn btn-xs btn-default" data-delete="rule"> \
         <i class="{{= it.icons.remove_rule }}"></i> {{= it.translate("delete_rule") }} \
       </button> \
     </div> \
@@ -5086,7 +5086,7 @@ QueryBuilder.extend(/** @lends module:plugins.NotGroup.prototype */ {
     updateGroupNot: function(group) {
         var options = this.plugins['not-group'];
         group.$el.find('>' + QueryBuilder.selectors.group_not)
-            .toggleClass('active', group.not)
+            .toggleClass('builder', group.not)
             .find('i').attr('class', group.not ? options.icon_checked : options.icon_unchecked);
 
         /**

@@ -49,6 +49,7 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -983,12 +984,12 @@ public class ProxyController {
                     Object value = entrySet.getValue();
                     String valueString = value + "";
                     System.out.println(value.getClass());
-                    if (StringUtils.isNumeric(valueString)) {
+                    if (NumberUtils.isNumber(valueString)) {
                         columnDefs.add(new ColumnDef(key, "number", key));
                     } else if (DateUtils.convertToDate(valueString) != null) {
                         columnDefs.add(new ColumnDef(key, "date", key));
                     } else {
-                        columnDefs.add(new ColumnDef(key, "number", key));
+                        columnDefs.add(new ColumnDef(key, "string", key));
                     }
                 }
             }
@@ -1005,12 +1006,12 @@ public class ProxyController {
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
                 String value = entrySet.getValue();
-                if (StringUtils.isNumeric(value)) {
+                if (NumberUtils.isNumber(value)) {
                     columnDefs.add(new ColumnDef(key, "number", key));
                 } else if (DateUtils.convertToDate(value) != null) {
                     columnDefs.add(new ColumnDef(key, "date", key));
                 } else {
-                    columnDefs.add(new ColumnDef(key, "number", key));
+                    columnDefs.add(new ColumnDef(key, "string", key));
                 }
                 // columnDefs.add(new ColumnDef(key, "string", key));
             }

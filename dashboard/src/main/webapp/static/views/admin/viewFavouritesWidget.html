@@ -17,8 +17,8 @@
             <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
                 <div class="panel-heading">
                     <div class="panel-tools">
-                        <a class="edit" ng-click="editReportWidget(reportWidget);"
-                           ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i>
+                        <a class="edit"
+                           ui-sref="index.editWidget({accountId: accountId, accountName: accountName, productId: productId, tabId: favouritesWidget.widgetId.tabId.id, widgetId: favouritesWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i>
                         </a>
                         <div id="delete{{reportWidget.id}}" class="modal">
                             <div class="modal-dialog modal-lg">
@@ -43,7 +43,7 @@
                     <span class="{{favouritesWidget.widgetId.icon}}"></span> 
                     <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>
                 </div>
-                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
                     <div line-Chart-Directive line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
                 </div> 
                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'bar'">
