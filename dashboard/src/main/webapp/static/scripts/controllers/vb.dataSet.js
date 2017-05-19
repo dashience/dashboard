@@ -1931,7 +1931,79 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     // tableFooter:'@'
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
-                '<table ng-if="ajaxLoadingCompleted" class="table table-responsive table-bordered table-l2t">' +
+                '<div ng-if="ajaxLoadingCompleted">'+
+                '<div class="pull-right">' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal" ng-click="addDatasetColumn()"><i class="fa fa-plus"></i></button>' +
+                '<div id="myModal" class="modal fade" role="dialog">' +
+                '<div class="modal-dialog">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+                '<h4 class="modal-title">Derived Column</h4>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                '<form class="form-horizontal">' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Name</label>' +
+                '<div class="col-md-9">' +
+                '<input class="form-control" ng-model="datasetColumn.fieldName" type="text">' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Type</label>' +
+                '<div class="col-md-3">'+
+                '<select class="form-control">' +
+                '<option>' +
+                '1' +
+                '</option>' +
+                '</select>' +
+                '</div>'+
+                '<label class="col-md-2">Format</label>' +
+                '<div class="col-md-4">'+
+                '<select class="form-control">' +
+                '<option>' +
+                '1' +
+                '</option>' +
+                '</select>' +
+                '</div>'+
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Expression</label>' +
+                '<div class="col-md-9">'+
+                '<textarea class=form-control"></textarea>' +
+                '</div>'+
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Function</label>' +
+                '<div class="col-md-3">'+
+                '<select class="form-control">' +
+                '<option>' +
+                'YOY' +
+                '</option>' +
+                '<option>' +
+                'MOM' +
+                '</option>' +
+                '</select>' +
+                '</div>'+
+                '<label class="col-md-2">Column</label>'+
+                '<div class="col-md-4">'+
+                '<select class="form-control">' +
+                '<option>' +
+                '1' +
+                '</option>' +
+                '</select>' +
+                '</div>'+
+                '</div>' +
+                '</form>' +
+                '</div>' +
+                '<div class="modal-footer">' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<table class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
                 '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
                 '{{col.displayName}}' +
@@ -1943,7 +2015,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
-                '</table>',
+                '</table>'+
+                '</div>',
         link: function (scope, element, attr) {
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
@@ -2013,6 +2086,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.tableColumns = response.columnDefs;
                 scope.tableRows = response.data;
                 console.log(scope.tableColumns);
+                console.log(scope.tableRows)
             });
         }
     };
