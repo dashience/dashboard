@@ -1942,11 +1942,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<h4 class="modal-title">Derived Column</h4>' +
                 '</div>' +
                 '<div class="modal-body">' +
-                '<form class="form-horizontal">' +
+                '<form name="dataSetForm" class="form-horizontal">' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Field Name</label>' +
                 '<div class="col-md-9">' +
-                '<input class="form-control" ng-model="datasetColumn.fieldName" type="text">' +
+                '<input class="form-control" ng-model="datasetColumn.fieldName" ng-change="checkFieldName(datasetColumn.fieldName)" type="text">' +
+                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -1970,14 +1971,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-9">' +
-                '<textarea class=form-control" ng-model="datasetColumn.expression" rows="3" style="width:350px;resize:none"></textarea>' +
-                '<i class="btn btn-md fa fa-minus-circle"></i>' +
+                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="expressiondisabled"  ng-change="checkExpression(datasetColumn)" rows="3" style="width:350px;resize:none"></textarea>' +
+                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Function</label>' +
                 '<div class="col-md-3">' +
-                '<select class="form-control" ng-model="datasetColumn.function">' +
+                '<select  name="functionName" class="form-control" ng-model="datasetColumn.function" ng-disabled="functiondisabled" ng-change="checkFunction(datasetColumn)">' +
                 '<option>' +
                 'YOY' +
                 '</option>' +
@@ -1988,20 +1989,20 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<label class="col-md-2">Column</label>' +
                 '<div class="col-md-3">' +
-                '<select class="form-control" ng-model="datasetColumn.columnName">' +
+                '<select class="form-control" ng-disabled="functiondisabled" ng-model="datasetColumn.columnName">' +
                 '<option ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
                 '{{dataSetColumn.fieldName}}' +
                 '</option>' +
                 '</select>' +
                 '</div>' +
                 '<div class="col-md-1">' +
-                '<i class="btn btn-md fa fa-minus-circle"></i>' +
+                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearFunction(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
+                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)">Save</button>' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
                 '</div>' +
                 '</div>' +
@@ -2098,10 +2099,47 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 console.log(scope.tableColumns);
                 console.log(scope.tableRows)
             });
+//            scope.dataSetError = false;
+            scope.checkFieldName = function (fieldName) {
+                angular.forEach(scope.tableColumns, function (value, key) {
+                    if (value.fieldName == fieldName) {
+                        scope.dataSetError = true;
+                        angular.$apply()
+                    } else {
+                        scope.dataSetError = false;
+                    }
+                });
+            };
+            scope.functiondisabled = false;
+            scope.checkFunction = function (datasetColumn) {
+                if (datasetColumn.function) {
+                    scope.expressiondisabled = true;
+                } 
+
+            }
+            scope.expressiondisabled = false;
+            scope.checkExpression = function (datasetColumn) {
+                if (datasetColumn.expression) {
+                    scope.functiondisabled = true;
+                }
+            }
+            scope.clearFunction = function (datasetColumn) {
+                datasetColumn.fieldName = "";
+                datasetColumn.function = "";
+                scope.expressiondisabled = false;
+                scope.functiondisabled = false;
+            }
+            scope.clearExpression = function (datasetColumn) {
+                datasetColumn.expression = "";
+                scope.functiondisabled = false;
+                scope.expressiondisabled = false;
+            }
             scope.saveDatasetColumn = function (dataSetFields) {
 //                scope.datasetColumns=[];
 //                scope.datasetColumns.push(dataSetFields);
 //                console.log(scope.datasetColumns)
+
+
                 var data = {
                     columnName: dataSetFields.columnName,
                     expression: dataSetFields.expression,
