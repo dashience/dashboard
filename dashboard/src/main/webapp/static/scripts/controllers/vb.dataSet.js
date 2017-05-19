@@ -1933,7 +1933,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
                 '<div class="pull-right">' +
-                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal" ng-click="addDatasetColumn()"><i class="fa fa-plus"></i></button>' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>' +
                 '<div id="myModal" class="modal fade" role="dialog">' +
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
@@ -1952,16 +1952,16 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="form-group">' +
                 '<label class="col-md-3">Field Type</label>' +
                 '<div class="col-md-3">' +
-                '<select class="form-control" ng-model="fieldType">' +
-                '<option ng-repeat="fieldType in fieldTypes" value="fieldType.value">' +
+                '<select class="form-control" ng-model="datasetColumn.fieldType">' +
+                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
                 '{{fieldType.name}}' +
                 '</option>' +
                 '</select>' +
                 '</div>' +
                 '<label class="col-md-2">Format</label>' +
                 '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="formatType">' +
-                '<option  ng-repeat="formatType in formats" value="formatType.value">' +
+                '<select class="form-control" ng-model="datasetColumn.format">' +
+                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
                 '{{formatType.name}}' +
                 '</option>' +
                 '</select>' +
@@ -1970,14 +1970,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-9">' +
-                '<textarea class=form-control" rows="3" style="width:350px;resize:none"></textarea>' +
+                '<textarea class=form-control" ng-model="datasetColumn.expression" rows="3" style="width:350px;resize:none"></textarea>' +
                 '<i class="btn btn-md fa fa-minus-circle"></i>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Function</label>' +
                 '<div class="col-md-3">' +
-                '<select class="form-control">' +
+                '<select class="form-control" ng-model="datasetColumn.function">' +
                 '<option>' +
                 'YOY' +
                 '</option>' +
@@ -1988,7 +1988,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<label class="col-md-2">Column</label>' +
                 '<div class="col-md-3">' +
-                '<select class="form-control" ng-model="fieldName">' +
+                '<select class="form-control" ng-model="datasetColumn.columnName">' +
                 '<option ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
                 '{{dataSetColumn.fieldName}}' +
                 '</option>' +
@@ -2001,7 +2001,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success" data-dismiss="modal">Save</button>' +
+                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
                 '</div>' +
                 '</div>' +
@@ -2074,18 +2074,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
                 return value;
             };
-            scope.headerColumn = false;
-            scope.addDerivedColumn = function (newHeader) {
-                scope.headerValue = newHeader;
-                scope.headerColumn = true;
-                scope.addColumn = false;
-            }
-            scope.EditColumnHeader = false;
-            scope.isEditColumn = true;
-            scope.EditColumnHeaders = function () {
-                scope.EditColumnHeader = true;
-                scope.isEditColumn = false;
-            }
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&dataSetId=" + dataSourcePath.id +
@@ -2110,6 +2098,20 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 console.log(scope.tableColumns);
                 console.log(scope.tableRows)
             });
+            scope.saveDatasetColumn = function (dataSetFields) {
+//                scope.datasetColumns=[];
+//                scope.datasetColumns.push(dataSetFields);
+//                console.log(scope.datasetColumns)
+                var data = {
+                    columnName: dataSetFields.columnName,
+                    expression: dataSetFields.expression,
+                    fieldName: dataSetFields.fieldName,
+                    fieldType: dataSetFields.fieldType,
+                    format: dataSetFields.format,
+                    function: dataSetFields.function
+                }
+                console.log(data)
+            }
         }
     };
 });
