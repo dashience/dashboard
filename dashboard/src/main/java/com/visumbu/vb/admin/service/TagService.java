@@ -88,8 +88,17 @@ public class TagService {
         return null;
     }
 
-    public List getWidgetTagById(Integer tagWidgetId) {
-        return tagDao.getWidgetTagById(tagWidgetId);
+    public List getWidgetTag() {
+        List<WidgetTag> widgetTag = tagDao.read(WidgetTag.class);
+        return widgetTag;
+    }
+
+    public List getWidgetTagById(Integer tagId) {
+        return tagDao.getWidgetTagById(tagId);
+    }
+
+    public List getWidgetTagByName(String tagName) {
+        return tagDao.getWidgetTagByName(tagName);
     }
 
     public WidgetTag deleteWidgetTag(Integer widgetTagId) {
@@ -102,7 +111,7 @@ public class TagService {
             WidgetTag widgetTag = new WidgetTag();
             String widgetTagName = tagArray[i];
             Tag tag = tagDao.findTagName(widgetTagName);
-            
+
             widgetTag.setTagId(tag);
             Integer widgetId = tagWidgetBean.getWidgetId();
             TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
@@ -122,7 +131,6 @@ public class TagService {
 
     }
 
-
 //     public WidgetTag readWidgetTag(Integer id) {
 //        return (WidgetTag) tagDao.read(Tag.class, id);
 //    }
@@ -132,11 +140,10 @@ public class TagService {
 //        return (WidgetTag) tagDao.delete(id);
 //        //return dealer;
 //    }
-
     public Boolean removeFav(Integer widgetId, VbUser user) {
         Tag tag = tagDao.findTagName("Favourite");
         WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
-        if(widgetTag != null) {
+        if (widgetTag != null) {
             tagDao.delete(widgetTag);
             return true;
         }
@@ -145,14 +152,14 @@ public class TagService {
 
     public Boolean setFav(Integer widgetId, VbUser user) {
         Tag tag = tagDao.findTagName("Favourite");
-        if(tag == null) {
+        if (tag == null) {
             tag = new Tag();
             tag.setTagName("Favourite");
             tag.setDescription("Favourite Widgets");
             tag = (Tag) tagDao.create(tag);
         }
         WidgetTag widgetTag = tagDao.findWidgetTagByUserNTag(tag.getId(), widgetId, user);
-        if(widgetTag != null) {
+        if (widgetTag != null) {
             return false;
         }
         widgetTag = new WidgetTag();

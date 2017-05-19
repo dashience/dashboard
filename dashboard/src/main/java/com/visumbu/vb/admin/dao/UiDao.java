@@ -10,6 +10,7 @@ import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
@@ -22,6 +23,7 @@ import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
@@ -550,18 +552,19 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public DatasetColumns createColumns(DatasetColumnBean dataSet) {
+    public DatasetColumns createColumns(DatasetColumnBean dataSetColumn) {
         System.out.println("create columns function");
-        List<DatasetColumnBean> datasetColumnList = dataSet.getTableColumns();
+        List<DatasetColumnBean> datasetColumnList = dataSetColumn.getTableColumns();
         System.out.println("datasetColumnList ----> " + datasetColumnList);
-        DataSet dataset = getDataSetById(dataSet.getDatasetId());
+        DataSet dataset = getDataSetById(dataSetColumn.getDatasetId());
         DatasetColumns datasetColumns = new DatasetColumns();
 //        datasetColumns.setId(1);
-        datasetColumns.setFormula(dataSet.getFormula());
-        datasetColumns.setFieldName(dataSet.getColumn());
-        datasetColumns.setFieldType(dataSet.getFieldType());
-        datasetColumns.setDisplayName(dataSet.getColumn());
-        datasetColumns.setStatus(dataSet.getStatus());
+        datasetColumns.setExpression(dataSetColumn.getExpression());
+        datasetColumns.setFieldName(dataSetColumn.getColumn());
+        datasetColumns.setFieldType(dataSetColumn.getFieldType());
+        datasetColumns.setDisplayName(dataSetColumn.getColumn());
+        datasetColumns.setStatus(dataSetColumn.getStatus());
+        datasetColumns.setFunction(dataSetColumn.getFunction());
         datasetColumns.setDatasetId(dataset);
         saveOrUpdate(datasetColumns);
 
@@ -579,15 +582,16 @@ public class UiDao extends BaseDao {
         return datasetColumns;
     }
 
-    public DatasetColumns updateColumns(DatasetColumnBean dataSet) {
-        List<DatasetColumnBean> datasetColumnList = dataSet.getTableColumns();
-        DataSet dataset = getDataSetById(dataSet.getDatasetId());
+    public DatasetColumns updateColumns(DatasetColumnBean dataSetColumn) {
+        List<DatasetColumnBean> datasetColumnList = dataSetColumn.getTableColumns();
+        DataSet dataset = getDataSetById(dataSetColumn.getDatasetId());
         DatasetColumns datasetColumns = new DatasetColumns();
-        datasetColumns.setFormula(dataSet.getFormula());
-        datasetColumns.setFieldType(dataSet.getFieldType());
-        datasetColumns.setFieldName(dataSet.getColumn());
-        datasetColumns.setDisplayName(dataSet.getColumn());
-        datasetColumns.setStatus(dataSet.getStatus());
+        datasetColumns.setExpression(dataSetColumn.getExpression());
+        datasetColumns.setFieldName(dataSetColumn.getColumn());
+        datasetColumns.setFieldType(dataSetColumn.getFieldType());
+        datasetColumns.setDisplayName(dataSetColumn.getColumn());
+        datasetColumns.setStatus(dataSetColumn.getStatus());
+        datasetColumns.setFunction(dataSetColumn.getFunction());
         datasetColumns.setDatasetId(dataset);
         saveOrUpdate(datasetColumns);
         for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
@@ -601,5 +605,20 @@ public class UiDao extends BaseDao {
             saveOrUpdate(datasetFields);
         }
         return datasetColumns;
+    }
+
+    public List<Currency> getCurrenciesTypes() {
+        // System.out.println("dao is calling....");
+        String queryStr = "SELECT c FROM Currency c";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        return query.list();
+    }
+
+    public List<Timezone> getTimezoneTypes() {
+        // System.out.println("dao is calling....");
+        String queryStr = "SELECT t FROM Timezone t";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        return query.list();
+
     }
 }

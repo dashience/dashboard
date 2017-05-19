@@ -19,6 +19,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
+//        $scope.productId = $stateParams.productId;
 //        $stateParams.tabId = 0;
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
@@ -73,8 +74,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             if (!response[0]) {
                 return;
             }
-
-
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
 //        $state.go("index.dashboard", {productId: $stateParams.productId});
             try {
@@ -194,12 +193,31 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
                 });
-            } else if ($scope.getCurrentPage() === "tag") {
-                $state.go("index.tag", {
+            }
+//            else if ($scope.getCurrentPage() === "tag") {
+//                $state.go("index.tag", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+//                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+//                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+//                });
+//            }
+            else if ($scope.getCurrentPage() === "favourites") {
+                $state.go("index.favourites", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+                $state.go("index.viewFavouritesWidget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+//                    favouriteId: $stateParams.favouriteId,
+                    productId: $stateParams.productId,
+                    favouriteName: $stateParams.favouriteName,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
                 });
             } else {
                 $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
@@ -232,6 +250,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $stateParams.endDate = $scope.lastDate;
     }
 
+    $scope.setProductByFav = function () {
+        $scope.accountId = $stateParams.accountId;
+        $scope.accountName = $stateParams.accountName;
+        $scope.productId = $stateParams.productId;
+//        $stateParams.tabId = 0;
+        $scope.startDate = $stateParams.startDate;
+        $scope.endDate = $stateParams.endDate;
+    };
+
     $scope.loadNewUrl = function () {
         try {
             var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
@@ -239,12 +266,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
         } catch (e) {
         }
-        $stateParams.startDate = startDate
-        $stateParams.endDate = endDate
-        console.log($scope.startDate)
-        console.log($scope.endDate)
-        console.log($stateParams.startDate)
-        console.log($stateParams.endDate)
+        $stateParams.startDate = startDate;
+        $stateParams.endDate = endDate;
+        console.log($scope.startDate);
+        console.log($scope.endDate);
+        console.log($stateParams.startDate);
+        console.log($stateParams.endDate);
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
                 accountId: $stateParams.accountId,
@@ -356,10 +383,29 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
-        } else if ($scope.getCurrentPage() === "tag") {
-            $state.go("index.tag", {
+        }
+//        else if ($scope.getCurrentPage() === "tag") {
+//            $state.go("index.tag", {
+//                accountId: $stateParams.accountId,
+//                accountName: $stateParams.accountName,
+//                startDate: $stateParams.startDate,
+//                endDate: $stateParams.endDate
+//            });
+//        }
+        else if ($scope.getCurrentPage() === "favourites") {
+            $state.go("index.favourites", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+            $state.go("index.viewFavouritesWidget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                //favouriteId: $stateParams.favouriteId,
+                favouriteName: $stateParams.favouriteName,
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
@@ -414,9 +460,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("fieldSettings") > 0) {
             return "fieldSettings";
         }
-        if (url.indexOf("tag") > 0) {
-            return "tag";
+        if (url.indexOf("favourites") > 0) {
+            return "favourites";
         }
+        if (url.indexOf("viewFavouritesWidget") > 0) {
+            return "viewFavouritesWidget";
+        }
+//        if (url.indexOf("tag") > 0) {
+//            return "tag";
+//        }
         return "dashboard";
     };
     $scope.getCurrentTab = function () {

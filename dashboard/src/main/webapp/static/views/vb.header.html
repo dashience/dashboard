@@ -65,15 +65,15 @@
             </span>
         </div>
         <nav class = "navbar-default" role = "navigation">
-<!--            <div class = "navbar-header" id="animations">
-                <button class="navbar-toggle"ng-click="showLeft($event)">Show Left Menu!</button>
-
-                <menu visible="leftVisible" alignment="left">
-                    <menu-item hash="first-page">First Page</menu-item>
-                    <menu-item hash="second-page">Second Page</menu-item>
-                    <menu-item hash="third-page">Third Page</menu-item>
-                </menu>
-            </div>-->
+            <!--            <div class = "navbar-header" id="animations">
+                            <button class="navbar-toggle"ng-click="showLeft($event)">Show Left Menu!</button>
+            
+                            <menu visible="leftVisible" alignment="left">
+                                <menu-item hash="first-page">First Page</menu-item>
+                                <menu-item hash="second-page">Second Page</menu-item>
+                                <menu-item hash="third-page">Third Page</menu-item>
+                            </menu>
+                        </div>-->
             <!--            <div class = "navbar-header" id="animations">
                             <button type="button" class="navbar-toggle mobile-menu-toggle" data-animation="am-slide-left" data-placement="left" bs-aside="aside">
                                 <span class = "sr-only">Toggle navigation</span>
@@ -280,41 +280,43 @@
                                     </ul>
                                 </div>                                                              
                             </div>
-                            <div ng-if="permission.viewReport === true;">
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParams()">
-                                        <a data-ui-sref="index.report.reports({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i> <h5> Reports</h5>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>                                                    
-                            <div ng-if="permission.scheduleReport === true;">
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParams()">
-                                        <a data-ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-clock-o text-danger" aria-hidden="true"></i> <h5> Scheduler</h5>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div ng-if="permission.viewFieldSettings === true;">
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParams()">
-                                        <a data-ui-sref="index.fieldSettings({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-cog text-danger" aria-hidden="true"></i> <h5> Field Settings</h5>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div>
-                                <ul class="col-lg-3 icon-dash"> 
-                                    <li class="product-dashboard-icon" ng-click="setParams()">
-                                        <a data-ui-sref="index.tag({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                            <i class="fa fa-tag text-info" aria-hidden="true"></i> <h5>Tag</h5>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <div class="clear">
+                                <div ng-if="permission.viewReport === true;">
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.report.reports({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i> <h5> Reports</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>                                                    
+                                <div ng-if="permission.scheduleReport === true;">
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-clock-o text-danger" aria-hidden="true"></i> <h5> Scheduler</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div ng-if="permission.viewFieldSettings === true;">
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setParams()">
+                                            <a data-ui-sref="index.fieldSettings({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-cog text-danger" aria-hidden="true"></i> <h5> Field Settings</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <ul class="col-lg-3 icon-dash"> 
+                                        <li class="product-dashboard-icon" ng-click="setProductByFav()">
+                                            <a data-ui-sref="index.viewFavouritesWidget({accountId: accountId, accountName: accountName, productId: productId?productId:0, favouriteName: 'Favourite', startDate: startDate, endDate: endDate})">
+                                                <i class="fa fa-heart text-info" aria-hidden="true" style="font-size: 30px !important;"></i> <h5>Favourites</h5>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>

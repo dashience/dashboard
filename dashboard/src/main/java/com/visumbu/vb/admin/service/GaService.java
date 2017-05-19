@@ -220,19 +220,19 @@ public class GaService {
         String fieldName;
         String displayName;
         String fieldType;
-        String formula;
+        String expression;
 
         System.out.println("datasetColumnList --> " + datasetColumnList);
         for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
             DatasetColumns datasetColumn = datasetColumns.next();
-            System.out.println("datasetcolumn.getFormula() ----> " + datasetColumn.getFormula());
+            System.out.println("datasetcolumn.getExpression() ----> " + datasetColumn.getExpression());
             if (datasetColumn.getFormula() != null && !datasetColumn.getFormula().trim().isEmpty()) {
 
                 fieldName = datasetColumn.getFieldName();
                 displayName = datasetColumn.getDisplayName();
                 fieldType = datasetColumn.getFieldType();
-                formula = datasetColumn.getFormula();
-                StringTokenizer tokenizer = new StringTokenizer(formula, "([+*/-()1234567890])");
+                expression = datasetColumn.getExpression();
+                StringTokenizer tokenizer = new StringTokenizer(expression, "([+*/-()1234567890])");
                 String[] tokenArray = new String[tokenizer.countTokens()];
                 int i = -1;
                 while (tokenizer.hasMoreTokens()) {
@@ -241,7 +241,7 @@ public class GaService {
                     tokenArray[++i] = token;
                 }
 
-                String output;
+                String postFix;
                 double result = 0;
                 String resultStr = null;
 
@@ -250,19 +250,19 @@ public class GaService {
                 if (columnData.size() > 0) {
                     for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
                         dataPair = (Map<String, Object>) iterator.next();
-                        String calculateFormula = datasetColumn.getFormula();
+                        String valueExpression = datasetColumn.getFormula();
                         System.out.println("dataPair -----> " + dataPair);
-                        System.out.println("formula ----> " + calculateFormula);
+                        System.out.println("formula ----> " + valueExpression);
                         for (int j = 0; j < tokenArray.length; j++) {
                             System.out.println(tokenArray[j] + " value -----> " + dataPair.get(tokenArray[j]));
-                            calculateFormula = calculateFormula.replaceAll(tokenArray[j], dataPair.get(tokenArray[j]) + "");
-                            System.out.println("formulaaaaaaaaaa ----> " + calculateFormula);
+                            valueExpression = valueExpression.replaceAll(tokenArray[j], dataPair.get(tokenArray[j]) + "");
+                            System.out.println("formulaaaaaaaaaa ----> " + valueExpression);
                         }
 //                        InToPost theTrans = new InToPost(calculateFormula);
-                        output = postfix(calculateFormula);
+                        postFix = postfix(valueExpression);
 //                        output = theTrans.doTrans();
-                        System.out.println("final output ----> " + output);
-                        ParsePost aParser = new ParsePost(output);
+                        System.out.println("final output ----> " + postFix);
+                        ParsePost aParser = new ParsePost(postFix);
                         result = aParser.doParse();
                         System.out.println("result --> " + BigDecimal.valueOf(result).toPlainString());
                         resultStr = BigDecimal.valueOf(result).toPlainString();

@@ -15,6 +15,8 @@ import com.visumbu.vb.admin.dao.SchedulerDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
@@ -82,10 +84,12 @@ public class TimerService {
             Integer lastNmonths = null;
             Integer lastNweeks = null;
             Integer lastNyears = null;
-            System.out.println("startdate ----> "+scheduler.getCustomStartDate());
-            if (dateRangeName != null) {
+            System.out.println("startdate ----> " + scheduler.getCustomStartDate());
 
-                System.out.println("scheduler.getLastNdays() ----> " + scheduler.getLastNdays());
+            if (dateRangeName == null || dateRangeName.isEmpty()) {
+                startDate = null;
+                endDate = null;
+            } else if (dateRangeName != null) {
                 if (scheduler.getLastNdays() != null) {
                     lastNdays = scheduler.getLastNdays();
                     System.out.println("Last N days ----> " + lastNdays);
@@ -207,39 +211,67 @@ public class TimerService {
             schedulerService.createSchedulerHistory(schedulerHistory);
         }
     }
-    
+
 //    @Scheduled(cron = "0/5 * * * * *")
 //    public void testScheduler() {
 //        System.out.println("Test Scheduler...");
 //        System.out.println("Success....");
 //    }
-//    
     
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
         System.out.println("Executing daily Tasks....");
-        Integer hour = DateUtils.getCurrentHour();
-        Date today = new Date();
-        List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today); //schedulerDao.getScheduledTasks("Daily");
-        System.out.println("Executing tasks count " + scheduledTasks.size());
-        executeTasks(scheduledTasks);
+        List<Agency> allAgencies = schedulerDao.getAllAgency();
+        for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
+            Agency agency = iterator.next();
+            System.out.println("Executing Daily Task for Agency " + agency.toString());
+            AgencySettings agencySettings = userDao.getAgencySettingsById(agency.getId());
+            String timezone = agencySettings.getTimeZoneId().getShortDescription();
+            System.out.println("Timezone ===> " + timezone);
+            Date today = DateUtils.convertCurrentTimeToTz(timezone, new Date());
+            System.out.println("Converted Time  in Timezone " + timezone + " " + today + " Local Time " + new Date());
+            // Date today = new Date();
+            Integer hour = DateUtils.getHour(today);
+            List<Scheduler> scheduledTasks = schedulerDao.getDailyTasks(hour, today, agency); //schedulerDao.getScheduledTasks("Daily");
+            executeTasks(scheduledTasks);
+        }
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeWeeklyTask() {
-        Integer hour = DateUtils.getCurrentHour();
-        Date today = new Date();
-        String weekDayToday = DateUtils.getDayOfWeek(DateUtils.getCurrentWeekDay());
-        List<Scheduler> scheduledTasks = schedulerDao.getWeeklyTasks(hour, weekDayToday, today);
-        executeTasks(scheduledTasks);
+        List<Agency> allAgencies = schedulerDao.getAllAgency();
+        for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
+            Agency agency = iterator.next();
+            System.out.println("Executing Daily Task for Agency " + agency.toString());
+            AgencySettings agencySettings = userDao.getAgencySettingsById(agency.getId());
+            String timezone = agencySettings.getTimeZoneId().getShortDescription();
+            System.out.println("Timezone ===> " + timezone);
+            Date today = DateUtils.convertCurrentTimeToTz(timezone, new Date());
+            System.out.println("Converted Time  in Timezone " + timezone + " " + today + " Local Time " + new Date());
+            // Date today = new Date();
+            String weekDayToday = DateUtils.getDayOfWeek(DateUtils.getCurrentWeekDay(today));
+            Integer hour = DateUtils.getHour(today);
+            List<Scheduler> scheduledTasks = schedulerDao.getWeeklyTasks(hour, weekDayToday, today, agency);
+            executeTasks(scheduledTasks);
+        }
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeMonthlyTask() {
-        Date today = new Date();
-        String currentDateHour = DateUtils.dateToString(new Date(), "MM/dd/yyyy HH:00");
-        List<Scheduler> scheduledTasks = schedulerDao.getMonthlyTasks(currentDateHour, today);
-        executeTasks(scheduledTasks);
+        List<Agency> allAgencies = schedulerDao.getAllAgency();
+        for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
+            Agency agency = iterator.next();
+            System.out.println("Executing Montyly Task for Agency " + agency.toString());
+            AgencySettings agencySettings = userDao.getAgencySettingsById(agency.getId());
+            String timezone = agencySettings.getTimeZoneId().getShortDescription();
+            System.out.println("Monthly Timezone ===> " + timezone);
+            Date today = DateUtils.convertCurrentTimeToTz(timezone, new Date());
+            System.out.println("Monthly Converted Time  in Timezone " + timezone + " " + today + " Local Time " + new Date());
+            // Date today = new Date();
+            String currentDateHour = DateUtils.dateToString(today, "MM/dd/yyyy HH:00");
+            List<Scheduler> scheduledTasks = schedulerDao.getMonthlyTasks(currentDateHour, today, agency);
+            executeTasks(scheduledTasks);
+        }
     }
 
     @Scheduled(cron = "0 0 */1 * * *")
@@ -267,12 +299,21 @@ public class TimerService {
 
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeOnce() {
-        Integer hour = DateUtils.getCurrentHour();
-        Date today = new Date();
-        System.out.println("Once");
-        List<Scheduler> scheduledTasks = schedulerDao.getOnce(hour, today);
-        System.out.println("Once 1");
-        executeTasks(scheduledTasks);
+        List<Agency> allAgencies = schedulerDao.getAllAgency();
+        for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
+            Agency agency = iterator.next();
+            System.out.println("Executing Montyly Task for Agency " + agency.toString());
+            AgencySettings agencySettings = userDao.getAgencySettingsById(agency.getId());
+            String timezone = agencySettings.getTimeZoneId().getShortDescription();
+            System.out.println("Monthly Timezone ===> " + timezone);
+            Date today = DateUtils.convertCurrentTimeToTz(timezone, new Date());
+            System.out.println("Monthly Converted Time  in Timezone " + timezone + " " + today + " Local Time " + new Date());
+            Integer hour = DateUtils.getHour(today);
+            System.out.println("Once");
+            List<Scheduler> scheduledTasks = schedulerDao.getOnce(hour, today, agency);
+            System.out.println("Once 1");
+            executeTasks(scheduledTasks);
+        }
     }
 
     private Boolean downloadReportAndSend(Date startDate, Date endDate,

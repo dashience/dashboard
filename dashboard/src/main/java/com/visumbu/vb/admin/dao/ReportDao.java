@@ -86,7 +86,7 @@ public class ReportDao extends BaseDao {
         return null;
     }
     
-    private List<WidgetColumn> getColumns(TabWidget widget) {
+    public List<WidgetColumn> getColumns(TabWidget widget) {
         String queryStr = "select d from WidgetColumn d where d.widgetId = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("widgetId", widget);

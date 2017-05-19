@@ -1,0 +1,33 @@
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Favourites
+            </h2>               
+        </div>
+    </div>
+</div>
+<section class="content">  
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sl.No</th>
+                <th>Tag Name</th>
+                <!--<th>Widget Name</th>-->
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="favourite in favourites">
+                <td>{{$index + 1}}</td>
+                <td>{{favourite.tagName}} </td>
+                <!--                <td>{{favouritesWidget.widgetId.widgetTitle ? favouritesWidget.widgetId.widgetTitle:'-' }} </td>-->
+                <td>
+                    <a ui-sref="index.viewFavouritesWidget({accountId: accountId, accountName: accountName, favouriteId: favourite.id, favouriteName: favourite.tagName, startDate: startDate, endDate: endDate})"><i class="fa fa-eye"></i></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>

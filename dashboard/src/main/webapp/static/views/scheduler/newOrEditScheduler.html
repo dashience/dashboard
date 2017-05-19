@@ -224,13 +224,13 @@
                                                     <a>Custom</a>
                                                     <div class="col-md-12 custom-picker">
                                                         <!--                                                        <label>Custom Range</label>-->
-                                                        <a class="pull-right custom-daterange-box" id="customDateRange">
+                                                        <a class="pull-right custom-daterange-box" id="customDateRange" style="padding: 6px !important;">
                                                             <span class="date-border">
                                                                 
                                                                 <!--{{startDate}}-->
                                                                 <!--{{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}}--> 
-                                                                {{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}} 
-                                                                <i class="custom-daterange-box-icon fa fa-caret-down"></i>
+                                                                {{scheduler.customStartDate?scheduler.customStartDate:startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate?scheduler.customEndDate:endDate | date: "MM/dd/yyyy"}} 
+                                                                <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
                                                             </span>
                                                         </a> 
                                                     </div>

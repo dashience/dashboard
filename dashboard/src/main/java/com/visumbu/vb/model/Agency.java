@@ -8,6 +8,7 @@ package com.visumbu.vb.model;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,8 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+//import javax.persistence.OneToOne;
+//import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -44,6 +47,8 @@ public class Agency implements Serializable {
     @Column(name = "logo")
     private byte[] logo;
     @OneToMany(mappedBy = "agencyId")
+    private Collection<AgencySettings> agencySettingsCollection;
+    @OneToMany(mappedBy = "agencyId")
     private Collection<Scheduler> schedulerCollection;
     @OneToMany(mappedBy = "agencyId")
     private Collection<Report> reportCollection;
@@ -61,6 +66,8 @@ public class Agency implements Serializable {
     private Collection<VbUser> vbUserCollection;
     @OneToMany(mappedBy = "agencyId")
     private Collection<AgencyLicence> agencyLicenceCollection;
+//    @OneToOne(mappedBy = "agencyId")
+//    private AgencySettings agencySettings;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -152,9 +159,10 @@ public class Agency implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.Agency[ id=" + id + " ]";
+        return "Agency{" + "logo=" + logo + ", id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
     }
 
+    
     @XmlTransient
     @JsonIgnore
     public Collection<AgencyLicence> getAgencyLicenceCollection() {
@@ -243,6 +251,17 @@ public class Agency implements Serializable {
 
     public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
         this.schedulerCollection = schedulerCollection;
+    }
+
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencySettings> getAgencySettingsCollection() {
+        return agencySettingsCollection;
+    }
+
+    public void setAgencySettingsCollection(Collection<AgencySettings> agencySettingsCollection) {
+        this.agencySettingsCollection = agencySettingsCollection;
     }
 
     public byte[] getLogo() {

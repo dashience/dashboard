@@ -49,7 +49,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
             var widgetItems = [];
-            console.log(response);
             widgetItems = response;
             $http.get("admin/tag/getAllFav/").success(function (favResponse) {
                 widgetItems.forEach(function (value, key) {
@@ -115,14 +114,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
-        console.log(widgetData);
-        console.log(widgetData.widgetId + " : " + widgetData.tabId);
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
-            console.log(response);
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
                 response["tags"] = dataTag[0];
                 $scope.widgets.push(response);
-                console.log($scope.widgets);
             });
         });
     }
@@ -165,7 +160,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $http({method: 'POST', url: "admin/tag/setFav/" + widget.id});
             widget.isFav = true;
         }
-        console.log(widget)
     }
 
 //    $scope.favouritesNew = function (favourites, widget) {
@@ -297,7 +291,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 maxRecord: widget.maxRecord,
                 dateDuration: widget.dateDuration,
                 content: widget.content,
-                width: widget.width
+                width: widget.width,
+                jsonData:widget.jsonData,
+                queryFilter:widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -333,7 +329,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 maxRecord: widget.maxRecord,
                 dateDuration: widget.dateDuration,
                 content: widget.content,
-                width: widget.width
+                width: widget.width,
+                jsonData:widget.jsonData,
+                queryFilter:widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -487,7 +485,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
 
             scope.hideChild = function (item, hideStatus) {
-                // console.log(item);
                 if (!item)
                     return;
                 angular.forEach(item, function (value, key) {
@@ -624,12 +621,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             if (tableDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (tableDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
 
             var dataSourcePassword;
             if (tableDataSource.dataSourceId.password) {
@@ -639,10 +630,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             }
 
             scope.refreshTable = function () {
-                console.log(tableDataSource.id);
-                console.log(scope.widgetId);
-                console.log(tableDataSource);
-
                 scope.connectionTestUrl = url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
                         "&accountId=" + $stateParams.accountId +
@@ -655,9 +642,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         '&dataSetReportName=' + tableDataSource.reportName +
                         '&widgetId=' + scope.widgetId +
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query);
-                console.log("***************************************");
-                console.log(scope.connectionTestUrl);
-
 
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
@@ -675,7 +659,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
-                    console.log(response);
 
                     if (!response.data) {
                         return;
@@ -738,7 +721,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 angular.forEach(sortFields, function (value, key) {
                     if (value.fieldType != 'day') {
                         responseData = scope.orderData(responseData, sortFields);
-                        console.log(responseData)
                     } else {
                         responseData = sortByDay(responseData, sortFields)
                     }
@@ -1023,12 +1005,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (tickerDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (tickerDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
             var dataSourcePassword;
             if (tickerDataSource.dataSourceId.password) {
                 dataSourcePassword = tickerDataSource.dataSourceId.password;
@@ -1036,7 +1012,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 dataSourcePassword = '';
             }
             scope.refreshTicker = function () {
-                console.log("ticker --- > " + scope.tickerId);
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
                         "&accountId=" + $stateParams.accountId +
@@ -1143,7 +1118,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     } else {
                         labels["format"][displayName] = function (value) {
                             return formatBySecond(parseInt(value))
-                            console.log(formatBySecond(parseInt(value)))
                         };
                     }
                 } else {
@@ -1260,12 +1234,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (lineChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (lineChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
                 var dataSourcePassword;
                 if (lineChartDataSource.dataSourceId.password) {
                     dataSourcePassword = lineChartDataSource.dataSourceId.password;
@@ -1273,7 +1241,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     dataSourcePassword = '';
                 }
                 scope.refreshLineChart = function () {
-                    console.log("line --- > " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
@@ -1359,7 +1326,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             }
 
 
-                            console.log(gridLine)
                             var chart = c3.generate({
                                 bindto: element[0],
                                 data: {
@@ -1417,7 +1383,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
-            console.log(scope.widgetObj)
             var labels = {format: {}};
             scope.loadingBar = true;
             var yAxis = [];
@@ -1453,7 +1418,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     } else {
                         labels["format"][displayName] = function (value) {
                             return formatBySecond(parseInt(value))
-                            console.log(formatBySecond(parseInt(value)))
                         };
                     }
                 } else {
@@ -1572,12 +1536,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (barChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (barChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
                 var dataSourcePassword;
                 if (barChartDataSource.dataSourceId.password) {
                     dataSourcePassword = barChartDataSource.dataSourceId.password;
@@ -1585,7 +1543,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     dataSourcePassword = '';
                 }
                 scope.refreshBarChart = function () {
-                    console.log("bar -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
@@ -1756,7 +1713,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     } else {
                         labels["format"][displayName] = function (value) {
                             return formatBySecond(parseInt(value))
-                            console.log(formatBySecond(parseInt(value)))
                         };
                     }
                 } else {
@@ -1869,12 +1825,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (pieChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (pieChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
+                
                 var dataSourcePassword;
                 if (pieChartDataSource.dataSourceId.password) {
                     dataSourcePassword = pieChartDataSource.dataSourceId.password;
@@ -1883,7 +1834,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 scope.refreshPieChart = function () {
-                    console.log("pie -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
@@ -1917,7 +1867,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
-                                            console.log(chart)
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -2052,7 +2001,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     } else {
                         labels["format"][displayName] = function (value) {
                             return formatBySecond(parseInt(value))
-                            console.log(formatBySecond(parseInt(value)))
                         };
                     }
                 } else {
@@ -2168,12 +2116,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (areaChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (areaChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
+                
                 var dataSourcePassword;
                 if (areaChartDataSource.dataSourceId.password) {
                     dataSourcePassword = areaChartDataSource.dataSourceId.password;
@@ -2181,7 +2124,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     dataSourcePassword = '';
                 }
                 scope.refreshAreaChart = function () {
-                    console.log("Area -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
@@ -2349,7 +2291,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     } else {
                         labels["format"][displayName] = function (value) {
                             return formatBySecond(parseInt(value))
-                            console.log(formatBySecond(parseInt(value)))
                         };
                     }
                 } else {
@@ -2470,12 +2411,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "csv") {
-                    url = "admin/csv/getData?";
-                }
-                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "facebook") {
-                    url = "admin/proxy/getData?";
-                }
+                
                 var dataSourcePassword;
                 if (stackedBarChartDataSource.dataSourceId.password) {
                     dataSourcePassword = stackedBarChartDataSource.dataSourceId.password;
@@ -2483,7 +2419,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 scope.refreshStackedBarChart = function () {
-                    console.log("Stacked Bar -----> " + scope.widgetId);
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
                             "&accountId=" + $stateParams.accountId +
@@ -2513,7 +2448,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
 //                                    chartData = scope.orderData(chartData, sortFields);
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
-                                            console.log(chartMaxRecord.maxRecord)
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
                                         } else {
                                             chartData = sortingObj;

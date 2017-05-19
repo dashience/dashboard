@@ -79,8 +79,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
         }
     };
-
-
     $scope.pinterestPerformance = [
         {
             type: 'getTopBoards',
@@ -88,11 +86,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }, {
             type: 'getTopPins',
             name: 'getTopPins',
-
         }, {
             type: 'getOrganicData',
             name: 'getOrganicData',
-
         }
     ]
 
@@ -1219,7 +1215,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-
     $scope.adwordsPerformance = [
         {
             type: 'accountPerformance',
@@ -1667,9 +1662,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-
-
-
     $scope.getTimeSegemens = function () {
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
@@ -1722,7 +1714,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegment = $scope.pinterestPerformance[index].productSegments;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
-
         }
 
         function getIndex(data, object)
@@ -1736,21 +1727,16 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
         }
     };
-
-
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
-
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-
     function getItems() {
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = response;
         });
     }
     getItems();
-
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.searchDataSourceItems = [];
         $scope.dataSources = response;
@@ -1759,7 +1745,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.searchDataSourceItems.push({name: value.name, value: value.name, id: value.id});
         });
     });
-
     $scope.selectedItems = {name: "All Data Source", value: '', id: 0}
 
     $scope.selectXlsSheet = function (dataSource) {
@@ -1771,7 +1756,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             });
         }
     };
-
     $scope.saveDataSet = function () {
         var dataSet = $scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
@@ -1796,11 +1780,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.previewData = null;
         $scope.dataSetFlag = false;
     };
-
     $scope.clearTable = function () {
         $scope.dataSet = "";
     };
-
     $scope.editDataSet = function (dataSet) {
 //        if (dataSet.networkType !== null)
 //        {
@@ -1894,8 +1876,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //        }
 //        console.log(data);
     };
-
-
     $scope.resetPreview = function (dataSet) {
         $scope.previewData = null;
     };
@@ -1907,7 +1887,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.previewData = dataSet;
         }, 50);
     };
-
     $scope.refreshDataSet = function (dataSet) {
 //        var tmpDataSet = dataSet
 //        dataSet.timeSegment = "";
@@ -1918,12 +1897,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.previewData = dataSet;
         }, 50);
     };
-
     $scope.clearSeg = function (dataSet) {
         dataSet.timeSegment = '';
         dataSet.productSegment = '';
     };
-
     $scope.clearDataSet = function (dataSet) {
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
@@ -1931,13 +1908,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.selectedRow = null;
         $scope.dataSetFlag = false;
     };
-
     $scope.deleteDataSet = function (dataSet, index) {
         $http({method: 'DELETE', url: 'admin/ui/dataSet/' + dataSet.id}).success(function (response) {
             $scope.dataSets.splice(index, 1)
         });
     };
-
     $scope.selectedRow = null;
     $scope.setClickedRow = function (index) {
         $scope.selectedRow = index;
@@ -1981,12 +1956,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (dataSourcePath.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (dataSourcePath.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
 
             var dataSourcePassword;
             if (dataSourcePath.dataSourceId.password) {
@@ -2010,7 +1979,18 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
                 return value;
             };
-
+            scope.headerColumn = false;
+            scope.addDerivedColumn = function (newHeader) {
+                scope.headerValue = newHeader;
+                scope.headerColumn = true;
+                scope.addColumn = false;
+            }
+            scope.EditColumnHeader = false;
+            scope.isEditColumn = true;
+            scope.EditColumnHeaders = function () {
+                scope.EditColumnHeader = true;
+                scope.isEditColumn = false;
+            }
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&dataSetId=" + dataSourcePath.id +

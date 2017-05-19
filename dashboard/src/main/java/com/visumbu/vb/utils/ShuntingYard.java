@@ -16,7 +16,7 @@ public class ShuntingYard {
 
     private enum Operator {
 
-        ADD(1), SUBTRACT(2), MULTIPLY(3), DIVIDE(4), NOTEQUALS(5), EQUALS(8), LESSTHAN(9), GREATERTHAN(10), LESSTHANOREQUAL(11), GREATERTHANOREQUAL(12), EMPTY(13), NOTEMPTY(14), LIKE(15), NOTLIKE(16), NULL(17), NOTNULL(18), AND(6), OR(7);
+        AND(1), OR(1), ADD(16), SUBTRACT(15), MULTIPLY(17), DIVIDE(18), NOTEQUALS(13), EQUALS(14), LESSTHAN(11), GREATERTHAN(12), LESSTHANOREQUAL(9), GREATERTHANOREQUAL(10), EMPTY(8), NOTEMPTY(7), LIKE(6), NOTLIKE(5), NULL(4), NOTNULL(3);
         final int precedence;
 
         Operator(int p) {
@@ -63,9 +63,10 @@ public class ShuntingYard {
         input = input.replaceAll("\\+", " + ");
         input = input.replaceAll("\\*", " * ");
         input = input.replaceAll("/", " / ");
-
-        for (String token : input.split("\\s")) {
+        System.out.println("input infix ----> " + input);
+        for (String token : input.split("\\s+")) {
             // operator
+            System.out.println("token ---> "+token);
             if (ops.containsKey(token)) {
                 while (!stack.isEmpty() && isHigerPrec(token, stack.peek())) {
                     String popedOperator = stack.pop();
@@ -89,7 +90,6 @@ public class ShuntingYard {
 
                 // digit
             } else {
-
                 output.append(token).append(' ');
                 outputList.add(token);
             }
@@ -101,6 +101,7 @@ public class ShuntingYard {
             outputList.add(popedOperator);
         }
         System.out.println(outputList);
+        System.out.println("output ---> " + output);
         return output.toString();
     }
 
@@ -238,11 +239,12 @@ public class ShuntingYard {
     }
 
     public static boolean like(String toBeCompare, String by) {
+        System.out.println("toBeCompare "+toBeCompare+"  by"+by);
         if (toBeCompare != null && by != null) {
             if (by.startsWith("%") && by.endsWith("%")) {
                 System.out.println("Contains");
                 by = by.replaceAll("%", "");
-                return (by.equalsIgnoreCase(toBeCompare));
+                return (toBeCompare.contains(by));
             } else if (by.endsWith("%")) {
                 System.out.println("beginWith");
                 by = by.replaceAll("%", "");
@@ -266,7 +268,7 @@ public class ShuntingYard {
             if (by.startsWith("%") && by.endsWith("%")) {
                 System.out.println("doesn't Contains");
                 by = by.replaceAll("%", "");
-                return (!by.equalsIgnoreCase(toBeCompare));
+                return (!toBeCompare.contains(by));
             } else if (by.endsWith("%")) {
                 System.out.println("doesn't beginWith");
                 by = by.replaceAll("%", "");

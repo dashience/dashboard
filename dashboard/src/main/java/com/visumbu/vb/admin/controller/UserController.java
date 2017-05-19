@@ -18,6 +18,8 @@ import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.AgencySettings;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
@@ -133,14 +135,14 @@ public class UserController extends BaseController {
         }
         return userBean;
     }
-    
+
     @RequestMapping(value = "getPermission", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     LoginUserBean getPermission(HttpServletRequest request, HttpServletResponse response) {
         String user = getUser(request);
         LoginUserBean loginUserBean = new LoginUserBean();
         loginUserBean.setUsername(user);
-        loginUserBean.setPermission((Permission)request.getSession().getAttribute("permission"));
+        loginUserBean.setPermission((Permission) request.getSession().getAttribute("permission"));
         return loginUserBean;
     }
 
@@ -367,6 +369,7 @@ public class UserController extends BaseController {
         }
         return returnList;
     }
+
     @RequestMapping(value = "account", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Object createAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody Account account) {
@@ -462,6 +465,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agency", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Object createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
+       
         return userService.createAgency(agency);
     }
 
@@ -536,7 +540,7 @@ public class UserController extends BaseController {
     List getAgencyProductById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
         return userService.getAgencyProductById(agencyProductId);
     }
-    
+
     @RequestMapping(value = "productUpdateOrder/{agencyProductId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object updateWidgetUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
@@ -545,11 +549,30 @@ public class UserController extends BaseController {
         userService.productUpdateOrder(agencyProductId, productOrder);
         return null;
     }
-    
+
     @RequestMapping(value = "agencyProduct/{agencyProductId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     AgencyProduct deleteAgencyProductId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
         return userService.deleteAgencyProductId(agencyProductId);
+    }
+
+    @RequestMapping(value = "agencySetting", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    AgencySettings createAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
+     
+        return userService.createAgencySettings(agencySettings);
+    }
+
+    @RequestMapping(value = "agencySetting", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    AgencySettings updateAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
+        return userService.updateAgencySettings(agencySettings);
+    }
+    
+    @RequestMapping(value = "agencySetting/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    AgencySettings getAgencySettingsById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+        return userService.getAgencySettingsById(agencyId);
     }
 
     @ExceptionHandler
@@ -558,3 +581,4 @@ public class UserController extends BaseController {
         e.printStackTrace();
     }
 }
+ 
