@@ -360,7 +360,7 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li  ng-class="{ active: isSet(2) }">
+                <li ng-if="editChartType!='text'" ng-class="{ active: isSet(2) }">
                     <a ng-click="setTab(2)"> Filter
                     </a>
                 </li>

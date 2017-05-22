@@ -480,11 +480,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $(function () {
-        var start = moment().subtract(29, 'days');
-        var end = moment();
-        function cb(start, end) {
-            $('#daterange-btn span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-        }
         //Initialize Select2 Elements
         $(".select2").select2();
         //Datemask dd/mm/yyyy
@@ -500,8 +495,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         //Date range as a button
         $('#daterange-btn').daterangepicker(
                 {
-                    startDate: start,
-                    endDate: end,
+
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -525,9 +519,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
+                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
+                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
                     maxDate: new Date()
-                }, cb);
-        cb(start, end);
+                },
+                function (startDate, endDate) {
+                    $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                }
+        );
         //Date picker
         $('#datepicker').datepicker({
             autoclose: true
