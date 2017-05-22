@@ -19,7 +19,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         return $scope.tab === tabNum;
     };
     $scope.resetQueryBuilder = function () {
-
         $scope.dispQueryBuilder = true;
     }
 
@@ -372,8 +371,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
-        $scope.resetQueryBuilder();
-//        
+        $timeout(function () {
+            alert("Test Query")
+            $scope.resetQueryBuilder();
+        }, 50);
         if (chartType.type == 'text') {
             widget.dataSetId = '';
             widget.dataSourceId = '';
@@ -685,10 +686,10 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     }
-    $scope.filterData = function (filterQuery) {
-        $scope.jsonRules = filterQuery[0].list;
-        $scope.sqlQuery = filterQuery[0].query.sql;
-    }
+//    $scope.filterData = function (filterQuery) {
+//        $scope.jsonRules = filterQuery[0].list;
+//        $scope.sqlQuery = filterQuery[0].query.sql;
+//    }
 
     $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
@@ -1071,6 +1072,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" +
                 "</div>",
         link: function (scope, attrs) {
+            alert()
             scope.tableAggregations = JSON.parse(scope.aggregationsTypes);
             scope.tableGrouping = JSON.parse(scope.groupPriorities);
             scope.tableSorting = JSON.parse(scope.sortingFields);
@@ -1271,7 +1273,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
                     $rootScope.goBack();
-                    alert()
                     //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
             };
@@ -1398,9 +1399,12 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             filterData: '&',
         },
         link: function (scope, element, attr) {
+            alert("query")
+
             scope.columns = scope.queryData;
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
+            console.log(columnList);
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
                 var typeOfValue = value.type ? value.type : value.fieldType;
@@ -1443,6 +1447,17 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 $('#btn-set').on('click', function () {
                     $(element[0]).queryBuilder('setRules', scope.jsonBuild);
                 });
+//                var result = null;
+//                $('#btn-get').on('click', function () {
+//                    result = $(element[0]).queryBuilder('getRules');
+//                    console.log(JSON.stringify(result));
+//                    scope.buildJson = JSON.stringify(result);
+//                    if (!$.isEmptyObject(result)) {
+//                        alert(JSON.stringify(result, null, 2));
+//                    }
+//                    var sql_raw = $(element[0]).queryBuilder('getSQL', false, true);
+//                    scope.filterData({filterQuery: [{list: scope.buildJson, query: sql_raw}]});
+//                });
             });
         }
     };
