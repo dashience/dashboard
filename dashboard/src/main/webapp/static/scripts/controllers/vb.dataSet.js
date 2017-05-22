@@ -2002,7 +2002,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)">Save</button>' +
+                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
                 '</div>' +
                 '</div>' +
@@ -2138,6 +2138,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     function: dataSetFields.function
                 }
                 console.log(data)
+                dataSetFields.columnName="";
+                    dataSetFields.expression="";
+                    dataSetFields.fieldName=""
+                    dataSetFields.fieldType="";
+                    dataSetFields.format="";
+                    dataSetFields.function="";
             }
         }
     };
