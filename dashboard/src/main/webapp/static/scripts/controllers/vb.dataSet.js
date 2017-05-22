@@ -1971,14 +1971,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-9">' +
-                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="expressiondisabled"  ng-change="checkExpression(datasetColumn)" rows="3" style="width:350px;resize:none"></textarea>' +
+                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.function?true:false" rows="3" style="width:350px;resize:none"></textarea>' +
                 '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Function</label>' +
                 '<div class="col-md-3">' +
-                '<select  name="functionName" class="form-control" ng-model="datasetColumn.function" ng-disabled="functiondisabled" ng-change="checkFunction(datasetColumn)">' +
+                '<select  name="functionName" class="form-control" ng-model="datasetColumn.function" ng-disabled="datasetColumn.expression?true:false">' +
                 '<option>' +
                 'YOY' +
                 '</option>' +
@@ -1989,7 +1989,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<label class="col-md-2">Column</label>' +
                 '<div class="col-md-3">' +
-                '<select class="form-control" ng-disabled="functiondisabled" ng-model="datasetColumn.columnName">' +
+                '<select class="form-control" ng-disabled="datasetColumn.expression?true:false" ng-model="datasetColumn.columnName">' +
                 '<option ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
                 '{{dataSetColumn.fieldName}}' +
                 '</option>' +
@@ -2111,18 +2111,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 });
             };
             scope.functiondisabled = false;
-            scope.checkFunction = function (datasetColumn) {
-                if (datasetColumn.function) {
-                    scope.expressiondisabled = true;
-                } 
-
-            }
             scope.expressiondisabled = false;
-            scope.checkExpression = function (datasetColumn) {
-                if (datasetColumn.expression) {
-                    scope.functiondisabled = true;
-                }
-            }
             scope.clearFunction = function (datasetColumn) {
                 datasetColumn.fieldName = "";
                 datasetColumn.function = "";
