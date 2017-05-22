@@ -2074,65 +2074,95 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
                 return value;
             };
-            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
-                    "&dataSourceId=" + dataSourcePath.dataSourceId.id +
-                    "&dataSetId=" + dataSourcePath.id +
-                    "&accountId=" + $stateParams.accountId +
-                    "&dataSetReportName=" + dataSourcePath.reportName +
-                    "&timeSegment=" + dataSourcePath.timeSegment +
-                    "&filter=" + dataSourcePath.networkType +
-                    "&productSegment=" + dataSourcePath.productSegment +
-                    "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
-                    "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
-                    "&location=" + $stateParams.locationId +
-                    "&startDate=" + $stateParams.startDate +
-                    "&endDate=" + $stateParams.endDate +
-                    '&username=' + dataSourcePath.dataSourceId.userName +
-                    '&password=' + dataSourcePassword +
-                    '&url=' + dataSourcePath.url +
-                    '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
-                scope.ajaxLoadingCompleted = true;
-                scope.loadingTable = false;
-                scope.tableColumns = response.columnDefs;
-                scope.tableRows = response.data;
-                console.log(scope.tableColumns);
-                
-                 scope.columns = [];
-                console.log(scope.tableColumns.length);
-                for (var i = 0; i < scope.tableColumns.length; i++) {
-                    console.log(scope.i[i]);
-                    scope.columns.push({fieldName: scope.tableColumns[i].fieldName, displayName: scope.tableColumns[i].displayName, fieldType: scope.tableColumns[i].type, displayFormat: scope.tableColumns[i].displayFormat});
-                }
-                console.log(scope.columns);
-//                console.log(scope.columns)
-//                var tableColumnsData = {
-//                    datasetId: dataSourcePath.id,
-//                    tableColumns: scope.columns,
-//                    fieldType: "string",
-//                    formula: "visits+sessions",
-//                    column: "VisitsSessions"
-//                };
-//                console.log(tableColumnsData);
-//                $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: tableColumnsData}).success(function (response) {
-//                    console.log(response);
-//                });
-                
-                
+            scope.dataSetItems = function () {
+                $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
+                        "&dataSourceId=" + dataSourcePath.dataSourceId.id +
+                        "&dataSetId=" + dataSourcePath.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&dataSetReportName=" + dataSourcePath.reportName +
+                        "&timeSegment=" + dataSourcePath.timeSegment +
+                        "&filter=" + dataSourcePath.networkType +
+                        "&productSegment=" + dataSourcePath.productSegment +
+                        "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
+                        "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + dataSourcePath.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&url=' + dataSourcePath.url +
+                        '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+                    scope.ajaxLoadingCompleted = true;
+                    scope.loadingTable = false;
+                    scope.tableColumns = response.columnDefs;
+                    scope.tableRows = response.data;
+                    console.log(scope.tableColumns);
 //                console.log(scope.tableRows)
-            });
+                    scope.columns = [];
+                    console.log(scope.tableColumns.length);
+                    for (var i = 0; i < scope.tableColumns.length; i++) {
+                        console.log(scope.tableColumns[i]);
+                        var status = null;
+                        var expression = null;
+                        var functionName = null;
+                        if(typeof(scope.tableColumns[i].status) !== undefined){
+                            status = scope.tableColumns[i].status;
+                        }
+                        if(typeof(scope.tableColumns[i].expression) !== undefined){
+                            expression = scope.tableColumns[i].expression;
+                        }
+                        if(typeof(scope.tableColumns[i].functionName) !== undefined){
+                            functionName = scope.tableColumns[i].functionName;
+                        }
+                        var columnData = {
+                            id: scope.tableColumns[i].id, 
+                            fieldName: scope.tableColumns[i].fieldName,
+                            displayName: scope.tableColumns[i].displayName, 
+                            fieldType: scope.tableColumns[i].type, 
+                            displayFormat: scope.tableColumns[i].displayFormat,
+                            status: status,
+                            expression: expression,
+                            functionName: functionName
+                        }
+                        scope.columns.push(columnData);
+                    }
+                    console.log(scope.columns);
+//                    var tableColumnsData = {
+//                        datasetId: dataSourcePath.id,
+//                        tableColumns: scope.columns,
+//                    };
+//                    console.log(tableColumnsData);
+//                    $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: JSON.stringify(tableColumnsData)}).success(function (response) {
+//                        console.log(response);
+//                    });
+                });
+            }
+            scope.dataSetItems();
             scope.saveDatasetColumn = function (dataSetFields) {
 //                scope.datasetColumns=[];
 //                scope.datasetColumns.push(dataSetFields);
 //                console.log(scope.datasetColumns)
+                console.log(dataSetFields);
+                console.log(typeof(dataSetFields.function)+" "+typeof(dataSetFields.columnName));
+                
+                var functionName = null;
+                if (typeof(dataSetFields.function) !== "undefined" && typeof(dataSetFields.function) !== "undefined") {
+                    functionName = dataSetFields.function + "(" + dataSetFields.columnName + ")";
+                }
                 var data = {
-                    columnName: dataSetFields.columnName,
+                    datasetId: dataSourcePath.id,
+                    tableColumns : scope.columns,
                     expression: dataSetFields.expression,
                     fieldName: dataSetFields.fieldName,
+                    displayName: dataSetFields.fieldName,
                     fieldType: dataSetFields.fieldType,
-                    format: dataSetFields.format,
-                    function: dataSetFields.function
-                }
-                console.log(data)
+                    displayFormat: dataSetFields.format,
+                    functionName: functionName
+                };
+                console.log(data);
+                $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
+                    scope.dataSetItems();
+                });
             }
         }
     };

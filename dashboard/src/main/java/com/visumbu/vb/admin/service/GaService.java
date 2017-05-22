@@ -204,15 +204,15 @@ public class GaService {
             }
         }
         List<ColumnDef> columnDefs = new ArrayList<>();
-        List<Map<String, Object>> data = new ArrayList<>();
+        List<Map<String, Object>> originalData = new ArrayList<>();
         System.out.println("column.size() ---> " + column.size());
-        if (column.size() > 0) {
-            columnDefs = (List<ColumnDef>) column.get(0);
-        }
+//        if (column.size() > 0) {
+//            columnDefs = (List<ColumnDef>) column.get(0);
+//        }
         System.out.println("columnData.size() ---> " + columnData.size());
 
         if (columnData.size() > 0) {
-            data = (List) columnData.get(0);
+            originalData = (List) columnData.get(0);
         }
 
         System.out.println("dataSetId ---> " + dataSetId);
@@ -222,35 +222,121 @@ public class GaService {
         String fieldType;
         String expression;
         String displayFormat;
+        String formula;
+        String status;
+        String functionName;
+        Integer id;
 
         System.out.println("datasetColumnList --> " + datasetColumnList);
         for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
             DatasetColumns datasetColumn = datasetColumns.next();
             System.out.println("datasetcolumn.getExpression() ----> " + datasetColumn.getExpression());
-            if (datasetColumn.getExpression() != null && !datasetColumn.getExpression().trim().isEmpty()) {
+            id = datasetColumn.getId();
+            fieldName = datasetColumn.getFieldName();
+            displayName = datasetColumn.getDisplayName();
+            fieldType = datasetColumn.getFieldType();
+            displayFormat = datasetColumn.getDisplayFormat();
+            formula = datasetColumn.getExpression();
+            status = datasetColumn.getStatus();
+            functionName = datasetColumn.getFunctionName();
+            Map<String, Object> dataPair = new HashMap();
 
-                fieldName = datasetColumn.getFieldName();
-                displayName = datasetColumn.getDisplayName();
-                fieldType = datasetColumn.getFieldType();
-                expression = datasetColumn.getExpression();
-                displayFormat = datasetColumn.getDisplayFormat();
+            columnDefs.add(new ColumnDef(id, fieldName, fieldType, displayName, null, displayFormat, status, formula, functionName));
+            if (functionName != null && !functionName.trim().isEmpty()) {
+                String funcName = functionName;
+                
+                funcName = funcName.replaceAll("\\s+", "");
+                System.out.println("funcName ---> "+funcName);
+                StringTokenizer tokenizer = new StringTokenizer(funcName, "()");
+                String[] tokenArrayFunc = new String[tokenizer.countTokens()];
+                int i = -1;
+                while (tokenizer.hasMoreTokens()) {
+                    String token = (String) tokenizer.nextToken().trim();
+                    if (!token.equalsIgnoreCase("\\s+")) {
+                        System.out.println("token name 1---> " + token);
+                        tokenArrayFunc[++i] = token;
+                    }
+                }
+                Date strtDate = null, lastDate = null;
+                if (tokenArrayFunc[0].equalsIgnoreCase("yoy")) {
+                    strtDate = new DateTime(startDate).minusYears(1).toDate();
+                    lastDate = new DateTime(endDate).minusYears(1).toDate();
+                    System.out.println("yoy ---> ");
+                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+                } else if (tokenArrayFunc[0].equalsIgnoreCase("mom")) {
+                    strtDate = new DateTime(startDate).minusMonths(1).toDate();
+                    lastDate = new DateTime(endDate).minusMonths(1).toDate();
+                    System.out.println("mom ---> ");
+                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+                } else if (tokenArrayFunc[0].equalsIgnoreCase("wow")) {
+                    strtDate = new DateTime(startDate).minusWeeks(1).toDate();
+                    lastDate = new DateTime(endDate).minusWeeks(1).toDate();
+                    System.out.println("wow ---> ");
+                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+                }
+                GetReportsResponse gaDataOver = getGenericData(analyticsProfileId, strtDate, lastDate, null, null, metricsList, dimensions, productSegments, filter);
+                HashMap<String, List<Map<String, Object>>> dataMapForOver = (HashMap) getResponseAsMap(gaDataOver);
+                Iterator itYoy = dataMapForOver.entrySet().iterator();
+
+                List columnOver = new ArrayList<>();
+                List columnDataOver = new ArrayList<>();
+
+                while (itYoy.hasNext()) {
+                    Map.Entry pair = (Map.Entry) itYoy.next();
+                    if (pair.getKey().equals("data")) {
+                        columnDataOver.add(pair.getValue());
+                    } else {
+                        columnOver.add(pair.getValue());
+                    }
+                }
+                List<ColumnDef> columnDefsOver = new ArrayList<>();
+                List<Map<String, Object>> dataOver = new ArrayList<>();
+                System.out.println("columnYoy.size() ---> " + columnOver.size());
+                if (columnOver.size() > 0) {
+                    columnDefsOver = (List<ColumnDef>) columnOver.get(0);
+                }
+                System.out.println("columnDataYoy.size() ---> " + columnDataOver.size());
+
+                if (columnDataOver.size() > 0) {
+                    dataOver = (List) columnDataOver.get(0);
+                }
+                Map<String, Object> dataPairYoy = new HashMap();
+                if (columnDataOver.size() > 0) {
+                    int list = 0;
+                    for (Iterator<Map<String, Object>> iterator = dataOver.iterator(); iterator.hasNext();) {
+                        dataPairYoy = (Map<String, Object>) iterator.next();
+                        Map<String, Object> dataPairMap = new HashMap<>();
+                        dataPairMap = originalData.get(list++);
+                        System.out.println("yoy --> " +dataPairYoy.get("userType"));
+                        System.out.println("current year --->" +dataPairMap.get("userType"));
+                        String val = dataPairYoy.get(tokenArrayFunc[1]) + "";
+                        System.out.println("valOver ---> " + val);
+                        System.out.println("fieldName ---> " + fieldName);
+                        System.out.println("dataPairMap ---> " + dataPairMap);
+                        dataPairMap.put(fieldName, val);
+                        System.out.println("originalData ---> " + originalData);
+                    }
+                }
+            } else if (formula != null && !formula.trim().isEmpty()) {
+                expression = formula;
+                expression = expression.replaceAll("\\s+", "");
                 StringTokenizer tokenizer = new StringTokenizer(expression, "([+*/-()1234567890])");
                 String[] tokenArray = new String[tokenizer.countTokens()];
                 int i = -1;
                 while (tokenizer.hasMoreTokens()) {
-                    String token = (String) tokenizer.nextToken();
-                    System.out.println("token name ---> " + token);
-                    tokenArray[++i] = token;
+                    String token = (String) tokenizer.nextToken().trim();
+                    if (!token.equalsIgnoreCase("\\s+")) {
+                        System.out.println("token name 1---> " + token);
+                        tokenArray[++i] = token;
+                    }
                 }
 
                 String postFix;
                 double result = 0;
                 String resultStr = null;
-
-                Map<String, Object> dataPair = new HashMap();
-
+                System.out.println("originaldata ---> " + originalData);
                 if (columnData.size() > 0) {
-                    for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                    for (Iterator<Map<String, Object>> iterator = originalData.iterator(); iterator.hasNext();) {
                         dataPair = (Map<String, Object>) iterator.next();
                         String valueExpression = datasetColumn.getExpression();
                         System.out.println("dataPair -----> " + dataPair);
@@ -272,10 +358,14 @@ public class GaService {
                         System.out.println("field Name ---> " + fieldName);
                         System.out.println("resultstr ---> " + resultStr);
                     }
-                    columnDefs.add(new ColumnDef(fieldName, fieldType, displayName, null, displayFormat));
+                    System.out.println("id ---> " + id);
                 }
             }
+
         }
+//        System.out.println("originalData --> " + originalData);
+        List<Map<String, Object>> data = new ArrayList<>(originalData);
+
         returnMap.put("columnDefs", columnDefs);
         returnMap.put("data", data);
         return returnMap;

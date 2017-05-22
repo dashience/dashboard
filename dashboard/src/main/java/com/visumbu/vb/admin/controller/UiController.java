@@ -385,16 +385,16 @@ public class UiController extends BaseController {
         return uiService.update(dataSet);
     }
     
-    @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    DatasetColumns createColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
-        return uiService.createColumns(dataSet);
-    }
+//    @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    DatasetColumns createDataSetColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
+//        return uiService.createDataSetColumns(dataSetColumn);
+//    }
     
-    @RequestMapping(value = "dataSetColumns", method = RequestMethod.PUT, produces = "application/json")
+    @RequestMapping(value = "dataSetFormulaColumns", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DatasetColumns updateColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
-        return uiService.updateColumns(dataSet);
+    List<DatasetColumns> createDataSetFormulaColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
+        return uiService.createDataSetFormulaColumn(dataSetColumn);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")

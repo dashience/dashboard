@@ -11,6 +11,7 @@ package com.visumbu.vb.bean;
  */
 public class ColumnDef {
 
+    private Integer id;
     private String fieldName;
     private String type;
     private String sortPriority;
@@ -19,6 +20,9 @@ public class ColumnDef {
     private String displayName;
     private Integer groupPriority;
     private String displayFormat;
+    private String functionName;
+    private String expression;
+    private String status;
 
     public static class Aggregation {
 
@@ -39,7 +43,9 @@ public class ColumnDef {
         public static final String CPageE = "cpagee"; // cost/page engagements
         public static final String CPP = "cpp";  // cost/posts
     }
+
     public static class Format {
+
         public static final String CURRENCY = "$,.2f";
         public static final String PERCENTAGE = ".2%";
         public static final String DECIMAL1 = ",.1f";
@@ -52,7 +58,7 @@ public class ColumnDef {
         this.type = type;
         this.displayName = displayName;
     }
-    
+
     public ColumnDef(String fieldName, String type, String displayName, Integer groupPriority) {
         this.fieldName = fieldName;
         this.type = type;
@@ -67,14 +73,27 @@ public class ColumnDef {
         this.displayName = displayName;
         this.displayFormat = displayFormat;
     }
-    
-    public ColumnDef(String fieldName,String type, String displayName, String agregationFunction) {
+
+    public ColumnDef(Integer id, String fieldName, String type, String displayName, String agregationFunction, String displayFormat, String status, String expression,String functionName) {
+        this.id = id;
+        this.fieldName = fieldName;
+        this.type = type;
+        this.agregationFunction = agregationFunction;
+        this.displayName = displayName;
+        this.displayFormat = displayFormat;
+        this.status = status;
+        this.expression = expression;
+        this.functionName = functionName;
+    }
+
+    public ColumnDef(String fieldName, String type, String displayName, String agregationFunction) {
         this.fieldName = fieldName;
         this.agregationFunction = agregationFunction;
         this.displayName = displayName;
     }
 
-    public ColumnDef(String fieldName, String sortPriority, String sortOrder, String agregationFunction, String displayName, Integer groupPriority, String displayFormat) {
+    public ColumnDef(Integer id, String fieldName, String type, String sortPriority, String sortOrder, String agregationFunction, String displayName, Integer groupPriority, String displayFormat) {
+        this.id = id;
         this.fieldName = fieldName;
         this.type = type;
         this.sortPriority = sortPriority;
@@ -86,6 +105,14 @@ public class ColumnDef {
     }
 
     public ColumnDef() {
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getType() {
@@ -103,7 +130,7 @@ public class ColumnDef {
     public void setDisplayFormat(String displayFormat) {
         this.displayFormat = displayFormat;
     }
-    
+
     public String getFieldName() {
         return fieldName;
     }
@@ -151,10 +178,34 @@ public class ColumnDef {
     public void setGroupPriority(Integer groupPriority) {
         this.groupPriority = groupPriority;
     }
+    
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     @Override
     public String toString() {
         return "ColumnDef{" + "fieldName=" + fieldName + ", type=" + type + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + '}';
     }
-    
+
 }
