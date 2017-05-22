@@ -371,10 +371,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
-        $timeout(function () {
-            alert("Test Query")
-            $scope.resetQueryBuilder();
-        }, 50);
+//        $timeout(function () {
+//            $scope.resetQueryBuilder();
+//        }, 50);
         if (chartType.type == 'text') {
             widget.dataSetId = '';
             widget.dataSourceId = '';
@@ -750,12 +749,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     }
 
     $scope.save = function (widget) {
-        if (widget.chartType != 'text') {
-            if ($('.query-builder').queryBuilder('getRules')) {
-                $scope.jsonData = JSON.stringify($('.query-builder').queryBuilder('getRules'));
-                $scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
-            }
-        }
+//        if (widget.chartType != 'text') {
+//            if ($('.query-builder').queryBuilder('getRules')) {
+//                $scope.jsonData = JSON.stringify($('.query-builder').queryBuilder('getRules'));
+//                $scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
+//            }
+//        }
         try {
             $scope.customStartDate = widget.dateRangeName !== "Select Date Duration" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName !== "Select Date Duration" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -831,8 +830,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             isGridLine: widget.isGridLine,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
             customEndDate: $scope.customEndDate, //widget.customEndDate
-            jsonData: $scope.jsonData ? $scope.jsonData : null,
-            queryFilter: $scope.queryFilter ? $scope.queryFilter : null
+//            jsonData: $scope.jsonData ? $scope.jsonData : null,
+//            queryFilter: $scope.queryFilter ? $scope.queryFilter : null
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             console.log(response)
@@ -1072,7 +1071,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" +
                 "</div>",
         link: function (scope, attrs) {
-            alert()
             scope.tableAggregations = JSON.parse(scope.aggregationsTypes);
             scope.tableGrouping = JSON.parse(scope.groupPriorities);
             scope.tableSorting = JSON.parse(scope.sortingFields);
@@ -1188,12 +1186,12 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 }
             };
             scope.save = function () {
-                if (widget.chartType != 'text') {
-                    if ($('.query-builder').queryBuilder('getRules')) {
-                        scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
-                        scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
-                    }
-                }
+//                if (widget.chartType != 'text') {
+//                    if ($('.query-builder').queryBuilder('getRules')) {
+//                        scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
+//                        scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
+//                    }
+//                }
                 widget.dateRangeName = $("#dateRangeName").text().trim();
                 if (widget.dateRangeName === "Custom") {
                     scope.lastNDays = "";
@@ -1267,8 +1265,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     customEndDate: scope.customEndDate,
                     content: widget.content,
                     width: widget.width,
-                    jsonData: scope.jsonRules ? scope.jsonRules : null,
-                    queryFilter: scope.queryFilter ? scope.queryFilter : null
+//                    jsonData: scope.jsonRules ? scope.jsonRules : null,
+//                    queryFilter: scope.queryFilter ? scope.queryFilter : null
                 };
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
@@ -1399,8 +1397,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             filterData: '&',
         },
         link: function (scope, element, attr) {
-            alert("query")
-
             scope.columns = scope.queryData;
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
