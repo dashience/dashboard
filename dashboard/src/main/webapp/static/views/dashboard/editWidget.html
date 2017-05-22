@@ -670,14 +670,14 @@
                 </div>
             </div>
             <div ng-show="isSet(2)" class="license">
-                <div class="col-lg-12" ng-if="dispQueryBuilder == true;">
+                <div class="col-lg-12" ng-show="dispQueryBuilder == true;">{{dispQueryBuilder}}
                     <div jquery-Query-Builder query-Data='{{widget}}' filter-Data="filterData(filterQuery)"></div>
                     <div class='panel-footer'>
                         <div class="pull-right">
 
                             <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
                             <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
-                            <!--<button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>-->
+                            <button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>
                         </div>
                         <div>
                             <!--<button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>-->
