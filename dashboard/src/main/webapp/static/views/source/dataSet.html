@@ -137,24 +137,25 @@
 
                             <div ng-show="dataSetFlag">
                                 <label>Report</label>
-                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegemens(); refreshDataSet(dataSet)">
+                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(dataSet); refreshDataSet(dataSet)">
                                     <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                    <option ng-repeat="reportPerformances in report track by $index" value="{{reportPerformances.type}}">
+                                    <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
                                         {{reportPerformances.name}}</option>
                                 </select>
 
                                 <label ng-show="timeSegFlag">Time Segments</label>
 
                                 <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
-                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                    <option value="" selected="selected" ng-disabled="false">None</option>
                                     <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
                                         {{timeSegments.name}}</option>
                                 </select>
-                                
+<!--<select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)" ng-options="timeSegments.type for timeSegments in timeSegment"></select>-->
+                                <!--ng-if="dataSet.reportName == 'campaignPerformance'"-->
                                 <!--<label ng-if="!(dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>-->
-                                <label ng-if="dataSet.reportName == 'campaignPerformance'">Product Segments</label>
-                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);" ng-if="dataSet.reportName == 'campaignPerformance'">
-                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                <label ng-show="productSegFlag" >Product Segments</label>
+                                <select ng-show ="productSegFlag" class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);">
+                                    <option value="" selected="selected" ng-disabled="false">None</option>
                                     <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
                                 </select>
 <!--                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">

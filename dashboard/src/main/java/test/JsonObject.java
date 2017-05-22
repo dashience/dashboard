@@ -25,6 +25,12 @@ public class JsonObject {
         printResult();
     }
     
+    public static String printObject(){
+        JSONObject object=(JSONObject)getObject();
+        
+        return null;
+    }
+    
     public static Object objectParsing() {
         JSONObject object=(JSONObject) getObject();
         System.out.println("Company name==>"+object.get("name"));

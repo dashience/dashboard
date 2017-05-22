@@ -258,6 +258,8 @@ public class FacebookOrganic {
 
     public static List<Map<String, String>> getViewsByDevice() throws ParseException {
         String fbUrl = "https://graph.facebook.com/185042698207211/insights?pretty=0&until=1476489600&metric=page_views_by_site_logged_in_unique&period=days_28&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
+        
+//        String fbUrl="https://graph.facebook.com/390068281142490/insights?pretty=0&until=2017-05-19&metric=page_views_by_site_logged_in_unique&period=days_28&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
         String data = Rest.getData(fbUrl);
         JSONParser parser = new JSONParser();
         Object jsonObj = parser.parse(data);
@@ -267,28 +269,32 @@ public class FacebookOrganic {
         List<Map> deviceData = (List<Map>) arrayData.get(0).get("values");
         List<Map<String, Object>> valueData = new ArrayList();
         System.out.println("*********************************");
-        for (Iterator<Map> iterator = deviceData.iterator(); iterator.hasNext();) {
-            Map valuesData = iterator.next();
-            valueData.add((Map<String, Object>) valuesData.get("value"));
-        }
-
-        Map<String, Object> listData = new HashMap();
-        listData.put("data", valueData);
-        List<Map> deviceViewData = (List<Map>) listData.get("data");
-        Map<String, String> returnMap = new HashMap();
-        List<Map<String, String>> viewByDeviceListData = new ArrayList<>();
-        System.out.println("*********************************");
-        System.out.println(deviceViewData);
-        for (Iterator<Map> iterator = deviceViewData.iterator(); iterator.hasNext();) {
-            Map fbViewDeviceData = iterator.next();
-            returnMap.put("OTHER", fbViewDeviceData.get("OTHER") + "");
-            returnMap.put("WWW", fbViewDeviceData.get("WWW") + "");
-            returnMap.put("API", fbViewDeviceData.get("API") + "");
-            returnMap.put("MOBILE", fbViewDeviceData.get("MOBILE") + "");
-            viewByDeviceListData.add(returnMap);
-        }
-        System.out.println(viewByDeviceListData);
-        return viewByDeviceListData;
+        int objectLength=deviceData.size()-1;
+        Map<String,Object> objectArray=(Map<String,Object>) deviceData.get(objectLength).get("value");
+        System.out.println(objectArray);
+//        for (Iterator<Map> iterator = deviceData.iterator(); iterator.hasNext();) {
+//            Map valuesData = iterator.next();
+//            valueData.add((Map<String, Object>) valuesData.get("value"));
+//        }
+//
+//        Map<String, Object> listData = new HashMap();
+//        listData.put("data", valueData);
+//        List<Map> deviceViewData = (List<Map>) listData.get("data");
+//        Map<String, String> returnMap = new HashMap();
+//        List<Map<String, String>> viewByDeviceListData = new ArrayList<>();
+//        System.out.println("*********************************");
+//        System.out.println(deviceViewData);
+//        for (Iterator<Map> iterator = deviceViewData.iterator(); iterator.hasNext();) {
+//            Map fbViewDeviceData = iterator.next();
+//            returnMap.put("OTHER", fbViewDeviceData.get("OTHER") + "");
+//            returnMap.put("WWW", fbViewDeviceData.get("WWW") + "");
+//            returnMap.put("API", fbViewDeviceData.get("API") + "");
+//            returnMap.put("MOBILE", fbViewDeviceData.get("MOBILE") + "");
+//            viewByDeviceListData.add(returnMap);
+//        }
+//        System.out.println(viewByDeviceListData);
+//        return viewByDeviceListData;
+return null;
     }
 
     // ***********************************************************
@@ -330,7 +336,7 @@ public class FacebookOrganic {
 
     public static void main(String[] argv) throws ParseException {
 //        List<Map<String, String>> recentPosts = getTotalOrganicLikes();
-        List<Map<String, String>> recentPosts = (List<Map<String, String>>) getAdSetDetails();
+        List<Map<String, String>> recentPosts = (List<Map<String, String>>) getViewsByDevice();
 //        System.out.println(recentPosts);
     }
 

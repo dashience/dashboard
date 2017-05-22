@@ -940,7 +940,8 @@ public class ProxyController {
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
         log.debug("Start Date ---- " + startDate);
-        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, facebookOrganicAccountIdInt, startDate, endDate, timeSegment,productSegment);
+        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
+                facebookOrganicAccountIdInt, startDate, endDate, timeSegment,productSegment);
         log.debug(data);
         System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
         System.out.println(data);
@@ -1005,7 +1006,7 @@ public class ProxyController {
             Map<String, String> mapData = iterator.next();
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
-                String value = entrySet.getValue();
+                String value = String.valueOf(entrySet.getValue());
                 if (NumberUtils.isNumber(value)) {
                     columnDefs.add(new ColumnDef(key, "number", key));
                 } else if (DateUtils.convertToDate(value) != null) {

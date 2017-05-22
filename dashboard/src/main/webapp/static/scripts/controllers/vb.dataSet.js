@@ -2,6 +2,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
     $scope.timeSegFlag = false;
+    $scope.productSegFlag = false;
+//    $scope.dataSet.timeSegment  = 'None'//{name: 'None', type: 'none'}
     /*
      * 
      * All
@@ -114,10 +116,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
                 {
@@ -128,10 +130,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'network search partner',
                     name: 'network search partner'
                 },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         },
         {
@@ -154,20 +156,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
                 {
                     type: 'device',
                     name: 'device'
                 },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         },
         {
@@ -190,20 +192,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
                 {
                     type: 'device',
                     name: 'device'
                 },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         },
         {
@@ -226,10 +228,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
                 {
@@ -262,20 +264,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
                 {
                     type: 'device',
                     name: 'device'
                 },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         }, {
             type: 'agePerformance',
@@ -297,20 +299,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         }, {
             type: 'genderPerformance',
@@ -332,20 +334,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         }, {
             type: 'postPerformance',
@@ -367,20 +369,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         },
 //        {
@@ -455,205 +457,211 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                }
 //            ]
 //        },
-         {
-            type: 'totalOrganicLikes',
-            name: 'totalOrganicLikes',
+//        {
+//            type: 'totalOrganicLikes',
+//            name: 'totalOrganicLikes',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                },
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
+//            ],
+//            productSegments: [
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
+//            ]
+//        }, 
+//        {
+//            type: 'totalPageViews',
+//            name: 'totalPageViews',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                },
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
+//            ],
+//            productSegments: [
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
+//            ]
+//        }, 
+        {
+            type: 'engagements',
+            name: 'Engagements',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
 //                {
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         }, {
-            type: 'totalPageViews',
-            name: 'totalPageViews',
+            type: 'reach',
+            name: 'Reach',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
 //                {
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         }, {
-            type: 'totalEngagements',
-            name: 'totalEngagements',
+            type: 'pageLikes',
+            name: 'pageLikes',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
 //                {
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'totalReach',
-            name: 'totalReach',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
+                    type: 'city',
+                    name: 'city'
                 },
 //                {
-//                    type: 'year',
-//                    name: 'year'
-//                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'pageLikesByCity',
-            name: 'pageLikesByCity',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
         }, {//pageViewsByDevice
-            type: 'pageViewsByDay',
-            name: 'pageViewsByDay',
+            type: 'pageViews',
+            name: 'pageViews',
             timeSegments: [
                 {
                     type: 'day',
                     name: 'day'
                 },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
 //                {
 //                    type: 'year',
 //                    name: 'year'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
                 {
@@ -661,116 +669,86 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'device'
                 },
                 {
-                    type: 'none',
-                    name: 'none'
-                }
+                    type: 'gender',
+                    name: 'gender'
+                },
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ]
         }, {
-            type: 'pageViewsByDevice',
-            name: 'pageViewsByDevice',
+            type: 'pageReactions',
+            name: 'pageReactions',
             timeSegments: [
                 {
                     type: 'day',
                     name: 'day'
                 },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
 //                {
-//                    type: 'year',
-//                    name: 'year'
+//                    type: 'week',
+//                    name: 'week'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                },
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
             ],
             productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'pageReactionsTotal',
-            name: 'pageReactionsTotal',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
 //                {
-//                    type: 'year',
-//                    name: 'year'
+//                    type: 'device',
+//                    name: 'device'
 //                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'pageViewsByAgeGender',
-            name: 'pageViewsByAgeGender',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
 //                {
-//                    type: 'year',
-//                    name: 'year'
-//                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
+//                    type: 'none',
+//                    name: 'none'
+//                }
             ]
-        }
+        },
+//        {
+//            type: 'pageViewsByAgeGender',
+//            name: 'pageViewsByAgeGender',
+//            timeSegments: [
+//                {
+//                    type: 'day',
+//                    name: 'day'
+//                },
+//                {
+//                    type: 'week',
+//                    name: 'week'
+//                },
+//                {
+//                    type: 'month',
+//                    name: 'month'
+//                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                },
+//                {
+//                    type: 'none',
+//                    name: 'None'
+//                }
+//            ],
+//            productSegments: [
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+//                {
+//                    type: 'none',
+//                    name: 'none'
+//                }
+//            ]
+//        }
     ];
 //    $scope.pinterestPerformance = [ 
 //        {
@@ -1841,7 +1819,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-    $scope.getTimeSegemens = function () {
+    
+    
+//    $scope.dataSet={timeSegment:'none'};
+    
+    
+    $scope.getTimeSegements = function () {
 
 
 
@@ -1861,18 +1844,26 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
-            $scope.nwStatusFlag = false;
-            if ($scope.dataSet.reportName == "totalOrganicLikes" || $scope.dataSet.reportName == "totalPageViews" ||
-                    $scope.dataSet.reportName == "totalEngagements" || $scope.dataSet.reportName == "totalReach" ||
-                    $scope.dataSet.reportName == "pageLikesByCity" || $scope.dataSet.reportName == "pageViewsByDay" ||
-                    $scope.dataSet.reportName == "pageViewsByDevice" || $scope.dataSet.reportName == "pageReactionsTotal" ||
-                    $scope.dataSet.reportName == "pageViewsByAgeGender")
-            {
-                console.log("hello ");
-                $scope.timeSegFlag = false;
-            }else {
+            console.log("************************************************");
+            console.log($scope.productSegment);
+            if ($scope.dataSet.reportName!=="") {
+                $scope.nwStatusFlag = false;
                 $scope.timeSegFlag = true;
+                $scope.productSegFlag = true;
             }
+
+
+//            if ($scope.dataSet.reportName == "totalOrganicLikes" || $scope.dataSet.reportName == "totalPageViews" ||
+//                    $scope.dataSet.reportName == "totalEngagements" || $scope.dataSet.reportName == "totalReach" ||
+//                    $scope.dataSet.reportName == "pageLikesByCity" || $scope.dataSet.reportName == "pageViewsByDay" ||
+//                    $scope.dataSet.reportName == "pageViewsByDevice" || $scope.dataSet.reportName == "pageReactionsTotal" ||
+//                    $scope.dataSet.reportName == "pageViewsByAgeGender")
+//            {
+//                console.log("hello ");
+//                $scope.timeSegFlag = false;
+//            }else {
+//                $scope.timeSegFlag = true;
+//            }
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
         {
@@ -1923,6 +1914,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
         }
     };
+    
+//    $scope.dataSet.timeSegment = 'none'
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -1953,7 +1946,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     };
     $scope.saveDataSet = function () {
-        var dataSet = $scope.dataSet;
+        
+        var dataSetList = $scope.dataSet;
+        dataSetList.timeSegment === ""?'none':dataSetList.timeSegment;
+        
+        var dataSet = dataSetList;//$scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
         console.log(dataSet);
 //        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
@@ -2126,8 +2123,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     //setTableFn: '&',
                     // tableFooter:'@'
         },
-        template: '<div ng-show="showErrorMsg">{{errorMsg}}</div>'+
-                '<div ng-hide="showErrorMsg">'+
+        template: '<div ng-show="showErrorMsg">{{errorMsg}}</div>' +
+                '<div ng-hide="showErrorMsg">' +
                 '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<table ng-if="ajaxLoadingCompleted" class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
@@ -2189,14 +2186,30 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.EditColumnHeader = true;
                 scope.isEditColumn = false;
             }
+            
+            
+            var setTimeSegment, setProductSegment;
+            
+            if(dataSourcePath.timeSegment){
+                setTimeSegment = dataSourcePath.timeSegment
+            }else{
+                setTimeSegment = 'none'
+            }
+            if(dataSourcePath.productSegment){
+                setProductSegment = dataSourcePath.productSegment
+            }else{
+                setProductSegment = 'none'
+            }
+            
+            
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&dataSetId=" + dataSourcePath.id +
                     "&accountId=" + $stateParams.accountId +
                     "&dataSetReportName=" + dataSourcePath.reportName +
-                    "&timeSegment=" + dataSourcePath.timeSegment +
+                    "&timeSegment=" + setTimeSegment +
                     "&filter=" + dataSourcePath.networkType +
-                    "&productSegment=" + dataSourcePath.productSegment +
+                    "&productSegment=" + setProductSegment +
                     "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
                     "&location=" + $stateParams.locationId +
