@@ -1933,19 +1933,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
 //                '<div class="pull-right">' +
-                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet{{col.displayName}}"><i class="fa fa-plus"></i></button>' +
-                
-//                '</div>' +
-                '<table class="table table-responsive table-bordered table-l2t">' +
-                '<thead><tr>' +
-                '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
-                '{{col.displayName}}' +
-                '<button ng-if="datasetColumn.fieldName" type="button" class="btn btn-default" data-toggle="modal" data-target="#dataSet{{col.displayName}}"><i class="fa fa-pencil"></i></button>'+
-                '<button ng-if="datasetColumn.fieldName" type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>'+
-                '</th>' +
-                '</tr></thead>' +
-                '<tbody ng-repeat="tableRow in tableRows">' +
-                '<div id="dataSet{{col.displayName}}" class="modal fade" role="dialog">' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataset"><i class="fa fa-plus"></i></button>' +
+                '<div id="dataset" class="modal fade" role="dialog">' +
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
@@ -1989,12 +1978,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="form-group">' +
                 '<label class="col-md-3">Function</label>' +
                 '<div class="col-md-3">' +
-                '<select  name="functionName" class="form-control" ng-model="datasetColumn.function" ng-disabled="datasetColumn.expression?true:false">' +
-                '<option>' +
-                'YOY' +
-                '</option>' +
-                '<option>' +
-                'MOM' +
+                '<select  name="functionName" class="form-control" ng-model="datasetColumn.functionName" ng-disabled="datasetColumn.expression?true:false">' +
+                '<option ng-repeat="functionType in functionTypes" value={{functionType.name}}>' +
+                '{{functionType.name}}' +
                 '</option>' +
                 '</select>' +
                 '</div>' +
@@ -2019,6 +2005,90 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</div>' +
                 '</div>' +
+                '</div>' +
+                '<table class="table table-responsive table-bordered table-l2t">' +
+                '<thead><tr>' +
+                '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
+                '{{col.fieldName}}' +
+                //Edit
+                '<div>' +
+                '<button ng-if="col.functionName != null|| col.expression != null" type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#dataSetColumn" ng-click="editDataset(col)"><i class="fa fa-pencil"></i></button>' +
+                '<div id="dataSetColumn" class="modal fade" role="dialog">' +
+                '<div class="modal-dialog">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+                '<h4 class="modal-title">Derived Column</h4>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                '<form name="dataSetForm" class="form-horizontal">' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Name</label>' +
+                '<div class="col-md-9">' +
+                '<input class="form-control" ng-model="datasetColumn.fieldName" ng-change="checkFieldName(datasetColumn.fieldName)" type="text">' +
+                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Type</label>' +
+                '<div class="col-md-3">' +
+                '<select class="form-control" ng-model="datasetColumn.fieldType">' +
+                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
+                '{{fieldType.name}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<label class="col-md-2">Format</label>' +
+                '<div class="col-md-4">' +
+                '<select class="form-control" ng-model="datasetColumn.format">' +
+                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
+                '{{formatType.name}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Expression</label>' +
+                '<div class="col-md-9">' +
+                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.function?true:false" rows="3" style="width:350px;resize:none"></textarea>' +
+                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Function</label>' +
+                '<div class="col-md-3">' +
+                '<select  name="functionName" class="form-control" ng-model="datasetColumn.functionName" ng-disabled="datasetColumn.expression?true:false">' +
+                '<option ng-repeat="functionType in functionTypes" value={{functionType.name}}>' +
+                '{{functionType.name}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<label class="col-md-2">Column</label>' +
+                '<div class="col-md-3">' +
+                '<select class="form-control" ng-disabled="datasetColumn.expression?true:false" ng-model="datasetColumn.columnName">' +
+                '<option ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
+                '{{dataSetColumn.fieldName}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<div class="col-md-1">' +
+                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearFunction(datasetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '</form>' +
+                '</div>' +
+                '<div class="modal-footer">' +
+                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '<button ng-if="col.functionName != null|| col.expression != null" type="button" ng-click=deleteDataset(col) class="btn btn-default btn-xs"><i class="fa fa-trash"></i></button>' +
+                '</th>' +
+                '</tr></thead>' +
+                '<tbody ng-repeat="tableRow in tableRows">' +
                 '<tr class="text-capitalize">' +
                 '<td ng-repeat="col in tableColumns">' +
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
@@ -2043,6 +2113,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: "Decimal2", value: ',.2f'},
                 {name: "Time", value: 'H:M:S'},
                 {name: "Star Rating", value: 'starRating'}
+            ];
+            scope.functionTypes = [
+                {name: "YOY", value: 'yoy'},
+                {name: "MOM", value: 'mom'},
+                {name: 'WOW', value: 'wow'}
             ];
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
@@ -2078,54 +2153,88 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
                 return value;
             };
-            $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
-                    "&dataSourceId=" + dataSourcePath.dataSourceId.id +
-                    "&dataSetId=" + dataSourcePath.id +
-                    "&accountId=" + $stateParams.accountId +
-                    "&dataSetReportName=" + dataSourcePath.reportName +
-                    "&timeSegment=" + dataSourcePath.timeSegment +
-                    "&filter=" + dataSourcePath.networkType +
-                    "&productSegment=" + dataSourcePath.productSegment +
-                    "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
-                    "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
-                    "&location=" + $stateParams.locationId +
-                    "&startDate=" + $stateParams.startDate +
-                    "&endDate=" + $stateParams.endDate +
-                    '&username=' + dataSourcePath.dataSourceId.userName +
-                    '&password=' + dataSourcePassword +
-                    '&url=' + dataSourcePath.url +
-                    '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
-                scope.ajaxLoadingCompleted = true;
-                scope.loadingTable = false;
-                scope.tableColumns = response.columnDefs;
-                scope.tableRows = response.data;
-                console.log(scope.tableColumns);
+            scope.dataSetItems = function () {
+                $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
+                        "&dataSourceId=" + dataSourcePath.dataSourceId.id +
+                        "&dataSetId=" + dataSourcePath.id +
+                        "&accountId=" + $stateParams.accountId +
+                        "&dataSetReportName=" + dataSourcePath.reportName +
+                        "&timeSegment=" + dataSourcePath.timeSegment +
+                        "&filter=" + dataSourcePath.networkType +
+                        "&productSegment=" + dataSourcePath.productSegment +
+                        "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
+                        "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
+                        "&location=" + $stateParams.locationId +
+                        "&startDate=" + $stateParams.startDate +
+                        "&endDate=" + $stateParams.endDate +
+                        '&username=' + dataSourcePath.dataSourceId.userName +
+                        '&password=' + dataSourcePassword +
+                        '&url=' + dataSourcePath.url +
+                        '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+                    scope.ajaxLoadingCompleted = true;
+                    scope.loadingTable = false;
+                    scope.tableColumns = response.columnDefs;
+                    scope.tableRows = response.data;
+                    console.log(scope.tableColumns);
+//                console.log(scope.tableRows)
 
-//                 scope.columns = [];
-//                console.log(scope.tableColumns.length);
-//                for (var i = 0; i < scope.tableColumns.length; i++) {
-//                    console.log(scope.tableColumns[i]);
-//                    scope.columns.push({fieldName: scope.tableColumns[i].fieldName, displayName: scope.tableColumns[i].displayName, fieldType: scope.tableColumns[i].type});
-//                }
-//                console.log(scope.columns)
-//                var tableColumnsData = {
-//                    datasetId: dataSourcePath.id,
-//                    tableColumns: scope.columns,
-//                    fieldType: "string",
-//                    formula: "visits+sessions",
-//                    column: "VisitsSessions"
-//                };
-//                console.log(tableColumnsData);
-//                $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: tableColumnsData}).success(function (response) {
-//                    console.log(response);
-//                });
-            });
-//            scope.dataSetError = false;
+                    scope.expressionLessColumn = [];
+                    for (var j = 0; j < scope.tableColumns.length; j++) {
+                        if (scope.tableColumns[j].expression === null && scope.tableColumns[j].functionName === null) {
+                            scope.expressionLessColumn.push(scope.tableColumns[j]);
+                        }
+                    }
+                    scope.columns = [];
+                    console.log(scope.tableColumns.length);
+                    for (var i = 0; i < scope.tableColumns.length; i++) {
+                        console.log(scope.tableColumns[i]);
+                        var status = null;
+                        var expression = null;
+                        var functionName = null;
+                        if (typeof (scope.tableColumns[i].status) !== undefined) {
+                            status = scope.tableColumns[i].status;
+                        }
+                        if (typeof (scope.tableColumns[i].expression) !== undefined) {
+                            expression = scope.tableColumns[i].expression;
+                        }
+                        if (typeof (scope.tableColumns[i].functionName) !== undefined) {
+                            functionName = scope.tableColumns[i].functionName;
+                        }
+                        var columnData = {
+                            id: scope.tableColumns[i].id,
+                            fieldName: scope.tableColumns[i].fieldName,
+                            displayName: scope.tableColumns[i].displayName,
+                            fieldType: scope.tableColumns[i].type,
+                            displayFormat: scope.tableColumns[i].displayFormat,
+                            status: status,
+                            expression: expression,
+                            functionName: functionName
+                        }
+                        scope.columns.push(columnData);
+                    }
+                    console.log(scope.columns);
+//                    var tableColumnsData = {
+//                        datasetId: dataSourcePath.id,
+//                        tableColumns: scope.columns,
+//                    };
+//                    console.log(tableColumnsData);
+//                    $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: JSON.stringify(tableColumnsData)}).success(function (response) {
+//                        console.log(response);
+//                    });
+                });
+            }
+            scope.dataSetItems();
+
             scope.checkFieldName = function (fieldName) {
+
                 angular.forEach(scope.tableColumns, function (value, key) {
-                    if (value.fieldName == fieldName) {
+                    console.log(typeof (fieldName));
+                    console.log(typeof (value.fieldName));
+                    console.log(fieldName + " " + value.fieldName);
+                    if (value.fieldName === fieldName) {
                         scope.dataSetError = true;
-                        angular.$apply()
+                        angular.$apply();
+                        console.log(scope.dataSetError);
                     } else {
                         scope.dataSetError = false;
                     }
@@ -2134,7 +2243,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             scope.functiondisabled = false;
             scope.expressiondisabled = false;
             scope.clearFunction = function (datasetColumn) {
-                datasetColumn.fieldName = "";
+                datasetColumn.columnName = "";
                 datasetColumn.function = "";
                 scope.expressiondisabled = false;
                 scope.functiondisabled = false;
@@ -2144,27 +2253,74 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.functiondisabled = false;
                 scope.expressiondisabled = false;
             }
-            scope.saveDatasetColumn = function (dataSetFields) {
+            scope.dataSetFieldsClose = function (datasetColumn) {
+                console.log("function called close");
+                datasetColumn.expression = "";
+                datasetColumn.fieldName = "";
+                datasetColumn.fieldType = "";
+                datasetColumn.format = "";
+                datasetColumn.functionName = "";
+                datasetColumn.columnName = "";
+                scope.dataSetError = false;
+            };
+            scope.saveDatasetColumn = function (datasetColumn) {
 //                scope.datasetColumns=[];
 //                scope.datasetColumns.push(dataSetFields);
 //                console.log(scope.datasetColumns)
+                console.log(datasetColumn);
+                console.log(typeof (datasetColumn.functionName) + " " + typeof (datasetColumn.columnName));
 
-
-                var data = {
-                    columnName: dataSetFields.columnName,
-                    expression: dataSetFields.expression,
-                    fieldName: dataSetFields.fieldName,
-                    fieldType: dataSetFields.fieldType,
-                    format: dataSetFields.format,
-                    function: dataSetFields.function
+                var functionName = null;
+                if (typeof (datasetColumn.functionName) !== "undefined" && typeof (datasetColumn.functionName) !== "undefined") {
+                    functionName = datasetColumn.functionName + "(" + datasetColumn.columnName + ")";
                 }
-                console.log(data)
-                dataSetFields.columnName = "";
-                dataSetFields.expression = "";
-                dataSetFields.fieldName = ""
-                dataSetFields.fieldType = "";
-                dataSetFields.format = "";
-                dataSetFields.function = "";
+                var data = {
+                    datasetId: dataSourcePath.id,
+                    id: datasetColumn.id,
+                    tableColumns: scope.columns,
+                    expression: datasetColumn.expression,
+                    fieldName: datasetColumn.fieldName,
+                    displayName: datasetColumn.fieldName,
+                    fieldType: datasetColumn.fieldType,
+                    displayFormat: datasetColumn.format,
+                    functionName: functionName
+                };
+                console.log(data);
+                $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
+                    console.log(response)
+                    scope.dataSetItems();
+                    datasetColumn.expression = "";
+                    datasetColumn.fieldName = "";
+                    datasetColumn.fieldType = "";
+                    datasetColumn.format = "";
+                    datasetColumn.functionName = "";
+                    datasetColumn.columnName = "";
+                });
+            }
+            scope.editDataset = function (datasetColumn) {
+                console.log(datasetColumn)
+                var str = datasetColumn.functionName;
+                var findIndex = str.indexOf("(");
+                var functionName = str.slice(0, findIndex);
+                var columnName = str.slice(findIndex + 1, str.length - 1);
+                    
+                var editData = {
+                    id: datasetColumn.id,
+                    expression: datasetColumn.expression,
+                    fieldName: datasetColumn.fieldName,
+                    fieldType: datasetColumn.type,
+                    format: datasetColumn.displayFormat,
+                    functionName: functionName,
+                    columnName: columnName
+                };
+
+
+                scope.datasetColumn = editData;
+            }
+            scope.deleteDataset = function (datasetColumn) {
+                $http({method: "DELETE", url: 'admin/ui/dataSetFormulaColumns/' + datasetColumn.id}).success(function (response) {
+                    scope.dataSetItems();
+                });
             }
         }
     };

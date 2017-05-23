@@ -250,7 +250,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     }
 
     $scope.editWidget = function (widget) {
-        tagWidgetId(widget)
+        console.log(widget);
+        tagWidgetId(widget);
         $scope.editPreviewTitle = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
@@ -366,6 +367,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         selectedItems(selectedItem);
     };
     $scope.previewChart = function (chartType, widget) {
+        $scope.dispQueryBuilder=false;
         $scope.resetQueryBuilder();
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType; //Selected Chart type - Bind chart-type to showPreview()

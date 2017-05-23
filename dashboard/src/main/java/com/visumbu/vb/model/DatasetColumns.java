@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DatasetColumns.findByFieldType", query = "SELECT d FROM DatasetColumns d WHERE d.fieldType = :fieldType")
     , @NamedQuery(name = "DatasetColumns.findByExpression", query = "SELECT d FROM DatasetColumns d WHERE d.expression = :expression")
     , @NamedQuery(name = "DatasetColumns.findByStatus", query = "SELECT d FROM DatasetColumns d WHERE d.status = :status")
-    , @NamedQuery(name = "DatasetColumns.findByFunction", query = "SELECT d FROM DatasetColumns d WHERE d.function = :function")
+    , @NamedQuery(name = "DatasetColumns.findByFunctionName", query = "SELECT d FROM DatasetColumns d WHERE d.functionName = :functionName")
     , @NamedQuery(name = "DatasetColumns.findByDisplayFormat", query = "SELECT d FROM DatasetColumns d WHERE d.displayFormat = :displayFormat")})
 public class DatasetColumns implements Serializable {
 
@@ -62,15 +62,11 @@ public class DatasetColumns implements Serializable {
     @Column(name = "status")
     private String status;
     @Size(max = 255)
-    @Column(name = "function")
-    private String function;
+    @Column(name = "function_name")
+    private String functionName;
     @Size(max = 255)
     @Column(name = "display_format")
     private String displayFormat;
-    @Lob
-    @Size(max = 2147483647)
-    @Column(name = "formula")
-    private String formula;
     @JoinColumn(name = "dataset_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet datasetId;
@@ -130,12 +126,12 @@ public class DatasetColumns implements Serializable {
         this.status = status;
     }
 
-    public String getFunction() {
-        return function;
+    public String getFunctionName() {
+        return functionName;
     }
 
-    public void setFunction(String function) {
-        this.function = function;
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 
     public String getDisplayFormat() {
@@ -145,15 +141,7 @@ public class DatasetColumns implements Serializable {
     public void setDisplayFormat(String displayFormat) {
         this.displayFormat = displayFormat;
     }
-
-    public String getFormula() {
-        return formula;
-    }
-
-    public void setFormula(String formula) {
-        this.formula = formula;
-    }
-
+    
     public DataSet getDatasetId() {
         return datasetId;
     }

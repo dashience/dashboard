@@ -202,6 +202,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
 //                });
 //            }
+
             else if ($scope.getCurrentPage() === "favourites") {
                 $state.go("index.favourites", {
                     accountId: $stateParams.accountId,
@@ -209,7 +210,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate,
                     endDate: $stateParams.endDate
                 });
-            } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+            }
+            else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
                 $state.go("index.viewFavouritesWidget", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
@@ -219,7 +221,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate,
                     endDate: $stateParams.endDate
                 });
-            } else {
+            } 
+            else {
                 $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
             }
         });
@@ -409,7 +412,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
-        } else {
+        }
+        else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
@@ -480,11 +484,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $(function () {
-        var start = moment().subtract(29, 'days');
-        var end = moment();
-        function cb(start, end) {
-            $('#daterange-btn span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-        }
         //Initialize Select2 Elements
         $(".select2").select2();
         //Datemask dd/mm/yyyy
@@ -500,8 +499,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         //Date range as a button
         $('#daterange-btn').daterangepicker(
                 {
-                    startDate: start,
-                    endDate: end,
+
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -525,9 +523,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
+                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
+                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
                     maxDate: new Date()
-                }, cb);
-        cb(start, end);
+                },
+                function (startDate, endDate) {
+                    $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                }
+        );
         //Date picker
         $('#datepicker').datepicker({
             autoclose: true

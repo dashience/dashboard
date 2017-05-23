@@ -19,7 +19,7 @@ public class DatasetColumnBean {
     private String fieldType;
     private String status;
     private String expression;
-    private String function;
+    private String functionName;
     private String displayFormat;
     private Integer datasetId;
     private String column;
@@ -65,14 +65,14 @@ public class DatasetColumnBean {
         this.expression = expression;
     }
 
-    public void setFunction(String function) {
-        this.function = function;
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 
-    public String getFunction() {
-        return function;
+    public String getFunctionName() {
+        return functionName;
     }
-    
+
     public String getDisplayFormat() {
         return displayFormat;
     }
@@ -115,7 +115,7 @@ public class DatasetColumnBean {
 
     @Override
     public String toString() {
-        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", status=" + status + ", function=" + function + ", expression=" + expression + ", displayFormat=" + displayFormat + ", datasetId=" + datasetId + ", column=" + column + ", tableColumns=" + tableColumns + '}';
+        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", status=" + status + ", functionName=" + functionName + ", expression=" + expression + ", displayFormat=" + displayFormat + ", datasetId=" + datasetId + ", column=" + column + ", tableColumns=" + tableColumns + '}';
     }
 
 }

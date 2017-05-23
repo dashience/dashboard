@@ -758,6 +758,14 @@ public class UiService {
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
     }
+
+//    public DatasetColumns createDataSetColumns(DatasetColumnBean dataSetColumn) {
+//        return uiDao.createDataSetColumns(dataSetColumn);
+//    }
+
+    public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
+        return uiDao.createDataSetFormulaColumn(dataSetColumn);
+    }
     
     public List<Currency> getCurrencies() {
         return uiDao.getCurrenciesTypes();
@@ -765,5 +773,10 @@ public class UiService {
     
      public List<Timezone> getTimeZones() {
         return uiDao.getTimezoneTypes();
+    }
+
+    public DatasetColumns deleteDataSetFormulaColumnById(Integer datasetColumnId) {
+        DatasetColumns datasetColumn = (DatasetColumns) uiDao.read(DatasetColumns.class, datasetColumnId);
+        return (DatasetColumns) uiDao.delete(datasetColumn);
     }
 }

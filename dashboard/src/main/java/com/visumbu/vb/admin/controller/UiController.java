@@ -385,6 +385,19 @@ public class UiController extends BaseController {
         return uiService.update(dataSet);
     }
 
+    @RequestMapping(value = "dataSetFormulaColumns", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    List<DatasetColumns> createDataSetFormulaColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
+        return uiService.createDataSetFormulaColumn(dataSetColumn);
+    }
+
+    @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
+        System.out.println("id --> "+datasetColumnId);
+        return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
+    }
+
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
