@@ -19,6 +19,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         return $scope.tab === tabNum;
     };
     $scope.resetQueryBuilder = function () {
+
         $scope.dispQueryBuilder = true;
     }
 
@@ -365,16 +366,15 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         selectedItems(selectedItem);
     };
     $scope.previewChart = function (chartType, widget) {
+        $scope.resetQueryBuilder();
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType; //Selected Chart type - Bind chart-type to showPreview()
         $scope.selectedRow = chartType.type ? chartType.type : chartType.chartType;
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
-        $timeout(function () {
-            alert("Test Query")
-            $scope.resetQueryBuilder();
-        }, 50);
+
+//        
         if (chartType.type == 'text') {
             widget.dataSetId = '';
             widget.dataSourceId = '';
@@ -1072,7 +1072,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" +
                 "</div>",
         link: function (scope, attrs) {
-            alert()
             scope.tableAggregations = JSON.parse(scope.aggregationsTypes);
             scope.tableGrouping = JSON.parse(scope.groupPriorities);
             scope.tableSorting = JSON.parse(scope.sortingFields);
@@ -1188,11 +1187,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 }
             };
             scope.save = function () {
-                if (widget.chartType != 'text') {
-                    if ($('.query-builder').queryBuilder('getRules')) {
-                        scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
-                        scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
-                    }
+                if ($('.query-builder').queryBuilder('getRules')) {
+                    scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
+                    scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
                 }
                 widget.dateRangeName = $("#dateRangeName").text().trim();
                 if (widget.dateRangeName === "Custom") {
@@ -1273,7 +1270,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
                     $rootScope.goBack();
-                                       //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+                    alert()
+                    //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
             };
 //            scope.saveQueryFn({savequeryFn: scope.save});
@@ -1399,12 +1397,9 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             filterData: '&',
         },
         link: function (scope, element, attr) {
-            alert("query")
-
             scope.columns = scope.queryData;
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
-            console.log(columnList);
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
                 var typeOfValue = value.type ? value.type : value.fieldType;
@@ -1447,17 +1442,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 $('#btn-set').on('click', function () {
                     $(element[0]).queryBuilder('setRules', scope.jsonBuild);
                 });
-//                var result = null;
-//                $('#btn-get').on('click', function () {
-//                    result = $(element[0]).queryBuilder('getRules');
-//                    console.log(JSON.stringify(result));
-//                    scope.buildJson = JSON.stringify(result);
-//                    if (!$.isEmptyObject(result)) {
-//                        alert(JSON.stringify(result, null, 2));
-//                    }
-//                    var sql_raw = $(element[0]).queryBuilder('getSQL', false, true);
-//                    scope.filterData({filterQuery: [{list: scope.buildJson, query: sql_raw}]});
-//                });
             });
         }
     };

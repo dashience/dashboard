@@ -1932,9 +1932,20 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
-                '<div class="pull-right">' +
-                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>' +
-                '<div id="myModal" class="modal fade" role="dialog">' +
+//                '<div class="pull-right">' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet{{col.displayName}}"><i class="fa fa-plus"></i></button>' +
+                
+//                '</div>' +
+                '<table class="table table-responsive table-bordered table-l2t">' +
+                '<thead><tr>' +
+                '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
+                '{{col.displayName}}' +
+                '<button ng-if="datasetColumn.fieldName" type="button" class="btn btn-default" data-toggle="modal" data-target="#dataSet{{col.displayName}}"><i class="fa fa-pencil"></i></button>'+
+                '<button ng-if="datasetColumn.fieldName" type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>'+
+                '</th>' +
+                '</tr></thead>' +
+                '<tbody ng-repeat="tableRow in tableRows">' +
+                '<div id="dataSet{{col.displayName}}" class="modal fade" role="dialog">' +
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
@@ -2008,14 +2019,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '</div>' +
-                '<table class="table table-responsive table-bordered table-l2t">' +
-                '<thead><tr>' +
-                '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
-                '{{col.displayName}}' +
-                '</th>' +
-                '</tr></thead>' +
-                '<tbody ng-repeat="tableRow in tableRows">' +
                 '<tr class="text-capitalize">' +
                 '<td ng-repeat="col in tableColumns">' +
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
@@ -2097,7 +2100,25 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.tableColumns = response.columnDefs;
                 scope.tableRows = response.data;
                 console.log(scope.tableColumns);
-                console.log(scope.tableRows)
+
+//                 scope.columns = [];
+//                console.log(scope.tableColumns.length);
+//                for (var i = 0; i < scope.tableColumns.length; i++) {
+//                    console.log(scope.tableColumns[i]);
+//                    scope.columns.push({fieldName: scope.tableColumns[i].fieldName, displayName: scope.tableColumns[i].displayName, fieldType: scope.tableColumns[i].type});
+//                }
+//                console.log(scope.columns)
+//                var tableColumnsData = {
+//                    datasetId: dataSourcePath.id,
+//                    tableColumns: scope.columns,
+//                    fieldType: "string",
+//                    formula: "visits+sessions",
+//                    column: "VisitsSessions"
+//                };
+//                console.log(tableColumnsData);
+//                $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: tableColumnsData}).success(function (response) {
+//                    console.log(response);
+//                });
             });
 //            scope.dataSetError = false;
             scope.checkFieldName = function (fieldName) {
@@ -2138,12 +2159,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     function: dataSetFields.function
                 }
                 console.log(data)
-                dataSetFields.columnName="";
-                    dataSetFields.expression="";
-                    dataSetFields.fieldName=""
-                    dataSetFields.fieldType="";
-                    dataSetFields.format="";
-                    dataSetFields.function="";
+                dataSetFields.columnName = "";
+                dataSetFields.expression = "";
+                dataSetFields.fieldName = ""
+                dataSetFields.fieldType = "";
+                dataSetFields.format = "";
+                dataSetFields.function = "";
             }
         }
     };

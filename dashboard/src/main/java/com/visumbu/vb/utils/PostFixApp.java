@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.visumbu.vb.utils;
 
 /**
  *
@@ -11,37 +11,37 @@ package test;
  */
 import java.io.*;              // for I/O
 import java.util.StringTokenizer;
-import test.ParsePost;
+import com.visumbu.vb.utils.ParsePost;
 ////////////////////////////////////////////////////////////////
 
 class StackX {
 
     private final int maxSize;
-    private final float[] stackArray;
+    private final double[] stackArray;
     private int top;
 //--------------------------------------------------------------
 
     public StackX(int size) // constructor
     {
         maxSize = size;
-        stackArray = new float[maxSize];
+        stackArray = new double[maxSize];
         top = -1;
     }
 //--------------------------------------------------------------
 
-    public void push(float j) // put item on top of stack
+    public void push(double j) // put item on top of stack
     {
         stackArray[++top] = j;
     }
 //--------------------------------------------------------------
 
-    public float pop() // take item from top of stack
+    public double pop() // take item from top of stack
     {
         return stackArray[top--];
     }
 //--------------------------------------------------------------
 
-    public float peek() // peek at top of stack
+    public double peek() // peek at top of stack
     {
         return stackArray[top];
     }
@@ -65,7 +65,7 @@ class StackX {
     }
 //--------------------------------------------------------------
 
-    public float peekN(int n) // peek at index n
+    public double peekN(int n) // peek at index n
     {
         return stackArray[n];
     }
@@ -89,7 +89,7 @@ class PostfixApp {
 
     public static void main(String[] args) throws IOException {
         String input;
-        float output;
+        double output;
 
         while (true) {
             System.out.print("Enter postfix: ");

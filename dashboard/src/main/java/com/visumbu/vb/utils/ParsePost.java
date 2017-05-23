@@ -3,7 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.visumbu.vb.utils;
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 import java.util.StringTokenizer;
 
@@ -30,10 +36,10 @@ public class ParsePost {
     }
 //--------------------------------------------------------------
 
-    public float doParse() {
+    public double doParse() {
         theStack = new StackX(20);             // make new stack
         int j;
-        float num1, num2, interAns;
+        double num1, num2, interAns;
 
         for (j = 0; j < input.length; j++) // for each char,
         {
@@ -53,15 +59,19 @@ public class ParsePost {
                 {
                     case "+":
                         interAns = num1 + num2;
+                        System.out.println("add interAus --> " + interAns);
                         break;
                     case "-":
                         interAns = num1 - num2;
+                        System.out.println("sub interAus --> " + interAns);
                         break;
                     case "*":
                         interAns = num1 * num2;
+                        System.out.println("mul interAus --> " + interAns);
                         break;
                     case "/":
                         interAns = num1 / num2;
+                        System.out.println("div interAus --> " + interAns);
                         break;
                     default:
                         interAns = 0;
@@ -75,3 +85,4 @@ public class ParsePost {
 
 }  // end class ParsePost
 ////////////////////////////////////////////////////////////////
+

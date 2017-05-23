@@ -384,18 +384,6 @@ public class UiController extends BaseController {
     DataSet update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         return uiService.update(dataSet);
     }
-    
-    @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    DatasetColumns createColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
-        return uiService.createColumns(dataSet);
-    }
-    
-    @RequestMapping(value = "dataSetColumns", method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    DatasetColumns updateColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
-        return uiService.updateColumns(dataSet);
-    }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody

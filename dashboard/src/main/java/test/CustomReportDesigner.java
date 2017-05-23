@@ -2107,7 +2107,6 @@ public class CustomReportDesigner {
         System.out.println("End function of getSampleJFreeChart");
         return lineChartObject;
     }
-
     public void dynamicPdfTable(List<TabWidget> tabWidgets, String account, String product, String selectDate, OutputStream out) {
         System.out.println("Start function of dynamicPdfTable");
         try {

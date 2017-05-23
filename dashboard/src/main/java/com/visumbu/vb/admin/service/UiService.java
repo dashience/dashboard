@@ -758,14 +758,6 @@ public class UiService {
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
     }
-
-    public DatasetColumns createColumns(DatasetColumnBean dataSet) {
-        return uiDao.createColumns(dataSet);
-    }
-
-    public DatasetColumns updateColumns(DatasetColumnBean dataSet) {
-        return uiDao.updateColumns(dataSet);
-    }
     
     public List<Currency> getCurrencies() {
         return uiDao.getCurrenciesTypes();
