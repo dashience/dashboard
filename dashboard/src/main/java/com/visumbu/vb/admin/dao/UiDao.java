@@ -593,6 +593,7 @@ public class UiDao extends BaseDao {
             datasetFields.setExpression(datasetColumn.getExpression());
             datasetFields.setFieldName(datasetColumn.getFieldName());
             datasetFields.setDisplayName(datasetColumn.getDisplayName());
+            datasetFields.setDisplayFormat(datasetColumn.getDisplayFormat());
             datasetFields.setStatus(datasetColumn.getStatus());
             datasetFields.setFunctionName(datasetColumn.getFunctionName());
             datasetFields.setFieldType(datasetColumn.getFieldType());
@@ -606,6 +607,7 @@ public class UiDao extends BaseDao {
         datasetColumns.setFieldName(dataSetColumn.getFieldName());
         datasetColumns.setFieldType(dataSetColumn.getFieldType());
         datasetColumns.setDisplayName(dataSetColumn.getDisplayName());
+        datasetColumns.setDisplayFormat(dataSetColumn.getDisplayFormat());
         datasetColumns.setStatus(dataSetColumn.getStatus());
         datasetColumns.setFunctionName(dataSetColumn.getFunctionName());
         datasetColumns.setDatasetId(dataset);

@@ -1932,83 +1932,83 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
-//                '<div class="pull-right">' +
-//                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>' +
-//                '<div id="myModal" class="modal fade" role="dialog">' +
-//                '<div class="modal-dialog">' +
-//                '<div class="modal-content">' +
-//                '<div class="modal-header">' +
-//                '<button type="button" class="close" data-dismiss="modal" ng-click="dataSetFieldsClose()">&times;</button>' +
-//                '<h4 class="modal-title">Derived Column</h4>' +
-//                '</div>' +
-//                '<div class="modal-body">' +
-//                '<form name="dataSetForm" class="form-horizontal">' +
-//                '<div class="form-group">' +
-//                '<label class="col-md-3">Field Name</label>' +
-//                '<div class="col-md-9">' +
-//                '<input class="form-control" ng-model="datasetColumn.fieldName" ng-change="checkFieldName(datasetColumn.fieldName)" type="text">' +
-//                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
-//                '</div>' +
-//                '</div>' +
-//                '<div class="form-group">' +
-//                '<label class="col-md-3">Field Type</label>' +
-//                '<div class="col-md-3">' +
-//                '<select class="form-control" ng-model="datasetColumn.fieldType">' +
-//                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
-//                '{{fieldType.name}}' +
-//                '</option>' +
-//                '</select>' +
-//                '</div>' +
-//                '<label class="col-md-2">Format</label>' +
-//                '<div class="col-md-4">' +
-//                '<select class="form-control" ng-model="datasetColumn.format">' +
-//                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
-//                '{{formatType.name}}' +
-//                '</option>' +
-//                '</select>' +
-//                '</div>' +
-//                '</div>' +
-//                '<div class="form-group">' +
-//                '<label class="col-md-3">Expression</label>' +
-//                '<div class="col-md-9">' +
-//                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.function?true:false" rows="3" style="width:350px;resize:none"></textarea>' +
-//                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
-//                '</div>' +
-//                '</div>' +
-//                '<div class="form-group">' +
-//                '<label class="col-md-3">Function</label>' +
-//                '<div class="col-md-3">' +
-//                '<select  name="functionName" class="form-control" ng-model="datasetColumn.function" ng-disabled="datasetColumn.expression?true:false">' +
-//                '<option>' +
-//                'YOY' +
-//                '</option>' +
-//                '<option>' +
-//                'MOM' +
-//                '</option>' +
-//                '</select>' +
-//                '</div>' +
-//                '<label class="col-md-2">Column</label>' +
-//                '<div class="col-md-3">' +
-//                '<select class="form-control" ng-disabled="datasetColumn.expression?true:false" ng-model="datasetColumn.columnName">' +
-//                '<option ng-repeat="dataSetColumn in expressionLessColumn" value={{dataSetColumn.fieldName}}>' +
-//                '{{dataSetColumn.fieldName}}' +
-//                '</option>' +
-//                '</select>' +
-//                '</div>' +
-//                '<div class="col-md-1">' +
-//                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearFunction(datasetColumn)"></i>' +
-//                '</div>' +
-//                '</div>' +
-//                '</form>' +
-//                '</div>' +
-//                '<div class="modal-footer">' +
-//                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
-//                '<button type="button" class="btn btn-default"  ng-click="dataSetFieldsClose()" data-dismiss="modal">Close</button>' +
-//                '</div>' +
-//                '</div>' +
-//                '</div>' +
-//                '</div>' +
-//                '</div>' +
+                '<div class="pull-right">' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>' +
+                '<div id="myModal" class="modal fade" role="dialog">' +
+                '<div class="modal-dialog">' +
+                '<div class="modal-content">' +
+                '<div class="modal-header">' +
+                '<button type="button" class="close" data-dismiss="modal" ng-click="dataSetFieldsClose(datasetColumn)">&times;</button>' +
+                '<h4 class="modal-title">Derived Column</h4>' +
+                '</div>' +
+                '<div class="modal-body">' +
+                '<form name="dataSetForm" class="form-horizontal">' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Name</label>' +
+                '<div class="col-md-9">' +
+                '<input class="form-control" ng-model="datasetColumn.fieldName" ng-change="checkFieldName(datasetColumn.fieldName)" type="text">' +
+                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Type</label>' +
+                '<div class="col-md-3">' +
+                '<select class="form-control" ng-model="datasetColumn.fieldType">' +
+                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
+                '{{fieldType.name}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<label class="col-md-2">Format</label>' +
+                '<div class="col-md-4">' +
+                '<select class="form-control" ng-model="datasetColumn.format">' +
+                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
+                '{{formatType.name}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Expression</label>' +
+                '<div class="col-md-9">' +
+                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.function?true:false" rows="3" style="width:350px;resize:none"></textarea>' +
+                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Function</label>' +
+                '<div class="col-md-3">' +
+                '<select  name="functionName" class="form-control" ng-model="datasetColumn.function" ng-disabled="datasetColumn.expression?true:false">' +
+                '<option>' +
+                'YOY' +
+                '</option>' +
+                '<option>' +
+                'MOM' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<label class="col-md-2">Column</label>' +
+                '<div class="col-md-3">' +
+                '<select class="form-control" ng-disabled="datasetColumn.expression?true:false" ng-model="datasetColumn.columnName">' +
+                '<option ng-repeat="dataSetColumn in expressionLessColumn" value={{dataSetColumn.fieldName}}>' +
+                '{{dataSetColumn.fieldName}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<div class="col-md-1">' +
+                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearFunction(datasetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '</form>' +
+                '</div>' +
+                '<div class="modal-footer">' +
+                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" ng-disabled="dataSetError" data-dismiss="modal">Save</button>' +
+                '<button type="button" class="btn btn-default"  ng-click="dataSetFieldsClose(datasetColumn)" data-dismiss="modal">Close</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
                 '<table class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
                 '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
@@ -2165,7 +2165,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             scope.functiondisabled = false;
             scope.expressiondisabled = false;
             scope.clearFunction = function (datasetColumn) {
-                datasetColumn.fieldName = "";
+                datasetColumn.columnName = "";
                 datasetColumn.function = "";
                 scope.expressiondisabled = false;
                 scope.functiondisabled = false;
@@ -2175,35 +2175,46 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.functiondisabled = false;
                 scope.expressiondisabled = false;
             }
-            scope.dataSetFieldsClose = function () {
-                console.log("function called close")
-                scope.datasetColumn = "";
+            scope.dataSetFieldsClose = function (datasetColumn) {
+                console.log("function called close");
+                datasetColumn.expression = "";
+                datasetColumn.fieldName = "";
+                datasetColumn.fieldType = "";
+                datasetColumn.format = "";
+                datasetColumn.functionName = "";
+                datasetColumn.columnName = "";
+                scope.dataSetError = false;
             };
-            scope.saveDatasetColumn = function (dataSetFields) {
+            scope.saveDatasetColumn = function (datasetColumn) {
 //                scope.datasetColumns=[];
 //                scope.datasetColumns.push(dataSetFields);
 //                console.log(scope.datasetColumns)
-                console.log(dataSetFields);
-                console.log(typeof (dataSetFields.function) + " " + typeof (dataSetFields.columnName));
+                console.log(datasetColumn);
+                console.log(typeof (datasetColumn.function) + " " + typeof (datasetColumn.columnName));
 
                 var functionName = null;
-                if (typeof (dataSetFields.function) !== "undefined" && typeof (dataSetFields.function) !== "undefined") {
-                    functionName = dataSetFields.function + "(" + dataSetFields.columnName + ")";
+                if (typeof (datasetColumn.function) !== "undefined" && typeof (datasetColumn.function) !== "undefined") {
+                    functionName = datasetColumn.function + "(" + datasetColumn.columnName + ")";
                 }
                 var data = {
                     datasetId: dataSourcePath.id,
                     tableColumns: scope.columns,
-                    expression: dataSetFields.expression,
-                    fieldName: dataSetFields.fieldName,
-                    displayName: dataSetFields.fieldName,
-                    fieldType: dataSetFields.fieldType,
-                    displayFormat: dataSetFields.format,
+                    expression: datasetColumn.expression,
+                    fieldName: datasetColumn.fieldName,
+                    displayName: datasetColumn.fieldName,
+                    fieldType: datasetColumn.fieldType,
+                    displayFormat: datasetColumn.format,
                     functionName: functionName
                 };
                 console.log(data);
                 $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
                     scope.dataSetItems();
-                    scope.datasetColumn = "";
+                    datasetColumn.expression = "";
+                    datasetColumn.fieldName = "";
+                    datasetColumn.fieldType = "";
+                    datasetColumn.format = "";
+                    datasetColumn.functionName = "";
+                    datasetColumn.columnName = "";
                 });
             }
         }
