@@ -1,5 +1,5 @@
 
-app.config(function ($stateProvider, $urlRouterProvider) {
+app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $stateProvider
             .state("index", {
                 url: "/index",
@@ -103,6 +103,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 //                templateUrl: "static/views/admin/favourites.html",
 //                controller: 'FavouritesController'
 //            })
+            .state("viewPdf", {
+                url: "/viewPdf/:accountId/:accountName/:productId/:productName/:tabId?:startDate/:endDate",
+                templateUrl: "static/views/pdf/vb.pdf.html",
+                controller:'PdfController'
+            })
             .state("index.viewFavouritesWidget", {
                 url: "/viewFavouritesWidget/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate",
                 templateUrl: "static/views/admin/viewFavouritesWidget.html",
@@ -118,6 +123,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('index.dashboard');
     });
+
+
+//    $routeProvider.when('/viewPdf', {
+//        url: '/viewPdf/:accountId/:accountName/:tabId',
+//        templateUrl: 'static/views/pdf/vb.pdf.html'});
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });
 app.run(['$window', '$rootScope', '$stateParams',

@@ -1,0 +1,151 @@
+<style>
+    /*Favorites*/
+    .red {
+        color:red;
+    }
+    .green {
+        color:#555;
+    }
+    .fa-heart{
+        font-size: 13px !important;
+        cursor:pointer;
+    }
+
+    span.stars, span.stars span {
+        display: block;
+        background: url('static/img/logos/stars.png') 0 -16px repeat-x;
+        width: 80px;
+        height: 16px;
+    }
+
+    span.stars span {
+        background-position: 0 0;
+    }
+
+    .alignright {
+        float:right;
+    }
+
+    .pdf-widget{
+        margin-top: 1%;
+    }
+
+    #header{
+        height: 90px !important;
+        /*border-bottom: none !important;*/
+    }
+    .pdf-title-2{
+        background-color: rgb(241, 243, 246);
+        height: 100px;
+        padding: 8px;
+    }
+    .pdf-highlight-user{
+        color: rgb(1, 67, 98);
+    }
+    .pdf-highlight-agency{
+        background-color: #FFFFFF;
+        padding: 5px;
+    }
+    .pdf-highlight-text-green{
+        color: rgb(98, 203, 49);
+    }
+</style>
+
+<header class="main-header" id="header">
+    <div class="fixed-navbar">
+        <div id="logo">
+            <img src="static/img/logos/deeta-logo.png" alt="" style="width: inherit;"/>
+        </div>
+    </div>
+</header>
+
+<div id="wrapper">
+    <div class="col-sm-12">
+        <h2>
+            Month End Report
+        </h2>
+    </div>
+
+    <div class="col-sm-12">
+        <div class="pdf-title-2">
+            <div class="col-sm-6">
+                <ul class="list-unstyled">
+                    <li>{{reportStartDate| date: 'MMM yyyy'}} - {{reportEndDate| date: 'MMM yyyy'}}</li>
+                    <li>{{userProductName}}</li>
+                    <li>Budget <span class="pdf-highlight-text-green">$1,500</span></li>
+                    <li><h4 class="pdf-highlight-user"><b>{{userAccountName}}</b></h4></li>
+                </ul> 
+            </div>
+            <div class="col-sm-6">
+                <div>
+                    <ul class="list-unstyled pull-right pdf-highlight-agency">
+                        <li class="pdf-highlight-text-green">DIGITAL ADVISOR</li>
+                        <li>Zoe</li>
+                        <li>EMAIL : info@deetaanalytics.com</li>
+                        <li>PHONE : 773-446-7565</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-repeat="widget in pdfWidgets">
+    <div ng-if="widget.chartType == 'ticker'">
+        <div class="col-sm-{{widget.width}}">
+            <div class="hpanel border-table">                
+                <div set-Ticker-Fn="setTickerFn(tickerFn)" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="widget.chartType != 'ticker'">
+        <div class="col-md-{{widget.width}} table-deeta pdf-widget">
+            <div class="hpanel hgreen border-table" ng-hide="hidenewchart">
+                <div class="panel-heading">
+                    <span class="{{widget.icon}}"></span>
+                    <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
+
+                </div>
+                <div class="panel-body" ng-if="widget.chartType === 'line'">
+                    <div>
+                        <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                    </div>
+                </div>
+                <div class="panel-body" ng-if="widget.chartType === 'bar'">
+                    <div>
+                        <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                    </div>
+                </div>
+                <div class="panel-body" ng-if="widget.chartType === 'pie'">
+                    <div>
+                        <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                    </div>
+                </div>
+                <div class="panel-body"  ng-if="widget.chartType === 'area'">
+                    <div>
+                        <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                    </div>
+                </div>
+                <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
+                    <div class="table-responsive project-list">
+                        <div id="changes-height" class="project-list">
+                            <div set-Table-Chart-Fn="setTableChartFn(tableFn)" dynamic-Table pdf-function="addToPdf(test)" dynamic-Table-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Obj="{{widget}}" table-Footer="{{widget.tableFooter}}" widget-Columns="{{widget.columns}}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body"  ng-if="widget.chartType === 'text'">
+                    <div class="col-md-12">
+                        <div class="text-widget">
+                            <span ng-bind-html="widget.content"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
+                    <div>
+                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>

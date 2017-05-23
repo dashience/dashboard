@@ -258,6 +258,9 @@
         <div class="btn-group">
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
         </div>
+        <div class="btn-group">
+            <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{productName}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
+        </div>
         <div class="btn-group" ng-if="permission.downloadReport === true;">
             <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Export
@@ -277,21 +280,6 @@
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
                 <button type="button" class="btn btn-block btn-info" ng-click="addWidget()"><i class="fa fa-plus-circle"></i> Add Widget</button>
             </a>
-            <!--            <div class="dropdown-menu dropdown-content">
-                            <span class="lay-wid">Select the Layout</span>
-                            <a href="" class="dropdown-item" ng-click="addWidget('2')">
-                                <div class="col-md-2 btn-apps wid firstrow"><i class="fa fa-line-chart"></i></div>
-                                <div class="col-md-2 btn-apps wid firstrow"><i class="fa fa-pie-chart"></i></div>
-                                <div class="col-md-2 btn-apps wid firstrow"><i class="fa fa-table"></i></div>
-                            </a>
-                            <a href="" class="dropdown-item" ng-click="addWidget('3')">
-                                <div class="col-md-5 btn-apps wid secondrow"><i class="fa fa-table"></i></div>
-                                <div class="col-md-5 btn-apps wid secondrow"><i class="fa fa-area-chart"></i></div>
-                            </a>
-                            <a href="" class="dropdown-item" ng-click="addWidget('6')">
-                                <div class="col-md-10 btn-apps wid thirdrow"><i class="fa fa-table"></i></div>
-                            </a>
-                        </div>-->
         </div>
     </div>
 </div>

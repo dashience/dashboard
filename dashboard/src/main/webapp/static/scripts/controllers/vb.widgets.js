@@ -42,7 +42,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
         $window.open(url);
     };
-
+    
     function getWidgetItem() {      //Default Loading Items
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
@@ -50,6 +50,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
             var widgetItems = [];
             widgetItems = response;
+            if (response) {
+                $scope.productName = response[0].tabId.agencyProductId.productName;
+            }
             $http.get("admin/tag/getAllFav/").success(function (favResponse) {
                 widgetItems.forEach(function (value, key) {
                     favWidget = $.grep(favResponse, function (b) {
@@ -62,44 +65,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 });
             })
-//            widgetItems.forEach(function (value, key) {
-//                $http.get("admin/tag/widgetTag/" + value.id).success(function (response) {
-//                    console.log(response)
-//                    if (response.length == 0) {
-//                        var tagsList = $scope.tags[0]
-//                        console.log($scope.tags[0])
-//                        tagsList.status = 'InActive';
-//                        value.tags = tagsList;
-//                        console.log(value)
-//                    }
-//                    response.forEach(function (val, k) {
-//                        if (value.id == val.widgetId.id) {
-//                            val.tagId.status = val.status ? val.status : 'InActive';
-//                            value.tags = val.tagId;
-//                        }
-//                    });
-//                });
-//            });
             $scope.widgets = widgetItems;
         });
     }
     getWidgetItem();
 
-    $scope.addWidget = function (newWidget) {       //Add Widget
-//        var data = {
-//            width: newWidget, 'minHeight': 25, columns: [], chartType: ""
-//        };
-//        $http({method: 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+    $scope.addWidget = function (newWidget) {
         $state.go("index.editWidget", {
             productId: $stateParams.productId,
             accountId: $stateParams.accountId,
             accountName: $stateParams.accountName,
             tabId: $stateParams.tabId,
-            widgetId: 0, //response.id,
+            widgetId: 0, 
             startDate: $stateParams.startDate,
             endDate: $stateParams.endDate
         });
-//        });
     };
     $scope.removeBackDrop = function () {
         $('body').removeClass().removeAttr('style');
@@ -125,6 +105,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();
     };
+
     $scope.moveWidget = function (list, from, to) {
         list.splice(to, 0, list.splice(from, 1)[0]);
         return list;
@@ -161,30 +142,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.isFav = true;
         }
     }
-
-//    $scope.favouritesNew = function (favourites, widget) {
-//        alert(widget.id);
-//        console.log(widget.id);
-//        console.log(favourites);
-//        console.log(widget);
-//        console.log(widget.tags.status);
-//        console.log(widget.tags.tagName);
-//
-//        if (favourites === true) {
-//            alert("active")
-//            widget.tags.status = "Active";
-//        } else {
-//            alert("inactive")
-//            widget.tags.status = "InActive";
-//        }
-//        var tagData = {
-//            tagName: widget.tags.tagName,
-//            widgetId: widget.id,
-//            status: widget.tags.status
-//        }
-//        $http({method: 'POST', url: "admin/tag/selectedTag", data: tagData});
-//    };
-
 
     $scope.goReport = function () {
         $state.go('index.report.reports', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
@@ -292,8 +249,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 dateDuration: widget.dateDuration,
                 content: widget.content,
                 width: widget.width,
-                jsonData:widget.jsonData,
-                queryFilter:widget.queryFilter
+                jsonData: widget.jsonData,
+                queryFilter: widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -330,8 +287,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 dateDuration: widget.dateDuration,
                 content: widget.content,
                 width: widget.width,
-                jsonData:widget.jsonData,
-                queryFilter:widget.queryFilter
+                jsonData: widget.jsonData,
+                queryFilter: widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -479,8 +436,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         scope.hideParent(value, hideStatus);
                         scope.hideParent(value.data, false)
                     }
-                    // scope.hideChild(value.data, false)
-                    //value.data.$hideRows = true;
                 });
             };
 
@@ -493,7 +448,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     if (hideStatus == false) {
                         scope.hideChild(value, hideStatus);
                     }
-                    //value.data.$hideRows = true;
                 });
             };
 
@@ -1361,7 +1315,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             });
                         }
                     });
-                }
+                };
                 scope.setLineChartFn({lineFn: scope.refreshLineChart});
                 scope.refreshLineChart();
             }
@@ -1825,7 +1779,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                
+
                 var dataSourcePassword;
                 if (pieChartDataSource.dataSourceId.password) {
                     dataSourcePassword = pieChartDataSource.dataSourceId.password;
@@ -2116,7 +2070,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                
+
                 var dataSourcePassword;
                 if (areaChartDataSource.dataSourceId.password) {
                     dataSourcePassword = areaChartDataSource.dataSourceId.password;
@@ -2411,7 +2365,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                
+
                 var dataSourcePassword;
                 if (stackedBarChartDataSource.dataSourceId.password) {
                     dataSourcePassword = stackedBarChartDataSource.dataSourceId.password;
