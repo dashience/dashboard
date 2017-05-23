@@ -236,7 +236,7 @@ public class GaService {
             displayName = datasetColumn.getDisplayName();
             fieldType = datasetColumn.getFieldType();
             displayFormat = datasetColumn.getDisplayFormat();
-            System.out.println("displayFormat ---> "+displayFormat);
+            System.out.println("displayFormat ---> " + displayFormat);
             formula = datasetColumn.getExpression();
             status = datasetColumn.getStatus();
             functionName = datasetColumn.getFunctionName();
@@ -245,9 +245,9 @@ public class GaService {
             columnDefs.add(new ColumnDef(id, fieldName, fieldType, displayName, null, displayFormat, status, formula, functionName));
             if (functionName != null && !functionName.trim().isEmpty()) {
                 String funcName = functionName;
-                
+
                 funcName = funcName.replaceAll("\\s+", "");
-                System.out.println("funcName ---> "+funcName);
+                System.out.println("funcName ---> " + funcName);
                 StringTokenizer tokenizer = new StringTokenizer(funcName, "()");
                 String[] tokenArrayFunc = new String[tokenizer.countTokens()];
                 int i = -1;
@@ -304,18 +304,21 @@ public class GaService {
                 Map<String, Object> dataPairYoy = new HashMap();
                 if (columnDataOver.size() > 0) {
                     int list = 0;
-                    for (Iterator<Map<String, Object>> iterator = dataOver.iterator(); iterator.hasNext();) {
-                        dataPairYoy = (Map<String, Object>) iterator.next();
-                        Map<String, Object> dataPairMap = new HashMap<>();
-                        dataPairMap = originalData.get(list++);
-                        System.out.println("yoy --> " +dataPairYoy.get("userType"));
-                        System.out.println("current year --->" +dataPairMap.get("userType"));
-                        String val = dataPairYoy.get(tokenArrayFunc[1]) + "";
-                        System.out.println("valOver ---> " + val);
-                        System.out.println("fieldName ---> " + fieldName);
-                        System.out.println("dataPairMap ---> " + dataPairMap);
-                        dataPairMap.put(fieldName, val);
-                        System.out.println("originalData ---> " + originalData);
+                    if (dataOver.size() == originalData.size()) {
+                        for (Iterator<Map<String, Object>> iterator = dataOver.iterator(); iterator.hasNext();) {
+                            dataPairYoy = (Map<String, Object>) iterator.next();
+                            Map<String, Object> dataPairMap = new HashMap<>();
+                            dataPairMap = originalData.get(list);
+                            System.out.println("yoy --> " + dataPairYoy.get("userType"));
+                            System.out.println("current year --->" + dataPairMap.get("userType"));
+                            String val = dataPairYoy.get(tokenArrayFunc[1]) + "";
+                            System.out.println("valOver ---> " + val);
+                            System.out.println("fieldName ---> " + fieldName);
+                            System.out.println("dataPairMap ---> " + dataPairMap);
+                            dataPairMap.put(fieldName, val);
+                            System.out.println("originalData ---> " + originalData);
+                            list++;
+                        }
                     }
                 }
             } else if (formula != null && !formula.trim().isEmpty()) {

@@ -934,7 +934,7 @@ public class ProxyController {
         if (facebookOrganicAccountId != null) {
             facebookOrganicAccountIdInt = Long.parseLong(facebookOrganicAccountId);
         }
-        String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
+        String accessToken = "EAAUAYCRJ0GSBAAXR6GZCHFZACLBL2OCWRCOKYZ84FFRJULXWHBSNXDDPC9SPC2IM35S0AKCGPZAVL1FLJ3OVDLZ2ZAOZAT4ZAFDBUWPCS94MCSJVADVHTE4SQNDXWBOCSOTTBXHOWVJWL5JYZBYMCDGWK6OIJZCQIWC7PK2XCM7SNTYHILAMTCXQ";
         log.debug("Report Name ---- " + dataSetReportName);
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);

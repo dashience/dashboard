@@ -37,7 +37,7 @@ public class FacebookService {
 
 //    public final String ACCESS_TOKEN = ExampleConfig.ACCESS_TOKEN;
 //   old-- public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
-    public String ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
+    public String ACCESS_TOKEN = "EAAUAYCRJ0GSBAAXR6GZCHFZACLBL2OCWRCOKYZ84FFRJULXWHBSNXDDPC9SPC2IM35S0AKCGPZAVL1FLJ3OVDLZ2ZAOZAT4ZAFDBUWPCS94MCSJVADVHTE4SQNDXWBOCSOTTBXHOWVJWL5JYZBYMCDGWK6OIJZCQIWC7PK2XCM7SNTYHILAMTCXQ";
     public String ORGANIC_ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
 
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
@@ -286,6 +286,7 @@ public class FacebookService {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+            System.out.println("account Performance");
 
             String url = BASE_URL + accountId + "/insights?fields=account_name,impressions,clicks,ctr,cpc,spend,actions,reach,cost_per_action_type,adset_name&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
