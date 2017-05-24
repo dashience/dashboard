@@ -56,9 +56,17 @@ public class ShuntingYard {
         StringBuilder output = new StringBuilder();
         List<String> outputList = new ArrayList<>();
         Deque<String> stack = new LinkedList<>();
-
-        for (String token : infix.split("\\s")) {
+        String input = infix;
+        input = input.replaceAll("\\(", "\\( ");
+        input = input.replaceAll("\\)", " \\)");
+        input = input.replaceAll("-", " - ");
+        input = input.replaceAll("\\+", " + ");
+        input = input.replaceAll("\\*", " * ");
+        input = input.replaceAll("/", " / ");
+        System.out.println("input infix ----> " + input);
+        for (String token : input.split("\\s+")) {
             // operator
+            System.out.println("token ---> "+token);
             if (ops.containsKey(token)) {
                 while (!stack.isEmpty() && isHigerPrec(token, stack.peek())) {
                     String popedOperator = stack.pop();
@@ -82,7 +90,6 @@ public class ShuntingYard {
 
                 // digit
             } else {
-
                 output.append(token).append(' ');
                 outputList.add(token);
             }
@@ -94,6 +101,7 @@ public class ShuntingYard {
             outputList.add(popedOperator);
         }
         System.out.println(outputList);
+        System.out.println("output ---> " + output);
         return output.toString();
     }
 
@@ -138,6 +146,9 @@ public class ShuntingYard {
     }
 
     public static List<Map<String, Object>> filter(List<Map<String, Object>> list, String postFixRules) {
+        if(list == null){
+            return null;
+        }
         List<Map<String, Object>> filtered = list.stream()
                 .filter(p -> checkFilter(p, postFixRules)).collect(Collectors.toList());
         return filtered;
@@ -231,6 +242,7 @@ public class ShuntingYard {
     }
 
     public static boolean like(String toBeCompare, String by) {
+        System.out.println("toBeCompare "+toBeCompare+"  by"+by);
         if (toBeCompare != null && by != null) {
             if (by.startsWith("%") && by.endsWith("%")) {
                 System.out.println("Contains");

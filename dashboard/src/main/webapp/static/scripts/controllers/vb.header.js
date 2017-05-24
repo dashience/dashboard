@@ -202,24 +202,27 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
 //                });
 //            }
-            else if ($scope.getCurrentPage() === "favourites") {
-                $state.go("index.favourites", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
-                $state.go("index.viewFavouritesWidget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-//                    favouriteId: $stateParams.favouriteId,
-                    productId: $stateParams.productId,
-                    favouriteName: $stateParams.favouriteName,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            } else {
+
+//            else if ($scope.getCurrentPage() === "favourites") {
+//                $state.go("index.favourites", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+//                    startDate: $stateParams.startDate,
+//                    endDate: $stateParams.endDate
+//                });
+//            }
+//            else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+//                $state.go("index.viewFavouritesWidget", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+////                    favouriteId: $stateParams.favouriteId,
+//                    productId: $stateParams.productId,
+//                    favouriteName: $stateParams.favouriteName,
+//                    startDate: $stateParams.startDate,
+//                    endDate: $stateParams.endDate
+//                });
+//            } 
+            else {
                 $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
             }
         });
@@ -392,24 +395,25 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //                endDate: $stateParams.endDate
 //            });
 //        }
-        else if ($scope.getCurrentPage() === "favourites") {
-            $state.go("index.favourites", {
-                accountId: $stateParams.accountId,
-                accountName: $stateParams.accountName,
-                startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
-            });
-        } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
-            $state.go("index.viewFavouritesWidget", {
-                accountId: $stateParams.accountId,
-                accountName: $stateParams.accountName,
-                productId: $stateParams.productId,
-                //favouriteId: $stateParams.favouriteId,
-                favouriteName: $stateParams.favouriteName,
-                startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
-            });
-        } else {
+//        else if ($scope.getCurrentPage() === "favourites") {
+//            $state.go("index.favourites", {
+//                accountId: $stateParams.accountId,
+//                accountName: $stateParams.accountName,
+//                startDate: $stateParams.startDate,
+//                endDate: $stateParams.endDate
+//            });
+//        } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+//            $state.go("index.viewFavouritesWidget", {
+//                accountId: $stateParams.accountId,
+//                accountName: $stateParams.accountName,
+//                productId: $stateParams.productId,
+//                //favouriteId: $stateParams.favouriteId,
+//                favouriteName: $stateParams.favouriteName,
+//                startDate: $stateParams.startDate,
+//                endDate: $stateParams.endDate
+//            });
+//        }
+        else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
@@ -460,12 +464,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("fieldSettings") > 0) {
             return "fieldSettings";
         }
-        if (url.indexOf("favourites") > 0) {
-            return "favourites";
-        }
-        if (url.indexOf("viewFavouritesWidget") > 0) {
-            return "viewFavouritesWidget";
-        }
+//        if (url.indexOf("favourites") > 0) {
+//            return "favourites";
+//        }
+//        if (url.indexOf("viewFavouritesWidget") > 0) {
+//            return "viewFavouritesWidget";
+//        }
 //        if (url.indexOf("tag") > 0) {
 //            return "tag";
 //        }
@@ -480,11 +484,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $(function () {
-        var start = moment().subtract(29, 'days');
-        var end = moment();
-        function cb(start, end) {
-            $('#daterange-btn span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-        }
         //Initialize Select2 Elements
         $(".select2").select2();
         //Datemask dd/mm/yyyy
@@ -500,8 +499,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         //Date range as a button
         $('#daterange-btn').daterangepicker(
                 {
-                    startDate: start,
-                    endDate: end,
+
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -525,9 +523,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
+                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
+                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
                     maxDate: new Date()
-                }, cb);
-        cb(start, end);
+                },
+                function (startDate, endDate) {
+                    $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                }
+        );
         //Date picker
         $('#datepicker').datepicker({
             autoclose: true

@@ -116,24 +116,24 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
                 {
                     type: 'device',
                     name: 'device'
                 },
-                {
-                    type: 'network search partner',
-                    name: 'network search partner'
-                },
 //                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+//                    type: 'network search partner',
+//                    name: 'network search partner'
+//                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         },
         {
@@ -156,20 +156,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
                 {
                     type: 'device',
                     name: 'device'
                 },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         },
         {
@@ -192,20 +192,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
 //                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+//                    type: 'device',
+//                    name: 'device'
+//                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         },
         {
@@ -228,58 +228,59 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+                {
+                    type: 'none',
+                    name: 'None'
                 }
             ]
         },
+//        {
+//            type: 'devicePerformance',
+//            name: 'devicePerformance',
+//            timeSegments: [
+////                {
+////                    type: 'day',
+////                    name: 'day'
+////                },
+////                {
+////                    type: 'week',
+////                    name: 'week'
+////                },
+////                {
+////                    type: 'month',
+////                    name: 'month'
+////                },
+////                {
+////                    type: 'year',
+////                    name: 'year'
+////                },
+////                {
+////                    type: 'none',
+////                    name: 'None'
+////                }
+//            ],
+//            productSegments: [
+//                {
+//                    type: 'device',
+//                    name: 'device'
+//                },
+////                {
+////                    type: 'none',
+////                    name: 'none'
+////                }
+//            ]
+//        }, 
         {
-            type: 'devicePerformance',
-            name: 'devicePerformance',
-            timeSegments: [
-//                {
-//                    type: 'day',
-//                    name: 'day'
-//                },
-//                {
-//                    type: 'week',
-//                    name: 'week'
-//                },
-//                {
-//                    type: 'month',
-//                    name: 'month'
-//                },
-//                {
-//                    type: 'year',
-//                    name: 'year'
-//                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
-            ]
-        }, {
             type: 'agePerformance',
             name: 'agePerformance',
             timeSegments: [
@@ -299,20 +300,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
-//                {
-//                    type: 'device',
-//                    name: 'device'
-//                },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'age',
+                    name: 'age'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         }, {
             type: 'genderPerformance',
@@ -334,20 +335,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
-//                {
-//                    type: 'device',
-//                    name: 'device'
-//                },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'gender',
+                    name: 'gender'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         }, {
             type: 'postPerformance',
@@ -369,20 +370,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
 //                {
 //                    type: 'device',
 //                    name: 'device'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         },
 //        {
@@ -549,20 +550,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
 //                {
 //                    type: 'device',
 //                    name: 'device'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         }, {
             type: 'reach',
@@ -584,20 +585,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
 //                {
 //                    type: 'device',
 //                    name: 'device'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         }, {
             type: 'pageLikes',
@@ -619,20 +620,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
                 {
                     type: 'city',
                     name: 'city'
                 },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         }, {//pageViewsByDevice
             type: 'pageViews',
@@ -658,10 +659,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                    type: 'year',
 //                    name: 'year'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
                 {
@@ -672,10 +673,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'gender',
                     name: 'gender'
                 },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         }, {
             type: 'pageReactions',
@@ -697,20 +698,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 ////                    type: 'year',
 ////                    name: 'year'
 ////                },
-//                {
-//                    type: 'none',
-//                    name: 'None'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ],
             productSegments: [
 //                {
 //                    type: 'device',
 //                    name: 'device'
 //                },
-//                {
-//                    type: 'none',
-//                    name: 'none'
-//                }
+                {
+                    type: 'none',
+                    name: 'None'
+                }
             ]
         },
 //        {
@@ -1819,15 +1820,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-    
-    
+
+
 //    $scope.dataSet={timeSegment:'none'};
-    
-    
+
+
     $scope.getTimeSegements = function () {
-
-
-
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.instagramPerformance);
@@ -1846,10 +1844,66 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
             console.log("************************************************");
             console.log($scope.productSegment);
-            if ($scope.dataSet.reportName!=="") {
+            if ($scope.dataSet.reportName !== "") {
                 $scope.nwStatusFlag = false;
                 $scope.timeSegFlag = true;
                 $scope.productSegFlag = true;
+            }
+
+            if ($scope.dataSet.reportName == 'agePerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'}
+                $scope.dataSet.productSegment = $scope.productSegment[0]
+            }
+            if ($scope.dataSet.reportName == 'genderPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'}
+                $scope.dataSet.productSegment = $scope.productSegment[0]
+            }
+            if ($scope.dataSet.reportName == 'pageReactions') {
+                $scope.dataSet.timeSegment = $scope.timeSegment[0];
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'}
+            }
+            if ($scope.dataSet.reportName == 'accountPerformance') {
+                $scope.dataSet.timeSegment = $scope.timeSegment[3];
+                $scope.dataSet.productSegment = $scope.productSegment[1];
+            }
+            if ($scope.dataSet.reportName == 'campaignPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'adPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'adSetPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'postPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'engagements') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'reach') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'pageLikes') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'pageViews') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
             }
 
 
@@ -1914,7 +1968,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
         }
     };
-    
+
 //    $scope.dataSet.timeSegment = 'none'
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -1946,10 +2000,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     };
     $scope.saveDataSet = function () {
-        
+
         var dataSetList = $scope.dataSet;
-        dataSetList.timeSegment === ""?'none':dataSetList.timeSegment;
-        
+        dataSetList.timeSegment === "" ? 'none' : dataSetList.timeSegment;
+
         var dataSet = dataSetList;//$scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
         console.log(dataSet);
@@ -2123,10 +2177,87 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     //setTableFn: '&',
                     // tableFooter:'@'
         },
-        template: '<div ng-show="showErrorMsg">{{errorMsg}}</div>' +
+        template: '<div ng-show="showErrorMsg"><h5><center>{{errorMsg}}</center></h5></div>' +
                 '<div ng-hide="showErrorMsg">' +
                 '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<table ng-if="ajaxLoadingCompleted" class="table table-responsive table-bordered table-l2t">' +
+//                '<div class="pull-right">' +
+//                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i></button>' +
+//                '<div id="myModal" class="modal fade" role="dialog">' +
+//                '<div class="modal-dialog">' +
+//                '<div class="modal-content">' +
+//                '<div class="modal-header">' +
+//                '<button type="button" class="close" data-dismiss="modal" ng-click="dataSetFieldsClose()">&times;</button>' +
+//                '<h4 class="modal-title">Derived Column</h4>' +
+//                '</div>' +
+//                '<div class="modal-body">' +
+//                '<form name="dataSetForm" class="form-horizontal">' +
+//                '<div class="form-group">' +
+//                '<label class="col-md-3">Field Name</label>' +
+//                '<div class="col-md-9">' +
+//                '<input class="form-control" ng-model="datasetColumn.fieldName" ng-change="checkFieldName(datasetColumn.fieldName)" type="text">' +
+//                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+//                '</div>' +
+//                '</div>' +
+//                '<div class="form-group">' +
+//                '<label class="col-md-3">Field Type</label>' +
+//                '<div class="col-md-3">' +
+//                '<select class="form-control" ng-model="datasetColumn.fieldType">' +
+//                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
+//                '{{fieldType.name}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '<label class="col-md-2">Format</label>' +
+//                '<div class="col-md-4">' +
+//                '<select class="form-control" ng-model="datasetColumn.format">' +
+//                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
+//                '{{formatType.name}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '</div>' +
+//                '<div class="form-group">' +
+//                '<label class="col-md-3">Expression</label>' +
+//                '<div class="col-md-9">' +
+//                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.function?true:false" rows="3" style="width:350px;resize:none"></textarea>' +
+//                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
+//                '</div>' +
+//                '</div>' +
+//                '<div class="form-group">' +
+//                '<label class="col-md-3">Function</label>' +
+//                '<div class="col-md-3">' +
+//                '<select  name="functionName" class="form-control" ng-model="datasetColumn.function" ng-disabled="datasetColumn.expression?true:false">' +
+//                '<option>' +
+//                'YOY' +
+//                '</option>' +
+//                '<option>' +
+//                'MOM' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '<label class="col-md-2">Column</label>' +
+//                '<div class="col-md-3">' +
+//                '<select class="form-control" ng-disabled="datasetColumn.expression?true:false" ng-model="datasetColumn.columnName">' +
+//                '<option ng-repeat="dataSetColumn in expressionLessColumn" value={{dataSetColumn.fieldName}}>' +
+//                '{{dataSetColumn.fieldName}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '<div class="col-md-1">' +
+//                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearFunction(datasetColumn)"></i>' +
+//                '</div>' +
+//                '</div>' +
+//                '</form>' +
+//                '</div>' +
+//                '<div class="modal-footer">' +
+//                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
+//                '<button type="button" class="btn btn-default"  ng-click="dataSetFieldsClose()" data-dismiss="modal">Close</button>' +
+//                '</div>' +
+//                '</div>' +
+//                '</div>' +
+//                '</div>' +
+//                '</div>' +               
                 '<thead><tr>' +
                 '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
                 '{{col.displayName}}' +
@@ -2138,8 +2269,26 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
-                '</table></div>',
+                '</table>' +
+                '</div>',
         link: function (scope, element, attr) {
+            scope.fieldTypes = [
+                {name: 'None', value: ''},
+                {name: 'String', value: 'string'},
+                {name: 'Number', value: 'number'},
+                {name: 'Date', value: 'date'},
+                {name: 'Day', value: 'day'}
+            ];
+            scope.formats = [
+                {name: "None", value: ''},
+                {name: "Currency", value: '$,.2f'},
+                {name: "Integer", value: ',.0f'},
+                {name: "Percentage", value: ',.2%'},
+                {name: "Decimal1", value: ',.1f'},
+                {name: "Decimal2", value: ',.2f'},
+                {name: "Time", value: 'H:M:S'},
+                {name: "Star Rating", value: 'starRating'}
+            ];
             scope.loadingTable = true;
             var dataSourcePath = JSON.parse(scope.path)
             console.log(dataSourcePath);
@@ -2174,34 +2323,20 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
                 return value;
             };
-            scope.headerColumn = false;
-            scope.addDerivedColumn = function (newHeader) {
-                scope.headerValue = newHeader;
-                scope.headerColumn = true;
-                scope.addColumn = false;
-            }
-            scope.EditColumnHeader = false;
-            scope.isEditColumn = true;
-            scope.EditColumnHeaders = function () {
-                scope.EditColumnHeader = true;
-                scope.isEditColumn = false;
-            }
-            
-            
             var setTimeSegment, setProductSegment;
-            
-            if(dataSourcePath.timeSegment){
-                setTimeSegment = dataSourcePath.timeSegment
-            }else{
+
+            if (dataSourcePath.timeSegment) {
+                setTimeSegment = dataSourcePath.timeSegment.type;
+            } else {
                 setTimeSegment = 'none'
             }
-            if(dataSourcePath.productSegment){
-                setProductSegment = dataSourcePath.productSegment
-            }else{
+            if (dataSourcePath.productSegment) {
+                setProductSegment = dataSourcePath.productSegment.type;
+            } else {
                 setProductSegment = 'none'
             }
-            
-            
+
+
             $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                     "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                     "&dataSetId=" + dataSourcePath.id +
@@ -2221,9 +2356,16 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                 scope.ajaxLoadingCompleted = true;
                 scope.loadingTable = false;
-                scope.tableColumns = response.columnDefs;
-                scope.tableRows = response.data;
-                console.log(scope.tableColumns);
+console.log(response)
+                if (response.data.length == 0) {
+                    scope.errorMsg = "No Data Found"
+                    scope.showErrorMsg = true;
+                } else {
+                    scope.showErrorMsg = false;
+                    scope.tableColumns = response.columnDefs;
+                    scope.tableRows = response.data;
+                    console.log(scope.tableColumns);
+                }
             });
         }
     };

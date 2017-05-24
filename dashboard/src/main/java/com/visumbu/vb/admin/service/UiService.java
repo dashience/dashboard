@@ -759,12 +759,12 @@ public class UiService {
         return uiDao.getTabWidgetById(widgetId);
     }
 
-    public DatasetColumns createColumns(DatasetColumnBean dataSet) {
-        return uiDao.createColumns(dataSet);
-    }
+//    public DatasetColumns createDataSetColumns(DatasetColumnBean dataSetColumn) {
+//        return uiDao.createDataSetColumns(dataSetColumn);
+//    }
 
-    public DatasetColumns updateColumns(DatasetColumnBean dataSet) {
-        return uiDao.updateColumns(dataSet);
+    public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
+        return uiDao.createDataSetFormulaColumn(dataSetColumn);
     }
     
     public List<Currency> getCurrencies() {

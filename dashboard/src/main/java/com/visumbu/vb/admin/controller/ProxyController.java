@@ -149,6 +149,10 @@ public class ProxyController {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget tabWidget = uiService.getWidgetById(widgetId);
             String queryFilter = tabWidget.getQueryFilter();
+            System.out.println("returnMap ---> "+returnMap);
+            if(returnMap == null){
+                return null;
+            }
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
             returnMap.put("data", returnDataMap);
@@ -935,7 +939,9 @@ public class ProxyController {
         if (facebookOrganicAccountId != null) {
             facebookOrganicAccountIdInt = Long.parseLong(facebookOrganicAccountId);
         }
-        String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
+//        String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
+//        String accessToken = "EAAUAycrj0GsBAAxr6gZCHfZAClbl2ocwrcokyz84FFRJuLxWHbsNXddPc9sPC2iM35s0AkCGpZAVL1fLJ3OvDLz2ZAOZAt4ZAFDBUWpCs94McSjVaDVHte4sQndXwbOcSoTtBxhOwVJwl5JYZBymCdGWK6oijZCqIwC7pK2xCm7sNtyHiLaMtCXq";
+        String accessToken="EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
         log.debug("Report Name ---- " + dataSetReportName);
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
@@ -1425,6 +1431,17 @@ public class ProxyController {
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 }
+//                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+//                    System.out.println("DS TYPE ==>  CSV");
+////                    url = "../admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
+//                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+////                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+//                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
+////                    url = "../admin/proxy/getData?";
+//                    url = "../dashboard/admin/proxy/getData?";
+//
+//                }
                 valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));

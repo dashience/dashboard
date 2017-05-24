@@ -31,11 +31,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DatasetColumns.findAll", query = "SELECT d FROM DatasetColumns d")
     , @NamedQuery(name = "DatasetColumns.findById", query = "SELECT d FROM DatasetColumns d WHERE d.id = :id")
-    , @NamedQuery(name = "DatasetColumns.findByDatasetId", query = "SELECT d FROM DatasetColumns d WHERE d.datasetId.id = :id")
-    , @NamedQuery(name = "DatasetColumns.findByFieldName", query = "SELECT d FROM DatasetColumns d WHERE d.fieldName = :fieldName")
     , @NamedQuery(name = "DatasetColumns.findByDisplayName", query = "SELECT d FROM DatasetColumns d WHERE d.displayName = :displayName")
+    , @NamedQuery(name = "DatasetColumns.findByFieldName", query = "SELECT d FROM DatasetColumns d WHERE d.fieldName = :fieldName")
+    , @NamedQuery(name = "DatasetColumns.findByFieldType", query = "SELECT d FROM DatasetColumns d WHERE d.fieldType = :fieldType")
+    , @NamedQuery(name = "DatasetColumns.findByExpression", query = "SELECT d FROM DatasetColumns d WHERE d.expression = :expression")
     , @NamedQuery(name = "DatasetColumns.findByStatus", query = "SELECT d FROM DatasetColumns d WHERE d.status = :status")
-    , @NamedQuery(name = "DatasetColumns.findByFieldType", query = "SELECT d FROM DatasetColumns d WHERE d.fieldType = :fieldType")})
+    , @NamedQuery(name = "DatasetColumns.findByFunctionName", query = "SELECT d FROM DatasetColumns d WHERE d.functionName = :functionName")
+    , @NamedQuery(name = "DatasetColumns.findByDisplayFormat", query = "SELECT d FROM DatasetColumns d WHERE d.displayFormat = :displayFormat")})
 public class DatasetColumns implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,21 +47,26 @@ public class DatasetColumns implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Size(max = 255)
+    @Column(name = "display_name")
+    private String displayName;
+    @Size(max = 255)
     @Column(name = "field_name")
     private String fieldName;
     @Size(max = 255)
-    @Column(name = "display_name")
-    private String displayName;
-    @Lob
-    @Size(max = 2147483647)
-    @Column(name = "formula")
-    private String formula;
+    @Column(name = "field_type")
+    private String fieldType;
+    @Size(max = 255)
+    @Column(name = "expression")
+    private String expression;
     @Size(max = 255)
     @Column(name = "status")
     private String status;
     @Size(max = 255)
-    @Column(name = "field_type")
-    private String fieldType;
+    @Column(name = "function_name")
+    private String functionName;
+    @Size(max = 255)
+    @Column(name = "display_format")
+    private String displayFormat;
     @JoinColumn(name = "dataset_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet datasetId;
@@ -79,14 +86,6 @@ public class DatasetColumns implements Serializable {
         this.id = id;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
@@ -95,20 +94,12 @@ public class DatasetColumns implements Serializable {
         this.displayName = displayName;
     }
 
-    public String getFormula() {
-        return formula;
+    public String getFieldName() {
+        return fieldName;
     }
 
-    public void setFormula(String formula) {
-        this.formula = formula;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     public String getFieldType() {
@@ -119,6 +110,38 @@ public class DatasetColumns implements Serializable {
         this.fieldType = fieldType;
     }
 
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
+    public String getDisplayFormat() {
+        return displayFormat;
+    }
+
+    public void setDisplayFormat(String displayFormat) {
+        this.displayFormat = displayFormat;
+    }
+    
     public DataSet getDatasetId() {
         return datasetId;
     }
@@ -151,5 +174,5 @@ public class DatasetColumns implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DatasetColumns[ id=" + id + " ]";
     }
-
+    
 }

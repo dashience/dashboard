@@ -360,10 +360,10 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li  ng-class="{ active: isSet(2) }">
+<!--                <li ng-if="editChartType!='text'" ng-class="{ active: isSet(2) }">
                     <a ng-click="setTab(2)"> Filter
                     </a>
-                </li>
+                </li>-->
                 <!--                <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
                                     <a href ng-click="setTab(3)"> User
                                     </a>
@@ -669,24 +669,24 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="isSet(2)" class="license">
-                <div class="col-lg-12" ng-if="dispQueryBuilder == true;">
+<!--            <div ng-show="isSet(2)" class="license">
+                <div class="col-lg-12">
                     <div jquery-Query-Builder query-Data='{{widget}}' filter-Data="filterData(filterQuery)"></div>
                     <div class='panel-footer'>
                         <div class="pull-right">
 
                             <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
                             <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
-                            <!--<button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>-->
+                            <button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>
                         </div>
                         <div>
-                            <!--<button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>-->
+                            <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
                             <button class='btn btn-info' ng-click='saveQuery()'> Apply Filter</button>
-                            <!--<button class='btn btn-info' ng-click='widget.isQueryBuilder = true; save(widget)'> Apply Filter</button>-->
+                            <button class='btn btn-info' ng-click='widget.isQueryBuilder = true; save(widget)'> Apply Filter</button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
