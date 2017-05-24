@@ -21,6 +21,7 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.utils.DateUtils;
+import com.visumbu.vb.utils.PropertyReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -44,16 +45,20 @@ import test.DateRangeFactory;
 @EnableScheduling
 @Service("timeService")
 public class TimerService {
-
+    
     @Autowired
     private UserDao userDao;
-
+    
     @Autowired
     private SchedulerService schedulerService;
-
+    
     @Autowired
     private SchedulerDao schedulerDao;
-
+    
+    PropertyReader propReader = new PropertyReader();
+    
+    private final String urlDownloadReport = "url.downloadReport";
+    
     public void executeTasks(List<Scheduler> scheduledTasks) {
         System.out.println("Executing Tasks " + scheduledTasks);
         Date today = new Date();
@@ -85,7 +90,7 @@ public class TimerService {
             Integer lastNweeks = null;
             Integer lastNyears = null;
             System.out.println("startdate ----> " + scheduler.getCustomStartDate());
-
+            
             if (dateRangeName == null || dateRangeName.isEmpty()) {
                 startDate = null;
                 endDate = null;
@@ -105,7 +110,7 @@ public class TimerService {
                 if (scheduler.getLastNweeks() != null) {
                     lastNweeks = scheduler.getLastNweeks();
                     System.out.println("Last N weeks ----> " + lastNweeks);
-
+                    
                 } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
                     lastNweeks = 0;
                 }
@@ -115,9 +120,9 @@ public class TimerService {
                 } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
                     lastNyears = 0;
                 }
-
+                
                 System.out.println("dateRangename ----> " + dateRangeName);
-
+                
                 Range dateRangeSelect = null;
 //            if (dateRangeName.equalsIgnoreCase("Today")) {
 //                dateRangeSelect = Range.TODAY;
@@ -145,7 +150,7 @@ public class TimerService {
                 } else if (lastNyears != null) {
                     dateRangeSelect = Range.YEAR;
                 }
-
+                
                 if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
                     try {
                         startDate = df.parse(scheduler.getCustomStartDate());
@@ -171,22 +176,22 @@ public class TimerService {
                 } else {
                     dateRange = DateRangeFactory.getRange(dateRangeSelect);
                 }
-
+                
                 if (dateRange != null) {
                     startDate = dateRange.getStartDate();
                     endDate = dateRange.getEndDate();
                 }
             }
-
+            
             System.out.println("dateRange start Date-----> " + startDate);
             System.out.println("dateRange End Date-----> " + endDate);
             schedulerHistory.setStartTime(startDate);
             schedulerHistory.setEndTime(endDate);
-
+            
             String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + "." + exportType;
             filename = filename.replaceAll(" ", "_");
             String toAddress = accountMailId;
-
+            
             if (toAddress != null && !toAddress.isEmpty()) {
                 toAddress += "," + scheduler.getSchedulerEmail();
             } else {
@@ -217,7 +222,6 @@ public class TimerService {
 //        System.out.println("Test Scheduler...");
 //        System.out.println("Success....");
 //    }
-    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
         System.out.println("Executing daily Tasks....");
@@ -236,7 +240,7 @@ public class TimerService {
             executeTasks(scheduledTasks);
         }
     }
-
+    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeWeeklyTask() {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
@@ -255,7 +259,7 @@ public class TimerService {
             executeTasks(scheduledTasks);
         }
     }
-
+    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeMonthlyTask() {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
@@ -273,7 +277,7 @@ public class TimerService {
             executeTasks(scheduledTasks);
         }
     }
-
+    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeYearlyTask() {
 //         Integer hour = DateUtils.getCurrentHour();
@@ -285,7 +289,7 @@ public class TimerService {
         System.out.println(scheduledTasks);
 //        executeTasks(scheduledTasks);
     }
-
+    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeYearOfWeek() {
         Date today = new Date();
@@ -294,9 +298,9 @@ public class TimerService {
         String weekDayToday = DateUtils.getDayOfWeek(DateUtils.getCurrentWeekDay());
         List<Scheduler> scheduledTasks = schedulerDao.getYearOfWeekTasks(hour, weekDayToday, currentYearOfWeekCount, today);
         executeTasks(scheduledTasks);
-
+        
     }
-
+    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeOnce() {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
@@ -315,7 +319,7 @@ public class TimerService {
             executeTasks(scheduledTasks);
         }
     }
-
+    
     private Boolean downloadReportAndSend(Date startDate, Date endDate,
             String accountId, String exportType, Integer reportId, String filename,
             String to, String subject, String message) {
@@ -324,12 +328,10 @@ public class TimerService {
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-//            String urlStr = "http://dashience.com/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
-//            String urlStr = "http://172.16.1.15:8080/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
-            String urlStr = "http://localhost:8084/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
+            String urlStr = propReader.readUrl(urlDownloadReport) + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
             System.out.println(urlStr);
             URL website = new URL(urlStr);
-
+            
             File file = new File(filename);
             System.out.println("filename: " + filename);
             FileUtils.copyURLToFile(website, file);
@@ -344,5 +346,5 @@ public class TimerService {
         }
         return true;
     }
-
+    
 }

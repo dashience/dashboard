@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.controller;
 
 //import static com.visumbu.vb.admin.controller.EnliventController.processFollowings;
+import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
@@ -19,6 +20,7 @@ import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Property;
@@ -29,6 +31,7 @@ import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.CsvDataSet;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
+import com.visumbu.vb.utils.PropertyReader;
 import com.visumbu.vb.utils.Rest;
 import com.visumbu.vb.utils.ShuntingYard;
 import com.visumbu.vb.utils.XlsDataSet;
@@ -101,6 +104,13 @@ public class ProxyController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private UiDao uiDao;
+
+    PropertyReader propReader = new PropertyReader();
+
+    private final String urlDownload = "url.download";
 
     final static Logger log = Logger.getLogger(ProxyController.class);
 
@@ -194,7 +204,7 @@ public class ProxyController {
     @RequestMapping(value = "pinterest", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map getPinterestData(HttpServletRequest request, HttpServletResponse response) {
-
+        System.out.println("getPinterestData function");
         String reportName = request.getParameter("dataSetReportName");
         String dataSetId = request.getParameter("dataSetId");
 
@@ -324,6 +334,13 @@ public class ProxyController {
                 returnMap.put("columnDefs", columnDefObject);
 
                 returnMap.put("data", twitterData);
+
+//                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+//                System.out.println("datasetColumnList0 ----> " + datasetColumnList);
+//                if (datasetColumnList.size() > 0) {
+//                    System.out.println("datasetColumnList1 ---> " + datasetColumnList);
+//                    return data;
+//                }
                 return returnMap;
             } catch (ParseException ex) {
                 java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -875,7 +892,7 @@ public class ProxyController {
     @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getFbData(HttpServletRequest request, HttpServletResponse response) {
-        log.debug("Calling of getFbData function in ProxyController class");
+        System.out.println("Calling of getFbData function in ProxyController class");
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
@@ -996,6 +1013,9 @@ public class ProxyController {
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
 
         List<ColumnDef> columnDefs = new ArrayList<>();
+        if (data == null) {
+            return null;
+        }
         for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, String> mapData = iterator.next();
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
@@ -1244,7 +1264,8 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+//                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = propReader.readUrl(urlDownload) + "";
 //                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -1408,7 +1429,9 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../dashboard/admin/proxy/getData?";
+//                String url = "../dashboard/admin/proxy/getData?";
+                String url = propReader.readUrl(urlDownload) + "";
+                System.out.println("url ---> "+url);
 //                String url = "../admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {

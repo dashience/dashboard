@@ -384,17 +384,18 @@ public class UiController extends BaseController {
     DataSet update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         return uiService.update(dataSet);
     }
-    
-//    @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
-//    public @ResponseBody
-//    DatasetColumns createDataSetColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
-//        return uiService.createDataSetColumns(dataSetColumn);
-//    }
-    
+
     @RequestMapping(value = "dataSetFormulaColumns", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     List<DatasetColumns> createDataSetFormulaColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
         return uiService.createDataSetFormulaColumn(dataSetColumn);
+    }
+
+    @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
+        System.out.println("id --> "+datasetColumnId);
+        return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")

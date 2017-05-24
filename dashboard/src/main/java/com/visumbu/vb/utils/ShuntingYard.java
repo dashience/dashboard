@@ -146,6 +146,9 @@ public class ShuntingYard {
     }
 
     public static List<Map<String, Object>> filter(List<Map<String, Object>> list, String postFixRules) {
+        if(list == null){
+            return null;
+        }
         List<Map<String, Object>> filtered = list.stream()
                 .filter(p -> checkFilter(p, postFixRules)).collect(Collectors.toList());
         return filtered;

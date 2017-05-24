@@ -38,7 +38,7 @@ public class FacebookService {
 //    public final String ACCESS_TOKEN = ExampleConfig.ACCESS_TOKEN;
 //   old-- public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
     public String ACCESS_TOKEN = "EAAUAYCRJ0GSBAAXR6GZCHFZACLBL2OCWRCOKYZ84FFRJULXWHBSNXDDPC9SPC2IM35S0AKCGPZAVL1FLJ3OVDLZ2ZAOZAT4ZAFDBUWPCS94MCSJVADVHTE4SQNDXWBOCSOTTBXHOWVJWL5JYZBYMCDGWK6OIJZCQIWC7PK2XCM7SNTYHILAMTCXQ";
-    public String ORGANIC_ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
+    public String ORGANIC_ACCESS_TOKEN = "EAAUAYCRJ0GSBAAXR6GZCHFZACLBL2OCWRCOKYZ84FFRJULXWHBSNXDDPC9SPC2IM35S0AKCGPZAVL1FLJ3OVDLZ2ZAOZAT4ZAFDBUWPCS94MCSJVADVHTE4SQNDXWBOCSOTTBXHOWVJWL5JYZBYMCDGWK6OIJZCQIWC7PK2XCM7SNTYHILAMTCXQ";
 
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
@@ -107,28 +107,30 @@ public class FacebookService {
         return Rest.getData(url);
     }
 
-    public List<Map<String,String>>  getPageLikesByCity(Long accountId, Date startDate, Date endDate, String aggregation)  {
+    public List<Map<String, String>> getPageLikesByCity(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
 //            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_fans_city?access_token=" + ACCESS_TOKEN;
-            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_fans_city?access_token="+ORGANIC_ACCESS_TOKEN; 
+            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_fans_city?access_token=" + ORGANIC_ACCESS_TOKEN;
             String data = Rest.getData(fbUrl);
             JSONParser parser = new JSONParser();
+            if (data == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(data);
             JSONObject json = (JSONObject) jsonObj;
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
             Map returnMap = new HashMap<>();
-            List<Map> fbData = (List<Map>)jsonToMap.get("data");
-            List<Map<String,String>> listData = new ArrayList<>();
-            Map fbFansData = (Map)fbData.get(0);
-            List fbLikesList = (List)fbFansData.get("values");
+            List<Map> fbData = (List<Map>) jsonToMap.get("data");
+            List<Map<String, String>> listData = new ArrayList<>();
+            Map fbFansData = (Map) fbData.get(0);
+            List fbLikesList = (List) fbFansData.get("values");
             System.out.print("**************** City by likes --------------------");
-            Map<String,Object> values = (Map<String,Object>)((Map)fbLikesList.get(0)).get("value");
+            Map<String, Object> values = (Map<String, Object>) ((Map) fbLikesList.get(0)).get("value");
             System.out.print(values);
-            
-            
+
             for (Map.Entry<String, Object> entry : values.entrySet()) {
                 String key = entry.getKey();
-                System.out.print("key--->"+key);
+                System.out.print("key--->" + key);
                 Object value = entry.getValue();
                 System.out.print("values ----->");
                 System.out.print(value);
@@ -137,7 +139,7 @@ public class FacebookService {
                 dataMap.put("likes", value + "");
                 listData.add(dataMap);
             }
-            
+
             return listData;
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
@@ -145,13 +147,15 @@ public class FacebookService {
         return null;
     }
 
-    
     public List<Map<String, String>> getTotalReach(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
 //            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_impressions_organic_unique?access_token=" + ACCESS_TOKEN;
-            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_impressions_organic_unique?access_token="+ORGANIC_ACCESS_TOKEN; 
+            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_impressions_organic_unique?access_token=" + ORGANIC_ACCESS_TOKEN;
             String data = Rest.getData(fbUrl);
             JSONParser parser = new JSONParser();
+            if (data == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(data);
             JSONObject json = (JSONObject) jsonObj;
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
@@ -176,9 +180,12 @@ public class FacebookService {
     public List<Map<String, String>> getTotalEngagements(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
 //            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_engaged_users?access_token=" + ACCESS_TOKEN;
-            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_engaged_users?access_token="+ORGANIC_ACCESS_TOKEN; 
+            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_engaged_users?access_token=" + ORGANIC_ACCESS_TOKEN;
             String data = Rest.getData(fbUrl);
             JSONParser parser = new JSONParser();
+            if (data == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(data);
             JSONObject json = (JSONObject) jsonObj;
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
@@ -200,11 +207,14 @@ public class FacebookService {
 
     public List<Map<String, String>> getTotalPageViews(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
-            
-            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?access_token="+ORGANIC_ACCESS_TOKEN; 
+
+            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?access_token=" + ORGANIC_ACCESS_TOKEN;
 //            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_views_total?access_token=" + ACCESS_TOKEN;
             String data = Rest.getData(fbUrl);
             JSONParser parser = new JSONParser();
+            if (data == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(data);
             JSONObject json = (JSONObject) jsonObj;
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
@@ -232,9 +242,13 @@ public class FacebookService {
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 //            String url = "https://graph.facebook.com/v2.9/" + accountId + "posts?fields=message,likes,comments"
 //                    + "&access_token=" + ACCESS_TOKEN;
-            String fbUrl="https://graph.facebook.com/v2.9/185042698207211/posts?fields=message,likes,comments&access_token="+ORGANIC_ACCESS_TOKEN; 
+            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/posts?fields=message,likes,comments&access_token=" + ORGANIC_ACCESS_TOKEN;
             String data = Rest.getData(fbUrl);
+            System.out.println("data ---> " + data);
             JSONParser parser = new JSONParser();
+            if (data == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(data);
             JSONObject json = (JSONObject) jsonObj;
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
@@ -259,10 +273,13 @@ public class FacebookService {
 
     public List<Map<String, String>> getTotalOrganicLikes(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
-           // String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_fans?access_token=" + ACCESS_TOKEN;
-           String fbUrl="https://graph.facebook.com/v2.9/185042698207211/insights/page_fans?access_token="+ORGANIC_ACCESS_TOKEN; 
-           String data = Rest.getData(fbUrl);
+            // String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_fans?access_token=" + ACCESS_TOKEN;
+            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_fans?access_token=" + ORGANIC_ACCESS_TOKEN;
+            String data = Rest.getData(fbUrl);
             JSONParser parser = new JSONParser();
+            if (data == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(data);
             JSONObject json = (JSONObject) jsonObj;
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
@@ -305,6 +322,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -350,6 +370,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -396,6 +419,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -441,6 +467,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -486,6 +515,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -531,6 +563,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -580,6 +615,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -626,6 +664,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -758,6 +799,9 @@ public class FacebookService {
             }
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
@@ -788,6 +832,9 @@ public class FacebookService {
 
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
 
@@ -826,6 +873,9 @@ public class FacebookService {
                     + "&access_token=" + ACCESS_TOKEN;
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             return array.get("data");
@@ -843,6 +893,9 @@ public class FacebookService {
                     + "&access_token=" + ACCESS_TOKEN;
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();
+            if (fbData == null) {
+                return null;
+            }
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             return array.get("data");

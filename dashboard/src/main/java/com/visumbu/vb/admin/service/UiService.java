@@ -774,4 +774,9 @@ public class UiService {
      public List<Timezone> getTimeZones() {
         return uiDao.getTimezoneTypes();
     }
+
+    public DatasetColumns deleteDataSetFormulaColumnById(Integer datasetColumnId) {
+        DatasetColumns datasetColumn = (DatasetColumns) uiDao.read(DatasetColumns.class, datasetColumnId);
+        return (DatasetColumns) uiDao.delete(datasetColumn);
+    }
 }

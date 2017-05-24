@@ -178,9 +178,9 @@ public class GaService {
         System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
         List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetId);
-        System.out.println("datasetColumnList ----> " + datasetColumnList);
+        System.out.println("datasetColumnList0 ----> " + datasetColumnList);
         if (datasetColumnList.size() > 0) {
-            System.out.println("datasetColumnList ---> " + datasetColumnList);
+            System.out.println("datasetColumnList1 ---> " + datasetColumnList);
             Map<String, List<Map<String, Object>>> data = addDerivedColumn(gaData, dataSetId, startDate, endDate, analyticsProfileId, metricsList, dimensions, productSegments, filter);
             return data;
         }
@@ -214,6 +214,8 @@ public class GaService {
         if (columnData.size() > 0) {
             originalData = (List) columnData.get(0);
         }
+
+        System.out.println("originalData ---> " + originalData);
 
         System.out.println("dataSetId ---> " + dataSetId);
         List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetId);
@@ -304,6 +306,9 @@ public class GaService {
                 Map<String, Object> dataPairYoy = new HashMap();
                 if (columnDataOver.size() > 0) {
                     int list = 0;
+                    System.out.println("dataOver.size() ---> " + dataOver.size());
+                    System.out.println("originalData.size() ---> " + originalData.size());
+
                     if (dataOver.size() == originalData.size()) {
                         for (Iterator<Map<String, Object>> iterator = dataOver.iterator(); iterator.hasNext();) {
                             dataPairYoy = (Map<String, Object>) iterator.next();
@@ -314,10 +319,16 @@ public class GaService {
                             String val = dataPairYoy.get(tokenArrayFunc[1]) + "";
                             System.out.println("valOver ---> " + val);
                             System.out.println("fieldName ---> " + fieldName);
-                            System.out.println("dataPairMap ---> " + dataPairMap);
                             dataPairMap.put(fieldName, val);
+                            System.out.println("dataPairMap ---> " + dataPairMap);
                             System.out.println("originalData ---> " + originalData);
                             list++;
+                        }
+                    } else {
+                        for (Iterator<Map<String, Object>> iterator = originalData.iterator(); iterator.hasNext();) {
+                            dataPairYoy = (Map<String, Object>) iterator.next();
+                            Map<String, Object> dataPairMap = new HashMap<>();
+                            dataPairMap.put(fieldName, "");
                         }
                     }
                 }
@@ -367,7 +378,7 @@ public class GaService {
             }
 
         }
-//        System.out.println("originalData --> " + originalData);
+        System.out.println("originalData 2--> " + originalData);
         List<Map<String, Object>> data = new ArrayList<>(originalData);
 
         returnMap.put("columnDefs", columnDefs);

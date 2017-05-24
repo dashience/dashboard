@@ -25,12 +25,12 @@ public class TextMailWithAttachment {
 
     PropertyReader propReader = new PropertyReader();
 
-    private String hostName = "smtp.hostname";
-    private String setPort = "smtp.port";
-    private String authUser = "smtp.authuser";
-    private String authPass = "smtp.authpass";
-    private String fromAddress = "smtp.fromaddress";
-    private String tlsSslRequired = "smtp.tls.ssl.required";
+    private final String hostName = "smtp.hostname";
+    private final String setPort = "smtp.port";
+    private final String authUser = "smtp.authuser";
+    private final String authPass = "smtp.authpass";
+    private final String fromAddress = "smtp.fromaddress";
+    private final String tlsSslRequired = "smtp.tls.ssl.required";
 
     public TextMailWithAttachment(MailProperties props) {
         this.props = props;
@@ -53,13 +53,13 @@ public class TextMailWithAttachment {
             mailAttachment.setAttachmentPath(attachment);
             mailAttachments.add(mailAttachment);
         }
-        this.props.setHostName(propReader.ReadProperties(hostName));
-        int portNo = Integer.parseInt(propReader.ReadProperties(setPort));
+        this.props.setHostName(propReader.readProperties(hostName));
+        int portNo = Integer.parseInt(propReader.readProperties(setPort));
         this.props.setPort(portNo);
-        this.props.setAuthUser(propReader.ReadProperties(authUser));
-        this.props.setAuthPasswd(propReader.ReadProperties(authPass));
-        this.props.setFrom(propReader.ReadProperties(fromAddress));
-        this.props.setSetSSLOnConnect(Boolean.parseBoolean(propReader.ReadProperties(tlsSslRequired)));
+        this.props.setAuthUser(propReader.readProperties(authUser));
+        this.props.setAuthPasswd(propReader.readProperties(authPass));
+        this.props.setFrom(propReader.readProperties(fromAddress));
+        this.props.setSetSSLOnConnect(Boolean.parseBoolean(propReader.readProperties(tlsSslRequired)));
         this.props.setHtmlMessage(message);
         this.props.setTxtMessage(message);
         this.props.setSubject(subject);
