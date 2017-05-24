@@ -19,7 +19,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         return $scope.tab === tabNum;
     };
     $scope.resetQueryBuilder = function () {
-
+//        alert("reset")
         $scope.dispQueryBuilder = true;
     }
 
@@ -366,16 +366,17 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.selectItem = selectedItem;
         selectedItems(selectedItem);
     };
+
     $scope.previewChart = function (chartType, widget) {
-        $scope.dispQueryBuilder=false;
-        $scope.resetQueryBuilder();
+//        alert("preview")
+        $scope.dispQueryBuilder == true;
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType; //Selected Chart type - Bind chart-type to showPreview()
         $scope.selectedRow = chartType.type ? chartType.type : chartType.chartType;
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
-
+        $scope.resetQueryBuilder();
 //        
         if (chartType.type == 'text') {
             widget.dataSetId = '';
@@ -871,12 +872,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         });
     };
-    $scope.saveQuery = function () {
-        if ($('.query-builder').queryBuilder('getRules') != null) {
-            $scope.setTab(1);
-        }
 
-    }
     $scope.selectDateRangeName = function (widget) {
         $scope.editChart = widget;
         widget.dateRangeName = "Custom";
@@ -1074,6 +1070,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" +
                 "</div>",
         link: function (scope, attrs) {
+//            alert("table")
             scope.tableAggregations = JSON.parse(scope.aggregationsTypes);
             scope.tableGrouping = JSON.parse(scope.groupPriorities);
             scope.tableSorting = JSON.parse(scope.sortingFields);
@@ -1272,7 +1269,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
                     sessionStorage.clear();
                     $rootScope.goBack();
-                    alert()
                     //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
             };
@@ -1396,9 +1392,10 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
         restrict: 'A',
         scope: {
             queryData: '@',
-            filterData: '&',
         },
         link: function (scope, element, attr) {
+//            reload();
+//            alert("query")
             scope.columns = scope.queryData;
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
