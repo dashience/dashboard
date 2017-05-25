@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.utils;
 
+import com.visumbu.vb.admin.dao.UiDao;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -18,13 +19,15 @@ import java.util.TimeZone;
  */
 public class Formatter {
 
-    public static String format(String format, String value) {
+    public static String format(String format, String value) {              
         String returnValue = value;
         String jFormat = format;
         String prefix = "";
         String sufix = "";
         Integer multiplier = 1;
         System.out.println("format ---->" + jFormat + "<----->");
+        String currency = format.substring(0,1);
+        System.out.println("currency --->" +currency);
         System.out.println("value ----->" + value);
         if (jFormat.indexOf("%") >= 0) {
             System.out.println("if --- 1");
@@ -32,10 +35,10 @@ public class Formatter {
             multiplier = 1;
             jFormat = jFormat.replace("%", "");
         }
-        if (jFormat.indexOf('$') >= 0) {
+        if (jFormat.indexOf(currency) >= 0) {
             System.out.println("if --- 2");
-            prefix = "$";
-            jFormat = jFormat.replace("$", "");
+            prefix = currency;
+            jFormat = jFormat.replace(currency, "");
         }
         if (jFormat != null && jFormat.equals("H:M:S")) {
             System.out.println("format -----> H:M:S");

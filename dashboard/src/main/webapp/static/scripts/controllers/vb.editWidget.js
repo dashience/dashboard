@@ -36,6 +36,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //                $scope.editWidget(value)
 //            })
 //        }
+
+        //console.log(response);
         $scope.widgets = response;
         if ($stateParams.widgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
@@ -86,6 +88,18 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {duration: "Yesterday", value: 'yesterday'},
         {duration: "Custom", value: 'custom'}
     ];
+
+//      $http({method: 'GET', url: 'admin/ui/getAgency'}).success(function (response) {
+//          var currencyValue = response;
+//      });
+
+    $scope.agencyCurrencies = []
+    $http({method: 'GET', url: 'admin/ui/getCurrencyByAgency'}).success(function (response) {
+        $scope.agencyCurrencies = response;
+        $scope.getCurrency($scope.agencyCurrencies);
+        console.log(response)
+    });
+
     $scope.alignments = [
         {value: '', name: 'None'},
         {value: "left", name: "Left"},
@@ -113,16 +127,31 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         {name: 'No', value: ''}
     ];
     $scope.isEditPreviewColumn = false;
-    $scope.formats = [
-        {name: "None", value: ''},
-        {name: "Currency", value: '$,.2f'},
-        {name: "Integer", value: ',.0f'},
-        {name: "Percentage", value: ',.2%'},
-        {name: "Decimal1", value: ',.1f'},
-        {name: "Decimal2", value: ',.2f'},
-        {name: "Time", value: 'H:M:S'},
-        {name: "Star Rating", value: 'starRating'}
-    ];
+//    var currencySymbol = "$";
+
+    console.log("Currency");
+    console.log($scope.agencyCurrencies);
+
+    $scope.getCurrency = function (list) {
+        console.log(list)
+        list.forEach(function (val, k) {
+            $scope.currency = val.currencyId.currencySymbol;
+        });
+
+        $scope.formats = [
+            {name: "None", value: ''},
+            {name: "Currency", value: $scope.currency + ',.2f'},
+//            {name: "Currency", value: '$,.2f'},
+            {name: "Integer", value: ',.0f'},
+            {name: "Percentage", value: ',.2%'},
+            {name: "Decimal1", value: ',.1f'},
+            {name: "Decimal2", value: ',.2f'},
+            {name: "Time", value: 'H:M:S'},
+            {name: "Star Rating", value: 'starRating'}
+        ];
+    };
+
+
     $scope.chartAggregation = [
         {name: "None", value: ''},
         {name: 'Min', value: "min"},
@@ -1265,7 +1294,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 } catch (e) {
 
                 }
-               
+
                 var widgetColumnsData = [];
                 var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeader;
                 angular.forEach(saveWidgetColumnList, function (value, key) {
@@ -1486,7 +1515,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 filterList = [{id: 'select', label: 'select', type: 'integer'}]
 
             }
-            
+
             $(document).ready(function ()
             {
 //                var rules_basic = {

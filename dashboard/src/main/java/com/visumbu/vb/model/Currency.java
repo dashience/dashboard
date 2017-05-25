@@ -6,21 +6,16 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -32,10 +27,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "Currency.findAll", query = "SELECT c FROM Currency c")
     , @NamedQuery(name = "Currency.findById", query = "SELECT c FROM Currency c WHERE c.id = :id")
-    , @NamedQuery(name = "Currency.findByCurrency", query = "SELECT c FROM Currency c WHERE c.currency= :currency")
+    , @NamedQuery(name = "Currency.findByCurrency", query = "SELECT c FROM Currency c WHERE c.currency = :currency")
     , @NamedQuery(name = "Currency.findByCurrencyCode", query = "SELECT c FROM Currency c WHERE c.currencyCode = :currencyCode")
+    , @NamedQuery(name = "Currency.findByInUsd", query = "SELECT c FROM Currency c WHERE c.inUsd = :inUsd")
     , @NamedQuery(name = "Currency.findByNation", query = "SELECT c FROM Currency c WHERE c.nation = :nation")
- , @NamedQuery(name = "Currency.findByInUsd", query = "SELECT c FROM Currency c WHERE c.inUsd = :inUsd")})
+    , @NamedQuery(name = "Currency.findByCurrencySymbol", query = "SELECT c FROM Currency c WHERE c.currencySymbol = :currencySymbol")})
 public class Currency implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,23 +40,23 @@ public class Currency implements Serializable {
     @NotNull
     @Column(name = "id")
     private Integer id;
-    @Size(max = 200)
+    @Size(max = 255)
     @Column(name = "currency")
     private String currency;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 255)
     @Column(name = "currency_code")
     private String currencyCode;
-    @Size(max = 200)
-    @Column(name = "nation")
-    private String nation;
-    @Size(max = 200)
+    @Size(max = 255)
     @Column(name = "in_usd")
     private String inUsd;
-    
-    @OneToMany(mappedBy = "currencyId")
-    private Collection<AgencySettings> agencySettingsCollection;
+    @Size(max = 255)
+    @Column(name = "nation")
+    private String nation;
+    @Size(max = 45)
+    @Column(name = "currency_symbol")
+    private String currencySymbol;
 
     public Currency() {
     }
@@ -98,14 +94,6 @@ public class Currency implements Serializable {
         this.currencyCode = currencyCode;
     }
 
-    public String getNation() {
-        return nation;
-    }
-
-    public void setNation(String nation) {
-        this.nation = nation;
-    }
-
     public String getInUsd() {
         return inUsd;
     }
@@ -114,15 +102,20 @@ public class Currency implements Serializable {
         this.inUsd = inUsd;
     }
 
-    
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencySettings> getAgencySettingsCollection() {
-        return agencySettingsCollection;
+    public String getNation() {
+        return nation;
     }
 
-    public void setAgencySettingsCollection(Collection<AgencySettings> agencySettingsCollection) {
-        this.agencySettingsCollection = agencySettingsCollection;
+    public void setNation(String nation) {
+        this.nation = nation;
+    }
+
+    public String getCurrencySymbol() {
+        return currencySymbol;
+    }
+
+    public void setCurrencySymbol(String currencySymbol) {
+        this.currencySymbol = currencySymbol;
     }
 
     @Override

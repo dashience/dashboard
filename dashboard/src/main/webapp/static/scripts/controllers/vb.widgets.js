@@ -292,8 +292,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 dateDuration: widget.dateDuration,
                 content: widget.content,
                 width: widget.width,
-                jsonData:widget.jsonData,
-                queryFilter:widget.queryFilter
+                jsonData: widget.jsonData,
+                queryFilter: widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -330,8 +330,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 dateDuration: widget.dateDuration,
                 content: widget.content,
                 width: widget.width,
-                jsonData:widget.jsonData,
-                queryFilter:widget.queryFilter
+                jsonData: widget.jsonData,
+                queryFilter: widget.queryFilter
             };
 
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -1399,6 +1399,25 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
+
+
+//            var NL = d3.locale({
+//                "decimal": ".",
+//                "thousands": ",",
+//                "grouping": [3],
+//                "currency": ["", "€"],
+//                "dateTime": "%a %b %e %X %Y",
+//                "date": "%m/%d/%Y",
+//                "time": "%H:%M:%S",
+//                "periods": ["AM", "PM"],
+//                "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+//                "shortDays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+//                "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+//                "shortMonths": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+//            })
+
+
+
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -1825,7 +1844,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                
+
                 var dataSourcePassword;
                 if (pieChartDataSource.dataSourceId.password) {
                     dataSourcePassword = pieChartDataSource.dataSourceId.password;
@@ -2116,7 +2135,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                
+
                 var dataSourcePassword;
                 if (areaChartDataSource.dataSourceId.password) {
                     dataSourcePassword = areaChartDataSource.dataSourceId.password;
@@ -2411,7 +2430,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
                 }
-                
+
                 var dataSourcePassword;
                 if (stackedBarChartDataSource.dataSourceId.password) {
                     dataSourcePassword = stackedBarChartDataSource.dataSourceId.password;

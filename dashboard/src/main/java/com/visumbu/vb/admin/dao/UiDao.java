@@ -14,6 +14,8 @@ import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
@@ -53,6 +55,10 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
+//    public List getAgencyIdByUser(VbUser user){
+//        
+//        return null;
+//    }
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         System.out.println(user);
         String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.accountId.agencyId = d.userId.agencyId and d.userId.id = :userId";
@@ -619,4 +625,51 @@ public class UiDao extends BaseDao {
         return query.list();
 
     }
+
+    //get AgencyBYUserId
+//    public Agency getAgencyByUserId(VbUser user) {
+//        String queryStr = "select a from Agency a where a.userId = :user";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("user", user);
+//        return (Agency)query.uniqueResult();
+    public List<AgencySettings> getAgencyByUserId(VbUser user) {
+        System.out.println(user);
+        String queryStr = "select a from AgencySettings a where a.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", user.getAgencyId().getId());
+//        List<AgencySettings> currencyList = query.list();
+//        for(Iterator<AgencySettings> iterate = currencyList.iterator(); iterate.hasNext();){
+//            AgencySettings agencySettings = iterate.next();
+//            String currencySymbol = agencySettings.g
+//        }
+//        String currency = getCurrencySymbol(user);
+        return query.list();
+    }
+
+//    public static String currencySymbol;
+//
+//    public String getCurrencySymbol(VbUser user) {
+//        System.out.println(user);
+//        String queryStr = "select a from AgencySettings a where a.agencyId.id = :agencyId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("agencyId", user.getAgencyId().getId());
+//
+//        AgencySettings agencySetting = (AgencySettings) query.list().get(0);
+//        String queryForCurrency = "select c.currencySymbol from Currency c where c.id = :currencyId";
+//        Query queryCurrency = sessionFactory.getCurrentSession().createQuery(queryForCurrency);
+//        System.out.println("currencyID ---> " + agencySetting.getCurrencyId());
+//
+//        queryCurrency.setParameter("currencyId", agencySetting.getCurrencyId());
+//        currencySymbol = (String) queryCurrency.uniqueResult();
+//
+//        System.out.println("currencySymbol ---> " + currencySymbol);
+////        List<AgencySettings> currencyList = query.list();
+////        for(Iterator<AgencySettings> iterate = currencyList.iterator(); iterate.hasNext();){
+////            AgencySettings agencySettings = iterate.next();
+////            String currencySymbol = agencySettings.g
+////        }
+//        return currencySymbol;
+//    }
+    //............
+
 }

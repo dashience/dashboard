@@ -19,6 +19,8 @@ import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
@@ -766,12 +768,21 @@ public class UiService {
     public DatasetColumns updateColumns(DatasetColumnBean dataSet) {
         return uiDao.updateColumns(dataSet);
     }
-    
+
     public List<Currency> getCurrencies() {
         return uiDao.getCurrenciesTypes();
     }
-    
-     public List<Timezone> getTimeZones() {
+
+    public List<Timezone> getTimeZones() {
         return uiDao.getTimezoneTypes();
     }
+
+    //get AgencyBYId
+//      public Agency getAgencyByUserId(VbUser user) {
+//        return uiDao.getAgencyByUserId(user);
+    public List<AgencySettings> getAgencyByUserId(VbUser user) {
+        return uiDao.getAgencyByUserId(user);
+
+    }
+    //...............
 }

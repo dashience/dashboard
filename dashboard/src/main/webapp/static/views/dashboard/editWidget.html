@@ -460,7 +460,7 @@
 
                                         <div class="form-group">
                                             <div class="col-md-8">
-                                                <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
+                                                <input type="checkbox" ng-model="showAdvanceOptions" ng-change="getCurrency(agencyCurrencies)"> Advance Options
                                             </div>
                                             <div class="col-md-4" ng-if="editChartType != 'pie'">
                                                 <label>Grid Line</label>

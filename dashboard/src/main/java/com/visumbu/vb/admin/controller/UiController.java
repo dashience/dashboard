@@ -13,6 +13,7 @@ import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.DatasetColumns;
 
 import com.visumbu.vb.model.Currency;
@@ -49,6 +51,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -384,13 +387,13 @@ public class UiController extends BaseController {
     DataSet update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         return uiService.update(dataSet);
     }
-    
+
     @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     DatasetColumns createColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
         return uiService.createColumns(dataSet);
     }
-    
+
     @RequestMapping(value = "dataSetColumns", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     DatasetColumns updateColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
@@ -598,6 +601,19 @@ public class UiController extends BaseController {
         //System.out.println("size of currencies"+currencies.size());
         return timezones;
     }
+
+    @RequestMapping(value = "getCurrencyByAgency", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgencyCurrency(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        System.out.println("***************UI CONTRIK********************");
+        System.out.println(uiService.getAgencyByUserId(user));
+        return uiService.getAgencyByUserId(user);
+    }
+    //..................
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
