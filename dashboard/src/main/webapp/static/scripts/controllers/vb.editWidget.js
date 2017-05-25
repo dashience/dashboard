@@ -759,12 +759,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 $scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
             }
         }
+        widget.dateRangeName = $("#dateRangeName").text().trim();
         try {
             $scope.customStartDate = widget.dateRangeName !== "Select Date Duration" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName !== "Select Date Duration" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
         } catch (e) {
 
         }
+        console.log(widget.dateRangeName);
+        console.log($scope.customStartDate);
+        console.log($scope.customEndDate);
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -1203,7 +1207,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 } catch (e) {
 
                 }
-
+                console.log(widget.dateRangeName);
+                console.log(scope.customStartDate);
+                console.log(scope.customEndDate);
                 var widgetColumnsData = [];
                 var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeader;
                 angular.forEach(saveWidgetColumnList, function (value, key) {

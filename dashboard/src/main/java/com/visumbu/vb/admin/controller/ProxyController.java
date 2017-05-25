@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.controller;
 
 //import static com.visumbu.vb.admin.controller.EnliventController.processFollowings;
+import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
@@ -31,13 +32,16 @@ import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.CsvDataSet;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
+import com.visumbu.vb.utils.ParsePost;
 import com.visumbu.vb.utils.PropertyReader;
 import com.visumbu.vb.utils.Rest;
 import com.visumbu.vb.utils.ShuntingYard;
+import static com.visumbu.vb.utils.ShuntingYard.postfix;
 import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,6 +52,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +61,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,6 +234,9 @@ public class ProxyController {
                 String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
                 String data = Rest.getData(fbUrl);
                 JSONParser parser = new JSONParser();
+                if (data == null) {
+                    return null;
+                }
                 Object jsonObj = parser.parse(data);
                 JSONObject json = (JSONObject) jsonObj;
                 Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
@@ -241,9 +250,36 @@ public class ProxyController {
                     returnDataMap.put("description", fbDataMap.get("description") + "");
                     returnDataMap.put("pins_counts", ((Map) fbDataMap.get("counts")).get("pins") + "");
                     returnData.add(returnDataMap);
-
                 }
+                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+                System.out.println("datasetColumnList0 ----> " + datasetColumnList);
+                if (datasetColumnList.size() > 0) {
+                    Map<String, List<Map<String, String>>> pinInterestData = addDerivedColumnForPinInterest(returnData, datasetColumnList);
+                    Map returnPinMap = new HashMap();
+                    Iterator it = pinInterestData.entrySet().iterator();
 
+                    List column = new ArrayList<>();
+                    List columnData = new ArrayList<>();
+
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry) it.next();
+                        if (pair.getKey().equals("data")) {
+                            columnData.add(pair.getValue());
+                        } else {
+                            column.add(pair.getValue());
+                        }
+                    }
+                    List<Map<String, String>> columnsData = (List<Map<String, String>>) columnData.get(0);
+                    List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
+                    System.out.println("columnData ---> " + columnData);
+                    System.out.println("column ---> " + column);
+
+                    List<ColumnDef> columnDefs = getColumnDefForDerivedColumn(columnsData, columns);
+                    returnPinMap.put("columnDefs", columnDefs);
+
+                    returnPinMap.put("data", columnsData);
+                    return returnPinMap;
+                }
                 Map pinterestData = new HashMap();
                 List<ColumnDef> columnDefs = getColumnDef(returnData);
                 returnMap.put("columnDefs", columnDefs);
@@ -263,6 +299,9 @@ public class ProxyController {
 //                String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
                 String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZb-_MWyppZRUUDgHauO9_3lCjwRFLtkrsSCIPVD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Ccreator%2Coriginal_link%2Cmetadata%2Cmedia";
                 String data = Rest.getData(fbUrl);
+                if (data == null) {
+                    return null;
+                }
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
                 JSONObject json = (JSONObject) jsonObj;
@@ -278,7 +317,35 @@ public class ProxyController {
                     returnDataMap.put("created_at", fbDataMap.get("created_at") + "");
                     returnData.add(returnDataMap);
                 }
+                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+                System.out.println("datasetColumnList0 ----> " + datasetColumnList);
+                if (datasetColumnList.size() > 0) {
+                    Map<String, List<Map<String, String>>> pinInterestData = addDerivedColumnForPinInterest(returnData, datasetColumnList);
+                    Map returnPinMap = new HashMap();
+                    Iterator it = pinInterestData.entrySet().iterator();
 
+                    List column = new ArrayList<>();
+                    List columnData = new ArrayList<>();
+
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry) it.next();
+                        if (pair.getKey().equals("data")) {
+                            columnData.add(pair.getValue());
+                        } else {
+                            column.add(pair.getValue());
+                        }
+                    }
+                    List<Map<String, String>> columnsData = (List<Map<String, String>>) columnData.get(0);
+                    List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
+                    System.out.println("columnData ---> " + columnData);
+                    System.out.println("column ---> " + column);
+
+                    List<ColumnDef> columnDefs = getColumnDefForDerivedColumn(columnsData, columns);
+                    returnPinMap.put("columnDefs", columnDefs);
+
+                    returnPinMap.put("data", columnsData);
+                    return returnPinMap;
+                }
                 Map pinterestData = new HashMap();
                 List<ColumnDef> columnDefs = getColumnDef(returnData);
                 returnMap.put("columnDefs", columnDefs);
@@ -302,7 +369,9 @@ public class ProxyController {
 //                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
                 Map returnMap = new HashMap<>();
 //                List fbData = (List<Map<String,Object>>) jsonToMap.get("data");
-
+                if (data == null) {
+                    return null;
+                }
                 //////////////////////////
                 JSONObject jsonArray = (JSONObject) parser.parse(data);
 
@@ -317,6 +386,45 @@ public class ProxyController {
                 }
                 twitterData.add(myMapData);
 
+                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+                System.out.println("datasetColumnList0 ----> " + datasetColumnList);
+                if (datasetColumnList.size() > 0) {
+
+                    List<Map<String, String>> twitterDataListString = new ArrayList<>();
+                    Map<String, String> mapData = new HashMap<>();
+                    for (Map.Entry<String, Object> entry : myData.entrySet()) {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
+                        mapData.put(key, value + "");
+                    }
+                    twitterDataListString.add(mapData);
+
+                    Map<String, List<Map<String, String>>> pinInterestData = addDerivedColumnForPinInterest(twitterDataListString, datasetColumnList);
+                    Map returnPinMap = new HashMap();
+                    Iterator it = pinInterestData.entrySet().iterator();
+
+                    List column = new ArrayList<>();
+                    List columnData = new ArrayList<>();
+
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry) it.next();
+                        if (pair.getKey().equals("data")) {
+                            columnData.add(pair.getValue());
+                        } else {
+                            column.add(pair.getValue());
+                        }
+                    }
+                    List<Map<String, String>> columnsData = (List<Map<String, String>>) columnData.get(0);
+                    List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
+                    System.out.println("columnData ---> " + columnData);
+                    System.out.println("column ---> " + column);
+
+                    List<ColumnDef> columnDefs = getColumnDefForDerivedColumn(columnsData, columns);
+                    returnPinMap.put("columnDefs", columnDefs);
+
+                    returnPinMap.put("data", columnsData);
+                    return returnPinMap;
+                }
                 List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
 
                 /////////////////////////////////////////////////////////
@@ -454,6 +562,163 @@ public class ProxyController {
 //        System.out.println("--------------------------------------");
 //        return followingsCount;
 //    }
+    public Map<String, List<Map<String, String>>> addDerivedColumnForPinInterest(List<Map<String, String>> data, List<DatasetColumns> datasetColumnList) {
+        List<Map<String, String>> originalData = new ArrayList<>(data);
+        List<ColumnDef> columnDefs = new ArrayList<>();
+
+        Map returnMap = new HashMap<>();
+
+        System.out.println("originalData ---> " + originalData);
+        String fieldName;
+        String displayName;
+        String fieldType;
+        String expression;
+        String displayFormat;
+        String formula;
+        String status;
+        String functionName;
+        Integer id;
+
+        System.out.println("datasetColumnList --> " + datasetColumnList);
+        for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
+            DatasetColumns datasetColumn = datasetColumns.next();
+            System.out.println("datasetcolumn.getExpression() ----> " + datasetColumn.getExpression());
+            id = datasetColumn.getId();
+            fieldName = datasetColumn.getFieldName();
+            displayName = datasetColumn.getDisplayName();
+            fieldType = datasetColumn.getFieldType();
+            displayFormat = datasetColumn.getDisplayFormat();
+            System.out.println("displayFormat ---> " + displayFormat);
+            formula = datasetColumn.getExpression();
+            status = datasetColumn.getStatus();
+            functionName = datasetColumn.getFunctionName();
+            Map<String, String> dataPair = new HashMap();
+
+            columnDefs.add(new ColumnDef(id, fieldName, fieldType, displayName, null, displayFormat, status, formula, functionName));
+            if (functionName != null && !functionName.trim().isEmpty()) {
+                String funcName = functionName;
+
+                funcName = funcName.replaceAll("\\s+", "");
+                System.out.println("funcName ---> " + funcName);
+                StringTokenizer tokenizer = new StringTokenizer(funcName, "()");
+                String[] tokenArrayFunc = new String[tokenizer.countTokens()];
+                int i = -1;
+                while (tokenizer.hasMoreTokens()) {
+                    String token = (String) tokenizer.nextToken().trim();
+                    if (!token.equalsIgnoreCase("\\s+")) {
+                        System.out.println("token name 1---> " + token);
+                        tokenArrayFunc[++i] = token;
+                    }
+                }
+//                Date strtDate = null, lastDate = null;
+//                if (tokenArrayFunc[0].equalsIgnoreCase("yoy")) {
+//                    strtDate = new DateTime(startDate).minusYears(1).toDate();
+//                    lastDate = new DateTime(endDate).minusYears(1).toDate();
+//                    System.out.println("yoy ---> ");
+//                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+//                } else if (tokenArrayFunc[0].equalsIgnoreCase("mom")) {
+//                    strtDate = new DateTime(startDate).minusMonths(1).toDate();
+//                    lastDate = new DateTime(endDate).minusMonths(1).toDate();
+//                    System.out.println("mom ---> ");
+//                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+//                } else if (tokenArrayFunc[0].equalsIgnoreCase("wow")) {
+//                    strtDate = new DateTime(startDate).minusWeeks(1).toDate();
+//                    lastDate = new DateTime(endDate).minusWeeks(1).toDate();
+//                    System.out.println("wow ---> ");
+//                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+//                }
+
+                Map<String, String> dataPairYoy = new HashMap();
+
+                for (Iterator<Map<String, String>> iterator = originalData.iterator(); iterator.hasNext();) {
+                    dataPairYoy = (Map<String, String>) iterator.next();
+                    Map<String, Object> dataPairMap = new HashMap<>();
+                    dataPairYoy.put(fieldName, dataPairYoy.get(tokenArrayFunc[1]) + "");
+                }
+
+            } else if (formula != null && !formula.trim().isEmpty()) {
+                expression = formula;
+                expression = expression.replaceAll("\\s+", "");
+                StringTokenizer tokenizer = new StringTokenizer(expression, "([+*/-()1234567890])");
+                String[] tokenArray = new String[tokenizer.countTokens()];
+                int i = -1;
+                while (tokenizer.hasMoreTokens()) {
+                    String token = (String) tokenizer.nextToken().trim();
+                    if (!token.equalsIgnoreCase("\\s+")) {
+                        System.out.println("token name 1---> " + token);
+                        tokenArray[++i] = token;
+                    }
+                }
+
+                String postFix;
+
+                double result = 0;
+                String resultStr = null;
+                System.out.println("originaldata ---> " + originalData);
+                if (data.size() > 0) {
+                    for (Iterator<Map<String, String>> iterator = originalData.iterator(); iterator.hasNext();) {
+                        dataPair = (Map<String, String>) iterator.next();
+                        int flag = 0;
+                        String valueExpression = datasetColumn.getExpression();
+                        String operatorExpression = datasetColumn.getExpression();
+                        System.out.println("dataPair -----> " + dataPair);
+                        System.out.println("formula ----> " + valueExpression);
+                        for (int j = 0; j < tokenArray.length; j++) {
+                            System.out.println(tokenArray[j] + " value -----> " + dataPair.get(tokenArray[j]));
+                            try {
+                                double value = Double.parseDouble(dataPair.get(tokenArray[j]));
+                                valueExpression = valueExpression.replaceAll(tokenArray[j], value + "");
+                                System.out.println("formulaaaaaaaaaa ----> " + valueExpression);
+                            } catch (NumberFormatException e) {
+                                valueExpression = valueExpression.replaceAll(tokenArray[j], dataPair.get(tokenArray[j]) + "");
+                                operatorExpression = operatorExpression.replaceAll(tokenArray[j], "");
+                                System.out.println("formulaaaaaaaaaa 1----> " + valueExpression);
+                                System.out.println("operator ----> " + operatorExpression);
+                                System.out.println(e);
+                                flag++;
+                            }
+                        }
+                        if (flag == 0) {
+//                        InToPost theTrans = new InToPost(calculateFormula);
+                            postFix = postfix(valueExpression);
+//                        output = theTrans.doTrans();
+                            System.out.println("final output ----> " + postFix);
+                            ParsePost aParser = new ParsePost(postFix);
+                            result = aParser.doParse();
+                            System.out.println("result --> " + BigDecimal.valueOf(result).toPlainString());
+                            resultStr = BigDecimal.valueOf(result).toPlainString();
+                            dataPair.put(fieldName, resultStr);
+                        } else {
+                            if (operatorExpression.contains("-")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains("*")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains("/")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains("(")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains(")")) {
+                                dataPair.put(fieldName, "");
+                            } else {
+                                valueExpression = valueExpression.replaceAll("\\+", "");
+                                dataPair.put(fieldName, valueExpression);
+                            }
+                        }
+                        System.out.println("field Name ---> " + fieldName);
+                        System.out.println("resultstr ---> " + resultStr);
+                    }
+                    System.out.println("id ---> " + id);
+                }
+            }
+
+        }
+        System.out.println("originalData 2--> " + originalData);
+        List<Map<String, String>> fbData = new ArrayList<>(originalData);
+        returnMap.put("columnDefs", columnDefs);
+        returnMap.put("data", fbData);
+        return returnMap;
+    }
+
     @RequestMapping(value = "getSheets", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map<Integer, String> getXlsSheets(HttpServletRequest request, HttpServletResponse response) {
@@ -896,10 +1161,13 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
+        String productSegment = request.getParameter("productSegment");
         if (timeSegment == null) {
             timeSegment = "daily";
         }
-
+        if (productSegment == null) {
+            productSegment = "none";
+        }
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
         if (dataSetId != null) {
@@ -914,6 +1182,7 @@ public class ProxyController {
             if (dataSet != null) {
                 dataSetReportName = dataSet.getReportName();
                 timeSegment = dataSet.getTimeSegment();
+                productSegment = dataSet.getProductSegment();
             }
         }
         String accountIdStr = request.getParameter("accountId");
@@ -951,13 +1220,46 @@ public class ProxyController {
         if (facebookOrganicAccountId != null) {
             facebookOrganicAccountIdInt = Long.parseLong(facebookOrganicAccountId);
         }
-        String accessToken = "EAAUAYCRJ0GSBAAXR6GZCHFZACLBL2OCWRCOKYZ84FFRJULXWHBSNXDDPC9SPC2IM35S0AKCGPZAVL1FLJ3OVDLZ2ZAOZAT4ZAFDBUWPCS94MCSJVADVHTE4SQNDXWBOCSOTTBXHOWVJWL5JYZBYMCDGWK6OIJZCQIWC7PK2XCM7SNTYHILAMTCXQ";
+        String accessToken = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
         log.debug("Report Name ---- " + dataSetReportName);
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
         log.debug("Start Date ---- " + startDate);
-        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, facebookOrganicAccountIdInt, startDate, endDate, timeSegment);
-        log.debug(data);
+        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+        System.out.println("datasetColumnList0 ----> " + datasetColumnList);
+        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
+                facebookOrganicAccountIdInt, startDate, endDate, timeSegment, productSegment);
+        if (datasetColumnList.size() > 0) {
+            Map<String, List<Map<String, String>>> fbData = addDerivedColumnForFb(data, datasetColumnList, startDate, endDate, accessToken, dataSetReportName, facebookAccountIdInt, facebookOrganicAccountIdInt, timeSegment, productSegment);
+            Map returnMap = new HashMap();
+            Iterator it = fbData.entrySet().iterator();
+
+            List column = new ArrayList<>();
+            List columnData = new ArrayList<>();
+
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                if (pair.getKey().equals("data")) {
+                    columnData.add(pair.getValue());
+                } else {
+                    column.add(pair.getValue());
+                }
+            }
+            List<Map<String, String>> columnsData = (List<Map<String, String>>) columnData.get(0);
+            List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
+            System.out.println("columnData ---> " + columnData);
+            System.out.println("column ---> " + column);
+
+            List<ColumnDef> columnDefs = getColumnDefForDerivedColumn(columnsData, columns);
+            returnMap.put("columnDefs", columnDefs);
+            if (fieldsOnly != null) {
+                return returnMap;
+            }
+            returnMap.put("data", columnsData);
+            return returnMap;
+        }
+
+        System.out.println("FbData list ----> " + data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
@@ -968,6 +1270,187 @@ public class ProxyController {
             return returnMap;
         }
         returnMap.put("data", data);
+        return returnMap;
+    }
+
+    public Map<String, List<Map<String, String>>> addDerivedColumnForFb(List<Map<String, String>> data, List<DatasetColumns> datasetColumnList, Date startDate, Date endDate, String accessToken, String dataSetReportName, Long facebookAccountIdInt, Long facebookOrganicAccountIdInt, String timeSegment, String productSegment) {
+        List<Map<String, String>> originalData = new ArrayList<>(data);
+        List<ColumnDef> columnDefs = new ArrayList<>();
+
+        Map returnMap = new HashMap<>();
+
+        System.out.println("originalData ---> " + originalData);
+        String fieldName;
+        String displayName;
+        String fieldType;
+        String expression;
+        String displayFormat;
+        String formula;
+        String status;
+        String functionName;
+        Integer id;
+
+        System.out.println("datasetColumnList --> " + datasetColumnList);
+        for (Iterator<DatasetColumns> datasetColumns = datasetColumnList.iterator(); datasetColumns.hasNext();) {
+            DatasetColumns datasetColumn = datasetColumns.next();
+            System.out.println("datasetcolumn.getExpression() ----> " + datasetColumn.getExpression());
+            id = datasetColumn.getId();
+            fieldName = datasetColumn.getFieldName();
+            displayName = datasetColumn.getDisplayName();
+            fieldType = datasetColumn.getFieldType();
+            displayFormat = datasetColumn.getDisplayFormat();
+            System.out.println("displayFormat ---> " + displayFormat);
+            formula = datasetColumn.getExpression();
+            status = datasetColumn.getStatus();
+            functionName = datasetColumn.getFunctionName();
+            Map<String, String> dataPair = new HashMap();
+
+            columnDefs.add(new ColumnDef(id, fieldName, fieldType, displayName, null, displayFormat, status, formula, functionName));
+            if (functionName != null && !functionName.trim().isEmpty()) {
+                String funcName = functionName;
+
+                funcName = funcName.replaceAll("\\s+", "");
+                System.out.println("funcName ---> " + funcName);
+                StringTokenizer tokenizer = new StringTokenizer(funcName, "()");
+                String[] tokenArrayFunc = new String[tokenizer.countTokens()];
+                int i = -1;
+                while (tokenizer.hasMoreTokens()) {
+                    String token = (String) tokenizer.nextToken().trim();
+                    if (!token.equalsIgnoreCase("\\s+")) {
+                        System.out.println("token name 1---> " + token);
+                        tokenArrayFunc[++i] = token;
+                    }
+                }
+                Date strtDate = null, lastDate = null;
+                if (tokenArrayFunc[0].equalsIgnoreCase("yoy")) {
+                    strtDate = new DateTime(startDate).minusYears(1).toDate();
+                    lastDate = new DateTime(endDate).minusYears(1).toDate();
+                    System.out.println("yoy ---> ");
+                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+                } else if (tokenArrayFunc[0].equalsIgnoreCase("mom")) {
+                    strtDate = new DateTime(startDate).minusMonths(1).toDate();
+                    lastDate = new DateTime(endDate).minusMonths(1).toDate();
+                    System.out.println("mom ---> ");
+                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+                } else if (tokenArrayFunc[0].equalsIgnoreCase("wow")) {
+                    strtDate = new DateTime(startDate).minusWeeks(1).toDate();
+                    lastDate = new DateTime(endDate).minusWeeks(1).toDate();
+                    System.out.println("wow ---> ");
+                    System.out.println("startDate ----> " + strtDate + " endDate ----> " + lastDate);
+                }
+                List<Map<String, String>> dataListOver = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
+                        facebookOrganicAccountIdInt, strtDate, lastDate, timeSegment, productSegment);
+
+                List<Map<String, String>> dataOver = new ArrayList<>(dataListOver);
+
+                Map<String, String> dataPairYoy = new HashMap();
+                if (dataListOver.size() > 0) {
+                    int list = 0;
+                    System.out.println("dataOver.size() ---> " + dataOver.size());
+                    System.out.println("originalData.size() ---> " + originalData.size());
+
+                    if (dataOver.size() == originalData.size()) {
+                        for (Iterator<Map<String, String>> iterator = dataOver.iterator(); iterator.hasNext();) {
+                            dataPairYoy = (Map<String, String>) iterator.next();
+                            Map<String, String> dataPairMap = new HashMap<>();
+                            dataPairMap = originalData.get(list);
+                            System.out.println("yoy --> " + dataPairYoy.get("userType"));
+                            System.out.println("current year --->" + dataPairMap.get("userType"));
+                            String val = dataPairYoy.get(tokenArrayFunc[1]) + "";
+                            System.out.println("valOver ---> " + val);
+                            System.out.println("fieldName ---> " + fieldName);
+                            dataPairMap.put(fieldName, val);
+                            System.out.println("dataPairMap ---> " + dataPairMap);
+                            System.out.println("originalData ---> " + originalData);
+                            list++;
+                        }
+                    } else {
+                        for (Iterator<Map<String, String>> iterator = originalData.iterator(); iterator.hasNext();) {
+                            dataPairYoy = (Map<String, String>) iterator.next();
+                            Map<String, Object> dataPairMap = new HashMap<>();
+                            dataPairMap.put(fieldName, "");
+                        }
+                    }
+                }
+            } else if (formula != null && !formula.trim().isEmpty()) {
+                expression = formula;
+                expression = expression.replaceAll("\\s+", "");
+                StringTokenizer tokenizer = new StringTokenizer(expression, "([+*/-()1234567890])");
+                String[] tokenArray = new String[tokenizer.countTokens()];
+                int i = -1;
+                while (tokenizer.hasMoreTokens()) {
+                    String token = (String) tokenizer.nextToken().trim();
+                    if (!token.equalsIgnoreCase("\\s+")) {
+                        System.out.println("token name 1---> " + token);
+                        tokenArray[++i] = token;
+                    }
+                }
+
+                String postFix;
+                double result = 0;
+                String resultStr = null;
+                System.out.println("originaldata ---> " + originalData);
+                if (data.size() > 0) {
+                    for (Iterator<Map<String, String>> iterator = originalData.iterator(); iterator.hasNext();) {
+                        dataPair = (Map<String, String>) iterator.next();
+                        int flag = 0;
+                        String valueExpression = datasetColumn.getExpression();
+                        String operatorExpression = datasetColumn.getExpression();
+
+                        System.out.println("dataPair -----> " + dataPair);
+                        System.out.println("formula ----> " + valueExpression);
+                        for (int j = 0; j < tokenArray.length; j++) {
+                            System.out.println(tokenArray[j] + " value -----> " + dataPair.get(tokenArray[j]));
+                            try {
+                                double value = Double.parseDouble(dataPair.get(tokenArray[j]));
+                                valueExpression = valueExpression.replaceAll(tokenArray[j], value + "");
+                                System.out.println("formulaaaaaaaaaa ----> " + valueExpression);
+                            } catch (NumberFormatException e) {
+                                valueExpression = valueExpression.replaceAll(tokenArray[j], dataPair.get(tokenArray[j]) + "");
+                                operatorExpression = operatorExpression.replaceAll(tokenArray[j], "");
+                                System.out.println("formulaaaaaaaaaa 1----> " + valueExpression);
+                                System.out.println("operator ----> " + operatorExpression);
+                                flag++;
+                            }
+                        }
+                        if (flag == 0) {
+//                        InToPost theTrans = new InToPost(calculateFormula);
+                            postFix = postfix(valueExpression);
+//                        output = theTrans.doTrans();
+                            System.out.println("final output ----> " + postFix);
+                            ParsePost aParser = new ParsePost(postFix);
+                            result = aParser.doParse();
+                            System.out.println("result --> " + BigDecimal.valueOf(result).toPlainString());
+                            resultStr = BigDecimal.valueOf(result).toPlainString();
+                            dataPair.put(fieldName, resultStr);
+                        } else {
+                            if (operatorExpression.contains("-")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains("*")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains("/")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains("(")) {
+                                dataPair.put(fieldName, "");
+                            } else if (operatorExpression.contains(")")) {
+                                dataPair.put(fieldName, "");
+                            } else {
+                                valueExpression = valueExpression.replaceAll("\\+", "");
+                                dataPair.put(fieldName, valueExpression);
+                            }
+                        }
+                        System.out.println("field Name ---> " + fieldName);
+                        System.out.println("resultstr ---> " + resultStr);
+                    }
+                    System.out.println("id ---> " + id);
+                }
+            }
+
+        }
+        System.out.println("originalData 2--> " + originalData);
+        List<Map<String, String>> fbData = new ArrayList<>(originalData);
+        returnMap.put("columnDefs", columnDefs);
+        returnMap.put("data", fbData);
         return returnMap;
     }
 
@@ -1029,6 +1512,36 @@ public class ProxyController {
                     columnDefs.add(new ColumnDef(key, "string", key));
                 }
                 // columnDefs.add(new ColumnDef(key, "string", key));
+            }
+            return columnDefs;
+        }
+        return columnDefs;
+    }
+
+    private List<ColumnDef> getColumnDefForDerivedColumn(List<Map<String, String>> data, List<ColumnDef> column) {
+
+        List<ColumnDef> columnDefs = new ArrayList<>();
+        if (data == null) {
+            return null;
+        }
+        for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, String> mapData = iterator.next();
+            for (Iterator<ColumnDef> iterate = column.iterator(); iterate.hasNext();) {
+                ColumnDef columns = iterate.next();
+                for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
+                    String key = entrySet.getKey();
+                    String value = entrySet.getValue();
+                    if (key.equalsIgnoreCase(columns.getFieldName())) {
+                        if (NumberUtils.isNumber(value) && columns.getType() == null) {
+                            columnDefs.add(new ColumnDef(columns.getId(), key, "number", key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
+                        } else if (DateUtils.convertToDate(value) != null && columns.getType() == null) {
+                            columnDefs.add(new ColumnDef(columns.getId(), key, "date", key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
+                        } else {
+                            columnDefs.add(new ColumnDef(columns.getId(), key, columns.getType() == null ? "string" : columns.getType(), key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
+                        }
+                    }
+                    // columnDefs.add(new ColumnDef(key, "string", key));
+                }
             }
             return columnDefs;
         }
@@ -1192,10 +1705,10 @@ public class ProxyController {
         String exportType = request.getParameter("exportType");
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
+        Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate1);
+        Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate1);
 //        String widgetIdStr = request.getParameter("widgetId");
 //        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
 //            Integer widgetId = Integer.parseInt(widgetIdStr);
@@ -1214,8 +1727,8 @@ public class ProxyController {
 //                System.out.println("endDate 2 ----> " + endDate);
 //            }
 //        }
-        String start_date = month_date.format(startDate);
-        String end_date = month_date.format(endDate);
+        String start_date = month_date.format(startDate1);
+        String end_date = month_date.format(endDate1);
         String selectDate;
 
         System.out.println("startDate ----> " + start_date);
@@ -1264,6 +1777,10 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
+                Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+                System.out.println("startDate  ----> " + startDate);
+                Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+                System.out.println("endDate  ----> " + endDate);
 //                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 String url = propReader.readUrl(urlDownload) + "";
 //                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
@@ -1357,15 +1874,15 @@ public class ProxyController {
     @RequestMapping(value = "download/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-        log.debug("Start Function of download");
+        System.out.println("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
+        Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate1);
+        Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate1);
 
 //        String widgetIdStr = request.getParameter("widgetId");
 //        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
@@ -1385,20 +1902,15 @@ public class ProxyController {
 //                System.out.println("endDate 2 ----> " + endDate);
 //            }
 //        }
-        String start_date = month_date.format(startDate);
-        String end_date = month_date.format(endDate);
+        String start_date = month_date.format(startDate1);
+        String end_date = month_date.format(endDate1);
         String selectDate;
-
-        System.out.println("startDate ----> " + start_date);
-        System.out.println("endDate ----> " + end_date);
 
         if (start_date.equalsIgnoreCase(end_date)) {
             selectDate = start_date;
         } else {
             selectDate = start_date.concat(" - " + end_date);
         }
-        System.out.println("selectDate ---> " + selectDate);
-
         log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -1429,9 +1941,13 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
+                Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+                System.out.println("startDate  ----> " + startDate);
+                Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+                System.out.println("endDate  ----> " + endDate);
 //                String url = "../dashboard/admin/proxy/getData?";
                 String url = propReader.readUrl(urlDownload) + "";
-                System.out.println("url ---> "+url);
+                System.out.println("url ---> " + url);
 //                String url = "../admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -1454,11 +1970,14 @@ public class ProxyController {
 //
 //                }
                 valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
+                System.out.println("tabWidget Id---> " + tabWidget.getId());
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                 String start = tabWidget.getCustomStartDate();
                 String end = tabWidget.getCustomEndDate();
+                System.out.println("start ---> " + start);
+                System.out.println("end ---> " + end);
 
                 if (start != null) {
                     startDate = DateUtils.getStartDate(start);
@@ -1468,9 +1987,12 @@ public class ProxyController {
                     endDate = DateUtils.getEndDate(end);
                     System.out.println("endDate 2 ----> " + endDate);
                 }
+                System.out.println("startDate ---> " + startDate);
+                System.out.println("endDate ---> " + endDate);
+
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
-
+                System.out.println("valueMap ---> " + valueMap);
                 Integer port = request.getServerPort();
 
                 int account_id = Integer.parseInt(request.getParameter("accountId"));

@@ -32,6 +32,7 @@ import com.visumbu.vb.model.WidgetTag;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
@@ -564,7 +565,10 @@ public class UiDao extends BaseDao {
         for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
             System.out.println("create Data set columns ----> ");
             DatasetColumnBean datasetColumn = datasetColumnBean.next();
-            if (datasetColumn.getId() != dataSetColumn.getId()) {
+            System.out.println(datasetColumn.getId() + "____________" + dataSetColumn.getId());
+            System.out.println(datasetColumn.getId().getClass().getSimpleName() + "____________" + dataSetColumn.getId().getClass().getSimpleName());
+            if (!Objects.equals(datasetColumn.getId(), dataSetColumn.getId())) {
+                System.out.println("if");
                 DatasetColumns datasetFields = new DatasetColumns();
                 System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
                 datasetFields.setId(datasetColumn.getId());
@@ -579,6 +583,7 @@ public class UiDao extends BaseDao {
                 saveOrUpdate(datasetFields);
                 datasetList.add(datasetFields);
             } else if (datasetColumn.getId() == null && dataSetColumn.getId() == null) {
+                System.out.println("else if");
                 DatasetColumns datasetFields = new DatasetColumns();
                 System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
                 datasetFields.setId(datasetColumn.getId());

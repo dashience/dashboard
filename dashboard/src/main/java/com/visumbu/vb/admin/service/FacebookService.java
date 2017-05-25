@@ -37,8 +37,8 @@ public class FacebookService {
 
 //    public final String ACCESS_TOKEN = ExampleConfig.ACCESS_TOKEN;
 //   old-- public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
-    public String ACCESS_TOKEN = "EAAUAYCRJ0GSBAAXR6GZCHFZACLBL2OCWRCOKYZ84FFRJULXWHBSNXDDPC9SPC2IM35S0AKCGPZAVL1FLJ3OVDLZ2ZAOZAT4ZAFDBUWPCS94MCSJVADVHTE4SQNDXWBOCSOTTBXHOWVJWL5JYZBYMCDGWK6OIJZCQIWC7PK2XCM7SNTYHILAMTCXQ";
-    public String ORGANIC_ACCESS_TOKEN = "EAAUAYCRJ0GSBAAXR6GZCHFZACLBL2OCWRCOKYZ84FFRJULXWHBSNXDDPC9SPC2IM35S0AKCGPZAVL1FLJ3OVDLZ2ZAOZAT4ZAFDBUWPCS94MCSJVADVHTE4SQNDXWBOCSOTTBXHOWVJWL5JYZBYMCDGWK6OIJZCQIWC7PK2XCM7SNTYHILAMTCXQ";
+    public String ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
+    public String ORGANIC_ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
 
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
@@ -47,7 +47,7 @@ public class FacebookService {
     public final String BASE_URL_FEED = "https://graph.facebook.com/v2.8/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
 
-    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation,String productSegment) {
         this.ACCESS_TOKEN = accessToken;
         if (aggregation == null) {
             aggregation = "";

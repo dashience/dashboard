@@ -2271,9 +2271,10 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 console.log(typeof (datasetColumn.functionName) + " " + typeof (datasetColumn.columnName));
 
                 var functionName = null;
-                if (typeof (datasetColumn.functionName) !== "undefined" && typeof (datasetColumn.functionName) !== "undefined") {
+                if (typeof (datasetColumn.functionName) !== "undefined" && datasetColumn.functionName !== null && datasetColumn.columnName !== null && typeof (datasetColumn.columnName) !== "undefined") {
                     functionName = datasetColumn.functionName + "(" + datasetColumn.columnName + ")";
                 }
+                console.log(functionName);
                 var data = {
                     datasetId: dataSourcePath.id,
                     id: datasetColumn.id,
@@ -2298,12 +2299,16 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 });
             }
             scope.editDataset = function (datasetColumn) {
-                console.log(datasetColumn)
-                var str = datasetColumn.functionName;
-                var findIndex = str.indexOf("(");
-                var functionName = str.slice(0, findIndex);
-                var columnName = str.slice(findIndex + 1, str.length - 1);
-                    
+                console.log(datasetColumn);
+                var functionName = null;
+                var columnName = null;
+                if (datasetColumn.functionName != null) {
+                    var str = datasetColumn.functionName;
+                    var findIndex = str.indexOf("(");
+                    functionName = str.slice(0, findIndex);
+                    columnName = str.slice(findIndex + 1, str.length - 1);
+                }
+
                 var editData = {
                     id: datasetColumn.id,
                     expression: datasetColumn.expression,
@@ -2313,15 +2318,13 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     functionName: functionName,
                     columnName: columnName
                 };
-
-
                 scope.datasetColumn = editData;
             }
             scope.deleteDataset = function (datasetColumn) {
                 $http({method: "DELETE", url: 'admin/ui/dataSetFormulaColumns/' + datasetColumn.id}).success(function (response) {
                     scope.dataSetItems();
                 });
-            }
+            };
         }
     };
 });
