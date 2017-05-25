@@ -111,8 +111,8 @@ public class ProxyController {
         Map returnMap = new HashMap<>();
         String dataSourceType = request.getParameter("dataSourceType");
         String dataSetId = request.getParameter("dataSetId");
+        Integer dataSetIdInt = null;
         if (dataSetId != null) {
-            Integer dataSetIdInt = null;
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
             } catch (Exception e) {
@@ -144,14 +144,23 @@ public class ProxyController {
         }
 
         String widgetIdStr = request.getParameter("widgetId");
+
         System.out.println("WIDGET ID " + widgetIdStr);
         if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
+            String queryFilter;
             Integer widgetId = Integer.parseInt(widgetIdStr);
-            TabWidget tabWidget = uiService.getWidgetById(widgetId);
-            String queryFilter = tabWidget.getQueryFilter();
-            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
-            List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
-            returnMap.put("data", returnDataMap);
+            TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetId, dataSetIdInt);
+            if (tabWidget == null) {
+                queryFilter = null;
+                List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+                List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
+                returnMap.put("data", returnDataMap);
+            } else {
+                queryFilter = tabWidget.getQueryFilter();
+                List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+                List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
+                returnMap.put("data", returnDataMap);
+            }
         }
         return returnMap;
     }

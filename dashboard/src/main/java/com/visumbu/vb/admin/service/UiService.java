@@ -758,6 +758,11 @@ public class UiService {
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
     }
+    
+        public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
+        return uiDao.getWidgetByIdAndDataSetId(widgetId, datasetId);
+    }
+    
 
 //    public DatasetColumns createDataSetColumns(DatasetColumnBean dataSetColumn) {
 //        return uiDao.createDataSetColumns(dataSetColumn);

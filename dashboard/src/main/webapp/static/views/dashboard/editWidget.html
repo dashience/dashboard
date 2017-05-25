@@ -669,9 +669,9 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="isSet(2)" class="license">
-                <div class="col-lg-12">
-                    <div ng-if="dispQueryBuilder == true;" jquery-Query-Builder query-Data="{{widget}}"></div>
+            <div ng-show="isSet(2) && editChartType!='text'" class="license">{{dispQueryBuilder}}
+                <div class="col-lg-12" ng-if="dispQueryBuilder == true">
+                    <div jquery-Query-Builder query-Data="{{previewColumn}}"></div>
                     <div class='panel-footer'>
                         <div class="pull-right">
 

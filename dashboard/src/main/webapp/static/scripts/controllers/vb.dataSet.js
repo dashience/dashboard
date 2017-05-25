@@ -1932,13 +1932,13 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
-//                '<div class="pull-right">' +
+                '<div class="pull-right">' +
                 '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataset"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataset" class="modal fade" role="dialog">' +
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
-                '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+                '<button type="button" class="close" ng-click="dataSetFieldsClose(datasetColumn)" data-dismiss="modal">&times;</button>' +
                 '<h4 class="modal-title">Derived Column</h4>' +
                 '</div>' +
                 '<div class="modal-body">' +
@@ -1971,7 +1971,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-9">' +
-                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.function?true:false" rows="3" style="width:350px;resize:none"></textarea>' +
+                '<textarea name="expression"' +
+                'class="form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.functionName?true:false" rows="5></textarea>' +
                 '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
@@ -1999,8 +2000,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
-                '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" ng-disabled="dataSetError||!((datasetColumn.expression||(datasetColumn.functionName&&datasetColumn.columnName))&&datasetColumn.fieldName&&datasetColumn.fieldType&&datasetColumn.format)||!(datasetColumn)" data-dismiss="modal">Save</button>' +
+                '<button type="button" class="btn btn-default" ng-click="dataSetFieldsClose(datasetColumn)" data-dismiss="modal">Close</button>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -2017,7 +2018,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
-                '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+                '<button type="button" class="close" ng-click="dataSetFieldsClose(datasetColumn)" data-dismiss="modal">&times;</button>' +
                 '<h4 class="modal-title">Derived Column</h4>' +
                 '</div>' +
                 '<div class="modal-body">' +
@@ -2050,7 +2051,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-9">' +
-                '<textarea name="expression" class=form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.function?true:false" rows="3" style="width:350px;resize:none"></textarea>' +
+                '<textarea name="expression" class="form-control" ng-model="datasetColumn.expression" ng-trim="false" ng-disabled="datasetColumn.functionName?true:false" rows="3"></textarea>' +
                 '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
@@ -2079,7 +2080,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<div class="modal-footer">' +
                 '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
-                '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
+                '<button type="button" class="btn btn-default" ng-click="dataSetFieldsClose(datasetColumn)" data-dismiss="modal">Close</button>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -2240,18 +2241,18 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     }
                 });
             };
-            scope.functiondisabled = false;
-            scope.expressiondisabled = false;
+//            scope.functiondisabled = false;
+//            scope.expressiondisabled = false;
             scope.clearFunction = function (datasetColumn) {
                 datasetColumn.columnName = "";
-                datasetColumn.function = "";
-                scope.expressiondisabled = false;
-                scope.functiondisabled = false;
+                datasetColumn.functionName = "";
+//                scope.expressiondisabled = false;
+//                scope.functiondisabled = false;
             }
             scope.clearExpression = function (datasetColumn) {
                 datasetColumn.expression = "";
-                scope.functiondisabled = false;
-                scope.expressiondisabled = false;
+//                scope.functiondisabled = false;
+//                scope.expressiondisabled = false;
             }
             scope.dataSetFieldsClose = function (datasetColumn) {
                 console.log("function called close");
@@ -2303,7 +2304,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 var findIndex = str.indexOf("(");
                 var functionName = str.slice(0, findIndex);
                 var columnName = str.slice(findIndex + 1, str.length - 1);
-                    
+
                 var editData = {
                     id: datasetColumn.id,
                     expression: datasetColumn.expression,
@@ -2322,6 +2323,48 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.dataSetItems();
                 });
             }
+
+
+
+
+
+//            scope.config = {
+//                autocomplete: [
+//                    {
+//                        words: [/[A-Za-z]+[_A-Za-z0-9]/gi],
+//                        cssClass: 'user'
+//                    }
+//                ],
+//                dropdown: [
+//                    {
+//                        trigger: /([A-Za-z]+[_A-Za-z0-9]+)/gi,
+//                        list: function (match, callback) {
+//
+//                            // match is the regexp return, in this case it returns
+//                            // [0] the full match, [1] the first capture group => username
+//
+//                            // Prepare the fake data
+//                            var listData = scope.tableColumns.filter(function (element) {
+//                                return element.displayName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
+//                                        && element.displayName.length > match[1].length;
+//                            }).map(function (element) {
+//                                return {
+//                                    display: element.displayName, // This gets displayed in the dropdown
+//                                    item: element // This will get passed to onSelect
+//                                };
+//                            });
+//                            callback(listData);
+//                        },
+//                        onSelect: function (item) {
+//                            return item.display;
+//                        },
+//                        mode: 'replace'
+//                    }
+//                ]
+//            }
+//            ;
+
+
         }
     };
 });
