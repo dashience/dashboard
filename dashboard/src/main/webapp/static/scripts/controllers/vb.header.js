@@ -428,8 +428,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $(function () {
-        var start = moment().subtract(29, 'days');
-        var end = moment();
+        var start =  $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days');
+        var end = $stateParams.startDate ? $stateParams.startDate : moment();
         function cb(start, end) {
             $('#daterange-btn span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
         }
@@ -448,8 +448,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         //Date range as a button
         $('#daterange-btn').daterangepicker(
                 {
-                    startDate: start,
-                    endDate: end,
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],

@@ -24,7 +24,37 @@ import org.joda.time.LocalDate;
  */
 public class DateUtils {
 
+    private static List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>() {
+        {
+            add(new SimpleDateFormat("M/dd/yyyy"));
+            add(new SimpleDateFormat("dd.M.yyyy"));
+            add(new SimpleDateFormat("M/dd/yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.M.yyyy hh:mm:ss a"));
+            add(new SimpleDateFormat("dd.MMM.yyyy"));
+            add(new SimpleDateFormat("dd-MMM-yyyy"));
+        }
+    };
     
+    public static Date convertToDate(String input) {
+        Date date = null;
+        if (null == input) {
+            return null;
+        }
+        for (SimpleDateFormat format : dateFormats) {
+            try {
+                format.setLenient(false);
+                date = format.parse(input);
+            } catch (Exception e) {
+                //Shhh.. try other formats
+            }
+            if (date != null) {
+                break;
+            }
+        }
+
+        return date;
+    }
+
     public static String toAdWordsDate(Date date) {
         String format = "YYYYMMdd";
         return dateToString(date, format);
@@ -43,7 +73,7 @@ public class DateUtils {
         }
         return toAdWordsDate(endDate);
     }
-    
+
     public static Date get30DaysBack() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd ");
         Calendar cal = Calendar.getInstance();
@@ -355,6 +385,7 @@ public class DateUtils {
         String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         return days[day - 1];
     }
+
     public static Date getStartDateOfWeek(Date currentStart) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -362,14 +393,15 @@ public class DateUtils {
     public static Date getNextWeek(Date weekStart) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
     public static Integer getYearOfWeek() {
         Date date = new Date();
-        Calendar calendar =  new GregorianCalendar();    
+        Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
-        return  calendar.get(Calendar.WEEK_OF_YEAR);
+        return calendar.get(Calendar.WEEK_OF_YEAR);
     }
 
-     public static String getGaStartDate(Date startDate) {
+    public static String getGaStartDate(Date startDate) {
         if (startDate == null) {
             return "7DaysAgo";
         }
@@ -382,7 +414,7 @@ public class DateUtils {
         }
         return toGaDate(endDate);
     }
-    
+
     public static String toGaDate(Date date) {
         String format = "YYYY-MM-dd";
         return dateToString(date, format);

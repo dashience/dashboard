@@ -783,6 +783,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
 
     $scope.save = function (widget) {
+        widget.dateRangeName = $("#dateRangeName").text().trim();
+
         console.log(widget);
         try {
             $scope.customStartDate = widget.dateRangeName !== "Select Date Duration" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);

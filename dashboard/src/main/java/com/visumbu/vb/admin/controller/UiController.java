@@ -579,8 +579,9 @@ public class UiController extends BaseController {
         accountId = 10201209987716903L;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = new Date();
+         String productSegement="";
 //       String  stratDates=dateFormat.format(startDate);
-        facebookService.getAccountPerformance(accountId, startDate, startDate, "day");
+        facebookService.getAccountPerformance(accountId, startDate, startDate, "day",productSegement);
 //        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
 
         return null;

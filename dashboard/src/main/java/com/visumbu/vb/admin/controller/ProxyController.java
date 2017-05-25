@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -816,8 +817,13 @@ public class ProxyController {
         String dataSetId = request.getParameter("dataSetId");
         String dataSetReportName = request.getParameter("dataSetReportName");
         String timeSegment = request.getParameter("timeSegment");
+        String productSegment = request.getParameter("productSegment");
         if (timeSegment == null) {
             timeSegment = "daily";
+        }
+        
+        if(productSegment==null){
+            productSegment="none";
         }
 
         Integer dataSetIdInt = null;
@@ -834,6 +840,7 @@ public class ProxyController {
             if (dataSet != null) {
                 dataSetReportName = dataSet.getReportName();
                 timeSegment = dataSet.getTimeSegment();
+                productSegment=dataSet.getProductSegment();
             }
         }
         String accountIdStr = request.getParameter("accountId");
@@ -868,12 +875,17 @@ public class ProxyController {
         String facebookOrganicAccountId = getAccountId(accountProperty, "facebookOrganicAccountId");
         Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
         Long facebookOrganicAccountIdInt = Long.parseLong(facebookOrganicAccountId);
-        String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
+//        String accessToken = "EAAUAycrj0GsBAMWB8By4qKhTWXZCZBdGmyq0VfW0ZC6bqVZCwPhIgNwm22cNM3eDiORolMxpxNUHU2mYVPWb8z6Y8VZB7rjChibZCl9yDgjgXKk5hZCk2TKBksiscVrfZARK7WvexXQvfph4StZBGpJ1ZCi2nw67bKRWZCcO0sWtUmIVm020Tor4Srm";
+        String accessToken = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
         log.debug("Report Name ---- " + dataSetReportName);
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
         log.debug("Start Date ---- " + startDate);
-        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, facebookOrganicAccountIdInt, startDate, endDate, timeSegment);
+//        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt, 
+//                facebookOrganicAccountIdInt, startDate, endDate, timeSegment);
+
+        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
+                facebookOrganicAccountIdInt, startDate, endDate, timeSegment, productSegment);
         log.debug(data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();
@@ -920,15 +932,39 @@ public class ProxyController {
         return columnDefs;
     }
 
+//    private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
+//
+//        List<ColumnDef> columnDefs = new ArrayList<>();
+//        for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
+//            Map<String, String> mapData = iterator.next();
+//            for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
+//                String key = entrySet.getKey();
+//                String value = entrySet.getValue() + "";
+//                columnDefs.add(new ColumnDef(key, "string", key));
+//            }
+//            return columnDefs;
+//        }
+//        return columnDefs;
+//    }
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
 
         List<ColumnDef> columnDefs = new ArrayList<>();
+        if (data == null) {
+            return null;
+        }
         for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, String> mapData = iterator.next();
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
-                String value = entrySet.getValue();
-                columnDefs.add(new ColumnDef(key, "string", key));
+                String value = String.valueOf(entrySet.getValue());
+                if (NumberUtils.isNumber(value)) {
+                    columnDefs.add(new ColumnDef(key, "number", key));
+                } else if (DateUtils.convertToDate(value) != null) {
+                    columnDefs.add(new ColumnDef(key, "date", key));
+                } else {
+                    columnDefs.add(new ColumnDef(key, "string", key));
+                }
+                // columnDefs.add(new ColumnDef(key, "string", key));
             }
             return columnDefs;
         }
@@ -1092,10 +1128,10 @@ public class ProxyController {
         String exportType = request.getParameter("exportType");
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
+        Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate1);
+        Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate1);
 //        String widgetIdStr = request.getParameter("widgetId");
 //        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
 //            Integer widgetId = Integer.parseInt(widgetIdStr);
@@ -1114,8 +1150,8 @@ public class ProxyController {
 //                System.out.println("endDate 2 ----> " + endDate);
 //            }
 //        }
-        String start_date = month_date.format(startDate);
-        String end_date = month_date.format(endDate);
+        String start_date = month_date.format(startDate1);
+        String end_date = month_date.format(endDate1);
         String selectDate;
 
         System.out.println("startDate ----> " + start_date);
@@ -1164,8 +1200,12 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-//                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
-                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+                System.out.println("startDate  ----> " + startDate);
+                Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+                System.out.println("endDate  ----> " + endDate);
+                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+//                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -1174,16 +1214,18 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    System.out.println("DS TYPE ==>  CSV");
-                    url = "../admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
-                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-//                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-//                    url = "../dashboard/admin/proxy/getData?";
-                    url = "../admin/proxy/getData?";
                 }
+//                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+//                    System.out.println("DS TYPE ==>  CSV");
+////                    url = "../admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
+//                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+////                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+//                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
+//                    url = "../dashboard/admin/proxy/getData?";
+////                    url = "../admin/proxy/getData?";
+//                }
+                valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
 
 //                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -1219,10 +1261,14 @@ public class ProxyController {
                 log.debug("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
                 JSONParser parser = new JSONParser();
-                Object jsonObj = parser.parse(data);
-                Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);
-                List dataList = (List) responseMap.get("data");
-                tabWidget.setData(dataList);
+                if (data == null) {
+                    tabWidget.setData(null);
+                } else {
+                    Object jsonObj = parser.parse(data);
+                    Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);
+                    List dataList = (List) responseMap.get("data");
+                    tabWidget.setData(dataList);
+                }
 
             } catch (ParseException ex) {
                 log.error("ParseException in downloadReport Function: " + ex);
@@ -1254,15 +1300,15 @@ public class ProxyController {
     @RequestMapping(value = "download/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-        log.debug("Start Function of download");
+        System.out.println("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
+        Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate1);
+        Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate1);
 
 //        String widgetIdStr = request.getParameter("widgetId");
 //        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
@@ -1282,20 +1328,15 @@ public class ProxyController {
 //                System.out.println("endDate 2 ----> " + endDate);
 //            }
 //        }
-        String start_date = month_date.format(startDate);
-        String end_date = month_date.format(endDate);
+        String start_date = month_date.format(startDate1);
+        String end_date = month_date.format(endDate1);
         String selectDate;
-
-        System.out.println("startDate ----> " + start_date);
-        System.out.println("endDate ----> " + end_date);
 
         if (start_date.equalsIgnoreCase(end_date)) {
             selectDate = start_date;
         } else {
             selectDate = start_date.concat(" - " + end_date);
         }
-        System.out.println("selectDate ---> " + selectDate);
-
         log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -1326,8 +1367,13 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-//                String url = "../dashboard/admin/proxy/getData?";
-                String url = "../admin/proxy/getData?";
+                Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+                System.out.println("startDate  ----> " + startDate);
+                Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+                System.out.println("endDate  ----> " + endDate);
+                String url = "../dashboard/admin/proxy/getData?";
+//                String url = "../admin/proxy/getData?";
+                System.out.println("url ---> " + url);
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -1336,22 +1382,27 @@ public class ProxyController {
                     valueMap.put("query", Arrays.asList(URLEncoder.encode(tabWidget.getDataSetId().getQuery(), "UTF-8")));
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                    System.out.println("DS TYPE ==>  CSV");
-                    url = "../admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
-                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-//                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-                    url = "../admin/proxy/getData?";
-//                    url = "../dashboard/admin/proxy/getData?";
-
                 }
+//                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
+//                    System.out.println("DS TYPE ==>  CSV");
+////                    url = "../admin/csv/getData";
+//                    url = "../dashboard/admin/csv/getData";
+//                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
+////                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
+//                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
+////                    url = "../admin/proxy/getData?";
+//                    url = "../dashboard/admin/proxy/getData?";
+//
+//                }
+                valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
+                System.out.println("tabWidget Id---> " + tabWidget.getId());
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                 String start = tabWidget.getCustomStartDate();
                 String end = tabWidget.getCustomEndDate();
+                System.out.println("start ---> " + start);
+                System.out.println("end ---> " + end);
 
                 if (start != null) {
                     startDate = DateUtils.getStartDate(start);
@@ -1361,9 +1412,12 @@ public class ProxyController {
                     endDate = DateUtils.getEndDate(end);
                     System.out.println("endDate 2 ----> " + endDate);
                 }
+                System.out.println("startDate ---> " + startDate);
+                System.out.println("endDate ---> " + endDate);
+
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
-
+                System.out.println("valueMap ---> " + valueMap);
                 Integer port = request.getServerPort();
 
                 int account_id = Integer.parseInt(request.getParameter("accountId"));
@@ -1386,10 +1440,14 @@ public class ProxyController {
                 String data = Rest.getData(url, valueMap);
                 System.out.println("Data -----> : " + data);
                 JSONParser parser = new JSONParser();
-                Object jsonObj = parser.parse(data);
-                Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);
-                List dataList = (List) responseMap.get("data");
-                tabWidget.setData(dataList);
+                if (data == null) {
+                    tabWidget.setData(null);
+                } else {
+                    Object jsonObj = parser.parse(data);
+                    Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);
+                    List dataList = (List) responseMap.get("data");
+                    tabWidget.setData(dataList);
+                }
             } catch (ParseException ex) {
                 log.error("ParseException in download function: " + ex);
             } catch (UnsupportedEncodingException ex) {
