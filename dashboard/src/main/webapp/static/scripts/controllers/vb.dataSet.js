@@ -1932,7 +1932,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
-                '<div class="pull-right">' +
+                '<div ng-if="tableColumns!=null" class="pull-right">' +
                 '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataset"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataset" class="modal fade" role="dialog">' +
                 '<div class="modal-dialog">' +
@@ -1970,10 +1970,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
-                '<div class="col-md-9">' +
-                '<textarea name="expression"' +
-                'class="form-control" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.functionName?true:false" rows="5></textarea>' +
-                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
+                '<div class="col-md-8">' +
+                '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
+                'class="form-control code expression" ng-model="datasetColumn.expression" ng-disabled="datasetColumn.functionName?true:false" rows="5"></textarea>' +
+                '</div>' +
+                '<div class="col-md-1">' +
+                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -1994,7 +1996,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</select>' +
                 '</div>' +
                 '<div class="col-md-1">' +
-                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearFunction(datasetColumn)"></i>' +
+                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '</form>' +
@@ -2013,8 +2015,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '{{col.fieldName}}' +
                 //Edit
                 '<div>' +
-                '<button ng-if="col.functionName != null|| col.expression != null" type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#dataSetColumn" ng-click="editDataset(col)"><i class="fa fa-pencil"></i></button>' +
-                '<div id="dataSetColumn" class="modal fade" role="dialog">' +
+                '<button ng-if="col.functionName != null|| col.expression != null" type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#dataSetColumn{{col.fieldName}}" ng-click="editDataset(col)"><i class="fa fa-pencil"></i></button>' +
+                '<div id="dataSetColumn{{col.fieldName}}" class="modal fade" role="dialog">' +
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
@@ -2050,9 +2052,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
-                '<div class="col-md-9">' +
-                '<textarea name="expression" class="form-control" ng-model="datasetColumn.expression" ng-trim="false" ng-disabled="datasetColumn.functionName?true:false" rows="3"></textarea>' +
-                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearExpression(datasetColumn)"></i>' +
+                '<div class="col-md-8">' +
+                '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" class="form-control code expression" ng-model="datasetColumn.expression" ng-trim="false" ng-disabled="datasetColumn.functionName?true:false" rows="5"></textarea>' +
+                '</div>' +
+                '<div class="col-md-1">' +
+                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -2073,7 +2077,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</select>' +
                 '</div>' +
                 '<div class="col-md-1">' +
-                '<i class="btn btn-md fa fa-minus-circle" ng-click="clearFunction(datasetColumn)"></i>' +
+                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(datasetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '</form>' +
@@ -2300,11 +2304,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             }
             scope.editDataset = function (datasetColumn) {
                 console.log(datasetColumn)
-                var str = datasetColumn.functionName;
-                var findIndex = str.indexOf("(");
-                var functionName = str.slice(0, findIndex);
-                var columnName = str.slice(findIndex + 1, str.length - 1);
-
+                var functionName = null;
+                var columnName = null;
+                if (datasetColumn.functionName != null) {
+                    var str = datasetColumn.functionName;
+                    var findIndex = str.indexOf("(");
+                    var functionName = str.slice(0, findIndex);
+                    var columnName = str.slice(findIndex + 1, str.length - 1);
+                }
                 var editData = {
                     id: datasetColumn.id,
                     expression: datasetColumn.expression,
@@ -2324,45 +2331,41 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 });
             }
 
+            scope.config = {
+                autocomplete: [
+                    {
+                        words: [/[A-Za-z]+[_A-Za-z0-9]/gi],
+                        cssClass: 'user'
+                    }
+                ],
+                dropdown: [
+                    {
+                        trigger: /([A-Za-z]+[_A-Za-z0-9]+)/gi,
+                        list: function (match, callback) {
 
+                            // match is the regexp return, in this case it returns
+                            // [0] the full match, [1] the first capture group => username
 
-
-
-//            scope.config = {
-//                autocomplete: [
-//                    {
-//                        words: [/[A-Za-z]+[_A-Za-z0-9]/gi],
-//                        cssClass: 'user'
-//                    }
-//                ],
-//                dropdown: [
-//                    {
-//                        trigger: /([A-Za-z]+[_A-Za-z0-9]+)/gi,
-//                        list: function (match, callback) {
-//
-//                            // match is the regexp return, in this case it returns
-//                            // [0] the full match, [1] the first capture group => username
-//
-//                            // Prepare the fake data
-//                            var listData = scope.tableColumns.filter(function (element) {
-//                                return element.displayName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
-//                                        && element.displayName.length > match[1].length;
-//                            }).map(function (element) {
-//                                return {
-//                                    display: element.displayName, // This gets displayed in the dropdown
-//                                    item: element // This will get passed to onSelect
-//                                };
-//                            });
-//                            callback(listData);
-//                        },
-//                        onSelect: function (item) {
-//                            return item.display;
-//                        },
-//                        mode: 'replace'
-//                    }
-//                ]
-//            }
-//            ;
+                            // Prepare the fake data
+                            var listData = scope.tableColumns.filter(function (element) {
+                                return element.displayName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
+                                        && element.displayName.length > match[1].length;
+                            }).map(function (element) {
+                                return {
+                                    display: element.displayName, // This gets displayed in the dropdown
+                                    item: element // This will get passed to onSelect
+                                };
+                            });
+                            callback(listData);
+                        },
+                        onSelect: function (item) {
+                            return item.display;
+                        },
+                        mode: 'replace'
+                    }
+                ]
+            }
+            ;
 
 
         }
