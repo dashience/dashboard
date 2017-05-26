@@ -18,11 +18,18 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 
         return $scope.tab === tabNum;
     };
+    $scope.dispQueryBuilder = false;
     $scope.resetQueryBuilder = function () {
-//        alert("reset")
         $scope.dispQueryBuilder = true;
-    }
 
+    }
+    $scope.saveQuery = function () {
+        if ($('.query-builder').queryBuilder('getRules') != null) {
+            $scope.setTab(1);
+        } else {
+            return;
+        }
+    }
 //    $scope.clickBtn = function(){
 
 //    }
@@ -304,8 +311,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         if (!dataSet) {
             return;
         }
+        widget.jsonData = null;
+        widget.queryFilter = null;
         $scope.editChartType = null;
         widget.previewUrl = dataSet;
+        $scope.dispQueryBuilder = false
         widget.columns = [];
         var chartType = widget;
         var url = "admin/proxy/getData?";
@@ -368,16 +378,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
 
     $scope.previewChart = function (chartType, widget) {
-//        alert("preview")
-        $scope.dispQueryBuilder == true;
+        $scope.resetQueryBuilder();
         $scope.showPreviewItems = chartType.type ? chartType.type : chartType.chartType;
         widget.chartType = chartType.type ? chartType.type : chartType.chartType; //Selected Chart type - Bind chart-type to showPreview()
         $scope.selectedRow = chartType.type ? chartType.type : chartType.chartType;
         $scope.editChartType = chartType.type ? chartType.type : chartType.chartType;
         $scope.previewChartUrl = widget.previewUrl;
         $scope.previewColumn = widget;
-        $scope.resetQueryBuilder();
-//        
         if (chartType.type == 'text') {
             widget.dataSetId = '';
             widget.dataSourceId = '';
@@ -1074,7 +1081,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" +
                 "</div>",
         link: function (scope, attrs) {
-//            alert("table")
             scope.tableAggregations = JSON.parse(scope.aggregationsTypes);
             scope.tableGrouping = JSON.parse(scope.groupPriorities);
             scope.tableSorting = JSON.parse(scope.sortingFields);
@@ -1122,6 +1128,12 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             } else {
                 dataSourcePassword = '';
             }
+
+
+
+            console.log()
+
+
             $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                     "&dataSetId=" + tableDataSource.id +
                     "&driver=" + tableDataSource.dataSourceId.sqlDriver +
@@ -1400,8 +1412,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             queryData: '@',
         },
         link: function (scope, element, attr) {
-//            reload();
-//            alert("query")
             scope.columns = scope.queryData;
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
@@ -1414,6 +1424,8 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                     scope.fieldsType = "string";
                 } else if (typeOfValue == 'Date') {
                     scope.fieldsType = "date";
+                } else if (typeOfValue == 'Day') {
+                    scope.fieldsType = "string";
                 } else {
                     scope.fieldsType = value.fieldType;
                 }
@@ -1449,5 +1461,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 });
             });
         }
+
     };
 });

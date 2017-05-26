@@ -66,7 +66,7 @@ public class ApiUtils {
         return ppcBingAccountId.substring(0, 3) + "-" + ppcBingAccountId.substring(3, 6) + "-" + ppcBingAccountId.substring(6);
     }
 
-    public static String removePercent(String value) {
+    public static Object removePercent(String value) {
         if (value == null) {
             return "0.0";
         }

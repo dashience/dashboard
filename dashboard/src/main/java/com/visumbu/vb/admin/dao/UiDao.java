@@ -566,7 +566,6 @@ public class UiDao extends BaseDao {
             System.out.println("create Data set columns ----> ");
             DatasetColumnBean datasetColumn = datasetColumnBean.next();
             System.out.println(datasetColumn.getId() + "____________" + dataSetColumn.getId());
-            System.out.println(datasetColumn.getId().getClass().getSimpleName() + "____________" + dataSetColumn.getId().getClass().getSimpleName());
             if (!Objects.equals(datasetColumn.getId(), dataSetColumn.getId())) {
                 System.out.println("if");
                 DatasetColumns datasetFields = new DatasetColumns();
@@ -627,6 +626,21 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         return query.list();
 
+    }
+
+    public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
+        String queryStr = "Select t FROM TabWidget t where t.dataSetId.id = :datasetId and id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", widgetId);
+        query.setParameter("datasetId", datasetId);
+        List tabWidgetData = query.list();
+        if(tabWidgetData == null || tabWidgetData.isEmpty()){
+            return null;
+        } 
+        System.out.println("tabWidgetData ---> "+tabWidgetData);
+        TabWidget tabWidget = (TabWidget) tabWidgetData.get(0);
+        tabWidget.setColumns(getColumns(tabWidget));
+        return tabWidget;
     }
 
 }
