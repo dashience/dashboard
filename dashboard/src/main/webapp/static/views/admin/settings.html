@@ -1,0 +1,136 @@
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Settings
+            </h2>               
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default" ng-repeat="group in productArray">
+            <div class="panel-heading" style="background-color: white;border-bottom: 1px solid lightgray">
+                <h4 class="panel-title" ng-click="getGroupName(group, files)">
+                    <i class="fa fa-plus-square-o" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index + 1}}"></i> 
+                    {{group}}
+                </h4>
+            </div>
+            <div id="collapse{{$index + 1}}" class="panel-collapse collapse" style="border-bottom: 1px solid lightgray;">
+                <form name="myForm" novalidate>
+                    <ul class="list-group">
+                        <li ng-if="file.groupName = 'ftp'" class="list-unstyled">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Property Name</th>
+                                    <th>Property Value</th>
+                                    <th>Action</th>
+                                </tr>
+                                <tbody>
+                                    <tr ng-repeat="fileList in fileLists">
+                                        <td>
+                                            <div>{{fileList.propertyName}}</div>                                   
+                                        </td>
+                                        <td>
+                                            <div ng-hide="fileList.isEdit">{{fileList.propertyValue}}</div>
+                                            <div ng-show="fileList.isEdit">                                                    
+                                                <div ng-if="fileList.propertyType === 'string'">
+                                                    <input type="text" name="string{{$index + 1}}" ng-model="fileList.propertyValue">
+                                                    <span style="color:red" ng-show="myForm.string{{$index + 1}}.$dirty && myForm.string{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.string{{$index + 1}}.$error.required">String is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'int'">
+                                                    <input placeholder="number" name="int{{$index + 1}}" class="textbox-n" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'number')" onblur="(this.type = 'text')" id="number">
+                                                    <span style="color:red" ng-show="myForm.int{{$index + 1}}.$dirty && myForm.int{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.int{{$index + 1}}.$error.required">Number is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'email'">
+                                                    <input type="email" name="email{{$index + 1}}" ng-model="fileList.propertyValue" required>
+                                                    <span style="color:red" ng-show="myForm.email{{$index + 1}}.$dirty && myForm.email{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.email{{$index + 1}}.$error.required">Email is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'date'">
+                                                    <input placeholder="Date" name="date{{$index + 1}}" class="textbox-n" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'date')" onblur="(this.type = 'text')" id="date">
+                                                    <span style="color:red" ng-show="myForm.date{{$index + 1}}.$dirty && myForm.date{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.date{{$index + 1}}.$error.required">Date is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'time'">
+                                                    <input placeholder="Time" name="time{{$index + 1}}" class="textbox-n" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'time')" onblur="(this.type = 'text')" id="time">
+                                                    <span style="color:red" ng-show="myForm.time{{$index + 1}}.$dirty && myForm.time{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.time{{$index + 1}}.$error.required">Time is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'datetime'">
+                                                    <input placeholder="DateTime" name="datetime{{$index + 1}}" class="textbox-n" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'datetime-local')" onblur="(this.type = 'text')" id="datetime">
+                                                    <span style="color:red" ng-show="myForm.datetime{{$index + 1}}.$dirty && myForm.datetime{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.datetime{{$index + 1}}.$error.required">Datetime is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'month'">
+                                                    <input placeholder="Month" name="month{{$index + 1}}" class="textbox-n" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'month')" onblur="(this.type = 'text')" id="month">
+                                                    <span style="color:red" ng-show="myForm.month{{$index + 1}}.$dirty && myForm.month{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.month{{$index + 1}}.$error.required">Month is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'week'">
+                                                    <input placeholder="Week" name="week{{$index + 1}}" class="textbox-n" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'week')" onblur="(this.type = 'text')" id="week">
+                                                    <span style="color:red" ng-show="myForm.week{{$index + 1}}.$dirty && myForm.week{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.week{{$index + 1}}.$error.required">Week is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'url'">
+                                                    <input type="url" name="url{{$index + 1}}" ng-model="fileList.propertyValue" required>
+                                                    <span style="color:red" ng-show="myForm.url{{$index + 1}}.$dirty && myForm.url{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.url{{$index + 1}}.$error.required">Url is required.</span>
+                                                    </span>
+                                                </div>
+
+                                                <div ng-if="fileList.propertyType === 'range'">
+                                                    <input type="range" name="range{{$index + 1}}" ng-model="fileList.propertyValue" required>
+                                                    <span style="color:red" ng-show="myForm.range{{$index + 1}}.$dirty && myForm.range{{$index + 1}}.$invalid">
+                                                        <span ng-show="myForm.range{{$index + 1}}.$error.required">Range is required.</span>
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div ng-show="fileList.isEdit">
+                                                <button class="btn btn-primary btn-xs" 
+                                                        ng-click="save(fileList); fileList.isEdit = false;" 
+                                                        ng-disabled="myForm.string{{$index + 1}}.$dirty && myForm.string{{$index + 1}}.$invalid || myForm.int{{$index + 1}}.$dirty && myForm.int{{$index + 1}}.$invalid || myForm.email{{$index + 1}}.$dirty && myForm.email{{$index + 1}}.$invalid || myForm.date{{$index + 1}}.$dirty && myForm.date{{$index + 1}}.$invalid || myForm.url{{$index + 1}}.$dirty && myForm.url{{$index + 1}}.$invalid || myForm.time{{$index + 1}}.$dirty && myForm.time{{$index + 1}}.$invalid || myForm.datetime{{$index + 1}}.$dirty && myForm.datetime{{$index + 1}}.$invalid || myForm.month{{$index + 1}}.$dirty && myForm.month{{$index + 1}}.$invalid || myForm.week{{$index + 1}}.$dirty && myForm.week{{$index + 1}}.$invalid || myForm.range{{$index + 1}}.$dirty && myForm.range{{$index + 1}}.$invalid">
+                                                    <i class="fa fa-save"></i>
+                                                </button>
+                                            </div>
+
+                                            <div ng-hide="fileList.isEdit">
+                                                <button class="btn btn-primary btn-xs" ng-click="fileList.isEdit = true">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

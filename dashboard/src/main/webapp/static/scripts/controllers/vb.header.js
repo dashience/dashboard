@@ -219,6 +219,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate,
                     endDate: $stateParams.endDate
                 });
+            } else if ($scope.getCurrentPage() === "settings") {
+                $state.go("index.settings", {
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
             } else {
                 $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
             }
@@ -409,6 +414,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
+        } else if ($scope.getCurrentPage() === "settings") {
+            $state.go("index.settings", {
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
@@ -465,6 +475,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         if (url.indexOf("viewFavouritesWidget") > 0) {
             return "viewFavouritesWidget";
+        }
+        if (url.indexOf("settings") > 0) {
+            return "settings";
         }
 //        if (url.indexOf("tag") > 0) {
 //            return "tag";

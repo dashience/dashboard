@@ -112,6 +112,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 url: "/viewFavouritesWidget/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate",
                 templateUrl: "static/views/admin/viewFavouritesWidget.html",
                 controller: 'ViewFavouritesWidgetController'
+            })
+            .state("index.settings", {
+                url: "/settings?:startDate/:endDate",
+                templateUrl: "static/views/admin/settings.html",
+                controller: 'SettingsController'
             });
 //            .state("index.viewFavouritesWidget", {
 //                url: "/viewFavouritesWidget/:accountId/:accountName/:favouriteId/:favouriteName?:startDate/:endDate",
