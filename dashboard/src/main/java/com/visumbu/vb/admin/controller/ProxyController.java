@@ -691,7 +691,13 @@ public class ProxyController {
         System.out.println("Report Name " + dataSetReportName);
         System.out.println("datasetId ---->" + dataSetId);
         System.out.println("datasetIdInt ---->" + dataSetIdInt);
-        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        List<Map<String,Object>> data = (List<Map<String,Object>>)dataMap.get("data");
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
+        Map returnMap = new HashMap<>();
+        returnMap.put("columnDefs", columnDefs);
+        returnMap.put("data", data);
+        return returnMap;
     }
 
     private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
@@ -979,6 +985,7 @@ public class ProxyController {
                     Object value = entrySet.getValue();
                     String valueString = value + "";
                     System.out.println(value.getClass());
+                    valueString = valueString.replaceAll("^\"|\"$", "");
                     if (NumberUtils.isNumber(valueString)) {
                         columnDefs.add(new ColumnDef(key, "number", key));
                     } else if (DateUtils.convertToDate(valueString) != null) {
@@ -1001,6 +1008,7 @@ public class ProxyController {
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
                 String value = entrySet.getValue();
+                value = value.replaceAll("^\"|\"$", "");
                 if (NumberUtils.isNumber(value)) {
                     columnDefs.add(new ColumnDef(key, "number", key));
                 } else if (DateUtils.convertToDate(value) != null) {

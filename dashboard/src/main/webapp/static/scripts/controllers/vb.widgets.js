@@ -1,3 +1,10 @@
+
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
 
     $scope.widgets = []
@@ -5,6 +12,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.toggleDragging = function () {
         $scope.dragEnabled = !$scope.dragEnabled;
     };
+    
+    
+    
+    $scope.firstSortableOptions = {
+        start: function (event, ui) {
+            console.log('start1');
+        },
+        stop: function (event, ui) {
+            console.log('stop1');
+        }
+    };
+    
+    
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -332,7 +352,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             widgetObj: '@',
             pdfFunction: '&'
         },
-        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
+        template: '{{testData}}<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
 //                Start Table
                 '<table ng-if="ajaxLoadingCompleted" class="table table-striped" ng-hide="hideEmptyTable">' +
 //                        Start Table Header
@@ -498,7 +518,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     return "-";
                 }
                 if (column.displayFormat) {
-                    if (Number.isNaN(value)) {
+                    if (isNaN(value)) {
                         return "-";
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
@@ -784,7 +804,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                             returnValue[value.fieldname] = scope.calculatedMetric(list, calculatedFn.name, calculatedFn.field1, calculatedFn.field2);
                         }
                     });
-                    if (Number.isNaN(returnValue)) {
+                    if (isNaN(returnValue[value.fieldname])) {
                         returnValue[value.fieldname] = "-";
                     }
                 });
@@ -941,7 +961,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                     return "-";
                 }
                 if (column.displayFormat) {
-                    if (Number.isNaN(value)) {
+                    if (isNaN(value)) {
                         return "-";
                     }
                     if (column.displayFormat.indexOf("%") > -1) {

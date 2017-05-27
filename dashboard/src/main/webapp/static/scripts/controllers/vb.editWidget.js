@@ -955,17 +955,14 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" + //End Panel Title
                 "</div>" +
                 "</div>" +
-//                "<pre>{{previewTableHeader | json}}</pre>" +
-//                " <pre ng-repeat='header in previewTableHeader'>{{header.displayName}} </pre>" +
                 //Table
                 "<div class=''>" +
                 "<div class='table-responsive tbl-preview'>" +
-                "<table  class='defaultTable table table-bordered table-hover'>" +
+                "<table  class='table table-bordered table-hover'>" +
                 "<thead>" +
-                "<tr>" +
-                "<th id='{{collectionField.displayName}}'  ng-repeat='collectionField in previewTableHeader'>" +
-                "<div  ng-hide='collectionField.isEdit'>" +
-//                "<div class='preview-table-settings' ng-click='collectionField.isEdit=true'>" +
+                "<tr ng-model='previewTableHeader' ui-sortable='sortableOptions'>" +
+                "<th ng-repeat='collectionField in previewTableHeader'>" +
+                "<div ng-hide='collectionField.isEdit'>" +
                 "<div class='preview-table-settings' ng-hide='collectionField.isEdit'>" +
                 "<a ng-click='collectionField.isEdit = true'>{{collectionField.displayName}}</a>" +
                 "</div></div>" +
@@ -973,9 +970,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "<div ng-show='collectionField.isEdit'><input class='form-control-btn' ng-model='collectionField.displayName'>" +
                 "<a class='btn btn-default btn-xs' ng-click='collectionField.isEdit=false'><i class='fa fa-save'></i></a>" +
                 "<a class='btn btn-default btn-xs' ng-click='collectionField.isEdit=false'><i class='fa fa-close'></i></a></div>" +
-                "</th>" +
-                "</tr>" +
-                "<tr><th ng-repeat='collectionField in previewTableHeader'>" +
+//                "</th>" +
+//                "</tr>" +
+//                "<tr><th ng-repeat='collectionField in previewTableHeader'>" +
                 "<button class='settings btn btn-default btn-xs'" +
                 "ns-popover=''" +
                 "ns-popover-template='close'" +
@@ -1086,6 +1083,17 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 scope.editPreviewTitle = true;
             };
 
+            scope.sortableOptions = {
+                start: function (event, ui) {
+                    console.log('start1');
+//                    console.log(ui);
+                },
+                stop: function (event, ui) {
+                    console.log('stop1');
+//                    console.log(ui);
+                }
+            };
+
             scope.listColumns = [];
             scope.listColumns = JSON.parse(scope.previewColumns);
             scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
@@ -1134,101 +1142,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
             });
-            $(document).ready(function () {
-                $('.defaultTable').dragtable({
-                    persistState: function (table) {
-
-                        if (!window.sessionStorage)
-                            return;
-                        table.el.find('th').each(function (i) {
-                            if (this.id != '') {
-                                table.sortOrder[this.id] = i;
-                            }
-                        });
-                        scope.mapJson(table.sortOrder);
-                    },
-                    clickDelay: 200,
-                });
-            });
-            scope.mapJson = function (object) {
-                scope.draggedObject = [];
-                scope.newHeaders = [];
-                $.each(object, function (key, value) {
-                    scope.draggedObject[value] = key;
-                });
-
-                console.log(scope.draggedObject)
-                
-                scope.previewTableHeader = orderByFilter(scope.previewTableHeader, function (item) {
-                    return scope.draggedObject.indexOf(item.displayName)
-                });
-scope.$apply()
-
-//                console.log(scope.previewTableHeader)
-//                console.log("Before Drage")
-//                
-//                console.log(scope.draggedObject)
-//                console.log("Drag Items")
-//                angular.forEach(scope.previewTableHeader, function (value, key) {
-//                    scope.filterReturnItem = orderByFilter(scope.previewTableHeader, function (item) {
-//                        return scope.draggedObject.indexOf(item.displayName)
-//                    });
-//                });
-//                scope.previewTableHeader = []
-//                console.log("Draged Collection")
-//                console.log(scope.filterReturnItem)
-//                
-//                scope.previewTableHeader = scope.filterReturnItem;
-//                console.log(scope.previewTableHeader)
-//                console.log("After Drag")
-//                scope.$apply();
-//                console.log(scope.previewTableHeader)
-//                console.log("After Refresh")
-            };
             scope.deleteColumn = function (collectionField, index) {
-                console.log(collectionField)
-
-                // scope.draggedObject
-                console.log(collectionField.fieldName)
-                var removeItemIndex = scope.draggedObject.indexOf(collectionField.fieldName)
-                console.log(removeItemIndex)
-                scope.draggedObject.splice(removeItemIndex, 1)
-                console.log(scope.draggedObject)
-
                 scope.previewTableHeader.splice(index, 1)
-
-                scope.previewTableHeader = orderByFilter(scope.previewTableHeader, function (item) {
-                    return scope.draggedObject.indexOf(item.displayName)
-                });
-scope.$apply()
-
-                console.log(scope.previewTableHeader)
-
-//                console.log(index)
-
-                if (typeof (scope.filterReturnItem) == "undefined")
-                {
-                    //scope.previewTableHeader.splice(index, 1);
-                } else {
-                    // var dragDeletedIndexPos = scope.filterReturnItem.indexOf(collectionField);
-                    // scope.filterReturnItem.splice(dragDeletedIndexPos, 1);
-                    //scope.previewTableHeader = scope.filterReturnItem;
-
-//                    var returnItems = scope.previewTableHeader;
-//                    scope.previewTableHeader = ""
-//                    scope.previewTableHeader = returnItems;
-//                    scope.$apply();
-//                    var previewHeaderObject = scope.previewTableHeader[$index];
-//                    console.log(previewHeaderObject);
-//                    console.log(scope.filterReturnItem);
-//                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
-//                    console.log("dragableHeaderIndex="+dragableHeaderIndex);
-//                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
-////                    scope.previewTableHeader = [];
-//                    console.log(scope.filterReturnItem);
-//                    scope.previewTableHeader = scope.filterReturnItem;
-//                    console.log(scope.previewTableHeader);
-                }
             };
             scope.previewTableHeader = JSON.parse(scope.previewColumns);
             scope.save = function () {
@@ -1251,7 +1166,7 @@ scope.$apply()
                 }
 
                 var widgetColumnsData = [];
-                var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeader;
+                var saveWidgetColumnList = scope.previewTableHeader;
                 angular.forEach(saveWidgetColumnList, function (value, key) {
                     var hideColumn = value.columnHide;
                     if (value.groupPriority > 0) {
