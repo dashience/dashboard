@@ -28,11 +28,11 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <listener>
+<!--    <listener>
     <listener-class>
         org.springframework.web.context.ContextLoaderListener
     </listener-class>
-    </listener>
+    </listener>-->
     
     <servlet-mapping>
         <servlet-name>admin</servlet-name>

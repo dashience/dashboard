@@ -9,7 +9,7 @@
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 ">
 
-	<context:component-scan base-package="com.visumbu.vb.admin.service" />
+	<context:component-scan base-package="com.visumbu.vb.admin" />  
 	 <!-- For times when you need more complex processing, passing data to the scheduled job -->
     <bean name="complexJobDetail"    class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
         <property name="jobClass" value="com.visumbu.vb.utils.ScheduledJob" />
@@ -18,29 +18,29 @@
                 <entry key="timeService" value-ref="timeService" />
                 
             </map>
-        </property>
+    </property>
         <property name="durability" value="true" />
     </bean>
  
     <!-- Run the job every 5 seconds only on Weekends -->
     <bean id="cronTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="complexJobDetail" />
-        <property name="cronExpression" value="0/5 * * ? * FRI"/>
+        <property name="cronExpression" value="0/5 * * ? * MON"/>
     </bean>
     
      <!-- Run the job every 5 seconds only on Weekends -->
     <bean id="cronTrigger2"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="complexJobDetail" />
-        <property name="cronExpression" value="0/10 * * ? * FRI"/>
+        <property name="cronExpression" value="0/15 * * ? * MON"/>
     </bean>
      <bean id="cronTrigger3"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="complexJobDetail" />
-        <property name="cronExpression" value="0/20 * * ? * FRI"/>
+        <property name="cronExpression" value="0/20 * * ? * MON"/>
      </bean>
  <bean id="cronTrigger4"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="complexJobDetail" />
-        <property name="cronExpression" value="0/30 * * ? * FRI"/>
-    </bean></beans>
+        <property name="cronExpression" value="0/30 * * ? * MON"/>
+    </bean>
   
     <!-- Scheduler factory bean to glue together jobDetails and triggers to Configure Quartz Scheduler -->
     <bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

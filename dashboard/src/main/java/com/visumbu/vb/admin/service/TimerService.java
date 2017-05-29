@@ -41,7 +41,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import test.DateRangeFactory;
 
-@EnableScheduling
+//@EnableScheduling
 @Service("timeService")
 public class TimerService {
 
@@ -218,7 +218,7 @@ public class TimerService {
 //        System.out.println("Success....");
 //    }
 //    
-    @Scheduled(cron = "0 0 */1 * * *")
+    //@Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
         System.out.println("Executing daily Tasks....");
         List<Agency> allAgencies = schedulerDao.getAllAgency();
@@ -237,7 +237,7 @@ public class TimerService {
         }
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
+    //@Scheduled(cron = "0 0 */1 * * *")
     public void executeWeeklyTask() {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
@@ -256,7 +256,7 @@ public class TimerService {
         }
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
+    //@Scheduled(cron = "0 0 */1 * * *")
     public void executeMonthlyTask() {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
@@ -274,7 +274,7 @@ public class TimerService {
         }
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
+    //@Scheduled(cron = "0 0 */1 * * *")
     public void executeYearlyTask() {
 //         Integer hour = DateUtils.getCurrentHour();
         System.out.println("Yearly Tasks");
@@ -286,7 +286,7 @@ public class TimerService {
 //        executeTasks(scheduledTasks);
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
+   // @Scheduled(cron = "0 0 */1 * * *")
     public void executeYearOfWeek() {
         Date today = new Date();
         Integer hour = DateUtils.getCurrentHour();
@@ -297,7 +297,7 @@ public class TimerService {
 
     }
 
-    @Scheduled(cron = "0 0 */1 * * *")
+    //@Scheduled(cron = "0 0 */1 * * *")
     public void executeOnce() {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {

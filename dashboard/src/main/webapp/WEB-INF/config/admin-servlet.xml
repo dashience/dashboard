@@ -13,10 +13,13 @@ http://www.springframework.org/schema/tx
 http://www.springframework.org/schema/tx/spring-tx.xsd
 http://www.springframework.org/schema/mvc
 http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    
 
     <context:property-placeholder location="/WEB-INF/database.properties" />
     <context:component-scan base-package="com.visumbu.vb.admin" />
-
+    
+     <import resource="/quartzContext.xml"/>
+  
     <tx:annotation-driven transaction-manager="hibernateTransactionManager"/>
     <mvc:annotation-driven />
 
@@ -90,4 +93,5 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     </bean>
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
     </bean>
+     
 </beans>
