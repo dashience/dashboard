@@ -365,7 +365,8 @@ public class GaService {
                     .setDateRanges(dateRangeList)
                     //.setDimensions(dimensionList)
                     //.setFiltersExpression(filter)
-                    .setMetrics(metricList);
+                    .setMetrics(metricList)
+                    .setPageSize(100000);
             if (filter != null) {
                 request.setFiltersExpression(filter);
             }
