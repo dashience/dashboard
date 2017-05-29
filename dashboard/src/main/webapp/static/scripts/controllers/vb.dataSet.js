@@ -1934,7 +1934,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div ng-if="ajaxLoadingCompleted">' +
                 '<div ng-if="tableColumns!=null" class="pull-right">' +
                 '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataset"><i class="fa fa-plus"></i></button>' +
-                '<div id="dataset" class="modal fade" role="dialog">' +
+                '<div id="dataset" class="modal" role="dialog">' +
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
@@ -1990,7 +1990,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<label class="col-md-2">Column</label>' +
                 '<div class="col-md-3">' +
                 '<select class="form-control" ng-disabled="datasetColumn.expression?true:false" ng-model="datasetColumn.columnName">' +
-                '<option ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
+                '<option ng-if="dataSetColumn.functionName==null" ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
                 '{{dataSetColumn.fieldName}}' +
                 '</option>' +
                 '</select>' +
@@ -2002,8 +2002,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" ng-disabled="dataSetError||!((datasetColumn.expression||(datasetColumn.functionName&&datasetColumn.columnName))&&datasetColumn.fieldName&&datasetColumn.fieldType&&datasetColumn.format)||!(datasetColumn)" data-dismiss="modal">Save</button>' +
-                '<button type="button" class="btn btn-default" ng-click="dataSetFieldsClose(datasetColumn)" data-dismiss="modal">Close</button>' +
+                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-click="saveDatasetColumn(datasetColumn)" ng-disabled="dataSetError||!((datasetColumn.expression||(datasetColumn.functionName&&datasetColumn.columnName))&&datasetColumn.fieldName&&datasetColumn.fieldType&&datasetColumn.format)||!(datasetColumn)">Save</button>' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(datasetColumn)" >Close</button>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -2015,8 +2015,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '{{col.fieldName}}' +
                 //Edit
                 '<div>' +
-                '<button ng-if="col.functionName != null|| col.expression != null" type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#dataSetColumn{{col.fieldName}}" ng-click="editDataset(col)"><i class="fa fa-pencil"></i></button>' +
-                '<div id="dataSetColumn{{col.fieldName}}" class="modal fade" role="dialog">' +
+                '<button ng-if="col.functionName != null|| col.expression != null" type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#dataSetColumn{{col.id}}" ng-click="editDataset(col)"><i class="fa fa-pencil"></i></button>' +
+                '<div id="dataSetColumn{{col.id}}" class="modal" role="dialog">' +
                 '<div class="modal-dialog">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
@@ -2029,7 +2029,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<label class="col-md-3">Field Name</label>' +
                 '<div class="col-md-9">' +
                 '<input class="form-control" ng-model="datasetColumn.fieldName" ng-change="checkFieldName(datasetColumn.fieldName)" type="text">' +
-                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '<span ng-show="dataSetError" class="text-danger">Field Name Already Exists</span>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -2071,7 +2071,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<label class="col-md-2">Column</label>' +
                 '<div class="col-md-3">' +
                 '<select class="form-control" ng-disabled="datasetColumn.expression?true:false" ng-model="datasetColumn.columnName">' +
-                '<option ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
+                '<option ng-if="dataSetColumn.functionName==null" ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
                 '{{dataSetColumn.fieldName}}' +
                 '</option>' +
                 '</select>' +
@@ -2083,14 +2083,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success"  ng-click="saveDatasetColumn(datasetColumn)" data-dismiss="modal">Save</button>' +
-                '<button type="button" class="btn btn-default" ng-click="dataSetFieldsClose(datasetColumn)" data-dismiss="modal">Close</button>' +
-                '</div>' +
+                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError||!((datasetColumn.expression||(datasetColumn.functionName&&datasetColumn.columnName))&&datasetColumn.fieldName&&datasetColumn.fieldType&&datasetColumn.format)||!(datasetColumn)" ng-click="saveDatasetColumn(datasetColumn)">Save</button>' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(datasetColumn)">Close</button>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
                 '<button ng-if="col.functionName != null|| col.expression != null" type="button" ng-click=deleteDataset(col) class="btn btn-default btn-xs"><i class="fa fa-trash"></i></button>' +
+                '</div>' +
                 '</th>' +
                 '</tr></thead>' +
                 '<tbody ng-repeat="tableRow in tableRows">' +
@@ -2229,7 +2229,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 });
             }
             scope.dataSetItems();
-
+            scope.dataSetError = false;
             scope.checkFieldName = function (fieldName) {
 
                 angular.forEach(scope.tableColumns, function (value, key) {
@@ -2245,18 +2245,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     }
                 });
             };
-//            scope.functiondisabled = false;
-//            scope.expressiondisabled = false;
             scope.clearFunction = function (datasetColumn) {
                 datasetColumn.columnName = "";
                 datasetColumn.functionName = "";
-//                scope.expressiondisabled = false;
-//                scope.functiondisabled = false;
             }
             scope.clearExpression = function (datasetColumn) {
                 datasetColumn.expression = "";
-//                scope.functiondisabled = false;
-//                scope.expressiondisabled = false;
             }
             scope.dataSetFieldsClose = function (datasetColumn) {
                 console.log("function called close");
@@ -2269,14 +2263,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.dataSetError = false;
             };
             scope.saveDatasetColumn = function (datasetColumn) {
-//                scope.datasetColumns=[];
-//                scope.datasetColumns.push(dataSetFields);
-//                console.log(scope.datasetColumns)
-                console.log(datasetColumn);
-                console.log(typeof (datasetColumn.functionName) + " " + typeof (datasetColumn.columnName));
-
                 var functionName = null;
-                if (typeof (datasetColumn.functionName) !== "undefined" && typeof (datasetColumn.functionName) !== "undefined") {
+                if (typeof (datasetColumn.functionName) !== "undefined" && datasetColumn.functionName !== null && datasetColumn.functionName !== "" && datasetColumn.columnName !== null && datasetColumn.columnName !== "" && typeof (datasetColumn.functionName) !== "undefined") {
                     functionName = datasetColumn.functionName + "(" + datasetColumn.columnName + ")";
                 }
                 var data = {
@@ -2292,6 +2280,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 };
                 console.log(data);
                 $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
+                    scope.ajaxLoadingCompleted = false;
+                    scope.loadingTable = true;
                     console.log(response)
                     scope.dataSetItems();
                     datasetColumn.expression = "";
@@ -2309,8 +2299,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 if (datasetColumn.functionName != null) {
                     var str = datasetColumn.functionName;
                     var findIndex = str.indexOf("(");
-                    var functionName = str.slice(0, findIndex);
-                    var columnName = str.slice(findIndex + 1, str.length - 1);
+                    functionName = str.slice(0, findIndex);
+                    columnName = str.slice(findIndex + 1, str.length - 1);
                 }
                 var editData = {
                     id: datasetColumn.id,
@@ -2325,8 +2315,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 
                 scope.datasetColumn = editData;
             }
+
             scope.deleteDataset = function (datasetColumn) {
                 $http({method: "DELETE", url: 'admin/ui/dataSetFormulaColumns/' + datasetColumn.id}).success(function (response) {
+                    scope.ajaxLoadingCompleted = false;
+                    scope.loadingTable = true;
                     scope.dataSetItems();
                 });
             }
