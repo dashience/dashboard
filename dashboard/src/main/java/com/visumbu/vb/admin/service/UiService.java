@@ -272,6 +272,9 @@ public class UiService {
             } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
                 startDate = null;
                 endDate = null;
+            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
+                startDate = null;
+                endDate = null;
             } else if (dateRangeSelect.equals(Range.DAY)) {
                 dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
             } else if (dateRangeSelect.equals(Range.WEEK)) {

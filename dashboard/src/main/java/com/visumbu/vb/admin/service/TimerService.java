@@ -165,6 +165,13 @@ public class TimerService {
                     } catch (ParseException ex) {
                         Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
+                    try {
+                        startDate = df.parse(scheduler.getCustomStartDate());
+                        endDate = df.parse(scheduler.getCustomEndDate());
+                    } catch (ParseException ex) {
+                        Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else if (dateRangeSelect.equals(Range.DAY)) {
                     dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
                 } else if (dateRangeSelect.equals(Range.WEEK)) {

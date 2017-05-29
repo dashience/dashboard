@@ -566,7 +566,7 @@ public class UiDao extends BaseDao {
             System.out.println("create Data set columns ----> ");
             DatasetColumnBean datasetColumn = datasetColumnBean.next();
             System.out.println(datasetColumn.getId() + "____________" + dataSetColumn.getId());
-            if (!Objects.equals(datasetColumn.getId(), dataSetColumn.getId())) {
+            if (datasetColumn.getId() == null && dataSetColumn.getId() == null) {
                 System.out.println("if");
                 DatasetColumns datasetFields = new DatasetColumns();
                 System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
@@ -581,7 +581,7 @@ public class UiDao extends BaseDao {
                 datasetFields.setDatasetId(dataset);
                 saveOrUpdate(datasetFields);
                 datasetList.add(datasetFields);
-            } else if (datasetColumn.getId() == null && dataSetColumn.getId() == null) {
+            } else if (!Objects.equals(datasetColumn.getId(), dataSetColumn.getId())) {
                 System.out.println("else if");
                 DatasetColumns datasetFields = new DatasetColumns();
                 System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
@@ -634,10 +634,10 @@ public class UiDao extends BaseDao {
         query.setParameter("id", widgetId);
         query.setParameter("datasetId", datasetId);
         List tabWidgetData = query.list();
-        if(tabWidgetData == null || tabWidgetData.isEmpty()){
+        if (tabWidgetData == null || tabWidgetData.isEmpty()) {
             return null;
-        } 
-        System.out.println("tabWidgetData ---> "+tabWidgetData);
+        }
+        System.out.println("tabWidgetData ---> " + tabWidgetData);
         TabWidget tabWidget = (TabWidget) tabWidgetData.get(0);
         tabWidget.setColumns(getColumns(tabWidget));
         return tabWidget;
