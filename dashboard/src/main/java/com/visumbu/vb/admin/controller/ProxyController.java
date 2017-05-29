@@ -159,24 +159,28 @@ public class ProxyController {
             returnMap = (Map) getPinterestData(request, response);
         }
 
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
+
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
+        List datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+        
+        addDerivedColumn(returnMap, datasetColumnList, startDate, endDate);
+
         String widgetIdStr = request.getParameter("widgetId");
 
         System.out.println("WIDGET ID " + widgetIdStr);
         if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
-            String queryFilter;
+            String queryFilter = null;
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetId, dataSetIdInt);
-            if (tabWidget == null) {
-                queryFilter = null;
-                List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
-                List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
-                returnMap.put("data", returnDataMap);
-            } else {
+            if (tabWidget != null) {
                 queryFilter = tabWidget.getQueryFilter();
-                List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
-                List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
-                returnMap.put("data", returnDataMap);
             }
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
+            returnMap.put("data", returnDataMap);
         }
         return returnMap;
     }
@@ -186,7 +190,6 @@ public class ProxyController {
     Map getCsvData(HttpServletRequest request, HttpServletResponse response) {
         try {
             String connectionString = request.getParameter("connectionUrl");
-            List<DatasetColumns> datasetColumnList = new ArrayList<>();
             String dataSetId = request.getParameter("dataSetId");
             Integer dataSetIdInt = null;
             if (dataSetId != null) {
@@ -194,9 +197,6 @@ public class ProxyController {
                     dataSetIdInt = Integer.parseInt(dataSetId);
                 } catch (Exception e) {
 
-                }
-                if (dataSetIdInt != null) {
-                    datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
                 }
             }
             if (connectionString == null) {
@@ -212,36 +212,6 @@ public class ProxyController {
             }
             List<Map<String, Object>> dataSet = CsvDataSet.CsvDataSet(connectionString);
 
-            System.out.println("datasetColumnList0 ----> " + datasetColumnList);
-
-            if (datasetColumnList.size() > 0) {
-                Map<String, List<Map<String, Object>>> csvData = addDerivedColumn(dataSet, null, datasetColumnList, null, null, null, null, null, null, null, null, null, null, null, null);
-
-                Map returnCsvMap = new HashMap();
-                Iterator it = csvData.entrySet().iterator();
-
-                List column = new ArrayList<>();
-                List columnData = new ArrayList<>();
-
-                while (it.hasNext()) {
-                    Map.Entry pair = (Map.Entry) it.next();
-                    if (pair.getKey().equals("data")) {
-                        columnData.add(pair.getValue());
-                    } else {
-                        column.add(pair.getValue());
-                    }
-                }
-                List<Map<String, Object>> columnsData = (List<Map<String, Object>>) columnData.get(0);
-                List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
-                System.out.println("columnData ---> " + columnData);
-                System.out.println("column ---> " + column);
-
-                List<ColumnDef> columnDef = getColumnDefForDerivedColumnObject(columnsData, columns);
-                returnCsvMap.put("columnDefs", columnDef);
-
-                returnCsvMap.put("data", columnsData);
-                return returnCsvMap;
-            }
             Map returnMap = new HashMap<>();
             returnMap.put("data", dataSet);
             returnMap.put("columnDefs", getColumnDefObject(dataSet));
@@ -296,44 +266,7 @@ public class ProxyController {
                     returnDataMap.put("pins_counts", ((Map) fbDataMap.get("counts")).get("pins") + "");
                     returnData.add(returnDataMap);
                 }
-                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-                System.out.println("datasetColumnList0 ----> " + datasetColumnList);
-                if (datasetColumnList.size() > 0) {
-                    List<Map<String, Object>> returnDataObj = new ArrayList<>();
-                    for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
-                        Map<String, Object> fbDataMap = iterator.next();
-                        Map<String, Object> returnDataMap = new HashMap<>();
-                        returnDataMap.put("name", fbDataMap.get("name") + "");
-                        returnDataMap.put("description", fbDataMap.get("description") + "");
-                        returnDataMap.put("pins_counts", ((Map) fbDataMap.get("counts")).get("pins") + "");
-                        returnDataObj.add(returnDataMap);
-                    }
-                    Map<String, List<Map<String, Object>>> pinInterestData = addDerivedColumn(returnDataObj, null, datasetColumnList, null, null, null, null, null, null, null, null, null, null, null, null);
-                    Map returnPinMap = new HashMap();
-                    Iterator it = pinInterestData.entrySet().iterator();
 
-                    List column = new ArrayList<>();
-                    List columnData = new ArrayList<>();
-
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
-                        if (pair.getKey().equals("data")) {
-                            columnData.add(pair.getValue());
-                        } else {
-                            column.add(pair.getValue());
-                        }
-                    }
-                    List<Map<String, Object>> columnsData = (List<Map<String, Object>>) columnData.get(0);
-                    List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
-                    System.out.println("columnData ---> " + columnData);
-                    System.out.println("column ---> " + column);
-
-                    List<ColumnDef> columnDefs = getColumnDefForDerivedColumnObject(columnsData, columns);
-                    returnPinMap.put("columnDefs", columnDefs);
-
-                    returnPinMap.put("data", columnsData);
-                    return returnPinMap;
-                }
                 Map pinterestData = new HashMap();
                 List<ColumnDef> columnDefs = getColumnDef(returnData);
                 returnMap.put("columnDefs", columnDefs);
@@ -372,44 +305,6 @@ public class ProxyController {
                     returnData.add(returnDataMap);
                 }
 
-                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-                System.out.println("datasetColumnList0 ----> " + datasetColumnList);
-                if (datasetColumnList.size() > 0) {
-                    List<Map<String, Object>> returnDataObj = new ArrayList<>();
-                    for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
-                        Map<String, Object> fbDataMap = iterator.next();
-                        Map<String, Object> returnDataMap = new HashMap<>();
-                        returnDataMap.put("note", fbDataMap.get("note") + "");
-                        returnDataMap.put("url", fbDataMap.get("url") + "");
-                        returnDataMap.put("created_at", fbDataMap.get("created_at") + "");
-                        returnDataObj.add(returnDataMap);
-                    }
-                    Map<String, List<Map<String, Object>>> pinInterestData = addDerivedColumn(returnDataObj, null, datasetColumnList, null, null, null, null, null, null, null, null, null, null, null, null);
-                    Map returnPinMap = new HashMap();
-                    Iterator it = pinInterestData.entrySet().iterator();
-
-                    List column = new ArrayList<>();
-                    List columnData = new ArrayList<>();
-
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
-                        if (pair.getKey().equals("data")) {
-                            columnData.add(pair.getValue());
-                        } else {
-                            column.add(pair.getValue());
-                        }
-                    }
-                    List<Map<String, Object>> columnsData = (List<Map<String, Object>>) columnData.get(0);
-                    List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
-                    System.out.println("columnData ---> " + columnData);
-                    System.out.println("column ---> " + column);
-
-                    List<ColumnDef> columnDefs = getColumnDefForDerivedColumnObject(columnsData, columns);
-                    returnPinMap.put("columnDefs", columnDefs);
-
-                    returnPinMap.put("data", columnsData);
-                    return returnPinMap;
-                }
                 Map pinterestData = new HashMap();
                 List<ColumnDef> columnDefs = getColumnDef(returnData);
                 returnMap.put("columnDefs", columnDefs);
@@ -450,36 +345,6 @@ public class ProxyController {
                 }
                 twitterData.add(myMapData);
 
-                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-                System.out.println("datasetColumnList0 ----> " + datasetColumnList);
-                if (datasetColumnList.size() > 0) {
-
-                    Map<String, List<Map<String, Object>>> pinInterestData = addDerivedColumn(twitterData, null, datasetColumnList, null, null, null, null, null, null, null, null, null, null, null, null);
-                    Map returnPinMap = new HashMap();
-                    Iterator it = pinInterestData.entrySet().iterator();
-
-                    List column = new ArrayList<>();
-                    List columnData = new ArrayList<>();
-
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
-                        if (pair.getKey().equals("data")) {
-                            columnData.add(pair.getValue());
-                        } else {
-                            column.add(pair.getValue());
-                        }
-                    }
-                    List<Map<String, Object>> columnsData = (List<Map<String, Object>>) columnData.get(0);
-                    List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
-                    System.out.println("columnData ---> " + columnData);
-                    System.out.println("column ---> " + column);
-
-                    List<ColumnDef> columnDefs = getColumnDefForDerivedColumnObject(columnsData, columns);
-                    returnPinMap.put("columnDefs", columnDefs);
-
-                    returnPinMap.put("data", columnsData);
-                    return returnPinMap;
-                }
                 List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
 
                 /////////////////////////////////////////////////////////
@@ -871,17 +736,7 @@ public class ProxyController {
         System.out.println("Report Name " + dataSetReportName);
         System.out.println("datasetId ---->" + dataSetId);
         System.out.println("datasetIdInt ---->" + dataSetIdInt);
-        Map<String, List<Map<String, Object>>> analyticsData = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
-        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-
-        System.out.println("datasetColumnList0 ----> " + datasetColumnList);
-        if (datasetColumnList.size() > 0) {
-            System.out.println("datasetColumnList1 ---> " + datasetColumnList);
-            Map<String, List<Map<String, Object>>> data = addDerivedColumn(null, analyticsData, datasetColumnList, dataSetReportName, startDate, endDate, gaProfileId, null, null, null, null, timeSegment, productSegment, null, dataSetIdInt);
-            return data;
-        }
-
-        return analyticsData;
+        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
     }
 
     private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
@@ -1009,39 +864,7 @@ public class ProxyController {
         if (data == null) {
             return null;
         }
-        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
 
-        System.out.println("datasetColumnList0 ----> " + datasetColumnList);
-        if (datasetColumnList.size() > 0) {
-            System.out.println("datasetColumnList1 ---> " + datasetColumnList);
-            Map<String, List<Map<String, Object>>> adwordsData = addDerivedColumn(data, null, datasetColumnList, dataSetReportName, startDate, endDate, null, adwordsAccountId, null, null, null, timeSegment, productSegment, filter, null);
-            Map returnMapAdwords = new HashMap();
-            Iterator it = adwordsData.entrySet().iterator();
-
-            List column = new ArrayList<>();
-            List columnData = new ArrayList<>();
-
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-                if (pair.getKey().equals("data")) {
-                    columnData.add(pair.getValue());
-                } else {
-                    column.add(pair.getValue());
-                }
-            }
-            List<Map<String, Object>> columnsData = (List<Map<String, Object>>) columnData.get(0);
-            List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
-            System.out.println("columnData ---> " + columnData);
-            System.out.println("column ---> " + column);
-
-            List<ColumnDef> columnDefs = getColumnDefForDerivedColumnObject(columnsData, columns);
-            returnMapAdwords.put("columnDefs", columnDefs);
-            if (fieldsOnly != null) {
-                return returnMapAdwords;
-            }
-            returnMapAdwords.put("data", columnsData);
-            return returnMapAdwords;
-        }
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
         if (fieldsOnly != null) {
@@ -1051,14 +874,12 @@ public class ProxyController {
         return returnMap;
     }
 
-    public Map<String, List<Map<String, Object>>> addDerivedColumn(List<Map<String, Object>> dataList, Map<String, List<Map<String, Object>>> analyticsData, List<DatasetColumns> datasetColumnList, String dataSetReportName, Date startDate, Date endDate, String gaProfileId, String adwordsAccountId, String accessToken, Long facebookAccountIdInt, Long facebookOrganicAccountIdInt, String timeSegment, String productSegment, String filter, Integer dataSetIdInt) {
+    public Map<String, List<Map<String, Object>>> addDerivedColumn(Map<String, List<Map<String, Object>>> analyticsData, List<DatasetColumns> datasetColumnList, Date startDate, Date endDate) {
         Map returnMap = new HashMap();
 
         List<ColumnDef> columnDefs = new ArrayList<>();
         List<Map<String, Object>> originalData = new ArrayList<>();
-        if (dataList != null) {
-            originalData = dataList;
-        }
+
         if (analyticsData != null) {
             Iterator it = analyticsData.entrySet().iterator();
 
@@ -1140,33 +961,33 @@ public class ProxyController {
                 }
                 System.out.println("addDerivedColumnforDA function");
                 List<Map<String, Object>> dataOver = new ArrayList<>();
-                if (adwordsAccountId != null) {
-                    System.out.println("adwords");
-                    dataOver = adwordsService.getAdwordsReport(dataSetReportName, strtDate, lastDate, adwordsAccountId, timeSegment, productSegment, filter);
-                } else if (facebookAccountIdInt != null && facebookOrganicAccountIdInt != null) {
-                    System.out.println("facebook");
-                    dataOver = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
-                            facebookOrganicAccountIdInt, strtDate, lastDate, timeSegment, productSegment);
-                } else if (gaProfileId != null) {
-                    System.out.println("analytics");
-                    Map<String, List<Map<String, Object>>> analyticsDataOver = gaService.getGaReport(dataSetReportName, gaProfileId, strtDate, lastDate, timeSegment, productSegment, dataSetIdInt);
-                    Iterator it = analyticsDataOver.entrySet().iterator();
-
-                    List columnOver = new ArrayList<>();
-                    List columnDataOver = new ArrayList<>();
-
-                    while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry) it.next();
-                        if (pair.getKey().equals("data")) {
-                            columnDataOver.add(pair.getValue());
-                        } else {
-                            columnOver.add(pair.getValue());
-                        }
-                    }
-                    List<Map<String, Object>> columnsDataOver = (List<Map<String, Object>>) columnDataOver.get(0);
-                    List<ColumnDef> columnsOver = (List<ColumnDef>) columnOver.get(0);
-                    dataOver = columnsDataOver;
-                }
+//                if (adwordsAccountId != null) {
+//                    System.out.println("adwords");
+//                    dataOver = adwordsService.getAdwordsReport(dataSetReportName, strtDate, lastDate, adwordsAccountId, timeSegment, productSegment, filter);
+//                } else if (facebookAccountIdInt != null && facebookOrganicAccountIdInt != null) {
+//                    System.out.println("facebook");
+//                    dataOver = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
+//                            facebookOrganicAccountIdInt, strtDate, lastDate, timeSegment, productSegment);
+//                } else if (gaProfileId != null) {
+//                    System.out.println("analytics");
+//                    Map<String, List<Map<String, Object>>> analyticsDataOver = gaService.getGaReport(dataSetReportName, gaProfileId, strtDate, lastDate, timeSegment, productSegment, dataSetIdInt);
+//                    Iterator it = analyticsDataOver.entrySet().iterator();
+//
+//                    List columnOver = new ArrayList<>();
+//                    List columnDataOver = new ArrayList<>();
+//
+//                    while (it.hasNext()) {
+//                        Map.Entry pair = (Map.Entry) it.next();
+//                        if (pair.getKey().equals("data")) {
+//                            columnDataOver.add(pair.getValue());
+//                        } else {
+//                            columnOver.add(pair.getValue());
+//                        }
+//                    }
+//                    List<Map<String, Object>> columnsDataOver = (List<Map<String, Object>>) columnDataOver.get(0);
+//                    List<ColumnDef> columnsOver = (List<ColumnDef>) columnOver.get(0);
+//                    dataOver = columnsDataOver;
+//                }
                 Map<String, Object> dataPairYoy = new HashMap();
                 if (dataOver.size() > 0) {
                     int list = 0;
@@ -1399,40 +1220,8 @@ public class ProxyController {
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
         log.debug("Start Date ---- " + startDate);
-        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-        System.out.println("datasetColumnList0 ----> " + datasetColumnList);
         List<Map<String, Object>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
                 facebookOrganicAccountIdInt, startDate, endDate, timeSegment, productSegment);
-        if (datasetColumnList.size() > 0) {
-            Map<String, List<Map<String, Object>>> fbData = addDerivedColumn(data, null, datasetColumnList, dataSetReportName, startDate, endDate, null, null, accessToken, facebookAccountIdInt, facebookOrganicAccountIdInt, timeSegment, productSegment, null, null);
-            Map returnMap = new HashMap();
-            Iterator it = fbData.entrySet().iterator();
-
-            List column = new ArrayList<>();
-            List columnData = new ArrayList<>();
-
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-                if (pair.getKey().equals("data")) {
-                    columnData.add(pair.getValue());
-                } else {
-                    column.add(pair.getValue());
-                }
-            }
-            List<Map<String, Object>> columnsData = (List<Map<String, Object>>) columnData.get(0);
-            List<ColumnDef> columns = (List<ColumnDef>) column.get(0);
-            System.out.println("columnData ---> " + columnData);
-            System.out.println("column ---> " + column);
-
-            List<ColumnDef> columnDefs = getColumnDefForDerivedColumnObject(columnsData, columns);
-            returnMap.put("columnDefs", columnDefs);
-            if (fieldsOnly != null) {
-                return returnMap;
-            }
-            returnMap.put("data", columnsData);
-            return returnMap;
-        }
-
         System.out.println("FbData list ----> " + data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();

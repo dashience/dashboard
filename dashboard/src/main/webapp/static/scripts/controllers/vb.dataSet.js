@@ -1932,7 +1932,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
-                '<div ng-if="tableRows!=null" class="pull-right">' +
+                '<div ng-if="tableRows.length != 0" class="pull-right">' +
                 '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataset"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataset" class="modal" role="dialog">' +
                 '<div class="modal-dialog">' +

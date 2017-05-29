@@ -37,10 +37,12 @@ import com.visumbu.vb.model.WidgetTag;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
@@ -772,7 +774,60 @@ public class UiService {
 //    }
 
     public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
-        return uiDao.createDataSetFormulaColumn(dataSetColumn);
+        DataSet dataset = uiDao.getDataSetById(dataSetColumn.getDatasetId());
+        List<DatasetColumns> datasetList = new ArrayList();
+        System.out.println("create columns function");
+        List<DatasetColumnBean> datasetColumnList = dataSetColumn.getTableColumns();
+        System.out.println("datasetColumnList ----> " + datasetColumnList);
+        for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
+            System.out.println("create Data set columns ----> ");
+            DatasetColumnBean datasetColumn = datasetColumnBean.next();
+            System.out.println(datasetColumn.getId() + "____________" + dataSetColumn.getId());
+            if (datasetColumn.getId() == null && dataSetColumn.getId() == null) {
+                System.out.println("if");
+                DatasetColumns datasetFields = new DatasetColumns();
+                System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
+                datasetFields.setId(datasetColumn.getId());
+                datasetFields.setExpression(datasetColumn.getExpression());
+                datasetFields.setFieldName(datasetColumn.getFieldName());
+                datasetFields.setDisplayName(datasetColumn.getDisplayName());
+                datasetFields.setDisplayFormat(datasetColumn.getDisplayFormat());
+                datasetFields.setStatus(datasetColumn.getStatus());
+                datasetFields.setFunctionName(datasetColumn.getFunctionName());
+                datasetFields.setFieldType(datasetColumn.getFieldType());
+                datasetFields.setDatasetId(dataset);
+                uiDao.saveOrUpdate(datasetFields);
+                datasetList.add(datasetFields);
+            } else if (!Objects.equals(datasetColumn.getId(), dataSetColumn.getId())) {
+                System.out.println("else if");
+                DatasetColumns datasetFields = new DatasetColumns();
+                System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
+                datasetFields.setId(datasetColumn.getId());
+                datasetFields.setExpression(datasetColumn.getExpression());
+                datasetFields.setFieldName(datasetColumn.getFieldName());
+                datasetFields.setDisplayName(datasetColumn.getDisplayName());
+                datasetFields.setDisplayFormat(datasetColumn.getDisplayFormat());
+                datasetFields.setStatus(datasetColumn.getStatus());
+                datasetFields.setFunctionName(datasetColumn.getFunctionName());
+                datasetFields.setFieldType(datasetColumn.getFieldType());
+                datasetFields.setDatasetId(dataset);
+                uiDao.saveOrUpdate(datasetFields);
+                datasetList.add(datasetFields);
+            }
+        }
+        DatasetColumns datasetColumns = new DatasetColumns();
+        datasetColumns.setId(dataSetColumn.getId());
+        datasetColumns.setExpression(dataSetColumn.getExpression());
+        datasetColumns.setFieldName(dataSetColumn.getFieldName());
+        datasetColumns.setFieldType(dataSetColumn.getFieldType());
+        datasetColumns.setDisplayName(dataSetColumn.getDisplayName());
+        datasetColumns.setDisplayFormat(dataSetColumn.getDisplayFormat());
+        datasetColumns.setStatus(dataSetColumn.getStatus());
+        datasetColumns.setFunctionName(dataSetColumn.getFunctionName());
+        datasetColumns.setDatasetId(dataset);
+        uiDao.saveOrUpdate(datasetColumns);
+        datasetList.add(datasetColumns);
+        return datasetList;
     }
     
     public List<Currency> getCurrencies() {
