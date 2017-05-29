@@ -89,6 +89,7 @@ public class PdfController extends BaseController {
             return;
         }
         String filePath = pdfService.generatePdf(url, windowStatus);
+        System.out.println("PDF GENERATED " + filePath);
         InputStream fis = null;
         try {
             java.io.File file = new java.io.File(filePath);

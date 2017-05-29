@@ -23,6 +23,7 @@ import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.VbUtils;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,22 +55,34 @@ public class PdfService {
     private String pdfFilesPath = "/tmp/";
 
     public String generatePdf(String url, String windowStatus) {
-
+        System.out.println("Generating PDF");
+        List<String> commandsList = new ArrayList<>();
+        commandsList.add(pdfGeneratorCommand);
         try {
             // command ===> wkhtmltopdf --window-status done cover http://localhost:8080/dashboard/index.html#/viewPdf/27/Jose/30/Product%201/271?startDate=4~2F28~2F2017\&endDate=5~2F27~2F2017 test.pdf
             String windowStatusCommand = "";
             if (windowStatus != null) {
-                windowStatusCommand = " --window-status " + windowStatus;
+                commandsList.add("--window-status");
+                commandsList.add(windowStatus);
+            } else {
+                
             }
+            commandsList.add("cover");
+            commandsList.add(url);
             String filename = pdfFilesPath + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".pdf";
-            String command = pdfGeneratorCommand + " " + windowStatusCommand + " " + URLEncoder.encode(url, "UTF-8") + " " + filename;
+            commandsList.add(filename);
+            String command = pdfGeneratorCommand + " " + windowStatusCommand + " cover \"" + url + "\" " + filename;
+            System.out.println(command);
             java.lang.Runtime rt = java.lang.Runtime.getRuntime();
-            java.lang.Process p = rt.exec(command);
+            String[] commandToExecute = (String[])commandsList.toArray(new String[commandsList.size()]);
+            java.lang.Process p = rt.exec(commandToExecute);
             p.waitFor();
             return filename;
         } catch (InterruptedException ex) {
+            ex.printStackTrace();
             Logger.getLogger(PdfService.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            ex.printStackTrace();
             Logger.getLogger(PdfService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
