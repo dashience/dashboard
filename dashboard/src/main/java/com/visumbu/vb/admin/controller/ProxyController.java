@@ -158,7 +158,7 @@ public class ProxyController {
 
         if (datasetColumnList.size() > 0) {
             data = addDerivedColumnsFunction(datasetColumnList, data, valueMap, response);
-            
+
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, data);
             returnMap.put("data", dataWithDerivedColumns);
         }
@@ -237,6 +237,9 @@ public class ProxyController {
         } else if (functionName.equalsIgnoreCase("mom")) {
             dateRange.setStartDate(new DateTime(startDate).minusMonths(1).toDate());
             dateRange.setEndDate(new DateTime(endDate).minusMonths(1).toDate());
+        } else if (functionName.equalsIgnoreCase("wow")) {
+            dateRange.setStartDate(new DateTime(startDate).minusWeeks(1).toDate());
+            dateRange.setEndDate(new DateTime(endDate).minusWeeks(1).toDate());
         } else if (functionName.equalsIgnoreCase("custom")) {
 
         }
@@ -288,7 +291,7 @@ public class ProxyController {
                 boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
                 if (isDerivedColumn) {
                     Object derivedFunctionValue = getDataForDervicedFunctionColumn(data, dataMap.get(datasetColumn.getBaseField()), datasetColumn);
-                    
+
                     returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
                 } else {
                     returnDataMap.put(datasetColumn.getFieldName(), dataMap.get(datasetColumn.getFieldName()));
@@ -298,11 +301,11 @@ public class ProxyController {
         }
         return returnData;
     }
-    
+
     public Object getDataForDervicedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DatasetColumns datasetColumn) {
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
-            if((mapData.get(datasetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
+            if ((mapData.get(datasetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
                 return mapData.get(datasetColumn.getFieldName());
             }
         }
