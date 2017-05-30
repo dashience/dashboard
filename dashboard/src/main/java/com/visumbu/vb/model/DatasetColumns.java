@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DatasetColumns.findByExpression", query = "SELECT d FROM DatasetColumns d WHERE d.expression = :expression")
     , @NamedQuery(name = "DatasetColumns.findByStatus", query = "SELECT d FROM DatasetColumns d WHERE d.status = :status")
     , @NamedQuery(name = "DatasetColumns.findByFunctionName", query = "SELECT d FROM DatasetColumns d WHERE d.functionName = :functionName")
+    , @NamedQuery(name = "DatasetColumns.findByColumnName", query = "SELECT d FROM DatasetColumns d WHERE d.columnName = :columnName")
     , @NamedQuery(name = "DatasetColumns.findByDisplayFormat", query = "SELECT d FROM DatasetColumns d WHERE d.displayFormat = :displayFormat")})
 public class DatasetColumns implements Serializable {
 
@@ -64,6 +65,9 @@ public class DatasetColumns implements Serializable {
     @Size(max = 255)
     @Column(name = "function_name")
     private String functionName;
+    @Size(max = 255)
+    @Column(name = "column_name")
+    private String columnName;
     @Size(max = 255)
     @Column(name = "display_format")
     private String displayFormat;
@@ -134,6 +138,14 @@ public class DatasetColumns implements Serializable {
         this.functionName = functionName;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
     public String getDisplayFormat() {
         return displayFormat;
     }
@@ -141,7 +153,7 @@ public class DatasetColumns implements Serializable {
     public void setDisplayFormat(String displayFormat) {
         this.displayFormat = displayFormat;
     }
-    
+
     public DataSet getDatasetId() {
         return datasetId;
     }
@@ -174,5 +186,5 @@ public class DatasetColumns implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DatasetColumns[ id=" + id + " ]";
     }
-    
+
 }

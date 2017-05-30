@@ -763,16 +763,14 @@ public class UiService {
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
     }
-    
-        public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
+
+    public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
         return uiDao.getWidgetByIdAndDataSetId(widgetId, datasetId);
     }
-    
 
 //    public DatasetColumns createDataSetColumns(DatasetColumnBean dataSetColumn) {
 //        return uiDao.createDataSetColumns(dataSetColumn);
 //    }
-
     public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
         DataSet dataset = uiDao.getDataSetById(dataSetColumn.getDatasetId());
         List<DatasetColumns> datasetList = new ArrayList();
@@ -794,6 +792,7 @@ public class UiService {
                 datasetFields.setDisplayFormat(datasetColumn.getDisplayFormat());
                 datasetFields.setStatus(datasetColumn.getStatus());
                 datasetFields.setFunctionName(datasetColumn.getFunctionName());
+                datasetFields.setColumnName(datasetColumn.getColumnName());
                 datasetFields.setFieldType(datasetColumn.getFieldType());
                 datasetFields.setDatasetId(dataset);
                 uiDao.saveOrUpdate(datasetFields);
@@ -809,6 +808,7 @@ public class UiService {
                 datasetFields.setDisplayFormat(datasetColumn.getDisplayFormat());
                 datasetFields.setStatus(datasetColumn.getStatus());
                 datasetFields.setFunctionName(datasetColumn.getFunctionName());
+                datasetFields.setColumnName(datasetColumn.getColumnName());
                 datasetFields.setFieldType(datasetColumn.getFieldType());
                 datasetFields.setDatasetId(dataset);
                 uiDao.saveOrUpdate(datasetFields);
@@ -824,17 +824,18 @@ public class UiService {
         datasetColumns.setDisplayFormat(dataSetColumn.getDisplayFormat());
         datasetColumns.setStatus(dataSetColumn.getStatus());
         datasetColumns.setFunctionName(dataSetColumn.getFunctionName());
+        datasetColumns.setColumnName(dataSetColumn.getColumnName());
         datasetColumns.setDatasetId(dataset);
         uiDao.saveOrUpdate(datasetColumns);
         datasetList.add(datasetColumns);
         return datasetList;
     }
-    
+
     public List<Currency> getCurrencies() {
         return uiDao.getCurrenciesTypes();
     }
-    
-     public List<Timezone> getTimeZones() {
+
+    public List<Timezone> getTimeZones() {
         return uiDao.getTimezoneTypes();
     }
 

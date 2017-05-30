@@ -2284,19 +2284,15 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     fieldName: datasetFields.fieldName,
                     fieldType: datasetFields.type,
                     format: datasetFields.displayFormat,
-                    functionName: functionName,
-                    columnName: columnName
+                    functionName: datasetFields.functionName,
+                    columnName: datasetFields.columnName
                 };
                 scope.datasetColumn = editData;
                 console.log(editData);
             }
 
             scope.saveDatasetColumn = function (datasetColumn) {
-                var functionName = null;
-                if (typeof (datasetColumn.functionName) !== "undefined" && datasetColumn.functionName !== null && datasetColumn.functionName !== "" && datasetColumn.columnName !== null && datasetColumn.columnName !== "" && typeof (datasetColumn.columnName) !== "undefined") {
-                    functionName = datasetColumn.functionName + "(" + datasetColumn.columnName + ")";
-                }
-                console.log(functionName);
+
                 var data = {
                     datasetId: dataSourcePath.id,
                     id: datasetColumn.id,
@@ -2306,7 +2302,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     displayName: datasetColumn.fieldName,
                     fieldType: datasetColumn.fieldType,
                     displayFormat: datasetColumn.format,
-                    functionName: functionName
+                    functionName: datasetColumn.functionName,
+                    columnName: datasetColumn.columnName
                 };
                 console.log(data);
                 $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
