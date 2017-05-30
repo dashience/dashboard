@@ -137,6 +137,9 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 });
 app.run(['$window', '$rootScope', '$stateParams',
     function ($window, $rootScope, $stateParams) {
+        console.log($stateParams)
+        //$rootScope.accountNameByPdf = $stateParams.accountName; 
+        
         $rootScope.goBack = function () {
             $window.history.back();
         }

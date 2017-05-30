@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DatasetColumns;
 
 import com.visumbu.vb.model.Currency;
@@ -473,6 +474,11 @@ public class UiController extends BaseController {
         return uiService.getUserAccount();
     }
 
+    @RequestMapping(value = "getAccount/{id}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return uiService.getAccountById(id);
+    }
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {

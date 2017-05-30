@@ -13,6 +13,7 @@ import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
@@ -702,6 +703,9 @@ public class UiService {
         return userAccount;
     }
 
+    public List<Account> getAccountById(Integer id) {
+        return uiDao.getAccountById(id);
+    }
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         return uiDao.getUserAccountByUser(user);
     }
@@ -773,5 +777,5 @@ public class UiService {
     
      public List<Timezone> getTimeZones() {
         return uiDao.getTimezoneTypes();
-    }
+    }    
 }

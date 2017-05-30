@@ -22,52 +22,148 @@ and open the template in the editor.
 <link href="http://webapplayers.com/homer_admin-v2.0/styles/style.css" rel="stylesheet" type="text/css"/>
 <!--        <link href="../../../static/lib/css/L2T.css" rel="stylesheet">-->
 <style>
-    #logo {
-        float: left;
-        width: 96px;
-        padding: 2px 10px 18px 18px;
-        height: 56px;
-        text-align: center;
-        background-color: #FFF;
-    }
     .col-fixed-2 {
         width: 190px !important;
+        margin-right: 20px;
         float: left;
     }
     .col-fixed-3 {
         width: 285px !important;
+        margin-right: 20px;
         float: left;
     }
     .col-fixed-4 {
         width: 380px !important;
+        margin-right: 20px;
         float: left;
     }
     .col-fixed-6 {
         width: 570px !important;
-        /*margin-left: 20px;*/
+        margin-right: 20px;
         float: left;
     }
     .col-fixed-8 {
         width: 760px !important;
+        margin-right: 20px;
         float: left;
     }
     .col-fixed-12 {
         width: 1140px !important;
+        margin-right: 20px;
         float: left;
     }
+
+    .c3 {
+        max-width:100%;
+        max-height:100%;
+    }
+    
+    .content {
+        padding:0px 20px;
+    }
+    
+    .panel-body {
+        padding:5px 5px !important;
+    }
+    
+.wrapper {
+    width:1400px;
+    margin:0;
+    background:#fff;
+    border:none;
+    overflow:auto;
+}
+
+.header-pdf {
+    padding:0px;
+    margin-bottom:0px;
+    min-height:100px;
+    margin-top:0px;
+    border-bottom:1px solid #ddd;
+}
+.head-title h2 {
+    font-size:18pt;
+    margin:0;
+    padding:0;
+    text-transform: uppercase;
+    font-weight:600;
+}
+
+.sub-header {
+    background:#f1f1f1;
+    min-height:120px;
+    padding:5px 0px;
+    margin-top:10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.pull-right {
+    float: right;
+}
+
+.section-right-block {
+padding: 5px 10px;
+width: 237px;
+background: #fff;
+}
+.section-right-block h2 {
+font-family: 'enigmaticregular';
+font-weight: normal !important;
+}
+
+
+img {
+    max-width:100%;
+}
+
+
+svg {
+     max-width:100%;
+}
+
+.head-title {
+    background: #555 !important;
+    color: #fff;
+    min-height: 40px;
+    padding: 10px 10px;
+    border-radius: 2px;
+}
 
 </style>
 
 <!--    </head>-->
-<div ng-controller="PdfController">       
-    <!--        <header class="main-header" id="header">
-                <div class="fixed-navbar">
-                    <div id="logo">
-                        <img src="static/img/logos/deeta-logo.png" alt="" style="width: inherit;"/>
-                    </div>
+<div ng-controller="PdfController">
+    <div class="wrapper">
+    <div class="header-pdf">        
+            <img src="static/img/logos/dashience-logo.jpg" width="120"> 
+            <img src="{{userAccountLogo}}" width="100"> 
+    </div>
+    <div class="head-title">
+        <h2>Month End Report</h2>
+    </div>    
+    <div class="sub-header">
+        <div class="col-md-12">
+            
+            <div class="section-block pull-left">
+                <h6>{{reportStartDate}} - {{reportEndDate}}</h6>
+                <h5>{{userProductName}}</h5>
+                <h6>Budget $1500</h6>
+                <h2><strong>{{userAccountName}}</strong></h2>
+            </div>
+            
+            <div class="pull-right">
+                <div class="section-right-block">
+                    <h4>Digital Advisor</h4>
+                    <p>Email:info@dashience.com</p>
+                    <p>Phone:773-446-7565</p>
                 </div>
-            </header>-->
-    <div id="wrapper" style="margin: 0px;width: 1200px">
+            </div>
+            
+        </div>
+        
+    </div>
+    
         <div class="content">
             <div class="row">
                 <button class="btn btn-default btn-xs" ng-click="downloadUiPdf()">Pdf</button>
@@ -81,31 +177,31 @@ and open the template in the editor.
                                             </div>
                                         </div>-->
 
-                    <div class="hpanel col-md1-{{widget.width}} col-fixed-{{widget.width}}" ng-if="widget.chartType == 'ticker'">
+                    <div class="hpanel col-fixed-{{widget.width}}" ng-if="widget.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
                     </div>
 
-                    <div class="hpanel col-md1-{{widget.width}} col-fixed-{{widget.width}}" ng-if="widget.chartType != 'ticker'">
+                    <div class="hpanel col-fixed-{{widget.width}}" ng-if="widget.chartType != 'ticker'">
                         <div class="panel-heading">                           
                             <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'line'">
-                            <div>
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'bar'">
-                            <div>
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'pie'">
-                            <div>
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body"  ng-if="widget.chartType === 'area'">
-                            <div>
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
@@ -124,7 +220,7 @@ and open the template in the editor.
                             </div>
                         </div>
                         <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
-                            <div>
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
                                 <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div> 
