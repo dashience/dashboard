@@ -398,7 +398,7 @@ public class UiController extends BaseController {
         return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
     }
 
-    @RequestMapping(value = "datasetId/{datasetId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "getDatasetById/{datasetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDatasetById (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
         return uiService.getDatasetById(datasetId);

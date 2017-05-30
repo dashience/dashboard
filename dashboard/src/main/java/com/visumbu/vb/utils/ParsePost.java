@@ -47,9 +47,9 @@ public class ParsePost {
             // read from input
             theStack.displayStack("" + input[j] + " ");  // *diagnostic*
             if (!input[j].equalsIgnoreCase("+") && !input[j].equalsIgnoreCase("-") && !input[j].equalsIgnoreCase("*") && !input[j].equalsIgnoreCase("/")) {
-                if (Integer.parseInt(input[j]) >= 0) // if it's a number
+                if (Double.parseDouble(input[j]) >= 0) // if it's a number
                 {
-                    theStack.push(Float.parseFloat(input[j])); //   push it
+                    theStack.push(Double.parseDouble(input[j])); //   push it
                 }
             } else // it's an operator
             {

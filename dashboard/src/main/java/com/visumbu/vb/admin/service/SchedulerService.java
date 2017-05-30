@@ -285,6 +285,9 @@ public class SchedulerService {
             } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
                 customStartDate = schedulerBean.getCustomStartDate();
                 customEndDate = schedulerBean.getCustomEndDate();
+            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
+                customStartDate = schedulerBean.getCustomStartDate();
+                customEndDate = schedulerBean.getCustomEndDate();
             } else if (dateRangeSelect.equals(Range.DAY)) {
                 System.out.println("lastNdays ---> " + lastNdays);
                 dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
