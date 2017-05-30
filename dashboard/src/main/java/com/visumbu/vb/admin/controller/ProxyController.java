@@ -1247,68 +1247,7 @@ public class ProxyController {
         }
         return columnDefs;
     }
-
-    private List<ColumnDef> getColumnDefForDerivedColumn(List<Map<String, String>> data, List<ColumnDef> column) {
-
-        List<ColumnDef> columnDefs = new ArrayList<>();
-        if (data == null) {
-            return null;
-        }
-        for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
-            Map<String, String> mapData = iterator.next();
-            for (Iterator<ColumnDef> iterate = column.iterator(); iterate.hasNext();) {
-                ColumnDef columns = iterate.next();
-                for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
-                    String key = entrySet.getKey();
-                    String value = entrySet.getValue();
-                    if (key.equalsIgnoreCase(columns.getFieldName())) {
-                        if (NumberUtils.isNumber(value) && columns.getType() == null) {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, "number", key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
-                        } else if (DateUtils.convertToDate(value) != null && columns.getType() == null) {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, "date", key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
-                        } else {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, columns.getType() == null ? "string" : columns.getType(), key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
-                        }
-                    }
-                    // columnDefs.add(new ColumnDef(key, "string", key));
-                }
-            }
-            return columnDefs;
-        }
-        return columnDefs;
-    }
-
-    private List<ColumnDef> getColumnDefForDerivedColumnObject(List<Map<String, Object>> data, List<DatasetColumns> column) {
-
-        List<ColumnDef> columnDefs = new ArrayList<>();
-        if (data == null) {
-            return null;
-        }
-        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
-            Map<String, Object> mapData = iterator.next();
-            for (Iterator<DatasetColumns> iterate = column.iterator(); iterate.hasNext();) {
-                DatasetColumns columns = iterate.next();
-                for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
-                    String key = entrySet.getKey();
-                    Object objValue = entrySet.getValue();
-                    String value = objValue + "";
-                    if (key.equalsIgnoreCase(columns.getFieldName())) {
-                        if (NumberUtils.isNumber(value) && columns.getFieldType() == null) {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, "number", key, null, columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
-                        } else if (DateUtils.convertToDate(value) != null && columns.getFieldType() == null) {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, "date", key, null, columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
-                        } else {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, columns.getFieldType() == null ? "string" : columns.getFieldType(), key, null, columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
-                        }
-                    }
-                    // columnDefs.add(new ColumnDef(key, "string", key));
-                }
-            }
-            return columnDefs;
-        }
-        return columnDefs;
-    }
-
+    
     @RequestMapping(value = "getJson", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getJson(HttpServletRequest request, HttpServletResponse response) {
