@@ -630,13 +630,20 @@ public class UiDao extends BaseDao {
         query.setParameter("id", widgetId);
         query.setParameter("datasetId", datasetId);
         List tabWidgetData = query.list();
-        if(tabWidgetData == null || tabWidgetData.isEmpty()){
+        if (tabWidgetData == null || tabWidgetData.isEmpty()) {
             return null;
-        } 
-        System.out.println("tabWidgetData ---> "+tabWidgetData);
+        }
+        System.out.println("tabWidgetData ---> " + tabWidgetData);
         TabWidget tabWidget = (TabWidget) tabWidgetData.get(0);
         tabWidget.setColumns(getColumns(tabWidget));
         return tabWidget;
+    }
+
+    public List getDatasetById(Integer datasetId) {
+        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", datasetId);
+        return query.list();
     }
 
 }
