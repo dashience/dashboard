@@ -793,6 +793,7 @@ public class UiService {
                 datasetFields.setStatus(datasetColumn.getStatus());
                 datasetFields.setFunctionName(datasetColumn.getFunctionName());
                 datasetFields.setColumnName(datasetColumn.getColumnName());
+                datasetFields.setBaseField(datasetColumn.getBaseField());
                 datasetFields.setFieldType(datasetColumn.getFieldType());
                 datasetFields.setDatasetId(dataset);
                 uiDao.saveOrUpdate(datasetFields);
@@ -809,6 +810,7 @@ public class UiService {
                 datasetFields.setStatus(datasetColumn.getStatus());
                 datasetFields.setFunctionName(datasetColumn.getFunctionName());
                 datasetFields.setColumnName(datasetColumn.getColumnName());
+                datasetFields.setBaseField(datasetColumn.getBaseField());
                 datasetFields.setFieldType(datasetColumn.getFieldType());
                 datasetFields.setDatasetId(dataset);
                 uiDao.saveOrUpdate(datasetFields);
@@ -825,6 +827,7 @@ public class UiService {
         datasetColumns.setStatus(dataSetColumn.getStatus());
         datasetColumns.setFunctionName(dataSetColumn.getFunctionName());
         datasetColumns.setColumnName(dataSetColumn.getColumnName());
+        datasetColumns.setBaseField(dataSetColumn.getBaseField());
         datasetColumns.setDatasetId(dataset);
         uiDao.saveOrUpdate(datasetColumns);
         datasetList.add(datasetColumns);
