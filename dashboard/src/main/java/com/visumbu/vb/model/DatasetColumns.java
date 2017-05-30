@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DatasetColumns.findByStatus", query = "SELECT d FROM DatasetColumns d WHERE d.status = :status")
     , @NamedQuery(name = "DatasetColumns.findByFunctionName", query = "SELECT d FROM DatasetColumns d WHERE d.functionName = :functionName")
     , @NamedQuery(name = "DatasetColumns.findByColumnName", query = "SELECT d FROM DatasetColumns d WHERE d.columnName = :columnName")
+    , @NamedQuery(name = "DatasetColumns.findByBaseField", query = "SELECT d FROM DatasetColumns d WHERE d.baseField = :baseField")
     , @NamedQuery(name = "DatasetColumns.findByDisplayFormat", query = "SELECT d FROM DatasetColumns d WHERE d.displayFormat = :displayFormat")})
 public class DatasetColumns implements Serializable {
 
@@ -68,6 +69,9 @@ public class DatasetColumns implements Serializable {
     @Size(max = 255)
     @Column(name = "column_name")
     private String columnName;
+    @Size(max = 255)
+    @Column(name = "base_field")
+    private String baseField;
     @Size(max = 255)
     @Column(name = "display_format")
     private String displayFormat;
@@ -146,6 +150,14 @@ public class DatasetColumns implements Serializable {
         this.columnName = columnName;
     }
 
+    public String getBaseField() {
+        return baseField;
+    }
+
+    public void setBaseField(String baseField) {
+        this.baseField = baseField;
+    }
+    
     public String getDisplayFormat() {
         return displayFormat;
     }
