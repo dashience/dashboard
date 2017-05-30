@@ -224,7 +224,16 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.schedulerMonthly = null;
             scheduler.schedulerYearly = null;
 //            scheduler.schedulerYearOfWeek = null;
-        } else {
+        } else if (scheduler.schedulerRepeatType === "None") {
+            scheduler.schedulerNow = null;
+            scheduler.schedulerTime = null;
+            scheduler.startDate = null;
+            scheduler.endDate = null;
+            scheduler.schedulerWeekly = null;
+            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        }else {
             return null;
         }
 
@@ -243,8 +252,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.customStartDate = "";
             scheduler.customEndDate = "";
         }
-        console.log(scheduler.customStartDate);
-        console.log(scheduler.customEndDate);
+        
         scheduler.schedulerEmail = emails;
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });
@@ -337,7 +345,9 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $(".scheduler-list-style").find("li").click(function (e) {
                 e.stopPropagation();
             });
-
+            $(".scheduler-dateRange-none").click(function (e) {
+                $(".scheduler-list-style").css("display", "none");
+            });
 
             $(document).click(function (e) {
                 console.log(e.target.className);

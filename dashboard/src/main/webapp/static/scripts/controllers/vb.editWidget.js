@@ -1273,7 +1273,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
             widgetTableDateRange: '@',
         },
         link: function (scope, element, attr) {
-            $(document).ready(function (e) {
+//            $(document).ready(function (e) {
                 $(".scheduler-list-style").click(function (e) {
                     e.stopPropagation();
                 });
@@ -1312,8 +1312,8 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                             $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
                         }
                 );
-                $(".ranges ul").find("li").addClass("custom-picker");
-                $(".custom-picker").click(function (e) {
+                $(".ranges ul").find("li").addClass("custom-pickers");
+                $(".custom-pickers").click(function (e) {
                     $(".scheduler-list-style").hide();
                     scope.$apply();
                 });
@@ -1323,9 +1323,12 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                     $(".daterangepicker").css("display", "none");
 //                        e.bind();
                 });
+                $(".date-range-none").click(function(e){
+                    $(".scheduler-list-style").css("display", "none");
+                });
                 $(document).on("click", function (e) {
                     var selectedElement = e.target.className;
-                    if (selectedElement == "custom-picker" ||
+                    if (selectedElement == "custom-pickers" ||
                             selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
                             selectedElement == "month" ||
                             selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
@@ -1348,7 +1351,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
 
                     $(".scheduler-list-style").hide(); //                    
                 });
-            });
+//            });
         }
     };
 });
