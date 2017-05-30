@@ -2098,9 +2098,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<form name="dataSetForm" class="form-horizontal">' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Field Name</label>' +
-                '<div class="col-md-9">' +
-                '<input class="form-control" ng-model="dataSetColumn.fieldName" ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
-                '<span ng-show="dataSetError" class="text-danger">Field Name Already Exists</span>' +
+                '<div class="col-md-3">' +
+                '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
+                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '</div>' +
+                '<label class="col-md-2">Base Field</label>' +
+                '<div class="col-md-4">' +
+                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
+                '<option ng-if="dataSetColumn.functionName==null" ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
+                '{{dataSetColumn.fieldName}}' +
+                '</option>' +
+                '</select>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -2114,7 +2122,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<label class="col-md-2">Format</label>' +
                 '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="dataSetColumn.format">' +
+                '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
                 '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
                 '{{formatType.name}}' +
                 '</option>' +
@@ -2189,8 +2197,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: "Percentage", value: ',.2%'},
                 {name: "Decimal1", value: ',.1f'},
                 {name: "Decimal2", value: ',.2f'},
-                {name: "Time", value: 'H:M:S'},
-                {name: "Star Rating", value: 'starRating'}
+                {name: "Time", value: 'H:M:S'}
             ];
             scope.functionTypes = [
                 {name: "YOY", value: 'yoy'},
@@ -2482,7 +2489,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     dataSetColumn.expression = "";
                     dataSetColumn.fieldName = "";
                     dataSetColumn.fieldType = "";
-                    dataSetColumn.format = "";
+                    dataSetColumn.displayFormat = "";
                     dataSetColumn.functionName = "";
                     dataSetColumn.columnName = "";
                     dataSetColumn.dateRangeName = "";
@@ -2493,7 +2500,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             }
 
             scope.editDataset = function (dataSetColumn) {
-                console.log(dataSetColumn)
+                console.log(dataSetColumn.displayFormat)
                 var editData = {
                     id: dataSetColumn.id,
                     expression: dataSetColumn.expression,
