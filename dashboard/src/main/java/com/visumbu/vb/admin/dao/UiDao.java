@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
@@ -639,4 +640,10 @@ public class UiDao extends BaseDao {
         return tabWidget;
     }
 
+    public List<Account> getAccountById(Integer id) {
+        String queryStr = "select d from Account d where d.id = :accountId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", id);
+        return query.list();
+    }
 }
