@@ -56,10 +56,10 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
 //                type: 'twitter',
 //                name: 'Twitter'
 //            },
-//             {
-//                type: 'bing',
-//                name: 'Bing'
-//            }
+             {
+                type: 'bing',
+                name: 'Bing'
+            }
         ];
         function getItems() {
             $http.get('admin/ui/dataSource').success(function (response) {
