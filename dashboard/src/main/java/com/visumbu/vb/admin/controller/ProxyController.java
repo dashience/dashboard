@@ -157,7 +157,8 @@ public class ProxyController {
         List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
 
         if (datasetColumnList.size() > 0) {
-
+            data = addDerivedColumnsFunction(datasetColumnList, data, valueMap, response);
+            
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, data);
             returnMap.put("data", dataWithDerivedColumns);
         }
@@ -248,8 +249,9 @@ public class ProxyController {
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
         String cachedRange = DateUtils.dateToString(startDate, format) + " To " + DateUtils.dateToString(endDate, format);
-        Map cachedData = new HashMap<>();
+        Map<String, List> cachedData = new HashMap<>();
         cachedData.put(cachedRange, data);
+        Map<String, List> derivedColumnData = new HashMap<>();
         for (Iterator<DatasetColumns> iterator = datasetColumns.iterator(); iterator.hasNext();) {
             DatasetColumns datasetColumn = iterator.next();
             boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
@@ -265,12 +267,13 @@ public class ProxyController {
                     endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM-dd-yyyy"));
                     request.put("endDate", endDateValue);
                     Map dataMapForFunction = getData(request, response);
-                    List<Map<String, Object>> dataForFunction = (List<Map<String, Object>>)dataMapForFunction.get("data");
+                    List<Map<String, Object>> dataForFunction = (List<Map<String, Object>>) dataMapForFunction.get("data");
                     cachedData.put(cachedRangeForFunction, dataForFunction);
                 } else {
-                    
+
                 }
-                
+                derivedColumnData.put(datasetColumn.getFieldName(), cachedData.get(cachedRangeForFunction));
+
             } else {
 
             }
@@ -279,9 +282,31 @@ public class ProxyController {
         List<Map<String, Object>> returnData = new ArrayList<>();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
-            returnData.add(addDerivedColumnsExpr(datasetColumns, dataMap));
+            for (Iterator<DatasetColumns> iterator1 = datasetColumns.iterator(); iterator1.hasNext();) {
+                Map<String, Object> returnDataMap = new HashMap<>();
+                DatasetColumns datasetColumn = iterator1.next();
+                boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
+                if (isDerivedColumn) {
+                    Object derivedFunctionValue = getDataForDervicedFunctionColumn(data, dataMap.get(datasetColumn.getBaseField()), datasetColumn);
+                    
+                    returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
+                } else {
+                    returnDataMap.put(datasetColumn.getFieldName(), dataMap.get(datasetColumn.getFieldName()));
+                }
+                returnData.add(returnDataMap);
+            }
         }
         return returnData;
+    }
+    
+    public Object getDataForDervicedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DatasetColumns datasetColumn) {
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> mapData = iterator.next();
+            if((mapData.get(datasetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
+                return mapData.get(datasetColumn.getFieldName());
+            }
+        }
+        return null;
     }
 
     public static List<Map<String, Object>> addDerivedColumnsExpr(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data) {
