@@ -40,7 +40,6 @@
     <class>com.visumbu.vb.model.AdwordsCriteria</class>
     <class>com.visumbu.vb.model.WidgetTag</class>
     <class>com.visumbu.vb.model.Tag</class>
-    <class>com.visumbu.vb.model.DatasetColumns</class>
     <class>com.visumbu.vb.model.AgencySettings</class>
     <class>com.visumbu.vb.model.Currency</class>
     <class>com.visumbu.vb.model.Timezone</class>

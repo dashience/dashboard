@@ -384,17 +384,18 @@ public class UiController extends BaseController {
     DataSet update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         return uiService.update(dataSet);
     }
-    
-    @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
+
+    @RequestMapping(value = "dataSetFormulaColumns", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DatasetColumns createColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
-        return uiService.createColumns(dataSet);
+    List<DatasetColumns> createDataSetFormulaColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
+        return uiService.createDataSetFormulaColumn(dataSetColumn);
     }
-    
-    @RequestMapping(value = "dataSetColumns", method = RequestMethod.PUT, produces = "application/json")
+
+    @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    DatasetColumns updateColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSet) {
-        return uiService.updateColumns(dataSet);
+    DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
+        System.out.println("id --> "+datasetColumnId);
+        return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
