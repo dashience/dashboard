@@ -17,6 +17,7 @@ import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
@@ -156,6 +157,7 @@ public class ProxyController {
         List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
 
         if (datasetColumnList.size() > 0) {
+
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, data);
             returnMap.put("data", dataWithDerivedColumns);
         }
@@ -174,10 +176,7 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
-        if (datasetColumnList.size() > 0) {
-            returnMap.put("columnDefs", getColumnDefForDerivedColumnObject((List<Map<String, Object>>) returnMap.get("data"), datasetColumnList));
-            return returnMap;
-        }
+
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
         return returnMap;
     }
@@ -229,7 +228,54 @@ public class ProxyController {
         return returnMap;
     }
 
-    public static List<Map<String, Object>> addDerivedColumnsFunction(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data) {
+    public DateRange getDateRange(String functionName, Date startDate, Date endDate) {
+        DateRange dateRange = new DateRange();
+        if (functionName.equalsIgnoreCase("yoy")) {
+            dateRange.setStartDate(new DateTime(startDate).minusYears(1).toDate());
+            dateRange.setEndDate(new DateTime(endDate).minusYears(1).toDate());
+        } else if (functionName.equalsIgnoreCase("mom")) {
+            dateRange.setStartDate(new DateTime(startDate).minusMonths(1).toDate());
+            dateRange.setEndDate(new DateTime(endDate).minusMonths(1).toDate());
+        } else if (functionName.equalsIgnoreCase("custom")) {
+
+        }
+        return dateRange;
+    }
+
+    public List<Map<String, Object>> addDerivedColumnsFunction(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data, MultiValueMap request, HttpServletResponse response) {
+        // Supported Functions : yoy, mom, wow
+        String format = "yyyy-MM-dd";
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        String cachedRange = DateUtils.dateToString(startDate, format) + " To " + DateUtils.dateToString(endDate, format);
+        Map cachedData = new HashMap<>();
+        cachedData.put(cachedRange, data);
+        for (Iterator<DatasetColumns> iterator = datasetColumns.iterator(); iterator.hasNext();) {
+            DatasetColumns datasetColumn = iterator.next();
+            boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
+            if (isDerivedColumn) {
+                String functionName = datasetColumn.getFunctionName();
+                DateRange dateRange = getDateRange(functionName, startDate, endDate);
+                String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                if (cachedData.get(cachedRangeForFunction) == null) {
+                    List<String> startDateValue = new ArrayList();
+                    startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM-dd-yyyy"));
+                    request.put("startDate", startDateValue);
+                    List<String> endDateValue = new ArrayList();
+                    endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM-dd-yyyy"));
+                    request.put("endDate", endDateValue);
+                    Map dataMapForFunction = getData(request, response);
+                    List<Map<String, Object>> dataForFunction = (List<Map<String, Object>>)dataMapForFunction.get("data");
+                    cachedData.put(cachedRangeForFunction, dataForFunction);
+                } else {
+                    
+                }
+                
+            } else {
+
+            }
+        }
+
         List<Map<String, Object>> returnData = new ArrayList<>();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
@@ -251,7 +297,7 @@ public class ProxyController {
         Map<String, Object> returnMap = new HashMap<>();
         for (Iterator<DatasetColumns> iterator = datasetColumns.iterator(); iterator.hasNext();) {
             DatasetColumns datasetColumn = iterator.next();
-            boolean isDerivedColumn = checkIsDerived(datasetColumn);
+            boolean isDerivedColumn = checkIsDerivedExpr(datasetColumn);
             if (isDerivedColumn) {
                 if (datasetColumn.getExpression() != null) {
                     String expressionValue = executeExpression(datasetColumn, data);
@@ -281,8 +327,15 @@ public class ProxyController {
         return "TestFunction";
     }
 
-    private static boolean checkIsDerived(DatasetColumns datasetColumn) {
-        if (datasetColumn.getFunctionName() != null || datasetColumn.getExpression() != null) {
+    private static boolean checkIsDerivedExpr(DatasetColumns datasetColumn) {
+        if (datasetColumn.getExpression() != null && !datasetColumn.getExpression().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean checkIsDerivedFunction(DatasetColumns datasetColumn) {
+        if (datasetColumn.getFunctionName() != null || !datasetColumn.getFunctionName().isEmpty()) {
             return true;
         }
         return false;
@@ -1969,6 +2022,10 @@ public class ProxyController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {
         e.printStackTrace();
+    }
+
+    private Object addDatasetProperties(List<ColumnDef> columnDefObject, List<DatasetColumns> datasetColumnList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
