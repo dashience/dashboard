@@ -181,7 +181,23 @@ public class ShuntingYard {
                 return "'" + operand1 + operand2 + "'";
             }
         } else if (operator.equalsIgnoreCase("/")) {
-            return Double.parseDouble(operand1) / Double.parseDouble(operand2);
+            try {
+                return Double.parseDouble(operand1) / Double.parseDouble(operand2);
+            } catch (NumberFormatException e) {
+                return "";
+            }
+        } else if (operator.equalsIgnoreCase("*")) {
+            try {
+                return Double.parseDouble(operand1) * Double.parseDouble(operand2);
+            } catch (NumberFormatException e) {
+                return "";
+            }
+        } else if (operator.equalsIgnoreCase("-")) {
+            try {
+                return Double.parseDouble(operand1) - Double.parseDouble(operand2);
+            } catch (NumberFormatException e) {
+                return "";
+            }
         }
         System.out.println("DATA 1 " + operand1);
         System.out.println("DATA 2" + operand2);

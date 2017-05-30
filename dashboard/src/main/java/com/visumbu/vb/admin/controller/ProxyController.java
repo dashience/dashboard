@@ -154,9 +154,11 @@ public class ProxyController {
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
         List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-        List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, data);
 
-        returnMap.put("data", dataWithDerivedColumns);
+        if (datasetColumnList.size() > 0) {
+            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, data);
+            returnMap.put("data", dataWithDerivedColumns);
+        }
         // addDerivedColumn(returnMap, datasetColumnList, startDate, endDate);
         String widgetIdStr = request.getParameter("widgetId");
 
@@ -172,6 +174,11 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
+        if (datasetColumnList.size() > 0) {
+            returnMap.put("columnDefs", getColumnDefForDerivedColumnObject((List<Map<String, Object>>) returnMap.get("data"), datasetColumnList));
+            return returnMap;
+        }
+        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
         return returnMap;
     }
 
@@ -247,7 +254,15 @@ public class ProxyController {
             boolean isDerivedColumn = checkIsDerived(datasetColumn);
             if (isDerivedColumn) {
                 if (datasetColumn.getExpression() != null) {
-                    returnMap.put(datasetColumn.getFieldName(), executeExpression(datasetColumn, data));
+                    String expressionValue = executeExpression(datasetColumn, data);
+                    System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
+                    if ((expressionValue.startsWith("'") && expressionValue.endsWith("'"))) {
+                        Object expValue = expressionValue.substring(1, expressionValue.length() - 1);
+                        returnMap.put(datasetColumn.getFieldName(), expValue);
+                    } else {
+                        Object expValue = expressionValue;
+                        returnMap.put(datasetColumn.getFieldName(), expValue);
+                    }
                 }
             } else {
                 returnMap.put(datasetColumn.getFieldName(), data.get(datasetColumn.getFieldName()));
@@ -256,7 +271,7 @@ public class ProxyController {
         return returnMap;
     }
 
-    private static Object executeExpression(DatasetColumns datasetColumn, Map<String, Object> data) {
+    private static String executeExpression(DatasetColumns datasetColumn, Map<String, Object> data) {
         String postFixRule = ShuntingYard.postfix(datasetColumn.getExpression());
         return ShuntingYard.executeExpression(data, postFixRule);
     }
@@ -1413,7 +1428,7 @@ public class ProxyController {
         return columnDefs;
     }
 
-    private List<ColumnDef> getColumnDefForDerivedColumnObject(List<Map<String, Object>> data, List<ColumnDef> column) {
+    private List<ColumnDef> getColumnDefForDerivedColumnObject(List<Map<String, Object>> data, List<DatasetColumns> column) {
 
         List<ColumnDef> columnDefs = new ArrayList<>();
         if (data == null) {
@@ -1421,19 +1436,19 @@ public class ProxyController {
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
-            for (Iterator<ColumnDef> iterate = column.iterator(); iterate.hasNext();) {
-                ColumnDef columns = iterate.next();
+            for (Iterator<DatasetColumns> iterate = column.iterator(); iterate.hasNext();) {
+                DatasetColumns columns = iterate.next();
                 for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
                     String key = entrySet.getKey();
                     Object objValue = entrySet.getValue();
                     String value = objValue + "";
                     if (key.equalsIgnoreCase(columns.getFieldName())) {
-                        if (NumberUtils.isNumber(value) && columns.getType() == null) {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, "number", key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
-                        } else if (DateUtils.convertToDate(value) != null && columns.getType() == null) {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, "date", key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
+                        if (NumberUtils.isNumber(value) && columns.getFieldType() == null) {
+                            columnDefs.add(new ColumnDef(columns.getId(), key, "number", key, null, columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
+                        } else if (DateUtils.convertToDate(value) != null && columns.getFieldType() == null) {
+                            columnDefs.add(new ColumnDef(columns.getId(), key, "date", key, null, columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
                         } else {
-                            columnDefs.add(new ColumnDef(columns.getId(), key, columns.getType() == null ? "string" : columns.getType(), key, columns.getAgregationFunction(), columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
+                            columnDefs.add(new ColumnDef(columns.getId(), key, columns.getFieldType() == null ? "string" : columns.getFieldType(), key, null, columns.getDisplayFormat(), columns.getStatus(), columns.getExpression(), columns.getFunctionName()));
                         }
                     }
                     // columnDefs.add(new ColumnDef(key, "string", key));
