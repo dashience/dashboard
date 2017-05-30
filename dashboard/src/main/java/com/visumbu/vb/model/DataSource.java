@@ -216,25 +216,6 @@ public class DataSource implements Serializable {
         this.sourceFile = sourceFile;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<TabWidget> getTabWidgetCollection() {
-        return tabWidgetCollection;
-    }
-
-    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
-        this.tabWidgetCollection = tabWidgetCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DataSet> getDataSetCollection() {
-        return dataSetCollection;
-    }
-
-    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
-        this.dataSetCollection = dataSetCollection;
-    }
 
     public String getAccessToken() {
         return accessToken;

@@ -35,15 +35,6 @@ import org.json.simple.parser.ParseException;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class FacebookService {
 
-//    public final String ACCESS_TOKEN = ExampleConfig.ACCESS_TOKEN;
-//   old-- public String ACCESS_TOKEN = "EAAXL1ZCQXlg0BAPqilppp0oaYcitsMNxK0EReU3ght4VP50BAFunLsXNE4GAYRJ4VtYjr67GbJYVHwx1wn80aWSg26l27MPI7NH1m86JZBsgWy5yz4P98x8DoGDGD1wwJ5lDBxXRHDA2ZC1rYdZBroXpZA7qOS2CJQYdwKgdHWAZDZD";
-    //before may 23rd acess token
-//    public String ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
-//    public String ORGANIC_ACCESS_TOKEN = "EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
-    //may 23rd access token
-//    public String ACCESS_TOKEN="EAAUAycrj0GsBAAxr6gZCHfZAClbl2ocwrcokyz84FFRJuLxWHbsNXddPc9sPC2iM35s0AkCGpZAVL1fLJ3OvDLz2ZAOZAt4ZAFDBUWpCs94McSjVaDVHte4sQndXwbOcSoTtBxhOwVJwl5JYZBymCdGWK6oijZCqIwC7pK2xCm7sNtyHiLaMtCXq";
-//    public String ORGANIC_ACCESS_TOKEN="EAAUAycrj0GsBAAxr6gZCHfZAClbl2ocwrcokyz84FFRJuLxWHbsNXddPc9sPC2iM35s0AkCGpZAVL1fLJ3OvDLz2ZAOZAt4ZAFDBUWpCs94McSjVaDVHte4sQndXwbOcSoTtBxhOwVJwl5JYZBymCdGWK6oijZCqIwC7pK2xCm7sNtyHiLaMtCXq";
-    //may 24th access token
     public String ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
     public String ORGANIC_ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
@@ -70,9 +61,6 @@ public class FacebookService {
         if (dataSet.equalsIgnoreCase("adSetPerformance")) {
             return getAdSetPerformance(accountId, startDate, endDate, aggregation, productSegement);
         }
-//        if (dataSet.equalsIgnoreCase("devicePerformance")) {
-//            return getDevicePerformance(accountId, startDate, endDate, aggregation,productSegement);
-//        }
         if (dataSet.equalsIgnoreCase("agePerformance")) {
             return getAgePerformance(accountId, startDate, endDate, aggregation, productSegement);
         }
@@ -80,21 +68,10 @@ public class FacebookService {
             return getGenderPerformance(accountId, startDate, endDate, aggregation, productSegement);
         }
 
-//        if (dataSet.equalsIgnoreCase("postSummary")) {
-//            return getPostSummary(organicAccountId, startDate, endDate, aggregation);
-//        }
         if (dataSet.equalsIgnoreCase("instagramPerformance")) {
             return getInstagramPerformance(accountId, startDate, endDate, aggregation);
         }
-//        if (dataSet.equalsIgnoreCase("recentPostPerformance")) {
-//            return getPostPerformance(organicAccountId, startDate, endDate, aggregation, productSegement);
-//        }
-//        if (dataSet.equalsIgnoreCase("totalOrganicLikes")) {
-//            return getTotalOrganicLikes(organicAccountId, startDate, endDate, aggregation);
-//        }
-//        if (dataSet.equalsIgnoreCase("totalPageViews")) {
-//            return getTotalPageViews(organicAccountId, startDate, endDate, aggregation);
-//        }
+
         if (dataSet.equalsIgnoreCase("postPerformance")) {
             return getPostPerformance(organicAccountId, startDate, endDate, aggregation, productSegement);
         }
@@ -110,15 +87,10 @@ public class FacebookService {
         if (dataSet.equalsIgnoreCase("pageViews")) {
             return getPageViews(organicAccountId, startDate, endDate, aggregation, productSegement);
         }
-//        if (dataSet.equalsIgnoreCase("pageViewsByDevice")) {
-//            return getViewsByDevice(organicAccountId, startDate, endDate, aggregation);
-//        }
+
         if (dataSet.equalsIgnoreCase("pageReactions")) {
             return getPageReactions(organicAccountId, startDate, endDate, aggregation, productSegement);
         }
-//        if (dataSet.equalsIgnoreCase("pageViewsByAgeGender")) {
-//            return getViewsByAgeGender(organicAccountId, startDate, endDate, aggregation);
-//        }
 
         return null;
     }
@@ -179,54 +151,6 @@ public class FacebookService {
         return null;
     }
 
-//    public List<Map<String, String>> getViewsByAgeGender(Long accountId, Date startDate, Date endDate, String aggregation) {
-//
-//        try {
-//            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-//            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//
-//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights?pretty=0&"
-//                    + "until=" + endDateStr + "&metric=page_views_by_age_gender_logged_in_unique&period=days_28&"
-//                    + "access_token=" + ORGANIC_ACCESS_TOKEN;
-//
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//            System.out.println(fbUrl);
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//
-//            String data = Rest.getData(fbUrl);
-//            JSONParser parser = new JSONParser();
-//            Object jsonObj = parser.parse(data);
-//            JSONObject json = (JSONObject) jsonObj;
-//            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-//            List<Map> arrayData = (List<Map>) jsonToMap.get("data");
-//            Map<String, Object> object = arrayData.get(0);
-//            List<Map<String, Object>> arrayList = (List<Map<String, Object>>) object.get("values");
-//            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//            System.out.println(arrayList);
-//            int objectLength = arrayList.size() - 1;
-//            System.out.println("Object Length=" + objectLength);
-//            Map<String, Object> arrayObject = (Map<String, Object>) arrayList.get(objectLength).get("value");
-//            List<Map<String, String>> listData = new ArrayList<>();
-//            for (Map.Entry<String, Object> entry : arrayObject.entrySet()) {
-//                String key = entry.getKey();
-//                Object value = entry.getValue();
-//                JSONObject jsonObject = new JSONObject();
-//                jsonObject.put("data", value);
-//                Map dataMap = new HashMap();
-//                dataMap.put("period", key);
-//                dataMap.put("Male", ((Map) jsonObject.get("data")).get("M"));
-//                dataMap.put("FeMale", ((Map) jsonObject.get("data")).get("F"));
-//                dataMap.put("UnKnown", ((Map) jsonObject.get("data")).get("U"));
-//                listData.add(dataMap);
-//            }
-//
-//            return listData;
-//
-//        } catch (ParseException ex) {
-//            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
     public List<Map<String, String>> getPageReactions(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
             //ORGANIC_ACCESS_TOKEN
@@ -289,12 +213,9 @@ public class FacebookService {
 
             System.out.println("-------------- Account ID -->" + accountId);
             if (aggregation.equalsIgnoreCase("day")) {
-                //            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw&since=1460226600&until=1462818600&period=day&limit=50";
+              
                 String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_views_total?"
                         + "access_token=" + ORGANIC_ACCESS_TOKEN + "&since=" + startDateStr + "&until=" + endDateStr + "&period=day&limit=50";
-
-                //https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?
-                //access_token=&since=1460226600&until=1462818600&period=day&limit=50
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println(fbUrl);
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -350,11 +271,16 @@ public class FacebookService {
 
                 System.out.println("*********************************");
                 int objectLength = deviceData.size() - 1;
-                Map<String, String> objectArray = (Map<String, String>) deviceData.get(objectLength).get("value");
                 List<Map<String, String>> viewByDeviceListData = new ArrayList<>();
-                objectArray.remove("API");
-                viewByDeviceListData.add(objectArray);
-                return viewByDeviceListData;
+                try {
+                    Map<String, String> objectArray = (Map<String, String>) deviceData.get(objectLength).get("value");
+
+                    objectArray.remove("API");
+                    viewByDeviceListData.add(objectArray);
+                    return viewByDeviceListData;
+                } catch (NullPointerException ex) {
+                    return viewByDeviceListData;
+                }
             }
 
             if (productSegment.equalsIgnoreCase("gender")) {
@@ -425,11 +351,15 @@ public class FacebookService {
                 System.out.println("=====================");
                 System.out.println(fbLikesList.get(0));
                 int objectLength = fbLikesList.size() - 1;
-                String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
-                Map<String, String> returnMapData = new HashMap<>();
-                returnMapData.put("page_views", values);
-                listData.add(returnMapData);
-                return listData;
+                try {
+                    String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
+                    Map<String, String> returnMapData = new HashMap<>();
+                    returnMapData.put("page_views", values);
+                    listData.add(returnMapData);
+                    return listData;
+                } catch (NullPointerException ex) {
+                    return listData;
+                }
             }
 
         } catch (ParseException ex) {
@@ -438,60 +368,6 @@ public class FacebookService {
         return null;
     }
 
-//    public List<Map<String, String>> getViewsByDevice(Long accountId, Date startDate, Date endDate, String aggregation) {
-//
-//        try {
-////            String fbUrl = "https://graph.facebook.com/185042698207211/insights?pretty=0&until=1476489600&metric=page_views_by_site_logged_in_unique&period=days_28&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
-//            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-//            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights?pretty=0&until=" + endDateStr + "&"
-//                    + "metric=page_views_by_site_logged_in_unique&period=days_28&access_token=" + ORGANIC_ACCESS_TOKEN;
-//
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//            System.out.println(fbUrl);
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//
-//            String data = Rest.getData(fbUrl);
-//            JSONParser parser = new JSONParser();
-//            Object jsonObj = parser.parse(data);
-//            JSONObject json = (JSONObject) jsonObj;
-//            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-//            List<Map> arrayData = (List<Map>) jsonToMap.get("data");
-//            List<Map> deviceData = (List<Map>) arrayData.get(0).get("values");
-//            List<Map<String, Object>> valueData = new ArrayList();
-//
-//            System.out.println("*********************************");
-//            int objectLength = deviceData.size() - 1;
-//            Map<String, String> objectArray = (Map<String, String>) deviceData.get(objectLength).get("value");
-//            List<Map<String, String>> viewByDeviceListData = new ArrayList<>();
-//            viewByDeviceListData.add(objectArray);
-////            for (Iterator<Map> iterator = deviceData.iterator(); iterator.hasNext();) {
-////                Map valuesData = iterator.next();
-////                valueData.add((Map<String, Object>) valuesData.get("value"));
-////            }
-////
-////            Map<String, Object> listData = new HashMap();
-////            listData.put("data", valueData);
-////            List<Map> deviceViewData = (List<Map>) listData.get("data");
-////            Map<String, String> returnMap = new HashMap();
-////            System.out.println("*********************************");
-////            System.out.println(deviceViewData);
-////            
-////            for (Iterator<Map> iterator = deviceViewData.iterator(); iterator.hasNext();) {
-////                Map fbViewDeviceData = iterator.next();
-////                returnMap.put("OTHER", fbViewDeviceData.get("OTHER") + "");
-////                returnMap.put("WWW", fbViewDeviceData.get("WWW") + "");
-//////                returnMap.put("API", fbViewDeviceData.get("API") + "");
-////                returnMap.put("MOBILE", fbViewDeviceData.get("MOBILE") + "");
-////                viewByDeviceListData.add(returnMap);
-////            }
-////            System.out.println(viewByDeviceListData);
-//            return viewByDeviceListData;
-//        } catch (ParseException ex) {
-//            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
     public List<Map<String, String>> getPageLikes(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
 //            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_fans_city?access_token=" + ACCESS_TOKEN;
@@ -520,22 +396,26 @@ public class FacebookService {
                 List fbLikesList = (List) fbFansData.get("values");
                 int objectLength = fbLikesList.size() - 1;
                 System.out.print("**************** City by likes --------------------");
-                Map<String, Object> values = (Map<String, Object>) ((Map) fbLikesList.get(objectLength)).get("value");
-                System.out.print(values);
+                try {
+                    Map<String, Object> values = (Map<String, Object>) ((Map) fbLikesList.get(objectLength)).get("value");
+                    System.out.print(values);
 
-                for (Map.Entry<String, Object> entry : values.entrySet()) {
-                    String key = entry.getKey();
-                    System.out.print("key--->" + key);
-                    Object value = entry.getValue();
-                    System.out.print("values ----->");
-                    System.out.print(value);
-                    Map<String, String> dataMap = new HashMap<>();
-                    dataMap.put("city", key + "");
-                    dataMap.put("likes", value + "");
-                    listData.add(dataMap);
+                    for (Map.Entry<String, Object> entry : values.entrySet()) {
+                        String key = entry.getKey();
+                        System.out.print("key--->" + key);
+                        Object value = entry.getValue();
+                        System.out.print("values ----->");
+                        System.out.print(value);
+                        Map<String, String> dataMap = new HashMap<>();
+                        dataMap.put("city", key + "");
+                        dataMap.put("likes", value + "");
+                        listData.add(dataMap);
+                    }
+
+                    return listData;
+                } catch (NullPointerException ex) {
+                    return listData;
                 }
-
-                return listData;
             }
             //get total organic likes
             if (aggregation.equalsIgnoreCase("none") && productSegement.equalsIgnoreCase("none")) {
@@ -560,11 +440,15 @@ public class FacebookService {
                 Map fbFansData = (Map) fbData.get(0);
                 List fbLikesList = (List) fbFansData.get("values");
                 int objectLength = fbLikesList.size() - 1;
-                String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
-                Map<String, String> returnMapData = new HashMap<>();
-                returnMapData.put("page_fans", values);
-                listData.add(returnMapData);
-                return listData;
+                try {
+                    String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
+                    Map<String, String> returnMapData = new HashMap<>();
+                    returnMapData.put("page_fans", values);
+                    listData.add(returnMapData);
+                    return listData;
+                } catch (NullPointerException ex) {
+                    return listData;
+                }
             }
 
         } catch (ParseException ex) {
@@ -575,7 +459,6 @@ public class FacebookService {
 
     public List<Map<String, String>> getTotalReach(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
-//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_impressions_organic_unique?access_token=" + ACCESS_TOKEN;
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 
@@ -602,14 +485,17 @@ public class FacebookService {
 //            System.out.println("=====================");
             System.out.println(fbLikesList.get(0));
             int ObjectLength = fbLikesList.size() - 1;
-            String values = ((Map) fbLikesList.get(ObjectLength)).get("value") + "";
-            Map<String, String> returnMapData = new HashMap<>();
-            returnMapData.put("reach", values);
-            listData.add(returnMapData);
-            System.out.println("=====================");
-            System.out.println(listData);
-
-            return listData;
+            try {
+                String values = ((Map) fbLikesList.get(ObjectLength)).get("value") + "";
+                Map<String, String> returnMapData = new HashMap<>();
+                returnMapData.put("reach", values);
+                listData.add(returnMapData);
+                System.out.println("=====================");
+                System.out.println(listData);
+                return listData;
+            } catch (NullPointerException ex) {
+                return listData;
+            }
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -618,8 +504,6 @@ public class FacebookService {
 
     public List<Map<String, String>> getTotalEngagements(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
-//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_engaged_users?access_token=" + ACCESS_TOKEN;
-//            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_engaged_users?access_token=" + ORGANIC_ACCESS_TOKEN;
 
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -644,59 +528,25 @@ public class FacebookService {
             Map fbFansData = (Map) fbData.get(2);
             List fbLikesList = (List) fbFansData.get("values");
             int objectLength = fbLikesList.size() - 1;
-            String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
-            Map<String, String> returnMapData = new HashMap<>();
-            returnMapData.put("engagements", values);
-            listData.add(returnMapData);
-            return listData;
+            try {
+                String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
+                Map<String, String> returnMapData = new HashMap<>();
+                returnMapData.put("engagements", values);
+                listData.add(returnMapData);
+                return listData;
+            } catch (NullPointerException ex) {
+                return listData;
+            }
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-//    public List<Map<String, String>> getTotalPageViews(Long accountId, Date startDate, Date endDate, String aggregation) {
-//        try {
-//            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-//            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-////            String fbUrl = "https://graph.facebook.com/v2.9/185042698207211/insights/page_views_total?access_token=" + ORGANIC_ACCESS_TOKEN;
-//            String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_views_total?access_token="
-//                    + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
-//
-//            System.out.println("************************************");
-//            System.out.println(fbUrl);
-//            System.out.println("************************************");
-//
-////            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_views_total?access_token=" + ACCESS_TOKEN;
-//            String data = Rest.getData(fbUrl);
-//            JSONParser parser = new JSONParser();
-//            Object jsonObj = parser.parse(data);
-//            JSONObject json = (JSONObject) jsonObj;
-//            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-//            Map returnMap = new HashMap<>();
-//            List fbData = (List<Map>) jsonToMap.get("data");
-//            List<Map<String, String>> listData = new ArrayList<>();
-//            Map fbFansData = (Map) fbData.get(2);
-//            List fbLikesList = (List) fbFansData.get("values");
-//            System.out.println("=====================");
-//            System.out.println(fbLikesList.get(0));
-//            String values = ((Map) fbLikesList.get(3)).get("value") + "";
-//            Map<String, String> returnMapData = new HashMap<>();
-//            returnMapData.put("page_views", values);
-//            listData.add(returnMapData);
-//            return listData;
-//        } catch (ParseException ex) {
-//            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
     public List<Map<String, String>> getPostPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//            String url = "https://graph.facebook.com/v2.9/" + accountId + "posts?fields=message,likes,comments"
-//                    + "&access_token=" + ACCESS_TOKEN;
-
             String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/posts?fields=message,"
                     + "reactions.type(LIKE).summary(total_count).limit(0).as(like),comments&access_token="
                     + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
@@ -748,38 +598,6 @@ public class FacebookService {
         return null;
     }
 
-//    public List<Map<String, String>> getTotalOrganicLikes(Long accountId, Date startDate, Date endDate, String aggregation) {
-//        try {
-//            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-//            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//            // String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_fans?access_token=" + ACCESS_TOKEN;
-//            String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_fans?access_token="
-//                    + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
-//
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//            System.out.println(fbUrl);
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//
-//            String data = Rest.getData(fbUrl);
-//            JSONParser parser = new JSONParser();
-//            Object jsonObj = parser.parse(data);
-//            JSONObject json = (JSONObject) jsonObj;
-//            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-//            Map returnMap = new HashMap<>();
-//            List fbData = (List<Map>) jsonToMap.get("data");
-//            List<Map<String, String>> listData = new ArrayList<>();
-//            Map fbFansData = (Map) fbData.get(0);
-//            List fbLikesList = (List) fbFansData.get("values");
-//            String values = ((Map) fbLikesList.get(3)).get("value") + "";
-//            Map<String, String> returnMapData = new HashMap<>();
-//            returnMapData.put("page_fans", values);
-//            listData.add(returnMapData);
-//            return listData;
-//        } catch (ParseException ex) {
-//            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
     public List<Map<String, String>> getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -840,6 +658,8 @@ public class FacebookService {
             //return getActions(actions); //array.get("data");
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
         return null;
     }
@@ -848,7 +668,6 @@ public class FacebookService {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//https://graph.facebook.com/v2.8/act_10153963646170050/insights?level=campaign&fields=account_name,impressions,clicks,ctr,cpc,spend,actions,reach,cost_per_action_type,campaign_name&time_range[since]=2016-10-01&time_range[until]=2016-10-31&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw
 
             String url = BASE_URL + accountId + "/insights?level=campaign&fields=account_name,impressions,clicks,ctr,cpc,spend,actions,reach,cost_per_action_type,campaign_name&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
@@ -897,6 +716,8 @@ public class FacebookService {
             //return getActions(actions); //array.get("data");
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
         return null;
     }
@@ -905,11 +726,7 @@ public class FacebookService {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//https://graph.facebook.com/v2.8/act_10153963646170050/insights?level=ad&fields=account_name,impressions,clicks,ctr,cpc,spend,actions,reach,cost_per_action_type,adset_name&time_range[since]=2016-10-01&time_range[until]=2016-10-31&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw
 
-//            String url = BASE_URL + accountId + "/insights?level=ad&fields=account_name,impressions,clicks,ctr,cpc,spend,actions,reach,cost_per_action_type,adset_name&"
-//                    + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
-//                    + "&access_token=" + ACCESS_TOKEN;
             String url = BASE_URL + accountId + "/insights?fields=account_name%2Cimpressions%2Cclicks%2Cctr%2Ccpc%2Cspend%2Cactions%2Creach%2Ccost_per_action_type%2Cadset_name%2Cad_name%2Ccampaign_name&level=ad&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
                     + "&access_token=" + ACCESS_TOKEN + "&limit=100";
@@ -953,6 +770,8 @@ public class FacebookService {
             //return getActions(actions); //array.get("data");
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
         return null;
     }
@@ -961,7 +780,6 @@ public class FacebookService {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//https://graph.facebook.com/v2.8/act_10153963646170050/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_range[since]=2016-10-01&time_range[until]=2016-10-31&breakdowns=impression_device&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw 
 
             String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,cpc,spend,actions,cost_per_action_type&breakdowns=impression_device&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
@@ -1001,6 +819,8 @@ public class FacebookService {
             //return getActions(actions); //array.get("data");
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
         return null;
     }
@@ -1009,7 +829,6 @@ public class FacebookService {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//https://graph.facebook.com/v2.8/act_10153963646170050/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_range[since]=2016-10-01&time_range[until]=2016-10-31&breakdowns=age&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw
 
             if (productSegement.equalsIgnoreCase("age") || productSegement.equalsIgnoreCase("none")) {
                 String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,cpc,spend,actions,cost_per_action_type&breakdowns=age&"
@@ -1051,6 +870,8 @@ public class FacebookService {
             //return getActions(actions); //array.get("data");
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
         return null;
     }
@@ -1059,7 +880,6 @@ public class FacebookService {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//https://graph.facebook.com/v2.8/act_10153963646170050/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_range[since]=2016-10-01&time_range[until]=2016-10-31&breakdowns=gender&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw
 
             if (productSegement.equalsIgnoreCase("gender") || productSegement.equalsIgnoreCase("none")) {
                 String url = BASE_URL + accountId + "/insights?fields=clicks,impressions,ctr,cpc,spend,actions,cost_per_action_type&breakdowns=gender&"
@@ -1101,6 +921,8 @@ public class FacebookService {
             //return getActions(actions); //array.get("data");
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
         return null;
     }
@@ -1109,9 +931,6 @@ public class FacebookService {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-// https://graph.facebook.com/v2.8/110571071477/feed?fields=shares,likes,message,reactions,comments{message,comment_count,created_time,like_count},created_time,type&use_actual_created_time_for_backdated_post=true&until=2016-10-31&since=2015-10-01
-            //&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw&limit=100
-
             String url = "https://graph.facebook.com/v2.8/" + accountId + "/feed?fields=shares,likes,message,reactions,"
                     + "comments{message,comment_count,created_time,like_count},created_time,type&"
                     + "use_actual_created_time_for_backdated_post=true&limit=100&"
@@ -1122,9 +941,6 @@ public class FacebookService {
             System.out.println(url);
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 
-//            String url = BASE_URL_FEED + "110571071477" + "/feed?fields=shares,likes,message,reactions,comments{message,comment_count,created_time,like_count},created_time,type&use_actual_created_time_for_backdated_post=true&limit=100"
-//                    + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
-//                    + "&access_token=" + ACCESS_TOKEN;
             if (aggregation.equalsIgnoreCase("weekly")) {
                 url += "&time_increment=7";
             }
@@ -1156,67 +972,12 @@ public class FacebookService {
             //return getActions(actions); //array.get("data");
         } catch (ParseException ex) {
             Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
         return null;
     }
 
-//    private List<Map<String, String>> getPostSummary(Long accountId, Date startDate, Date endDate, String aggregation) {
-//        try {
-//            System.out.println("Account Id --->" + accountId);
-//            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-//            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
-//// https://graph.facebook.com/v2.8/110571071477/feed?fields=shares,likes,message,reactions,comments{message,comment_count,created_time,like_count},created_time,type&use_actual_created_time_for_backdated_post=true&until=2016-10-31&since=2015-10-01
-//            //&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw&limit=100
-//
-//            System.out.println("Getting post summary for " + startDateStr + endDateStr);
-//            String url = "https://graph.facebook.com/v2.8/" + accountId + "/feed?fields=shares,likes,message,reactions,"
-//                    + "comments{message,comment_count,created_time,like_count},created_time,"
-//                    + "type&use_actual_created_time_for_backdated_post=true&limit=100&"
-//                    + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
-//                    + "access_token=" + ORGANIC_ACCESS_TOKEN;
-//
-//            
-//
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//            System.out.println(url);
-//            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-//
-////            String url = BASE_URL_FEED + accountId + "/feed?fields=shares,likes,reactions,comments{comment_count,created_time,like_count}&limit=100"
-////                    + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
-////                    + "&access_token=" + ACCESS_TOKEN;
-////            String url = BASE_URL_FEED + "110571071477" + "/feed?fields=shares,likes,reactions,comments{comment_count,created_time,like_count}&limit=100"
-////                    + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
-////                    + "&access_token=" + ACCESS_TOKEN;
-//            if (aggregation.equalsIgnoreCase("weekly")) {
-//                url += "&time_increment=7";
-//            }
-//            if (aggregation.equalsIgnoreCase("daily")) {
-//                url += "&time_increment=1";
-//            }
-//            String fbData = Rest.getData(url);
-//            JSONParser parser = new JSONParser();
-//            Object jsonObj = parser.parse(fbData);
-//            JSONObject array = (JSONObject) jsonObj;
-//            JSONArray dataArr = (JSONArray) array.get("data");
-//            List<Map<String, String>> dataValueList = new ArrayList();
-//            for (int i = 0; i < dataArr.size(); i++) {
-//                JSONObject data = (JSONObject) dataArr.get(i);
-//                Map<String, String> dataList = getDataValue(data);
-//                dataList.put("date", startDateStr);
-//                dataList.put("reactions", getActionsCount((JSONObject) data.get("reactions")) + "");
-//                dataList.put("likes", getActionsCount((JSONObject) data.get("likes")) + "");
-//                dataList.put("comments", getActionsCount((JSONObject) data.get("comments")) + "");
-//                dataList.put("shares", getShareCount((JSONObject) data.get("shares")) + "");
-//                dataList.put("engagements", (Long.parseLong(dataList.get("shares")) + Long.parseLong(dataList.get("likes")) + Long.parseLong(dataList.get("comments"))) + "");
-//                dataValueList.add(dataList);
-//            }
-//            return dataValueList;
-//            //return getActions(actions); //array.get("data");
-//        } catch (ParseException ex) {
-//            Logger.getLogger(FacebookService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
     public static void main(String[] argv) {
         System.out.println(DateUtils.dateToString(DateUtils.toDate("2017-01-26T20:21:33+0000".replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM-dd-yyyy HH:mm"));
         /*
@@ -1355,7 +1116,6 @@ public class FacebookService {
                     + "fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_increment=7&time_range[since]=" + startDateStr
                     + "&time_range[until]=" + endDateStr
                     + "&access_token=" + ACCESS_TOKEN;
-            //https://graph.facebook.com/v2.8/act_10153963646170050/insights?fields=clicks,impressions,ctr,spend,actions,cost_per_action_type&time_range[since]=2016-10-01&time_range[until]=2016-10-31&time_increment=7&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw
 
             String fbData = Rest.getData(url);
             JSONParser parser = new JSONParser();

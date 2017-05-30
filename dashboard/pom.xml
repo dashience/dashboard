@@ -457,6 +457,14 @@
 
         <!-- twitter code ends -->
         
+        <!-- bing ads -->
+        <dependency>
+            <groupId>com.microsoft.bingads</groupId>
+            <artifactId>microsoft.bingads</artifactId>
+            <version>10.4.10</version>
+        </dependency>
+        <!-- bing ads ends -->
+        
     </dependencies>
 
     <build>

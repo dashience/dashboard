@@ -49,9 +49,17 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 name: 'Pinterest'
             },
             {
-                type: 'twitter',
-                name: 'Twitter'
-            }
+                type: 'linkedin',
+                name: 'LinkedIn'
+            },
+//            {
+//                type: 'twitter',
+//                name: 'Twitter'
+//            },
+//             {
+//                type: 'bing',
+//                name: 'Bing'
+//            }
         ];
         function getItems() {
             $http.get('admin/ui/dataSource').success(function (response) {
