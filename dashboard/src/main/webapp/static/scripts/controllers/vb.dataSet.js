@@ -1947,9 +1947,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<form name="dataSetForm" class="form-horizontal">' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Field Name</label>' +
-                '<div class="col-md-9">' +
+                '<div class="col-md-3">' +
                 '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
                 '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '</div>' +
+                '<label class="col-md-2">Base Field</label>' +
+                '<div class="col-md-4">' +
+                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
+                '<option ng-if="dataSetColumn.functionName==null" ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
+                '{{dataSetColumn.fieldName}}' +
+                '</option>' +
+                '</select>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -1963,7 +1971,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<label class="col-md-2">Format</label>' +
                 '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="datasSetColumn.format">' +
+                '<select class="form-control" ng-model="datasSetColumn.displayFormat">' +
                 '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
                 '{{formatType.name}}' +
                 '</option>' +
@@ -2074,7 +2082,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<table class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
-                '<th class="text-capitalize table-bg" ng-repeat="col in tableColumns">' +
+                '<th class="text-capitalize table-bg" ng-repeat="col in dataSetColumns">' +
                 '{{col.fieldName}}' +
                 //Edit
                 '<div>' +
@@ -2090,9 +2098,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<form name="dataSetForm" class="form-horizontal">' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Field Name</label>' +
-                '<div class="col-md-9">' +
-                '<input class="form-control" ng-model="dataSetColumn.fieldName" ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
-                '<span ng-show="dataSetError" class="text-danger">Field Name Already Exists</span>' +
+                '<div class="col-md-3">' +
+                '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
+                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '</div>' +
+                '<label class="col-md-2">Base Field</label>' +
+                '<div class="col-md-4">' +
+                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
+                '<option ng-if="dataSetColumn.functionName==null" ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
+                '{{dataSetColumn.fieldName}}' +
+                '</option>' +
+                '</select>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -2106,7 +2122,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<label class="col-md-2">Format</label>' +
                 '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="dataSetColumn.format">' +
+                '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
                 '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
                 '{{formatType.name}}' +
                 '</option>' +
@@ -2158,7 +2174,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</tr></thead>' +
                 '<tbody ng-repeat="tableRow in tableRows">' +
                 '<tr class="text-capitalize">' +
-                '<td ng-repeat="col in tableColumns">' +
+                '<td ng-repeat="col in dataSetColumns">' +
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
@@ -2181,8 +2197,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: "Percentage", value: ',.2%'},
                 {name: "Decimal1", value: ',.1f'},
                 {name: "Decimal2", value: ',.2f'},
-                {name: "Time", value: 'H:M:S'},
-                {name: "Star Rating", value: 'starRating'}
+                {name: "Time", value: 'H:M:S'}
             ];
             scope.functionTypes = [
                 {name: "YOY", value: 'yoy'},
@@ -2242,48 +2257,91 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&password=' + dataSourcePassword +
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
-                    scope.ajaxLoadingCompleted = true;
-                    scope.loadingTable = false;
                     scope.tableColumns = response.columnDefs;
                     scope.tableRows = response.data;
-                    console.log(scope.tableColumns);
-//                console.log(scope.tableRows)
-
-                    scope.expressionLessColumn = [];
-                    for (var j = 0; j < scope.tableColumns.length; j++) {
-                        if (scope.tableColumns[j].expression === null && scope.tableColumns[j].functionName === null) {
-                            scope.expressionLessColumn.push(scope.tableColumns[j]);
-                        }
-                    }
+                    scope.dataSetColumns = [];
                     scope.columns = [];
-                    console.log(scope.tableColumns.length);
-                    for (var i = 0; i < scope.tableColumns.length; i++) {
-                        console.log(scope.tableColumns[i]);
-                        var status = null;
-                        var expression = null;
-                        var functionName = null;
-                        if (typeof (scope.tableColumns[i].status) !== undefined) {
-                            status = scope.tableColumns[i].status;
+
+                    $http.get("admin/ui/getDatasetById/" + dataSourcePath.id).success(function (resp) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        console.log(resp)
+                        if (resp == "" || resp == null) {
+                            scope.dataSetColumns = scope.tableColumns;
+                            console.log(scope.dataSetColumns)
+                        } else {
+                            angular.forEach(resp, function (value, key) {
+                                angular.forEach(scope.tableColumns, function (val, key) {
+                                    if (value.fieldName == val.fieldName) {
+                                        var data = {
+                                            id: value.id,
+                                            fieldName: value.fieldName,
+                                            displayName: value.displayName,
+                                            fieldType: value.fieldType,
+                                            displayFormat: value.displayFormat,
+                                            status: value.status,
+                                            expression: value.expression,
+                                            functionName: value.functionName,
+                                            columnName: value.columnName,
+                                            baseField: value.baseField,
+//                                            customFunctionName: value.customFunctionName,
+//                                            customStartDate: value.customStartDate,
+//                                            customEndDate: value.customEndDate
+                                        };
+                                        console.log(data);
+                                        scope.dataSetColumns.push(data);
+                                    }
+                                });
+                            });
                         }
-                        if (typeof (scope.tableColumns[i].expression) !== undefined) {
-                            expression = scope.tableColumns[i].expression;
+                        console.log(scope.dataSetColumns)
+                        scope.expressionLessColumn = [];
+                        for (var j = 0; j < scope.dataSetColumns.length; j++) {
+                            if (scope.dataSetColumns[j].expression === null && scope.dataSetColumns[j].functionName === null) {
+                                scope.expressionLessColumn.push(scope.dataSetColumns[j]);
+                            }
                         }
-                        if (typeof (scope.tableColumns[i].functionName) !== undefined) {
-                            functionName = scope.tableColumns[i].functionName;
+                        console.log(scope.dataSetColumns.length);
+                        for (var i = 0; i < scope.dataSetColumns.length; i++) {
+                            console.log(scope.dataSetColumns[i]);
+                            var status = null;
+                            var expression = null;
+                            var functionName = null;
+                            var columnName = null;
+                            var baseField = null;
+                            if (typeof (scope.dataSetColumns[i].status) !== undefined) {
+                                status = scope.dataSetColumns[i].status;
+                            }
+                            if (typeof (scope.dataSetColumns[i].expression) !== undefined) {
+                                expression = scope.dataSetColumns[i].expression;
+                            }
+                            if (typeof (scope.dataSetColumns[i].functionName) !== undefined) {
+                                functionName = scope.dataSetColumns[i].functionName;
+                            }
+                            if (typeof (scope.dataSetColumns[i].columnName) !== undefined) {
+                                functionName = scope.dataSetColumns[i].columnName;
+                            }
+                            if (typeof (scope.dataSetColumns[i].baseField) !== undefined) {
+                                functionName = scope.dataSetColumns[i].baseField;
+                            }
+                            var columnData = {
+                                id: scope.dataSetColumns[i].id,
+                                fieldName: scope.dataSetColumns[i].fieldName,
+                                displayName: scope.dataSetColumns[i].displayName,
+                                fieldType: scope.dataSetColumns[i].type,
+                                displayFormat: scope.dataSetColumns[i].displayFormat,
+                                status: status,
+                                expression: expression,
+                                functionName: functionName,
+                                columnName: columnName,
+                                baseField: baseField
+//                            customFunctionName: dataSetColumn.dateRangeName,
+//                            customStartDate: dataSetColumn.customStartDate,
+//                            customEndDate: dataSetColumn.customEndDate
+                            };
+                            scope.columns.push(columnData);
                         }
-                        var columnData = {
-                            id: scope.tableColumns[i].id,
-                            fieldName: scope.tableColumns[i].fieldName,
-                            displayName: scope.tableColumns[i].displayName,
-                            fieldType: scope.tableColumns[i].type,
-                            displayFormat: scope.tableColumns[i].displayFormat,
-                            status: status,
-                            expression: expression,
-                            functionName: functionName
-                        }
-                        scope.columns.push(columnData);
-                    }
-                    console.log(scope.columns);
+                    });
 //                    var tableColumnsData = {
 //                        datasetId: dataSourcePath.id,
 //                        tableColumns: scope.columns,
@@ -2293,7 +2351,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                        console.log(response);
 //                    });
                 });
-            }
+            };
             scope.dataSetItems();
             scope.dataSetError = false;
             function showDataSetError() {
@@ -2332,7 +2390,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSetColumn.expression = "";
                 dataSetColumn.fieldName = "";
                 dataSetColumn.fieldType = "";
-                dataSetColumn.format = "";
+                dataSetColumn.displayFormat = "";
                 dataSetColumn.functionName = "";
                 dataSetColumn.columnName = "";
                 dataSetColumn.dateRangeName = "";
@@ -2402,10 +2460,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 
                 }
                 var functionName = null;
-                if (typeof (dataSetColumn.functionName) !== "undefined" && dataSetColumn.functionName !== null && dataSetColumn.functionName !== "" && dataSetColumn.columnName !== null && dataSetColumn.columnName !== "" && typeof (dataSetColumn.functionName) !== "undefined") {
-                    functionName = dataSetColumn.functionName + "(" + dataSetColumn.columnName + ")";
-                }
-                if (dataSetColumn.functionName != 'Custom' + "(" + dataSetColumn.columnName + ")") {
+
+                if (dataSetColumn.functionName != 'Custom') {
                     dataSetColumn.dateRangeName = "";
                     scope.customStartDate = "";
                     scope.customEndDate = "";
@@ -2413,18 +2469,19 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 var data = {
                     datasetId: dataSourcePath.id,
                     id: dataSetColumn.id,
+                    tableColumns: scope.columns,
                     expression: dataSetColumn.expression,
                     fieldName: dataSetColumn.fieldName,
                     displayName: dataSetColumn.fieldName,
                     fieldType: dataSetColumn.fieldType,
-                    displayFormat: dataSetColumn.format,
-                    functionName: functionName,
-                    customFunctionName: dataSetColumn.dateRangeName,
-                    customStartDate: scope.customStartDate,
-                    customEndDate: scope.customEndDate
+                    baseField: dataSetColumn.baseField,
+                    displayFormat: dataSetColumn.displayFormat,
+                    functionName: dataSetColumn.functionName,
+                    columnName: dataSetColumn.columnName
                 };
                 console.log(data);
                 $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
+                    console.log(response);
                     scope.ajaxLoadingCompleted = false;
                     scope.loadingTable = true;
                     console.log(response)
@@ -2432,38 +2489,30 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     dataSetColumn.expression = "";
                     dataSetColumn.fieldName = "";
                     dataSetColumn.fieldType = "";
-                    dataSetColumn.format = "";
+                    dataSetColumn.displayFormat = "";
                     dataSetColumn.functionName = "";
                     dataSetColumn.columnName = "";
                     dataSetColumn.dateRangeName = "";
                     dataSetColumn.customStartDate = "";
                     dataSetColumn.customEndDate = "";
+                    dataSetColumn.baseField = "";
                 });
             }
+
             scope.editDataset = function (dataSetColumn) {
-                console.log(dataSetColumn)
-                var functionName = null;
-                var columnName = null;
-                if (dataSetColumn.functionName != null) {
-                    var str = dataSetColumn.functionName;
-                    var findIndex = str.indexOf("(");
-                    functionName = str.slice(0, findIndex);
-                    columnName = str.slice(findIndex + 1, str.length - 1);
-                }
+                console.log(dataSetColumn.displayFormat)
                 var editData = {
                     id: dataSetColumn.id,
                     expression: dataSetColumn.expression,
                     fieldName: dataSetColumn.fieldName,
-                    fieldType: dataSetColumn.type,
-                    format: dataSetColumn.displayFormat,
-                    functionName: functionName,
-                    columnName: columnName,
+                    fieldType: dataSetColumn.fieldType,
+                    displayFormat: dataSetColumn.displayFormat,
+                    functionName: dataSetColumn.functionName,
+                    columnName: dataSetColumn.columnName,
                     customFunctionName: dataSetColumn.dateRangeName,
                     customStartDate: dataSetColumn.customStartDate,
                     customEndDate: dataSetColumn.customEndDate
                 };
-
-
                 scope.dataSetColumn = editData;
             }
 
@@ -2486,10 +2535,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     {
                         trigger: /([A-Za-z]+[_A-Za-z0-9]+)/gi,
                         list: function (match, callback) {
-
                             // match is the regexp return, in this case it returns
                             // [0] the full match, [1] the first capture group => username
-
                             // Prepare the fake data
                             var listData = scope.tableColumns.filter(function (element) {
                                 return element.displayName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
@@ -2508,10 +2555,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         mode: 'replace'
                     }
                 ]
-            }
-            ;
-
-
+            };
         }
     };
 });

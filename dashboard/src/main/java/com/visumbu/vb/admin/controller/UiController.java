@@ -399,6 +399,11 @@ public class UiController extends BaseController {
         return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
     }
 
+    @RequestMapping(value = "getDatasetById/{datasetId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getDatasetById (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
+        return uiService.getDatasetById(datasetId);
+    }
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -496,11 +501,7 @@ public class UiController extends BaseController {
         return uiService.getUserAccountById(userId);
     }
 
-//    @RequestMapping(value = "userAccountId/{userId}", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    List getUserAccountId (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
-//        return uiService.getUserAccountId(userId);
-//    }
+    
     @RequestMapping(value = "userAccount/{userAccountId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     UserAccount deleteUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userAccountId) {

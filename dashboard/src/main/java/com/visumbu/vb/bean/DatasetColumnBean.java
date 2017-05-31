@@ -20,6 +20,8 @@ public class DatasetColumnBean {
     private String status;
     private String expression;
     private String functionName;
+    private String columnName;
+    private String baseField;
     private String displayFormat;
     private Integer datasetId;
     private String column;
@@ -71,6 +73,22 @@ public class DatasetColumnBean {
 
     public String getFunctionName() {
         return functionName;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public String getBaseField() {
+        return baseField;
+    }
+
+    public void setBaseField(String baseField) {
+        this.baseField = baseField;
     }
 
     public String getDisplayFormat() {
