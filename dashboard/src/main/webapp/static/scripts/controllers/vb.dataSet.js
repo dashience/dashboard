@@ -1961,37 +1961,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '<label class="col-md-3">Field Type</label>' +
-                '<div class="col-md-3">' +
-                '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
-                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
-                '{{fieldType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '<label class="col-md-2">Format</label>' +
-                '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
-                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
-                '{{formatType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Expression</label>' +
-                '<div class="col-md-8">' +
-                '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
-                'class="form-control code expression" ng-model="dataSetColumn.expression" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
-                '</div>' +
-                '<div class="col-md-1">' +
-                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(datasetColumn)"></i>' +
-                '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
                 '<label class="col-md-3">Function</label>' +
                 '<div class="col-md-3">' +
-                '<select  name="functionName" class="form-control" ng-model="dataSetColumn.functionName" ng-disabled="dataSetColumn.expression?true:false">' +
+                '<select  name="functionName" class="form-control" ng-model="dataSetColumn.functionName" ng-change="functionChange(dataSetColumn.functionName)" ng-disabled="dataSetColumn.expression?true:false">' +
                 '<option ng-repeat="functionType in functionTypes" value={{functionType.name}}>' +
                 '{{functionType.name}}' +
                 '</option>' +
@@ -2061,13 +2033,41 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<label class="col-md-1">Column</label>' +
                 '<div class="col-md-2">' +
                 '<select class="form-control" ng-disabled="dataSetColumn.expression?true:false" ng-model="dataSetColumn.columnName">' +
-                '<option ng-if="dataSetColumn.functionName==null" ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
+                '<option ng-if="dataSetColumn.functionName==null||dataSetColumn.expression==null" ng-repeat="dataSetColumn in tableColumns" value={{dataSetColumn.fieldName}}>' +
                 '{{dataSetColumn.fieldName}}' +
                 '</option>' +
                 '</select>' +
                 '</div>' +
                 '<div class="col-md-1">' +
                 '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Expression</label>' +
+                '<div class="col-md-8">' +
+                '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
+                'class="form-control code expression" ng-model="dataSetColumn.expression" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
+                '</div>' +
+                '<div class="col-md-1">' +
+                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(dataSetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Type</label>' +
+                '<div class="col-md-3">' +
+                '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
+                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
+                '{{fieldType.name}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<label class="col-md-2">Format</label>' +
+                '<div class="col-md-4">' +
+                '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
+                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
+                '{{formatType.name}}' +
+                '</option>' +
+                '</select>' +
                 '</div>' +
                 '</div>' +
                 '</form>' +
@@ -2094,7 +2094,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<button type="button" class="close" ng-click="dataSetFieldsClose(dataSetColumn)" data-dismiss="modal">&times;</button>' +
                 '<h4 class="modal-title">Derived Column</h4>' +
                 '</div>' +
-                '<div class="modal-body">' +
+                '<div class="modal-body" style="overflow: visible;">' +
                 '<form name="dataSetForm" class="form-horizontal">' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Field Name</label>' +
@@ -2109,33 +2109,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '{{dataSetColumn.fieldName}}' +
                 '</option>' +
                 '</select>' +
-                '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Field Type</label>' +
-                '<div class="col-md-3">' +
-                '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
-                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
-                '{{fieldType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '<label class="col-md-2">Format</label>' +
-                '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
-                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
-                '{{formatType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Expression</label>' +
-                '<div class="col-md-8">' +
-                '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" class="form-control code expression" ng-model="dataSetColumn.expression" ng-trim="false" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
-                '</div>' +
-                '<div class="col-md-1">' +
-                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(dataSetColumn)"></i>' +
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -2218,6 +2191,34 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<div class="col-md-1">' +
                 '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Expression</label>' +
+                '<div class="col-md-8">' +
+                '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
+                'class="form-control code expression" ng-model="dataSetColumn.expression" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
+                '</div>' +
+                '<div class="col-md-1">' +
+                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(dataSetColumn)"></i>' +
+                '</div>' +
+                '</div>' +
+                '<div class="form-group">' +
+                '<label class="col-md-3">Field Type</label>' +
+                '<div class="col-md-3">' +
+                '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
+                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
+                '{{fieldType.name}}' +
+                '</option>' +
+                '</select>' +
+                '</div>' +
+                '<label class="col-md-2">Format</label>' +
+                '<div class="col-md-4">' +
+                '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
+                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
+                '{{formatType.name}}' +
+                '</option>' +
+                '</select>' +
                 '</div>' +
                 '</div>' +
                 '</form>' +
@@ -2707,13 +2708,13 @@ app.directive('functionDateRange', function ($stateParams, $timeout) {
                         {
                             ranges: {
                                 'Today': [moment(), moment()],
-                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+//                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                                 'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
                                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                                'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
-//                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
-                                'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                                'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+////                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+//                                'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
