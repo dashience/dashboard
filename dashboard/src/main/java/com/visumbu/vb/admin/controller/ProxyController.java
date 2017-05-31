@@ -18,6 +18,7 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DateRange;
+import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
@@ -80,6 +81,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import test.CustomReportDesigner;
+import test.DateRangeFactory;
 
 /**
  *
@@ -230,7 +232,41 @@ public class ProxyController {
         return returnMap;
     }
 
-    public DateRange getDateRange(String functionName, Date startDate, Date endDate) {
+    public Map<String, Date> getCustomDate(String dateRangeName, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears) {
+        System.out.println("Date Range Name --> " + dateRangeName);
+
+        Map returnDateMap = new HashMap<>();
+        Range dateRangeSelect = null;
+        DateRange dateRange = null;
+        if (lastNdays != null) {
+            dateRangeSelect = Range.DAY;
+        } else if (lastNweeks != null) {
+            dateRangeSelect = Range.WEEK;
+        } else if (lastNmonths != null) {
+            dateRangeSelect = Range.MONTH;
+        } else if (lastNyears != null) {
+            dateRangeSelect = Range.YEAR;
+        }
+
+        System.out.println("dateRangeSelect ---> "+dateRangeSelect);
+        if (dateRangeSelect.equals(Range.DAY)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
+        } else if (dateRangeSelect.equals(Range.WEEK)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
+        } else if (dateRangeSelect.equals(Range.MONTH)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
+        } else if (dateRangeSelect.equals(Range.YEAR)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
+        }
+
+        if (dateRange != null) {
+            returnDateMap.put("startDate", dateRange.getStartDate());
+            returnDateMap.put("endDate", dateRange.getEndDate());
+        }
+        return returnDateMap;
+    }
+
+    public DateRange getDateRange(String functionName, String dateRangeName, String customStartDate, String customEndDate, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears, Date startDate, Date endDate) {
         DateRange dateRange = new DateRange();
         if (functionName.equalsIgnoreCase("yoy")) {
             dateRange.setStartDate(new DateTime(startDate).minusYears(1).toDate());
@@ -242,7 +278,20 @@ public class ProxyController {
             dateRange.setStartDate(new DateTime(startDate).minusWeeks(1).toDate());
             dateRange.setEndDate(new DateTime(endDate).minusWeeks(1).toDate());
         } else if (functionName.equalsIgnoreCase("custom")) {
-
+            if (dateRangeName.equalsIgnoreCase("custom")) {
+                System.out.println("Custom Date");
+                System.out.println("StartDate ---> " + DateUtils.getStartDate(customStartDate));
+                System.out.println("EndDate ---> " + DateUtils.getEndDate(customEndDate));
+                dateRange.setStartDate(DateUtils.getStartDate(customStartDate));
+                dateRange.setEndDate(DateUtils.getEndDate(customEndDate));
+            } else {
+                Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears);
+                System.out.println("Last N dates");
+                System.out.println("StartDate ---> " + dateMap.get("startDate"));
+                System.out.println("EndDate ---> " + dateMap.get("endDate"));
+                dateRange.setStartDate(dateMap.get("startDate"));
+                dateRange.setEndDate(dateMap.get("endDate"));
+            }
         }
         return dateRange;
     }
@@ -261,7 +310,14 @@ public class ProxyController {
             boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
             if (isDerivedColumn) {
                 String functionName = datasetColumn.getFunctionName();
-                DateRange dateRange = getDateRange(functionName, startDate, endDate);
+                String dateRangeName = datasetColumn.getDateRangeName();
+                Integer lastNdays = datasetColumn.getLastNdays();
+                Integer lastNweeks = datasetColumn.getLastNweeks();
+                Integer lastNmonths = datasetColumn.getLastNmonths();
+                Integer lastNyears = datasetColumn.getLastNyears();
+                String customStartDate = datasetColumn.getCustomStartDate();
+                String customEndDate = datasetColumn.getCustomEndDate();
+                DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
                 String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
                 if (cachedData.get(cachedRangeForFunction) == null) {
                     List<String> startDateValue = new ArrayList();
@@ -291,30 +347,23 @@ public class ProxyController {
                 DatasetColumns datasetColumn = iterator1.next();
                 boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
                 if (isDerivedColumn) {
-                    Object derivedFunctionValue = getDataForDervicedFunctionColumn(data, dataMap.get(datasetColumn.getBaseField()), datasetColumn);
-                    System.out.println("MAtched RETUYRN DATA ");
-                    System.out.println(derivedFunctionValue);
+                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(data, dataMap.get(datasetColumn.getBaseField()), datasetColumn);
                     returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
-                    System.out.println(returnDataMap);
                 } else {
                     System.out.println("ELSE BLOCK" + datasetColumn.getFieldName());
                     returnDataMap.put(datasetColumn.getFieldName(), dataMap.get(datasetColumn.getFieldName()));
                 }
             }
-            System.out.println("MY DATA ");
             System.out.println(returnDataMap);
             returnData.add(returnDataMap);
         }
         return returnData;
     }
 
-    public Object getDataForDervicedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DatasetColumns datasetColumn) {
-         System.out.println("DDDDDDDDDDDDDDDDDAAAAAATA" + datasetColumn.getBaseField() + " TTTT " + baseFieldValue + " SSS " + datasetColumn.getColumnName());
-         System.out.println(data);
+    public Object getDataForDerivedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DatasetColumns datasetColumn) {
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
             if ((mapData.get(datasetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
-                System.out.println("MATCHED DATA" + mapData.get(datasetColumn.getColumnName()));
                 return mapData.get(datasetColumn.getColumnName());
             }
         }
@@ -350,7 +399,7 @@ public class ProxyController {
             } else {
                 returnMap.put(datasetColumn.getFieldName(), data.get(datasetColumn.getFieldName()));
             }
-            
+
         }
         return returnMap;
     }
@@ -358,11 +407,6 @@ public class ProxyController {
     private static String executeExpression(DatasetColumns datasetColumn, Map<String, Object> data) {
         String postFixRule = ShuntingYard.postfix(datasetColumn.getExpression());
         return ShuntingYard.executeExpression(data, postFixRule);
-    }
-
-    private static Object executeFunction(DatasetColumns datasetColumn, Map<String, Object> data) {
-
-        return "TestFunction";
     }
 
     private static boolean checkIsDerivedExpr(DatasetColumns datasetColumn) {
@@ -543,7 +587,6 @@ public class ProxyController {
                 // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                 // System.out.println(twitterData);
                 // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
 //                fbData.lastIndexOf(jsonObj);
 //                String likesCount = fbData.size() + "";
 //                Map<String, String> boardsSize = new HashMap<>();
@@ -1451,7 +1494,6 @@ public class ProxyController {
 
         // System.out.println("startDate ----> " + start_date);
         // System.out.println("endDate ----> " + end_date);
-
         if (start_date.equalsIgnoreCase(end_date)) {
             selectDate = start_date;
         } else {
@@ -1722,7 +1764,6 @@ public class ProxyController {
 //
 //                // System.out.println("product name :" + product);
                 // System.out.println("account name :" + account);
-
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
                 log.debug("URL:" + url);
                 if (url.startsWith("../")) {
@@ -1776,10 +1817,6 @@ public class ProxyController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {
         e.printStackTrace();
-    }
-
-    private Object addDatasetProperties(List<ColumnDef> columnDefObject, List<DatasetColumns> datasetColumnList) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
