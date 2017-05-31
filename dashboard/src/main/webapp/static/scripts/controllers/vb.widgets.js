@@ -13,6 +13,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dragEnabled = !$scope.dragEnabled;
     };
     
+     $scope.downloadUiPdf = function () {
+         console.log($stateParams)
+         console.log("#viewPdf/"+ $stateParams.accountId+"/"+ $stateParams.accountName+"/" +$stateParams.productId+"/"+ $stateParams.productName+"/"+$stateParams.tabId+"/"+"05-02-2017"+"/"+"05-31-2017")
+window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(location.origin + location.pathname.substr(0, location.pathname.indexOf('/', 1) + 1) + "index.html#viewPdf/"+ $stateParams.accountId+"/"+ $stateParams.accountName+"/" +$stateParams.productId+"/"+$stateParams.tabId+"?startDate="+$stateParams.startDate+"&endDate="+$stateParams.endDate));
+//window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent("#viewPdf/"+ $stateParams.accountId+"/"+ $stateParams.accountName+"/" +$stateParams.productId+"/"+ $stateParams.productName+"/"+$stateParams.tabId+"/"+ $stateParams.startDate+"/"+$stateParams.endDate));
+
+//        window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
+    }
+    
     
     
     $scope.firstSortableOptions = {
