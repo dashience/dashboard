@@ -114,15 +114,6 @@ public class Product implements Serializable {
     }   
     
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Dashboard> getDashboardCollection() {
-        return dashboardCollection;
-    }
-
-    public void setDashboardCollection(Collection<Dashboard> dashboardCollection) {
-        this.dashboardCollection = dashboardCollection;
-    }
 
     @Override
     public int hashCode() {

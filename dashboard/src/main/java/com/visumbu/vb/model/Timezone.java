@@ -138,15 +138,5 @@ public class Timezone implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.Timezone[ id=" + id + " ]";
     }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencySettings> getAgencySettingsCollection() {
-        return agencySettingsCollection;
-    }
-
-    public void setAgencySettingsCollection(Collection<AgencySettings> agencySettingsCollection) {
-        this.agencySettingsCollection = agencySettingsCollection;
-    }
     
 }

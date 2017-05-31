@@ -335,7 +335,7 @@ public class WidgetColumn implements Serializable {
         this.combinationType = combinationType;
     }
        
-    
+   
     @XmlTransient
     @JsonIgnore
     public TabWidget getWidgetId() {

@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author duc-dev-04
  */
 @XmlRootElement(name = "Report")
-public class AccountDevicePerformanceReport {
+public class AccountDevicePerformanceReport implements GenericReport {
 
     private List<Column> keywordPerformanceReportColumns;
     private String reportName;
@@ -29,6 +29,11 @@ public class AccountDevicePerformanceReport {
     private String potentialIncompleteData;
     private List<AccountDevicePerformanceRow> accountDevicePerformanceRows;
 
+    @Override
+    public List getRows() {
+        return accountDevicePerformanceRows;
+    }
+    
     public List<AccountDevicePerformanceRow> getAccountDevicePerformanceRows() {
         return accountDevicePerformanceRows;
     }
@@ -124,4 +129,5 @@ public class AccountDevicePerformanceReport {
     public String toString() {
         return "AccountDevicePerformanceReport{" + "keywordPerformanceReportColumns=" + keywordPerformanceReportColumns + ", reportName=" + reportName + ", xmlns=" + xmlns + ", reportTime=" + reportTime + ", timeZone=" + timeZone + ", reportAggregation=" + reportAggregation + ", lastCompletedAvailableDay=" + lastCompletedAvailableDay + ", lastCompletedAvailableHour=" + lastCompletedAvailableHour + ", potentialIncompleteData=" + potentialIncompleteData + ", accountDevicePerformanceRows=" + accountDevicePerformanceRows + '}';
     }
+
 }

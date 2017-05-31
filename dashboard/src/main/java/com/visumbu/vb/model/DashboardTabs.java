@@ -144,15 +144,6 @@ public class DashboardTabs implements Serializable {
         this.tabOrder = tabOrder;
     }
 
-//    @XmlTransient
-//    @JsonIgnore
-//    public Collection<TabWidget> getTabWidgetCollection() {
-//        return tabWidgetCollection;
-//    }
-//
-//    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
-//        this.tabWidgetCollection = tabWidgetCollection;
-//    }
 
     public Dashboard getDashboardId() {
         return dashboardId;
@@ -196,14 +187,5 @@ public class DashboardTabs implements Serializable {
         return "com.visumbu.vb.model.DashboardTabs[ id=" + id + " ]";
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<TabWidget> getTabWidgetCollection() {
-        return tabWidgetCollection;
-    }
-
-    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
-        this.tabWidgetCollection = tabWidgetCollection;
-    }
 
     }

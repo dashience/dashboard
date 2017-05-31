@@ -108,15 +108,6 @@ public class Dashboard implements Serializable {
         this.modifiedTime = modifiedTime;
     }
 
-//    @XmlTransient
-//    @JsonIgnore
-//    public Collection<DashboardTabs> getDashboardTabsCollection() {
-//        return dashboardTabsCollection;
-//    }
-//
-//    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
-//        this.dashboardTabsCollection = dashboardTabsCollection;
-//    }
 
     public VbUser getUserId() {
         return userId;
@@ -159,14 +150,6 @@ public class Dashboard implements Serializable {
         this.productId = productId;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DashboardTabs> getDashboardTabsCollection() {
-        return dashboardTabsCollection;
-    }
-
-    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
-        this.dashboardTabsCollection = dashboardTabsCollection;
-    }
+  
 
     }

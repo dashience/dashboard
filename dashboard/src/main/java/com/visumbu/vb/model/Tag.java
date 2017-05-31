@@ -120,15 +120,5 @@ public class Tag implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.Tag[ id=" + id + " ]";
     }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<WidgetTag> getWidgetTagCollection() {
-        return widgetTagCollection;
-    }
-
-    public void setWidgetTagCollection(Collection<WidgetTag> widgetTagCollection) {
-        this.widgetTagCollection = widgetTagCollection;
-    }
     
 }

@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author duc-dev-04
  */
 @XmlRootElement(name = "Report")
-public class GeoZipLocationPerformanceReport {
+public class GeoZipLocationPerformanceReport implements GenericReport {
     private List<Column> columns;
     private String reportName;
     private String xmlns;
@@ -28,6 +28,11 @@ public class GeoZipLocationPerformanceReport {
     private String potentialIncompleteData;
     private List<GeoZipLocationPerformanceRow> geoZipLocationPerformanceRows;
 
+    @Override
+    public List getRows() {
+        return geoZipLocationPerformanceRows;
+    }
+    
     public List<GeoZipLocationPerformanceRow> getGeoZipLocationPerformanceRows() {
         return geoZipLocationPerformanceRows;
     }
@@ -125,4 +130,6 @@ public class GeoZipLocationPerformanceReport {
     public String toString() {
         return "GeoZipLocationPerformanceReport{" + "columns=" + columns + ", reportName=" + reportName + ", xmlns=" + xmlns + ", reportTime=" + reportTime + ", timeZone=" + timeZone + ", reportAggregation=" + reportAggregation + ", lastCompletedAvailableDay=" + lastCompletedAvailableDay + ", lastCompletedAvailableHour=" + lastCompletedAvailableHour + ", potentialIncompleteData=" + potentialIncompleteData + ", geoZipLocationPerformanceRows=" + geoZipLocationPerformanceRows + '}';
     }
+
+    
 }

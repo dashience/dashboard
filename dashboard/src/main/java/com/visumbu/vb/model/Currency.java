@@ -115,15 +115,7 @@ public class Currency implements Serializable {
     }
 
     
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencySettings> getAgencySettingsCollection() {
-        return agencySettingsCollection;
-    }
-
-    public void setAgencySettingsCollection(Collection<AgencySettings> agencySettingsCollection) {
-        this.agencySettingsCollection = agencySettingsCollection;
-    }
+   
 
     @Override
     public int hashCode() {

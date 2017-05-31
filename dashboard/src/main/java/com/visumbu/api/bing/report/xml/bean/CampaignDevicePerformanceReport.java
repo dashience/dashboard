@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author duc-dev-04
  */
 @XmlRootElement(name = "Report")
-public class CampaignDevicePerformanceReport {
+public class CampaignDevicePerformanceReport implements GenericReport{
 
     private List<Column> keywordPerformanceReportColumns;
     private String reportName;
@@ -29,6 +29,11 @@ public class CampaignDevicePerformanceReport {
     private String potentialIncompleteData;
     private List<CampaignDevicePerformanceRow> campaignDevicePerformanceRows;
 
+    @Override
+    public List getRows() {
+        return campaignDevicePerformanceRows;
+    }
+    
     public List<CampaignDevicePerformanceRow> getCampaignDevicePerformanceRows() {
         return campaignDevicePerformanceRows;
     }

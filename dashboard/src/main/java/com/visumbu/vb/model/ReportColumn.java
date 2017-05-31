@@ -294,16 +294,6 @@ public class ReportColumn implements Serializable {
     public void setAlignment(String alignment) {
         this.alignment = alignment;
     }
-
-    @XmlTransient
-    @JsonIgnore
-    public ReportWidget getReportId() {
-        return reportId;
-    }
-
-    public void setReportId(ReportWidget reportId) {
-        this.reportId = reportId;
-    }
     
     
 

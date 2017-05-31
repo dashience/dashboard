@@ -129,25 +129,7 @@ public class DealerProduct implements Serializable {
         this.dealerId = dealerId;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DealerProductSource> getDealerProductSourceCollection() {
-        return dealerProductSourceCollection;
-    }
-
-    public void setDealerProductSourceCollection(Collection<DealerProductSource> dealerProductSourceCollection) {
-        this.dealerProductSourceCollection = dealerProductSourceCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DealerProductService> getDealerProductServiceCollection() {
-        return dealerProductServiceCollection;
-    }
-
-    public void setDealerProductServiceCollection(Collection<DealerProductService> dealerProductServiceCollection) {
-        this.dealerProductServiceCollection = dealerProductServiceCollection;
-    }
+  
 
     @Override
     public int hashCode() {

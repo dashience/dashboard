@@ -150,16 +150,7 @@ public class AgencyProduct implements Serializable {
     }
 
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DashboardTabs> getDashboardTabsCollection() {
-        return dashboardTabsCollection;
-    }
-
-    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
-        this.dashboardTabsCollection = dashboardTabsCollection;
-    }
-
+    
     public String getIcon() {
         return icon;
     }

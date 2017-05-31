@@ -121,14 +121,14 @@ public class BingController {
         return null;
     }
 
-    @RequestMapping(value = "accountDevicePerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    AccountDevicePerformanceReport getAccountDevicePerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get30DaysBack();
-        Date endDate = new Date();
-        return bingService.getAccountDevicePerformanceReport(startDate, endDate, accountId, "");
-
-    }
+//    @RequestMapping(value = "accountDevicePerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    AccountDevicePerformanceReport getAccountDevicePerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = new Date();
+//        return bingService.getAccountDevicePerformanceReport(startDate, endDate, accountId, "");
+//
+//    }
 
     @RequestMapping(value = "getCampaignPerformanceReport", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -155,38 +155,38 @@ public class BingController {
     }
 
     //Error
-    @RequestMapping(value = "getAdPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    AdPerformanceReport getAdPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get30DaysBack();
-        Date endDate = new Date();
-        return bingService.getAdPerformanceReport(startDate, endDate, accountId);
-    }
+//    @RequestMapping(value = "getAdPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    AdPerformanceReport getAdPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = new Date();
+//        return bingService.getAdPerformanceReport(startDate, endDate, accountId);
+//    }
 
-    @RequestMapping(value = "getGeoCityLocationPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    GeoCityLocationPerformanceReport getGeoCityLocationPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get30DaysBack();
-        Date endDate = new Date();
-        return bingService.getGeoCityLocationPerformanceReport(startDate, endDate, accountId, "");
-    }
+//    @RequestMapping(value = "getGeoCityLocationPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    GeoCityLocationPerformanceReport getGeoCityLocationPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = new Date();
+//        return bingService.getGeoCityLocationPerformanceReport(startDate, endDate, accountId, "");
+//    }
 
-    @RequestMapping(value = "getGeoZipLocationPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    GeoZipLocationPerformanceReport getGeoZipLocationPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Date startDate = DateUtils.get30DaysBack();
-            Date endDate = new Date();
-            return bingService.getGeoZipLocationPerformanceReport(startDate, endDate, accountId);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+//    @RequestMapping(value = "getGeoZipLocationPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    GeoZipLocationPerformanceReport getGeoZipLocationPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            Date startDate = DateUtils.get30DaysBack();
+//            Date endDate = new Date();
+//            return bingService.getGeoZipLocationPerformanceReport(startDate, endDate, accountId);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ExecutionException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (TimeoutException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

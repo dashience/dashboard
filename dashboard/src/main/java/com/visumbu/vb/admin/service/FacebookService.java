@@ -44,7 +44,7 @@ public class FacebookService {
     public final String BASE_URL_FEED = "https://graph.facebook.com/v2.8/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
 
-    public List<Map<String, String>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String,Object>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         this.ACCESS_TOKEN = accessToken;
         if (aggregation == null) {
             aggregation = "";
@@ -100,7 +100,7 @@ public class FacebookService {
         return Rest.getData(url);
     }
 
-    public List<Map<String, String>> getAdSetPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getAdSetPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -126,21 +126,21 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List<Map<String, String>> dataValueList = new ArrayList();
+            List<Map<String, Object>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
                 List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, String> dataList = getDataValue(data);
+                Map<String, Object> dataList = getDataValue(data);
                 if (actionsArr != null) {
                     dataList.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
                 dataValueList.add(dataList);
             }
             return dataValueList;  //getActions(actionsArr);
@@ -151,7 +151,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getPageReactions(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
+    public List<Map<String, Object>> getPageReactions(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
             //ORGANIC_ACCESS_TOKEN
 
@@ -182,10 +182,10 @@ public class FacebookService {
                 JSONObject jsonObject = (JSONObject) object;
                 Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(jsonObject);
                 List<Map> arrayData = (List<Map>) jsonToMap.get("data");
-                List<Map<String, String>> listData = new ArrayList<>();
+                List<Map<String, Object>> listData = new ArrayList<>();
                 for (Iterator<Map> iterator = arrayData.iterator(); iterator.hasNext();) {
                     Map reactionsData = iterator.next();
-                    Map<String, String> reactionObject = new HashMap<>();
+                    Map<String, Object> reactionObject = new HashMap<>();
                     reactionObject.put("message", reactionsData.get("message") + "");
                     reactionObject.put("updated_time", reactionsData.get("updated_time") + "");
                     reactionObject.put("like", ((Map) ((Map) reactionsData.get("like")).get("summary")).get("total_count") + "");
@@ -205,7 +205,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getPageViews(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
+    public List<Map<String, Object>> getPageViews(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
 
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -232,11 +232,11 @@ public class FacebookService {
                 Map<String, Object> object = arrayData.get(0);
                 List<Map> listArrayObject = (List<Map>) object.get("values");
                 System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                List<Map<String, String>> listData = new ArrayList<>();
+                List<Map<String, Object>> listData = new ArrayList<>();
 
                 for (Iterator<Map> iterator = listArrayObject.iterator(); iterator.hasNext();) {
                     Map next = iterator.next();
-                    Map<String, String> dataMap = new HashMap<>();
+                    Map<String, Object> dataMap = new HashMap<>();
                     System.out.println("value=" + next.get("value"));
                     System.out.println("end_time=" + next.get("end_time"));
                     dataMap.put("value", next.get("value") + "");
@@ -271,9 +271,9 @@ public class FacebookService {
 
                 System.out.println("*********************************");
                 int objectLength = deviceData.size() - 1;
-                List<Map<String, String>> viewByDeviceListData = new ArrayList<>();
+                List<Map<String, Object>> viewByDeviceListData = new ArrayList<>();
                 try {
-                    Map<String, String> objectArray = (Map<String, String>) deviceData.get(objectLength).get("value");
+                    Map<String, Object> objectArray = (Map<String,Object>) deviceData.get(objectLength).get("value");
 
                     objectArray.remove("API");
                     viewByDeviceListData.add(objectArray);
@@ -308,7 +308,7 @@ public class FacebookService {
                 int objectLength = arrayList.size() - 1;
                 System.out.println("Object Length=" + objectLength);
                 Map<String, Object> arrayObject = (Map<String, Object>) arrayList.get(objectLength).get("value");
-                List<Map<String, String>> listData = new ArrayList<>();
+                List<Map<String, Object>> listData = new ArrayList<>();
                 for (Map.Entry<String, Object> entry : arrayObject.entrySet()) {
                     String key = entry.getKey();
                     Object value = entry.getValue();
@@ -334,7 +334,6 @@ public class FacebookService {
                 System.out.println(fbUrl);
                 System.out.println("************************************");
 
-//            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_views_total?access_token=" + ACCESS_TOKEN;
                 String data = Rest.getData(fbUrl);
                 JSONParser parser = new JSONParser();
                 if (data == null) {
@@ -345,7 +344,7 @@ public class FacebookService {
                 Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
                 Map returnMap = new HashMap<>();
                 List fbData = (List<Map>) jsonToMap.get("data");
-                List<Map<String, String>> listData = new ArrayList<>();
+                List<Map<String, Object>> listData = new ArrayList<>();
                 Map fbFansData = (Map) fbData.get(2);
                 List fbLikesList = (List) fbFansData.get("values");
                 System.out.println("=====================");
@@ -353,7 +352,7 @@ public class FacebookService {
                 int objectLength = fbLikesList.size() - 1;
                 try {
                     String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
-                    Map<String, String> returnMapData = new HashMap<>();
+                    Map<String, Object> returnMapData = new HashMap<>();
                     returnMapData.put("page_views", values);
                     listData.add(returnMapData);
                     return listData;
@@ -368,7 +367,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getPageLikes(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getPageLikes(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
 //            String fbUrl = "https://graph.facebook.com/" + accountId + "/insights/page_fans_city?access_token=" + ACCESS_TOKEN;
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -391,7 +390,7 @@ public class FacebookService {
                 Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
                 Map returnMap = new HashMap<>();
                 List<Map> fbData = (List<Map>) jsonToMap.get("data");
-                List<Map<String, String>> listData = new ArrayList<>();
+                List<Map<String, Object>> listData = new ArrayList<>();
                 Map fbFansData = (Map) fbData.get(0);
                 List fbLikesList = (List) fbFansData.get("values");
                 int objectLength = fbLikesList.size() - 1;
@@ -406,7 +405,7 @@ public class FacebookService {
                         Object value = entry.getValue();
                         System.out.print("values ----->");
                         System.out.print(value);
-                        Map<String, String> dataMap = new HashMap<>();
+                        Map<String, Object> dataMap = new HashMap<>();
                         dataMap.put("city", key + "");
                         dataMap.put("likes", value + "");
                         listData.add(dataMap);
@@ -436,13 +435,13 @@ public class FacebookService {
                 Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
                 Map returnMap = new HashMap<>();
                 List fbData = (List<Map>) jsonToMap.get("data");
-                List<Map<String, String>> listData = new ArrayList<>();
+                List<Map<String, Object>> listData = new ArrayList<>();
                 Map fbFansData = (Map) fbData.get(0);
                 List fbLikesList = (List) fbFansData.get("values");
                 int objectLength = fbLikesList.size() - 1;
                 try {
                     String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
-                    Map<String, String> returnMapData = new HashMap<>();
+                    Map<String, Object> returnMapData = new HashMap<>();
                     returnMapData.put("page_fans", values);
                     listData.add(returnMapData);
                     return listData;
@@ -457,7 +456,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getTotalReach(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getTotalReach(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -479,7 +478,7 @@ public class FacebookService {
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
             Map returnMap = new HashMap<>();
             List fbData = (List<Map>) jsonToMap.get("data");
-            List<Map<String, String>> listData = new ArrayList<>();
+            List<Map<String, Object>> listData = new ArrayList<>();
             Map fbFansData = (Map) fbData.get(2);
             List fbLikesList = (List) fbFansData.get("values");
 //            System.out.println("=====================");
@@ -487,7 +486,7 @@ public class FacebookService {
             int ObjectLength = fbLikesList.size() - 1;
             try {
                 String values = ((Map) fbLikesList.get(ObjectLength)).get("value") + "";
-                Map<String, String> returnMapData = new HashMap<>();
+                Map<String, Object> returnMapData = new HashMap<>();
                 returnMapData.put("reach", values);
                 listData.add(returnMapData);
                 System.out.println("=====================");
@@ -502,7 +501,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getTotalEngagements(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String,Object>> getTotalEngagements(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
 
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -524,13 +523,13 @@ public class FacebookService {
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
             Map returnMap = new HashMap<>();
             List fbData = (List<Map>) jsonToMap.get("data");
-            List<Map<String, String>> listData = new ArrayList<>();
+            List<Map<String, Object>> listData = new ArrayList<>();
             Map fbFansData = (Map) fbData.get(2);
             List fbLikesList = (List) fbFansData.get("values");
             int objectLength = fbLikesList.size() - 1;
             try {
                 String values = ((Map) fbLikesList.get(objectLength)).get("value") + "";
-                Map<String, String> returnMapData = new HashMap<>();
+                Map<String, Object> returnMapData = new HashMap<>();
                 returnMapData.put("engagements", values);
                 listData.add(returnMapData);
                 return listData;
@@ -543,7 +542,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getPostPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
+    public List<Map<String, Object>> getPostPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -565,10 +564,10 @@ public class FacebookService {
             Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
             Map returnMap = new HashMap<>();
             List<Map> fbData = (List<Map>) jsonToMap.get("data");
-            List<Map<String, String>> listData = new ArrayList<>();
+            List<Map<String, Object>> listData = new ArrayList<>();
             for (Iterator<Map> iterator = fbData.iterator(); iterator.hasNext();) {
                 Map fbDataMap = iterator.next();
-                Map<String, String> fbDataObj = new HashMap<>();
+                Map<String, Object> fbDataObj = new HashMap<>();
                 fbDataObj.put("message", fbDataMap.get("message") + "");
                 if (fbDataMap.containsKey("like")) {
                     List<Map> data2 = new ArrayList<>();
@@ -598,13 +597,13 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
+    public List<Map<String,Object>> getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 
             if (productSegment.equalsIgnoreCase("device")) {
-                List<Map<String, String>> accountDevicePerformance = getDevicePerformance(accountId, startDate, endDate, aggregation);
+                List<Map<String,Object>> accountDevicePerformance = getDevicePerformance(accountId, startDate, endDate, aggregation);
                 return accountDevicePerformance;
             } else {
 
@@ -636,21 +635,21 @@ public class FacebookService {
                 Object jsonObj = parser.parse(fbData);
                 JSONObject array = (JSONObject) jsonObj;
                 JSONArray dataArr = (JSONArray) array.get("data");
-                List<Map<String, String>> dataValueList = new ArrayList();
+                List<Map<String, Object>> dataValueList = new ArrayList();
                 for (int i = 0; i < dataArr.size(); i++) {
                     JSONObject data = (JSONObject) dataArr.get(i);
                     JSONArray actionsArr = (JSONArray) data.get("actions");
                     //JSONObject actions = (JSONObject) actionsArr.get(0);
                     List<Map<String, String>> returnList = new ArrayList<>();
                     JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                    Map<String, String> dataList = getDataValue(data);
+                    Map<String, Object> dataList = getDataValue(data);
                     if (actionsArr != null) {
                         dataList.putAll(getActionsData(actionsArr, "actions_"));
                     }
                     if (costPerActionTypeArr != null) {
                         dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
                     dataValueList.add(dataList);
                 }
                 return dataValueList;  //getActions(actionsArr);
@@ -664,7 +663,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getCampaignPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getCampaignPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -694,23 +693,24 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List<Map<String, String>> dataValueList = new ArrayList();
+            List<Map<String, Object>> dataValueList = new ArrayList();
+            Map<String, Object> dataMap=new HashMap();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
-                List<Map<String, String>> returnList = new ArrayList<>();
+//                List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, String> dataList = getDataValue(data);
+                dataMap = getDataValue(data);
                 if (actionsArr != null) {
-                    dataList.putAll(getActionsData(actionsArr, "actions_"));
+                    dataMap.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
-                    dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+                    dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr")+""));
 
-                dataValueList.add(dataList);
+                dataValueList.add(dataMap);
             }
             return dataValueList;  //getActions(actionsArr);
             //return getActions(actions); //array.get("data");
@@ -722,7 +722,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getAdPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getAdPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -749,21 +749,21 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List<Map<String, String>> dataValueList = new ArrayList();
+            List<Map<String, Object>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
                 List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, String> dataList = getDataValue(data);
+                Map<String, Object> dataList = getDataValue(data);
                 if (actionsArr != null) {
                     dataList.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
                 dataValueList.add(dataList);
             }
             return dataValueList;  //getActions(actionsArr);
@@ -776,7 +776,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getDevicePerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, Object>> getDevicePerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -798,21 +798,22 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List<Map<String, String>> dataValueList = new ArrayList();
+            List<Map<String, Object>> dataValueList = new ArrayList();
+            Map<String, Object> dataList=new HashMap();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
                 List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, String> dataList = getDataValue(data);
+                dataList = getDataValue(data);
                 if (actionsArr != null) {
                     dataList.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
                 dataValueList.add(dataList);
             }
             return dataValueList;
@@ -825,7 +826,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getAgePerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String,Object>> getAgePerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -848,21 +849,21 @@ public class FacebookService {
                 Object jsonObj = parser.parse(fbData);
                 JSONObject array = (JSONObject) jsonObj;
                 JSONArray dataArr = (JSONArray) array.get("data");
-                List<Map<String, String>> dataValueList = new ArrayList();
+                List<Map<String, Object>> dataValueList = new ArrayList();
                 for (int i = 0; i < dataArr.size(); i++) {
                     JSONObject data = (JSONObject) dataArr.get(i);
                     JSONArray actionsArr = (JSONArray) data.get("actions");
                     //JSONObject actions = (JSONObject) actionsArr.get(0);
                     List<Map<String, String>> returnList = new ArrayList<>();
                     JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                    Map<String, String> dataList = getDataValue(data);
+                    Map<String, Object> dataList = getDataValue(data);
                     if (actionsArr != null) {
                         dataList.putAll(getActionsData(actionsArr, "actions_"));
                     }
                     if (costPerActionTypeArr != null) {
                         dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
                     dataValueList.add(dataList);
                 }
                 return dataValueList;
@@ -876,7 +877,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getGenderPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String,Object>> getGenderPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -899,21 +900,21 @@ public class FacebookService {
                 Object jsonObj = parser.parse(fbData);
                 JSONObject array = (JSONObject) jsonObj;
                 JSONArray dataArr = (JSONArray) array.get("data");
-                List<Map<String, String>> dataValueList = new ArrayList<>();
+                List<Map<String, Object>> dataValueList = new ArrayList<>();
                 for (int i = 0; i < dataArr.size(); i++) {
                     JSONObject data = (JSONObject) dataArr.get(i);
                     JSONArray actionsArr = (JSONArray) data.get("actions");
                     //JSONObject actions = (JSONObject) actionsArr.get(0);
                     List<Map<String, String>> returnList = new ArrayList<>();
                     JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                    Map<String, String> dataList = getDataValue(data);
+                    Map<String,Object> dataList = getDataValue(data);
                     if (actionsArr != null) {
                         dataList.putAll(getActionsData(actionsArr, "actions_"));
                     }
                     if (costPerActionTypeArr != null) {
                         dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
                     dataValueList.add(dataList);
                 }
                 return dataValueList;
@@ -927,7 +928,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String, String>> getPostPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, Object>> getPostPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -955,17 +956,17 @@ public class FacebookService {
             Object jsonObj = parser.parse(fbData);
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
-            List<Map<String, String>> dataValueList = new ArrayList();
+            List<Map<String, Object>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
-                Map<String, String> dataList = getDataValue(data);
-                dataList.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataList.get("created_time").replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM/dd/yyyy HH:mm"));
+                Map<String, Object> dataList = getDataValue(data);
+                dataList.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataList.get("created_time")+"".replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM/dd/yyyy HH:mm"));
                 dataList.put("date", startDateStr);
                 dataList.put("reactions", getActionsCount((JSONObject) data.get("reactions")) + "");
                 dataList.put("likes", getActionsCount((JSONObject) data.get("likes")) + "");
                 dataList.put("comments", getActionsCount((JSONObject) data.get("comments")) + "");
                 dataList.put("shares", getShareCount((JSONObject) data.get("shares")) + "");
-                dataList.put("engagements", (Long.parseLong(dataList.get("shares")) + Long.parseLong(dataList.get("likes")) + Long.parseLong(dataList.get("comments"))) + "");
+                dataList.put("engagements", (Long.parseLong(dataList.get("shares")+"") + Long.parseLong(dataList.get("likes")+"") + Long.parseLong(dataList.get("comments")+"")) + "");
                 dataValueList.add(dataList);
             }
             return dataValueList;
@@ -1022,10 +1023,10 @@ public class FacebookService {
 //    }
 //    
 
-    private Map<String, String> getDataValue(JSONObject data) {
-        List<Map<String, String>> returnList = new ArrayList<>();
+    private Map<String, Object> getDataValue(JSONObject data) {
+        List<Map<String, Object>> returnList = new ArrayList<>();
         Set<String> keySet = data.keySet();
-        Map<String, String> dataMap = new HashMap<>();
+        Map<String, Object> dataMap = new HashMap<>();
         for (Iterator<String> iterator = keySet.iterator(); iterator.hasNext();) {
             String key = iterator.next();
             if (!(data.get(key) instanceof JSONArray || data.get(key) instanceof JSONObject)) {
@@ -1067,7 +1068,7 @@ public class FacebookService {
         return actions.get("count");
     }
 
-    public List<Map<String, String>> getInstagramPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
+    public List<Map<String, Object>> getInstagramPerformance(Long accountId, Date startDate, Date endDate, String aggregation) {
         try {
             String url = BASE_URL + accountId + "/insights?"
                     //+ "fields=campaigns{insights{campaign_name,clicks,impressions,ctr,cpc,actions,cost_per_action_type,spend,account_name}}"
@@ -1094,10 +1095,10 @@ public class FacebookService {
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
 
-            List<Map<String, String>> dataValueList = new ArrayList();
+            List<Map<String, Object>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
-                Map<String, String> dataList = getDataValue(data);
+                Map<String,Object> dataList = getDataValue(data);
 
                 dataValueList.add(dataList);
             }
@@ -1133,16 +1134,16 @@ public class FacebookService {
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
                 List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, String> dataList = getDataValue(data);
+                Map<String, Object> dataList = getDataValue(data);
                 if (actionsArr != null) {
                     dataList.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("date_start", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_start"), "yyyy-MM-dd"), "MM/dd/yyyy"));
-                dataList.put("date_stop", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_stop"), "yyyy-MM-dd"), "MM/dd/yyyy"));
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")));
+                dataList.put("date_start", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_start")+"", "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataList.put("date_stop", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_stop")+"", "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
                 dataValueList.add(dataList);
             }
             return dataValueList;

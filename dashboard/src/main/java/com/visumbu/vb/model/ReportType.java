@@ -118,15 +118,6 @@ public class ReportType implements Serializable {
         this.createdTime = createdTime;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Report> getReportCollection() {
-        return reportCollection;
-    }
-
-    public void setReportCollection(Collection<Report> reportCollection) {
-        this.reportCollection = reportCollection;
-    }
 
     public VbUser getUserId() {
         return userId;

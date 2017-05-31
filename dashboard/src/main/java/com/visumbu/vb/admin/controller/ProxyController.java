@@ -212,9 +212,16 @@ public class ProxyController {
         String reportName = request.getParameter("dataSetReportName");
         String dataSetId = request.getParameter("dataSetId");
 
-        String pinterestAccessToken = request.getParameter("pinterestAccessToken");
+       
+        String accountIdStr = request.getParameter("accountId");
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String accessToken=getAccountId(accountProperty, "pinterestAccessToken");
 
-        if (pinterestAccessToken == null) {
+
+        System.out.println("Pinterst access token--->"+accessToken);
+        if (accessToken == null) {
             return null;
         } else {
             Integer dataSetIdInt = null;
@@ -234,8 +241,11 @@ public class ProxyController {
             }
             if (reportName.equalsIgnoreCase("getTopBoards")) {
                 try {
-                    String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=" + pinterestAccessToken
+                    String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=" + accessToken
                             + "&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
+                    System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&PINTEREST&&&&&&&&");
+                    System.out.println(fbUrl);
+                    
                     String data = Rest.getData(fbUrl);
                     JSONParser parser = new JSONParser();
                     Object jsonObj = parser.parse(data);
@@ -271,7 +281,7 @@ public class ProxyController {
             if (reportName.equalsIgnoreCase("getTopPins")) {
                 try {
                     String fbUrl = "https://api.pinterest.com/v1/me/pins/?"
-                            + "access_token=" + pinterestAccessToken
+                            + "access_token=" + accessToken
                             + "&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Ccreator%2Coriginal_link%2Cmetadata%2Cmedia";
                     String data = Rest.getData(fbUrl);
                     JSONParser parser = new JSONParser();
@@ -304,7 +314,7 @@ public class ProxyController {
             }
             if (reportName.equalsIgnoreCase("getOrganicData")) {
                 try {
-                    String fbUrl = "https://api.pinterest.com/v1/me/?access_token=" + pinterestAccessToken
+                    String fbUrl = "https://api.pinterest.com/v1/me/?access_token=" + accessToken
                             + "&fields=first_name%2Cid%2Clast_name%2Curl%2Ccounts";
                     String data = Rest.getData(fbUrl);
                     JSONParser parser = new JSONParser();
@@ -485,6 +495,7 @@ public class ProxyController {
             String dataSetId = request.getParameter("dataSetId");
             String dataSetReportName = request.getParameter("dataSetReportName");
             String timeSegment = request.getParameter("timeSegment");
+            String productSegment=request.getParameter("productSegment");
             if (timeSegment == null) {
                 timeSegment = "daily";
             }
@@ -541,7 +552,7 @@ public class ProxyController {
                 Long bingAccountIdLong = Long.parseLong(bingAccountId);
                 Map returnMap = new HashMap();
                 List<Map<String, Object>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate,
-                        endDate, timeSegment);
+                        endDate, timeSegment,productSegment);
                 System.out.println("-------------------------------");
                 System.out.println(data);
                 List<ColumnDef> columnDefs = getColumnDefObject(data);
@@ -855,7 +866,7 @@ public class ProxyController {
         String linkedinAccountId=getAccountId(accountProperty, "linkedinAccountId");
         Long linkedInaccountId=Long.parseLong(linkedinAccountId);
         
-        List<Map<String, String>> data = linkedinService.get(accessToken, linkedInaccountId,dataSetReportName,
+        List<Map<String, Object>> data = linkedinService.get(accessToken, linkedInaccountId,dataSetReportName,
            startDate, endDate, timeSegment, productSegment);
         log.debug(data);
         System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
@@ -865,7 +876,7 @@ public class ProxyController {
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
         Map returnMap = new HashMap();
-        List<ColumnDef> columnDefs = getColumnDef(data);
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
        
         returnMap.put("data", data);
@@ -943,7 +954,7 @@ public class ProxyController {
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
         log.debug("Start Date ---- " + startDate);
-        List<Map<String, String>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
+        List<Map<String, Object>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
                 facebookOrganicAccountIdInt, startDate, endDate, timeSegment, productSegment);
         log.debug(data);
         System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
@@ -953,7 +964,7 @@ public class ProxyController {
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
         Map returnMap = new HashMap();
-        List<ColumnDef> columnDefs = getColumnDef(data);
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
         if (fieldsOnly != null) {
             return returnMap;

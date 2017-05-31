@@ -428,16 +428,6 @@ public class Dealer implements Serializable {
         return "com.visumbu.wa.model.Dealer[ id=" + id + " ]";
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DealerSite> getDealerSiteCollection() {
-        return dealerSiteCollection;
-    }
-
-    public void setDealerSiteCollection(Collection<DealerSite> dealerSiteCollection) {
-        this.dealerSiteCollection = dealerSiteCollection;
-    }
-
     public String getDealerGroup() {
         return dealerGroup;
     }
@@ -454,15 +444,6 @@ public class Dealer implements Serializable {
         this.oem = oem;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DealerProduct> getDealerProductCollection() {
-        return dealerProductCollection;
-    }
-
-    public void setDealerProductCollection(Collection<DealerProduct> dealerProductCollection) {
-        this.dealerProductCollection = dealerProductCollection;
-    }
 
     public String getAccountmanagerEmail() {
         return accountmanagerEmail;

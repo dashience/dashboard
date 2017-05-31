@@ -315,24 +315,4 @@ public class Report implements Serializable {
         return "Report{" + "id=" + id + ", reportName=" + reportName + ", reportTitle=" + reportTitle + ", createdTime=" + createdTime + ", status=" + status + ", datasource=" + datasource + ", dataset=" + dataset + ", dimension=" + dimension + ", filter=" + filter + ", sort=" + sort + ", displayColumns=" + displayColumns + ", displayOrder=" + displayOrder + ", remarks=" + remarks + ", defaultCount=" + defaultCount + ", icon=" + icon + ", description=" + description + ", logo=" + logo + ", reportTypeId=" + reportTypeId + ", createdBy=" + createdBy + '}';
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<ReportWidget> getReportWidgetCollection() {
-        return reportWidgetCollection;
-    }
-
-    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
-        this.reportWidgetCollection = reportWidgetCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Scheduler> getSchedulerCollection() {
-        return schedulerCollection;
-    }
-
-    public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
-        this.schedulerCollection = schedulerCollection;
-    }
-
 }
