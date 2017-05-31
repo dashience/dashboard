@@ -27,6 +27,6 @@ public class Data {
 
     @Override
     public String toString() {
-        return "Data{" + "value=" + value + '}';
+        return value;
     }
 }

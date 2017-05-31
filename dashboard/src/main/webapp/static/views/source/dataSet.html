@@ -176,28 +176,44 @@
 
                             <div ng-show="dataSetFlag">
                                 <label>Report</label>
-                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegemens(); refreshDataSet(dataSet)">
+                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(); refreshDataSet(dataSet)">
                                     <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                    <option ng-repeat="reportPerformances in report track by $index" value="{{reportPerformances.type}}">
+                                    <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
                                         {{reportPerformances.name}}</option>
                                 </select>
 
                                 <label ng-show="timeSegFlag">Time Segments</label>
 
-                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
-                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                    <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
-                                        {{timeSegments.name}}</option>
+                                <!--                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
+                                                                    <option value="" selected="selected" ng-disabled="false">None</option>
+                                                                    <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
+                                                                        {{timeSegments.name}}</option>
+                                                                </select>-->
+                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" 
+                                ng-change="refreshDataSet(dataSet)" 
+                                ng-options="timeSegments.name for timeSegments in timeSegment track by timeSegments.name">
                                 </select>
-                                <label ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>
+                                <!--ng-if="dataSet.reportName == 'campaignPerformance'"-->
+                                <!--<label ng-if="!(dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>-->
+                                <label ng-show="productSegFlag" >Product Segments</label>
+                                <!--                                <select ng-show ="productSegFlag" class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);">
+                                                                    <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
+                                                                </select>-->
 
-                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet)" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">
-                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                    <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
+                                <select  ng-show="productSegFlag" class="form-control" ng-model="dataSet.productSegment" 
+                                ng-change="refreshDataSet(dataSet)"
+                                ng-options="productSegments.name for productSegments in productSegment track by productSegments.name">
+                                    
                                 </select>
+
+
+                                <!--                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">
+                                                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                                                    <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
+                                                                </select>-->
 
                                 <label ng-show="nwStatusFlag">Network Type</label>
-                                <select ng-show="nwStatusFlag" class="form-control"ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType" class="form-control">
+                                <select ng-show="nwStatusFlag" class="form-control"ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType">
                                     <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>
                                 </select>
@@ -216,7 +232,7 @@
                             <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
                         </div>
 
-                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter' || dataSet.dataSourceId.dataSourceType === 'linkedin'">
+                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter'">
                             <label>File Url</label>
                             <div>
                                 <input type="text" class="form-control" ng-model="dataSet.url">

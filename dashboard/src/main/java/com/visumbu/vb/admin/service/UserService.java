@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.DealerDao;
 import com.visumbu.vb.admin.dao.UserDao;
+import com.visumbu.vb.bean.AgencyBean;
 import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.model.Account;
@@ -114,10 +115,19 @@ public class UserService {
         return loginUserBean;
     }
 
+    private AgencyBean toAgencyBean(Agency agency) {
+        AgencyBean agencyBean = new AgencyBean();
+        agencyBean.setAgencyName(agencyBean.getAgencyName());
+        agencyBean.setDescription(agencyBean.getDescription());
+        agencyBean.setEmail(agencyBean.getEmail());
+        agencyBean.setStatus(agencyBean.getStatus());
+        return agencyBean;
+    }
+    
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
-        userBean.setAgencyId(teUser.getAgencyId());
+        userBean.setAgencyId(toAgencyBean(teUser.getAgencyId()));
 //        userBean.setPassword(teUser.getPassword());
         userBean.setFailLoginCount(teUser.getFailedLoginCount());
         userBean.setIsAdmin(teUser.getIsAdmin() != null && teUser.getIsAdmin() == true ? "admin" : "");
