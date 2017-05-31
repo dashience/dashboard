@@ -28,27 +28,27 @@ and open the template in the editor.
         float: left;
     }
     .col-fixed-3 {
-        width: 285px !important;
+        width: 320px !important;
         margin-right: 20px;
         float: left;
     }
     .col-fixed-4 {
-        width: 380px !important;
+        width: 430px !important;
         margin-right: 20px;
         float: left;
     }
     .col-fixed-6 {
-        width: 570px !important;
+        width: 650px !important;
         margin-right: 20px;
         float: left;
     }
     .col-fixed-8 {
-        width: 760px !important;
+        width: 870px !important;
         margin-right: 20px;
         float: left;
     }
     .col-fixed-12 {
-        width: 1140px !important;
+        width: 1300px !important;
         margin-right: 20px;
         float: left;
     }
@@ -64,10 +64,13 @@ and open the template in the editor.
     
     .panel-body {
         padding:5px 5px !important;
+        border: none !important;
     }
-    
+    .content {
+        width:1300px;
+    }    
 .wrapper {
-    width:1400px;
+    width:1350px;
     margin:0;
     background:#fff;
     border:none;
@@ -75,11 +78,9 @@ and open the template in the editor.
 }
 
 .header-pdf {
-    padding:0px;
-    margin-bottom:0px;
-    min-height:100px;
-    margin-top:0px;
-    border-bottom:1px solid #ddd;
+padding: 0px;
+margin-bottom: 5px;
+margin-top: 0px;
 }
 .head-title h2 {
     font-size:18pt;
@@ -88,40 +89,46 @@ and open the template in the editor.
     text-transform: uppercase;
     font-weight:600;
 }
-
 .sub-header {
-    background:#f1f1f1;
-    min-height:120px;
+    border:1px solid #eaeaea;
+    min-height:80px;
     padding:5px 0px;
     margin-top:10px;
     margin-bottom: 10px;
     overflow: hidden;
 }
 
+.h-150 {
+    min-height: 110px;
+}
+
+.hpanel .stats {
+    border:none !important;
+}
+
+.hpanel {
+    border: 1px solid #eaeaea;
+    margin-bottom: 15px;
+}
 .pull-right {
     float: right;
 }
-
 .section-right-block {
 padding: 5px 10px;
-width: 237px;
 background: #fff;
+color: #6abe1e;
 }
-.section-right-block h2 {
-font-family: 'enigmaticregular';
-font-weight: normal !important;
-}
-
-
 img {
     max-width:100%;
 }
 
+.section-block h4 {
+    color: #6abe22;
+}
 
 svg {
      max-width:100%;
 }
-
 .head-title {
     background: #555 !important;
     color: #fff;
@@ -130,33 +137,37 @@ svg {
     border-radius: 2px;
 }
 
+@media print
+   {
+      .pdf {display:none !important;}
+   }
+   
+
 </style>
 
 <!--    </head>-->
 <div ng-controller="PdfController">
     <div class="wrapper">
     <div class="header-pdf">        
-            <img src="static/img/logos/dashience-logo.jpg" width="120"> 
-            <img src="{{userAccountLogo}}" width="100"> 
+            <img src="static/img/logos/dashience-logo.jpg" width="80"> 
+            <img src="{{userAccountLogo}}" width="50"> 
     </div>
     <div class="head-title">
-        <h2>Month End Report</h2>
+        <h2>{{userProductName}}</h2>
     </div>    
     <div class="sub-header">
         <div class="col-md-12">
             
             <div class="section-block pull-left">
-                <h6>{{reportStartDate}} - {{reportEndDate}}</h6>
-                <h5>{{userProductName}}</h5>
-                <h6>Budget $1500</h6>
+                <h4>{{reportStartDate}} - {{reportEndDate}}</h4>
                 <h2><strong>{{userAccountName}}</strong></h2>
             </div>
             
             <div class="pull-right">
                 <div class="section-right-block">
-                    <h4>Digital Advisor</h4>
-                    <p>Email:info@dashience.com</p>
-                    <p>Phone:773-446-7565</p>
+                    
+                    <p>Email: info@dashience.com<br>Phone: 773-446-7565</p>
+                    
                 </div>
             </div>
             
@@ -166,7 +177,7 @@ svg {
     
         <div class="content">
             <div class="row">
-                <button class="btn btn-default btn-xs" ng-click="downloadUiPdf()">Pdf</button>
+                <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
                 <div  ng-repeat="widget in pdfWidgets">
 
                     <!--                    <div class="col-md-{{widget.width}}" ng-if="widget.chartType == 'ticker'">
@@ -186,22 +197,22 @@ svg {
                             <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'line'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'bar'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'pie'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body"  ng-if="widget.chartType === 'area'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
@@ -220,7 +231,7 @@ svg {
                             </div>
                         </div>
                         <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1140 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
                                 <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div> 
