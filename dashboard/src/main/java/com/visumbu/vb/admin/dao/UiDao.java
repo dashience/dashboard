@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
@@ -31,8 +32,10 @@ import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
@@ -428,6 +431,7 @@ public class UiDao extends BaseDao {
     }
 
     public DataSet getDataSetById(Integer dataSetId) {
+        System.out.println("datasetID ---> " + dataSetId);
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
@@ -553,62 +557,10 @@ public class UiDao extends BaseDao {
     }
 
     public List<DatasetColumns> getDatasetColumnsByDatasetId(Integer datasetId) {
-        Query query = sessionFactory.getCurrentSession().getNamedQuery("DatasetColumns.findByDatasetId");
+        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", datasetId);
         return query.list();
-    }
-
-    public DatasetColumns createColumns(DatasetColumnBean dataSet) {
-        System.out.println("create columns function");
-        List<DatasetColumnBean> datasetColumnList = dataSet.getTableColumns();
-        System.out.println("datasetColumnList ----> " + datasetColumnList);
-        DataSet dataset = getDataSetById(dataSet.getDatasetId());
-        DatasetColumns datasetColumns = new DatasetColumns();
-//        datasetColumns.setId(1);
-        datasetColumns.setFormula(dataSet.getFormula());
-        datasetColumns.setFieldName(dataSet.getColumn());
-        datasetColumns.setFieldType(dataSet.getFieldType());
-        datasetColumns.setDisplayName(dataSet.getColumn());
-        datasetColumns.setStatus(dataSet.getStatus());
-        datasetColumns.setDatasetId(dataset);
-        saveOrUpdate(datasetColumns);
-
-        for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
-            System.out.println("create Data set columns ----> ");
-            DatasetColumnBean datasetColumn = datasetColumnBean.next();
-            DatasetColumns datasetFields = new DatasetColumns();
-            System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
-            datasetFields.setFieldName(datasetColumn.getFieldName());
-            datasetFields.setDisplayName(datasetColumn.getDisplayName());
-            datasetFields.setFieldType(datasetColumn.getFieldType());
-            datasetFields.setDatasetId(dataset);
-            saveOrUpdate(datasetFields);
-        }
-        return datasetColumns;
-    }
-
-    public DatasetColumns updateColumns(DatasetColumnBean dataSet) {
-        List<DatasetColumnBean> datasetColumnList = dataSet.getTableColumns();
-        DataSet dataset = getDataSetById(dataSet.getDatasetId());
-        DatasetColumns datasetColumns = new DatasetColumns();
-        datasetColumns.setFormula(dataSet.getFormula());
-        datasetColumns.setFieldType(dataSet.getFieldType());
-        datasetColumns.setFieldName(dataSet.getColumn());
-        datasetColumns.setDisplayName(dataSet.getColumn());
-        datasetColumns.setStatus(dataSet.getStatus());
-        datasetColumns.setDatasetId(dataset);
-        saveOrUpdate(datasetColumns);
-        for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
-            DatasetColumnBean datasetColumn = datasetColumnBean.next();
-            DatasetColumns datasetFields = new DatasetColumns();
-            datasetFields.setId(datasetColumn.getId());
-            datasetFields.setFieldName(datasetColumn.getFieldName());
-            datasetFields.setDisplayName(datasetColumn.getDisplayName());
-            datasetFields.setFieldType(datasetColumn.getFieldType());
-            datasetFields.setDatasetId(dataset);
-            saveOrUpdate(datasetFields);
-        }
-        return datasetColumns;
     }
 
     public List<Currency> getCurrenciesTypes() {
@@ -626,6 +578,34 @@ public class UiDao extends BaseDao {
 
     }
 
+    public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
+        String queryStr = "Select t FROM TabWidget t where t.dataSetId.id = :datasetId and id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", widgetId);
+        query.setParameter("datasetId", datasetId);
+        List tabWidgetData = query.list();
+        if (tabWidgetData == null || tabWidgetData.isEmpty()) {
+            return null;
+        }
+        System.out.println("tabWidgetData ---> " + tabWidgetData);
+        TabWidget tabWidget = (TabWidget) tabWidgetData.get(0);
+        tabWidget.setColumns(getColumns(tabWidget));
+        return tabWidget;
+    }
+
+    public List getDatasetById(Integer datasetId) {
+        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", datasetId);
+        return query.list();
+    }
+
+    public List<Account> getAccountById(Integer id) {
+        String queryStr = "select d from Account d where d.id = :accountId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", id);
+        return query.list();
+    }
     //get AgencyBYUserId
 //    public Agency getAgencyByUserId(VbUser user) {
 //        String queryStr = "select a from Agency a where a.userId = :user";

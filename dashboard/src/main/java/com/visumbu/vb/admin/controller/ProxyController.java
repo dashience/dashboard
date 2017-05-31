@@ -179,10 +179,10 @@ public class ProxyController {
                     }
                 }
             }
-            List<Map<String, String>> dataSet = CsvDataSet.CsvDataSet(connectionString);
+            List<Map<String, Object>> dataSet = CsvDataSet.CsvDataSet(connectionString);
             Map returnMap = new HashMap<>();
             returnMap.put("data", dataSet);
-            returnMap.put("columnDefs", getColumnDef(dataSet));
+            returnMap.put("columnDefs", getColumnDefObject(dataSet));
             return returnMap;
         } catch (IOException ex) {
 

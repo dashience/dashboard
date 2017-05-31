@@ -253,13 +253,6 @@ public class Agency implements Serializable {
         this.schedulerCollection = schedulerCollection;
     }
 
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
-    }
 
     @XmlTransient
     @JsonIgnore
@@ -269,5 +262,13 @@ public class Agency implements Serializable {
 
     public void setAgencySettingsCollection(Collection<AgencySettings> agencySettingsCollection) {
         this.agencySettingsCollection = agencySettingsCollection;
+    }
+
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
     }
 }

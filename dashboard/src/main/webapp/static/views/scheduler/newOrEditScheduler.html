@@ -226,10 +226,10 @@
                                                         <!--                                                        <label>Custom Range</label>-->
                                                         <a class="pull-right custom-daterange-box" id="customDateRange" style="padding: 6px !important;">
                                                             <span class="date-border">
-                                                                
+
                                                                 <!--{{startDate}}-->
                                                                 <!--{{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}}--> 
-                                                                {{scheduler.customStartDate?scheduler.customStartDate:startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate?scheduler.customEndDate:endDate | date: "MM/dd/yyyy"}} 
+                                                                {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
                                                                 <!--<i class="custom-daterange-box-icon fa fa-caret-down"></i>-->
                                                             </span>
                                                         </a> 
@@ -283,25 +283,12 @@
                                                         Years
                                                     </a>
                                                 </li>
+                                                <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widget)">None</a></li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!--                            <div class="form-group" ng-show="scheduler.dateRangeName === 'Custom'">
-                                                            <div class="col-md-12">
-                                                                <label>Custom Range</label>
-                                                                <div>
-                                                                    <a class="pull-right custom-daterange-box" id="customDateRange">
-                                                                        <span class="date-border">
-                                                                            {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                                                                            <i class="custom-daterange-box-icon fa fa-caret-down"></i>
-                                                                        </span>
-                                                                    </a> 
-                                                                </div>
-                                                            </div>
-                                                        </div>-->
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <label>Email Ids</label>

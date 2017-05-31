@@ -16,7 +16,24 @@ public class ShuntingYard {
 
     private enum Operator {
 
-        ADD(1), SUBTRACT(2), MULTIPLY(3), DIVIDE(4), NOTEQUALS(5), EQUALS(8), LESSTHAN(9), GREATERTHAN(10), LESSTHANOREQUAL(11), GREATERTHANOREQUAL(12), EMPTY(13), NOTEMPTY(14), LIKE(15), NOTLIKE(16), NULL(17), NOTNULL(18), AND(6), OR(7);
+        AND(1),
+        OR(1),
+        NOTNULL(3),
+        NULL(4),
+        NOTLIKE(5),
+        LIKE(6),
+        NOTEMPTY(7),
+        EMPTY(8),
+        LESSTHANOREQUAL(9),
+        GREATERTHANOREQUAL(10),
+        LESSTHAN(11),
+        GREATERTHAN(12),
+        NOTEQUALS(13),
+        EQUALS(14),
+        SUBTRACT(15),
+        ADD(16),
+        MULTIPLY(17),
+        DIVIDE(18);
         final int precedence;
 
         Operator(int p) {
@@ -56,8 +73,15 @@ public class ShuntingYard {
         StringBuilder output = new StringBuilder();
         List<String> outputList = new ArrayList<>();
         Deque<String> stack = new LinkedList<>();
-
-        for (String token : infix.split("\\s")) {
+        String input = infix;
+        input = input.replaceAll("\\(", "\\( ");
+        input = input.replaceAll("\\)", " \\)");
+        input = input.replaceAll("-", " - ");
+        input = input.replaceAll("\\+", " + ");
+        input = input.replaceAll("\\*", " * ");
+        input = input.replaceAll("/", " / ");
+        System.out.println("input infix ----> " + input);
+        for (String token : input.split("\\s+")) {
             // operator
             if (ops.containsKey(token)) {
                 while (!stack.isEmpty() && isHigerPrec(token, stack.peek())) {
@@ -82,7 +106,6 @@ public class ShuntingYard {
 
                 // digit
             } else {
-
                 output.append(token).append(' ');
                 outputList.add(token);
             }
@@ -94,18 +117,20 @@ public class ShuntingYard {
             outputList.add(popedOperator);
         }
         System.out.println(outputList);
+        System.out.println("output ---> " + output);
         return output.toString();
     }
 
     public static void main(String argv[]) {
         if (1 == 1) {
             // System.out.println("'john'".substring(1, "'john'".length() - 1));
-            System.out.println(postfix("ga:dayOfWeekName LIKE 'M%'"));
-            return;
+            //System.out.println(postfix("( currentSalary + prevSalary )"));
+            //return;
         }
         String[] firstnames = {"john", "david", "mathew", "john", "jerry", "Uffe", "Sekar", "Suresh", "Ramesh", "Raja"};
         String[] secondnames = {"Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty"};
-        String[] salary = {"10000", "20000", "15000", "5323", "2000", "5346", "1000", "4889", "7854", "2438"};
+        String[] currentSalary = {"10000", "20000", "15000", "5323", "2000", "5346", "1000", "4889", "7854", "2438"};
+        String[] prevSalary = {"5000", "2000", "4000", "4323", "200", "346", "800", "5889", "6854", "1438"};
         String[] location = {"India", "Iceland", "Mexico", "Slovenia", "Poland", "Australia", "1000", "USA", "England", "Canada"};
 
         List<Map<String, Object>> list = new ArrayList<>();
@@ -113,14 +138,70 @@ public class ShuntingYard {
             Map<String, Object> dataMap = new HashMap<>();
             dataMap.put("firstname", firstnames[i]);
             dataMap.put("secondname", secondnames[i]);
-            dataMap.put("salary", salary[i]);
+            dataMap.put("currentSalary", currentSalary[i]);
+            dataMap.put("prevSalary", prevSalary[i]);
             dataMap.put("location", location[i]);
             list.add(dataMap);
         }
-        String rulesInfix = "( ( firstname = 'john' AND secondname = 'Eleven' ) OR ( salary = 15000 AND location = 'Mexico' OR ( firstname = 'mathew' AND secondname = 'Thirteen' ) ) )";
-        System.out.println(applyExpression(list, rulesInfix));
+        String rulesInfix = " ( ( currentSalary + prevSalary / 100) + firstname ) + secondname ";
+        for (Iterator<Map<String, Object>> iterator = list.iterator(); iterator.hasNext();) {
+            Map<String, Object> data = iterator.next();
+            String postFix = postfix(rulesInfix);
+            System.out.println("POST FIX ===> " + postFix);
+            System.out.println(executeExpression(data, postFix));
+        }
 //        String postfixExpr = postfix("( ( firstname = 'john' AND secondname = 'Eleven' ) OR ( salary = 15000 AND location = 'Mexico' OR ( firstname = 'mathew' AND secondname = 'Thirteen' ) ) )");
 //        System.out.println(filter(list, postfixExpr));
+    }
+
+    public static String executeExpression(Map<String, Object> mapData, String postFixRules) {
+        String[] postfixRulesList = postFixRules.trim().split("\\s+");
+        Deque<String> stack = new LinkedList<>();
+        for (int i = 0; i < postfixRulesList.length; i++) {
+            String postFixToken = postfixRulesList[i];
+            if (ops.containsKey(postFixToken)) {
+                String operator = postFixToken;
+                String operand2 = getOperand(stack.pop(), mapData);
+                String operand1 = getOperand(stack.pop(), mapData);
+                stack.push(calculateValue(operand1, operand2, operator) + "");
+            } else {
+                stack.push(postFixToken);
+            }
+        }
+        return stack.pop();
+    }
+
+    private static Object calculateValue(String operand1, String operand2, String operator) {
+        if (operator.equalsIgnoreCase("+")) {
+            try {
+                return Double.parseDouble(operand1) + Double.parseDouble(operand2);
+            } catch (NumberFormatException e) {
+//                System.out.println("OPER 1 " + operand1);
+//                System.out.println("OPER 2 " + operand2);
+                return "'" + operand1 + operand2 + "'";
+            }
+        } else if (operator.equalsIgnoreCase("/")) {
+            try {
+                return Double.parseDouble(operand1) / Double.parseDouble(operand2);
+            } catch (NumberFormatException e) {
+                return "";
+            }
+        } else if (operator.equalsIgnoreCase("*")) {
+            try {
+                return Double.parseDouble(operand1) * Double.parseDouble(operand2);
+            } catch (NumberFormatException e) {
+                return "";
+            }
+        } else if (operator.equalsIgnoreCase("-")) {
+            try {
+                return Double.parseDouble(operand1) - Double.parseDouble(operand2);
+            } catch (NumberFormatException e) {
+                return "";
+            }
+        }
+        System.out.println("DATA 1 " + operand1);
+        System.out.println("DATA 2" + operand2);
+        return "DATA";
     }
 
     public static List<Map<String, Object>> applyExpression(List<Map<String, Object>> list, String rulesInfix) {
@@ -138,6 +219,9 @@ public class ShuntingYard {
     }
 
     public static List<Map<String, Object>> filter(List<Map<String, Object>> list, String postFixRules) {
+        if (list == null) {
+            return null;
+        }
         List<Map<String, Object>> filtered = list.stream()
                 .filter(p -> checkFilter(p, postFixRules)).collect(Collectors.toList());
         return filtered;
@@ -231,11 +315,12 @@ public class ShuntingYard {
     }
 
     public static boolean like(String toBeCompare, String by) {
+        System.out.println("toBeCompare " + toBeCompare + "  by" + by);
         if (toBeCompare != null && by != null) {
             if (by.startsWith("%") && by.endsWith("%")) {
                 System.out.println("Contains");
                 by = by.replaceAll("%", "");
-                return (by.equalsIgnoreCase(toBeCompare));
+                return (toBeCompare.contains(by));
             } else if (by.endsWith("%")) {
                 System.out.println("beginWith");
                 by = by.replaceAll("%", "");
@@ -259,7 +344,7 @@ public class ShuntingYard {
             if (by.startsWith("%") && by.endsWith("%")) {
                 System.out.println("doesn't Contains");
                 by = by.replaceAll("%", "");
-                return (!by.equalsIgnoreCase(toBeCompare));
+                return (!toBeCompare.contains(by));
             } else if (by.endsWith("%")) {
                 System.out.println("doesn't beginWith");
                 by = by.replaceAll("%", "");

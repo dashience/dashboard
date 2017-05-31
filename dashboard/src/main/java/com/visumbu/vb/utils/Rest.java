@@ -51,7 +51,7 @@ public class Rest {
         }
         String returnStr = "";
         try {
-            System.out.println("urlString:"+urlString);
+            System.out.println("urlString:" + urlString);
             URL httpUrl = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
             conn.setRequestMethod("GET");
@@ -61,13 +61,13 @@ public class Rest {
                 System.out.println("if condition");
                 System.out.println(urlString);
                 System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + conn.getResponseCode());
+                return null;
+//                throw new RuntimeException("Failed : HTTP error code : "
+//                        + conn.getResponseCode());
             } else {
                 System.out.println("else condition");
                 System.out.println(urlString);
                 System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
-
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(

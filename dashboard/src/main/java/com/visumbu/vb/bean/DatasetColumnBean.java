@@ -18,7 +18,11 @@ public class DatasetColumnBean {
     private String displayName;
     private String fieldType;
     private String status;
-    private String formula;
+    private String expression;
+    private String functionName;
+    private String columnName;
+    private String baseField;
+    private String displayFormat;
     private Integer datasetId;
     private String column;
     private List<DatasetColumnBean> tableColumns;
@@ -55,12 +59,44 @@ public class DatasetColumnBean {
         this.status = status;
     }
 
-    public String getFormula() {
-        return formula;
+    public String getExpression() {
+        return expression;
     }
 
-    public void setFormula(String formula) {
-        this.formula = formula;
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public String getBaseField() {
+        return baseField;
+    }
+
+    public void setBaseField(String baseField) {
+        this.baseField = baseField;
+    }
+
+    public String getDisplayFormat() {
+        return displayFormat;
+    }
+
+    public void setDisplayFormat(String displayFormat) {
+        this.displayFormat = displayFormat;
     }
 
     public Integer getDatasetId() {
@@ -97,7 +133,7 @@ public class DatasetColumnBean {
 
     @Override
     public String toString() {
-        return "DatasetColumnBean{" + "fieldName=" + fieldName + ", displayName=" + displayName + ", status=" + status + ", formula=" + formula + ", datasetId=" + datasetId + '}';
+        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", status=" + status + ", functionName=" + functionName + ", expression=" + expression + ", displayFormat=" + displayFormat + ", datasetId=" + datasetId + ", column=" + column + ", tableColumns=" + tableColumns + '}';
     }
 
 }

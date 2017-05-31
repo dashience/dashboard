@@ -1213,7 +1213,7 @@ public class CustomReportDesigner {
 
         // System.out.println(tabWidget.getWidgetTitle() + "Actual Size ===> " + data.size());
         List<Map<String, Object>> tempData = new ArrayList<>();
-        if (columns ==  null || columns.isEmpty()) {
+        if (columns == null || columns.isEmpty()) {
             return null;
         }
         List<Map<String, Object>> originalData = tabWidget.getData();
@@ -2641,7 +2641,7 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
         List<Map<String, Object>> originalData = tabWidget.getData();
         List<Map<String, Object>> tempData = tabWidget.getData();
-          if (originalData == null || originalData.isEmpty()) {
+        if (originalData == null || originalData.isEmpty()) {
             return null;
         }
         List<Map<String, Object>> data = new ArrayList<>(originalData);
@@ -2988,8 +2988,8 @@ public class CustomReportDesigner {
             List<WidgetColumn> columns = tabWidget.getColumns();
 
             List<Map<String, Object>> originalData = tabWidget.getData();
-            
-              if (originalData == null || originalData.isEmpty()) {
+
+            if (originalData == null || originalData.isEmpty()) {
                 return null;
             }
             List<Map<String, Object>> data = new ArrayList<>(originalData);
@@ -3190,7 +3190,7 @@ public class CustomReportDesigner {
             List<WidgetColumn> columns = tabWidget.getColumns();
 
             List<Map<String, Object>> originalData = tabWidget.getData();
-             if (originalData == null || originalData.isEmpty()) {
+            if (originalData == null || originalData.isEmpty()) {
                 return null;
             }
             List<Map<String, Object>> data = new ArrayList<>(originalData);
@@ -3675,7 +3675,7 @@ public class CustomReportDesigner {
         List<WidgetColumn> columns = tabWidget.getColumns();
 
         List<Map<String, Object>> originalData = tabWidget.getData();
-         if (originalData == null || originalData.isEmpty()) {
+        if (originalData == null || originalData.isEmpty()) {
             return null;
         }
         List<Map<String, Object>> data = new ArrayList<>(originalData);

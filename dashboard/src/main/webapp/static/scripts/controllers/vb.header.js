@@ -19,6 +19,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
+//        $scope.productId = $stateParams.productId;
 //        $stateParams.tabId = 0;
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
@@ -73,8 +74,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             if (!response[0]) {
                 return;
             }
-
-
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
 //        $state.go("index.dashboard", {productId: $stateParams.productId});
             try {
@@ -203,6 +202,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
 //                });
 //            }
+
             else if ($scope.getCurrentPage() === "favourites") {
                 $state.go("index.favourites", {
                     accountId: $stateParams.accountId,
@@ -210,12 +210,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate,
                     endDate: $stateParams.endDate
                 });
-            } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+            }
+            else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
                 $state.go("index.viewFavouritesWidget", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
 //                    favouriteId: $stateParams.favouriteId,
+                    productId: $stateParams.productId,
                     favouriteName: $stateParams.favouriteName,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else if ($scope.getCurrentPage() === "settings") {
+                $state.go("index.settings", {
                     startDate: $stateParams.startDate,
                     endDate: $stateParams.endDate
                 });
@@ -250,6 +257,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $stateParams.endDate = $scope.lastDate;
     }
 
+    $scope.setProductByFav = function () {
+        $scope.accountId = $stateParams.accountId;
+        $scope.accountName = $stateParams.accountName;
+        $scope.productId = $stateParams.productId;
+//        $stateParams.tabId = 0;
+        $scope.startDate = $stateParams.startDate;
+        $scope.endDate = $stateParams.endDate;
+    };
+
     $scope.loadNewUrl = function () {
         try {
             var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
@@ -257,12 +273,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
         } catch (e) {
         }
-        $stateParams.startDate = startDate
-        $stateParams.endDate = endDate
-        console.log($scope.startDate)
-        console.log($scope.endDate)
-        console.log($stateParams.startDate)
-        console.log($stateParams.endDate)
+        $stateParams.startDate = startDate;
+        $stateParams.endDate = endDate;
+        console.log($scope.startDate);
+        console.log($scope.endDate);
+        console.log($stateParams.startDate);
+        console.log($stateParams.endDate);
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
                 accountId: $stateParams.accountId,
@@ -394,8 +410,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $state.go("index.viewFavouritesWidget", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
                 //favouriteId: $stateParams.favouriteId,
                 favouriteName: $stateParams.favouriteName,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else if ($scope.getCurrentPage() === "settings") {
+            $state.go("index.settings", {
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
@@ -456,6 +478,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("viewFavouritesWidget") > 0) {
             return "viewFavouritesWidget";
         }
+        if (url.indexOf("settings") > 0) {
+            return "settings";
+        }
 //        if (url.indexOf("tag") > 0) {
 //            return "tag";
 //        }
@@ -470,11 +495,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $(function () {
-        var start = moment().subtract(29, 'days');
-        var end = moment();
-        function cb(start, end) {
-            $('#daterange-btn span').html(start.format('MM-DD-YYYY') + ' - ' + end.format('MM-DD-YYYY'));
-        }
         //Initialize Select2 Elements
         $(".select2").select2();
         //Datemask dd/mm/yyyy
@@ -490,8 +510,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         //Date range as a button
         $('#daterange-btn').daterangepicker(
                 {
-                    startDate: start,
-                    endDate: end,
+
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -515,9 +534,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
+                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(29, 'days'),
+                    endDate: $stateParams.endDate ? $stateParams.endDate : moment(),
                     maxDate: new Date()
-                }, cb);
-        cb(start, end);
+                },
+                function (startDate, endDate) {
+                    $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                }
+        );
         //Date picker
         $('#datepicker').datepicker({
             autoclose: true

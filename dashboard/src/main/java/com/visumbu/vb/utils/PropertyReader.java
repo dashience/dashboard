@@ -23,13 +23,30 @@ public class PropertyReader {
     ClassLoader classLoader = PropertyReader.class.getClassLoader();
 
     File file = new File(classLoader.getResource("mail/smtp.properties").getFile());
+    File urlFile = new File(classLoader.getResource("urlChanges/url.properties").getFile());
     FileInputStream fileInput;
     Properties prop = new Properties();
 
-    public String ReadProperties(String name) {
+    public String readProperties(String name) {
         String returnProp = null;
         try {
             fileInput = new FileInputStream(file);
+            prop.load(fileInput);
+            returnProp = prop.getProperty(name);
+            fileInput.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PropertyReader.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (IOException ex) {
+            Logger.getLogger(PropertyReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returnProp;
+    }
+
+    public String readUrl(String name) {
+        String returnProp = null;
+        try {
+            fileInput = new FileInputStream(urlFile);
             prop.load(fileInput);
             returnProp = prop.getProperty(name);
             fileInput.close();
