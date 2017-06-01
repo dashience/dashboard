@@ -8,7 +8,7 @@
 <link href="http://webapplayers.com/homer_admin-v2.0/fonts/pe-icon-7-stroke/css/helper.css" rel="stylesheet" type="text/css"/>
 <link href="http://webapplayers.com/homer_admin-v2.0/styles/style.css" rel="stylesheet" type="text/css"/>
 
-<link href="../../lib/css/print.css" rel="stylesheet" media="print" type="text/css"/>
+<!--<link href="../../lib/css/print.css" rel="stylesheet" media="print" type="text/css"/>-->
 <!--[if lte IE 8]>
 <link rel="stylesheet" media="print" href="/print.css" type="text/css" />
 <![endif]-->
@@ -128,11 +128,22 @@
         padding: 10px 10px;
         border-radius: 2px;
     }
+    .pageBreak{   
+        page-break-inside:avoid;
+    }
+    @media print  {
+        /* All your print styles go here */
+        .pdfButton {
+            display:none !important;
+        }
 
+    }
 
-   
-    
-
+    @media screen {
+        .pdfButton {
+            display:block;
+        }
+    }
 </style>
 
 <!--    </head>-->

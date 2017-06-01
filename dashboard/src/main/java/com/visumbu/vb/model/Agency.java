@@ -136,7 +136,7 @@ public class Agency implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.Agency[ id=" + id + " ]";
+        return "Agency{" + "id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
     }
     
 }

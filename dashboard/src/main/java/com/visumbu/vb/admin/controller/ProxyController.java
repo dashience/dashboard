@@ -278,7 +278,7 @@ public class ProxyController {
             dateRange.setStartDate(new DateTime(startDate).minusWeeks(1).toDate());
             dateRange.setEndDate(new DateTime(endDate).minusWeeks(1).toDate());
         } else if (functionName.equalsIgnoreCase("custom")) {
-            if (dateRangeName.equalsIgnoreCase("custom")) {
+            if (dateRangeName.equalsIgnoreCase("custom") || dateRangeName.equalsIgnoreCase("select date")) {
                 System.out.println("Custom Date");
                 System.out.println("StartDate ---> " + DateUtils.getStartDate(customStartDate));
                 System.out.println("EndDate ---> " + DateUtils.getEndDate(customEndDate));
@@ -1161,6 +1161,9 @@ public class ProxyController {
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();
+        if(data == null){
+            return null;
+        }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
             for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {

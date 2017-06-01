@@ -117,17 +117,20 @@ public class UserService {
 
     private AgencyBean toAgencyBean(Agency agency) {
         AgencyBean agencyBean = new AgencyBean();
-        agencyBean.setAgencyName(agencyBean.getAgencyName());
-        agencyBean.setDescription(agencyBean.getDescription());
-        agencyBean.setEmail(agencyBean.getEmail());
-        agencyBean.setStatus(agencyBean.getStatus());
+        agencyBean.setAgencyName(agency.getAgencyName());
+        agencyBean.setDescription(agency.getDescription());
+        agencyBean.setEmail(agency.getEmail());
+        agencyBean.setStatus(agency.getStatus());
+        agencyBean.setId(agency.getId());
         return agencyBean;
     }
     
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
+        System.out.println("Agency Id " + teUser.getAgencyId());
         userBean.setAgencyId(toAgencyBean(teUser.getAgencyId()));
+        System.out.println("AGENCY BEAN " + userBean.getAgencyId());
 //        userBean.setPassword(teUser.getPassword());
         userBean.setFailLoginCount(teUser.getFailedLoginCount());
         userBean.setIsAdmin(teUser.getIsAdmin() != null && teUser.getIsAdmin() == true ? "admin" : "");

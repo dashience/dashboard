@@ -33,8 +33,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //    $scope.clickBtn = function(){
 
 //    }
-
+    $scope.loadingEditWidget = true;
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+        $scope.loadingEditWidget = false;
 //        $scope.widgets = response;
 //        if ($stateParams.widgetId) {
 //            $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
@@ -529,38 +530,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }, 50);
     };
     $scope.selectY2Axis = function (widget, y2data) {
-        if (widget.chartType == 'stackedbar') {
-            $scope.editChartType = null;
-            angular.forEach(y2data, function (value, key) {
-                if (!value) {
-                    return;
-                }
-                var exists = false;
-                angular.forEach(widget.columns, function (val, key) {
-                    if (val.fieldName === value.fieldName) {
-                        exists = true;
-                        val.yAxis = 2;
-                        val.groupField = y2data.indexOf(value) + 1;
-                        console.log(val.groupField);
-                    } else {
-                        if (val.fieldName == y2data.removeItem) {
-                            val.yAxis = null;
-                            val.groupField = null;
-                        }
-                    }
-                });
-                if (exists == false) {
-                    if (value.displayName) {
-                        value.yAxis = 2;
-                        widget.columns.push(value);
-                    }
-                }
-            });
-            var chartType = widget;
-            $timeout(function () {
-                $scope.previewChart(chartType, widget)
-            }, 50);
-        }
         $scope.editChartType = null;
         angular.forEach(y2data, function (value, key) {
             if (!value) {
@@ -1285,83 +1254,83 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
         },
         link: function (scope, element, attr) {
 //            $(document).ready(function (e) {
-                $(".scheduler-list-style").click(function (e) {
-                    e.stopPropagation();
-                });
-                var widget = JSON.parse(scope.widgetTableDateRange);
-                var widgetStartDate = widget.customStartDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
-                var widgetEndDate = widget.customEndDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
-                //Date range as a button
-                $(element[0]).daterangepicker(
-                        {
-                            ranges: {
-                                'Today': [moment(), moment()],
-                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                                'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                                'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+            $(".scheduler-list-style").click(function (e) {
+                e.stopPropagation();
+            });
+            var widget = JSON.parse(scope.widgetTableDateRange);
+            var widgetStartDate = widget.customStartDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
+            var widgetEndDate = widget.customEndDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
+            //Date range as a button
+            $(element[0]).daterangepicker(
+                    {
+                        ranges: {
+                            'Today': [moment(), moment()],
+                            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                            'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
+                            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
-                                'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+                            'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
-                                'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 //                        'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 //                        'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                                'This Year': [moment().startOf('year'), moment().endOf(new Date())],
-                                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                            'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                            'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-                            },
-                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
-                            endDate: widgetEndDate ? widgetEndDate : moment(),
-                            maxDate: new Date()
                         },
-                        function (startDate, endDate) {
-                            $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
-                        }
-                );
-                $(".ranges ul").find("li").addClass("custom-pickers");
-                $(".custom-pickers").click(function (e) {
-                    $(".scheduler-list-style").hide();
-                    scope.$apply();
-                });
-                $(".editWidgetDropDown").click(function (e) {
-                    $(".scheduler-list-style").removeAttr("style");
-                    $(".scheduler-list-style").css("display", "block");
-                    $(".daterangepicker").css("display", "none");
+                        startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
+                        endDate: widgetEndDate ? widgetEndDate : moment(),
+                        maxDate: new Date()
+                    },
+                    function (startDate, endDate) {
+                        $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                    }
+            );
+            $(".ranges ul").find("li").addClass("custom-pickers");
+            $(".custom-pickers").click(function (e) {
+                $(".scheduler-list-style").hide();
+                scope.$apply();
+            });
+            $(".editWidgetDropDown").click(function (e) {
+                $(".scheduler-list-style").removeAttr("style");
+                $(".scheduler-list-style").css("display", "block");
+                $(".daterangepicker").css("display", "none");
 //                        e.bind();
-                });
-                $(".date-range-none").click(function(e){
+            });
+            $(".date-range-none").click(function (e) {
+                $(".scheduler-list-style").css("display", "none");
+            });
+            $(document).on("click", function (e) {
+                var selectedElement = e.target.className;
+                if (selectedElement == "custom-pickers" ||
+                        selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
+                        selectedElement == "month" ||
+                        selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
+                        selectedElement == "next available" ||
+                        selectedElement == "input-mini form-control active" ||
+                        selectedElement == "calendar-table" || selectedElement == "table-condensed" ||
+                        selectedElement == "daterangepicker_input")
+                {
+                    $(".scheduler-list-style").css("display", "block");
+                } else {
                     $(".scheduler-list-style").css("display", "none");
-                });
-                $(document).on("click", function (e) {
-                    var selectedElement = e.target.className;
-                    if (selectedElement == "custom-pickers" ||
-                            selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
-                            selectedElement == "month" ||
-                            selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
-                            selectedElement == "next available" ||
-                            selectedElement == "input-mini form-control active" ||
-                            selectedElement == "calendar-table" || selectedElement == "table-condensed" ||
-                            selectedElement == "daterangepicker_input")
-                    {
-                        $(".scheduler-list-style").css("display", "block");
-                    } else {
-                        $(".scheduler-list-style").css("display", "none");
-                    }
-                });
-                $(".applyBtn").click(function (e) {
-                    try {
-                        scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-                        scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
-                    } catch (e) {
-                    }
+                }
+            });
+            $(".applyBtn").click(function (e) {
+                try {
+                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                } catch (e) {
+                }
 
-                    $(".scheduler-list-style").hide(); //                    
-                });
+                $(".scheduler-list-style").hide(); //                    
+            });
 //            });
         }
     };
