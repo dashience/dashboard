@@ -1934,8 +1934,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
-                '<div ng-if="tableColumns!=null" class="pull-right">' +
-                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet"><i class="fa fa-plus"></i></button>' +
+                '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataSet" class="modal" role="dialog">' +
                 '<div class="modal-dialog modal-lg">' +
                 '<div class="modal-content">' +
@@ -2330,7 +2330,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.tableRows = response.data;
 
                     scope.columns = [];
-
+                    scope.dataSetId=dataSourcePath.id;
                     if (dataSourcePath.id != null) {
                         $http.get("admin/ui/getDatasetById/" + dataSourcePath.id).success(function (resp) {
                             scope.ajaxLoadingCompleted = true;
@@ -2572,7 +2572,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.customStartDate = "";
                     scope.customEndDate = "";
                 }
-
+                scope.datasetId=dataSourcePath.id;
                 var data = {
                     datasetId: dataSourcePath.id,
                     id: dataSetColumn.id,

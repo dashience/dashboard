@@ -67,7 +67,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
+        $scope.loading=true;
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+            $scope.loading=false;
             var widgetItems = [];
             widgetItems = response;
             if (response) {
