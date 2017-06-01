@@ -195,6 +195,7 @@ public class ProxyController {
         Map returnMap = new HashMap<>();
 
         String dataSourceType = getFromMultiValueMap(request, "dataSourceType");
+        System.out.println("dataSourceType --> "+dataSourceType);
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         Integer dataSetIdInt = null;
         if (dataSetId != null) {
@@ -319,10 +320,12 @@ public class ProxyController {
                 String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
                 if (cachedData.get(cachedRangeForFunction) == null) {
                     List<String> startDateValue = new ArrayList();
-                    startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM-dd-yyyy"));
+                    startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM/dd/yyyy"));
+                    System.out.println("startDateValue --> " + startDateValue);
                     request.put("startDate", startDateValue);
                     List<String> endDateValue = new ArrayList();
-                    endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM-dd-yyyy"));
+                    endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM/dd/yyyy"));
+                    System.out.println("endDateValue --> " + endDateValue);
                     request.put("endDate", endDateValue);
                     Map dataMapForFunction = getData(request, response);
                     List<Map<String, Object>> dataForFunction = (List<Map<String, Object>>) dataMapForFunction.get("data");
@@ -354,6 +357,7 @@ public class ProxyController {
                     String customEndDate = datasetColumn.getCustomEndDate();
                     DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
                     String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                    System.out.println("cachedRangeForFunction ---> "+cachedRangeForFunction);
                     Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(datasetColumn.getBaseField()), datasetColumn);
                     returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
                 } else {
@@ -948,9 +952,9 @@ public class ProxyController {
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         // System.out.println("widgetID ---> " + widgetIdStr);
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-        // System.out.println("startDate 1 ----> " + startDate);
+         System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-        // System.out.println("endDate 1 ----> " + endDate);
+         System.out.println("endDate 1 ----> " + endDate);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             // System.out.println("widgetId ----> " + widgetId);
