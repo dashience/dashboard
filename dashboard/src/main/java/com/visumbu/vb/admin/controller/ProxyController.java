@@ -278,7 +278,7 @@ public class ProxyController {
             dateRange.setStartDate(new DateTime(startDate).minusWeeks(1).toDate());
             dateRange.setEndDate(new DateTime(endDate).minusWeeks(1).toDate());
         } else if (functionName.equalsIgnoreCase("custom")) {
-            if (dateRangeName.equalsIgnoreCase("custom")) {
+            if (dateRangeName.equalsIgnoreCase("custom") || dateRangeName.equalsIgnoreCase("select date")) {
                 System.out.println("Custom Date");
                 System.out.println("StartDate ---> " + DateUtils.getStartDate(customStartDate));
                 System.out.println("EndDate ---> " + DateUtils.getEndDate(customEndDate));
@@ -967,10 +967,16 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
-        // System.out.println("Report Name " + dataSetReportName);
-        // System.out.println("datasetId ---->" + dataSetId);
-        // System.out.println("datasetIdInt ---->" + dataSetIdInt);
-        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        System.out.println("Report Name " + dataSetReportName);
+        System.out.println("datasetId ---->" + dataSetId);
+        System.out.println("datasetIdInt ---->" + dataSetIdInt);
+        Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        List<Map<String,Object>> data = (List<Map<String,Object>>)dataMap.get("data");
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
+        Map returnMap = new HashMap<>();
+        returnMap.put("columnDefs", columnDefs);
+        returnMap.put("data", data);
+        return returnMap;
     }
 
     private Object getAdwordsData(MultiValueMap request, HttpServletResponse response) {
@@ -1251,6 +1257,9 @@ public class ProxyController {
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();
+        if(data == null){
+            return null;
+        }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
             for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
@@ -1261,6 +1270,8 @@ public class ProxyController {
                 } else {
                     Object value = entrySet.getValue();
                     String valueString = value + "";
+                    System.out.println(value.getClass());
+                    valueString = valueString.replaceAll("^\"|\"$", "");
                     if (NumberUtils.isNumber(valueString)) {
                         columnDefs.add(new ColumnDef(key, "number", key));
                     } else if (DateUtils.convertToDate(valueString) != null) {
@@ -1286,6 +1297,7 @@ public class ProxyController {
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
                 String value = entrySet.getValue();
+                value = value.replaceAll("^\"|\"$", "");
                 if (NumberUtils.isNumber(value)) {
                     columnDefs.add(new ColumnDef(key, "number", key));
                 } else if (DateUtils.convertToDate(value) != null) {

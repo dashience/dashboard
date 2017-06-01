@@ -750,10 +750,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     function tagWidgetId(widget) {
         widget.tagName = [];
         $http.get("admin/tag/widgetTag/" + widget.id).success(function (response) {
-            console.log(response)
             $scope.widgetTags = response;
             angular.forEach(response, function (value, key) {
-                console.log(value)
                 widget.tagName.push(value.tagId.tagName)
             });
         });
@@ -965,17 +963,14 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" + //End Panel Title
                 "</div>" +
                 "</div>" +
-//                "<pre>{{previewTableHeader | json}}</pre>" +
-//                " <pre ng-repeat='header in previewTableHeader'>{{header.displayName}} </pre>" +
                 //Table
                 "<div class=''>" +
                 "<div class='table-responsive tbl-preview'>" +
-                "<table  class='defaultTable table table-bordered table-hover'>" +
+                "<table  class='table table-bordered table-hover'>" +
                 "<thead>" +
-                "<tr>" +
-                "<th id='{{collectionField.displayName}}'  ng-repeat='collectionField in previewTableHeader'>" +
-                "<div  ng-hide='collectionField.isEdit'>" +
-//                "<div class='preview-table-settings' ng-click='collectionField.isEdit=true'>" +
+                "<tr ng-model='previewTableHeader' ui-sortable='sortableOptions'>" +
+                "<th ng-repeat='collectionField in previewTableHeader'>" +
+                "<div ng-hide='collectionField.isEdit'>" +
                 "<div class='preview-table-settings' ng-hide='collectionField.isEdit'>" +
                 "<a ng-click='collectionField.isEdit = true'>{{collectionField.displayName}}</a>" +
                 "</div></div>" +
@@ -983,9 +978,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "<div ng-show='collectionField.isEdit'><input class='form-control-btn' ng-model='collectionField.displayName'>" +
                 "<a class='btn btn-default btn-xs' ng-click='collectionField.isEdit=false'><i class='fa fa-save'></i></a>" +
                 "<a class='btn btn-default btn-xs' ng-click='collectionField.isEdit=false'><i class='fa fa-close'></i></a></div>" +
-                "</th>" +
-                "</tr>" +
-                "<tr><th ng-repeat='collectionField in previewTableHeader'>" +
+//                "</th>" +
+//                "</tr>" +
+//                "<tr><th ng-repeat='collectionField in previewTableHeader'>" +
                 "<button class='settings btn btn-default btn-xs'" +
                 "ns-popover=''" +
                 "ns-popover-template='close'" +
@@ -1095,7 +1090,18 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             {
                 scope.editPreviewTitle = true;
             };
-            scope.previewTableHeader = JSON.parse(scope.previewColumns);
+
+            scope.sortableOptions = {
+                start: function (event, ui) {
+                    console.log('start1');
+//                    console.log(ui);
+                },
+                stop: function (event, ui) {
+                    console.log('stop1');
+//                    console.log(ui);
+                }
+            };
+
             scope.listColumns = [];
             scope.listColumns = JSON.parse(scope.previewColumns);
             scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
@@ -1128,12 +1134,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             } else {
                 dataSourcePassword = '';
             }
-
-
-
-            console.log()
-
-
             $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                     "&dataSetId=" + tableDataSource.id +
                     "&driver=" + tableDataSource.dataSourceId.sqlDriver +
@@ -1149,58 +1149,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
             });
-            $(document).ready(function () {
-                $('.defaultTable').dragtable({
-                    persistState: function (table) {
-
-                        if (!window.sessionStorage)
-                            return;
-                        table.el.find('th').each(function (i) {
-                            if (this.id != '') {
-                                table.sortOrder[this.id] = i;
-                            }
-                        });
-                        scope.mapJson(table.sortOrder);
-                    },
-                    clickDelay: 200,
-                });
-            });
-            scope.mapJson = function (object) {
-                scope.draggedObject = [];
-                scope.newHeaders = [];
-                $.each(object, function (key, value) {
-                    scope.draggedObject[value] = key;
-                });
-                angular.forEach(scope.previewTableHeader, function (value, key) {
-                    scope.filterReturnItem = orderByFilter(scope.previewTableHeader, function (item) {
-                        return scope.draggedObject.indexOf(item.displayName)
-                    });
-                });
+            scope.deleteColumn = function (collectionField, index) {
+                scope.previewTableHeader.splice(index, 1)
             };
-            scope.deleteColumn = function (collectionField, $index) {
-                if (typeof (scope.filterReturnItem) == "undefined")
-                {
-                    scope.previewTableHeader.splice($index, 1);
-                } else {
-                    var dragDeletedIndexPos = scope.filterReturnItem.indexOf(collectionField);
-                    scope.filterReturnItem.splice(dragDeletedIndexPos, 1);
-                    scope.previewTableHeader = scope.filterReturnItem;
-//                    var returnItems = scope.previewTableHeader;
-//                    scope.previewTableHeader = ""
-//                    scope.previewTableHeader = returnItems;
-//                    scope.$apply();
-//                    var previewHeaderObject = scope.previewTableHeader[$index];
-//                    console.log(previewHeaderObject);
-//                    console.log(scope.filterReturnItem);
-//                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
-//                    console.log("dragableHeaderIndex="+dragableHeaderIndex);
-//                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
-////                    scope.previewTableHeader = [];
-//                    console.log(scope.filterReturnItem);
-//                    scope.previewTableHeader = scope.filterReturnItem;
-//                    console.log(scope.previewTableHeader);
-                }
-            };
+            scope.previewTableHeader = JSON.parse(scope.previewColumns);
             scope.save = function () {
                 if ($('.query-builder').queryBuilder('getRules')) {
                     scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
@@ -1223,7 +1175,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 console.log(scope.customStartDate);
                 console.log(scope.customEndDate);
                 var widgetColumnsData = [];
-                var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeader;
+                var saveWidgetColumnList = scope.previewTableHeader;
                 angular.forEach(saveWidgetColumnList, function (value, key) {
                     var hideColumn = value.columnHide;
                     if (value.groupPriority > 0) {
@@ -1294,7 +1246,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.closeWidget = function () {
                 widget = "";
                 sessionStorage.clear();
-                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+                $rootScope.goBack();
+//                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
             };
         }
     };
@@ -1326,7 +1279,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
             widgetTableDateRange: '@',
         },
         link: function (scope, element, attr) {
-            $(document).ready(function (e) {
+//            $(document).ready(function (e) {
                 $(".scheduler-list-style").click(function (e) {
                     e.stopPropagation();
                 });
@@ -1365,8 +1318,8 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                             $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
                         }
                 );
-                $(".ranges ul").find("li").addClass("custom-picker");
-                $(".custom-picker").click(function (e) {
+                $(".ranges ul").find("li").addClass("custom-pickers");
+                $(".custom-pickers").click(function (e) {
                     $(".scheduler-list-style").hide();
                     scope.$apply();
                 });
@@ -1376,9 +1329,12 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                     $(".daterangepicker").css("display", "none");
 //                        e.bind();
                 });
+                $(".date-range-none").click(function(e){
+                    $(".scheduler-list-style").css("display", "none");
+                });
                 $(document).on("click", function (e) {
                     var selectedElement = e.target.className;
-                    if (selectedElement == "custom-picker" ||
+                    if (selectedElement == "custom-pickers" ||
                             selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
                             selectedElement == "month" ||
                             selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
@@ -1401,7 +1357,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
 
                     $(".scheduler-list-style").hide(); //                    
                 });
-            });
+//            });
         }
     };
 });
@@ -1449,7 +1405,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                             filters: filterList,
                             rules: scope.jsonBuild ? scope.jsonBuild : null
                         });
-                console.log(element[0]);
                 $('#btn-clear').on('click', function () {
                     $(element[0]).queryBuilder('reset');
                 });
