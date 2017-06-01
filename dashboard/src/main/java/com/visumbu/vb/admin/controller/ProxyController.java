@@ -480,126 +480,130 @@ public class ProxyController {
 
 //    @RequestMapping(value = "pinterest", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
-    private Object getPinterestData(MultiValueMap request, HttpServletResponse response) {
-
+    @RequestMapping(value = "pinterest", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map getPinterestData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        // System.out.println("getPinterestData function");
         String reportName = getFromMultiValueMap(request, "dataSetReportName");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
 
-        String pinterestAccessToken = getFromMultiValueMap(request, "pinterestAccessToken");
+        Integer dataSetIdInt = null;
+        DataSet dataSet = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
 
-        if (pinterestAccessToken == null) {
-            return null;
-        } else {
-            Integer dataSetIdInt = null;
-            DataSet dataSet = null;
-            if (dataSetId != null) {
-                try {
-                    dataSetIdInt = Integer.parseInt(dataSetId);
-                } catch (Exception e) {
-
-                }
-                if (dataSetIdInt != null) {
-                    dataSet = uiService.readDataSet(dataSetIdInt);
-                }
-                if (dataSet != null) {
-                    reportName = dataSet.getReportName();
-                }
             }
-            if (reportName.equalsIgnoreCase("getTopBoards")) {
-                try {
-                    String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=" + pinterestAccessToken
-                            + "&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
-                    String data = Rest.getData(fbUrl);
-                    JSONParser parser = new JSONParser();
-                    Object jsonObj = parser.parse(data);
-                    JSONObject json = (JSONObject) jsonObj;
-                    Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-                    Map returnMap = new HashMap<>();
-                    List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
-                    List<Map<String, String>> returnData = new ArrayList<>();
-                    for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
-                        Map<String, Object> fbDataMap = iterator.next();
-                        Map<String, String> returnDataMap = new HashMap<>();
-                        returnDataMap.put("name", fbDataMap.get("name") + "");
-                        returnDataMap.put("description", fbDataMap.get("description") + "");
-                        returnDataMap.put("pins_counts", ((Map) fbDataMap.get("counts")).get("pins") + "");
-                        returnData.add(returnDataMap);
-
-                    }
-
-                    Map pinterestData = new HashMap();
-                    List<ColumnDef> columnDefs = getColumnDef(returnData);
-                    returnMap.put("columnDefs", columnDefs);
-
-                    returnMap.put("data", returnData);
-                    System.out.println("************* Controller &********************");
-                    System.out.println(returnMap);
-
-                    return returnMap;
-                } catch (ParseException ex) {
-                    java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            if (dataSetIdInt != null) {
+                dataSet = uiService.readDataSet(dataSetIdInt);
+            }
+            if (dataSet != null) {
+                reportName = dataSet.getReportName();
+            }
+        }
+        if (reportName.equalsIgnoreCase("getTopBoards")) {
+            try {
+                String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
+                String data = Rest.getData(fbUrl);
+                JSONParser parser = new JSONParser();
+                if (data == null) {
+                    return null;
                 }
+                Object jsonObj = parser.parse(data);
+                JSONObject json = (JSONObject) jsonObj;
+                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+                Map returnMap = new HashMap<>();
+                List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
+                List<Map<String, String>> returnData = new ArrayList<>();
+                for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
+                    Map<String, Object> fbDataMap = iterator.next();
+                    Map<String, String> returnDataMap = new HashMap<>();
+                    returnDataMap.put("name", fbDataMap.get("name") + "");
+                    returnDataMap.put("description", fbDataMap.get("description") + "");
+                    returnDataMap.put("pins_counts", ((Map) fbDataMap.get("counts")).get("pins") + "");
+                    returnData.add(returnDataMap);
+                }
+
+                Map pinterestData = new HashMap();
+                List<ColumnDef> columnDefs = getColumnDef(returnData);
+                returnMap.put("columnDefs", columnDefs);
+
+                returnMap.put("data", returnData);
+                // System.out.println("************* Controller &********************");
+                // System.out.println(returnMap);
+
+                return returnMap;
+            } catch (ParseException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
 //            return null;
-            }
-            if (reportName.equalsIgnoreCase("getTopPins")) {
-                try {
-                    String fbUrl = "https://api.pinterest.com/v1/me/pins/?"
-                            + "access_token=" + pinterestAccessToken
-                            + "&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Ccreator%2Coriginal_link%2Cmetadata%2Cmedia";
-                    String data = Rest.getData(fbUrl);
-                    JSONParser parser = new JSONParser();
-                    Object jsonObj = parser.parse(data);
-                    JSONObject json = (JSONObject) jsonObj;
-                    Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-                    Map returnMap = new HashMap<>();
-                    List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
-                    List<Map<String, String>> returnData = new ArrayList<>();
-                    for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
-                        Map<String, Object> fbDataMap = iterator.next();
-                        Map<String, String> returnDataMap = new HashMap<>();
-                        returnDataMap.put("note", fbDataMap.get("note") + "");
-                        returnDataMap.put("url", fbDataMap.get("url") + "");
-                        returnDataMap.put("created_at", fbDataMap.get("created_at") + "");
-                        returnData.add(returnDataMap);
-                    }
-
-                    Map pinterestData = new HashMap();
-                    List<ColumnDef> columnDefs = getColumnDef(returnData);
-                    returnMap.put("columnDefs", columnDefs);
-                    returnMap.put("data", returnData);
-                    System.out.println("************* Controller &********************");
-                    System.out.println(returnMap);
-                    return returnMap;
-                } catch (ParseException ex) {
-                    java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (reportName.equalsIgnoreCase("getTopPins")) {
+            try {
+//                String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
+                String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZb-_MWyppZRUUDgHauO9_3lCjwRFLtkrsSCIPVD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Ccreator%2Coriginal_link%2Cmetadata%2Cmedia";
+                String data = Rest.getData(fbUrl);
+                if (data == null) {
+                    return null;
                 }
-//            return null;
+                JSONParser parser = new JSONParser();
+                Object jsonObj = parser.parse(data);
+                JSONObject json = (JSONObject) jsonObj;
+                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+                Map returnMap = new HashMap<>();
+                List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
+                List<Map<String, String>> returnData = new ArrayList<>();
+                for (Iterator<Map<String, Object>> iterator = fbData.iterator(); iterator.hasNext();) {
+                    Map<String, Object> fbDataMap = iterator.next();
+                    Map<String, String> returnDataMap = new HashMap<>();
+                    returnDataMap.put("note", fbDataMap.get("note") + "");
+                    returnDataMap.put("url", fbDataMap.get("url") + "");
+                    returnDataMap.put("created_at", fbDataMap.get("created_at") + "");
+                    returnData.add(returnDataMap);
+                }
+
+                Map pinterestData = new HashMap();
+                List<ColumnDef> columnDefs = getColumnDef(returnData);
+                returnMap.put("columnDefs", columnDefs);
+                returnMap.put("data", returnData);
+                // System.out.println("************* Controller &********************");
+                // System.out.println(returnMap);
+                return returnMap;
+            } catch (ParseException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (reportName.equalsIgnoreCase("getOrganicData")) {
-                try {
-                    String fbUrl = "https://api.pinterest.com/v1/me/?access_token=" + pinterestAccessToken
-                            + "&fields=first_name%2Cid%2Clast_name%2Curl%2Ccounts";
-                    String data = Rest.getData(fbUrl);
-                    JSONParser parser = new JSONParser();
+//            return null;
+        }
+        if (reportName.equalsIgnoreCase("getOrganicData")) {
+            try {
+//                String fbUrl = "https://api.pinterest.com/v1/me/likes/?access_token=AS94T9w2BZ8g5z1i47YGkp7c6U88FLtkVt0cCntD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Coriginal_link%2Cmetadata%2Cimage%2Cmedia%2Ccreator";
+                String fbUrl = "https://api.pinterest.com/v1/me/?access_token=AZb-_MWyppZRUUDgHauO9_3lCjwRFLtkrsSCIPVD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Ccounts";
+                String data = Rest.getData(fbUrl);
+                JSONParser parser = new JSONParser();
 //                Object jsonObj = parser.parse(data);
 //                JSONObject json = (JSONObject) jsonObj;
 //                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-                    Map returnMap = new HashMap<>();
+                Map returnMap = new HashMap<>();
 //                List fbData = (List<Map<String,Object>>) jsonToMap.get("data");
+                if (data == null) {
+                    return null;
+                }
+                //////////////////////////
+                JSONObject jsonArray = (JSONObject) parser.parse(data);
 
-                    //////////////////////////
-                    JSONObject jsonArray = (JSONObject) parser.parse(data);
+                Map<String, Object> myData = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) jsonArray).get("data")).get("counts");
+                List<Map<String, Object>> twitterData = new ArrayList<>();
 
-                    Map<String, Object> myData = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) jsonArray).get("data")).get("counts");
-                    List<Map<String, Object>> twitterData = new ArrayList<>();
+                Map<String, Object> myMapData = new HashMap<>();
+                for (Map.Entry<String, Object> entry : myData.entrySet()) {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+                    myMapData.put(key, value + "");
+                }
+                twitterData.add(myMapData);
 
-                    Map<String, Object> myMapData = new HashMap<>();
-                    for (Map.Entry<String, Object> entry : myData.entrySet()) {
-                        String key = entry.getKey();
-                        Object value = entry.getValue();
-                        myMapData.put(key, value + "");
-                    }
-                    twitterData.add(myMapData);
+                List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
 
                 /////////////////////////////////////////////////////////
                 // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
@@ -612,16 +616,110 @@ public class ProxyController {
 //                List<Map<String, String>> listData = new ArrayList<>();
 //                listData.add(boardsSize);
 //
-//                    returnMap.put("columnDefs", columnDefObject);
+                returnMap.put("columnDefs", columnDefObject);
 
-                    returnMap.put("data", twitterData);
-                    return returnMap;
-                } catch (ParseException ex) {
-                    java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-//            return null;
+                returnMap.put("data", twitterData);
+
+//                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+//                // System.out.println("datasetColumnList0 ----> " + datasetColumnList);
+//                if (datasetColumnList.size() > 0) {
+//                    // System.out.println("datasetColumnList1 ---> " + datasetColumnList);
+//                    return data;
+//                }
+                return returnMap;
+            } catch (ParseException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
+//            return null;
         }
+
+//        if (reportName.equalsIgnoreCase("getFollowingsCount")) {
+//            ArrayList<String> followingsApiUrls = new ArrayList<>();
+//
+//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername");
+//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveU56azVPVGMwTXpreU5ERXpOVGczTXpBNk9USXlNek0zTURVMU9UWTJNelk1TXpnek1WOUZ8ZDdiZWVlOWQ5NDZlMmE4MjgwZjcyZTAxY2YyM2NiZDVmOGE5MjllMWIwMWZjY2MxYThlNjAzMjg4Yzk1MjhiMg%3D%3D");
+//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveE9EY3pNakU0TURNeE5Ua3pOelV6TURnNk9USXlNek0zTURVM01USTNOVE13TmpNeE5GOUZ8MTMzODE2NzlmMmYwNDMwYTc5NzU4MDg5YTE1OTU3Nzc4YTYzODFlNjFmY2YzN2ZkYzQyMzJkMDUwMzM5MWQ2MA%3D%3D");
+//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveU5EVXlNelV5TnprMk1UYzFPVEF6TnpjNk9USXlNek0zTURVNE1UZzNOekUyT1RVM05WOUZ8MmU0YzRmZWYwYmZhM2JlZTRmZGM2MjM0NzViNWMzMTg5NDJjZmQ4YjljNGZhYjc1ZWIxN2QzMWQyZmY4ZmU2NA%3D%3D");
+//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TkRveU5UZzJNRFV6TkRFd01URXpOVEUwTVRRNk9USXlNek0zTURVMU16WXhPVFk0TVRVNU4xOUp8YWQxZjViZjlmNTQ2YTg2YzI3NGU0MmQ0Nzg5ODVjMmVmNTY2MDRlZDZjZDZhMzAzNzE5MTU5YjQ1NWVkZjc5NQ%3D%3D");
+//
+////            String fbUrl = "https://api.pinterest.com/v1/me/likes/?access_token=AS94T9w2BZ8g5z1i47YGkp7c6U88FLtkVt0cCntD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Coriginal_link%2Cmetadata%2Cimage%2Cmedia%2Ccreator";
+//            int maxCount = 0;
+//            for (int i = 0; i < followingsApiUrls.size(); i++) {
+//                try {
+//                    int getFollowingsCount = processFollowings(followingsApiUrls.get(i));
+//                    maxCount = maxCount + getFollowingsCount;
+//                } catch (ParseException ex) {
+//                    java.util.logging.Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            Map returnMap = new HashMap<>();
+//            String pinterestFollowersCount = maxCount + "";
+//            Map<String, String> followersSize = new HashMap<>();
+//            followersSize.put("followings_count", pinterestFollowersCount);
+//            List<Map<String, String>> listData = new ArrayList<>();
+//            listData.add(followersSize);
+//
+//            List<ColumnDef> columnDefs = getColumnDef(listData);
+//            returnMap.put("columnDefs", columnDefs);
+//
+//            returnMap.put("data", listData);
+//            return returnMap;
+//        }
+//
+//        if (reportName.equalsIgnoreCase("getTotalBoards")) {
+//            try {
+//                String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
+//                String data = Rest.getData(fbUrl);
+//                JSONParser parser = new JSONParser();
+//                Object jsonObj = parser.parse(data);
+//                JSONObject json = (JSONObject) jsonObj;
+//                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+//                Map returnMap = new HashMap<>();
+//                List fbData = (List<Map>) jsonToMap.get("data");
+//                fbData.lastIndexOf(jsonObj);
+//                String boardsCount = fbData.size() + "";
+//                Map<String, String> boardsSize = new HashMap<>();
+//                boardsSize.put("total_boards", boardsCount);
+//                List<Map<String, String>> listData = new ArrayList<>();
+//                listData.add(boardsSize);
+//
+//                List<ColumnDef> columnDefs = getColumnDef(listData);
+//                returnMap.put("columnDefs", columnDefs);
+//
+//                returnMap.put("data", listData);
+//                return returnMap;
+//            } catch (ParseException ex) {
+//                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+////            return null;
+//        }
+//        if (reportName.equalsIgnoreCase("getTotalPins")) {
+//            try {
+//                String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
+//                String data = Rest.getData(fbUrl);
+//                JSONParser parser = new JSONParser();
+//                Object jsonObj = parser.parse(data);
+//                JSONObject json = (JSONObject) jsonObj;
+//                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+//                Map returnMap = new HashMap<>();
+//                List fbData = (List<Map>) jsonToMap.get("data");
+//                fbData.lastIndexOf(jsonObj);
+//                String pinsCount = fbData.size() + "";
+//                Map<String, String> pinsSize = new HashMap<>();
+//                pinsSize.put("total_pins", pinsCount);
+//                List<Map<String, String>> listData = new ArrayList<>();
+//                listData.add(pinsSize);
+//
+//                List<ColumnDef> columnDefs = getColumnDef(listData);
+//                returnMap.put("columnDefs", columnDefs);
+//
+//                returnMap.put("data", listData);
+//                return returnMap;
+//            } catch (ParseException ex) {
+//                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+////            return null;
+//        }
         return null;
 
     }
