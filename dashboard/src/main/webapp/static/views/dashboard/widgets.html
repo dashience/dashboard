@@ -260,9 +260,9 @@
         <div class="btn-group">
             <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{productName}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
         </div>
-<!--        <div class="btn-group">
-            <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>
-        </div>-->
+        <!--        <div class="btn-group">
+                    <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>
+                </div>-->
         <div class="btn-group" ng-if="permission.downloadReport === true;">
             <div class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Export
@@ -285,11 +285,12 @@
         </div>
     </div>
 </div>
+<div ng-show="loading" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div>
     <div ng-repeat="widget in widgets">
         <div ng-if="widget.chartType == 'ticker'">
-<!--            <div class="col-sm-{{widget.width}}">
-                <div class="hpanel border-table">-->
+            <!--            <div class="col-sm-{{widget.width}}">
+                            <div class="hpanel border-table">-->
             <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
                     <div class="panel-tools">
@@ -324,8 +325,8 @@
             </div>
         </div>
         <div ng-if="widget.chartType != 'ticker'">
-<!--            <div class="col-md-{{widget.width}} table-deeta">
-                <div class="hpanel hgreen border-table">-->
+            <!--            <div class="col-md-{{widget.width}} table-deeta">
+                            <div class="hpanel hgreen border-table">-->
             <div class="col-md-{{widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget">
                     <div class="panel-heading">

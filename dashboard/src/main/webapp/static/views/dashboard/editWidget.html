@@ -169,6 +169,7 @@
         </div>
     </div>
 </div>
+<div ng-show="loadingEditWidget" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
 
@@ -670,7 +671,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="isSet(2) && editChartType != 'text'" class="license">{{dispQueryBuilder}}
+            <div ng-show="isSet(2) && editChartType != 'text'" class="license">
                 <div class="col-lg-12" ng-if="dispQueryBuilder == true">
                     <div jquery-Query-Builder query-Data="{{previewColumn}}"></div>
                     <div class='panel-footer'>
@@ -681,7 +682,7 @@
                             <!--<button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>-->
                         </div>
                         <div>
-                            <!--<button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>-->
+                            <!--<button class='btn btn-default' ng-click='saveQuery()'><span class='fa fa-arrow-left'></span> Back</button>-->
                             <button class='btn btn-info' ng-click='saveQuery()'> Apply Filter</button>
                             <!--<button class='btn btn-info' ng-click='widget.isQueryBuilder = true; save(widget)'> Apply Filter</button>-->
                         </div>
