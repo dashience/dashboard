@@ -160,8 +160,6 @@ public class ProxyController {
 
         if (datasetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(datasetColumnList, data, valueMap, response);
-//System.out.println("DDDDAAATTTAA");
-//            System.out.println(data);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
@@ -197,6 +195,7 @@ public class ProxyController {
         Map returnMap = new HashMap<>();
 
         String dataSourceType = getFromMultiValueMap(request, "dataSourceType");
+        System.out.println("dataSourceType --> "+dataSourceType);
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         Integer dataSetIdInt = null;
         if (dataSetId != null) {
@@ -248,7 +247,7 @@ public class ProxyController {
             dateRangeSelect = Range.YEAR;
         }
 
-        System.out.println("dateRangeSelect ---> "+dateRangeSelect);
+        System.out.println("dateRangeSelect ---> " + dateRangeSelect);
         if (dateRangeSelect.equals(Range.DAY)) {
             dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
         } else if (dateRangeSelect.equals(Range.WEEK)) {
@@ -321,10 +320,12 @@ public class ProxyController {
                 String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
                 if (cachedData.get(cachedRangeForFunction) == null) {
                     List<String> startDateValue = new ArrayList();
-                    startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM-dd-yyyy"));
+                    startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM/dd/yyyy"));
+                    System.out.println("startDateValue --> " + startDateValue);
                     request.put("startDate", startDateValue);
                     List<String> endDateValue = new ArrayList();
-                    endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM-dd-yyyy"));
+                    endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM/dd/yyyy"));
+                    System.out.println("endDateValue --> " + endDateValue);
                     request.put("endDate", endDateValue);
                     Map dataMapForFunction = getData(request, response);
                     List<Map<String, Object>> dataForFunction = (List<Map<String, Object>>) dataMapForFunction.get("data");
@@ -333,13 +334,12 @@ public class ProxyController {
 
                 }
                 derivedColumnData.put(datasetColumn.getFieldName(), cachedData.get(cachedRangeForFunction));
-
             } else {
 
             }
         }
-
         List<Map<String, Object>> returnData = new ArrayList<>();
+
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
             Map<String, Object> returnDataMap = new HashMap<>();
@@ -347,16 +347,27 @@ public class ProxyController {
                 DatasetColumns datasetColumn = iterator1.next();
                 boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
                 if (isDerivedColumn) {
-                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(data, dataMap.get(datasetColumn.getBaseField()), datasetColumn);
+                    String functionName = datasetColumn.getFunctionName();
+                    String dateRangeName = datasetColumn.getDateRangeName();
+                    Integer lastNdays = datasetColumn.getLastNdays();
+                    Integer lastNweeks = datasetColumn.getLastNweeks();
+                    Integer lastNmonths = datasetColumn.getLastNmonths();
+                    Integer lastNyears = datasetColumn.getLastNyears();
+                    String customStartDate = datasetColumn.getCustomStartDate();
+                    String customEndDate = datasetColumn.getCustomEndDate();
+                    DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
+                    String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                    System.out.println("cachedRangeForFunction ---> "+cachedRangeForFunction);
+                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(datasetColumn.getBaseField()), datasetColumn);
                     returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
                 } else {
-                    System.out.println("ELSE BLOCK" + datasetColumn.getFieldName());
                     returnDataMap.put(datasetColumn.getFieldName(), dataMap.get(datasetColumn.getFieldName()));
                 }
             }
             System.out.println(returnDataMap);
             returnData.add(returnDataMap);
         }
+
         return returnData;
     }
 
@@ -941,9 +952,9 @@ public class ProxyController {
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         // System.out.println("widgetID ---> " + widgetIdStr);
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-        // System.out.println("startDate 1 ----> " + startDate);
+         System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-        // System.out.println("endDate 1 ----> " + endDate);
+         System.out.println("endDate 1 ----> " + endDate);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             // System.out.println("widgetId ----> " + widgetId);
@@ -971,7 +982,7 @@ public class ProxyController {
         System.out.println("datasetId ---->" + dataSetId);
         System.out.println("datasetIdInt ---->" + dataSetIdInt);
         Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
-        List<Map<String,Object>> data = (List<Map<String,Object>>)dataMap.get("data");
+        List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         Map returnMap = new HashMap<>();
         returnMap.put("columnDefs", columnDefs);
@@ -1257,7 +1268,7 @@ public class ProxyController {
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();
-        if(data == null){
+        if (data == null) {
             return null;
         }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
