@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!--<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--<link href="../../../static/lib/css/bootstrap.min.css" rel="stylesheet">-->
-<!--<link href="../../../static/lib/js/c3/c3.css" rel="stylesheet" type="text/css"/>-->
 <link href="http://webapplayers.com/homer_admin-v2.0/vendor/fontawesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
 <link href="http://webapplayers.com/homer_admin-v2.0/vendor/metisMenu/dist/metisMenu.css" rel="stylesheet" type="text/css"/>
 <link href="http://webapplayers.com/homer_admin-v2.0/vendor/animate.css/animate.css" rel="stylesheet" type="text/css"/>
@@ -20,7 +7,12 @@ and open the template in the editor.
 <link href="http://webapplayers.com/homer_admin-v2.0/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" rel="stylesheet" type="text/css"/>
 <link href="http://webapplayers.com/homer_admin-v2.0/fonts/pe-icon-7-stroke/css/helper.css" rel="stylesheet" type="text/css"/>
 <link href="http://webapplayers.com/homer_admin-v2.0/styles/style.css" rel="stylesheet" type="text/css"/>
-<!--        <link href="../../../static/lib/css/L2T.css" rel="stylesheet">-->
+
+<link href="../../lib/css/print.css" rel="stylesheet" media="print" type="text/css"/>
+<!--[if lte IE 8]>
+<link rel="stylesheet" media="print" href="/print.css" type="text/css" />
+<![endif]-->
+
 <style>
     .col-fixed-2 {
         width: 190px !important;
@@ -57,11 +49,11 @@ and open the template in the editor.
         max-width:100%;
         max-height:100%;
     }
-    
+
     .content {
         padding:0px 20px;
     }
-    
+
     .panel-body {
         padding:5px 5px !important;
         border: none !important;
@@ -69,116 +61,114 @@ and open the template in the editor.
     .content {
         width:1300px;
     }    
-.wrapper {
-    width:1350px;
-    margin:0;
-    background:#fff;
-    border:none;
-    overflow:auto;
-}
+    .wrapper {
+        width:1350px;
+        margin:0;
+        background:#fff;
+        border:none;
+        overflow:auto;
+    }
 
-.header-pdf {
-padding: 0px;
-margin-bottom: 5px;
-margin-top: 0px;
-}
-.head-title h2 {
-    font-size:18pt;
-    margin:0;
-    padding:0;
-    text-transform: uppercase;
-    font-weight:600;
-}
-.sub-header {
-    border:1px solid #eaeaea;
-    min-height:80px;
-    padding:5px 0px;
-    margin-top:10px;
-    margin-bottom: 10px;
-    overflow: hidden;
-}
+    .header-pdf {
+        padding: 0px;
+        margin-bottom: 5px;
+        margin-top: 0px;
+    }
+    .head-title h2 {
+        font-size:18pt;
+        margin:0;
+        padding:0;
+        text-transform: uppercase;
+        font-weight:600;
+    }
+    .sub-header {
+        border:1px solid #eaeaea;
+        min-height:80px;
+        padding:5px 0px;
+        margin-top:10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
 
-.h-150 {
-    min-height: 110px;
-}
+    .h-150 {
+        min-height: 110px;
+    }
 
-.hpanel .stats {
-    border:none !important;
-}
+    .hpanel .stats {
+        border:none !important;
+    }
 
-.hpanel {
-    border: 1px solid #eaeaea;
-    margin-bottom: 15px;
-}
-.pull-right {
-    float: right;
-}
-.section-right-block {
-padding: 5px 10px;
-background: #fff;
-color: #6abe1e;
-}
-img {
-    max-width:100%;
-}
+    .hpanel {
+        border: 1px solid #eaeaea;
+        margin-bottom: 15px;
+    }
+    .pull-right {
+        float: right;
+    }
+    .section-right-block {
+        padding: 5px 10px;
+        background: #fff;
+        color: #6abe1e;
+    }
+    img {
+        max-width:100%;
+    }
 
-.section-block h4 {
-    color: #6abe22;
-}
+    .section-block h4 {
+        color: #6abe22;
+    }
 
-svg {
-     max-width:100%;
-}
-.head-title {
-    background: #555 !important;
-    color: #fff;
-    min-height: 40px;
-    padding: 10px 10px;
-    border-radius: 2px;
-}
+    svg {
+        max-width:100%;
+    }
+    .head-title {
+        background: #555 !important;
+        color: #fff;
+        min-height: 40px;
+        padding: 10px 10px;
+        border-radius: 2px;
+    }
 
-@media print
-   {
-      .pdf {display:none !important;}
-   }
+
    
+    
 
 </style>
 
 <!--    </head>-->
 <div ng-controller="PdfController">
     <div class="wrapper">
-    <div class="header-pdf">        
+        <div class="header-pdf">        
             <img src="static/img/logos/dashience-logo.jpg" width="80"> 
             <img src="{{userAccountLogo}}" width="50"> 
-    </div>
-    <div class="head-title">
-        <h2>{{userProductName}}</h2>
-    </div>    
-    <div class="sub-header">
-        <div class="col-md-12">
-            
-            <div class="section-block pull-left">
-                <h4>{{reportStartDate}} - {{reportEndDate}}</h4>
-                <h2><strong>{{userAccountName}}</strong></h2>
-            </div>
-            
-            <div class="pull-right">
-                <div class="section-right-block">
-                    
-                    <p>Email: info@dashience.com<br>Phone: 773-446-7565</p>
-                    
-                </div>
-            </div>
-            
         </div>
-        
-    </div>
-    
+        <div class="head-title">
+            <h2>{{userProductName}}</h2>
+        </div>    
+        <div class="sub-header">
+            <div class="col-md-12">
+
+                <div class="section-block pull-left">
+                    <h4>{{reportStartDate}} - {{reportEndDate}}</h4>
+                    <h2><strong>{{userAccountName}}</strong></h2>
+                </div>
+
+                <div class="pull-right">
+                    <div class="section-right-block">                    
+                        <p>Email: info@dashience.com<br>Phone: 773-446-7565</p>                    
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
         <div class="content">
             <div class="row">
-                <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
-                <div  ng-repeat="widget in pdfWidgets">
+                <div class="pdfButton">
+                    <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
+                </div>
+                <div class="pageBreak" ng-repeat="widget in pdfWidgets">
 
                     <!--                    <div class="col-md-{{widget.width}}" ng-if="widget.chartType == 'ticker'">
                                             <div>
@@ -197,22 +187,22 @@ svg {
                             <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'line'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'bar'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body" ng-if="widget.chartType === 'pie'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
                         <div class="panel-body"  ng-if="widget.chartType === 'area'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
@@ -231,7 +221,7 @@ svg {
                             </div>
                         </div>
                         <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
-                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 *widget.width)/12}}px">
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div> 

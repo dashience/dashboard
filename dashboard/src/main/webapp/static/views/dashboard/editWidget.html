@@ -433,7 +433,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-if="editChartType != 'pie'">
+                                        <div class="form-group" ng-if="!(editChartType == 'pie'||editChartType == 'stackedbar')">
                                             <div class="col-md-12">
                                                 <label>Select Y2-Axis</label>
                                                 <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
@@ -680,7 +680,7 @@
                             <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
                             <!--<button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>-->
                         </div>
-                        <div>[
+                        <div>
                             <!--<button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>-->
                             <button class='btn btn-info' ng-click='saveQuery()'> Apply Filter</button>
                             <!--<button class='btn btn-info' ng-click='widget.isQueryBuilder = true; save(widget)'> Apply Filter</button>-->
