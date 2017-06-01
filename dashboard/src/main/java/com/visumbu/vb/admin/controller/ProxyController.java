@@ -140,6 +140,8 @@ public class ProxyController {
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String dataSourceType = request.getParameter("dataSourceType");
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
         String dataSetId = request.getParameter("dataSetId");
         Integer dataSetIdInt = null;
         if (dataSetId != null) {
@@ -178,9 +180,15 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
-
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
-        return returnMap;
+        System.out.println("returnMap final ---> " + returnMap);
+        Map dataMap = new HashMap<>();
+        dataMap.put("columnDefs", returnMap.get("columnDefs"));
+        if (fieldsOnly != null) {
+            return dataMap;
+        }
+        dataMap.put("data", returnMap.get("data"));
+        return dataMap;
     }
 
     public String getFromMultiValueMap(MultiValueMap valueMap, String key) {
@@ -195,7 +203,7 @@ public class ProxyController {
         Map returnMap = new HashMap<>();
 
         String dataSourceType = getFromMultiValueMap(request, "dataSourceType");
-        System.out.println("dataSourceType --> "+dataSourceType);
+        System.out.println("dataSourceType --> " + dataSourceType);
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         Integer dataSetIdInt = null;
         if (dataSetId != null) {
@@ -228,6 +236,7 @@ public class ProxyController {
         } else if (dataSourceType.equalsIgnoreCase("pinterest")) {
             returnMap = (Map) getPinterestData(request, response);
         }
+        System.out.println("return map ---> " + returnMap);
         return returnMap;
     }
 
@@ -357,7 +366,7 @@ public class ProxyController {
                     String customEndDate = datasetColumn.getCustomEndDate();
                     DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
                     String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
-                    System.out.println("cachedRangeForFunction ---> "+cachedRangeForFunction);
+                    System.out.println("cachedRangeForFunction ---> " + cachedRangeForFunction);
                     Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(datasetColumn.getBaseField()), datasetColumn);
                     returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
                 } else {
@@ -856,9 +865,9 @@ public class ProxyController {
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         // System.out.println("widgetID ---> " + widgetIdStr);
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-         System.out.println("startDate 1 ----> " + startDate);
+        System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-         System.out.println("endDate 1 ----> " + endDate);
+        System.out.println("endDate 1 ----> " + endDate);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             // System.out.println("widgetId ----> " + widgetId);
@@ -1022,9 +1031,9 @@ public class ProxyController {
 
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
+//        if (fieldsOnly != null) {
+//            return returnMap;
+//        }
         returnMap.put("data", data);
         return returnMap;
     }
@@ -1055,9 +1064,6 @@ public class ProxyController {
         String fieldsOnly = request.getParameter("fieldsOnly");
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
         returnMap.put("data", data);
         // System.out.println(returnMap);
         return returnMap;
@@ -1151,9 +1157,6 @@ public class ProxyController {
         Map returnMap = new HashMap();
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
         returnMap.put("data", data);
         return returnMap;
     }
