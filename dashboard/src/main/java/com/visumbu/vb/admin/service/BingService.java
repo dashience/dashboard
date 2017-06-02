@@ -140,55 +140,65 @@ public class BingService {
             if (productSegment.equalsIgnoreCase("device")) {
                 AccountDevicePerformanceReport bingDevicePerformance = getAccountDevicePerformanceReport(startDate,
                         endDate, accountId, aggregation, productSegment);
-                List<Object> bingAccountRows = bingDevicePerformance.getRows();
-                List<Map<String, Object>> bingReportSet = new ArrayList();
-                Map accountPerformanceReport = new HashMap();
-                for (Iterator<Object> iterator = bingAccountRows.iterator(); iterator.hasNext();) {
-                    Object bingRow = iterator.next();
-                    ObjectMapper oMapper = new ObjectMapper();
-                    Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
-                    for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
-                        String key = entry.getKey();
-                        System.out.println("KEY ==> " + key);
-                        if (entry.getValue() != null) {
-                            System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
-                            dataMap.put(key, ((Map) entry.getValue()).get("value"));
-                        } else {
-                            dataMap.put(key, null);
+                try {
+                    List<Object> bingAccountRows = bingDevicePerformance.getRows();
+                    List<Map<String, Object>> bingReportSet = new ArrayList();
+                    Map accountPerformanceReport = new HashMap();
+                    for (Iterator<Object> iterator = bingAccountRows.iterator(); iterator.hasNext();) {
+                        Object bingRow = iterator.next();
+                        ObjectMapper oMapper = new ObjectMapper();
+                        Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
+                        for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                            String key = entry.getKey();
+                            System.out.println("KEY ==> " + key);
+                            if (entry.getValue() != null) {
+                                System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
+                                dataMap.put(key, ((Map) entry.getValue()).get("value"));
+                            } else {
+                                dataMap.put(key, null);
+                            }
                         }
+                        bingReportSet.add(dataMap);
                     }
-                    bingReportSet.add(dataMap);
-                }
 
-                System.out.println("*****************************");
-                System.out.println(bingReportSet);
-                return bingReportSet;
+                    System.out.println("*****************************");
+                    System.out.println(bingReportSet);
+                    return bingReportSet;
+                } catch (NullPointerException ex) {
+                    return null;
+                }
             } else {
+                System.out.println("aggregation-->" + aggregation);
+                System.out.println("product segment-->" + productSegment);
                 AccountPerformanceReport bingAccountReport = getAccountPerformanceReport(startDate, endDate, accountId,
-                        aggregation);
-                List<Object> bingAccountRows = bingAccountReport.getRows();
-                List<Map<String, Object>> bingReportSet = new ArrayList();
-                Map accountPerformanceReport = new HashMap();
-                for (Iterator<Object> iterator = bingAccountRows.iterator(); iterator.hasNext();) {
-                    Object bingRow = iterator.next();
-                    ObjectMapper oMapper = new ObjectMapper();
-                    Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
-                    for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
-                        String key = entry.getKey();
-                        System.out.println("KEY ==> " + key);
-                        if (entry.getValue() != null) {
-                            System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
-                            dataMap.put(key, ((Map) entry.getValue()).get("value"));
-                        } else {
-                            dataMap.put(key, null);
+                        aggregation, productSegment);
+                try {
+                    List<Object> bingAccountRows = bingAccountReport.getRows();
+                    List<Map<String, Object>> bingReportSet = new ArrayList();
+                    Map accountPerformanceReport = new HashMap();
+                    for (Iterator<Object> iterator = bingAccountRows.iterator(); iterator.hasNext();) {
+                        Object bingRow = iterator.next();
+                        ObjectMapper oMapper = new ObjectMapper();
+                        Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
+                        for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                            String key = entry.getKey();
+                            System.out.println("KEY ==> " + key);
+                            if (entry.getValue() != null) {
+                                System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
+                                dataMap.put(key, ((Map) entry.getValue()).get("value"));
+                            } else {
+                                dataMap.put(key, null);
+                            }
                         }
+                        bingReportSet.add(dataMap);
                     }
-                    bingReportSet.add(dataMap);
-                }
 
-                System.out.println("*****************************");
-                System.out.println(bingReportSet);
-                return bingReportSet;
+                    System.out.println("*****************************");
+                    System.out.println(bingReportSet);
+                    return bingReportSet;
+                } catch (NullPointerException ex) {
+                    return null;
+                }
             }
         }
 
@@ -197,78 +207,91 @@ public class BingService {
             if (productSegment.equalsIgnoreCase("device")) {
                 CampaignDevicePerformanceReport campaignDeviceReport = getCampaignDevicePerformanceReport(startDate,
                         endDate, accountId, aggregation);
-                List<Object> bingCampaignRows = campaignDeviceReport.getRows();
-                List<Map<String, Object>> bingReportSet = new ArrayList();
-                Map accountPerformanceReport = new HashMap();
-                for (Iterator<Object> iterator = bingCampaignRows.iterator(); iterator.hasNext();) {
-                    Object bingRow = iterator.next();
-                    ObjectMapper oMapper = new ObjectMapper();
-                    Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
-                    for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
-                        String key = entry.getKey();
-                        System.out.println("KEY ==> " + key);
-                        if (entry.getValue() != null) {
-                            System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
-                            dataMap.put(key, ((Map) entry.getValue()).get("value"));
-                        } else {
-                            dataMap.put(key, null);
+                try {
+                    List<Object> bingCampaignRows = campaignDeviceReport.getRows();
+                    List<Map<String, Object>> bingReportSet = new ArrayList();
+                    Map accountPerformanceReport = new HashMap();
+                    for (Iterator<Object> iterator = bingCampaignRows.iterator(); iterator.hasNext();) {
+                        Object bingRow = iterator.next();
+                        ObjectMapper oMapper = new ObjectMapper();
+                        Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
+                        for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                            String key = entry.getKey();
+                            System.out.println("KEY ==> " + key);
+                            if (entry.getValue() != null) {
+                                System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
+                                dataMap.put(key, ((Map) entry.getValue()).get("value"));
+                            } else {
+                                dataMap.put(key, null);
+                            }
                         }
+                        bingReportSet.add(dataMap);
                     }
-                    bingReportSet.add(dataMap);
-                }
 
-                System.out.println("*****************************");
-                System.out.println(bingReportSet);
-                return bingReportSet;
+                    System.out.println("*****************************");
+                    System.out.println(bingReportSet);
+                    return bingReportSet;
+                } catch (NullPointerException ex) {
+                    return null;
+                }
             } else {
                 CampaignPerformanceReport campaignReport = getCampaignPerformanceReport(startDate, endDate, accountId,
-                        aggregation);
-                List<Object> bingCampaignRows = campaignReport.getRows();
-                List<Map<String, Object>> bingReportSet = new ArrayList();
-                Map accountPerformanceReport = new HashMap();
-                for (Iterator<Object> iterator = bingCampaignRows.iterator(); iterator.hasNext();) {
-                    Object bingRow = iterator.next();
-                    ObjectMapper oMapper = new ObjectMapper();
-                    Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
-                    for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
-                        String key = entry.getKey();
-                        System.out.println("KEY ==> " + key);
-                        if (entry.getValue() != null) {
-                            System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
-                            dataMap.put(key, ((Map) entry.getValue()).get("value"));
-                        } else {
-                            dataMap.put(key, null);
+                        aggregation, productSegment);
+                try {
+                    List<Object> bingCampaignRows = campaignReport.getRows();
+                    List<Map<String, Object>> bingReportSet = new ArrayList();
+                    Map accountPerformanceReport = new HashMap();
+                    for (Iterator<Object> iterator = bingCampaignRows.iterator(); iterator.hasNext();) {
+                        Object bingRow = iterator.next();
+                        ObjectMapper oMapper = new ObjectMapper();
+                        Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
+                        for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                            String key = entry.getKey();
+                            System.out.println("KEY ==> " + key);
+                            if (entry.getValue() != null) {
+                                System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
+                                dataMap.put(key, ((Map) entry.getValue()).get("value"));
+                            } else {
+                                dataMap.put(key, null);
+                            }
                         }
+                        bingReportSet.add(dataMap);
                     }
-                    bingReportSet.add(dataMap);
+                    return bingReportSet;
+                } catch (NullPointerException ex) {
+                    return null;
                 }
-                return bingReportSet;
+
             }
 
         }
         if (reportName.equalsIgnoreCase("adGroupPerformance")) {
-            AdGroupPerformanceReport bingAdGroupPerformaceReport = getAdGroupPerformanceReport(startDate, endDate, accountId,
-                    aggregation);
-            List<Object> bingCampaignRows = bingAdGroupPerformaceReport.getRows();
-            List<Map<String, Object>> bingReportSet = new ArrayList();
-            Map accountPerformanceReport = new HashMap();
-            for (Iterator<Object> iterator = bingCampaignRows.iterator(); iterator.hasNext();) {
-                Object bingRow = iterator.next();
-                ObjectMapper oMapper = new ObjectMapper();
-                Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
-                for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
-                    String key = entry.getKey();
-                    System.out.println("KEY ==> " + key);
-                    if (entry.getValue() != null) {
-                        System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
-                        dataMap.put(key, ((Map) entry.getValue()).get("value"));
-                    } else {
-                        dataMap.put(key, null);
+            AdGroupPerformanceReport bingAdGroupPerformaceReport = getAdGroupPerformanceReport(startDate, endDate,
+                    accountId, aggregation, productSegment);
+            try {
+                List<Object> bingCampaignRows = bingAdGroupPerformaceReport.getRows();
+                List<Map<String, Object>> bingReportSet = new ArrayList();
+                Map accountPerformanceReport = new HashMap();
+                for (Iterator<Object> iterator = bingCampaignRows.iterator(); iterator.hasNext();) {
+                    Object bingRow = iterator.next();
+                    ObjectMapper oMapper = new ObjectMapper();
+                    Map<String, Object> dataMap = oMapper.convertValue(bingRow, Map.class);
+                    for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                        String key = entry.getKey();
+                        System.out.println("KEY ==> " + key);
+                        if (entry.getValue() != null) {
+                            System.out.println("Value ==> " + ((Map) entry.getValue()).get("value"));
+                            dataMap.put(key, ((Map) entry.getValue()).get("value"));
+                        } else {
+                            dataMap.put(key, null);
+                        }
                     }
+                    bingReportSet.add(dataMap);
                 }
-                bingReportSet.add(dataMap);
+                return bingReportSet;
+            } catch (NullPointerException e) {
+                return null;
             }
-            return bingReportSet;
         }
 
         if (reportName.equalsIgnoreCase("adPerformance")) {
@@ -303,7 +326,7 @@ public class BingService {
         if (reportName.equalsIgnoreCase("geoPerformance")) {
             if (productSegment.equalsIgnoreCase("city")) {
                 GeoCityLocationPerformanceReport bingGeoCityReport = getGeoCityLocationPerformanceReport(startDate, endDate,
-                        accountId, aggregation);
+                        accountId, aggregation, productSegment);
                 try {
                     List<Object> bingGeoCityPerformanceRows = bingGeoCityReport.getRows();
                     List<Map<String, Object>> bingReportSet = new ArrayList();
@@ -331,8 +354,8 @@ public class BingService {
 
             }
             if (productSegment.equalsIgnoreCase("zip")) {
-                GeoZipLocationPerformanceReport bingGeoZipReport = getGeoZipLocationPerformanceReport(startDate, endDate,
-                        accountId);
+                GeoZipLocationPerformanceReport bingGeoZipReport = getGeoZipLocationPerformanceReport(startDate,
+                        endDate, accountId);
                 try {
                     List<Object> bingGeoZipPerformanceRows = bingGeoZipReport.getRows();
                     List<Map<String, Object>> bingReportSet = new ArrayList();
@@ -393,14 +416,14 @@ public class BingService {
     }
 
     public AccountPerformanceReport getAccountPerformanceReport(Date startDate, Date endDate, Long accountId,
-            String aggregation)
+            String aggregation, String productSegment)
             throws InterruptedException, ExecutionException, TimeoutException {
         initAuthentication(accountId);
         ReportingServiceManager reportingServiceManager = new ReportingServiceManager(authorizationData);
         reportingServiceManager.setStatusPollIntervalInMilliseconds(5000);
         String filename = "bing-" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".xml";
         ReportRequest reportRequest
-                = getAccountPerformaceReportRequest(startDate, endDate, aggregation);
+                = getAccountPerformaceReportRequest(startDate, endDate, aggregation, productSegment);
 
         ReportingDownloadParameters reportingDownloadParameters = new ReportingDownloadParameters();
         reportingDownloadParameters.setReportRequest(reportRequest);
@@ -502,14 +525,15 @@ public class BingService {
         return null;
     }
 
-    public CampaignPerformanceReport getCampaignPerformanceReport(Date startDate, Date endDate, Long accountId, String aggregation) {
+    public CampaignPerformanceReport getCampaignPerformanceReport(Date startDate, Date endDate, Long accountId,
+            String aggregation, String productSegment) {
         try {
             initAuthentication(accountId);
             ReportingServiceManager reportingServiceManager = new ReportingServiceManager(authorizationData);
             reportingServiceManager.setStatusPollIntervalInMilliseconds(5000);
             String filename = "bing-" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".xml";
             ReportRequest reportRequest
-                    = getCampaignPerformaceReportRequest(startDate, endDate, aggregation);
+                    = getCampaignPerformaceReportRequest(startDate, endDate, aggregation, productSegment);
 
             ReportingDownloadParameters reportingDownloadParameters = new ReportingDownloadParameters();
             reportingDownloadParameters.setReportRequest(reportRequest);
@@ -568,14 +592,14 @@ public class BingService {
     }
 
     public AdGroupPerformanceReport getAdGroupPerformanceReport(Date startDate, Date endDate, Long accountId,
-            String aggregation) {
+            String aggregation, String productSegment) {
         try {
             initAuthentication(accountId);
             ReportingServiceManager reportingServiceManager = new ReportingServiceManager(authorizationData);
             reportingServiceManager.setStatusPollIntervalInMilliseconds(5000);
             String filename = "bing-" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".xml";
             ReportRequest reportRequest
-                    = getAdGroupPerformaceReportRequest(startDate, endDate, aggregation);
+                    = getAdGroupPerformaceReportRequest(startDate, endDate, aggregation, productSegment);
 
             ReportingDownloadParameters reportingDownloadParameters = new ReportingDownloadParameters();
             reportingDownloadParameters.setReportRequest(reportRequest);
@@ -634,14 +658,14 @@ public class BingService {
     }
 
     public GeoCityLocationPerformanceReport getGeoCityLocationPerformanceReport(Date startDate, Date endDate, Long accountId,
-            String aggregation) {
+            String aggregation, String productSegment) {
         try {
             initAuthentication(accountId);
             ReportingServiceManager reportingServiceManager = new ReportingServiceManager(authorizationData);
             reportingServiceManager.setStatusPollIntervalInMilliseconds(5000);
             String filename = "bing-" + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".xml";
             ReportRequest reportRequest
-                    = getGeoCityLocationPerformanceReportRequest(startDate, endDate, aggregation);
+                    = getGeoCityLocationPerformanceReportRequest(startDate, endDate, aggregation, productSegment);
 
             ReportingDownloadParameters reportingDownloadParameters = new ReportingDownloadParameters();
             reportingDownloadParameters.setReportRequest(reportRequest);
@@ -796,7 +820,8 @@ public class BingService {
         return report;
     }
 
-    private ReportRequest getGeoCityLocationPerformanceReportRequest(Date startDate, Date endDate, String aggregation) {
+    private ReportRequest getGeoCityLocationPerformanceReportRequest(Date startDate, Date endDate, String aggregation,
+            String productSegment) {
         GeoLocationPerformanceReportRequest report = new GeoLocationPerformanceReportRequest();
         ReportFormat ReportFileFormat = ReportFormat.XML;
         report.setFormat(ReportFileFormat);
@@ -804,6 +829,8 @@ public class BingService {
         report.setReturnOnlyCompleteData(false);
         if (aggregation == null || aggregation.isEmpty()) {
 
+            report.setAggregation(NonHourlyReportAggregation.SUMMARY);
+        } else if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
             report.setAggregation(NonHourlyReportAggregation.SUMMARY);
         } else {
             report.setAggregation(NonHourlyReportAggregation.DAILY);
@@ -845,6 +872,7 @@ public class BingService {
         geoLocationPerformanceReportColumn.getGeoLocationPerformanceReportColumns().add(GeoLocationPerformanceReportColumn.COST_PER_CONVERSION);
         geoLocationPerformanceReportColumn.getGeoLocationPerformanceReportColumns().add(GeoLocationPerformanceReportColumn.CONVERSION_RATE);
         if (aggregation == null || aggregation.isEmpty()) {
+        } else if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
         } else {
             geoLocationPerformanceReportColumn.getGeoLocationPerformanceReportColumns().add(GeoLocationPerformanceReportColumn.TIME_PERIOD);
         }
@@ -913,7 +941,7 @@ public class BingService {
     }
 
     private ReportRequest getAdPerformaceReportRequest(Date startDate, Date endDate, String aggregation,
-            String prodSegment) {
+            String productSegment) {
         AdPerformanceReportRequest report = new AdPerformanceReportRequest();
         ReportFormat ReportFileFormat = ReportFormat.XML;
         report.setFormat(ReportFileFormat);
@@ -926,7 +954,7 @@ public class BingService {
             report.setAggregation(NonHourlyReportAggregation.WEEKLY);
         } else if (aggregation.equalsIgnoreCase("monthly")) {
             report.setAggregation(NonHourlyReportAggregation.MONTHLY);
-        } else if (aggregation.equalsIgnoreCase("none")) {
+        } else if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
             report.setAggregation(NonHourlyReportAggregation.SUMMARY);
         }
 
@@ -970,7 +998,11 @@ public class BingService {
         adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.FINAL_URL);
         adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.CAMPAIGN_NAME);
         adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.AD_GROUP_NAME);
-        adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.TIME_PERIOD);
+        if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
+        } else {
+            adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.TIME_PERIOD);
+        }
+
         adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.AD_DESCRIPTION);
         adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.AD_TITLE);
         adPerformanceReportColumn.getAdPerformanceReportColumns().add(AdPerformanceReportColumn.CAMPAIGN_ID);
@@ -983,11 +1015,11 @@ public class BingService {
         return report;
     }
 
-    private ReportRequest getAccountPerformaceReportRequest(Date startDate, Date endDate, String aggregation) {
+    private ReportRequest getAccountPerformaceReportRequest(Date startDate, Date endDate, String aggregation, String productSegment) {
         AccountPerformanceReportRequest report = new AccountPerformanceReportRequest();
         ReportFormat ReportFileFormat = ReportFormat.XML;
         report.setFormat(ReportFileFormat);
-        report.setReportName("My Keyword Performance Report");
+        report.setReportName("My Account Performance Report");
         report.setReturnOnlyCompleteData(false);
         if (aggregation.equalsIgnoreCase("weekly")) {
             report.setAggregation(ReportAggregation.WEEKLY);
@@ -1000,10 +1032,9 @@ public class BingService {
             report.setAggregation(ReportAggregation.SUMMARY);
         } else if (aggregation.equalsIgnoreCase("monthly")) {
             report.setAggregation(ReportAggregation.MONTHLY);
-        } else if (aggregation.equalsIgnoreCase("none")) {
-            System.out.println("inside empty else");
+        } else if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
             report.setAggregation(ReportAggregation.SUMMARY);
-        } else {
+        } else if (aggregation.equalsIgnoreCase("daily")) {
             System.out.println("inside last else");
             report.setAggregation(ReportAggregation.DAILY);
         }
@@ -1045,17 +1076,20 @@ public class BingService {
         accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.CONVERSION_RATE);
         accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.COST_PER_CONVERSION);
         accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.ACCOUNT_NAME);
+
         if (!(aggregation.equalsIgnoreCase("dayOfWeek") || aggregation.equalsIgnoreCase("hourOfDay"))) {
             accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.IMPRESSION_SHARE_PERCENT);
             accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.IMPRESSION_LOST_TO_BUDGET_PERCENT);
             accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.IMPRESSION_LOST_TO_RANK_PERCENT);
         }
-        if (!aggregation.isEmpty()) {
+        if (!aggregation.isEmpty() && !aggregation.equalsIgnoreCase("none")) {
             accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.TIME_PERIOD);
         }
         accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.AVERAGE_POSITION);
         accountPerformanceReportColumn.getAccountPerformanceReportColumns().add(AccountPerformanceReportColumn.PHONE_CALLS);
+
         report.setColumns(accountPerformanceReportColumn);
+
         return report;
     }
 
@@ -1228,7 +1262,8 @@ public class BingService {
         return report;
     }
 
-    private ReportRequest getCampaignPerformaceReportRequest(Date startDate, Date endDate, String aggregation) {
+    private ReportRequest getCampaignPerformaceReportRequest(Date startDate, Date endDate, String aggregation,
+            String productSegment) {
         CampaignPerformanceReportRequest report = new CampaignPerformanceReportRequest();
         ReportFormat ReportFileFormat = ReportFormat.XML;
         report.setFormat(ReportFileFormat);
@@ -1243,7 +1278,7 @@ public class BingService {
             report.setAggregation(ReportAggregation.MONTHLY);
         } else if (aggregation.equalsIgnoreCase("weekly")) {
             report.setAggregation(ReportAggregation.WEEKLY);
-        } else if (aggregation.equalsIgnoreCase("none")) {
+        } else if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
             report.setAggregation(ReportAggregation.SUMMARY);
         } else {
 //            report.setAggregation(ReportAggregation.DAILY);
@@ -1289,7 +1324,7 @@ public class BingService {
         campaignPerformanceReportColumn.getCampaignPerformanceReportColumns().add(CampaignPerformanceReportColumn.IMPRESSION_LOST_TO_BUDGET_PERCENT);
         campaignPerformanceReportColumn.getCampaignPerformanceReportColumns().add(CampaignPerformanceReportColumn.IMPRESSION_LOST_TO_RANK_PERCENT);
         campaignPerformanceReportColumn.getCampaignPerformanceReportColumns().add(CampaignPerformanceReportColumn.AVERAGE_POSITION);
-        if (aggregation != null && !aggregation.isEmpty()) {
+        if (aggregation != null && !aggregation.isEmpty() && !aggregation.equalsIgnoreCase("none")) {
             campaignPerformanceReportColumn.getCampaignPerformanceReportColumns().add(CampaignPerformanceReportColumn.TIME_PERIOD);
         }
         campaignPerformanceReportColumn.getCampaignPerformanceReportColumns().add(CampaignPerformanceReportColumn.CAMPAIGN_NAME);
@@ -1366,7 +1401,8 @@ public class BingService {
         return report;
     }
 
-    private ReportRequest getAdGroupPerformaceReportRequest(Date startDate, Date endDate, String aggregation) {
+    private ReportRequest getAdGroupPerformaceReportRequest(Date startDate, Date endDate, String aggregation,
+            String productSegment) {
         AdGroupPerformanceReportRequest report = new AdGroupPerformanceReportRequest();
         ReportFormat ReportFileFormat = ReportFormat.XML;
         report.setFormat(ReportFileFormat);
@@ -1378,7 +1414,7 @@ public class BingService {
             report.setAggregation(ReportAggregation.MONTHLY);
         } else if (aggregation.equalsIgnoreCase("weekly")) {
             report.setAggregation(ReportAggregation.WEEKLY);
-        } else if (aggregation.equalsIgnoreCase("none")) {
+        } else if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
             report.setAggregation(ReportAggregation.SUMMARY);
         }
         ArrayOflong accountIds = new ArrayOflong();
@@ -1424,6 +1460,8 @@ public class BingService {
         adGroupPerformanceReportColumn.getAdGroupPerformanceReportColumns().add(AdGroupPerformanceReportColumn.IMPRESSION_LOST_TO_RANK_PERCENT);
         adGroupPerformanceReportColumn.getAdGroupPerformanceReportColumns().add(AdGroupPerformanceReportColumn.AVERAGE_POSITION);
         if (aggregation == null || aggregation.isEmpty()) {
+
+        } else if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
 
         } else {
             adGroupPerformanceReportColumn.getAdGroupPerformanceReportColumns().add(AdGroupPerformanceReportColumn.TIME_PERIOD);

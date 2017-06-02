@@ -29,6 +29,16 @@ public class GeoZipLocationPerformanceRow {
     private Data state;
     private Data averagePosition;
     private Data mostSpecificLocation;
+    private Data gregorianDate;
+
+    public Data getGregorianDate() {
+        return gregorianDate;
+    }
+
+    @XmlElement(name = "GregorianDate")
+    public void setGregorianDate(Data gregorianDate) {
+        this.gregorianDate = gregorianDate;
+    }
 
     public Data getClicks() {
         return clicks;

@@ -52,74 +52,74 @@ public class BingController {
     @Autowired
     private BingService bingService;
     public static final Long accountId = 2610614L;
+//
+//    @RequestMapping(value = "testBing", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    Object getAllDataSets(HttpServletRequest request, HttpServletResponse response) throws IOException, GeneralSecurityException {
+//        try {
+//            Date startDate = DateUtils.get30DaysBack();
+//            Date endDate = new Date();
+//            return bingService.getKeywordPerformanceReport(startDate, endDate, accountId);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ExecutionException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (TimeoutException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
-    @RequestMapping(value = "testBing", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object getAllDataSets(HttpServletRequest request, HttpServletResponse response) throws IOException, GeneralSecurityException {
-        try {
-            Date startDate = DateUtils.get30DaysBack();
-            Date endDate = new Date();
-            return bingService.getKeywordPerformanceReport(startDate, endDate, accountId);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+//    @RequestMapping(value = "accountPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    AccountPerformanceReport getAccountPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            Date startDate = DateUtils.get30DaysBack();
+//            Date endDate = new Date();
+//            return bingService.getAccountPerformanceReport(startDate, endDate, accountId, "daily");
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ExecutionException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (TimeoutException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
-    @RequestMapping(value = "accountPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    AccountPerformanceReport getAccountPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Date startDate = DateUtils.get30DaysBack();
-            Date endDate = new Date();
-            return bingService.getAccountPerformanceReport(startDate, endDate, accountId, "daily");
-        } catch (InterruptedException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "accountHourOfDayPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    AccountHourOfDayPerformanceReport getAccountHourOfDayPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Date startDate = DateUtils.get30DaysBack();
-            Date endDate = new Date();
-            return bingService.getAccountHourOfDayPerformanceReport(startDate, endDate, accountId);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "accountDayOfWeekPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    AccountDayOfWeekPerformanceReport getAccountDayOfWeekPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Date startDate = DateUtils.get30DaysBack();
-            Date endDate = new Date();
-            return bingService.getAccountDayOfWeekPerformanceReport(startDate, endDate, accountId);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
+//    @RequestMapping(value = "accountHourOfDayPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    AccountHourOfDayPerformanceReport getAccountHourOfDayPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            Date startDate = DateUtils.get30DaysBack();
+//            Date endDate = new Date();
+//            return bingService.getAccountHourOfDayPerformanceReport(startDate, endDate, accountId);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ExecutionException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (TimeoutException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
+//
+//    @RequestMapping(value = "accountDayOfWeekPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    AccountDayOfWeekPerformanceReport getAccountDayOfWeekPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            Date startDate = DateUtils.get30DaysBack();
+//            Date endDate = new Date();
+//            return bingService.getAccountDayOfWeekPerformanceReport(startDate, endDate, accountId);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ExecutionException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (TimeoutException ex) {
+//            Logger.getLogger(BingController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
 //    @RequestMapping(value = "accountDevicePerformanceReport", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
@@ -130,29 +130,29 @@ public class BingController {
 //
 //    }
 
-    @RequestMapping(value = "getCampaignPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    CampaignPerformanceReport getCampaignPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get30DaysBack();
-        Date endDate = new Date();
-        return bingService.getCampaignPerformanceReport(startDate, endDate, accountId, "");
-    }
-
-    @RequestMapping(value = "getCampaignDevicePerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    CampaignDevicePerformanceReport getCampaignDevicePerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get30DaysBack();
-        Date endDate = new Date();
-        return bingService.getCampaignDevicePerformanceReport(startDate, endDate, accountId, "daily");
-    }
-
-    @RequestMapping(value = "getAdGroupPerformanceReport", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    AdGroupPerformanceReport getAdGroupPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = DateUtils.get30DaysBack();
-        Date endDate = new Date();
-        return bingService.getAdGroupPerformanceReport(startDate, endDate, accountId, "");
-    }
+//    @RequestMapping(value = "getCampaignPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    CampaignPerformanceReport getCampaignPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = new Date();
+//        return bingService.getCampaignPerformanceReport(startDate, endDate, accountId, "");
+//    }
+//
+//    @RequestMapping(value = "getCampaignDevicePerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    CampaignDevicePerformanceReport getCampaignDevicePerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = new Date();
+//        return bingService.getCampaignDevicePerformanceReport(startDate, endDate, accountId, "daily");
+//    }
+//
+//    @RequestMapping(value = "getAdGroupPerformanceReport", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    AdGroupPerformanceReport getAdGroupPerformanceReport(HttpServletRequest request, HttpServletResponse response) {
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = new Date();
+//        return bingService.getAdGroupPerformanceReport(startDate, endDate, accountId, "");
+//    }
 
     //Error
 //    @RequestMapping(value = "getAdPerformanceReport", method = RequestMethod.GET, produces = "application/json")

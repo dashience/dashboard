@@ -78,7 +78,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
         } else if (dataSource === "linkedin")
-        {                          
+        {
             $scope.report = $scope.linkedinPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
@@ -246,18 +246,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Geo Performance',
             timeSegments: [
                 {
-                    type: 'daily',
-                    name: 'Daily'
-                },
-                {
-                    type: 'monthly',
-                    name: 'Monthly'
-                },
-                {
-                    type: 'weekly',
-                    name: 'Weekly'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
@@ -272,18 +260,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'city',
                     name: 'City'
                 },
-                {
-                    type: 'country',
-                    name: 'Country'
-                },
-                {
-                    type: 'region',
-                    name: 'Region'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
             ]
         },
     ];
@@ -1481,8 +1457,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
-            $scope.dataSet.timeSegment = {name: 'None', type: 'none'}
-            $scope.dataSet.productSegment = {name: 'None', type: 'none'}
+            if ($scope.dataSet.reportName == 'geoPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'City', type: 'city'};
+            } else {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'}
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'}
+            }
         }
 
 
@@ -2007,7 +1988,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.loadingTable = false;
                 console.log(response)
                 if (response.data.length == 0) {
-                    scope.errorMsg = "No Data Found"
+                    scope.errorMsg = "No Data Found";
                     scope.showErrorMsg = true;
                 } else {
                     scope.showErrorMsg = false;

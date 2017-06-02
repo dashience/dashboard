@@ -35,6 +35,37 @@ public class AdGroupPerformanceRow {
     private Data adGroupId;
     private Data adGroupName;
     private Data phoneCalls;
+    private Data gregorianDate;
+    private Data week;
+    private Data month;
+
+    public Data getWeek() {
+        return week;
+    }
+    @XmlElement(name = "Week")
+    public void setWeek(Data week) {
+        this.week = week;
+    }
+
+    public Data getMonth() {
+        return month;
+    }
+
+    @XmlElement(name = "Month")
+    public void setMonth(Data month) {
+        this.month = month;
+    }
+    
+    
+
+    public Data getGregorianDate() {
+        return gregorianDate;
+    }
+
+    @XmlElement(name = "GregorianDate")
+    public void setGregorianDate(Data gregorianDate) {
+        this.gregorianDate = gregorianDate;
+    }
     
     public Data getImpressions() {
         return impressions;

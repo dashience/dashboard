@@ -36,7 +36,37 @@ public class AdPerformanceRow {
     private Data adGroupId;
     private Data displayUrl;
     private Data destinationUrl;
-    
+    private Data gregorianDate;
+    private Data week;
+    private Data month;
+
+    public Data getWeek() {
+        return week;
+    }
+
+    @XmlElement(name = "Week")
+    public void setWeek(Data week) {
+        this.week = week;
+    }
+
+    public Data getMonth() {
+        return month;
+    }
+
+    @XmlElement(name = "Month")
+    public void setMonth(Data month) {
+        this.month = month;
+    }
+
+    public Data getGregorianDate() {
+        return gregorianDate;
+    }
+
+    @XmlElement(name = "GregorianDate")
+    public void setGregorianDate(Data gregorianDate) {
+        this.gregorianDate = gregorianDate;
+    }
+
     public Data getImpressions() {
         return impressions;
     }
@@ -126,7 +156,7 @@ public class AdPerformanceRow {
     public void setAccountName(Data accountName) {
         this.accountName = accountName;
     }
-    
+
     public Data getAveragePosition() {
         return averagePosition;
     }
@@ -161,7 +191,7 @@ public class AdPerformanceRow {
     @XmlElement(name = "CampaignId")
     public void setCampaignId(Data campaignId) {
         this.campaignId = campaignId;
-    }  
+    }
 
     public Data getAdGroupId() {
         return adGroupId;
@@ -230,6 +260,5 @@ public class AdPerformanceRow {
     public String toString() {
         return "AdPerformanceRow{" + "accountName=" + accountName + ", accountId=" + accountId + ", clicks=" + clicks + ", impressions=" + impressions + ", averageCpc=" + averageCpc + ", ctr=" + ctr + ", spend=" + spend + ", conversions=" + conversions + ", costPerConversion=" + costPerConversion + ", conversionRate=" + conversionRate + ", finalUrl=" + finalUrl + ", campaignName=" + campaignName + ", adGroupName=" + adGroupName + ", timePeriod=" + timePeriod + ", adDescription=" + adDescription + ", adTitle=" + adTitle + ", averagePosition=" + averagePosition + ", campaignId=" + campaignId + ", adGroupId=" + adGroupId + ", displayUrl=" + displayUrl + ", destinationUrl=" + destinationUrl + '}';
     }
-    
-    
+
 }

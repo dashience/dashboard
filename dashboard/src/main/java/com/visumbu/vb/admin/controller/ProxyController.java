@@ -104,7 +104,7 @@ public class ProxyController {
 
     @Autowired
     private ReportService reportService;
-    
+
     @Autowired
     private LinkedinService linkedinService;
 
@@ -212,17 +212,21 @@ public class ProxyController {
         String reportName = request.getParameter("dataSetReportName");
         String dataSetId = request.getParameter("dataSetId");
 
-       
         String accountIdStr = request.getParameter("accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String accessToken=getAccountId(accountProperty, "pinterestAccessToken");
+        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
 
-
-        System.out.println("Pinterst access token--->"+accessToken);
+        System.out.println("Pinterst access token--->" + accessToken);
         if (accessToken == null) {
-            return null;
+            System.out.println("pinterest accesstoken data not found now...");
+            Map pinterestData = new HashMap();
+            List<ColumnDef> columnDefs = new ArrayList();
+            List<Map<String, String>> returnData = new ArrayList<>();
+            pinterestData.put("columnDefs", columnDefs);
+            pinterestData.put("data", returnData);
+            return pinterestData;
         } else {
             Integer dataSetIdInt = null;
             DataSet dataSet = null;
@@ -245,7 +249,7 @@ public class ProxyController {
                             + "&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
                     System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&PINTEREST&&&&&&&&");
                     System.out.println(fbUrl);
-                    
+
                     String data = Rest.getData(fbUrl);
                     JSONParser parser = new JSONParser();
                     Object jsonObj = parser.parse(data);
@@ -495,7 +499,7 @@ public class ProxyController {
             String dataSetId = request.getParameter("dataSetId");
             String dataSetReportName = request.getParameter("dataSetReportName");
             String timeSegment = request.getParameter("timeSegment");
-            String productSegment=request.getParameter("productSegment");
+            String productSegment = request.getParameter("productSegment");
             if (timeSegment == null) {
                 timeSegment = "daily";
             }
@@ -552,7 +556,7 @@ public class ProxyController {
                 Long bingAccountIdLong = Long.parseLong(bingAccountId);
                 Map returnMap = new HashMap();
                 List<Map<String, Object>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate,
-                        endDate, timeSegment,productSegment);
+                        endDate, timeSegment, productSegment);
                 System.out.println("-------------------------------");
                 System.out.println(data);
                 List<ColumnDef> columnDefs = getColumnDefObject(data);
@@ -852,35 +856,41 @@ public class ProxyController {
             }
         }
         String accountIdStr = request.getParameter("accountId");
+        System.out.println("Linkedin Account ID-->" + accountIdStr);
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
         System.out.println("startDate 1 ----> " + startDate);
 
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         System.out.println("endDate 1 ----> " + endDate);
-        
-        String accessToken= "AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM";
-        
+
+        String accessToken = "AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM";
+
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccountId=getAccountId(accountProperty, "linkedinAccountId");
-        Long linkedInaccountId=Long.parseLong(linkedinAccountId);
-        
-        List<Map<String, Object>> data = linkedinService.get(accessToken, linkedInaccountId,dataSetReportName,
-           startDate, endDate, timeSegment, productSegment);
-        log.debug(data);
-        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-        System.out.println(data);
+        String linkedinAccountId = getAccountId(accountProperty, "linkedinAccountId");
+        try {
+            Long linkedInaccountId = Long.parseLong(linkedinAccountId);
 
-//        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
-//        Date endDate = new Date();
-//        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
-        Map returnMap = new HashMap();
-        List<ColumnDef> columnDefs = getColumnDefObject(data);
-        returnMap.put("columnDefs", columnDefs);
-       
-        returnMap.put("data", data);
-        return returnMap;
+            List<Map<String, Object>> data = linkedinService.get(accessToken, linkedInaccountId, dataSetReportName,
+                    startDate, endDate, timeSegment, productSegment);
+            log.debug(data);
+            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+            System.out.println(data);
+            Map returnMap = new HashMap();
+            List<ColumnDef> columnDefs = getColumnDefObject(data);
+            returnMap.put("columnDefs", columnDefs);
+
+            returnMap.put("data", data);
+            return returnMap;
+        } catch (NumberFormatException ex) {
+            Map linkedInData = new HashMap();
+            List<ColumnDef> columnDefs = new ArrayList();
+            List<Map<String, String>> returnData = new ArrayList<>();
+            linkedInData.put("columnDefs", columnDefs);
+            linkedInData.put("data", returnData);
+            return linkedInData;
+        }
 
     }
 
