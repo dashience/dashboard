@@ -483,7 +483,7 @@ public class DateUtils {
         long fromOffset = milliDiff;
         long toOffset = toTimezone.getOffset(calendar.getTimeInMillis());
 
-        long convertedTime = calendar.getTimeInMillis() - (fromOffset - toOffset);
+        long convertedTime = (calendar.getTimeInMillis() - (fromOffset - toOffset))-1;
 
         System.out.println(new Date(convertedTime));
 
