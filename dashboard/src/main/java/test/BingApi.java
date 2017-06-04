@@ -105,7 +105,7 @@ public class BingApi {
              for (Iterator<KeywordKPI> iterator1 = keywordKPIs.getKeywordKPIs().iterator(); iterator1.hasNext();) {
              KeywordKPI kPI = iterator1.next();
              System.out.println("Impressions " + kPI.getImpressions());
-             }
+}
              }
 
              } catch (com.microsoft.bingads.v10.adinsight.AdApiFaultDetail_Exception ex) {

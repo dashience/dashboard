@@ -6,20 +6,24 @@
 package com.visumbu.vb.admin.controller;
 
 //import static com.visumbu.vb.admin.controller.EnliventController.processFollowings;
+import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
+import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
-import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.bean.DateRange;
+import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Property;
@@ -30,12 +34,16 @@ import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.CsvDataSet;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
+import com.visumbu.vb.utils.ParsePost;
+import com.visumbu.vb.utils.PropertyReader;
 import com.visumbu.vb.utils.Rest;
 import com.visumbu.vb.utils.ShuntingYard;
+import static com.visumbu.vb.utils.ShuntingYard.postfix;
 import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -56,6 +65,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +83,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import test.CustomReportDesigner;
+import test.DateRangeFactory;
 
 /**
  *
@@ -106,21 +117,36 @@ public class ProxyController {
     private ReportService reportService;
 
     @Autowired
-    private LinkedinService linkedinService;
+    private UiDao uiDao;
+
+    PropertyReader propReader = new PropertyReader();
+
+    private final String urlDownload = "url.download";
 
     final static Logger log = Logger.getLogger(ProxyController.class);
-
-    public String PINTEREST_ACCESS_TOKEN = "AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA";
 
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
         log.debug("Calling of getGenericData function in ProxyController class");
-        Map returnMap = new HashMap<>();
+
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
+            String key = entrySet.getKey();
+            String[] value = entrySet.getValue();
+            valueMap.put(key, Arrays.asList(value));
+        }
+
+        Map returnMap = getData(valueMap, response);
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String dataSourceType = request.getParameter("dataSourceType");
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
         String dataSetId = request.getParameter("dataSetId");
+        Integer dataSetIdInt = null;
         if (dataSetId != null) {
-            Integer dataSetIdInt = null;
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
             } catch (Exception e) {
@@ -131,7 +157,69 @@ public class ProxyController {
                 dataSourceType = dataSet.getDataSourceId().getDataSourceType();
             }
         }
-        System.out.println(dataSourceType);
+
+        List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+
+        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+
+        if (datasetColumnList.size() > 0) {
+            List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(datasetColumnList, data, valueMap, response);
+            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, dataWithDerivedFunctions);
+            returnMap.put("data", dataWithDerivedColumns);
+        }
+        // addDerivedColumn(returnMap, datasetColumnList, startDate, endDate);
+        String widgetIdStr = request.getParameter("widgetId");
+
+        // System.out.println("WIDGET ID " + widgetIdStr);
+        if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
+            String queryFilter = null;
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetId, dataSetIdInt);
+            if (tabWidget != null) {
+                queryFilter = tabWidget.getQueryFilter();
+            }
+            List<Map<String, Object>> originalData = (List<Map<String, Object>>) returnMap.get("data");
+            List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
+            returnMap.put("data", returnDataMap);
+        }
+        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
+        System.out.println("returnMap final ---> " + returnMap);
+        Map dataMap = new HashMap<>();
+        dataMap.put("columnDefs", returnMap.get("columnDefs"));
+        if (fieldsOnly != null) {
+            return dataMap;
+        }
+        dataMap.put("data", returnMap.get("data"));
+        return dataMap;
+    }
+
+    public String getFromMultiValueMap(MultiValueMap valueMap, String key) {
+        List<String> dataSourceTypeList = (List<String>) valueMap.get(key);
+        if (dataSourceTypeList != null && !dataSourceTypeList.isEmpty()) {
+            return dataSourceTypeList.get(0);
+        }
+        return null;
+    }
+
+    public Map getData(MultiValueMap request, HttpServletResponse response) {
+        Map returnMap = new HashMap<>();
+
+        String dataSourceType = getFromMultiValueMap(request, "dataSourceType");
+        System.out.println("dataSourceType --> " + dataSourceType);
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        Integer dataSetIdInt = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                DataSet dataSet = uiService.readDataSet(dataSetIdInt);
+                dataSourceType = dataSet.getDataSourceId().getDataSourceType();
+            }
+        }
+        // System.out.println(dataSourceType);
 
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             returnMap = (Map) getFbData(request, response);
@@ -149,55 +237,242 @@ public class ProxyController {
             returnMap = (Map) getXlsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("pinterest")) {
             returnMap = (Map) getPinterestData(request, response);
-        } else if (dataSourceType.equalsIgnoreCase("linkedin")) {
-            returnMap = (Map) getLinkedInData(request, response);
+        }
+        System.out.println("return map ---> " + returnMap);
+        return returnMap;
+    }
+
+    public Map<String, Date> getCustomDate(String dateRangeName, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears) {
+        System.out.println("Date Range Name --> " + dateRangeName);
+
+        Map returnDateMap = new HashMap<>();
+        Range dateRangeSelect = null;
+        DateRange dateRange = null;
+        if (lastNdays != null) {
+            dateRangeSelect = Range.DAY;
+        } else if (lastNweeks != null) {
+            dateRangeSelect = Range.WEEK;
+        } else if (lastNmonths != null) {
+            dateRangeSelect = Range.MONTH;
+        } else if (lastNyears != null) {
+            dateRangeSelect = Range.YEAR;
         }
 
-        String widgetIdStr = request.getParameter("widgetId");
-        System.out.println("WIDGET ID " + widgetIdStr);
-        if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
-            Integer widgetId = Integer.parseInt(widgetIdStr);
-            TabWidget tabWidget = uiService.getWidgetById(widgetId);
-            String queryFilter = tabWidget.getQueryFilter();
-            System.out.println("returnMap ---> " + returnMap);
-            if (returnMap == null) {
-                return null;
+        System.out.println("dateRangeSelect ---> " + dateRangeSelect);
+        if (dateRangeSelect.equals(Range.DAY)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
+        } else if (dateRangeSelect.equals(Range.WEEK)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
+        } else if (dateRangeSelect.equals(Range.MONTH)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
+        } else if (dateRangeSelect.equals(Range.YEAR)) {
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
+        }
+
+        if (dateRange != null) {
+            returnDateMap.put("startDate", dateRange.getStartDate());
+            returnDateMap.put("endDate", dateRange.getEndDate());
+        }
+        return returnDateMap;
+    }
+
+    public DateRange getDateRange(String functionName, String dateRangeName, String customStartDate, String customEndDate, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears, Date startDate, Date endDate) {
+        DateRange dateRange = new DateRange();
+        if (functionName.equalsIgnoreCase("yoy")) {
+            dateRange.setStartDate(new DateTime(startDate).minusYears(1).toDate());
+            dateRange.setEndDate(new DateTime(endDate).minusYears(1).toDate());
+        } else if (functionName.equalsIgnoreCase("mom")) {
+            dateRange.setStartDate(new DateTime(startDate).minusMonths(1).toDate());
+            dateRange.setEndDate(new DateTime(endDate).minusMonths(1).toDate());
+        } else if (functionName.equalsIgnoreCase("wow")) {
+            dateRange.setStartDate(new DateTime(startDate).minusWeeks(1).toDate());
+            dateRange.setEndDate(new DateTime(endDate).minusWeeks(1).toDate());
+        } else if (functionName.equalsIgnoreCase("custom")) {
+            if (dateRangeName.equalsIgnoreCase("custom") || dateRangeName.equalsIgnoreCase("select date")) {
+                System.out.println("Custom Date");
+                System.out.println("StartDate ---> " + DateUtils.getStartDate(customStartDate));
+                System.out.println("EndDate ---> " + DateUtils.getEndDate(customEndDate));
+                dateRange.setStartDate(DateUtils.getStartDate(customStartDate));
+                dateRange.setEndDate(DateUtils.getEndDate(customEndDate));
+            } else {
+                Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears);
+                System.out.println("Last N dates");
+                System.out.println("StartDate ---> " + dateMap.get("startDate"));
+                System.out.println("EndDate ---> " + dateMap.get("endDate"));
+                dateRange.setStartDate(dateMap.get("startDate"));
+                dateRange.setEndDate(dateMap.get("endDate"));
             }
-            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
-            List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(data, queryFilter);
-            returnMap.put("data", returnDataMap);
+        }
+        return dateRange;
+    }
+
+    public List<Map<String, Object>> addDerivedColumnsFunction(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data, MultiValueMap request, HttpServletResponse response) {
+        // Supported Functions : yoy, mom, wow
+        String format = "yyyy-MM-dd";
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        String cachedRange = DateUtils.dateToString(startDate, format) + " To " + DateUtils.dateToString(endDate, format);
+        Map<String, List> cachedData = new HashMap<>();
+        cachedData.put(cachedRange, data);
+        Map<String, List> derivedColumnData = new HashMap<>();
+        for (Iterator<DatasetColumns> iterator = datasetColumns.iterator(); iterator.hasNext();) {
+            DatasetColumns datasetColumn = iterator.next();
+            boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
+            if (isDerivedColumn) {
+                String functionName = datasetColumn.getFunctionName();
+                String dateRangeName = datasetColumn.getDateRangeName();
+                Integer lastNdays = datasetColumn.getLastNdays();
+                Integer lastNweeks = datasetColumn.getLastNweeks();
+                Integer lastNmonths = datasetColumn.getLastNmonths();
+                Integer lastNyears = datasetColumn.getLastNyears();
+                String customStartDate = datasetColumn.getCustomStartDate();
+                String customEndDate = datasetColumn.getCustomEndDate();
+                DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
+                String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                if (cachedData.get(cachedRangeForFunction) == null) {
+                    List<String> startDateValue = new ArrayList();
+                    startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM/dd/yyyy"));
+                    System.out.println("startDateValue --> " + startDateValue);
+                    request.put("startDate", startDateValue);
+                    List<String> endDateValue = new ArrayList();
+                    endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM/dd/yyyy"));
+                    System.out.println("endDateValue --> " + endDateValue);
+                    request.put("endDate", endDateValue);
+                    Map dataMapForFunction = getData(request, response);
+                    List<Map<String, Object>> dataForFunction = (List<Map<String, Object>>) dataMapForFunction.get("data");
+                    cachedData.put(cachedRangeForFunction, dataForFunction);
+                } else {
+
+                }
+                derivedColumnData.put(datasetColumn.getFieldName(), cachedData.get(cachedRangeForFunction));
+            } else {
+
+            }
+        }
+        List<Map<String, Object>> returnData = new ArrayList<>();
+
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            Map<String, Object> returnDataMap = new HashMap<>();
+            for (Iterator<DatasetColumns> iterator1 = datasetColumns.iterator(); iterator1.hasNext();) {
+                DatasetColumns datasetColumn = iterator1.next();
+                boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
+                if (isDerivedColumn) {
+                    String functionName = datasetColumn.getFunctionName();
+                    String dateRangeName = datasetColumn.getDateRangeName();
+                    Integer lastNdays = datasetColumn.getLastNdays();
+                    Integer lastNweeks = datasetColumn.getLastNweeks();
+                    Integer lastNmonths = datasetColumn.getLastNmonths();
+                    Integer lastNyears = datasetColumn.getLastNyears();
+                    String customStartDate = datasetColumn.getCustomStartDate();
+                    String customEndDate = datasetColumn.getCustomEndDate();
+                    DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
+                    String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                    System.out.println("cachedRangeForFunction ---> " + cachedRangeForFunction);
+                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(datasetColumn.getBaseField()), datasetColumn);
+                    returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
+                } else {
+                    returnDataMap.put(datasetColumn.getFieldName(), dataMap.get(datasetColumn.getFieldName()));
+                }
+            }
+            System.out.println(returnDataMap);
+            returnData.add(returnDataMap);
+        }
+
+        return returnData;
+    }
+
+    public Object getDataForDerivedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DatasetColumns datasetColumn) {
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> mapData = iterator.next();
+            if ((mapData.get(datasetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
+                return mapData.get(datasetColumn.getColumnName());
+            }
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> addDerivedColumnsExpr(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data) {
+        List<Map<String, Object>> returnData = new ArrayList<>();
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            returnData.add(addDerivedColumnsExpr(datasetColumns, dataMap));
+        }
+        return returnData;
+    }
+
+    public static Map<String, Object> addDerivedColumnsExpr(List<DatasetColumns> datasetColumns, Map<String, Object> data) {
+        Map<String, Object> returnMap = new HashMap<>();
+        for (Iterator<DatasetColumns> iterator = datasetColumns.iterator(); iterator.hasNext();) {
+            DatasetColumns datasetColumn = iterator.next();
+            boolean isDerivedColumn = checkIsDerivedExpr(datasetColumn);
+            if (isDerivedColumn) {
+                if (datasetColumn.getExpression() != null) {
+                    String expressionValue = executeExpression(datasetColumn, data);
+                    // System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
+                    if ((expressionValue.startsWith("'") && expressionValue.endsWith("'"))) {
+                        Object expValue = expressionValue.substring(1, expressionValue.length() - 1);
+                        returnMap.put(datasetColumn.getFieldName(), expValue);
+                    } else {
+                        Object expValue = expressionValue;
+                        returnMap.put(datasetColumn.getFieldName(), expValue);
+                    }
+                }
+            } else {
+                returnMap.put(datasetColumn.getFieldName(), data.get(datasetColumn.getFieldName()));
+            }
+
         }
         return returnMap;
     }
 
-    @RequestMapping(value = "getCsvData", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Map getCsvData(HttpServletRequest request, HttpServletResponse response) {
+    private static String executeExpression(DatasetColumns datasetColumn, Map<String, Object> data) {
+        String postFixRule = ShuntingYard.postfix(datasetColumn.getExpression());
+        return ShuntingYard.executeExpression(data, postFixRule);
+    }
+
+    private static boolean checkIsDerivedExpr(DatasetColumns datasetColumn) {
+        if (datasetColumn.getExpression() != null && !datasetColumn.getExpression().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean checkIsDerivedFunction(DatasetColumns datasetColumn) {
+        if (datasetColumn.getFunctionName() != null && !datasetColumn.getFunctionName().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    Map getCsvData(MultiValueMap<String, String> request, HttpServletResponse response) {
         try {
-            String connectionString = request.getParameter("connectionUrl");
-            if (connectionString == null) {
-                String dataSetId = request.getParameter("dataSetId");
+            String connectionString = getFromMultiValueMap(request, "connectionUrl");
+            String dataSetId = getFromMultiValueMap(request, "dataSetId");
+            Integer dataSetIdInt = null;
+            if (dataSetId != null) {
+                try {
+                    dataSetIdInt = Integer.parseInt(dataSetId);
+                } catch (Exception e) {
 
-                Integer dataSetIdInt = null;
-                DataSet dataSet = null;
-                if (dataSetId != null) {
-                    try {
-                        dataSetIdInt = Integer.parseInt(dataSetId);
-                    } catch (Exception e) {
-
-                    }
-                    if (dataSetIdInt != null) {
-                        dataSet = uiService.readDataSet(dataSetIdInt);
-                    }
-                    if (dataSet != null) {
-                        connectionString = dataSet.getDataSourceId().getConnectionString();
-                    }
                 }
             }
-            List<Map<String, String>> dataSet = CsvDataSet.CsvDataSet(connectionString);
+            if (connectionString == null) {
+
+                DataSet dataSet = null;
+
+                if (dataSetIdInt != null) {
+                    dataSet = uiService.readDataSet(dataSetIdInt);
+                }
+                if (dataSet != null) {
+                    connectionString = dataSet.getDataSourceId().getConnectionString();
+                }
+            }
+            List<Map<String, Object>> dataSet = CsvDataSet.CsvDataSet(connectionString);
+
             Map returnMap = new HashMap<>();
             returnMap.put("data", dataSet);
-            returnMap.put("columnDefs", getColumnDef(dataSet));
+            returnMap.put("columnDefs", getColumnDefObject(dataSet));
             return returnMap;
         } catch (IOException ex) {
 
@@ -205,14 +480,12 @@ public class ProxyController {
         return null;
     }
 
-    @RequestMapping(value = "pinterest", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Map getPinterestData(HttpServletRequest request, HttpServletResponse response) {
+    Map getPinterestData(MultiValueMap<String, String> request, HttpServletResponse response) {
 
-        String reportName = request.getParameter("dataSetReportName");
-        String dataSetId = request.getParameter("dataSetId");
+        String reportName = getFromMultiValueMap(request, "dataSetReportName");
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
 
-        String accountIdStr = request.getParameter("accountId");
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
@@ -385,11 +658,11 @@ public class ProxyController {
         return null;
     }
 
-    public Map getXlsData(HttpServletRequest request, HttpServletResponse response) {
+    public Map getXlsData(MultiValueMap request, HttpServletResponse response) {
         try {
-            String dataSetId = request.getParameter("dataSetId");
-            String dataSetReportName = request.getParameter("dataSetReportName");
-            String connectionUrl = request.getParameter("connectionUrl");
+            String dataSetId = getFromMultiValueMap(request, "dataSetId");
+            String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+            String connectionUrl = getFromMultiValueMap(request, "connectionUrl");
             Integer dataSetIdInt = null;
             DataSet dataSet = null;
             if (dataSetId != null) {
@@ -406,15 +679,15 @@ public class ProxyController {
                     connectionUrl = dataSet.getDataSourceId().getConnectionString();
                 }
             }
-            String accountIdStr = request.getParameter("accountId");
-            Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-            Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-            String fieldsOnly = request.getParameter("fieldsOnly");
+            String accountIdStr = getFromMultiValueMap(request, "accountId");
+            Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+            Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+            String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
 
-            String widgetIdStr = request.getParameter("widgetId");
+            String widgetIdStr = getFromMultiValueMap(request, "widgetId");
             if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
                 Integer widgetId = Integer.parseInt(widgetIdStr);
-                System.out.println("widgetId ----> " + widgetId);
+                // System.out.println("widgetId ----> " + widgetId);
                 TabWidget widget = uiService.getWidgetById(widgetId);
 
                 String start = widget.getCustomStartDate();
@@ -449,9 +722,10 @@ public class ProxyController {
         return null;
     }
 
-    public void getHttpsData(HttpServletRequest request, HttpServletResponse response) {
-        String url = request.getParameter("url");
-        String dataSetId = request.getParameter("dataSetId");
+    /// public void getHttpsData(final MultiValueMap<String, String> request, HttpServletResponse response) {
+    public void getHttpsData(final MultiValueMap<String, String> request, HttpServletResponse response) {
+        String url = getFromMultiValueMap(request, "url");
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
 
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
@@ -470,16 +744,17 @@ public class ProxyController {
                 }
             }
         }
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        String accountIdStr = request.getParameter("accountId");
+//        Map<String, String[]> parameterMap = request.getParameterMap();
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
+        //for (Map.Entry<String, List<String>> entrySet : request.entrySet()) {
+        for (Map.Entry<String, List<String>> entrySet : request.entrySet()) {
             String key = entrySet.getKey();
-            String[] value = entrySet.getValue();
-            valueMap.put(key, Arrays.asList(value));
+            List<String> value = entrySet.getValue();
+            valueMap.put(key, value);
         }
         for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
             Property property = iterator.next();
@@ -494,100 +769,14 @@ public class ProxyController {
         }
     }
 
-    private Object getBingData(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            String dataSetId = request.getParameter("dataSetId");
-            String dataSetReportName = request.getParameter("dataSetReportName");
-            String timeSegment = request.getParameter("timeSegment");
-            String productSegment = request.getParameter("productSegment");
-            if (timeSegment == null) {
-                timeSegment = "daily";
-            }
-            Integer dataSetIdInt = null;
-            DataSet dataSet = null;
-            if (dataSetId != null) {
-                try {
-                    dataSetIdInt = Integer.parseInt(dataSetId);
-                } catch (Exception e) {
-
-                }
-                if (dataSetIdInt != null) {
-                    dataSet = uiService.readDataSet(dataSetIdInt);
-                }
-                if (dataSet != null) {
-                    dataSetReportName = dataSet.getReportName();
-                    timeSegment = dataSet.getTimeSegment();
-                }
-            }
-            String accountIdStr = request.getParameter("accountId");
-            Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-            System.out.println("startDate 1 ----> " + startDate);
-            Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-            System.out.println("endDate 1 ----> " + endDate);
-            String fieldsOnly = request.getParameter("fieldsOnly");
-
-            String widgetIdStr = request.getParameter("widgetId");
-            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-                Integer widgetId = Integer.parseInt(widgetIdStr);
-                System.out.println("widgetId ----> " + widgetId);
-                TabWidget widget = uiService.getWidgetById(widgetId);
-
-                String start = widget.getCustomStartDate();
-                String end = widget.getCustomEndDate();
-
-                if (start != null) {
-                    startDate = DateUtils.getStartDate(start);
-                    System.out.println("startDate 2----> " + startDate);
-                }
-                if (end != null) {
-                    endDate = DateUtils.getEndDate(end);
-                    System.out.println("endDate 2----> " + endDate);
-                }
-            }
-
-            Integer accountId = Integer.parseInt(accountIdStr);
-            Account account = userService.getAccountId(accountId);
-            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-            String bingAccountId = getAccountId(accountProperty, "bingAccountId");
-            System.out.println("Account id---->" + account.getId());
-            System.out.println("Bing Account id---->" + bingAccountId);
-            System.out.println(account);
-            try {
-                Long bingAccountIdLong = Long.parseLong(bingAccountId);
-                Map returnMap = new HashMap();
-                List<Map<String, Object>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate,
-                        endDate, timeSegment, productSegment);
-                System.out.println("-------------------------------");
-                System.out.println(data);
-                List<ColumnDef> columnDefs = getColumnDefObject(data);
-                returnMap.put("columnDefs", columnDefs);
-                if (fieldsOnly != null) {
-                    return returnMap;
-                }
-                returnMap.put("data", data);
-                return returnMap;
-            } catch (NumberFormatException e) {
-                System.out.println("Number format exception took place here..please check it " + e);
-            }
-
-        } catch (InterruptedException ex) {
-            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (TimeoutException ex) {
-            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    private Object getAnalyticsData(HttpServletRequest request, HttpServletResponse response) {
-        String dataSetId = request.getParameter("dataSetId");
-        String dataSetReportName = request.getParameter("dataSetReportName");
-        String timeSegment = request.getParameter("timeSegment");
+    private Object getAnalyticsData(MultiValueMap request, HttpServletResponse response) {
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
         if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
             timeSegment = null;
         }
-        String productSegment = request.getParameter("productSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
@@ -609,18 +798,18 @@ public class ProxyController {
                 productSegment = dataSet.getProductSegment();
             }
         }
-        String accountIdStr = request.getParameter("accountId");
-        String fieldsOnly = request.getParameter("fieldsOnly");
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
 
-        String widgetIdStr = request.getParameter("widgetId");
-        System.out.println("widgetID ---> " + widgetIdStr);
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        // System.out.println("widgetID ---> " + widgetIdStr);
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         System.out.println("startDate 1 ----> " + startDate);
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
         System.out.println("endDate 1 ----> " + endDate);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
-            System.out.println("widgetId ----> " + widgetId);
+            // System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
 
             String start = widget.getCustomStartDate();
@@ -628,11 +817,11 @@ public class ProxyController {
 
             if (start != null) {
                 startDate = DateUtils.getStartDate(start);
-                System.out.println("startDate 2 ----> " + startDate);
+                // System.out.println("startDate 2 ----> " + startDate);
             }
             if (end != null) {
                 endDate = DateUtils.getEndDate(end);
-                System.out.println("endDate 2 ----> " + endDate);
+                // System.out.println("endDate 2 ----> " + endDate);
             }
         }
 
@@ -644,15 +833,21 @@ public class ProxyController {
         System.out.println("Report Name " + dataSetReportName);
         System.out.println("datasetId ---->" + dataSetId);
         System.out.println("datasetIdInt ---->" + dataSetIdInt);
-        return gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
+        Map returnMap = new HashMap<>();
+        returnMap.put("columnDefs", columnDefs);
+        returnMap.put("data", data);
+        return returnMap;
     }
 
-    private Object getAdwordsData(HttpServletRequest request, HttpServletResponse response) {
-        String dataSetId = request.getParameter("dataSetId");
-        String dataSetReportName = request.getParameter("dataSetReportName");
-        String timeSegment = request.getParameter("timeSegment");
-        String filter = request.getParameter("filter");
-        String productSegment = request.getParameter("productSegment");
+    private Object getAdwordsData(MultiValueMap request, HttpServletResponse response) {
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String filter = getFromMultiValueMap(request, "filter");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
 
@@ -682,17 +877,17 @@ public class ProxyController {
         if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
             filter = null;
         }
-        String accountIdStr = request.getParameter("accountId");
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        // System.out.println("startDate 1 ----> " + startDate);
 
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
-        String fieldsOnly = request.getParameter("fieldsOnly");
-        String widgetIdStr = request.getParameter("widgetId");
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        // System.out.println("endDate 1 ----> " + endDate);
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
-            System.out.println("widgetId ----> " + widgetId);
+            // System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
 
             String start = widget.getCustomStartDate();
@@ -700,11 +895,11 @@ public class ProxyController {
 
             if (start != null) {
                 startDate = DateUtils.getStartDate(start);
-                System.out.println("startDate 2 ----> " + startDate);
+                // System.out.println("startDate 2 ----> " + startDate);
             }
             if (end != null) {
                 endDate = DateUtils.getEndDate(end);
-                System.out.println("endDate 2 ----> " + endDate);
+                // System.out.println("endDate 2 ----> " + endDate);
             }
         }
 
@@ -721,7 +916,7 @@ public class ProxyController {
                 Object countryCriteria = dataMap.get("countryTerritory");
                 try {
                     if (cityCriteria != null) {
-                        System.out.println("CITY CRITERIA CLASS  " + cityCriteria.getClass());
+                        // System.out.println("CITY CRITERIA CLASS  " + cityCriteria.getClass());
                         Integer criteriaId = Integer.parseInt(cityCriteria + "");
                         AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
                         if (criteria != null) {
@@ -767,16 +962,17 @@ public class ProxyController {
                 }
             }
         }
-        System.out.println(data);
+        // System.out.println(data);
         Map returnMap = new HashMap();
         if (data == null) {
             return null;
         }
+
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
+//        if (fieldsOnly != null) {
+//            return returnMap;
+//        }
         returnMap.put("data", data);
         return returnMap;
     }
@@ -796,112 +992,38 @@ public class ProxyController {
     @RequestMapping(value = "testAdwords", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object testAdwords(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("Report Name" + request.getParameter("reportName"));
-        System.out.println("Time Segment" + request.getParameter("timeSegment"));
-        System.out.println("Product Segment" + request.getParameter("productSegment"));
-        System.out.println("filter " + request.getParameter("filter"));
+        // System.out.println("Report Name" + request.getParameter("reportName"));
+        // System.out.println("Time Segment" + request.getParameter("timeSegment"));
+        // System.out.println("Product Segment" + request.getParameter("productSegment"));
+        // System.out.println("filter " + request.getParameter("filter"));
 
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(request.getParameter("reportName"), DateUtils.get30DaysBack(), new Date(), "827-719-8225", request.getParameter("timeSegment"), request.getParameter("productSegment"), request.getParameter("filter"));
-        System.out.println(data);
+        // System.out.println(data);
         Map returnMap = new HashMap();
         String fieldsOnly = request.getParameter("fieldsOnly");
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
         returnMap.put("data", data);
-        System.out.println(returnMap);
+        // System.out.println(returnMap);
         return returnMap;
     }
 
     @RequestMapping(value = "testGa", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object testGa(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("Report Name" + request.getParameter("reportName"));
-        System.out.println("Time Segment" + request.getParameter("timeSegment"));
-        System.out.println("Product Segment" + request.getParameter("productSegment"));
-        System.out.println("filter " + request.getParameter("filter"));
+        // System.out.println("Report Name" + request.getParameter("reportName"));
+        // System.out.println("Time Segment" + request.getParameter("timeSegment"));
+        // System.out.println("Product Segment" + request.getParameter("productSegment"));
+        // System.out.println("filter " + request.getParameter("filter"));
         return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null);
     }
 
-    //linkedin 
-    @RequestMapping(value = "getLinkedInData", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object getLinkedInData(HttpServletRequest request, HttpServletResponse response) {
-
-        String dataSetId = request.getParameter("dataSetId");
-        String dataSetReportName = request.getParameter("dataSetReportName");
-        String timeSegment = request.getParameter("timeSegment");
-        String productSegment = request.getParameter("productSegment");
-
-        if (timeSegment == null) {
-            timeSegment = "daily";
-        }
-
-        Integer dataSetIdInt = null;
-        DataSet dataSet = null;
-        if (dataSetId != null) {
-            try {
-                dataSetIdInt = Integer.parseInt(dataSetId);
-            } catch (Exception e) {
-
-            }
-            if (dataSetIdInt != null) {
-                dataSet = uiService.readDataSet(dataSetIdInt);
-            }
-            if (dataSet != null) {
-                dataSetReportName = dataSet.getReportName();
-                timeSegment = dataSet.getTimeSegment();
-            }
-        }
-        String accountIdStr = request.getParameter("accountId");
-        System.out.println("Linkedin Account ID-->" + accountIdStr);
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
-
-        String accessToken = "AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM";
-
-        Integer accountId = Integer.parseInt(accountIdStr);
-        Account account = userService.getAccountId(accountId);
-        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccountId = getAccountId(accountProperty, "linkedinAccountId");
-        try {
-            Long linkedInaccountId = Long.parseLong(linkedinAccountId);
-
-            List<Map<String, Object>> data = linkedinService.get(accessToken, linkedInaccountId, dataSetReportName,
-                    startDate, endDate, timeSegment, productSegment);
-            log.debug(data);
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-            System.out.println(data);
-            Map returnMap = new HashMap();
-            List<ColumnDef> columnDefs = getColumnDefObject(data);
-            returnMap.put("columnDefs", columnDefs);
-
-            returnMap.put("data", data);
-            return returnMap;
-        } catch (NumberFormatException ex) {
-            Map linkedInData = new HashMap();
-            List<ColumnDef> columnDefs = new ArrayList();
-            List<Map<String, String>> returnData = new ArrayList<>();
-            linkedInData.put("columnDefs", columnDefs);
-            linkedInData.put("data", returnData);
-            return linkedInData;
-        }
-
-    }
-
-    @RequestMapping(value = "getFbData", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object getFbData(HttpServletRequest request, HttpServletResponse response) {
+    Object getFbData(MultiValueMap<String, String> request, HttpServletResponse response) {
         log.debug("Calling of getFbData function in ProxyController class");
-        String dataSetId = request.getParameter("dataSetId");
-        String dataSetReportName = request.getParameter("dataSetReportName");
-        String timeSegment = request.getParameter("timeSegment");
-        String productSegment = request.getParameter("productSegment");
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
         if (timeSegment == null) {
             timeSegment = "daily";
         }
@@ -922,14 +1044,14 @@ public class ProxyController {
                 timeSegment = dataSet.getTimeSegment();
             }
         }
-        String accountIdStr = request.getParameter("accountId");
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         System.out.println("startDate 1 ----> " + startDate);
 
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
         System.out.println("endDate 1 ----> " + endDate);
-        String fieldsOnly = request.getParameter("fieldsOnly");
-        String widgetIdStr = request.getParameter("widgetId");
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             System.out.println("widgetId ----> " + widgetId);
@@ -952,6 +1074,7 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String facebookAccountId = getAccountId(accountProperty, "facebookAccountId");
         String facebookOrganicAccountId = getAccountId(accountProperty, "facebookOrganicAccountId");
+
         Long facebookAccountIdInt = Long.parseLong(facebookAccountId);
         Long facebookOrganicAccountIdInt = null;
         if (facebookOrganicAccountId != null) {
@@ -976,11 +1099,12 @@ public class ProxyController {
         Map returnMap = new HashMap();
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
-        if (fieldsOnly != null) {
-            return returnMap;
-        }
+//        if (fieldsOnly != null) {
+//            return returnMap;
+//        }
         returnMap.put("data", data);
         return returnMap;
+
     }
 
     private String getAccountId(List<Property> accountProperty, String propertyName) {
@@ -994,9 +1118,98 @@ public class ProxyController {
         return propertyAccountId;
     }
 
+    private Object getBingData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        try {
+            String dataSetId = getFromMultiValueMap(request, "dataSetId");
+            String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+            String timeSegment = getFromMultiValueMap(request, "timeSegment");
+            String productSegment = getFromMultiValueMap(request, "productSegment");
+            if (timeSegment == null) {
+                timeSegment = "daily";
+            }
+            Integer dataSetIdInt = null;
+            DataSet dataSet = null;
+            if (dataSetId != null) {
+                try {
+                    dataSetIdInt = Integer.parseInt(dataSetId);
+                } catch (Exception e) {
+
+                }
+                if (dataSetIdInt != null) {
+                    dataSet = uiService.readDataSet(dataSetIdInt);
+                }
+                if (dataSet != null) {
+                    dataSetReportName = dataSet.getReportName();
+                    timeSegment = dataSet.getTimeSegment();
+                }
+            }
+            String accountIdStr = getFromMultiValueMap(request, "accountId");
+            Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+            System.out.println("startDate 1 ----> " + startDate);
+            Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+            System.out.println("endDate 1 ----> " + endDate);
+            String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+
+            String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+                Integer widgetId = Integer.parseInt(widgetIdStr);
+                System.out.println("widgetId ----> " + widgetId);
+                TabWidget widget = uiService.getWidgetById(widgetId);
+
+                String start = widget.getCustomStartDate();
+                String end = widget.getCustomEndDate();
+
+                if (start != null) {
+                    startDate = DateUtils.getStartDate(start);
+                    System.out.println("startDate 2----> " + startDate);
+                }
+                if (end != null) {
+                    endDate = DateUtils.getEndDate(end);
+                    System.out.println("endDate 2----> " + endDate);
+                }
+            }
+
+            Integer accountId = Integer.parseInt(accountIdStr);
+            Account account = userService.getAccountId(accountId);
+            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+            String bingAccountId = getAccountId(accountProperty, "bingAccountId");
+            System.out.println("Account id---->" + account.getId());
+            System.out.println("Bing Account id---->" + bingAccountId);
+            System.out.println(account);
+            try {
+                Long bingAccountIdLong = Long.parseLong(bingAccountId);
+                Map returnMap = new HashMap();
+                List<Map<String, Object>> data = bingService.get(dataSetReportName, bingAccountIdLong, startDate,
+                        endDate, timeSegment, productSegment);
+                System.out.println("-------------------------------");
+                System.out.println(data);
+                List<ColumnDef> columnDefs = getColumnDefObject(data);
+                returnMap.put("columnDefs", columnDefs);
+//                if (fieldsOnly != null) {
+//                    return returnMap;
+//                }
+                returnMap.put("data", data);
+                return returnMap;
+            } catch (NumberFormatException e) {
+                System.out.println("Number format exception took place here..please check it " + e);
+            }
+
+        } catch (InterruptedException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (TimeoutException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();
+        if (data == null) {
+            return null;
+        }
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
             for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
@@ -1007,6 +1220,8 @@ public class ProxyController {
                 } else {
                     Object value = entrySet.getValue();
                     String valueString = value + "";
+//                    System.out.println(value.getClass());
+                    valueString = valueString.replaceAll("^\"|\"$", "");
                     if (NumberUtils.isNumber(valueString)) {
                         columnDefs.add(new ColumnDef(key, "number", key));
                     } else if (DateUtils.convertToDate(valueString) != null) {
@@ -1024,11 +1239,15 @@ public class ProxyController {
     private List<ColumnDef> getColumnDef(List<Map<String, String>> data) {
 
         List<ColumnDef> columnDefs = new ArrayList<>();
+        if (data == null) {
+            return null;
+        }
         for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, String> mapData = iterator.next();
             for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
                 String key = entrySet.getKey();
-                String value = String.valueOf(entrySet.getValue());
+                String value = entrySet.getValue();
+                value = value.replaceAll("^\"|\"$", "");
                 if (NumberUtils.isNumber(value)) {
                     columnDefs.add(new ColumnDef(key, "number", key));
                 } else if (DateUtils.convertToDate(value) != null) {
@@ -1142,7 +1361,7 @@ public class ProxyController {
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                        System.out.println("DS TYPE ==>  CSV");
+                        // System.out.println("DS TYPE ==>  CSV");
 //                        url = "../admin/csv/getData";
                         url = "../dashboard/admin/csv/getData";
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -1200,14 +1419,14 @@ public class ProxyController {
         String exportType = request.getParameter("exportType");
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
+        Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
+        // System.out.println("startDate 1 ----> " + startDate1);
+        Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
+        // System.out.println("endDate 1 ----> " + endDate1);
 //        String widgetIdStr = request.getParameter("widgetId");
 //        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
 //            Integer widgetId = Integer.parseInt(widgetIdStr);
-//            System.out.println("widgetId ----> " + widgetId);
+//            // System.out.println("widgetId ----> " + widgetId);
 //            TabWidget widget = uiService.getWidgetById(widgetId);
 //
 //            String start = widget.getCustomStartDate();
@@ -1215,26 +1434,25 @@ public class ProxyController {
 //
 //            if (start != null) {
 //                startDate = DateUtils.getStartDate(start);
-//                System.out.println("startDate 2 ----> " + startDate);
+//                // System.out.println("startDate 2 ----> " + startDate);
 //            }
 //            if (end != null) {
 //                endDate = DateUtils.getEndDate(end);
-//                System.out.println("endDate 2 ----> " + endDate);
+//                // System.out.println("endDate 2 ----> " + endDate);
 //            }
 //        }
-        String start_date = month_date.format(startDate);
-        String end_date = month_date.format(endDate);
+        String start_date = month_date.format(startDate1);
+        String end_date = month_date.format(endDate1);
         String selectDate;
 
-        System.out.println("startDate ----> " + start_date);
-        System.out.println("endDate ----> " + end_date);
-
+        // System.out.println("startDate ----> " + start_date);
+        // System.out.println("endDate ----> " + end_date);
         if (start_date.equalsIgnoreCase(end_date)) {
             selectDate = start_date;
         } else {
             selectDate = start_date.concat(" - " + end_date);
         }
-        System.out.println("selectDate ---> " + selectDate);
+        // System.out.println("selectDate ---> " + selectDate);
         log.debug("EXport type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -1272,7 +1490,12 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+                // System.out.println("startDate  ----> " + startDate);
+                Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+                // System.out.println("endDate  ----> " + endDate);
+//                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+                String url = propReader.readUrl(urlDownload) + "";
 //                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -1284,7 +1507,7 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 }
 //                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-//                    System.out.println("DS TYPE ==>  CSV");
+//                    // System.out.println("DS TYPE ==>  CSV");
 ////                    url = "../admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
 //                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -1306,11 +1529,11 @@ public class ProxyController {
 
                 if (start != null) {
                     startDate = DateUtils.getStartDate(start);
-                    System.out.println("startDate 2 ----> " + startDate);
+                    // System.out.println("startDate 2 ----> " + startDate);
                 }
                 if (end != null) {
                     endDate = DateUtils.getEndDate(end);
-                    System.out.println("endDate 2 ----> " + endDate);
+                    // System.out.println("endDate 2 ----> " + endDate);
                 }
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
@@ -1364,20 +1587,20 @@ public class ProxyController {
     @RequestMapping(value = "download/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-        log.debug("Start Function of download");
+        // System.out.println("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
+        Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
+        // System.out.println("startDate 1 ----> " + startDate1);
+        Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
+        // System.out.println("endDate 1 ----> " + endDate1);
 
 //        String widgetIdStr = request.getParameter("widgetId");
 //        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
 //            Integer widgetId = Integer.parseInt(widgetIdStr);
-//            System.out.println("widgetId ----> " + widgetId);
+//            // System.out.println("widgetId ----> " + widgetId);
 //            TabWidget widget = uiService.getWidgetById(widgetId);
 //
 //            String start = widget.getCustomStartDate();
@@ -1385,27 +1608,22 @@ public class ProxyController {
 //
 //            if (start != null) {
 //                startDate = DateUtils.getStartDate(start);
-//                System.out.println("startDate 2 ----> " + startDate);
+//                // System.out.println("startDate 2 ----> " + startDate);
 //            }
 //            if (end != null) {
 //                endDate = DateUtils.getEndDate(end);
-//                System.out.println("endDate 2 ----> " + endDate);
+//                // System.out.println("endDate 2 ----> " + endDate);
 //            }
 //        }
-        String start_date = month_date.format(startDate);
-        String end_date = month_date.format(endDate);
+        String start_date = month_date.format(startDate1);
+        String end_date = month_date.format(endDate1);
         String selectDate;
-
-        System.out.println("startDate ----> " + start_date);
-        System.out.println("endDate ----> " + end_date);
 
         if (start_date.equalsIgnoreCase(end_date)) {
             selectDate = start_date;
         } else {
             selectDate = start_date.concat(" - " + end_date);
         }
-        System.out.println("selectDate ---> " + selectDate);
-
         log.debug("Export type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -1416,14 +1634,14 @@ public class ProxyController {
         for (Map.Entry<String, String> entrySet : dealerAccountDetails.entrySet()) {
             String key = entrySet.getKey();
             String value = entrySet.getValue();
-            System.out.println("key ---> " + key + " value ---> " + value);
+            // System.out.println("key ---> " + key + " value ---> " + value);
             valueMap.put(key, Arrays.asList(value));
         }
         Map<String, String[]> parameterMap = request.getParameterMap();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
             String[] value = entrySet.getValue();
-            System.out.println("key ---> " + key + " value ---> " + value);
+            // System.out.println("key ---> " + key + " value ---> " + value);
             valueMap.put(key, Arrays.asList(value));
         }
 
@@ -1436,7 +1654,13 @@ public class ProxyController {
                 if (tabWidget.getDataSourceId() == null) {
                     continue;
                 }
-                String url = "../dashboard/admin/proxy/getData?";
+                Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+                // System.out.println("startDate  ----> " + startDate);
+                Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+                // System.out.println("endDate  ----> " + endDate);
+//                String url = "../dashboard/admin/proxy/getData?";
+                String url = propReader.readUrl(urlDownload) + "";
+                // System.out.println("url ---> " + url);
 //                String url = "../admin/proxy/getData?";
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
@@ -1448,7 +1672,7 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 }
 //                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-//                    System.out.println("DS TYPE ==>  CSV");
+//                    // System.out.println("DS TYPE ==>  CSV");
 ////                    url = "../admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
 //                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
@@ -1459,44 +1683,49 @@ public class ProxyController {
 //
 //                }
                 valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
+                // System.out.println("tabWidget Id---> " + tabWidget.getId());
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                 String start = tabWidget.getCustomStartDate();
                 String end = tabWidget.getCustomEndDate();
+                // System.out.println("start ---> " + start);
+                // System.out.println("end ---> " + end);
 
                 if (start != null) {
                     startDate = DateUtils.getStartDate(start);
-                    System.out.println("startDate 2 ----> " + startDate);
+                    // System.out.println("startDate 2 ----> " + startDate);
                 }
                 if (end != null) {
                     endDate = DateUtils.getEndDate(end);
-                    System.out.println("endDate 2 ----> " + endDate);
+                    // System.out.println("endDate 2 ----> " + endDate);
                 }
+                // System.out.println("startDate ---> " + startDate);
+                // System.out.println("endDate ---> " + endDate);
+
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
-
+                // System.out.println("valueMap ---> " + valueMap);
                 Integer port = request.getServerPort();
 
                 int account_id = Integer.parseInt(request.getParameter("accountId"));
                 account = userService.getAccountName(account_id);
 
 //                int product_id = Integer.parseInt(request.getParameter("productId"));
-//                System.out.println("product_id :" + product_id);
+//                // System.out.println("product_id :" + product_id);
 //                product = userService.getProductName(product_id);
 //
-//                System.out.println("product name :" + product);
-                System.out.println("account name :" + account);
-
+//                // System.out.println("product name :" + product);
+                // System.out.println("account name :" + account);
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
                 log.debug("URL:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
-                System.out.println("url: " + url);
-                System.out.println("valuemap: " + valueMap);
+                // System.out.println("url: " + url);
+                // System.out.println("valuemap: " + valueMap);
                 String data = Rest.getData(url, valueMap);
-                System.out.println("Data -----> : " + data);
+                // System.out.println("Data -----> : " + data);
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
                 Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);

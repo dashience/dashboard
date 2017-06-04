@@ -167,9 +167,9 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     $scope.saveScheduler = function (scheduler) {
         scheduler.dateRangeName = $("#customDateRangeName").text();
         try {
-            $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+            $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" && scheduler.dateRangeName !== "None" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
-            $scope.customEndDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+            $scope.customEndDate = scheduler.dateRangeName !== "Select Date Duration" && scheduler.dateRangeName !== "None" ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
         } catch (e) {
 
         }
@@ -224,7 +224,16 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.schedulerMonthly = null;
             scheduler.schedulerYearly = null;
 //            scheduler.schedulerYearOfWeek = null;
-        } else {
+        } else if (scheduler.schedulerRepeatType === "None") {
+            scheduler.schedulerNow = null;
+            scheduler.schedulerTime = null;
+            scheduler.startDate = null;
+            scheduler.endDate = null;
+            scheduler.schedulerWeekly = null;
+            scheduler.schedulerMonthly = null;
+            scheduler.schedulerYearly = null;
+            scheduler.schedulerYearOfWeek = null;
+        }else {
             return null;
         }
 
@@ -233,18 +242,14 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                 return value;
             }
         }).join(',');
-        if (scheduler.dateRangeName === 'Custom') {
-            scheduler.customStartDate = $scope.customStartDate;
-            scheduler.customEndDate = $scope.customEndDate;
-        } else if (scheduler.dateRangeName === "Select Date Duration") {
+        if (scheduler.dateRangeName === 'Custom' || scheduler.dateRangeName === "Select Date Duration" || scheduler.dateRangeName === "None") {
             scheduler.customStartDate = $scope.customStartDate;
             scheduler.customEndDate = $scope.customEndDate;
         } else {
             scheduler.customStartDate = "";
             scheduler.customEndDate = "";
         }
-        console.log(scheduler.customStartDate);
-        console.log(scheduler.customEndDate);
+        
         scheduler.schedulerEmail = emails;
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });
@@ -337,7 +342,9 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $(".scheduler-list-style").find("li").click(function (e) {
                 e.stopPropagation();
             });
-
+            $(".scheduler-dateRange-none").click(function (e) {
+                $(".scheduler-list-style").css("display", "none");
+            });
 
             $(document).click(function (e) {
                 console.log(e.target.className);

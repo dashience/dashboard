@@ -21,6 +21,7 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.utils.DateUtils;
+import com.visumbu.vb.utils.PropertyReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -53,6 +54,10 @@ public class TimerService {
 
     @Autowired
     private SchedulerDao schedulerDao;
+
+    PropertyReader propReader = new PropertyReader();
+
+    private final String urlDownloadReport = "url.downloadReport";
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
         System.out.println("Executing Tasks " + scheduledTasks);
@@ -160,6 +165,13 @@ public class TimerService {
                     } catch (ParseException ex) {
                         Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
+                    try {
+                        startDate = df.parse(scheduler.getCustomStartDate());
+                        endDate = df.parse(scheduler.getCustomEndDate());
+                    } catch (ParseException ex) {
+                        Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } else if (dateRangeSelect.equals(Range.DAY)) {
                     dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
                 } else if (dateRangeSelect.equals(Range.WEEK)) {
@@ -196,19 +208,24 @@ public class TimerService {
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = subject + "\n\n- System";
-            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-            schedulerHistory.setFileName(filename);
-            schedulerHistory.setEmailId(toAddress);
-            schedulerHistory.setEmailSubject(subject);
-            schedulerHistory.setEmailMessage(message);
-            scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
-            schedulerDao.update(scheduler);
-            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-            Date schedulerEndTime = new Date();
-            schedulerHistory.setExecutionEndTime(schedulerEndTime);
-            schedulerHistory.setSchedulerId(schedulerById);
-            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-            schedulerService.createSchedulerHistory(schedulerHistory);
+            String status = scheduler.getStatus();
+            if (status.equalsIgnoreCase("Active")) {
+                Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+                schedulerHistory.setFileName(filename);
+                schedulerHistory.setEmailId(toAddress);
+                schedulerHistory.setEmailSubject(subject);
+                schedulerHistory.setEmailMessage(message);
+                scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
+                schedulerDao.update(scheduler);
+                schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
+                Date schedulerEndTime = new Date();
+                schedulerHistory.setExecutionEndTime(schedulerEndTime);
+                schedulerHistory.setSchedulerId(schedulerById);
+                schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
+                schedulerService.createSchedulerHistory(schedulerHistory);
+            } else {
+                System.out.println("Scheduler is InActive");
+            }
         }
     }
 
@@ -217,11 +234,11 @@ public class TimerService {
 //        System.out.println("Test Scheduler...");
 //        System.out.println("Success....");
 //    }
-    
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeDailyTasks() {
         System.out.println("Executing daily Tasks....");
         List<Agency> allAgencies = schedulerDao.getAllAgency();
+        System.out.println("all Agencies --> " + allAgencies);
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
             Agency agency = iterator.next();
             System.out.println("Executing Daily Task for Agency " + agency.toString());
@@ -324,9 +341,7 @@ public class TimerService {
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-//            String urlStr = "http://dashience.com/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
-            String urlStr = "http://172.16.1.15:8080/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
-//            String urlStr = "http://localhost:8084/dashboard/admin/proxy/downloadReport/" + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
+            String urlStr = propReader.readUrl(urlDownloadReport) + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
             System.out.println(urlStr);
             URL website = new URL(urlStr);
 

@@ -18,15 +18,13 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
-    console.log($scope.tabId)
     $http.get("admin/ui/reportWidgetByWidgetId/" + $stateParams.reportWidgetId).success(function (response) {
         $scope.widgets = response;
-        console.log(response)
         if ($stateParams.reportWidgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
-            })
+            });
         } else {
             $scope.editWidgetData.push({width: 12, columns: []})
         }

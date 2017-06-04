@@ -168,16 +168,18 @@ public class ApiUtils {
     public static Data removePercent(Data value) {
         Data data = new Data();
         String value1 = value.getValue();
+        
         if (value == null) {
             data.setValue("0.0");
             return data;
         }
-        value1 = value1.replaceAll("%", "");
+        
         try {
+            value1 = value1.replaceAll("%", "");
             data.setValue((Double.parseDouble(value1) / 100.0) + "");
             return data;
         } catch (Exception e) {
-
+             System.out.println("the value are -->"+value1);
         }
         data.setValue("0.0");
         return data;

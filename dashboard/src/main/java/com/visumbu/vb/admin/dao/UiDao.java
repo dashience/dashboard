@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
@@ -32,6 +33,7 @@ import com.visumbu.vb.model.WidgetTag;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
@@ -423,6 +425,7 @@ public class UiDao extends BaseDao {
     }
 
     public DataSet getDataSetById(Integer dataSetId) {
+        System.out.println("datasetID ---> " + dataSetId);
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
@@ -458,9 +461,18 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSetId", id);
         query.executeUpdate();
     }
+    
+    public void removeDataSetColumns(Integer id) {
+        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+    }
+
 
     public DataSet deleteDataSet(Integer id) {
         removeDataSetFromWidget(id);
+        removeDataSetColumns(id);
         String queryStr = "delete DataSet d where d.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
@@ -554,66 +566,6 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-//    public DatasetColumns createDataSetColumns(DatasetColumnBean dataSetColumn) {
-//        System.out.println("create columns function");
-//        List<DatasetColumnBean> datasetColumnList = dataSetColumn.getTableColumns();
-//        System.out.println("datasetColumnList ----> " + datasetColumnList);
-//        DataSet dataset = getDataSetById(dataSetColumn.getDatasetId());
-//
-//        for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
-//            System.out.println("create Data set columns ----> ");
-//            DatasetColumnBean datasetColumn = datasetColumnBean.next();
-//            DatasetColumns datasetFields = new DatasetColumns();
-//            System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
-//            datasetFields.setId(datasetColumn.getId());
-//            datasetFields.setExpression(dataSetColumn.getExpression());
-//            datasetFields.setFieldName(datasetColumn.getFieldName());
-//            datasetFields.setDisplayName(datasetColumn.getDisplayName());
-//            datasetFields.setStatus(dataSetColumn.getStatus());
-//            datasetFields.setFunctionName(dataSetColumn.getFunctionName());
-//            datasetFields.setFieldType(datasetColumn.getFieldType());
-//            datasetFields.setDatasetId(dataset);
-//            saveOrUpdate(datasetFields);
-//        }
-//        return null;
-//    }
-    public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
-        DataSet dataset = getDataSetById(dataSetColumn.getDatasetId());
-        List<DatasetColumns> datasetList = new ArrayList();
-
-        System.out.println("create columns function");
-        List<DatasetColumnBean> datasetColumnList = dataSetColumn.getTableColumns();
-        System.out.println("datasetColumnList ----> " + datasetColumnList);
-        for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
-            System.out.println("create Data set columns ----> ");
-            DatasetColumnBean datasetColumn = datasetColumnBean.next();
-            DatasetColumns datasetFields = new DatasetColumns();
-            System.out.println(datasetColumn.getFieldName() + " : " + datasetColumn.getDisplayName() + " ; " + datasetColumn.getFieldType());
-            datasetFields.setId(datasetColumn.getId());
-            datasetFields.setExpression(datasetColumn.getExpression());
-            datasetFields.setFieldName(datasetColumn.getFieldName());
-            datasetFields.setDisplayName(datasetColumn.getDisplayName());
-            datasetFields.setStatus(datasetColumn.getStatus());
-            datasetFields.setFunctionName(datasetColumn.getFunctionName());
-            datasetFields.setFieldType(datasetColumn.getFieldType());
-            datasetFields.setDatasetId(dataset);
-            saveOrUpdate(datasetFields);
-            datasetList.add(datasetFields);
-        }
-        DatasetColumns datasetColumns = new DatasetColumns();
-        datasetColumns.setId(dataSetColumn.getId());
-        datasetColumns.setExpression(dataSetColumn.getExpression());
-        datasetColumns.setFieldName(dataSetColumn.getFieldName());
-        datasetColumns.setFieldType(dataSetColumn.getFieldType());
-        datasetColumns.setDisplayName(dataSetColumn.getDisplayName());
-        datasetColumns.setStatus(dataSetColumn.getStatus());
-        datasetColumns.setFunctionName(dataSetColumn.getFunctionName());
-        datasetColumns.setDatasetId(dataset);
-        saveOrUpdate(datasetColumns);
-        datasetList.add(datasetColumns);
-        return datasetList;
-    }
-
     public List<Currency> getCurrenciesTypes() {
         // System.out.println("dao is calling....");
         String queryStr = "SELECT c FROM Currency c";
@@ -627,5 +579,34 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         return query.list();
 
+    }
+
+    public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
+        String queryStr = "Select t FROM TabWidget t where t.dataSetId.id = :datasetId and id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", widgetId);
+        query.setParameter("datasetId", datasetId);
+        List tabWidgetData = query.list();
+        if (tabWidgetData == null || tabWidgetData.isEmpty()) {
+            return null;
+        }
+        System.out.println("tabWidgetData ---> " + tabWidgetData);
+        TabWidget tabWidget = (TabWidget) tabWidgetData.get(0);
+        tabWidget.setColumns(getColumns(tabWidget));
+        return tabWidget;
+    }
+
+    public List getDatasetById(Integer datasetId) {
+        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", datasetId);
+        return query.list();
+    }
+
+    public List<Account> getAccountById(Integer id) {
+        String queryStr = "select d from Account d where d.id = :accountId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", id);
+        return query.list();
     }
 }

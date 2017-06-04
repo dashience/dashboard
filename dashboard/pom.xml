@@ -69,11 +69,11 @@
             <version>1.7.25</version>
         </dependency>
 
-        <!--        <dependency>
+        <dependency>
             <groupId>com.microsoft.bingads</groupId>
             <artifactId>microsoft.bingads</artifactId>
             <version>10.4.10</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -441,13 +441,6 @@
             <type>jar</type>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.0-beta1</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.oltu.oauth2/org.apache.oltu.oauth2.client -->
         <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>
@@ -458,11 +451,11 @@
         <!-- twitter code ends -->
         
         <!-- bing ads -->
-        <dependency>
+        <!--        <dependency>
             <groupId>com.microsoft.bingads</groupId>
             <artifactId>microsoft.bingads</artifactId>
             <version>10.4.10</version>
-        </dependency>
+        </dependency>-->
         <!-- bing ads ends -->
         
     </dependencies>

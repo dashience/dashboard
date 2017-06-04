@@ -68,7 +68,6 @@ public class Rest {
                 System.out.println("else condition");
                 System.out.println(urlString);
                 System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
-
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(

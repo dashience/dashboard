@@ -20,9 +20,17 @@ public class DatasetColumnBean {
     private String status;
     private String expression;
     private String functionName;
+    private String columnName;
+    private String baseField;
     private String displayFormat;
+    private String customEndDate;
+    private String customStartDate;
+    private String dateRangeName;
+    private Integer lastNdays;
+    private Integer lastNmonths;
+    private Integer lastNweeks;
+    private Integer lastNyears;
     private Integer datasetId;
-    private String column;
     private List<DatasetColumnBean> tableColumns;
 
     public String getFieldName() {
@@ -73,6 +81,22 @@ public class DatasetColumnBean {
         return functionName;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+
+    public String getBaseField() {
+        return baseField;
+    }
+
+    public void setBaseField(String baseField) {
+        this.baseField = baseField;
+    }
+
     public String getDisplayFormat() {
         return displayFormat;
     }
@@ -81,6 +105,62 @@ public class DatasetColumnBean {
         this.displayFormat = displayFormat;
     }
 
+    public String getCustomEndDate() {
+        return customEndDate;
+    }
+
+    public void setCustomEndDate(String customEndDate) {
+        this.customEndDate = customEndDate;
+    }
+
+    public String getCustomStartDate() {
+        return customStartDate;
+    }
+
+    public void setCustomStartDate(String customStartDate) {
+        this.customStartDate = customStartDate;
+    }
+
+    public String getDateRangeName() {
+        return dateRangeName;
+    }
+
+    public void setDateRangeName(String dateRangeName) {
+        this.dateRangeName = dateRangeName;
+    }
+
+    public Integer getLastNdays() {
+        return lastNdays;
+    }
+
+    public void setLastNdays(Integer lastNdays) {
+        this.lastNdays = lastNdays;
+    }
+
+    public Integer getLastNmonths() {
+        return lastNmonths;
+    }
+
+    public void setLastNmonths(Integer lastNmonths) {
+        this.lastNmonths = lastNmonths;
+    }
+
+    public Integer getLastNweeks() {
+        return lastNweeks;
+    }
+
+    public void setLastNweeks(Integer lastNweeks) {
+        this.lastNweeks = lastNweeks;
+    }
+
+    public Integer getLastNyears() {
+        return lastNyears;
+    }
+
+    public void setLastNyears(Integer lastNyears) {
+        this.lastNyears = lastNyears;
+    }
+    
     public Integer getDatasetId() {
         return datasetId;
     }
@@ -105,17 +185,9 @@ public class DatasetColumnBean {
         this.Id = Id;
     }
 
-    public String getColumn() {
-        return column;
-    }
-
-    public void setColumn(String column) {
-        this.column = column;
-    }
-
     @Override
     public String toString() {
-        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", status=" + status + ", functionName=" + functionName + ", expression=" + expression + ", displayFormat=" + displayFormat + ", datasetId=" + datasetId + ", column=" + column + ", tableColumns=" + tableColumns + '}';
+        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", status=" + status + ", functionName=" + functionName + ", expression=" + expression + ", displayFormat=" + displayFormat + ", datasetId=" + datasetId + ", tableColumns=" + tableColumns + '}';
     }
 
 }

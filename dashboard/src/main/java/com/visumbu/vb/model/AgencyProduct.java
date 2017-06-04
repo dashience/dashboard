@@ -91,7 +91,6 @@ public class AgencyProduct implements Serializable {
         this.productName = productName;
     }
 
-
     public Boolean getShowProduct() {
         return showProduct;
     }
@@ -144,13 +143,6 @@ public class AgencyProduct implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "com.visumbu.vb.model.AgencyProduct[ id=" + id + " ]";
-    }
-
-
-    
     public String getIcon() {
         return icon;
     }
@@ -158,5 +150,11 @@ public class AgencyProduct implements Serializable {
     public void setIcon(String icon) {
         this.icon = icon;
     }
-    
+
+    @Override
+    public String toString() {
+        return "com.visumbu.vb.model.AgencyProduct[ id=" + id + " ]";
+
+    }
+
 }

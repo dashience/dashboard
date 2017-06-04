@@ -203,26 +203,30 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //                });
 //            }
 
-//            else if ($scope.getCurrentPage() === "favourites") {
-//                $state.go("index.favourites", {
-//                    accountId: $stateParams.accountId,
-//                    accountName: $stateParams.accountName,
-//                    startDate: $stateParams.startDate,
-//                    endDate: $stateParams.endDate
-//                });
-//            }
-//            else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
-//                $state.go("index.viewFavouritesWidget", {
-//                    accountId: $stateParams.accountId,
-//                    accountName: $stateParams.accountName,
-////                    favouriteId: $stateParams.favouriteId,
-//                    productId: $stateParams.productId,
-//                    favouriteName: $stateParams.favouriteName,
-//                    startDate: $stateParams.startDate,
-//                    endDate: $stateParams.endDate
-//                });
-//            } 
-            else {
+            else if ($scope.getCurrentPage() === "favourites") {
+                $state.go("index.favourites", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            }
+            else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+                $state.go("index.viewFavouritesWidget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+//                    favouriteId: $stateParams.favouriteId,
+                    productId: $stateParams.productId,
+                    favouriteName: $stateParams.favouriteName,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else if ($scope.getCurrentPage() === "settings") {
+                $state.go("index.settings", {
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else {
                 $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
             }
         });
@@ -395,25 +399,29 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //                endDate: $stateParams.endDate
 //            });
 //        }
-//        else if ($scope.getCurrentPage() === "favourites") {
-//            $state.go("index.favourites", {
-//                accountId: $stateParams.accountId,
-//                accountName: $stateParams.accountName,
-//                startDate: $stateParams.startDate,
-//                endDate: $stateParams.endDate
-//            });
-//        } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
-//            $state.go("index.viewFavouritesWidget", {
-//                accountId: $stateParams.accountId,
-//                accountName: $stateParams.accountName,
-//                productId: $stateParams.productId,
-//                //favouriteId: $stateParams.favouriteId,
-//                favouriteName: $stateParams.favouriteName,
-//                startDate: $stateParams.startDate,
-//                endDate: $stateParams.endDate
-//            });
-//        }
-        else {
+        else if ($scope.getCurrentPage() === "favourites") {
+            $state.go("index.favourites", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+            $state.go("index.viewFavouritesWidget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                //favouriteId: $stateParams.favouriteId,
+                favouriteName: $stateParams.favouriteName,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else if ($scope.getCurrentPage() === "settings") {
+            $state.go("index.settings", {
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
         }
     };
@@ -464,12 +472,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("fieldSettings") > 0) {
             return "fieldSettings";
         }
-//        if (url.indexOf("favourites") > 0) {
-//            return "favourites";
-//        }
-//        if (url.indexOf("viewFavouritesWidget") > 0) {
-//            return "viewFavouritesWidget";
-//        }
+        if (url.indexOf("favourites") > 0) {
+            return "favourites";
+        }
+        if (url.indexOf("viewFavouritesWidget") > 0) {
+            return "viewFavouritesWidget";
+        }
+        if (url.indexOf("settings") > 0) {
+            return "settings";
+        }
 //        if (url.indexOf("tag") > 0) {
 //            return "tag";
 //        }

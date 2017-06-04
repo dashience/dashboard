@@ -5,7 +5,6 @@
  */
 package com.visumbu.vb.admin.controller;
 
-import static com.visumbu.vb.admin.controller.ProxyController.log;
 import com.visumbu.vb.admin.service.EnlivantService;
 import static com.visumbu.vb.admin.service.EnlivantService.getTopBoards;
 import com.visumbu.vb.admin.service.UiService;

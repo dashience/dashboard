@@ -91,13 +91,11 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             $scope.agencyById = data;
-
+            console.log(response)
             getAgency();
             if (response.status == true) {
                 $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
-
-
-            } else {
+            } else if (response.status == false) {
                 var dialog = bootbox.dialog({
                     title: 'Alert',
                     message: response.message
@@ -107,6 +105,8 @@ app.controller('AgencyController', function ($scope, $http) {
                         dialog.modal('hide');
                     }, 2000);
                 });
+            } else {
+                $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
             }
         });
 

@@ -187,5 +187,14 @@ public class DashboardTabs implements Serializable {
         return "com.visumbu.vb.model.DashboardTabs[ id=" + id + " ]";
     }
 
+//    @XmlTransient
+//    @JsonIgnore
+//    public Collection<TabWidget> getTabWidgetCollection() {
+//        return tabWidgetCollection;
+//    }
+//
+//    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
+//        this.tabWidgetCollection = tabWidgetCollection;
+//    }
 
     }

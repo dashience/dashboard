@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DatasetColumns;
 
 import com.visumbu.vb.model.Currency;
@@ -384,19 +385,25 @@ public class UiController extends BaseController {
     DataSet update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         return uiService.update(dataSet);
     }
-    
-//    @RequestMapping(value = "dataSetColumns", method = RequestMethod.POST, produces = "application/json")
-//    public @ResponseBody
-//    DatasetColumns createDataSetColumns(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
-//        return uiService.createDataSetColumns(dataSetColumn);
-//    }
-    
+
     @RequestMapping(value = "dataSetFormulaColumns", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     List<DatasetColumns> createDataSetFormulaColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
         return uiService.createDataSetFormulaColumn(dataSetColumn);
     }
 
+    @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
+        System.out.println("id --> "+datasetColumnId);
+        return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
+    }
+
+    @RequestMapping(value = "getDatasetById/{datasetId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getDatasetById (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
+        return uiService.getDatasetById(datasetId);
+    }
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -473,6 +480,11 @@ public class UiController extends BaseController {
         return uiService.getUserAccount();
     }
 
+    @RequestMapping(value = "getAccount/{id}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return uiService.getAccountById(id);
+    }
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {
@@ -489,11 +501,7 @@ public class UiController extends BaseController {
         return uiService.getUserAccountById(userId);
     }
 
-//    @RequestMapping(value = "userAccountId/{userId}", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    List getUserAccountId (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
-//        return uiService.getUserAccountId(userId);
-//    }
+    
     @RequestMapping(value = "userAccount/{userAccountId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     UserAccount deleteUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userAccountId) {
@@ -578,7 +586,7 @@ public class UiController extends BaseController {
         Date startDate = new Date();
         String productSegement="";
 //       String  stratDates=dateFormat.format(startDate);
-        facebookService.getAccountPerformance(accountId, startDate, startDate, "day",productSegement);
+        //facebookService.getAccountPerformance(accountId, startDate, startDate, "day",productSegement);
 //        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
 
         return null;

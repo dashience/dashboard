@@ -7,7 +7,7 @@
         border-bottom: none;
     }
     .table-fixed tbody {
-        /*        height: 430px;*/
+        height: 430px;
         overflow-y: auto !important;
         width: 100%;
     }
@@ -28,6 +28,45 @@
 
     .hpanel .panel-body {
         border: 1px solid #e4e5e7;
+    }
+    .user{
+        color: #0074D9;
+    }
+    textarea.form-control {
+        min-height: 0 !important;
+        font: none !important;
+    }
+
+    .expression{
+        height: 100% !important;
+    }
+     .custom-daterange-box{
+        display: flex;
+        width: 100%;
+        height: 34px;
+        padding: 5px 5px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+    .custom-daterange-box-icon{
+        margin-left: 48px;
+    }
+    .scheduler-list-style{
+        height: auto;
+        overflow: auto;
+    }
+    .ui-select-bootstrap > .ui-select-choices, .ui-select-bootstrap > .ui-select-no-choice {
+        display: contents;
     }
 </style>
 <div class="normalheader transition animated fadeIn">
@@ -131,13 +170,13 @@
                                     ng-options="dataSource.name for dataSource in dataSources track by dataSource.id" 
                                     placeholder="Data Source" 
                                     ng-value="dataSource.connectionString"
-                                    ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId)">
+                                    ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId);">
                                 <option value="" selected="selected" ng-disabled="true">Choose one</option>
                             </select>
 
                             <div ng-show="dataSetFlag">
                                 <label>Report</label>
-                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(); refreshDataSet(dataSet)">
+                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements();refreshDataSet(dataSet)">
                                     <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
                                         {{reportPerformances.name}}</option>
@@ -227,7 +266,7 @@
                         <div class="box-body popup-head">
 
                             <div id="changes-height" class="table-responsive">
-                                <div preview-Table path="{{previewData}}"></div>
+                                <div preview-Table path="{{previewData}}" preview-Data="getDataSetColumns(dataSet)"></div>
                             </div>
 
                         </div>
