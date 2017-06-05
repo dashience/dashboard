@@ -256,7 +256,7 @@ public class ProxyController {
         return returnDateMap;
     }
 
-    public DateRange getDateRange(String functionName, String dateRangeName, String customStartDate, String customEndDate, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears, Date startDate, Date endDate) {
+    public DateRange getDateRange(String functionName, String dateRangeName, String customStartDate, String customEndDate, Date startDate, Date endDate) {
         DateRange dateRange = new DateRange();
         if (functionName.equalsIgnoreCase("yoy")) {
             dateRange.setStartDate(new DateTime(startDate).minusYears(1).toDate());
@@ -268,26 +268,14 @@ public class ProxyController {
             dateRange.setStartDate(new DateTime(startDate).minusWeeks(1).toDate());
             dateRange.setEndDate(new DateTime(endDate).minusWeeks(1).toDate());
         } else if (functionName.equalsIgnoreCase("custom")) {
-            if (dateRangeName.equalsIgnoreCase("custom")) {
-                System.out.println("Custom Date");
-                System.out.println("StartDate ---> " + DateUtils.getStartDate(customStartDate));
-                System.out.println("EndDate ---> " + DateUtils.getEndDate(customEndDate));
-                dateRange.setStartDate(DateUtils.getStartDate(customStartDate));
-                dateRange.setEndDate(DateUtils.getEndDate(customEndDate));
-            } else {
-                Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears);
-                System.out.println("Last N dates");
-                System.out.println("StartDate ---> " + dateMap.get("startDate"));
-                System.out.println("EndDate ---> " + dateMap.get("endDate"));
-                dateRange.setStartDate(dateMap.get("startDate"));
-                dateRange.setEndDate(dateMap.get("endDate"));
-            }
+            dateRange.setStartDate(DateUtils.getStartDate(customStartDate));
+            dateRange.setEndDate(DateUtils.getEndDate(customEndDate));
         }
         return dateRange;
     }
 
     public List<Map<String, Object>> addDerivedColumnsFunction(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data, MultiValueMap request, HttpServletResponse response) {
-        // Supported Functions : yoy, mom, wow
+        // Supported Functions : yoy, mom, wow, custom
         String format = "yyyy-MM-dd";
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
@@ -307,22 +295,21 @@ public class ProxyController {
                 Integer lastNyears = datasetColumn.getLastNyears();
                 String customStartDate = datasetColumn.getCustomStartDate();
                 String customEndDate = datasetColumn.getCustomEndDate();
-                DateRange dateRange = null;
-                String cachedRangeForFunction = null;
-                if (dateRangeName.equalsIgnoreCase("select date")) {
-                    cachedRangeForFunction = cachedRange;
-                } else {
-                    dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
-                    cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                if (dateRangeName != null && !dateRangeName.isEmpty()) {
+                    if (!dateRangeName.equalsIgnoreCase("custom")) {
+                        Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears);
+                        customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
+                        customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
+                    }
                 }
+                DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
+                String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
                 if (cachedData.get(cachedRangeForFunction) == null) {
                     List<String> startDateValue = new ArrayList();
                     startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM/dd/yyyy"));
-                    System.out.println("startDateValue --> " + startDateValue);
                     request.put("startDate", startDateValue);
                     List<String> endDateValue = new ArrayList();
                     endDateValue.add(DateUtils.dateToString(dateRange.getEndDate(), "MM/dd/yyyy"));
-                    System.out.println("endDateValue --> " + endDateValue);
                     request.put("endDate", endDateValue);
                     Map dataMapForFunction = getData(request, response);
                     List<Map<String, Object>> dataForFunction = (List<Map<String, Object>>) dataMapForFunction.get("data");
@@ -352,14 +339,15 @@ public class ProxyController {
                     Integer lastNyears = datasetColumn.getLastNyears();
                     String customStartDate = datasetColumn.getCustomStartDate();
                     String customEndDate = datasetColumn.getCustomEndDate();
-                    DateRange dateRange = null;
-                    String cachedRangeForFunction = null;
-                    if (dateRangeName.equalsIgnoreCase("select date")) {
-                        cachedRangeForFunction = cachedRange;
-                    } else {
-                        dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
-                        cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                    if (dateRangeName != null && !dateRangeName.isEmpty()) {
+                        if (!dateRangeName.equalsIgnoreCase("custom")) {
+                            Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears);
+                            customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
+                            customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
+                        }
                     }
+                    DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
+                    String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
                     Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(datasetColumn.getBaseField()), datasetColumn);
                     returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
                 } else {
