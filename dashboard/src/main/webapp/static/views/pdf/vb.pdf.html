@@ -117,6 +117,9 @@
     .pageBreak{   
         page-break-inside:avoid;
     }
+    p{   
+        page-break-inside:avoid;
+    }
     @media print  {
         /* All your print styles go here */
         .pdfButton {
@@ -188,7 +191,7 @@
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>
                         </div>
-                        <div class="panel-body" ng-if="widget.chartType === 'bar'">
+                        <div class="panel-body" style="page-break-inside: avoid" ng-if="widget.chartType === 'bar'">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
                             </div>

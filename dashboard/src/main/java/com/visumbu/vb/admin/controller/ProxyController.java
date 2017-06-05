@@ -1286,7 +1286,6 @@ public class ProxyController {
                 } else {
                     Object value = entrySet.getValue();
                     String valueString = value + "";
-                    System.out.println(value.getClass());
                     valueString = valueString.replaceAll("^\"|\"$", "");
                     if (NumberUtils.isNumber(valueString)) {
                         columnDefs.add(new ColumnDef(key, "number", key));
