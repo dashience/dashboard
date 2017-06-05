@@ -92,7 +92,8 @@ public class UserService {
         LoginUserBean loginUserBean = null;
         if (!users.isEmpty()) {
             VbUser user = users.get(0);
-            if (user.getPassword().equals(userBean.getPassword())) {
+            if (user.getPassword().equals(userBean.getPassword()) && 
+                    user.getUserName().equals(userBean.getUsername())) {
                 user.setFailedLoginCount(0);
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
