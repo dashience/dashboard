@@ -248,7 +248,7 @@ public class TimerService {
         }
     }
     
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 0 */1 * * *")
     public void executeWeeklyTask() {
         System.out.println("Executing weekly Tasks....");
         List<Agency> allAgencies = schedulerDao.getAllAgency();
