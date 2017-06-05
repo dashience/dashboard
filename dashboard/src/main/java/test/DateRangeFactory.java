@@ -94,28 +94,43 @@ public class DateRangeFactory {
 
     }
 
-    public static DateRange getRange(Range range, int count) {
+    public static DateRange getRange(Range range, int count, Date endDate) {
 
         DateRange dateRange = new DateRange();
         Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endDate);
 
         if (range.equals(Range.DAY)) {
             System.out.println("day and count ----> " + count);
-            dateRange.setEndDate(calendar.getTime());
-            calendar.setTime(new Date());
             if (count == 0) {
+                dateRange.setEndDate(calendar.getTime());
+                calendar.setTime(endDate);
                 calendar.add(Calendar.DAY_OF_MONTH, count * (-1));
+                //	System.out.println(Calendar.WEEK_OF_YEAR + "....");
+                dateRange.setStartDate(calendar.getTime());
             } else {
+                calendar.setTime(endDate);
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                dateRange.setEndDate(calendar.getTime());
+//                calendar.setTime(endDate);
                 calendar.add(Calendar.DAY_OF_MONTH, (count - 1) * (-1));
+                //	System.out.println(Calendar.WEEK_OF_YEAR + "....");
+                dateRange.setStartDate(calendar.getTime());
             }
-            //	System.out.println(Calendar.WEEK_OF_YEAR + "....");
-            dateRange.setStartDate(calendar.getTime());
             return dateRange;
         }
 
         if (range.equals(Range.WEEK)) {
             System.out.println("week and count ----> " + count);
-            dateRange.setEndDate(calendar.getTime());
+            if (count == 0) {
+                dateRange.setEndDate(calendar.getTime());
+            } else {
+                // last day of previous week
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                dateRange.setEndDate(calendar.getTime());
+            }
+            calendar.setTime(endDate);
             calendar.add(Calendar.WEEK_OF_YEAR, count * (-1));
             //	System.out.println(Calendar.WEEK_OF_YEAR + "....");
             calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
@@ -137,16 +152,16 @@ public class DateRangeFactory {
             calendar.set(Calendar.DATE, 1);
 
             dateRange.setStartDate(calendar.getTime());
-            calendar = null;
-            calendar = Calendar.getInstance();
+            calendar.setTime(endDate);
             if (count == 0) {
+                calendar.setTime(endDate);
                 dateRange.setEndDate(calendar.getTime());
             } else {
                 calendar.set(Calendar.DATE, 1);
                 calendar.add(Calendar.DAY_OF_MONTH, -1);
                 calendar.getTime();
-                calendar.set(Calendar.DATE, 1);
-                calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+//                calendar.set(Calendar.DATE, 1);
+//                calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
                 dateRange.setEndDate(calendar.getTime());
             }
 
@@ -160,7 +175,6 @@ public class DateRangeFactory {
                 calendar.set(Calendar.DAY_OF_MONTH, 1);
                 dateRange.setStartDate(calendar.getTime());
             } else {
-                dateRange.setEndDate(calendar.getTime());
                 int year = calendar.get(Calendar.YEAR) - count;
 //                System.out.println(year);
                 int month = 0;

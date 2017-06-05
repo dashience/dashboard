@@ -132,17 +132,14 @@ public class TimerService {
                 } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
                     startDate = null;
                     endDate = null;
-                } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
-                    startDate = null;
-                    endDate = null;
                 } else if (dateRangeSelect.equals(Range.DAY)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays, new Date());
                 } else if (dateRangeSelect.equals(Range.WEEK)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks, new Date());
                 } else if (dateRangeSelect.equals(Range.MONTH)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths, new Date());
                 } else if (dateRangeSelect.equals(Range.YEAR)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears, new Date());
                 } else {
                     dateRange = DateRangeFactory.getRange(dateRangeSelect);
                 }

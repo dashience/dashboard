@@ -222,7 +222,7 @@ public class ProxyController {
         return returnMap;
     }
 
-    public Map<String, Date> getCustomDate(String dateRangeName, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears) {
+    public Map<String, Date> getCustomDate(String dateRangeName, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears, Date endDate) {
         System.out.println("Date Range Name --> " + dateRangeName);
 
         Map returnDateMap = new HashMap<>();
@@ -240,13 +240,13 @@ public class ProxyController {
 
         System.out.println("dateRangeSelect ---> " + dateRangeSelect);
         if (dateRangeSelect.equals(Range.DAY)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays, endDate);
         } else if (dateRangeSelect.equals(Range.WEEK)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks, endDate);
         } else if (dateRangeSelect.equals(Range.MONTH)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths, endDate);
         } else if (dateRangeSelect.equals(Range.YEAR)) {
-            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
+            dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears, endDate);
         }
 
         if (dateRange != null) {
@@ -297,7 +297,7 @@ public class ProxyController {
                 String customEndDate = datasetColumn.getCustomEndDate();
                 if (dateRangeName != null && !dateRangeName.isEmpty()) {
                     if (!dateRangeName.equalsIgnoreCase("custom")) {
-                        Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears);
+                        Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
                         customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
                         customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
                     }
@@ -341,9 +341,11 @@ public class ProxyController {
                     String customEndDate = datasetColumn.getCustomEndDate();
                     if (dateRangeName != null && !dateRangeName.isEmpty()) {
                         if (!dateRangeName.equalsIgnoreCase("custom")) {
-                            Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears);
+                            Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
                             customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
                             customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
+                            System.out.println("customStartDate ---> " + customStartDate);
+                            System.out.println("customEndDate ---> " + customEndDate);
                         }
                     }
                     DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
@@ -641,7 +643,7 @@ public class ProxyController {
                 startDate = DateUtils.getStartDate(widget.getCustomStartDate());
                 endDate = DateUtils.getEndDate(widget.getCustomEndDate());
                 if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration")) {
-                    Map dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    Map dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
                     startDate = DateUtils.getStartDate(dateRange.get("startDate") + "");
                     endDate = DateUtils.getEndDate(dateRange.get("endDate") + "");
                 }
@@ -753,7 +755,7 @@ public class ProxyController {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
                     endDate = DateUtils.getEndDate(widget.getCustomEndDate());
                 } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
-                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
                     startDate = dateRange.get("startDate");
                     endDate = dateRange.get("endDate");
                 }
@@ -826,7 +828,7 @@ public class ProxyController {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
                     endDate = DateUtils.getEndDate(widget.getCustomEndDate());
                 } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
-                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
                     startDate = dateRange.get("startDate");
                     endDate = dateRange.get("endDate");
                 }
@@ -902,7 +904,7 @@ public class ProxyController {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
                     endDate = DateUtils.getEndDate(widget.getCustomEndDate());
                 } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
-                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
                     startDate = dateRange.get("startDate");
                     endDate = dateRange.get("endDate");
                 }
@@ -1071,7 +1073,7 @@ public class ProxyController {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
                     endDate = DateUtils.getEndDate(widget.getCustomEndDate());
                 } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
-                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
                     startDate = dateRange.get("startDate");
                     endDate = dateRange.get("endDate");
                 }
@@ -1403,7 +1405,7 @@ public class ProxyController {
                         startDate = DateUtils.getEndDate(tabWidget.getCustomStartDate());
                         endDate = DateUtils.getEndDate(tabWidget.getCustomEndDate());
                     } else if (!tabWidget.getDateRangeName().equalsIgnoreCase("custom") && !tabWidget.getDateRangeName().equalsIgnoreCase("select date duration") && !tabWidget.getDateRangeName().equalsIgnoreCase("none")) {
-                        Map<String, Date> dateRange = getCustomDate(tabWidget.getDateRangeName(), tabWidget.getLastNdays(), tabWidget.getLastNweeks(), tabWidget.getLastNmonths(), tabWidget.getLastNyears());
+                        Map<String, Date> dateRange = getCustomDate(tabWidget.getDateRangeName(), tabWidget.getLastNdays(), tabWidget.getLastNweeks(), tabWidget.getLastNmonths(), tabWidget.getLastNyears(), endDate);
                         startDate = dateRange.get("startDate");
                         endDate = dateRange.get("endDate");
                     }
@@ -1536,7 +1538,7 @@ public class ProxyController {
                         startDate = DateUtils.getEndDate(tabWidget.getCustomStartDate());
                         endDate = DateUtils.getEndDate(tabWidget.getCustomEndDate());
                     } else if (!tabWidget.getDateRangeName().equalsIgnoreCase("custom") && !tabWidget.getDateRangeName().equalsIgnoreCase("select date duration") && !tabWidget.getDateRangeName().equalsIgnoreCase("none")) {
-                        Map<String, Date> dateRange = getCustomDate(tabWidget.getDateRangeName(), tabWidget.getLastNdays(), tabWidget.getLastNweeks(), tabWidget.getLastNmonths(), tabWidget.getLastNyears());
+                        Map<String, Date> dateRange = getCustomDate(tabWidget.getDateRangeName(), tabWidget.getLastNdays(), tabWidget.getLastNweeks(), tabWidget.getLastNmonths(), tabWidget.getLastNyears(), endDate);
                         startDate = dateRange.get("startDate");
                         endDate = dateRange.get("endDate");
                     }
