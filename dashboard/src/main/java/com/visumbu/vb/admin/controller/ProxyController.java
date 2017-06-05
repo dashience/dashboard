@@ -6,7 +6,6 @@
 package com.visumbu.vb.admin.controller;
 
 //import static com.visumbu.vb.admin.controller.EnliventController.processFollowings;
-import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
@@ -24,26 +23,21 @@ import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
-import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
-import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.CsvDataSet;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
-import com.visumbu.vb.utils.ParsePost;
 import com.visumbu.vb.utils.PropertyReader;
 import com.visumbu.vb.utils.Rest;
 import com.visumbu.vb.utils.ShuntingYard;
-import static com.visumbu.vb.utils.ShuntingYard.postfix;
 import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,17 +48,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.joda.time.DateTime;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -137,8 +126,6 @@ public class ProxyController {
         }
 
         Map returnMap = getData(valueMap, response);
-        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String dataSourceType = request.getParameter("dataSourceType");
         String fieldsOnly = request.getParameter("fieldsOnly");
 
@@ -165,10 +152,8 @@ public class ProxyController {
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
-        // addDerivedColumn(returnMap, datasetColumnList, startDate, endDate);
         String widgetIdStr = request.getParameter("widgetId");
 
-        // System.out.println("WIDGET ID " + widgetIdStr);
         if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
             String queryFilter = null;
             Integer widgetId = Integer.parseInt(widgetIdStr);
@@ -203,7 +188,6 @@ public class ProxyController {
         Map returnMap = new HashMap<>();
 
         String dataSourceType = getFromMultiValueMap(request, "dataSourceType");
-        System.out.println("dataSourceType --> " + dataSourceType);
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         Integer dataSetIdInt = null;
         if (dataSetId != null) {
@@ -217,7 +201,6 @@ public class ProxyController {
                 dataSourceType = dataSet.getDataSourceId().getDataSourceType();
             }
         }
-        // System.out.println(dataSourceType);
 
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             returnMap = (Map) getFbData(request, response);
@@ -236,7 +219,6 @@ public class ProxyController {
         } else if (dataSourceType.equalsIgnoreCase("pinterest")) {
             returnMap = (Map) getPinterestData(request, response);
         }
-        System.out.println("return map ---> " + returnMap);
         return returnMap;
     }
 
@@ -286,7 +268,7 @@ public class ProxyController {
             dateRange.setStartDate(new DateTime(startDate).minusWeeks(1).toDate());
             dateRange.setEndDate(new DateTime(endDate).minusWeeks(1).toDate());
         } else if (functionName.equalsIgnoreCase("custom")) {
-            if (dateRangeName.equalsIgnoreCase("custom") || dateRangeName.equalsIgnoreCase("select date")) {
+            if (dateRangeName.equalsIgnoreCase("custom")) {
                 System.out.println("Custom Date");
                 System.out.println("StartDate ---> " + DateUtils.getStartDate(customStartDate));
                 System.out.println("EndDate ---> " + DateUtils.getEndDate(customEndDate));
@@ -325,8 +307,14 @@ public class ProxyController {
                 Integer lastNyears = datasetColumn.getLastNyears();
                 String customStartDate = datasetColumn.getCustomStartDate();
                 String customEndDate = datasetColumn.getCustomEndDate();
-                DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
-                String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                DateRange dateRange = null;
+                String cachedRangeForFunction = null;
+                if (dateRangeName.equalsIgnoreCase("select date")) {
+                    cachedRangeForFunction = cachedRange;
+                } else {
+                    dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
+                    cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                }
                 if (cachedData.get(cachedRangeForFunction) == null) {
                     List<String> startDateValue = new ArrayList();
                     startDateValue.add(DateUtils.dateToString(dateRange.getStartDate(), "MM/dd/yyyy"));
@@ -364,9 +352,14 @@ public class ProxyController {
                     Integer lastNyears = datasetColumn.getLastNyears();
                     String customStartDate = datasetColumn.getCustomStartDate();
                     String customEndDate = datasetColumn.getCustomEndDate();
-                    DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
-                    String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
-                    System.out.println("cachedRangeForFunction ---> " + cachedRangeForFunction);
+                    DateRange dateRange = null;
+                    String cachedRangeForFunction = null;
+                    if (dateRangeName.equalsIgnoreCase("select date")) {
+                        cachedRangeForFunction = cachedRange;
+                    } else {
+                        dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, lastNdays, lastNweeks, lastNmonths, lastNyears, startDate, endDate);
+                        cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                    }
                     Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(datasetColumn.getBaseField()), datasetColumn);
                     returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
                 } else {
@@ -602,141 +595,16 @@ public class ProxyController {
                 twitterData.add(myMapData);
 
                 List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
-
-                /////////////////////////////////////////////////////////
-                // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                // System.out.println(twitterData);
-                // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//                fbData.lastIndexOf(jsonObj);
-//                String likesCount = fbData.size() + "";
-//                Map<String, String> boardsSize = new HashMap<>();
-//                boardsSize.put("total_pin_likes", likesCount);
-//                List<Map<String, String>> listData = new ArrayList<>();
-//                listData.add(boardsSize);
-//
                 returnMap.put("columnDefs", columnDefObject);
-
                 returnMap.put("data", twitterData);
-
-//                List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-//                // System.out.println("datasetColumnList0 ----> " + datasetColumnList);
-//                if (datasetColumnList.size() > 0) {
-//                    // System.out.println("datasetColumnList1 ---> " + datasetColumnList);
-//                    return data;
-//                }
                 return returnMap;
             } catch (ParseException ex) {
                 java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
-//            return null;
         }
-
-//        if (reportName.equalsIgnoreCase("getFollowingsCount")) {
-//            ArrayList<String> followingsApiUrls = new ArrayList<>();
-//
-//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername");
-//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveU56azVPVGMwTXpreU5ERXpOVGczTXpBNk9USXlNek0zTURVMU9UWTJNelk1TXpnek1WOUZ8ZDdiZWVlOWQ5NDZlMmE4MjgwZjcyZTAxY2YyM2NiZDVmOGE5MjllMWIwMWZjY2MxYThlNjAzMjg4Yzk1MjhiMg%3D%3D");
-//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveE9EY3pNakU0TURNeE5Ua3pOelV6TURnNk9USXlNek0zTURVM01USTNOVE13TmpNeE5GOUZ8MTMzODE2NzlmMmYwNDMwYTc5NzU4MDg5YTE1OTU3Nzc4YTYzODFlNjFmY2YzN2ZkYzQyMzJkMDUwMzM5MWQ2MA%3D%3D");
-//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveU5EVXlNelV5TnprMk1UYzFPVEF6TnpjNk9USXlNek0zTURVNE1UZzNOekUyT1RVM05WOUZ8MmU0YzRmZWYwYmZhM2JlZTRmZGM2MjM0NzViNWMzMTg5NDJjZmQ4YjljNGZhYjc1ZWIxN2QzMWQyZmY4ZmU2NA%3D%3D");
-//            followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TkRveU5UZzJNRFV6TkRFd01URXpOVEUwTVRRNk9USXlNek0zTURVMU16WXhPVFk0TVRVNU4xOUp8YWQxZjViZjlmNTQ2YTg2YzI3NGU0MmQ0Nzg5ODVjMmVmNTY2MDRlZDZjZDZhMzAzNzE5MTU5YjQ1NWVkZjc5NQ%3D%3D");
-//
-////            String fbUrl = "https://api.pinterest.com/v1/me/likes/?access_token=AS94T9w2BZ8g5z1i47YGkp7c6U88FLtkVt0cCntD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Coriginal_link%2Cmetadata%2Cimage%2Cmedia%2Ccreator";
-//            int maxCount = 0;
-//            for (int i = 0; i < followingsApiUrls.size(); i++) {
-//                try {
-//                    int getFollowingsCount = processFollowings(followingsApiUrls.get(i));
-//                    maxCount = maxCount + getFollowingsCount;
-//                } catch (ParseException ex) {
-//                    java.util.logging.Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//            Map returnMap = new HashMap<>();
-//            String pinterestFollowersCount = maxCount + "";
-//            Map<String, String> followersSize = new HashMap<>();
-//            followersSize.put("followings_count", pinterestFollowersCount);
-//            List<Map<String, String>> listData = new ArrayList<>();
-//            listData.add(followersSize);
-//
-//            List<ColumnDef> columnDefs = getColumnDef(listData);
-//            returnMap.put("columnDefs", columnDefs);
-//
-//            returnMap.put("data", listData);
-//            return returnMap;
-//        }
-//
-//        if (reportName.equalsIgnoreCase("getTotalBoards")) {
-//            try {
-//                String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
-//                String data = Rest.getData(fbUrl);
-//                JSONParser parser = new JSONParser();
-//                Object jsonObj = parser.parse(data);
-//                JSONObject json = (JSONObject) jsonObj;
-//                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-//                Map returnMap = new HashMap<>();
-//                List fbData = (List<Map>) jsonToMap.get("data");
-//                fbData.lastIndexOf(jsonObj);
-//                String boardsCount = fbData.size() + "";
-//                Map<String, String> boardsSize = new HashMap<>();
-//                boardsSize.put("total_boards", boardsCount);
-//                List<Map<String, String>> listData = new ArrayList<>();
-//                listData.add(boardsSize);
-//
-//                List<ColumnDef> columnDefs = getColumnDef(listData);
-//                returnMap.put("columnDefs", columnDefs);
-//
-//                returnMap.put("data", listData);
-//                return returnMap;
-//            } catch (ParseException ex) {
-//                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-////            return null;
-//        }
-//        if (reportName.equalsIgnoreCase("getTotalPins")) {
-//            try {
-//                String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
-//                String data = Rest.getData(fbUrl);
-//                JSONParser parser = new JSONParser();
-//                Object jsonObj = parser.parse(data);
-//                JSONObject json = (JSONObject) jsonObj;
-//                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-//                Map returnMap = new HashMap<>();
-//                List fbData = (List<Map>) jsonToMap.get("data");
-//                fbData.lastIndexOf(jsonObj);
-//                String pinsCount = fbData.size() + "";
-//                Map<String, String> pinsSize = new HashMap<>();
-//                pinsSize.put("total_pins", pinsCount);
-//                List<Map<String, String>> listData = new ArrayList<>();
-//                listData.add(pinsSize);
-//
-//                List<ColumnDef> columnDefs = getColumnDef(listData);
-//                returnMap.put("columnDefs", columnDefs);
-//
-//                returnMap.put("data", listData);
-//                return returnMap;
-//            } catch (ParseException ex) {
-//                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-////            return null;
-//        }
         return null;
-
     }
 
-//    public static int processFollowings(String fbUrl) throws ParseException {
-//
-//        String data = Rest.getData(fbUrl);
-//        JSONParser parser = new JSONParser();
-//        Object jsonObj = parser.parse(data);
-//        JSONObject json = (JSONObject) jsonObj;
-//        Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-//        List fbData = (List<Map>) jsonToMap.get("data");
-////        fbData.lastIndexOf(jsonObj);
-//        int followingsCount = fbData.size();
-//        // System.out.println("-------------------------------------------");
-//        // System.out.println(followingsCount);
-//        // System.out.println("--------------------------------------");
-//        return followingsCount;
-//    }
     @RequestMapping(value = "getSheets", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map<Integer, String> getXlsSheets(HttpServletRequest request, HttpServletResponse response) {
@@ -781,17 +649,13 @@ public class ProxyController {
             String widgetIdStr = getFromMultiValueMap(request, "widgetId");
             if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
                 Integer widgetId = Integer.parseInt(widgetIdStr);
-                // System.out.println("widgetId ----> " + widgetId);
                 TabWidget widget = uiService.getWidgetById(widgetId);
-
-                String start = widget.getCustomStartDate();
-                String end = widget.getCustomEndDate();
-
-                if (start != null) {
-                    startDate = DateUtils.getStartDate(start);
-                }
-                if (end != null) {
-                    endDate = DateUtils.getEndDate(end);
+                startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration")) {
+                    Map dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    startDate = DateUtils.getStartDate(dateRange.get("startDate") + "");
+                    endDate = DateUtils.getEndDate(dateRange.get("endDate") + "");
                 }
             }
 
@@ -893,19 +757,18 @@ public class ProxyController {
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
-            // System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
-
-            String start = widget.getCustomStartDate();
-            String end = widget.getCustomEndDate();
-
-            if (start != null) {
-                startDate = DateUtils.getStartDate(start);
-                // System.out.println("startDate 2----> " + startDate);
-            }
-            if (end != null) {
-                endDate = DateUtils.getEndDate(end);
-                // System.out.println("endDate 2----> " + endDate);
+            System.out.println("Widget title --->" + widget.getWidgetTitle());
+            System.out.println("Date Range Name ---> " + widget.getDateRangeName());
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
             }
         }
 
@@ -959,37 +822,36 @@ public class ProxyController {
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
 
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
-        // System.out.println("widgetID ---> " + widgetIdStr);
+        System.out.println("widgetID ---> " + widgetIdStr);
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
         System.out.println("endDate 1 ----> " + endDate);
+
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
-            // System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
-
-            String start = widget.getCustomStartDate();
-            String end = widget.getCustomEndDate();
-
-            if (start != null) {
-                startDate = DateUtils.getStartDate(start);
-                // System.out.println("startDate 2 ----> " + startDate);
-            }
-            if (end != null) {
-                endDate = DateUtils.getEndDate(end);
-                // System.out.println("endDate 2 ----> " + endDate);
+            System.out.println("Widget title --->" + widget.getWidgetTitle());
+            System.out.println("Date Range Name ---> " + widget.getDateRangeName());
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
             }
         }
-
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
-        System.out.println("Report Name " + dataSetReportName);
-        System.out.println("datasetId ---->" + dataSetId);
-        System.out.println("datasetIdInt ---->" + dataSetIdInt);
+        System.out.println("SSSSSSSStartDAaaaaaaaaaaaTe ---> " + startDate);
+        System.out.println("EEEEEEEEndDAaaaaaaaaaaaTe ---> " + endDate);
+
         Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
         List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");
         List<ColumnDef> columnDefs = getColumnDefObject(data);
@@ -1044,19 +906,18 @@ public class ProxyController {
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
-            // System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
-
-            String start = widget.getCustomStartDate();
-            String end = widget.getCustomEndDate();
-
-            if (start != null) {
-                startDate = DateUtils.getStartDate(start);
-                // System.out.println("startDate 2 ----> " + startDate);
-            }
-            if (end != null) {
-                endDate = DateUtils.getEndDate(end);
-                // System.out.println("endDate 2 ----> " + endDate);
+            System.out.println("Widget title --->" + widget.getWidgetTitle());
+            System.out.println("Date Range Name ---> " + widget.getDateRangeName());
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
             }
         }
 
@@ -1214,19 +1075,18 @@ public class ProxyController {
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
-            // System.out.println("widgetId ----> " + widgetId);
             TabWidget widget = uiService.getWidgetById(widgetId);
-
-            String start = widget.getCustomStartDate();
-            String end = widget.getCustomEndDate();
-
-            if (start != null) {
-                startDate = DateUtils.getStartDate(start);
-                // System.out.println("startDate 2 ----> " + startDate);
-            }
-            if (end != null) {
-                endDate = DateUtils.getEndDate(end);
-                // System.out.println("endDate 2 ----> " + endDate);
+            System.out.println("Widget title --->" + widget.getWidgetTitle());
+            System.out.println("Date Range Name ---> " + widget.getDateRangeName());
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears());
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
             }
         }
         Integer accountId = Integer.parseInt(accountIdStr);
@@ -1240,10 +1100,6 @@ public class ProxyController {
             facebookOrganicAccountIdInt = Long.parseLong(facebookOrganicAccountId);
         }
         String accessToken = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
-        log.debug("Report Name ---- " + dataSetReportName);
-        log.debug("Account Id ---- " + facebookAccountIdInt);
-        log.debug("Time segment ---- " + timeSegment);
-        log.debug("Start Date ---- " + startDate);
         List<Map<String, Object>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
                 facebookOrganicAccountIdInt, startDate, endDate, timeSegment, productSegment);
         // System.out.println("FbData list ----> " + data);
@@ -1284,7 +1140,6 @@ public class ProxyController {
                 } else {
                     Object value = entrySet.getValue();
                     String valueString = value + "";
-                    System.out.println(value.getClass());
                     valueString = valueString.replaceAll("^\"|\"$", "");
                     if (NumberUtils.isNumber(valueString)) {
                         columnDefs.add(new ColumnDef(key, "number", key));
@@ -1425,17 +1280,13 @@ public class ProxyController {
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-                        // System.out.println("DS TYPE ==>  CSV");
-//                        url = "../admin/csv/getData";
                         url = "../dashboard/admin/csv/getData";
                         valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                         valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                     } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
                         url = "../dashboard/admin/proxy/getData?";
-//                    url = "../admin/proxy/getData?";
                     }
                     valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
-//                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                     valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
                     Integer port = request.getServerPort();
@@ -1484,39 +1335,20 @@ public class ProxyController {
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
         Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
-        // System.out.println("startDate 1 ----> " + startDate1);
         Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
-        // System.out.println("endDate 1 ----> " + endDate1);
-//        String widgetIdStr = request.getParameter("widgetId");
-//        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-//            Integer widgetId = Integer.parseInt(widgetIdStr);
-//            // System.out.println("widgetId ----> " + widgetId);
-//            TabWidget widget = uiService.getWidgetById(widgetId);
-//
-//            String start = widget.getCustomStartDate();
-//            String end = widget.getCustomEndDate();
-//
-//            if (start != null) {
-//                startDate = DateUtils.getStartDate(start);
-//                // System.out.println("startDate 2 ----> " + startDate);
-//            }
-//            if (end != null) {
-//                endDate = DateUtils.getEndDate(end);
-//                // System.out.println("endDate 2 ----> " + endDate);
-//            }
-//        }
+
+        System.out.println("startDate 1 -->" + startDate1);
+        System.out.println("endDate 1 -->" + endDate1);
+
         String start_date = month_date.format(startDate1);
         String end_date = month_date.format(endDate1);
         String selectDate;
 
-        // System.out.println("startDate ----> " + start_date);
-        // System.out.println("endDate ----> " + end_date);
         if (start_date.equalsIgnoreCase(end_date)) {
             selectDate = start_date;
         } else {
             selectDate = start_date.concat(" - " + end_date);
         }
-        // System.out.println("selectDate ---> " + selectDate);
         log.debug("EXport type ==> " + exportType);
         if (exportType == null || exportType.isEmpty()) {
             exportType = "pdf";
@@ -1555,12 +1387,9 @@ public class ProxyController {
                     continue;
                 }
                 Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-                // System.out.println("startDate  ----> " + startDate);
                 Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-                // System.out.println("endDate  ----> " + endDate);
-//                String url = "../dashboard/admin/proxy/getData?"; // tabWidget.getDirectUrl();
+
                 String url = propReader.readUrl(urlDownload) + "";
-//                String url = "../admin/proxy/getData?"; // tabWidget.getDirectUrl();
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -1571,34 +1400,27 @@ public class ProxyController {
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 }
 //                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-//                    // System.out.println("DS TYPE ==>  CSV");
-////                    url = "../admin/csv/getData";
 //                    url = "../dashboard/admin/csv/getData";
 //                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-////                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
 //                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
 //                    url = "../dashboard/admin/proxy/getData?";
-////                    url = "../admin/proxy/getData?";
 //                }
+
                 valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
-
-//                valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-//                valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-//                valueMap.put("location", Arrays.asList(URLEncoder.encode(request.getParameter("location"), "UTF-8")));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
-                String start = tabWidget.getCustomStartDate();
-                String end = tabWidget.getCustomEndDate();
+                if (tabWidget.getDateRangeName() != null && !tabWidget.getDateRangeName().isEmpty()) {
+                    if (tabWidget.getDateRangeName().equalsIgnoreCase("custom")) {
+                        startDate = DateUtils.getEndDate(tabWidget.getCustomStartDate());
+                        endDate = DateUtils.getEndDate(tabWidget.getCustomEndDate());
+                    } else if (!tabWidget.getDateRangeName().equalsIgnoreCase("custom") && !tabWidget.getDateRangeName().equalsIgnoreCase("select date duration") && !tabWidget.getDateRangeName().equalsIgnoreCase("none")) {
+                        Map<String, Date> dateRange = getCustomDate(tabWidget.getDateRangeName(), tabWidget.getLastNdays(), tabWidget.getLastNweeks(), tabWidget.getLastNmonths(), tabWidget.getLastNyears());
+                        startDate = dateRange.get("startDate");
+                        endDate = dateRange.get("endDate");
+                    }
+                }
 
-                if (start != null) {
-                    startDate = DateUtils.getStartDate(start);
-                    // System.out.println("startDate 2 ----> " + startDate);
-                }
-                if (end != null) {
-                    endDate = DateUtils.getEndDate(end);
-                    // System.out.println("endDate 2 ----> " + endDate);
-                }
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
 
@@ -1661,24 +1483,6 @@ public class ProxyController {
         Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
         // System.out.println("endDate 1 ----> " + endDate1);
 
-//        String widgetIdStr = request.getParameter("widgetId");
-//        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-//            Integer widgetId = Integer.parseInt(widgetIdStr);
-//            // System.out.println("widgetId ----> " + widgetId);
-//            TabWidget widget = uiService.getWidgetById(widgetId);
-//
-//            String start = widget.getCustomStartDate();
-//            String end = widget.getCustomEndDate();
-//
-//            if (start != null) {
-//                startDate = DateUtils.getStartDate(start);
-//                // System.out.println("startDate 2 ----> " + startDate);
-//            }
-//            if (end != null) {
-//                endDate = DateUtils.getEndDate(end);
-//                // System.out.println("endDate 2 ----> " + endDate);
-//            }
-//        }
         String start_date = month_date.format(startDate1);
         String end_date = month_date.format(endDate1);
         String selectDate;
@@ -1722,10 +1526,8 @@ public class ProxyController {
                 // System.out.println("startDate  ----> " + startDate);
                 Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
                 // System.out.println("endDate  ----> " + endDate);
-//                String url = "../dashboard/admin/proxy/getData?";
                 String url = propReader.readUrl(urlDownload) + "";
-                // System.out.println("url ---> " + url);
-//                String url = "../admin/proxy/getData?";
+
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
                 if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("sql")) {
                     url = "../dbApi/admin/dataSet/getData";
@@ -1735,37 +1537,22 @@ public class ProxyController {
                     valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
                     valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
                 }
-//                else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("csv")) {
-//                    // System.out.println("DS TYPE ==>  CSV");
-////                    url = "../admin/csv/getData";
-//                    url = "../dashboard/admin/csv/getData";
-//                    valueMap.put("connectionUrl", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getConnectionString(), "UTF-8")));
-////                    valueMap.put("driver", Arrays.asList(URLEncoder.encode(tabWidget.getDataSourceId().getSqlDriver(), "UTF-8")));
-//                } else if (tabWidget.getDataSourceId().getDataSourceType().equalsIgnoreCase("facebook")) {
-////                    url = "../admin/proxy/getData?";
-//                    url = "../dashboard/admin/proxy/getData?";
-//
-//                }
+
                 valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
                 // System.out.println("tabWidget Id---> " + tabWidget.getId());
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
-                String start = tabWidget.getCustomStartDate();
-                String end = tabWidget.getCustomEndDate();
-                // System.out.println("start ---> " + start);
-                // System.out.println("end ---> " + end);
-
-                if (start != null) {
-                    startDate = DateUtils.getStartDate(start);
-                    // System.out.println("startDate 2 ----> " + startDate);
+                if (tabWidget.getDateRangeName() != null && !tabWidget.getDateRangeName().isEmpty()) {
+                    if (tabWidget.getDateRangeName().equalsIgnoreCase("custom")) {
+                        startDate = DateUtils.getEndDate(tabWidget.getCustomStartDate());
+                        endDate = DateUtils.getEndDate(tabWidget.getCustomEndDate());
+                    } else if (!tabWidget.getDateRangeName().equalsIgnoreCase("custom") && !tabWidget.getDateRangeName().equalsIgnoreCase("select date duration") && !tabWidget.getDateRangeName().equalsIgnoreCase("none")) {
+                        Map<String, Date> dateRange = getCustomDate(tabWidget.getDateRangeName(), tabWidget.getLastNdays(), tabWidget.getLastNweeks(), tabWidget.getLastNmonths(), tabWidget.getLastNyears());
+                        startDate = dateRange.get("startDate");
+                        endDate = dateRange.get("endDate");
+                    }
                 }
-                if (end != null) {
-                    endDate = DateUtils.getEndDate(end);
-                    // System.out.println("endDate 2 ----> " + endDate);
-                }
-                // System.out.println("startDate ---> " + startDate);
-                // System.out.println("endDate ---> " + endDate);
 
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
@@ -1775,21 +1562,13 @@ public class ProxyController {
                 int account_id = Integer.parseInt(request.getParameter("accountId"));
                 account = userService.getAccountName(account_id);
 
-//                int product_id = Integer.parseInt(request.getParameter("productId"));
-//                // System.out.println("product_id :" + product_id);
-//                product = userService.getProductName(product_id);
-//
-//                // System.out.println("product name :" + product);
-                // System.out.println("account name :" + account);
                 String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
                 log.debug("URL:" + url);
                 if (url.startsWith("../")) {
                     url = url.replaceAll("\\.\\./", localUrl);
                 }
-                // System.out.println("url: " + url);
-                // System.out.println("valuemap: " + valueMap);
+
                 String data = Rest.getData(url, valueMap);
-                // System.out.println("Data -----> : " + data);
                 JSONParser parser = new JSONParser();
                 Object jsonObj = parser.parse(data);
                 Map<String, Object> responseMap = JsonSimpleUtils.toMap((JSONObject) jsonObj);

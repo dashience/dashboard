@@ -167,9 +167,9 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     $scope.saveScheduler = function (scheduler) {
         scheduler.dateRangeName = $("#customDateRangeName").text();
         try {
-            $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" && scheduler.dateRangeName !== "None" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+            $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
-            $scope.customEndDate = scheduler.dateRangeName !== "Select Date Duration" && scheduler.dateRangeName !== "None" ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+            $scope.customEndDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
         } catch (e) {
 
         }
@@ -233,7 +233,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.schedulerMonthly = null;
             scheduler.schedulerYearly = null;
             scheduler.schedulerYearOfWeek = null;
-        }else {
+        } else {
             return null;
         }
 
@@ -242,14 +242,14 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                 return value;
             }
         }).join(',');
-        if (scheduler.dateRangeName === 'Custom' || scheduler.dateRangeName === "Select Date Duration" || scheduler.dateRangeName === "None") {
+        if (scheduler.dateRangeName === 'Custom') {
             scheduler.customStartDate = $scope.customStartDate;
             scheduler.customEndDate = $scope.customEndDate;
         } else {
             scheduler.customStartDate = "";
             scheduler.customEndDate = "";
         }
-        
+
         scheduler.schedulerEmail = emails;
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
         });

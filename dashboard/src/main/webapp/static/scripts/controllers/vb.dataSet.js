@@ -2573,7 +2573,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 
                 }
 
-                if (dataSetColumn.dateRangeName != "Custom" && dataSetColumn.dateRangeName != "Select Date") {
+                if (dataSetColumn.dateRangeName != "Custom") {
                     scope.customStartDate = "";
                     scope.customEndDate = "";
                 }

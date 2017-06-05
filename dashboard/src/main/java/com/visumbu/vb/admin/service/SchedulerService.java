@@ -66,7 +66,6 @@ public class SchedulerService {
         System.out.println("save scheduler");
         Scheduler scheduler = new Scheduler();
         String dateRangeName = schedulerBean.getDateRangeName();
-        DateRange dateRange = null;
         String customStartDate = null;
         String customEndDate = null;
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -105,60 +104,9 @@ public class SchedulerService {
                 lastNyears = 0;
             }
 
-//            Date startDate = DateUtils.getSixMonthsBack(today);
-//            System.out.println("Start Date -----> " + startDate);
-//            Date endDate = today;
-//            System.out.println("End Date -----> " + endDate);
-            Range dateRangeSelect = null;
-//            if (dateRangeName.equalsIgnoreCase("Today")) {
-//                dateRangeSelect = Range.TODAY;
-//            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
-//                dateRangeSelect = Range.YESTERDAY;
-//            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
-//                dateRangeSelect = Range.THIS_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
-//                dateRangeSelect = Range.LAST_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
-//                dateRangeSelect = Range.THIS_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
-//                dateRangeSelect = Range.LAST_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
-//                dateRangeSelect = Range.THIS_YEAR;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
-//                dateRangeSelect = Range.LAST_YEAR;
-//            } 
-            if (lastNdays != null) {
-                System.out.println("last days");
-                dateRangeSelect = Range.DAY;
-            } else if (lastNweeks != null) {
-                dateRangeSelect = Range.WEEK;
-            } else if (lastNmonths != null) {
-                dateRangeSelect = Range.MONTH;
-            } else if (lastNyears != null) {
-                dateRangeSelect = Range.YEAR;
-            }
-
-            if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
+            if (dateRangeName.equalsIgnoreCase("Custom")) {
                 customStartDate = schedulerBean.getCustomStartDate();
                 customEndDate = schedulerBean.getCustomEndDate();
-            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
-                customStartDate = schedulerBean.getCustomStartDate();
-                customEndDate = schedulerBean.getCustomEndDate();
-            } else if (dateRangeSelect.equals(Range.DAY)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
-            } else if (dateRangeSelect.equals(Range.WEEK)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
-            } else if (dateRangeSelect.equals(Range.MONTH)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
-            } else if (dateRangeSelect.equals(Range.YEAR)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
-            } else {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect);
-            }
-
-            if (dateRange != null) {
-                customStartDate = df.format(dateRange.getStartDate());
-                customEndDate = df.format(dateRange.getEndDate());
             }
         }
 
@@ -204,9 +152,6 @@ public class SchedulerService {
         Scheduler scheduler = new Scheduler();
         scheduler.setId(schedulerBean.getId());
         String dateRangeName = schedulerBean.getDateRangeName();
-        System.out.println("dateRangeName ---> " + dateRangeName);
-        System.out.println("last N Days ----> " + schedulerBean.getLastNdays());
-        DateRange dateRange = null;
         String customStartDate = null;
         String customEndDate = null;
         SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -219,94 +164,32 @@ public class SchedulerService {
             if (schedulerBean.getLastNdays() != null) {
                 lastNdays = schedulerBean.getLastNdays();
                 System.out.println("Last N days ----> " + lastNdays);
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
                 lastNdays = 0;
             }
             if (schedulerBean.getLastNmonths() != null) {
                 lastNmonths = schedulerBean.getLastNmonths();
                 System.out.println("Last N months ----> " + lastNmonths);
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
                 lastNmonths = 0;
             }
             if (schedulerBean.getLastNweeks() != null) {
                 lastNweeks = schedulerBean.getLastNweeks();
                 System.out.println("Last N weeks ----> " + lastNweeks);
 
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
                 lastNweeks = 0;
             }
             if (schedulerBean.getLastNyears() != null) {
                 lastNyears = schedulerBean.getLastNyears();
                 System.out.println("Last N years ----> " + lastNyears);
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
                 lastNyears = 0;
             }
 
-//            Date startDate = DateUtils.getSixMonthsBack(today);
-//            System.out.println("Start Date -----> " + startDate);
-//            Date endDate = today;
-//            System.out.println("End Date -----> " + endDate);
-            Range dateRangeSelect = null;
-//            if (dateRangeName.equalsIgnoreCase("Today")) {
-//                dateRangeSelect = Range.TODAY;
-//            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
-//                dateRangeSelect = Range.YESTERDAY;
-//            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
-//                dateRangeSelect = Range.THIS_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
-//                dateRangeSelect = Range.LAST_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
-//                dateRangeSelect = Range.THIS_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
-//                dateRangeSelect = Range.LAST_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
-//                dateRangeSelect = Range.THIS_YEAR;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
-//                dateRangeSelect = Range.LAST_YEAR;
-//            } 
-            if (lastNdays != null) {
-                System.out.println("last days");
-                dateRangeSelect = Range.DAY;
-            } else if (lastNweeks != null) {
-                dateRangeSelect = Range.WEEK;
-            } else if (lastNmonths != null) {
-                dateRangeSelect = Range.MONTH;
-            } else if (lastNyears != null) {
-                dateRangeSelect = Range.YEAR;
-            }
-
-            if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
+            if (dateRangeName.equalsIgnoreCase("Custom")) {
                 customStartDate = schedulerBean.getCustomStartDate();
                 customEndDate = schedulerBean.getCustomEndDate();
-            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
-                customStartDate = schedulerBean.getCustomStartDate();
-                customEndDate = schedulerBean.getCustomEndDate();
-            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
-                customStartDate = schedulerBean.getCustomStartDate();
-                customEndDate = schedulerBean.getCustomEndDate();
-            } else if (dateRangeSelect.equals(Range.DAY)) {
-                System.out.println("lastNdays ---> " + lastNdays);
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
-            } else if (dateRangeSelect.equals(Range.WEEK)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
-            } else if (dateRangeSelect.equals(Range.MONTH)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
-            } else if (dateRangeSelect.equals(Range.YEAR)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
-            } else {
-                System.out.println("without count");
-                dateRange = DateRangeFactory.getRange(dateRangeSelect);
-            }
-
-            if (dateRange != null) {
-                System.out.println("dateRange start Date---> " + dateRange.getStartDate());
-                customStartDate = df.format(dateRange.getStartDate());
-                System.out.println("dateRange end Date---> " + dateRange.getEndDate());
-                customEndDate = df.format(dateRange.getEndDate());
             }
         }
 
