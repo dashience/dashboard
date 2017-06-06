@@ -67,6 +67,7 @@ public class PdfService {
             } else {
                 
             }
+            commandsList.add("--print-media-type");
             commandsList.add("cover");
             commandsList.add(url);
             String filename = pdfFilesPath + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".pdf";

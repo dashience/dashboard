@@ -530,38 +530,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }, 50);
     };
     $scope.selectY2Axis = function (widget, y2data) {
-        if (widget.chartType == 'stackedbar') {
-            $scope.editChartType = null;
-            angular.forEach(y2data, function (value, key) {
-                if (!value) {
-                    return;
-                }
-                var exists = false;
-                angular.forEach(widget.columns, function (val, key) {
-                    if (val.fieldName === value.fieldName) {
-                        exists = true;
-                        val.yAxis = 2;
-                        val.groupField = y2data.indexOf(value) + 1;
-                        console.log(val.groupField);
-                    } else {
-                        if (val.fieldName == y2data.removeItem) {
-                            val.yAxis = null;
-                            val.groupField = null;
-                        }
-                    }
-                });
-                if (exists == false) {
-                    if (value.displayName) {
-                        value.yAxis = 2;
-                        widget.columns.push(value);
-                    }
-                }
-            });
-            var chartType = widget;
-            $timeout(function () {
-                $scope.previewChart(chartType, widget)
-            }, 50);
-        }
         $scope.editChartType = null;
         angular.forEach(y2data, function (value, key) {
             if (!value) {
@@ -611,10 +579,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
+        
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY1Axis(widget, yAxisItems);
-        } else {
+        } else {b
             angular.forEach(widget.columns, function (val, key) {
                 if (val.fieldName == column.fieldName) {
                     val.yAxis = null;
@@ -628,12 +597,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.removedByY2Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
+        console.log(widget.columns);
+        console.log(yAxisItems);
+        console.log(column);
+        console.log(column.fieldName);
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY2Axis(widget, yAxisItems);
         } else {
             angular.forEach(widget.columns, function (val, key) {
-                if (val.fieldName == column.fieldName) {
+                if (val.fieldName == column.fieldName && val.yAxis == column.yAxis) {
                     val.yAxis = null;
                 }
             });

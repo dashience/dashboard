@@ -111,6 +111,7 @@ public class TimerService {
                 System.out.println("dateRangename ----> " + dateRangeName);
 
                 Range dateRangeSelect = null;
+
                 if (lastNdays != null) {
                     dateRangeSelect = Range.DAY;
                 } else if (lastNweeks != null) {

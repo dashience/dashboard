@@ -239,7 +239,7 @@ public class UiService {
             } else if (dateRangeName.equalsIgnoreCase("None")) {
                 startDate = null;
                 endDate = null;
-            } 
+            }
         }
         System.out.println("dateRange start Date-----> " + startDate);
         System.out.println("dateRange End Date-----> " + endDate);
@@ -657,6 +657,7 @@ public class UiService {
     public List<Account> getAccountById(Integer id) {
         return uiDao.getAccountById(id);
     }
+
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         return uiDao.getUserAccountByUser(user);
     }

@@ -71,7 +71,7 @@ public class ReportDao extends BaseDao {
         for (int i = 0; i < reportOrderArray.length; i++) {
             Integer reportWidgetId = Integer.parseInt(reportOrderArray[i]);
             ReportWidget reportWidget = getReportWidgetById(reportWidgetId);
-            // reportWidget.setWidgetOrder(i);
+             reportWidget.setWidgetOrder(i);
         System.out.println(reportWidget);
             update(reportWidget);
         }
@@ -95,7 +95,7 @@ public class ReportDao extends BaseDao {
     }
 
     public List<ReportWidget> getReportWidget(Integer reportId) {
-        String queryStr = "select d from ReportWidget d where d.reportId.id = :reportId";
+        String queryStr = "select d from ReportWidget d where d.reportId.id = :reportId order by widgetOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("reportId", reportId);
 

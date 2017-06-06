@@ -229,24 +229,4 @@ public class DataSet implements Serializable {
         this.sheetName = sheetName;
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<TabWidget> getTabWidgetCollection() {
-        return tabWidgetCollection;
-    }
-
-    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
-        this.tabWidgetCollection = tabWidgetCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DatasetColumns> getDatasetColumnsCollection() {
-        return datasetColumnsCollection;
-    }
-
-    public void setDatasetColumnsCollection(Collection<DatasetColumns> datasetColumnsCollection) {
-        this.datasetColumnsCollection = datasetColumnsCollection;
-    }
-
 }

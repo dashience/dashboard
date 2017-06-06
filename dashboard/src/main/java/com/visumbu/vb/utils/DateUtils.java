@@ -43,6 +43,28 @@ public class DateUtils {
      * @return java.util.Date object if input string is parsed successfully else
      * returns null
      */
+    //convert date to timestamp
+    public static Long dateToTimeStamp(String strDate) {
+        System.out.println("strDate==" + strDate);
+        try {
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD");
+//            Date date = dateFormat.parse(strDate);
+//            long unixTime = (long) date.getTime() / 1000;
+//            System.out.println("timestamp=="+unixTime);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String currentDate=strDate+" 00:00:00";
+            Date date = dateFormat.parse(currentDate);
+            long unixTime = (long) date.getTime();
+            System.out.println(unixTime);
+            return unixTime;
+        } catch (ParseException e) {
+            System.out.println("Date parse exception tooks place");
+            System.out.println(e);
+        }
+        return null;
+    }
+
     public static Date convertToDate(String input) {
         Date date = null;
         if (null == input) {

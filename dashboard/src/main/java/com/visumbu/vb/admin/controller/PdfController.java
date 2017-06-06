@@ -82,6 +82,8 @@ public class PdfController extends BaseController {
     void download(HttpServletRequest request, HttpServletResponse response) {
         String url = request.getParameter("url");
         String windowStatus = request.getParameter("windowStatus");
+        System.out.println("Start Date "  + request.getParameter("startDate"));
+        System.out.println("End Date " + request.getParameter("endDate"));
         if (url == null) {
             url = request.getHeader("referer");
         }

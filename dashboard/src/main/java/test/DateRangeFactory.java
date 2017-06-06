@@ -137,12 +137,12 @@ public class DateRangeFactory {
             dateRange.setStartDate(calendar.getTime());
 
             /*
-			 * calendar = Calendar.getInstance();
-			 * calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-			 * dateRange.setEndDate(calendar.getTime());
-			 * calendar.add(Calendar.WEEK_OF_YEAR, count);
-			 * calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-			 * dateRange.setStartDate(calendar.getTime());
+			* calendar = Calendar.getInstance();
+			* calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+			* dateRange.setEndDate(calendar.getTime());
+			* calendar.add(Calendar.WEEK_OF_YEAR, count);
+			* calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+			* dateRange.setStartDate(calendar.getTime());
              */
             return dateRange;
         } else if (range.equals(Range.MONTH)) {

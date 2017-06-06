@@ -97,7 +97,7 @@ public class SchedulerService {
             if (dateRangeName.equalsIgnoreCase("Custom")) {
                 customStartDate = schedulerBean.getCustomStartDate();
                 customEndDate = schedulerBean.getCustomEndDate();
-            }
+            } 
         }
 
         System.out.println("dateRange custom start Date-----> " + customStartDate);
