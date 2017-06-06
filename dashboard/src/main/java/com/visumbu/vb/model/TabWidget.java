@@ -653,14 +653,14 @@ public class TabWidget implements Serializable {
         return "com.visumbu.vb.model.TabWidget[ id=" + id + " ]";
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<ReportWidget> getReportWidgetCollection() {
-        return reportWidgetCollection;
-    }
-
-    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
-        this.reportWidgetCollection = reportWidgetCollection;
-    }
+//    @XmlTransient
+//    @JsonIgnore
+//    public Collection<ReportWidget> getReportWidgetCollection() {
+//        return reportWidgetCollection;
+//    }
+//
+//    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
+//        this.reportWidgetCollection = reportWidgetCollection;
+//    }
 
 }

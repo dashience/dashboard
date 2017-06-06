@@ -1,7 +1,7 @@
 
 
 function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 
@@ -12,9 +12,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.toggleDragging = function () {
         $scope.dragEnabled = !$scope.dragEnabled;
     };
-    
-    
-    
+
+    $scope.downloadUiPdf = function () {
+        var url = location.origin + location.pathname.substr(0, location.pathname.indexOf('/', 1) + 1) + "index.html#viewPdf/" + $stateParams.accountId + "/" + $stateParams.accountName + "/" + $stateParams.productId + "/" + $stateParams.productName + "/" + $stateParams.tabId + "?startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+        window.open(url);
+    }
+
     $scope.firstSortableOptions = {
         start: function (event, ui) {
             console.log('start1');
@@ -23,8 +26,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             console.log('stop1');
         }
     };
-    
-    
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -62,14 +63,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var url = "admin/proxy/download/" + $stateParams.tabId + "?accountId=" + $stateParams.accountId + "&productId=" + $stateParams.productId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=ppt";
         $window.open(url);
     };
-    
+
     function getWidgetItem() {      //Default Loading Items
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
-        $scope.loading=true;
+        $scope.loading = true;
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            $scope.loading=false;
+            $scope.loading = false;
             var widgetItems = [];
             widgetItems = response;
             if (response) {
@@ -98,7 +99,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             accountId: $stateParams.accountId,
             accountName: $stateParams.accountName,
             tabId: $stateParams.tabId,
-            widgetId: 0, 
+            widgetId: 0,
             startDate: $stateParams.startDate,
             endDate: $stateParams.endDate
         });

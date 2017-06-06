@@ -147,18 +147,7 @@ public class AgencyProduct implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.AgencyProduct[ id=" + id + " ]";
-    }
-
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DashboardTabs> getDashboardTabsCollection() {
-        return dashboardTabsCollection;
-    }
-
-    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
-        this.dashboardTabsCollection = dashboardTabsCollection;
-    }
+    }   
 
     public String getIcon() {
         return icon;

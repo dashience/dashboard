@@ -162,7 +162,8 @@ public class UiController extends BaseController {
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
         System.out.println("save tab widget");
-        return uiService.saveTabWidget(tabId, tabWidget);
+        System.out.println("endDate ---> "+request.getParameter("endDate"));
+       return uiService.saveTabWidget(tabId, tabWidget);
         //return null; //uiService.createTabWidget(tabId, tabWidget);
     }
 
@@ -584,8 +585,9 @@ public class UiController extends BaseController {
         accountId = 10201209987716903L;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = new Date();
+        String productSegement="";
 //       String  stratDates=dateFormat.format(startDate);
-        facebookService.getAccountPerformance(accountId, startDate, startDate, "day");
+        //facebookService.getAccountPerformance(accountId, startDate, startDate, "day",productSegement);
 //        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
 
         return null;

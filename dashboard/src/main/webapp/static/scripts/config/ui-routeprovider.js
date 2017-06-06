@@ -103,11 +103,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //                templateUrl: "static/views/admin/favourites.html",
 //                controller: 'FavouritesController'
 //            })
-            .state("viewPdf", {
-                url: "/viewPdf/:accountId/:accountName/:productId/:productName/:tabId?:startDate/:endDate",
-                templateUrl: "static/views/pdf/vb.pdf.html",
-//                controller:'PdfController'
-            })
             .state("index.viewFavouritesWidget", {
                 url: "/viewFavouritesWidget/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate",
                 templateUrl: "static/views/admin/viewFavouritesWidget.html",
@@ -117,6 +112,21 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 url: "/settings?:startDate/:endDate",
                 templateUrl: "static/views/admin/settings.html",
                 controller: 'SettingsController'
+            })
+            .state("viewPdf", {
+                url: "/viewPdf/:accountId/:accountName/:productId/:productName/:tabId?:startDate/:endDate",
+                templateUrl: "static/views/pdf/vb.pdf.html",
+                controller:'PdfController'
+            })
+            .state("viewReportPdf", {
+                url: "/viewReportPdf/:accountId/:reportId?:startDate/:endDate",
+                templateUrl: "static/views/pdf/vb.reportPdf.html",
+                controller:'ReportPdfController'
+            })
+            .state("viewFavouritesPdf", {
+                url: "/viewFavouritesPdf/:accountId/:favouriteName?:startDate/:endDate",
+                templateUrl: "static/views/pdf/vb.favouritesPdf.html",
+                controller:'FavouritesPdfController'
             });
 //            .state("index.viewFavouritesWidget", {
 //                url: "/viewFavouritesWidget/:accountId/:accountName/:favouriteId/:favouriteName?:startDate/:endDate",
@@ -139,7 +149,7 @@ app.run(['$window', '$rootScope', '$stateParams',
     function ($window, $rootScope, $stateParams) {
         console.log($stateParams)
         //$rootScope.accountNameByPdf = $stateParams.accountName; 
-        
+
         $rootScope.goBack = function () {
             $window.history.back();
         }

@@ -140,9 +140,15 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 return value.id;
             }).join(',');
             if (widgetOrder) {
-                $http({method: 'GET', url: 'admin/ui/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
+                $http({method: 'GET', url: 'admin/report/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
             }
         }
         ;
+    };
+    
+    $scope.deleteReportWidget = function (reportWidget, index) {                            //Delete Widget
+        $http({method: 'DELETE', url: 'admin/report/reportWidget/' + reportWidget.id}).success(function (response) {
+            $scope.reportWidgets.splice(index, 1);
+        });
     };
 });

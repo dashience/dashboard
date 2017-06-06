@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -91,56 +90,28 @@ public class TimerService {
             Integer lastNyears = null;
             System.out.println("startdate ----> " + scheduler.getCustomStartDate());
 
-            if (dateRangeName == null || dateRangeName.isEmpty()) {
-                startDate = null;
-                endDate = null;
-            } else if (dateRangeName != null) {
+            if (dateRangeName != null && !dateRangeName.isEmpty()) {
                 if (scheduler.getLastNdays() != null) {
                     lastNdays = scheduler.getLastNdays();
                     System.out.println("Last N days ----> " + lastNdays);
-                } else if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
-                    lastNdays = 0;
                 }
                 if (scheduler.getLastNmonths() != null) {
                     lastNmonths = scheduler.getLastNmonths();
                     System.out.println("Last N months ----> " + lastNmonths);
-                } else if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
-                    lastNmonths = 0;
                 }
                 if (scheduler.getLastNweeks() != null) {
                     lastNweeks = scheduler.getLastNweeks();
                     System.out.println("Last N weeks ----> " + lastNweeks);
-
-                } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
-                    lastNweeks = 0;
                 }
                 if (scheduler.getLastNyears() != null) {
                     lastNyears = scheduler.getLastNyears();
                     System.out.println("Last N years ----> " + lastNyears);
-                } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
-                    lastNyears = 0;
                 }
 
                 System.out.println("dateRangename ----> " + dateRangeName);
 
                 Range dateRangeSelect = null;
-//            if (dateRangeName.equalsIgnoreCase("Today")) {
-//                dateRangeSelect = Range.TODAY;
-//            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
-//                dateRangeSelect = Range.YESTERDAY;
-//            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
-//                dateRangeSelect = Range.THIS_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
-//                dateRangeSelect = Range.LAST_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
-//                dateRangeSelect = Range.THIS_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
-//                dateRangeSelect = Range.LAST_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
-//                dateRangeSelect = Range.THIS_YEAR;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
-//                dateRangeSelect = Range.LAST_YEAR;
-//            }
+
                 if (lastNdays != null) {
                     dateRangeSelect = Range.DAY;
                 } else if (lastNweeks != null) {
@@ -158,28 +129,14 @@ public class TimerService {
                     } catch (ParseException ex) {
                         Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
-                    try {
-                        startDate = df.parse(scheduler.getCustomStartDate());
-                        endDate = df.parse(scheduler.getCustomEndDate());
-                    } catch (ParseException ex) {
-                        Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
-                    try {
-                        startDate = df.parse(scheduler.getCustomStartDate());
-                        endDate = df.parse(scheduler.getCustomEndDate());
-                    } catch (ParseException ex) {
-                        Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 } else if (dateRangeSelect.equals(Range.DAY)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays, new Date());
                 } else if (dateRangeSelect.equals(Range.WEEK)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks, new Date());
                 } else if (dateRangeSelect.equals(Range.MONTH)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths, new Date());
                 } else if (dateRangeSelect.equals(Range.YEAR)) {
-                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
+                    dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears, new Date());
                 } else {
                     dateRange = DateRangeFactory.getRange(dateRangeSelect);
                 }
@@ -208,24 +165,19 @@ public class TimerService {
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = subject + "\n\n- System";
-            String status = scheduler.getStatus();
-            if (status.equalsIgnoreCase("Active")) {
-                Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-                schedulerHistory.setFileName(filename);
-                schedulerHistory.setEmailId(toAddress);
-                schedulerHistory.setEmailSubject(subject);
-                schedulerHistory.setEmailMessage(message);
-                scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
-                schedulerDao.update(scheduler);
-                schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-                Date schedulerEndTime = new Date();
-                schedulerHistory.setExecutionEndTime(schedulerEndTime);
-                schedulerHistory.setSchedulerId(schedulerById);
-                schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-                schedulerService.createSchedulerHistory(schedulerHistory);
-            } else {
-                System.out.println("Scheduler is InActive");
-            }
+            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+            schedulerHistory.setFileName(filename);
+            schedulerHistory.setEmailId(toAddress);
+            schedulerHistory.setEmailSubject(subject);
+            schedulerHistory.setEmailMessage(message);
+            scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
+            schedulerDao.update(scheduler);
+            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
+            Date schedulerEndTime = new Date();
+            schedulerHistory.setExecutionEndTime(schedulerEndTime);
+            schedulerHistory.setSchedulerId(schedulerById);
+            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
+            schedulerService.createSchedulerHistory(schedulerHistory);
         }
     }
 
@@ -256,10 +208,11 @@ public class TimerService {
 
     @Scheduled(cron = "0 0 */1 * * *")
     public void executeWeeklyTask() {
+        System.out.println("Executing weekly Tasks....");
         List<Agency> allAgencies = schedulerDao.getAllAgency();
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
             Agency agency = iterator.next();
-            System.out.println("Executing Daily Task for Agency " + agency.toString());
+            System.out.println("Executing weekly Task for Agency " + agency.toString());
             AgencySettings agencySettings = userDao.getAgencySettingsById(agency.getId());
             String timezone = agencySettings.getTimeZoneId().getShortDescription();
             System.out.println("Timezone ===> " + timezone);

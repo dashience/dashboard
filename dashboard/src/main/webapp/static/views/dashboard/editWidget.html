@@ -245,7 +245,6 @@
         <div class="row col-md-12">
             <div class="col-md-4">
                 <label>Date Range</label>
-
                 <div>
                     <div class="dropdown editWidgetDropDown">
                         <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
@@ -362,7 +361,7 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li ng-if="editChartType != 'text'" ng-class="{ active: isSet(2) }">
+                <li ng-disabled="true" ng-if="editChartType != 'text'" ng-class="{ active: isSet(2) }">
                     <a ng-click="setTab(2)"> Filter
                     </a>
                 </li>
@@ -598,8 +597,6 @@
                                             </div>                            
                                         </div>
                                     </div>
-
-
                                 </div> 
                                 <div class='panel-footer'>
                                     <div>
@@ -609,7 +606,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="row edit-widget" ng-if="editChartType === 'table'">
@@ -637,7 +633,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="row" ng-if="editChartType === 'text'">
                     <div class="col-sm-12">
