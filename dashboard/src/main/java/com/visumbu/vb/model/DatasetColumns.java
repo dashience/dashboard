@@ -96,6 +96,8 @@ public class DatasetColumns implements Serializable {
     private Integer lastNweeks;
     @Column(name = "last_nmonths")
     private Integer lastNmonths;
+    @Column(name = "sort_priority")
+    private Integer sortPriority;
     @Column(name = "last_nyears")
     private Integer lastNyears;
     @JoinColumn(name = "dataset_id", referencedColumnName = "id")
@@ -252,6 +254,16 @@ public class DatasetColumns implements Serializable {
     public void setDatasetId(DataSet datasetId) {
         this.datasetId = datasetId;
     }
+
+    public Integer getSortPriority() {
+        return sortPriority;
+    }
+
+    public void setSortPriority(Integer sortPriority) {
+        this.sortPriority = sortPriority;
+    }
+    
+    
 
     @Override
     public int hashCode() {

@@ -4,6 +4,103 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.timeSegFlag = false;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
+    $scope.tab = 1;
+    $scope.setTab = function (newTab) {
+        $scope.tab = newTab;
+    };
+    $scope.isSet = function (tabNum) {
+
+
+        return $scope.tab === tabNum;
+    };
+    $scope.joinTypes = [
+        {name: 'left', value: 'left'},
+        {name: 'right', value: 'rught'},
+        {name: 'inner', value: 'inner'},
+        {name: 'outer', value: 'outer'}
+    ]
+    function getPreviewDataSet(dataSet, selectType) {
+        var url = "admin/proxy/getData?";
+        var dataSourcePassword;
+        if (dataSet.dataSourceId.password) {
+            dataSourcePassword = dataSet.dataSourceId.password;
+        } else {
+            dataSourcePassword = '';
+        }
+        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
+                "&dataSourceId=" + dataSet.dataSourceId.id +
+                "&dataSetId=" + dataSet.id +
+                "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + dataSet.reportName +
+                "&timeSegment=" + dataSet.timeSegment +
+                "&filter=" + dataSet.networkType +
+                "&productSegment=" + dataSet.productSegment +
+                "&driver=" + dataSet.dataSourceId.dataSourceType +
+                "&dataSourceType=" + dataSet.dataSourceId.dataSourceType +
+                "&location=" + $stateParams.locationId +
+                "&startDate=" + $stateParams.startDate +
+                "&endDate=" + $stateParams.endDate +
+                '&username=' + dataSet.dataSourceId.userName +
+                '&password=' + dataSourcePassword +
+                '&url=' + dataSet.url +
+                '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
+            console.log(response)
+            if (selectType == "dataSet1") {
+                $scope.firstDataSetColumns = response.columnDefs;
+                $scope.firstDataSetRows = response.data;
+            } else if (selectType == "dataSet2") {
+                $scope.secondDataSetColumns = response.columnDefs;
+                $scope.secondDataSetRows = response.data;
+            } else {
+                return //response;
+            }
+        })
+
+
+    }
+    $scope.selectFirstDataSet = function (dataSet) {
+
+        $scope.firstDataSet = JSON.parse(dataSet.firstDataSet);
+        $scope.firstDataSetName = $scope.firstDataSet.name;
+        $scope.dataSetIdFirst = $scope.firstDataSet.id;
+        getPreviewDataSet($scope.firstDataSet, "dataSet1");
+
+    }
+    $scope.selectSecondDataSet = function (dataSet) {
+        $scope.secondDataSet = JSON.parse(dataSet.secondDataSet);
+        $scope.secondDataSetName = $scope.secondDataSet.name;
+        $scope.dataSetIdSecond = $scope.secondDataSet.id;
+        getPreviewDataSet($scope.secondDataSet, "dataSet2");
+    }
+    $scope.dataSetColumnList = [];
+    $scope.addCombinedColumnList = function () {
+        $scope.dataSetColumnList.push({});
+    }
+    $scope.removeCombinedDataSetColumn = function (index) {
+        $scope.dataSetColumnList.splice(index, 1);
+
+    }
+
+    $scope.selectFirstDataSetColumn = function (combinedDataSetColumn) {
+    }
+    $scope.dataSetFields = [];
+    $scope.selectSecondDataSetColumn = function (combinedDataSetColumn) {
+        $scope.dataSetFields.push(combinedDataSetColumn);
+    }
+    $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
+
+        var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
+
+        var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
+
+        var data = {
+            dataSetIdFirst: dataSetIdFirst,
+            dataSetIdSecond: dataSetIdSecond,
+            condition: combinedDataSetColumn.joinType,
+            combinedDataSetFields: $scope.dataSetFields
+        }
+        console.log(data);
+    }
     /*
      * 
      * All
@@ -1879,7 +1976,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<table class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
-                '<th class="text-capitalize table-bg" ng-repeat="col in dataSetColumns">' +
+                '<th class="text-capitalize table-bg" ng-repeat="col in dataSetColumns |limitTo:5:1">' +
                 '{{col.fieldName}}' +
                 //Edit
                 '<div>' +
@@ -2031,9 +2128,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</th>' +
                 '</tr></thead>' +
-                '<tbody ng-repeat="tableRow in tableRows">' +
+                '<tbody ng-repeat="tableRow in tableRows|limitTo:5:1"">' +
                 '<tr class="text-capitalize">' +
-                '<td ng-repeat="col in dataSetColumns">' +
+                '<td ng-repeat="col in dataSetColumns |limitTo:5:1">' +
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
@@ -2301,12 +2398,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             scope.clearFunction = function (dataSetColumn) {
                 dataSetColumn.columnName = "";
                 dataSetColumn.functionName = "";
+                dataSetColumn.baseField = "";
             }
             scope.clearExpression = function (dataSetColumn) {
                 dataSetColumn.expression = "";
             }
             scope.dataSetFieldsClose = function (dataSetColumn) {
-                console.log("function called close");
                 dataSetColumn.expression = "";
                 dataSetColumn.fieldName = "";
                 dataSetColumn.fieldType = "";
