@@ -8,12 +8,15 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
+import com.visumbu.vb.bean.CombinedDatasetBean;
 import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.CombinedDataset;
+import com.visumbu.vb.model.CombinedDatasetCondition;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
@@ -807,6 +810,26 @@ public class UiService {
         return datasetList;
     }
 
+    public List<CombinedDatasetCondition> createCombinedDataset(CombinedDatasetBean combinedDatasetBean) {
+        CombinedDataset combinedDataset = new CombinedDataset();
+        List<CombinedDatasetCondition> returnList= new ArrayList<>();
+        combinedDataset.setDatasetIdFirst(readDataSet(combinedDatasetBean.getDataSetIdFirst()));
+        combinedDataset.setDatasetIdSecond(readDataSet(combinedDatasetBean.getDataSetIdSecond()));
+        combinedDataset.setOperationType(combinedDatasetBean.getOperationType());
+        uiDao.saveOrUpdate(combinedDataset);
+        List<CombinedDatasetBean> conditionFields = combinedDatasetBean.getConditionFields();
+        for (Iterator<CombinedDatasetBean> iterator = conditionFields.iterator(); iterator.hasNext();) {
+            CombinedDatasetBean combinedDatasetData = iterator.next();
+            CombinedDatasetCondition combinedDatasetCondition = new CombinedDatasetCondition();
+            combinedDatasetCondition.setCombinedDatasetId(combinedDataset);
+            combinedDatasetCondition.setConditionFieldFirst(combinedDatasetData.getFirstDataSetColumn());
+            combinedDatasetCondition.setConditionFieldSecond(combinedDatasetData.getSecondDataSetColumn());
+            uiDao.saveOrUpdate(combinedDatasetCondition);
+            returnList.add(combinedDatasetCondition);
+        }
+        return returnList;
+    }
+
     public List<Currency> getCurrencies() {
         return uiDao.getCurrenciesTypes();
     }
@@ -820,7 +843,8 @@ public class UiService {
         return (DatasetColumns) uiDao.delete(datasetColumn);
     }
 
-    public List<DatasetColumns> getDatasetById(Integer datasetId) {
-        return uiDao.getDatasetById(datasetId);
+    public List<DatasetColumns> getDatasetColumnByDatasetId(Integer datasetId) {
+        return uiDao.getDatasetColumnByDatasetId(datasetId);
     }
+
 }

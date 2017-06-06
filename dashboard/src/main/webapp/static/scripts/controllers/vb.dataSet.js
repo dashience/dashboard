@@ -96,10 +96,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var data = {
             dataSetIdFirst: dataSetIdFirst,
             dataSetIdSecond: dataSetIdSecond,
-            condition: combinedDataSetColumn.joinType,
-            combinedDataSetFields: $scope.dataSetFields
+            operationType: combinedDataSetColumn.joinType,
+            conditionFields: $scope.dataSetFields
         }
-        console.log(data);
+        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: JSON.stringify(data)}).success(function (response) {
+            console.log(response);
+        });
     }
     /*
      * 
@@ -1529,7 +1531,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
 
             if ($scope.dataSet.reportName == 'reach') {
-               if (!dataSet.timeSegment) {
+                if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
                     getTimeSegment(timeSegmentList, timeSegmentName)
@@ -2238,7 +2240,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.columns = [];
                     scope.dataSetId = dataSourcePath.id;
                     if (dataSourcePath.id != null) {
-                        $http.get("admin/ui/getDatasetById/" + dataSourcePath.id).success(function (resp) {
+                        $http.get("admin/ui/getDatasetColumnByDatasetId/" + dataSourcePath.id).success(function (resp) {
                             scope.ajaxLoadingCompleted = true;
                             scope.loadingTable = false;
                             console.log(resp)
