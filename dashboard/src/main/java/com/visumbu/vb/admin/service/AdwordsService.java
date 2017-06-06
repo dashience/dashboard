@@ -24,35 +24,19 @@ import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.adwords.lib.utils.v201609.ReportDownloader;
 import com.google.common.collect.Lists;
 import com.google.api.ads.adwords.lib.jaxb.v201609.Selector;
-import com.visumbu.api.adwords.report.xml.bean.AccountReport;
-import com.visumbu.api.adwords.report.xml.bean.AccountReportRow;
-import com.visumbu.api.adwords.report.xml.bean.AdGroupReportRow;
-import com.visumbu.api.adwords.report.xml.bean.AdReport;
-import com.visumbu.api.adwords.report.xml.bean.AdReportRow;
-import com.visumbu.api.adwords.report.xml.bean.AddGroupReport;
-import com.visumbu.api.adwords.report.xml.bean.CampaignReport;
-import com.visumbu.api.adwords.report.xml.bean.CampaignReportRow;
-import com.visumbu.api.adwords.report.xml.bean.GeoReport;
-import com.visumbu.api.adwords.report.xml.bean.GeoReportRow;
-import com.visumbu.api.adwords.report.xml.bean.VideoReport;
-import com.visumbu.api.adwords.report.xml.bean.VideoReportRow;
 import com.visumbu.vb.bean.AdwordsReport;
 import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.DateUtils;
-import com.visumbu.vb.utils.FileReader;
 import com.visumbu.vb.utils.XmlUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,18 +127,18 @@ public class AdwordsService {
 //        return null;
     }
 
-    private List<Map<String, String>> toMap(List data) {
-        List<Map<String, String>> returnMap = new ArrayList<>();
-        for (Iterator iterator = data.iterator(); iterator.hasNext();) {
-            Object dataObject = iterator.next();
-            ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> map
-                    = mapper.convertValue(dataObject, new TypeReference<Map<String, String>>() {
-                    });
-            returnMap.add(map);
-        }
-        return returnMap;
-    }
+//    private List<Map<String, String>> toMap(List data) {
+//        List<Map<String, String>> returnMap = new ArrayList<>();
+//        for (Iterator iterator = data.iterator(); iterator.hasNext();) {
+//            Object dataObject = iterator.next();
+//            ObjectMapper mapper = new ObjectMapper();
+//            Map<String, String> map
+//                    = mapper.convertValue(dataObject, new TypeReference<Map<String, String>>() {
+//                    });
+//            returnMap.add(map);
+//        }
+//        return returnMap;
+//    }
 
     public String getTimeSegment(String timeSegment) {
         if (timeSegment == null) {

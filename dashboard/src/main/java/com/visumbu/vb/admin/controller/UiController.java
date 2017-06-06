@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DatasetColumnBean;
-import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DatasetColumns;
 
 import com.visumbu.vb.model.Currency;
@@ -179,7 +178,7 @@ public class UiController extends BaseController {
     }
 
     @RequestMapping(value = "dbWidgetUpdateOrder/{tabId}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
+    public @ResponseBody                                                                                                                            
     Object updateWidgetUpdateOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
         String widgetOrder = request.getParameter("widgetOrder");
         uiService.updateWidgetUpdateOrder(tabId, widgetOrder);
@@ -395,15 +394,16 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
-        System.out.println("id --> "+datasetColumnId);
+        System.out.println("id --> " + datasetColumnId);
         return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
     }
 
     @RequestMapping(value = "getDatasetById/{datasetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDatasetById (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
+    List getDatasetById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
         return uiService.getDatasetById(datasetId);
     }
+
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -485,6 +485,7 @@ public class UiController extends BaseController {
     List getAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.getAccountById(id);
     }
+
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {
@@ -501,7 +502,6 @@ public class UiController extends BaseController {
         return uiService.getUserAccountById(userId);
     }
 
-    
     @RequestMapping(value = "userAccount/{userAccountId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     UserAccount deleteUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userAccountId) {
@@ -584,7 +584,7 @@ public class UiController extends BaseController {
         accountId = 10201209987716903L;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = new Date();
-        String productSegement="";
+        String productSegement = "";
 //       String  stratDates=dateFormat.format(startDate);
         //facebookService.getAccountPerformance(accountId, startDate, startDate, "day",productSegement);
 //        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
