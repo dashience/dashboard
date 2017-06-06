@@ -80,6 +80,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
+        } else if (dataSource === "bing")
+        {
+            $scope.report = $scope.bingPerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
@@ -106,7 +111,158 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     ]
 
+    $scope.bingPerformance = [
+        {
+            type: 'accountPerformance',
+            name: 'Account Performance',
+            timeSegments: [
+                {
+                    type: 'daily',
+                    name: 'Daily'
+                },
+                {
+                    type: 'monthly',
+                    name: 'Monthly'
+                },
+                {
+                    type: 'weekly',
+                    name: 'Weekly'
+                },
+                {
+                    type: 'dayOfWeek',
+                    name: 'Day Of Week'
+                },
+                {
+                    type: 'hourOfDay',
+                    name: 'Hour Of Day'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'campaignPerformance',
+            name: 'Campaign Performance',
+            timeSegments: [
+                {
+                    type: 'daily',
+                    name: 'Daily'
+                },
+                {
+                    type: 'monthly',
+                    name: 'Monthly'
+                },
+                {
+                    type: 'weekly',
+                    name: 'Weekly'
+                },
 
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'device',
+                    name: 'Device'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'adGroupPerformance',
+            name: 'AdGroup Performance',
+            timeSegments: [
+                {
+                    type: 'daily',
+                    name: 'Daily'
+                },
+                {
+                    type: 'monthly',
+                    name: 'Monthly'
+                },
+                {
+                    type: 'weekly',
+                    name: 'Weekly'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'adPerformance',
+            name: 'Ad Performance',
+            timeSegments: [
+                {
+                    type: 'daily',
+                    name: 'Daily'
+                },
+                {
+                    type: 'monthly',
+                    name: 'Monthly'
+                },
+                {
+                    type: 'weekly',
+                    name: 'Weekly'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'geoPerformance',
+            name: 'Geo Performance',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+
+                {
+                    type: 'zip',
+                    name: 'Zip'
+                },
+                {
+                    type: 'city',
+                    name: 'City'
+                },
+            ]
+        },
+    ];
     $scope.facebookPerformance = [
         {
             type: 'accountPerformance',
@@ -1432,7 +1588,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
 
             if ($scope.dataSet.reportName == 'reach') {
-               if (!dataSet.timeSegment) {
+                if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
                     getTimeSegment(timeSegmentList, timeSegmentName)
@@ -1468,6 +1624,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 } else {
                     getProductSegment(productList, productSegmentName)
                 }
+            }
+        }
+        if ($scope.dataSet.dataSourceId.dataSourceType === "bing")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.bingPerformance);
+            $scope.timeSegment = $scope.bingPerformance[index].timeSegments;
+            $scope.productSegment = $scope.bingPerformance[index].productSegments;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            if ($scope.dataSet.reportName == 'geoPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'City', type: 'city'};
+            } else {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
             }
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
