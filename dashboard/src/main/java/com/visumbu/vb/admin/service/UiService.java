@@ -711,6 +711,7 @@ public class UiService {
     public List<Account> getAccountById(Integer id) {
         return uiDao.getAccountById(id);
     }
+
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         return uiDao.getUserAccountByUser(user);
     }
@@ -805,6 +806,7 @@ public class UiService {
                 datasetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
                 datasetFields.setLastNyears(allDataSetColumn.getLastNyears());
                 datasetFields.setFieldType(allDataSetColumn.getFieldType());
+                datasetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 datasetFields.setDatasetId(dataset);
                 uiDao.saveOrUpdate(datasetFields);
                 datasetList.add(datasetFields);
@@ -828,6 +830,7 @@ public class UiService {
                 datasetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
                 datasetFields.setLastNyears(allDataSetColumn.getLastNyears());
                 datasetFields.setFieldType(allDataSetColumn.getFieldType());
+                datasetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 datasetFields.setDatasetId(dataset);
                 uiDao.saveOrUpdate(datasetFields);
                 datasetList.add(datasetFields);
@@ -848,6 +851,7 @@ public class UiService {
         datasetColumns.setCustomStartDate(dataSetColumn.getCustomStartDate());
         datasetColumns.setCustomEndDate(dataSetColumn.getCustomEndDate());
         datasetColumns.setLastNdays(dataSetColumn.getLastNdays());
+        datasetColumns.setSortPriority(dataSetColumn.getSortPriority());
         datasetColumns.setLastNmonths(dataSetColumn.getLastNmonths());
         datasetColumns.setLastNweeks(dataSetColumn.getLastNweeks());
         datasetColumns.setLastNyears(dataSetColumn.getLastNyears());

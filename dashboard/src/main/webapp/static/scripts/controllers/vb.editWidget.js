@@ -1349,7 +1349,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                     scope.fieldsType = "string";
                 } else if (typeOfValue == 'Date') {
                     scope.fieldsType = "date";
-                } else if (typeOfValue == 'Day') {
+                } else if (typeOfValue == 'day') {
                     scope.fieldsType = "string";
                 } else {
                     scope.fieldsType = value.fieldType;

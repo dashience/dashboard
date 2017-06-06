@@ -16,7 +16,8 @@ public class DatasetColumnBean {
     private Integer Id;
     private String fieldName;
     private String displayName;
-    private String fieldType;
+        private String fieldType;
+    private String type;
     private String status;
     private String expression;
     private String functionName;
@@ -31,6 +32,10 @@ public class DatasetColumnBean {
     private Integer lastNweeks;
     private Integer lastNyears;
     private Integer datasetId;
+    private Integer sortPriority;
+    private String agregationFunction;
+    private Integer groupPriority;
+    private String sortOrder;
     private List<DatasetColumnBean> tableColumns;
 
     public String getFieldName() {
@@ -49,13 +54,13 @@ public class DatasetColumnBean {
         this.displayName = displayName;
     }
 
-    public String getFieldType() {
-        return fieldType;
+    public String getType() {
+        return type;
     }
 
-    public void setFieldType(String fieldType) {
-        this.fieldType = fieldType;
-    }
+    public void setType(String type) {
+        this.type = type;
+    }   
 
     public String getStatus() {
         return status;
@@ -177,6 +182,48 @@ public class DatasetColumnBean {
         this.tableColumns = tableColumns;
     }
 
+    public Integer getSortPriority() {
+        return sortPriority;
+    }
+
+    public void setSortPriority(Integer sortPriority) {
+        this.sortPriority = sortPriority;
+    }
+
+    public String getAgregationFunction() {
+        return agregationFunction;
+    }
+
+    public void setAgregationFunction(String agregationFunction) {
+        this.agregationFunction = agregationFunction;
+    }
+
+    public Integer getGroupPriority() {
+        return groupPriority;
+    }
+
+    public void setGroupPriority(Integer groupPriority) {
+        this.groupPriority = groupPriority;
+    }
+
+    public String getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
+    }  
+
+    public String getFieldType() {
+        return fieldType;
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
+    
+    
+
     public Integer getId() {
         return Id;
     }
@@ -187,7 +234,7 @@ public class DatasetColumnBean {
 
     @Override
     public String toString() {
-        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", status=" + status + ", functionName=" + functionName + ", expression=" + expression + ", displayFormat=" + displayFormat + ", datasetId=" + datasetId + ", tableColumns=" + tableColumns + '}';
-    }
+        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", type=" + type + ", status=" + status + ", expression=" + expression + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", displayFormat=" + displayFormat + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", datasetId=" + datasetId + ", sortPriority=" + sortPriority + ", tableColumns=" + tableColumns + '}';
+    }    
 
 }
