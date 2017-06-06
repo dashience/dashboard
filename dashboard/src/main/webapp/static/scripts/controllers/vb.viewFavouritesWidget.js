@@ -6,13 +6,13 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.endDate = $stateParams.endDate;
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
+    $scope.favouriteName = $stateParams.favouriteName;
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
         var widgetItems = [];
         widgetItems = response;
         $http.get("admin/tag/getAllFav/").success(function (favResponse) {
             widgetItems.forEach(function (value, key) {
                 favWidget = $.grep(favResponse, function (b) {
-                    console.log(b)
                     return b.id === value.widgetId.id;
                 });
                 if (favWidget.length > 0) {
@@ -95,7 +95,6 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     }
     
     $scope.deleteReportWidget = function (favouritesWidget, index) {                            //Delete Widget
-        console.log(favouritesWidget)
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + favouritesWidget.widgetId.id}).success(function (response) {
             $scope.favouritesWidgets.splice(index, 1);
         });

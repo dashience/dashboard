@@ -48,7 +48,7 @@ import org.springframework.util.MultiValueMap;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class LinkedinService {
 
-    public List<Map<String, String>> get(String accessToken, Long accountId,String dataSetReportName, Date startDate, Date endDate, 
+    public List<Map<String, Object>> get(String accessToken, Long accountId,String dataSetReportName, Date startDate, Date endDate, 
             String aggregation, String productSegment) {
         System.out.println("Linkedin AccountId-->"+accountId);
         System.out.println("Linkedin Report Name--->"+dataSetReportName);
@@ -60,7 +60,7 @@ public class LinkedinService {
         return null;
     }
 
-    private List<Map<String, String>> getOrganicData(String accessToken,Long accountId, Date startDate, Date endDate, 
+    private List<Map<String,Object>> getOrganicData(String accessToken,Long accountId, Date startDate, Date endDate, 
             String aggregation, String productSegment) {
         try {
             
@@ -81,14 +81,14 @@ public class LinkedinService {
                 JSONObject json = (JSONObject) jsonObj;
                 Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
                 System.out.println(jsonToMap.get("_total"));
-                List<Map<String,String>> linkedInData = new ArrayList<>();
+                List<Map<String,Object>> linkedInData = new ArrayList<>();
                 try {
                     List<Map<String, Object>> myData = (List<Map<String, Object>>) jsonToMap.get("values");
 
                     
                     List<Map<String, String>> dataValueList = new ArrayList();
                     for (Iterator<Map<String, Object>> iterator = myData.iterator(); iterator.hasNext();) {
-                        Map<String,String> twitterMapData = new HashMap<>();
+                        Map<String,Object> twitterMapData = new HashMap<>();
                         Map<String, Object> mapData = iterator.next();
                         twitterMapData.put("clickCount", mapData.get("clickCount")+"");
                         twitterMapData.put("engagement", mapData.get("engagement")+"");

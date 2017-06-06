@@ -58,6 +58,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
+
         } else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
@@ -73,14 +76,23 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else if (dataSource === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
-            $scope.dataSetFlag = false;
+            $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
         }
     };
+    $scope.linkedinPerformance = [
+        {
+            type: 'organic',
+            name: 'Organic Report',
+            timeSegments: [],
+            productSegments: []
+        }
+    ];
     $scope.pinterestPerformance = [
         {
             type: 'getTopBoards',
@@ -113,10 +125,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'month'
                 },
                 {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
@@ -124,15 +132,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             productSegments: [
                 {
                     type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'network search partner',
-                    name: 'network search partner'
+                    name: 'Device'
                 },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         },
@@ -141,22 +145,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'campaignPerformance',
             timeSegments: [
                 {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
@@ -168,7 +156,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         },
@@ -177,57 +165,21 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'adPerformance',
             timeSegments: [
                 {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         },
         {
-            type: 'devicePerformance',
-            name: 'devicePerformance',
+            type: 'adSetPerformance',
+            name: 'adSetPerformance',
             timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
                 {
                     type: 'none',
                     name: 'None'
@@ -235,47 +187,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
-        }, {
+        },
+        {
             type: 'agePerformance',
             name: 'agePerformance',
             timeSegments: [
                 {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
+                    type: 'age',
+                    name: 'age'
                 },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         }, {
@@ -283,34 +216,18 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'genderPerformance',
             timeSegments: [
                 {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
+                    type: 'gender',
+                    name: 'gender'
                 },
                 {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         }, {
@@ -318,21 +235,21 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'postPerformance',
             timeSegments: [
                 {
-                    type: 'day',
-                    name: 'day'
-                },
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
                 {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'engagements',
+            name: 'Engagements',
+            timeSegments: [
                 {
                     type: 'none',
                     name: 'None'
@@ -340,35 +257,53 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         }, {
-            type: 'postSummary',
-            name: 'postSummary',
+            type: 'reach',
+            name: 'Reach',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: 'pageLikes',
+            name: 'pageLikes',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'city',
+                    name: 'City'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: 'pageViews',
+            name: 'pageViews',
             timeSegments: [
                 {
                     type: 'day',
                     name: 'day'
                 },
                 {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
@@ -379,351 +314,35 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'device'
                 },
                 {
+                    type: 'gender',
+                    name: 'gender'
+                },
+                {
                     type: 'none',
-                    name: 'none'
+                    name: 'None'
                 }
             ]
         }, {
-            type: 'recentPostPerformance',
-            name: 'recentPostPerformance',
+            type: 'pageReactions',
+            name: 'pageReactions',
             timeSegments: [
                 {
                     type: 'day',
                     name: 'day'
                 },
                 {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
             ],
             productSegments: [
                 {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'totalOrganicLikes',
-            name: 'totalOrganicLikes',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
                     type: 'none',
                     name: 'None'
                 }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
             ]
-        }, {
-            type: 'totalPageViews',
-            name: 'totalPageViews',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'totalEngagements',
-            name: 'totalEngagements',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'totalReach',
-            name: 'totalReach',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }, {
-            type: 'pageLikesByCity',
-            name: 'pageLikesByCity',
-            timeSegments: [
-                {
-                    type: 'day',
-                    name: 'day'
-                },
-                {
-                    type: 'week',
-                    name: 'week'
-                },
-                {
-                    type: 'month',
-                    name: 'month'
-                },
-                {
-                    type: 'year',
-                    name: 'year'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'device',
-                    name: 'device'
-                },
-                {
-                    type: 'none',
-                    name: 'none'
-                }
-            ]
-        }
+        },
     ];
-//    $scope.pinterestPerformance = [
-//        {
-//            type: 'getTopBoards',
-//            name: 'getTopBoards',
-////            timeSegments: [
-////                {
-////                    type: 'day',
-////                    name: 'day'
-////                },
-////                {
-////                    type: 'week',
-////                    name: 'week'
-////                },
-////                {
-////                    type: 'month',
-////                    name: 'month'
-////                },
-////                {
-////                    type: 'year',
-////                    name: 'year'
-////                }
-////            ]
-//        }, {
-//            type: 'getTopPins',
-//            name: 'getTopPins',
-////            timeSegments: [
-////                {
-////                    type: 'day',
-////                    name: 'day'
-////                },
-////                {
-////                    type: 'week',
-////                    name: 'week'
-////                },
-////                {
-////                    type: 'month',
-////                    name: 'month'
-////                },
-////                {
-////                    type: 'year',
-////                    name: 'year'
-////                }
-////            ]
-//        }, {
-//            type: 'getFollowingsCount',
-//            name: 'getFollowingsCount',
-////            timeSegments: [
-////                {
-////                    type: 'day',
-////                    name: 'day'
-////                },
-////                {
-////                    type: 'week',
-////                    name: 'week'
-////                },
-////                {
-////                    type: 'month',
-////                    name: 'month'
-////                },
-////                {
-////                    type: 'year',
-////                    name: 'year'
-////                }
-////            ]
-//        }, {
-//            type: 'getPinsLikeCount',
-//            name: 'getPinsLikeCount',
-////            timeSegments: [
-////                {
-////                    type: 'day',
-////                    name: 'day'
-////                },
-////                {
-////                    type: 'week',
-////                    name: 'week'
-////                },
-////                {
-////                    type: 'month',
-////                    name: 'month'
-////                },
-////                {
-////                    type: 'year',
-////                    name: 'year'
-////                }
-////            ]
-//        }, {
-//            type: 'getTotalBoards',
-//            name: 'getTotalBoards',
-////            timeSegments: [
-////                {
-////                    type: 'day',
-////                    name: 'day'
-////                },
-////                {
-////                    type: 'week',
-////                    name: 'week'
-////                },
-////                {
-////                    type: 'month',
-////                    name: 'month'
-////                },
-////                {
-////                    type: 'year',
-////                    name: 'year'
-////                }
-////            ]
-//        }, {
-//            type: 'getTotalPins',
-//            name: 'getTotalPins',
-////            timeSegments: [
-////                {
-////                    type: 'day',
-////                    name: 'day'
-////                },
-////                {
-////                    type: 'week',
-////                    name: 'week'
-////                },
-////                {
-////                    type: 'month',
-////                    name: 'month'
-////                },
-////                {
-////                    type: 'year',
-////                    name: 'year'
-////                }
-////            ]
-//        }
-//    ]
     $scope.instagramPerformance = [
         {
             type: 'instagramPerformance',
@@ -1664,7 +1283,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-    $scope.getTimeSegemens = function () {
+    $scope.getTimeSegements = function (dataSet) {
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
@@ -1673,12 +1292,183 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegment = $scope.instagramPerformance[index].productSegments;
             $scope.nwStatusFlag = true;
         }
+//        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
+//        {
+//            var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
+//            $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
+//            $scope.productSegment = $scope.facebookPerformance[index].productSegments;
+//            $scope.nwStatusFlag = false;
+//        }
+
         if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
-            $scope.nwStatusFlag = false;
+
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+
+            if ($scope.dataSet.reportName !== "") {
+                $scope.nwStatusFlag = false;
+                $scope.timeSegFlag = true;
+                $scope.productSegFlag = true;
+            }
+
+            if ($scope.dataSet.reportName == 'agePerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+            if ($scope.dataSet.reportName == 'genderPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+            if ($scope.dataSet.reportName == 'pageReactions') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+            if ($scope.dataSet.reportName == 'accountPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+            if ($scope.dataSet.reportName == 'campaignPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+
+            if ($scope.dataSet.reportName == 'adPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+
+            if ($scope.dataSet.reportName == 'adSetPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+
+            if ($scope.dataSet.reportName == 'postPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+
+            if ($scope.dataSet.reportName == 'engagements') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+
+            if ($scope.dataSet.reportName == 'reach') {
+               if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+
+            if ($scope.dataSet.reportName == 'pageLikes') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
+
+            if ($scope.dataSet.reportName == 'pageViews') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
+            }
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
         {
@@ -1708,14 +1498,17 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.pinterestPerformance);
-//            $scope.timeSegment = $scope.pinterestPerformance[index].timeSegments;
+            $scope.timeSegment = $scope.pinterestPerformance[index].timeSegments;
             $scope.productSegment = $scope.pinterestPerformance[index].productSegments;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
         }
 
         function getIndex(data, object)
@@ -1729,6 +1522,27 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
         }
     };
+
+
+
+    function getProductSegment(productList, productSegmentName) {
+        productList.forEach(function (val, key) {
+            if (productSegmentName == val.type) {
+                $scope.dataSet.productSegment = val;
+            }
+        })
+    }
+
+    function getTimeSegment(timeSegmentList, timeSegmentName) {
+        timeSegmentList.forEach(function (val, key) {
+            if (timeSegmentName == val.type) {
+                $scope.dataSet.timeSegment = val;
+            }
+        })
+    }
+
+
+
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -1759,21 +1573,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     };
     $scope.saveDataSet = function () {
-        var dataSet = $scope.dataSet;
+        var dataSetList = $scope.dataSet;
+        console.log(dataSetList.timeSegment.type);
+        dataSetList.timeSegment = dataSetList.timeSegment.type;
+        dataSetList.productSegment = dataSetList.productSegment.type;
+        console.log(dataSetList.timeSegment);
+
+        var dataSet = dataSetList;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
-        console.log(dataSet);
-//        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
-//        {
-//            var networkType = dataSet.networkType.map(function (value, key) {
-//                if (value) {
-//                    return value.type;
-//                }
-//            }).join(',');
-//            dataSet.networkType = networkType;
         $scope.nwStatusFlag = true;
-//        } else {
-//            $scope.nwStatusFlag = false;
-//        }
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });
@@ -1786,20 +1594,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSet = "";
     };
     $scope.editDataSet = function (dataSet) {
-//        if (dataSet.networkType !== null)
-//        {
-//            dataSet.networkType = dataSet.networkType.split(',').map(function (value, key) {
-//                return {
-//                    'name': value ? value : ''
-//                }
-//            });
         $scope.nwStatusFlag = true;
-//        } else {
-//
-//            $scope.nwStatusFlag = false;
-//        }
         console.log(dataSet.networkType);
-        console.log(dataSet.timeSegment);
+        console.log(dataSet);
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -1824,37 +1621,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         if (dataSet.dataSourceId.dataSourceType === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
-            $scope.getTimeSegemens();
+            $scope.getTimeSegements();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else if (dataSet.dataSourceId.dataSourceType === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
-            $scope.getTimeSegemens();
+            $scope.getTimeSegements(dataSet);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
-            $scope.getTimeSegemens();
+            $scope.getTimeSegements();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else if (dataSet.dataSourceId.dataSourceType === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
-            $scope.getTimeSegemens();
+            $scope.getTimeSegements();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = true;
         } else if (dataSet.dataSourceId.dataSourceType === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
-            $scope.getTimeSegemens();
+            $scope.getTimeSegements();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
-            $scope.getTimeSegemens();
+            $scope.getTimeSegements();
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else {
@@ -2301,16 +2098,28 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
                 return value;
             };
-            console.log(dataSourcePath)
+            console.log(dataSourcePath);
+            var setTimeSegment, setProductSegment;
+
+            if (dataSourcePath.timeSegment) {
+                setTimeSegment = dataSourcePath.timeSegment.type;
+            } else {
+                setTimeSegment = 'none'
+            }
+            if (dataSourcePath.productSegment) {
+                setProductSegment = dataSourcePath.productSegment.type;
+            } else {
+                setProductSegment = 'none'
+            }
             scope.dataSetItems = function () {
                 $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
                         "&dataSourceId=" + dataSourcePath.dataSourceId.id +
                         "&dataSetId=" + dataSourcePath.id +
                         "&accountId=" + $stateParams.accountId +
                         "&dataSetReportName=" + dataSourcePath.reportName +
-                        "&timeSegment=" + dataSourcePath.timeSegment +
+                        "&timeSegment=" + setTimeSegment +
                         "&filter=" + dataSourcePath.networkType +
-                        "&productSegment=" + dataSourcePath.productSegment +
+                        "&productSegment=" + setProductSegment +
                         "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
                         "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
                         "&location=" + $stateParams.locationId +
@@ -2330,7 +2139,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.tableRows = response.data;
 
                     scope.columns = [];
-                    scope.dataSetId=dataSourcePath.id;
+                    scope.dataSetId = dataSourcePath.id;
                     if (dataSourcePath.id != null) {
                         $http.get("admin/ui/getDatasetById/" + dataSourcePath.id).success(function (resp) {
                             scope.ajaxLoadingCompleted = true;
@@ -2577,7 +2386,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.customStartDate = "";
                     scope.customEndDate = "";
                 }
-                scope.datasetId=dataSourcePath.id;
+                scope.datasetId = dataSourcePath.id;
                 var data = {
                     datasetId: dataSourcePath.id,
                     id: dataSetColumn.id,
