@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -129,9 +128,6 @@ public class TimerService {
                     } catch (ParseException ex) {
                         Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
-                    startDate = null;
-                    endDate = null;
                 } else if (dateRangeSelect.equals(Range.DAY)) {
                     dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays, new Date());
                 } else if (dateRangeSelect.equals(Range.WEEK)) {

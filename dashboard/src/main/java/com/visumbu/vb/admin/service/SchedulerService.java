@@ -6,24 +6,18 @@
 package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.SchedulerDao;
-import com.visumbu.vb.bean.DateRange;
-import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.bean.SchedulerBean;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.DateUtils;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import test.DateRangeFactory;
 
 /**
  *
@@ -77,30 +71,26 @@ public class SchedulerService {
             if (schedulerBean.getLastNdays() != null) {
                 lastNdays = schedulerBean.getLastNdays();
                 System.out.println("Last N days ----> " + lastNdays);
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Days")) {
                 lastNdays = 0;
             }
             if (schedulerBean.getLastNmonths() != null) {
                 lastNmonths = schedulerBean.getLastNmonths();
                 System.out.println("Last N months ----> " + lastNmonths);
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Months")) {
                 lastNmonths = 0;
             }
             if (schedulerBean.getLastNweeks() != null) {
                 lastNweeks = schedulerBean.getLastNweeks();
                 System.out.println("Last N weeks ----> " + lastNweeks);
 
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Weeks")) {
                 lastNweeks = 0;
             }
             if (schedulerBean.getLastNyears() != null) {
                 lastNyears = schedulerBean.getLastNyears();
                 System.out.println("Last N years ----> " + lastNyears);
-            }
-            if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
+            } else if (dateRangeName.equalsIgnoreCase("Last 0 Years")) {
                 lastNyears = 0;
             }
 
