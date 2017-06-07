@@ -44,9 +44,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
             console.log(response);
             if (selectType == "dataSet1") {
+                $scope.firstDataSetLoading = false;
+                $scope.firstDataSetLoadingCompleted = true;
                 $scope.firstDataSetColumns = response.columnDefs;
                 $scope.firstDataSetRows = response.data;
             } else if (selectType == "dataSet2") {
+                $scope.secondDataSetLoading = false;
+                $scope.secondDataSetLoadingCompleted = true;
                 $scope.secondDataSetColumns = response.columnDefs;
                 $scope.secondDataSetRows = response.data;
             } else {
@@ -61,6 +65,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.firstDataSet = JSON.parse(dataSet.firstDataSet);
         $scope.firstDataSetName = $scope.firstDataSet.name;
         $scope.dataSetIdFirst = $scope.firstDataSet.id;
+        $scope.firstDataSetLoadingCompleted = false;
+        $scope.firstDataSetLoading = true;
         getPreviewDataSet($scope.firstDataSet, "dataSet1");
 
     };
@@ -68,6 +74,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.secondDataSet = JSON.parse(dataSet.secondDataSet);
         $scope.secondDataSetName = $scope.secondDataSet.name;
         $scope.dataSetIdSecond = $scope.secondDataSet.id;
+        $scope.secondDataSetLoadingCompleted = false;
+        $scope.secondDataSetLoading = true;
         getPreviewDataSet($scope.secondDataSet, "dataSet2");
     };
     $scope.dataSetColumnList = [];
@@ -80,12 +88,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
-
         var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
-
         var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
-
         var data = {
+            dataSetName:combinedDataSetColumn.combinedDataSetName,
             dataSetIdFirst: dataSetIdFirst,
             dataSetIdSecond: dataSetIdSecond,
             operationType: combinedDataSetColumn.joinType,
@@ -2569,12 +2575,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             };
             scope.functionChange = function (dataSetColumn) {
+                scope.dateErrorMessage = false;
                 if (dataSetColumn.functionName != "Custom") {
                     dataSetColumn.dateRangeName = "";
                 }
             }
             scope.dataSetColumn = {}
             scope.selectFunctionDateRange = function (dataSetColumn) {
+                scope.dateErrorMessage = false;
                 dataSetColumn.dateRangeName = "Custom";
                 dataSetColumn.lastNdays = "";
                 dataSetColumn.lastNweeks = "";
@@ -2657,6 +2665,10 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             };
 
             scope.saveDataSetColumn = function (dataSetColumn) {
+
+
+
+
                 console.log(dataSetColumn);
                 dataSetColumn.dateRangeName = $("#dateRangeName").text().trim();
                 console.log(dataSetColumn.dateRangeName);
@@ -2873,8 +2885,8 @@ app.directive('functionDateRange', function ($stateParams, $timeout) {
                 });
                 $(".applyBtn").click(function (e) {
                     try {
-                        scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-                        scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                        scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : widgetStartDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                        scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : widgetEndDate;
                     } catch (e) {
                     }
 
