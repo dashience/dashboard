@@ -85,8 +85,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.removeCombinedDataSetColumn = function (index) {
         $scope.dataSetColumnList.splice(index, 1);
-    };
-
+        console.log($scope.dataSetColumnList)
+    }
+    $scope.hideCondition = false;
+    $scope.selectJoinType = function (combinedDataSetColumn) {
+        if (combinedDataSetColumn.joinType != null) {
+            $scope.hideCondition = true;
+        }
+    }
     $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
         var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
@@ -98,8 +104,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             conditionFields: $scope.dataSetColumnList
         };
         console.log(data);
-        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: JSON.stringify(data)}).success(function (response) {
-            console.log(response);           
+//        $http({method: 'POST', url: 'admin/ui/combinedTableData', data:data}).success(function (response) {
+//            console.log(response);           
 //                   $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
 //                "&dataSourceId=" + dataSet.dataSourceId.id +
 //                "&dataSetId=" + dataSet.id +
@@ -119,7 +125,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
 //                    
 //                });
-        });
+//        });
     };
     /*
      * 
