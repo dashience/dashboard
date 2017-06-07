@@ -296,6 +296,25 @@
         <section class="content">
             <div class="row">
                 <div class="col-md-12">
+                <div class="hpanel">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <label class="col-md-2">DataSet Name</label>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" ng-model="combinedDataSetColumn.combinedDataSetName">
+                        </div>
+                        <label class="col-md-2">JoinType</label>
+                        <div class="col-md-4">
+                            <select class="form-control" ng-model="combinedDataSetColumn.joinType" ng-change="selectJoinType(combinedDataSetColumn)">
+                                <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
+                                    {{joinType.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-12">
                     <div class="hpanel">                
                         <div class="panel-body">
                             <label class="col-md-2">DataSet1</label>
@@ -372,21 +391,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="hpanel">
-                    <div class="panel-heading"></div>
-                    <div class="panel-body">
-                        <label class="col-md-6">JoinType</label>
-                        <div class="col-md-6">
-                            <select class="form-control" ng-model="combinedDataSetColumn.joinType" ng-change="selectJoinType(combinedDataSetColumn)">
-                                <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
-                                    {{joinType.name}}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
             <div class="col-md-12" ng-show="hideCondition">
                 <div class="hpanel">
                     <div class="panel-heading">Condition</div>

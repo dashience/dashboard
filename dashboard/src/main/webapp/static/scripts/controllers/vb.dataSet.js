@@ -98,6 +98,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
         var data = {
+            dataSetName:combinedDataSetColumn.combinedDataSetName,
             dataSetIdFirst: dataSetIdFirst,
             dataSetIdSecond: dataSetIdSecond,
             condition: combinedDataSetColumn.joinType,
