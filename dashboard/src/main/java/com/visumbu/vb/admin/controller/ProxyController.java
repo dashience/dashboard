@@ -475,7 +475,7 @@ public class ProxyController {
                     dataSet = uiService.readDataSet(dataSetIdInt);
                 }
                 if (dataSet != null) {
-                    connectionString = dataSet.getDataSourceId().getConnectionString();
+                    connectionString = (connectionString == null || connectionString.isEmpty()) ? dataSet.getDataSourceId().getConnectionString() : connectionString;
                 }
             }
             List<Map<String, Object>> dataSet = CsvDataSet.CsvDataSet(connectionString);
@@ -700,7 +700,7 @@ public class ProxyController {
                     dataSet = uiService.readDataSet(dataSetIdInt);
                 }
                 if (dataSet != null) {
-                    dataSetReportName = dataSet.getReportName();
+                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
                     connectionUrl = dataSet.getDataSourceId().getConnectionString();
                 }
             }
@@ -815,9 +815,9 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
-                dataSetReportName = dataSet.getReportName();
-                timeSegment = dataSet.getTimeSegment();
-                productSegment = dataSet.getProductSegment();
+                dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+                timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+                productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
             }
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
@@ -882,10 +882,10 @@ public class ProxyController {
             }
 
             if (dataSet != null) {
-                dataSetReportName = dataSet.getReportName();
-                timeSegment = dataSet.getTimeSegment();
-                productSegment = dataSet.getProductSegment();
-                filter = dataSet.getNetworkType();
+                dataSetReportName = (dataSetReportName == null) ? dataSet.getReportName() : dataSetReportName;
+                timeSegment = (timeSegment == null) ? dataSet.getTimeSegment() : timeSegment;
+                productSegment = (productSegment == null) ? dataSet.getProductSegment() : productSegment;
+                filter = (filter == null) ? dataSet.getNetworkType() : filter;
             }
         }
         if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
@@ -1061,8 +1061,8 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
-                dataSetReportName = dataSet.getReportName();
-                timeSegment = dataSet.getTimeSegment();
+                dataSetReportName = (dataSetReportName == null) ? dataSet.getReportName() : dataSetReportName;
+                timeSegment = (timeSegment == null) ? dataSet.getTimeSegment() : timeSegment;
             }
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
@@ -1146,9 +1146,9 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
-                dataSetReportName = dataSet.getReportName();
-                timeSegment = dataSet.getTimeSegment();
-                productSegment = dataSet.getProductSegment();
+                dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+                timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+                productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
             }
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
@@ -1249,9 +1249,9 @@ public class ProxyController {
                     dataSet = uiService.readDataSet(dataSetIdInt);
                 }
                 if (dataSet != null) {
-                    dataSetReportName = dataSet.getReportName();
-                    timeSegment = dataSet.getTimeSegment();
-                    productSegment = dataSet.getProductSegment();
+                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+                    timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+                    productSegment = (productSegment == null  || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
                 }
             }
             valueMap.put("timeSegment", Arrays.asList(timeSegment));
