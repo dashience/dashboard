@@ -92,9 +92,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             conditionFields: $scope.dataSetColumnList
         };
         console.log(data);
-//        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: JSON.stringify(data)}).success(function (response) {
-//            console.log(response);
-//        });
+        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: JSON.stringify(data)}).success(function (response) {
+            console.log(response);           
+//                   $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
+//                "&dataSourceId=" + dataSet.dataSourceId.id +
+//                "&dataSetId=" + dataSet.id +
+//                "&accountId=" + $stateParams.accountId +
+//                "&dataSetReportName=" + dataSet.reportName +
+//                "&timeSegment=" + dataSet.timeSegment +
+//                "&filter=" + dataSet.networkType +
+//                "&productSegment=" + dataSet.productSegment +
+//                "&driver=" + dataSet.dataSourceId.dataSourceType +
+//                "&dataSourceType=" + dataSet.dataSourceId.dataSourceType +
+//                "&location=" + $stateParams.locationId +
+//                "&startDate=" + $stateParams.startDate +
+//                "&endDate=" + $stateParams.endDate +
+//                '&username=' + dataSet.dataSourceId.userName +
+//                '&password=' + dataSourcePassword +
+//                '&url=' + dataSet.url +
+//                '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
+//                    
+//                });
+        });
     };
     /*
      * 
