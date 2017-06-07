@@ -6,7 +6,6 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,12 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -34,12 +30,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "CombinedDataset.findAll", query = "SELECT c FROM CombinedDataset c")
     , @NamedQuery(name = "CombinedDataset.findById", query = "SELECT c FROM CombinedDataset c WHERE c.id = :id")
-    , @NamedQuery(name = "CombinedDataset.findByOperationType", query = "SELECT c FROM CombinedDataset c WHERE c.operationType = :operationType")
-})
+    , @NamedQuery(name = "CombinedDataset.findByDatasetName", query = "SELECT c FROM CombinedDataset c WHERE c.datasetName = :datasetName")
+    , @NamedQuery(name = "CombinedDataset.findByOperationType", query = "SELECT c FROM CombinedDataset c WHERE c.operationType = :operationType")})
 public class CombinedDataset implements Serializable {
-
-    @OneToMany(mappedBy = "combinedDatasetId")
-    private Collection<CombinedDatasetCondition> combinedDatasetConditionCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,6 +40,9 @@ public class CombinedDataset implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    @Size(max = 255)
+    @Column(name = "dataset_name")
+    private String datasetName;
     @Size(max = 255)
     @Column(name = "operation_type")
     private String operationType;
@@ -70,6 +66,14 @@ public class CombinedDataset implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getDatasetName() {
+        return datasetName;
+    }
+
+    public void setDatasetName(String datasetName) {
+        this.datasetName = datasetName;
     }
 
     public String getOperationType() {
@@ -119,16 +123,6 @@ public class CombinedDataset implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.CombinedDataset[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<CombinedDatasetCondition> getCombinedDatasetConditionCollection() {
-        return combinedDatasetConditionCollection;
-    }
-
-    public void setCombinedDatasetConditionCollection(Collection<CombinedDatasetCondition> combinedDatasetConditionCollection) {
-        this.combinedDatasetConditionCollection = combinedDatasetConditionCollection;
     }
     
 }

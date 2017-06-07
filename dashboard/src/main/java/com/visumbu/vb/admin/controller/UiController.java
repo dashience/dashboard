@@ -434,7 +434,12 @@ public class UiController extends BaseController {
     DataSet deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.deleteDataSet(id);
     }
-
+    
+    @RequestMapping(value = "dataSetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns deleteDataSetColumns(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return uiService.deleteDataSetColumns(id);
+    }
 //    @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getUser(HttpServletRequest request, HttpServletResponse response) {

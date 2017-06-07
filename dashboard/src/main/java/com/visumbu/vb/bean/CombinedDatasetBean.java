@@ -13,12 +13,29 @@ import java.util.List;
  */
 public class CombinedDatasetBean {
 
+    private Integer id;
+    private String dataSetName;
     private Integer dataSetIdFirst;
     private Integer dataSetIdSecond;
     private String operationType;
     private List<CombinedDatasetBean> conditionFields;
     private String firstDataSetColumn;
     private String secondDataSetColumn;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getDataSetName() {
+        return dataSetName;
+    }
+
+    public void setDataSetName(String dataSetName) {
+        this.dataSetName = dataSetName;
+    }
 
     public Integer getDataSetIdFirst() {
         return dataSetIdFirst;

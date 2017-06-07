@@ -241,13 +241,11 @@
                                     </div>
                                 </div>
 
-                            <div ng-show="dataSetFlag">
-                                <label>Report</label>
-                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(dataSet); refreshDataSet(dataSet)">
-                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                    <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
-                                        {{reportPerformances.name}}</option>
-                                </select>
+                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
+                            <label>Query</label>
+                            <!--<textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>-->
+                            <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
+                        </div>
 
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter'">
                                     <label>File Url</label>
@@ -409,8 +407,6 @@
                                     <th>
                                         DataSet2 Column
                                     </th>
-
-
                                 </tr>
                             </thead>
                             <tbody>

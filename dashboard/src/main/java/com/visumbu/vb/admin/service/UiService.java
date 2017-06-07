@@ -580,6 +580,10 @@ public class UiService {
         return (DataSet) uiDao.deleteDataSet(id);
     }
 
+    public DatasetColumns deleteDataSetColumns(Integer id) {
+        return (DatasetColumns) uiDao.deleteDataSetColumns(id);
+    }
+
     public DataSource deleteDataSource(Integer id) {
 
         return (DataSource) uiDao.deleteDataSource(id);
@@ -812,7 +816,30 @@ public class UiService {
 
     public List<CombinedDatasetCondition> createCombinedDataset(CombinedDatasetBean combinedDatasetBean) {
         CombinedDataset combinedDataset = new CombinedDataset();
-        List<CombinedDatasetCondition> returnList= new ArrayList<>();
+        List<CombinedDatasetCondition> returnList = new ArrayList<>();
+        combinedDataset.setDatasetName(combinedDatasetBean.getDataSetName());
+        combinedDataset.setDatasetIdFirst(readDataSet(combinedDatasetBean.getDataSetIdFirst()));
+        combinedDataset.setDatasetIdSecond(readDataSet(combinedDatasetBean.getDataSetIdSecond()));
+        combinedDataset.setOperationType(combinedDatasetBean.getOperationType());
+        uiDao.saveOrUpdate(combinedDataset);
+        List<CombinedDatasetBean> conditionFields = combinedDatasetBean.getConditionFields();
+        for (Iterator<CombinedDatasetBean> iterator = conditionFields.iterator(); iterator.hasNext();) {
+            CombinedDatasetBean combinedDatasetData = iterator.next();
+            CombinedDatasetCondition combinedDatasetCondition = new CombinedDatasetCondition();
+            combinedDatasetCondition.setCombinedDatasetId(combinedDataset);
+            combinedDatasetCondition.setConditionFieldFirst(combinedDatasetData.getFirstDataSetColumn());
+            combinedDatasetCondition.setConditionFieldSecond(combinedDatasetData.getSecondDataSetColumn());
+            uiDao.saveOrUpdate(combinedDatasetCondition);
+            returnList.add(combinedDatasetCondition);
+        }
+        return returnList;
+    }
+
+    public List<CombinedDatasetCondition> updateCombinedDataset(CombinedDatasetBean combinedDatasetBean) {
+        CombinedDataset combinedDataset = new CombinedDataset();
+        List<CombinedDatasetCondition> returnList = new ArrayList<>();
+        combinedDataset.setId(combinedDatasetBean.getId());
+        combinedDataset.setDatasetName(combinedDatasetBean.getDataSetName());
         combinedDataset.setDatasetIdFirst(readDataSet(combinedDatasetBean.getDataSetIdFirst()));
         combinedDataset.setDatasetIdSecond(readDataSet(combinedDatasetBean.getDataSetIdSecond()));
         combinedDataset.setOperationType(combinedDatasetBean.getOperationType());
