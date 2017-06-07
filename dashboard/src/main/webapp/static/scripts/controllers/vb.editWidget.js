@@ -1266,9 +1266,9 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                         ranges: {
                             'Today': [moment(), moment()],
                             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                            'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                            'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                            'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
                             'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
                             'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -1284,8 +1284,8 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                         },
-                        startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
-                        endDate: widgetEndDate ? widgetEndDate : moment(),
+                        startDate: widgetStartDate ? widgetStartDate : moment().subtract(30, 'days'),
+                        endDate: widgetEndDate ? widgetEndDate : moment().subtract(1, 'days'),
                         maxDate: new Date()
                     },
                     function (startDate, endDate) {

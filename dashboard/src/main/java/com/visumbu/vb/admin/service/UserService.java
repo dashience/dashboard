@@ -99,6 +99,7 @@ public class UserService {
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
                 if (user != null) {
+                    user.setFailedLoginCount(0);
                     user.setFailedLoginCount(user.getFailedLoginCount() + 1);
                     loginUserBean = toLoginUserBean(user);
                 }

@@ -9,16 +9,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.tab = newTab;
     };
     $scope.isSet = function (tabNum) {
-
-
         return $scope.tab === tabNum;
     };
     $scope.joinTypes = [
         {name: 'left', value: 'left'},
-        {name: 'right', value: 'rught'},
+        {name: 'right', value: 'right'},
         {name: 'inner', value: 'inner'},
         {name: 'outer', value: 'outer'}
-    ]
+    ];
     function getPreviewDataSet(dataSet, selectType) {
         var url = "admin/proxy/getData?";
         var dataSourcePassword;
@@ -44,7 +42,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 '&password=' + dataSourcePassword +
                 '&url=' + dataSet.url +
                 '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
-            console.log(response)
+            console.log(response);
             if (selectType == "dataSet1") {
                 $scope.firstDataSetColumns = response.columnDefs;
                 $scope.firstDataSetRows = response.data;
@@ -52,9 +50,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.secondDataSetColumns = response.columnDefs;
                 $scope.secondDataSetRows = response.data;
             } else {
-                return //response;
+                return; //response;
             }
-        })
+        });
 
 
     }
@@ -65,28 +63,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetIdFirst = $scope.firstDataSet.id;
         getPreviewDataSet($scope.firstDataSet, "dataSet1");
 
-    }
+    };
     $scope.selectSecondDataSet = function (dataSet) {
         $scope.secondDataSet = JSON.parse(dataSet.secondDataSet);
         $scope.secondDataSetName = $scope.secondDataSet.name;
         $scope.dataSetIdSecond = $scope.secondDataSet.id;
         getPreviewDataSet($scope.secondDataSet, "dataSet2");
-    }
+    };
     $scope.dataSetColumnList = [];
+
     $scope.addCombinedColumnList = function () {
         $scope.dataSetColumnList.push({});
-    }
+    };
     $scope.removeCombinedDataSetColumn = function (index) {
         $scope.dataSetColumnList.splice(index, 1);
+    };
 
-    }
-
-    $scope.selectFirstDataSetColumn = function (combinedDataSetColumn) {
-    }
-    $scope.dataSetFields = [];
-    $scope.selectSecondDataSetColumn = function (combinedDataSetColumn) {
-        $scope.dataSetFields.push(combinedDataSetColumn);
-    }
     $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
 
         var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
@@ -97,12 +89,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSetIdFirst: dataSetIdFirst,
             dataSetIdSecond: dataSetIdSecond,
             operationType: combinedDataSetColumn.joinType,
-            conditionFields: $scope.dataSetFields
-        }
-        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: JSON.stringify(data)}).success(function (response) {
-            console.log(response);
-        });
-    }
+            conditionFields: $scope.dataSetColumnList
+        };
+        console.log(data);
+//        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: JSON.stringify(data)}).success(function (response) {
+//            console.log(response);
+//        });
+    };
     /*
      * 
      * All
@@ -195,16 +188,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.pinterestPerformance = [
         {
             type: 'getTopBoards',
-            name: 'getTopBoards',
+            name: 'getTopBoards'
         }, {
             type: 'getTopPins',
-            name: 'getTopPins',
+            name: 'getTopPins'
         }, {
             type: 'getOrganicData',
-            name: 'getOrganicData',
+            name: 'getOrganicData'
         }
-    ]
-
+    ];
 
     $scope.facebookPerformance = [
         {
@@ -1421,60 +1413,60 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
             if ($scope.dataSet.reportName == 'genderPerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
             if ($scope.dataSet.reportName == 'pageReactions') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
             if ($scope.dataSet.reportName == 'accountPerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
             if ($scope.dataSet.reportName == 'campaignPerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
 
@@ -1482,12 +1474,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
 
@@ -1495,12 +1487,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
 
@@ -1508,12 +1500,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
 
@@ -1521,12 +1513,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
 
@@ -1534,12 +1526,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
 
@@ -1547,12 +1539,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
 
@@ -1560,12 +1552,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
         }
@@ -1629,7 +1621,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             if (productSegmentName == val.type) {
                 $scope.dataSet.productSegment = val;
             }
-        })
+        });
     }
 
     function getTimeSegment(timeSegmentList, timeSegmentName) {
@@ -1637,7 +1629,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             if (timeSegmentName == val.type) {
                 $scope.dataSet.timeSegment = val;
             }
-        })
+        });
     }
 
 
@@ -1660,7 +1652,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.searchDataSourceItems.push({name: value.name, value: value.name, id: value.id});
         });
     });
-    $scope.selectedItems = {name: "All Data Source", value: '', id: 0}
+    $scope.selectedItems = {name: "All Data Source", value: '', id: 0};
 
     $scope.selectXlsSheet = function (dataSource) {
         if (dataSource.dataSourceType == 'xls') {
@@ -1712,7 +1704,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         };
         console.log(data);
         $scope.dataSet = data;
-        var dataSource = dataSet.dataSourceId
+        var dataSource = dataSet.dataSourceId;
         var dataSourceType = dataSet.dataSourceId.dataSourceType;
         if (dataSourceType == 'xls') {
             $scope.selectXlsSheet(dataSource);
@@ -1808,7 +1800,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.deleteDataSet = function (dataSet, index) {
         $http({method: 'DELETE', url: 'admin/ui/dataSet/' + dataSet.id}).success(function (response) {
-            $scope.dataSets.splice(index, 1)
+            $scope.dataSets.splice(index, 1);
         });
     };
     $scope.selectedRow = null;
@@ -1978,7 +1970,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '<table class="table table-responsive table-bordered table-l2t">' +
                 '<thead><tr>' +
-                '<th class="text-capitalize table-bg" ng-repeat="col in dataSetColumns |limitTo:5:1">' +
+                '<th class="text-capitalize table-bg" ng-repeat="col in dataSetColumns">' +
                 '{{col.fieldName}}' +
                 //Edit
                 '<div>' +
@@ -2130,9 +2122,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</th>' +
                 '</tr></thead>' +
-                '<tbody ng-repeat="tableRow in tableRows|limitTo:5:1"">' +
+                '<tbody ng-repeat="tableRow in tableRows">' +
                 '<tr class="text-capitalize">' +
-                '<td ng-repeat="col in dataSetColumns |limitTo:5:1">' +
+                '<td ng-repeat="col in dataSetColumns">' +
                 '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
                 '</td>' +
                 '</tbody>' +
@@ -2203,12 +2195,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             if (dataSourcePath.timeSegment) {
                 setTimeSegment = dataSourcePath.timeSegment.type;
             } else {
-                setTimeSegment = 'none'
+                setTimeSegment = 'none';
             }
             if (dataSourcePath.productSegment) {
                 setProductSegment = dataSourcePath.productSegment.type;
             } else {
-                setProductSegment = 'none'
+                setProductSegment = 'none';
             }
             scope.dataSetItems = function () {
                 $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
