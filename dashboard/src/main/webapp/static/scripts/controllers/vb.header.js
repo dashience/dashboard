@@ -254,6 +254,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         return yesterday;
     };
 
+    $scope.getBeforeDay = function () {
+        var today = new Date();
+        var yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        return yesterday;
+    };
     $scope.firstDate = $stateParams.startDate ? $scope.toDate(decodeURIComponent($stateParams.startDate)) : $scope.getDay().toLocaleDateString("en-US");
     $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : $scope.getBeforeDay().toLocaleDateString("en-US");
     if (!$stateParams.startDate) {
@@ -361,7 +367,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 endDate: $stateParams.endDate
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
-            $state.go("index.report.newOrEdit", {
+            $state.go("index.schedulerIndex.editOrNewScheduler", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 schedulerId: $stateParams.schedulerId,
@@ -539,8 +545,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
-                    startDate: moment().subtract(30, 'days'),
-                    endDate: moment().subtract(1, 'days'),
+                    startDate: $stateParams.startDate?$stateParams.startDate:moment().subtract(30, 'days'),
+                    endDate: $stateParams.endDate?$stateParams.endDate:moment().subtract(1, 'days'),
                     maxDate: new Date()
                 },
                 function (startDate, endDate) {
