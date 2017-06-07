@@ -98,199 +98,199 @@
 <div>
     <div  class="tab-content" ng-show="isSet(1)">
         <section class="content">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="hpanel">
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-8 data-search">
-                            <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
-                        </div>
-                        <div class="col-md-4 data-search">
-                            <select class="form-control" ng-change="clearTable()"
-                                    ng-options="dataSource.name for dataSource in searchDataSourceItems track by dataSource.id"
-                                    ng-model="selectedItems">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="hpanel">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-8 data-search">
+                                    <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
+                                </div>
+                                <div class="col-md-4 data-search">
+                                    <select class="form-control" ng-change="clearTable()"
+                                            ng-options="dataSource.name for dataSource in searchDataSourceItems track by dataSource.id"
+                                            ng-model="selectedItems">
 
-                                <!--<option value="" selected="selected" ng-disabled="true">Search Data Source...</option>-->
-                            </select>
-                        </div></div>
-                    <table class="table table-fixed">
-                        <thead>
-                            <tr>
-                                <th class="col-xs-5">Data Source</th>
-                                <th class="col-xs-6">Name</th>
-                                <th class="col-xs-1"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="dataSet in dataSets| filter: selectedItems.value | filter: searchDataSource" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
-                                <td class="col-xs-5" ng-click="editDataSet(dataSet)">
-                                    {{dataSet.dataSourceId.name}}
-                                </td>
-                                <td class="col-xs-6" ng-click="editDataSet(dataSet)">
-                                    {{dataSet.name?dataSet.name:'-'}}
-                                </td>
-                                <td class="col-md-1">
-                                    <!--<button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = true"><i class="fa fa-pencil"></i></button>-->
-                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSet{{dataSet.id}}"><i class="fa fa-trash-o"></i></button>
-                                    <div class="modal hmodal-success" id="deleteDataSet{{dataSet.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="color-line"></div>
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Delete</h4>
-                                                    <small class="font-bold"></small>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form class="form-horizontal" role="form">
-                                                        <div class="form-group">
-                                                            <div class="col-sm-12  col-md-12">
-                                                                <span>Want to delete ?</span>
+                                        <!--<option value="" selected="selected" ng-disabled="true">Search Data Source...</option>-->
+                                    </select>
+                                </div></div>
+                            <table class="table table-fixed">
+                                <thead>
+                                    <tr>
+                                        <th class="col-xs-5">Data Source</th>
+                                        <th class="col-xs-6">Name</th>
+                                        <th class="col-xs-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="dataSet in dataSets| filter: selectedItems.value | filter: searchDataSource" ng-class="{'selectedTableRow':$index == selectedRow}" ng-click="setClickedRow($index)">
+                                        <td class="col-xs-5" ng-click="editDataSet(dataSet)">
+                                            {{dataSet.dataSourceId.name}}
+                                        </td>
+                                        <td class="col-xs-6" ng-click="editDataSet(dataSet)">
+                                            {{dataSet.name?dataSet.name:'-'}}
+                                        </td>
+                                        <td class="col-md-1">
+                                            <!--<button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = true"><i class="fa fa-pencil"></i></button>-->
+                                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSet{{dataSet.id}}"><i class="fa fa-trash-o"></i></button>
+                                            <div class="modal hmodal-success" id="deleteDataSet{{dataSet.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="color-line"></div>
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            <h4 class="modal-title">Delete</h4>
+                                                            <small class="font-bold"></small>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-horizontal" role="form">
+                                                                <div class="form-group">
+                                                                    <div class="col-sm-12  col-md-12">
+                                                                        <span>Want to delete ?</span>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-primary btn-xs "
+                                                                        ng-click="deleteDataSet(dataSet, $index)"
+                                                                        data-dismiss="modal">
+                                                                    <span class="fa fa-trash"></span> Yes
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger btn-xs "
+                                                                        data-dismiss="modal">
+                                                                    <span class="fa fa-times"></span> No
+                                                                </button>
                                                             </div>
                                                         </div>
-                                                    </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <div class="col-sm-12">
-                                                        <button type="button" class="btn btn-primary btn-xs "
-                                                                ng-click="deleteDataSet(dataSet, $index)"
-                                                                data-dismiss="modal">
-                                                            <span class="fa fa-trash"></span> Yes
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger btn-xs "
-                                                                data-dismiss="modal">
-                                                            <span class="fa fa-times"></span> No
-                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="hpanel">
+                        <div class="panel-body">
+                            <form class="col-md-12 form-horizontal">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input class="form-control" type="text" ng-model="dataSet.name" placeholder="Name">
+                                    <label>Data Source</label>
+                                    <select class="form-control"
+                                            ng-options="dataSource.name for dataSource in dataSources track by dataSource.id"
+                                            placeholder="Data Source"
+                                            ng-value="dataSource.connectionString"
+                                            ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId);">
+                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                    </select>
+
+                                    <div ng-show="dataSetFlag">
+                                        <label>Report</label>
+                                        <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(); refreshDataSet(dataSet)">
+                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                            <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
+                                                {{reportPerformances.name}}</option>
+                                        </select>
+
+                                        <label ng-show="timeSegFlag">Time Segments</label>
+
+                                        <!--                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
+                                                                            <option value="" selected="selected" ng-disabled="false">None</option>
+                                                                            <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
+                                                                                {{timeSegments.name}}</option>
+                                                                        </select>-->
+                                        <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment"
+                                                 ng-change="refreshDataSet(dataSet)"
+                                                 ng-options="timeSegments.name for timeSegments in timeSegment track by timeSegments.type">
+                                        </select>
+                                        <!--ng-if="dataSet.reportName == 'campaignPerformance'"-->
+                                        <!--<label ng-if="!(dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>-->
+                                        <label ng-show="productSegFlag" >Product Segments</label>
+                                        <!--                                <select ng-show ="productSegFlag" class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);">
+                                                                            <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
+                                                                        </select>-->
+                                        <select  ng-show="productSegFlag" class="form-control" ng-model="dataSet.productSegment"
+                                                 ng-change="refreshDataSet(dataSet)"
+                                                 ng-options="productSegments.name for productSegments in productSegment track by productSegments.type">
+
+                                        </select>
+
+
+                                        <!--                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">
+                                                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                                                            <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
+                                                                        </select>-->
+
+                                        <label ng-show="nwStatusFlag">Network Type</label>
+                                        <select ng-show="nwStatusFlag" class="form-control"ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType">
+                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                            <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>
+                                        </select>
+                                        <!--                                <ui-select ng-show="nwStatusFlag"  ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType" on-removed="removed($item)" theme="select2" ng-disabled="disabled" class="form-control">
+                                                                            <ui-select-match placeholder="Select Network...">{{$item.name}}</ui-select-match>
+                                                                            <ui-select-choices repeat="network in networkTypes | filter:$select.search">
+                                                                                {{network.name}}
+                                                                            </ui-select-choices>
+                                                                        </ui-select>-->
                                     </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="hpanel">
-                <div class="panel-body">
-                    <form class="col-md-12 form-horizontal">
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input class="form-control" type="text" ng-model="dataSet.name" placeholder="Name">
-                            <label>Data Source</label>
-                            <select class="form-control"
-                                    ng-options="dataSource.name for dataSource in dataSources track by dataSource.id"
-                                    placeholder="Data Source"
-                                    ng-value="dataSource.connectionString"
-                                    ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId);">
-                                <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                            </select>
+                                </div>
 
-                            <div ng-show="dataSetFlag">
-                                <label>Report</label>
-                                <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(); refreshDataSet(dataSet)">
-                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                    <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
-                                        {{reportPerformances.name}}</option>
-                                </select>
+                                <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
+                                    <label>Query</label>
+                                    <!--<textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>-->
+                                    <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
+                                </div>
 
-                                <label ng-show="timeSegFlag">Time Segments</label>
+                                <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter'">
+                                    <label>File Url</label>
+                                    <div>
+                                        <input type="text" class="form-control" ng-model="dataSet.url">
+                                    </div>
+                                </div>
 
-                                <!--                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
-                                                                    <option value="" selected="selected" ng-disabled="false">None</option>
-                                                                    <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
-                                                                        {{timeSegments.name}}</option>
-                                                                </select>-->
-                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment"
-                                ng-change="refreshDataSet(dataSet)"
-                                ng-options="timeSegments.name for timeSegments in timeSegment track by timeSegments.type">
-                                </select>
-                                <!--ng-if="dataSet.reportName == 'campaignPerformance'"-->
-                                <!--<label ng-if="!(dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>-->
-                                <label ng-show="productSegFlag" >Product Segments</label>
-                                <!--                                <select ng-show ="productSegFlag" class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);">
-                                                                    <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
-                                                                </select>-->
-                                <select  ng-show="productSegFlag" class="form-control" ng-model="dataSet.productSegment"
-                                ng-change="refreshDataSet(dataSet)"
-                                ng-options="productSegments.name for productSegments in productSegment track by productSegments.type">
+                                <div>
+                                    <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'xls'">
+                                        <label>XLS</label>
+                                        <select class="form-control" ng-model="dataSet.reportName" ng-options="xlsSheetName for xlsSheetName in xlsSheetNames" ng-change="refreshDataSet(dataSet)"></select>
+                                    </div>
+                                </div>
 
-                                </select>
-
-
-                                <!--                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">
-                                                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                                    <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
-                                                                </select>-->
-
-                                <label ng-show="nwStatusFlag">Network Type</label>
-                                <select ng-show="nwStatusFlag" class="form-control"ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType">
-                                    <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                    <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>
-                                </select>
-                                <!--                                <ui-select ng-show="nwStatusFlag"  ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType" on-removed="removed($item)" theme="select2" ng-disabled="disabled" class="form-control">
-                                                                    <ui-select-match placeholder="Select Network...">{{$item.name}}</ui-select-match>
-                                                                    <ui-select-choices repeat="network in networkTypes | filter:$select.search">
-                                                                        {{network.name}}
-                                                                    </ui-select-choices>
-                                                                </ui-select>-->
-                            </div>
+                                <div class="form-group pull-right">
+                                    <button class="btn btn-success" ng-click="previewDataSet(dataSet)">Preview</button>
+                                    <button class="btn btn-info" ng-click="saveDataSet()">Save</button>
+                                    <button class="btn btn-warning" ng-click="clearDataSet(dataSet)">Cancel</button>
+                                </div>
+                            </form>
                         </div>
-
-                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
-                            <label>Query</label>
-                            <!--<textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>-->
-                            <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
-                        </div>
-
-                        <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter'">
-                            <label>File Url</label>
-                            <div>
-                                <input type="text" class="form-control" ng-model="dataSet.url">
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'xls'">
-                                <label>XLS</label>
-                                <select class="form-control" ng-model="dataSet.reportName" ng-options="xlsSheetName for xlsSheetName in xlsSheetNames" ng-change="refreshDataSet(dataSet)"></select>
-                            </div>
-                        </div>
-
-                        <div class="form-group pull-right">
-                            <button class="btn btn-success" ng-click="previewDataSet(dataSet)">Preview</button>
-                            <button class="btn btn-info" ng-click="saveDataSet()">Save</button>
-                            <button class="btn btn-warning" ng-click="clearDataSet(dataSet)">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div ng-show="showPreviewChart" ng-if="previewData">
-            <div class="col-md-12">
-                <div class="hpanel">
-                    <div class="panel-heading">
-                        Preview
                     </div>
-                    <div class="">
-                        <div class="box-body popup-head">
+                </div>
 
-                            <div id="changes-height" class="table-responsive">
-                                <div preview-Table path="{{previewData}}" preview-Data="getDataSetColumns(dataSet)"></div>
+                <div ng-show="showPreviewChart" ng-if="previewData">
+                    <div class="col-md-12">
+                        <div class="hpanel">
+                            <div class="panel-heading">
+                                Preview
                             </div>
+                            <div class="">
+                                <div class="box-body popup-head">
 
+                                    <div id="changes-height" class="table-responsive">
+                                        <div preview-Table path="{{previewData}}" preview-Data="getDataSetColumns(dataSet)"></div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
     </div>
     <div class="tab-content" ng-show="isSet(2)">
         <section class="content">
@@ -317,13 +317,16 @@
                 </div>
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="hpanel">
+                        <div class="col-md-6" >
+                           <div ng-show="firstDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+                            <div class="hpanel" ng-if="firstDataSetLoadingCompleted">
                                 <div class="panel-heading">
                                     {{firstDataSetName}}
                                 </div>
-                                <div class="panel-body">
-                                    <table class="table table-responsive table-bordered table-l2t">
+                                 
+                                <div class="panel-body" >
+                                    
+                                    <table class="table table-responsive table-bordered table-l2t" >
                                         <thead>
                                             <tr> 
                                                 <th class="text-capitalize table-bg" ng-repeat="firstDataSetColumn in firstDataSetColumns|limitTo:5:0">
@@ -340,113 +343,115 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="hpanel">
-                                <div class="panel-heading">
-                                    {{secondDataSetName}}
-                                </div>
-                                <div class="panel-body">
-                                    <table class="table table-responsive table-bordered table-l2t">
-                                        <thead>
-                                            <tr> 
-                                                <th class="text-capitalize table-bg" ng-repeat="secondDataSetColumn in secondDataSetColumns|limitTo:5:0">
-                                                    {{secondDataSetColumn.fieldName}}
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody ng-repeat="secondDataSetRow in secondDataSetRows|limitTo:5:0">
-                                            <tr class="text-capitalize">
-                                                <td ng-repeat="column in secondDataSetColumns|limitTo:5:0"><div>{{secondDataSetRow[column.fieldName]}}</div></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                   
+                    <div class="col-md-6">
+                        <div  ng-show="secondDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+                        <div class="hpanel" ng-if="secondDataSetLoadingCompleted">
+                            <div class="panel-heading">
+                                {{secondDataSetName}}
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="hpanel">
-                        <div class="panel-heading"></div>
-                        <div class="panel-body">
-                            <label class="col-md-6">JoinType</label>
-                            <div class="col-md-6">
-                                <select class="form-control" ng-model="combinedDataSetColumn.joinType">
-                                    <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
-                                        {{joinType.name}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="hpanel">
-                        <div class="panel-heading">Condition</div>
-                        <div class="panel-body">
-                            <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addCombinedColumnList()"><i class="fa fa-plus"></i></button></div>
-
-                            <table class="table table-bordered table-responsive table-scheduler">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            DataSet1 Column
-                                        </th>
-                                        <th>
-                                            DataSet2 Column
-                                        </th>
-
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="combinedDataSetColumn in dataSetColumnList track by $index">
-                                        <td >
-                                            <div>
-                                                <select class="form-control" ng-model="combinedDataSetColumn.firstDataSetColumn" ng-change="selectFirstDataSetColumn(combinedDataSetColumn)">
-                                                    <option ng-repeat="firstDataSetColumn in firstDataSetColumns track by $index " 
-                                                            value="{{firstDataSetColumn.fieldName}}">
-                                                        {{firstDataSetColumn.fieldName}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div>
-                                                <select class="form-control" ng-model="combinedDataSetColumn.secondDataSetColumn" ng-change="selectSecondDataSetColumn(combinedDataSetColumn)">
-                                                    <option ng-repeat="secondDataSetColumn in secondDataSetColumns track by $index" 
-                                                            value="{{secondDataSetColumn.fieldName}}">
-                                                        {{secondDataSetColumn.fieldName}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div><span class="btn btn-default btn-xs" ng-click="removeCombinedDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="hpanel">
-                        <div class="panel-heading"></div>
-                        <div class="panel-body">
-                            <div class="pull-right">
-                                <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
-                                <button class="btn btn-success" ng-disabled="!combinedDataSetColumn" ng-click="saveCombinedDataSet(combinedDataSetColumn)">Show Result</button>
-                                <button class="btn btn-default" ng-click="cancelCombinationDataSet()">Cancel</button>
+                             
+                            <div class="panel-body" >
+                                
+                                <table class="table table-responsive table-bordered table-l2t" >
+                                    <thead>
+                                        <tr> 
+                                            <th class="text-capitalize table-bg" ng-repeat="secondDataSetColumn in secondDataSetColumns|limitTo:5:0">
+                                                {{secondDataSetColumn.fieldName}}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-repeat="secondDataSetRow in secondDataSetRows|limitTo:5:0">
+                                        <tr class="text-capitalize">
+                                            <td ng-repeat="column in secondDataSetColumns|limitTo:5:0"><div>{{secondDataSetRow[column.fieldName]}}</div></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+            <div class="col-md-12">
+                <div class="hpanel">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <label class="col-md-6">JoinType</label>
+                        <div class="col-md-6">
+                            <select class="form-control" ng-model="combinedDataSetColumn.joinType" ng-change="selectJoinType(combinedDataSetColumn)">
+                                <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
+                                    {{joinType.name}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" ng-show="hideCondition">
+                <div class="hpanel">
+                    <div class="panel-heading">Condition</div>
+                    <div class="panel-body">
+                        <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addCombinedColumnList()"><i class="fa fa-plus"></i></button></div>
+
+                        <table class="table table-bordered table-responsive table-scheduler" >
+                            <thead>
+                                <tr>
+                                    <th>
+                                        DataSet1 Column
+                                    </th>
+                                    <th>
+                                        DataSet2 Column
+                                    </th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="combinedDataSetColumn in dataSetColumnList track by $index">
+                                    <td >
+                                        <div>
+                                            <select class="form-control" ng-model="combinedDataSetColumn.firstDataSetColumn" ng-change="selectFirstDataSetColumn(combinedDataSetColumn)">
+                                                <option ng-repeat="firstDataSetColumn in firstDataSetColumns track by $index " 
+                                                        value="{{firstDataSetColumn.fieldName}}">
+                                                    {{firstDataSetColumn.fieldName}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <select class="form-control" ng-model="combinedDataSetColumn.secondDataSetColumn" ng-change="selectSecondDataSetColumn(combinedDataSetColumn)">
+                                                <option ng-repeat="secondDataSetColumn in secondDataSetColumns track by $index" 
+                                                        value="{{secondDataSetColumn.fieldName}}">
+                                                    {{secondDataSetColumn.fieldName}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div><span class="btn btn-default btn-xs" ng-click="removeCombinedDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="hpanel">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div class="pull-right">
+                            <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
+                            <button class="btn btn-success" ng-disabled="!combinedDataSetColumn" ng-click="saveCombinedDataSet(combinedDataSetColumn)">Show Result</button>
+                            <button class="btn btn-default" ng-click="cancelCombinationDataSet(combinedDataSetColumn)">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
+</section>
+</div>
 </div>
 <script>
     $(document).ready(function () {
