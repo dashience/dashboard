@@ -118,6 +118,9 @@
     .report-footer-btn{
         padding: 16px;
     }
+    .pdf-fav {
+        padding: 5px 30px;
+    }
 </style>
 
 <div class="normalheader transition animated fadeIn">
@@ -131,11 +134,14 @@
         </div>
     </div>
 </div>
-<div class="pull-right-container pull-right">    
-    <div class="btn-group"> 
-        <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{accountId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+
+    <div class="row">    
+        <div class="col-sm-12 ">
+            <div class="btn-group pull-right pdf-fav"> 
+                <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{accountId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+            </div>
+        </div>
     </div>
-</div>
 
 <div class="row content">
     <div ng-repeat="favouritesWidget in favouritesWidgets">
@@ -156,23 +162,23 @@
                         <a title="Report" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
                         <a class="edit" ui-sref="index.editWidget({accountId: accountId, accountName: accountName, productId: 0, tabId: favouritesWidget.widgetId.tabId.id, widgetId: favouritesWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></a>
                         <!--<a class="closebox" data-toggle="modal" data-target="#delete{{favouritesWidget.widget.id.tab.id}}" title="Delete"><i class="fa fa-times"></i></a>-->
-<!--                        <div id="delete{{reportWidget.id}}" class="modal">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header" style="background-color:#9DD6D7;color:black;">
-                                        <strong>Delete</strong>
-                                        <strong><button class="close" data-dismiss="modal">&times;</button></strong>
-                                    </div>
-                                    <div class="modal-body">
-                                        <span>Want to delete ? </span>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(favouritesWidget, $index)" data-dismiss="modal">Yes</button>
-                                        <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>-->
+                        <!--                        <div id="delete{{reportWidget.id}}" class="modal">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header" style="background-color:#9DD6D7;color:black;">
+                                                                <strong>Delete</strong>
+                                                                <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <span>Want to delete ? </span>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(favouritesWidget, $index)" data-dismiss="modal">Yes</button>
+                                                                <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>-->
                         <a ng-if="favouritesWidget.widgetId.width != 3" ng-click="reduceWidget(favouritesWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
                     </div>

@@ -44,6 +44,8 @@
     <class>com.visumbu.vb.model.Currency</class>
     <class>com.visumbu.vb.model.Timezone</class>
     <class>com.visumbu.vb.model.Settings</class>
+    <class>com.visumbu.vb.model.CombinedDataset</class>
+    <class>com.visumbu.vb.model.CombinedDatasetCondition</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

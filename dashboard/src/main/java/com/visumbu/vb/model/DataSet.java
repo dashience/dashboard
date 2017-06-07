@@ -42,6 +42,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")})
 public class DataSet implements Serializable {
 
+    @OneToMany(mappedBy = "datasetIdFirst")
+    private Collection<CombinedDataset> combinedDatasetCollection;
+    @OneToMany(mappedBy = "datasetIdSecond")
+    private Collection<CombinedDataset> combinedDatasetCollection1;
+
     @OneToMany(mappedBy = "datasetId")
     private Collection<DatasetColumns> datasetColumnsCollection;
 
@@ -227,6 +232,26 @@ public class DataSet implements Serializable {
 
     public void setSheetName(String sheetName) {
         this.sheetName = sheetName;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<CombinedDataset> getCombinedDatasetCollection() {
+        return combinedDatasetCollection;
+    }
+
+    public void setCombinedDatasetCollection(Collection<CombinedDataset> combinedDatasetCollection) {
+        this.combinedDatasetCollection = combinedDatasetCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<CombinedDataset> getCombinedDatasetCollection1() {
+        return combinedDatasetCollection1;
+    }
+
+    public void setCombinedDatasetCollection1(Collection<CombinedDataset> combinedDatasetCollection1) {
+        this.combinedDatasetCollection1 = combinedDatasetCollection1;
     }
 
 }

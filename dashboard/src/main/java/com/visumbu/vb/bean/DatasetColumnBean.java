@@ -16,7 +16,7 @@ public class DatasetColumnBean {
     private Integer Id;
     private String fieldName;
     private String displayName;
-        private String fieldType;
+    private String fieldType;
     private String type;
     private String status;
     private String expression;
@@ -60,7 +60,7 @@ public class DatasetColumnBean {
 
     public void setType(String type) {
         this.type = type;
-    }   
+    }
 
     public String getStatus() {
         return status;
@@ -165,7 +165,7 @@ public class DatasetColumnBean {
     public void setLastNyears(Integer lastNyears) {
         this.lastNyears = lastNyears;
     }
-    
+
     public Integer getDatasetId() {
         return datasetId;
     }
@@ -212,7 +212,7 @@ public class DatasetColumnBean {
 
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
-    }  
+    }
 
     public String getFieldType() {
         return fieldType;
@@ -221,8 +221,6 @@ public class DatasetColumnBean {
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
     }
-    
-    
 
     public Integer getId() {
         return Id;
@@ -235,6 +233,6 @@ public class DatasetColumnBean {
     @Override
     public String toString() {
         return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", type=" + type + ", status=" + status + ", expression=" + expression + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", displayFormat=" + displayFormat + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", datasetId=" + datasetId + ", sortPriority=" + sortPriority + ", tableColumns=" + tableColumns + '}';
-    }    
+    }
 
 }

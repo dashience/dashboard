@@ -2,32 +2,32 @@
 <style>
     .col-fixed-2 {
         width: 190px !important;
-        margin-right: 20px;
+        margin-right: 8px;
         float: left;
     }
     .col-fixed-3 {
         width: 320px !important;
-        margin-right: 20px;
+        margin-right: 8px;
         float: left;
     }
     .col-fixed-4 {
         width: 430px !important;
-        margin-right: 20px;
+        margin-right: 8px;
         float: left;
     }
     .col-fixed-6 {
         width: 650px !important;
-        margin-right: 20px;
+        margin-right: 8px;
         float: left;
     }
     .col-fixed-8 {
         width: 870px !important;
-        margin-right: 20px;
+        margin-right: 8px;
         float: left;
     }
     .col-fixed-12 {
-        width: 1300px !important;
-        margin-right: 20px;
+        width: 1307px !important;
+        margin-right: 8px;
         float: left;
     }
 
@@ -37,7 +37,7 @@
     }
 
     .content {
-        padding:0px 20px;
+        padding:0px 17px !important;
     }
 
     .panel-body {
@@ -52,7 +52,7 @@
         margin:0;
         background:#fff;
         border:none;
-        overflow:auto;
+        /*overflow:auto;*/
     }
 
     .header-pdf {
@@ -66,6 +66,8 @@
         padding:0;
         text-transform: uppercase;
         font-weight:600;
+        float: left;
+        color: white;
     }
     .sub-header {
         border:1px solid #eaeaea;
@@ -105,7 +107,7 @@
     }
 
     svg {
-        max-width:100%;
+        max-width:99% !important;
     }
     .head-title {
         background: #555 !important;
@@ -120,14 +122,25 @@
     p{   
         page-break-inside:avoid;
     }
+    .user-select-logo{
+        margin-top: 20px;
+    }
     @media print  {
-        /* All your print styles go here */
         .pdfButton {
             display:none !important;
         }
-
+        .pdf-title-color{
+            background: transparent !important;
+            color: #fff !important; 
+        }
+        .pdf-subtitle-color{     
+            background: transparent !important;
+            color:#6abe1e !important;
+        }
+        .table{
+            width: 99% !important;
+        }
     }
-
     @media screen {
         .pdfButton {
             display:block;
@@ -135,23 +148,24 @@
     }
 </style>
 
-<!--    </head>-->
-<!--<div ng-controller="ReportPdfController">-->
 <div>
     <div class="wrapper">
         <div class="header-pdf">        
-            <img src="static/img/logos/dashience-logo.jpg" width="80"> 
-            <img src="{{userAccountLogo}}" width="50"> 
-            <img class="pull-right" src="{{pdfLogo}}" width="50"> 
+            <img src="static/img/logos/dashience-logo.jpg" width="80"> &nbsp;
+            <img src="{{userAccountLogo}}" width="100"> 
+            <img class="pull-right user-select-logo" src="{{pdfLogo}}" width="100"> 
         </div>
         <div class="head-title">
-            <h2>{{reportPdfTitle}}</h2>
+            <h2 class="pdf-title-color">{{reportPdfTitle}}</h2>
+            <div class="pdfButton pull-right">
+                <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
+            </div>
         </div>    
         <div class="sub-header">
             <div class="col-md-12">
 
                 <div class="section-block pull-left">
-                    <h4>{{reportPdfStartDate}} - {{reportPdfEndDate}}</h4>
+                    <h4 class="pdf-subtitle-color">{{reportPdfStartDate}} - {{reportPdfEndDate}}</h4>
                     <h2><strong>{{userAccountName}}</strong></h2>
                 </div>
 
@@ -160,19 +174,14 @@
                         <p>Email: info@dashience.com<br>Phone: 773-446-7565</p>                    
                     </div>
                 </div>
-
             </div>
-
         </div>
 
         <div class="content">
-            <div class="row">
-                <div class="pdfButton">
-                    <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
-                </div>
+            <div class="row">                
                 <div class="pageBreak" ng-repeat="reportWidget in reportWidgets">
 
-                    <div class="hpanel col-fixed-{{reportWidget.widgetId.width}}" ng-if="reportWidget.widgetId.chartType == 'ticker'">
+                    <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
                              ticker-Directive ticker-Source="{{reportWidget.widgetId.dataSetId}}" 
                              ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
@@ -185,7 +194,7 @@
                         <div class="panel-heading">                           
                             <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle?reportWidget.widgetId.widgetTitle:'Widget'}}</span>
                         </div>
-                        <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'line'">
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'line'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                      line-Chart-Directive 
@@ -196,7 +205,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body" style="page-break-inside: avoid" ng-if="reportWidget.widgetId.chartType === 'bar'">
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'bar'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive 
@@ -207,7 +216,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'pie'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
                                      pie-Chart-Directive 
@@ -218,7 +227,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'area'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
                                      area-Chart-Directive 
@@ -228,7 +237,7 @@
                                      widget-Obj="{{reportWidget.widgetId}}"></div>
                             </div>
                         </div>
-                        <div class="list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
+                        <div class="list pageBreak" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div id="changes-height" class="project-list">
                                     <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
@@ -240,14 +249,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'text'">
-                            <div class="col-md-12" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
+                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'text'">
+                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div class="text-widget">
                                     <span ng-bind-html="reportWidget.widgetId.content"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
+                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
                                      stacked-Bar-Chart-Directive 

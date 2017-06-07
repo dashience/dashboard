@@ -152,8 +152,8 @@
                 <!--<td><img class="img-responsive img-thumbnail" src="{{report.logo}}"/></td>-->
                 <td ng-if="permission.createReport === true || permission.downloadReport === true || permission.deleteReport === true">
                     <button ng-if="permission.createReport === true;" class="btn btn-default btn-xs" ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></button>
-                    <button ng-if="permission.downloadReport === true;" class="btn btn-info btn-xs" ng-click="downloadReportPdf(report)"><i class="fa fa-download"></i></button>
-                    <!--<button class="btn btn-primary btn-xs" ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle;"><i class="fa fa-times-circle-o"></i></button>-->
+                    <a ng-if="permission.downloadReport === true;" class="btn btn-info btn-xs" ng-href="#viewReportPdf/{{accountId}}/{{report.id}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-download"></i></a>
+                    <!--<button ng-if="permission.downloadReport === true;" class="btn btn-info btn-xs" ng-click="downloadReportPdf(report)"><i class="fa fa-download"></i></button>-->
                     <button ng-show="showSchedulerReport" class="btn btn-primary btn-xs" 
                             ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle">
                         <i class="fa fa-times-circle-o"></i>

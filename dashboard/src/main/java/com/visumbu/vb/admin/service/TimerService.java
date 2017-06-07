@@ -23,8 +23,13 @@ import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.PropertyReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +39,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -57,6 +66,8 @@ public class TimerService {
     PropertyReader propReader = new PropertyReader();
 
     private final String urlDownloadReport = "url.downloadReport";
+    private final String urlGenerator = "url.urlGenerator";
+    private final String reportDownloadUrl = "url.reportDownloadUrl";
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
         System.out.println("Executing Tasks " + scheduledTasks);
@@ -165,19 +176,24 @@ public class TimerService {
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = subject + "\n\n- System";
-            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-            schedulerHistory.setFileName(filename);
-            schedulerHistory.setEmailId(toAddress);
-            schedulerHistory.setEmailSubject(subject);
-            schedulerHistory.setEmailMessage(message);
-            scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
-            schedulerDao.update(scheduler);
-            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-            Date schedulerEndTime = new Date();
-            schedulerHistory.setExecutionEndTime(schedulerEndTime);
-            schedulerHistory.setSchedulerId(schedulerById);
-            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-            schedulerService.createSchedulerHistory(schedulerHistory);
+//            String status = scheduler.getStatus();
+//            if (status.equalsIgnoreCase("Active")) {
+                Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+                schedulerHistory.setFileName(filename);
+                schedulerHistory.setEmailId(toAddress);
+                schedulerHistory.setEmailSubject(subject);
+                schedulerHistory.setEmailMessage(message);
+                scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
+                schedulerDao.update(scheduler);
+                schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
+                Date schedulerEndTime = new Date();
+                schedulerHistory.setExecutionEndTime(schedulerEndTime);
+                schedulerHistory.setSchedulerId(schedulerById);
+                schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
+                schedulerService.createSchedulerHistory(schedulerHistory);
+//            } else {
+//                System.out.println("Scheduler is InActive");
+//            }
         }
     }
 
@@ -294,13 +310,17 @@ public class TimerService {
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-            String urlStr = propReader.readUrl(urlDownloadReport) + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
-            System.out.println(urlStr);
-            URL website = new URL(urlStr);
+            String url = propReader.readUrl(reportDownloadUrl)+ accountId + "/" + reportId + "?startDate=" + startDateStr + "&endDate=" + endDateStr;
+            String pdfGenerator = propReader.readUrl(urlGenerator)+URLEncoder.encode(url,"UTF-8");
+            downloadUrlAndSave(filename, pdfGenerator);
+            //String urlStr = propReader.readUrl(urlDownloadReport) + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
 
-            File file = new File(filename);
-            System.out.println("filename: " + filename);
-            FileUtils.copyURLToFile(website, file);
+            //System.out.println(urlStr);
+           // URL website = new URL(urlStr);
+
+//            File file = new File(filename);
+//            System.out.println("filename: " + filename);
+//            FileUtils.copyURLToFile(website, file);
             MailProperties mailProps = new MailProperties();
             TextMailWithAttachment sender = new TextMailWithAttachment(mailProps);
             String[] attachments = {filename};
@@ -311,6 +331,64 @@ public class TimerService {
             return false;
         }
         return true;
+    }
+
+    public static String downloadUrlAndSave(String filename, String urlPath) {
+        String savedFile = filename;
+        // Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[]{
+            new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+
+                public void checkClientTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+
+                public void checkServerTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+            }
+        };
+
+// Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+        }
+
+        try {
+            URL url = new java.net.URL(urlPath);
+            URLConnection urlConnect = url.openConnection();
+            urlConnect.setDoInput(true);
+            urlConnect.setDoOutput(true);
+            byte[] buffer = new byte[8 * 1024];
+            System.out.println("FILE NAME " + filename);
+            InputStream input = urlConnect.getInputStream();
+            try {
+                File file = new File(filename);
+                boolean mkdirs = file.getParentFile().mkdirs();
+                OutputStream output = new FileOutputStream(filename);
+                try {
+                    int bytesRead;
+                    while ((bytesRead = input.read(buffer)) != -1) {
+                        output.write(buffer, 0, bytesRead);
+                    }
+                } finally {
+                    output.close();
+                }
+            } finally {
+                input.close();
+            }
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return savedFile;
     }
 
 }
