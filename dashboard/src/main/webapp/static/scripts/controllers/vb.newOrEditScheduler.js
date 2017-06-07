@@ -162,14 +162,23 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $scope.scheduler.lastNmonths = "";
             $scope.scheduler.lastNyears = "";
         }
+        
+        $scope.showSchedulerMsg = false
+        $scope.showErrorDateRangeMessage = ""
+        
         console.log(scheduler)
     }
     $scope.saveScheduler = function (scheduler) {
         scheduler.dateRangeName = $("#customDateRangeName").text();
-        try {
-            $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
-            $scope.customEndDate = scheduler.dateRangeName !== "Select Date Duration" ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+        if (scheduler.dateRangeName == "Select Date Duration") {
+            scheduler.dateRangeName = ""
+        }
+
+        try {
+            $scope.customStartDate = moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY')//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+            $scope.customEndDate = moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') //: $stateParams.endDate;
         } catch (e) {
 
         }
@@ -233,15 +242,16 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.schedulerMonthly = null;
             scheduler.schedulerYearly = null;
             scheduler.schedulerYearOfWeek = null;
-        }else {
-            return null;
+        } else {
+            //return null;
         }
-
-        var emails = scheduler.schedulerEmail.map(function (value, key) {
-            if (value) {
-                return value;
-            }
-        }).join(',');
+        if (scheduler.schedulerEmail) {
+            var emails = scheduler.schedulerEmail.map(function (value, key) {
+                if (value) {
+                    return value;
+                }
+            }).join(',');
+        }
         if (scheduler.dateRangeName === 'Custom') {
             scheduler.customStartDate = $scope.customStartDate;
             scheduler.customEndDate = $scope.customEndDate;
@@ -249,11 +259,20 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.customStartDate = "";
             scheduler.customEndDate = "";
         }
-        
-        scheduler.schedulerEmail = emails;
-        $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
-        });
-        $scope.scheduler = "";
+
+
+        if (!scheduler.dateRangeName) {
+            $scope.showSchedulerMsg = true;
+            $scope.showErrorDateRangeMessage = "Select Date Duration"
+        } else {
+            $scope.showSchedulerMsg = false;
+            scheduler.schedulerEmail = emails;
+            $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
+            });
+            $scope.scheduler = "";
+            $scope.showErrorDateRangeMessage = ""
+        }
+
     };
 
     $timeout(function () {
@@ -271,14 +290,16 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             //Date range picker with time picker
             $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
             //Date range as a button
+            var customStartDate = $scope.scheduler.customStartDate ? $scope.scheduler.customStartDate : $stateParams.startDate;
+            var customEndDate = $scope.scheduler.customEndDate ? $scope.scheduler.customEndDate : $stateParams.endDate;
             $('#customDateRange').daterangepicker(
                     {
                         ranges: {
                             'Today': [moment(), moment()],
                             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                            'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                            'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                            'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
                             'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
                             'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -294,8 +315,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                         },
-                        startDate: $scope.scheduler.customStartDate ? $scope.scheduler.customStartDate : moment().subtract(29, 'days'),
-                        endDate: $scope.scheduler.customEndDate ? $scope.scheduler.customEndDate : moment(),
+                        startDate: customStartDate ? customStartDate : moment().subtract(30, 'days'),
+                        endDate: customEndDate ? customEndDate : moment().subtract(1, 'days'),
                         maxDate: new Date()
                     },
                     function (startDate, endDate) {

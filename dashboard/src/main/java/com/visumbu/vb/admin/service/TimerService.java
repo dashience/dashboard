@@ -178,8 +178,8 @@ public class TimerService {
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = subject + "\n\n- System";
-            String status = scheduler.getStatus();
-            if (status.equalsIgnoreCase("Active")) {
+//            String status = scheduler.getStatus();
+//            if (status.equalsIgnoreCase("Active")) {
                 Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
                 schedulerHistory.setFileName(filename);
                 schedulerHistory.setEmailId(toAddress);
@@ -193,9 +193,9 @@ public class TimerService {
                 schedulerHistory.setSchedulerId(schedulerById);
                 schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
                 schedulerService.createSchedulerHistory(schedulerHistory);
-            } else {
-                System.out.println("Scheduler is InActive");
-            }
+//            } else {
+//                System.out.println("Scheduler is InActive");
+//            }
         }
     }
 
