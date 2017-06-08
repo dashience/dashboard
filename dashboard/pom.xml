@@ -55,12 +55,12 @@
         <dependency>
             <groupId>com.google.api-ads</groupId>
             <artifactId>ads-lib</artifactId>
-            <version>3.2.0</version>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.api-ads</groupId>
             <artifactId>adwords-axis</artifactId>
-            <version>3.2.0</version>
+            <version>3.4.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
@@ -447,6 +447,12 @@
             <artifactId>org.apache.oltu.oauth2.client</artifactId>
             <version>1.0.2</version>
         </dependency>
+<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>22.0</version>
+</dependency>
 
         <!-- twitter code ends -->
         

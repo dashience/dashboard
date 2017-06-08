@@ -68,11 +68,12 @@ public class AdwordsService {
     private static final int PAGE_SIZE = 100;
     public static final String XML_FILE_DIR = "/tmp/";
     //private static String clientId = "162577857765-r9dvqjb6i7atjvjftdc8dq5pp80n8j2g.apps.googleusercontent.com";
-    private static String clientId = "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com";
+    private static String clientId = "117202177181-dfpvmamitf7acnn8ginmp5d0e813u584.apps.googleusercontent.com";
     //private static String clientSecret = "UxF3VNJFWfNBEQ86reUTk09M";
-    private static String clientSecret = "xXIHWHPBQ9B9KpkFs_1tmniu";
+    private static String clientSecret = "Z144G8Oqa15m93REF0k5z-vJ";
     //private static String refreshToken = "1/75VMEAe7i9UOm69maPpsPMaYH1e58R1xUGlulN--3Pg";
-    private static String refreshToken = "1/0u_BRufKySoAJwzSUaN6YDkpJiCTZ-swHBp-TMi_HYjPuJ9BIEFVAKhwewnySfK3";
+//    private static String refreshToken = "1/0u_BRufKySoAJwzSUaN6YDkpJiCTZ-swHBp-TMi_HYjPuJ9BIEFVAKhwewnySfK3";
+    private static String refreshToken = "1/TTTOt8m6Oh9dOdmQZz07jq6rP9QvxNZ-H0_T4WBwdYw";
     //private static String developerToken = "X4glgfA7zjlwzeL3jNQjkw";
     private static String developerToken = "I-Ivbh_yb3mE7O8L7KRTFA";
 
