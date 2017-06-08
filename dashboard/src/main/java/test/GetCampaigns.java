@@ -36,10 +36,10 @@ public class GetCampaigns {
 
     private static final int PAGE_SIZE = 100;
 
-    private static String clientId = "162577857765-r9dvqjb6i7atjvjftdc8dq5pp80n8j2g.apps.googleusercontent.com";
-    private static String clientSecret = "UxF3VNJFWfNBEQ86reUTk09M";
-    private static String refreshToken = "1/75VMEAe7i9UOm69maPpsPMaYH1e58R1xUGlulN--3Pg";
-    private static String developerToken = "X4glgfA7zjlwzeL3jNQjkw";
+    private static String clientId = "117202177181-dfpvmamitf7acnn8ginmp5d0e813u584.apps.googleusercontent.com";
+    private static String clientSecret = "Z144G8Oqa15m93REF0k5z-vJ";
+    private static String refreshToken = "1/i4W9G31Xej2OklH_wihE8AxcDDqd9UeH4Vsi6eJaQshIGy3zvEMB0svvFz4NOj-b";
+    private static String developerToken = "zA56sMrpDz_1Hrc_AbRwyA";
 
     public static void main(String[] args) throws Exception {
         // Generate a refreshable OAuth2 credential.
