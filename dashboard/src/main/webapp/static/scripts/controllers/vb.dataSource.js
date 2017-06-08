@@ -18,23 +18,14 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: "facebook",
                 name: "Facebook",
-                url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:9090/VizBoard/fbPost.html'
-            },
-            {
-                type: "linkedin",
-                name: "LinkedIn",
-                url: 'https://www.linkedin.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&state=123908353453&response_type=code'
+//                url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:9090/VizBoard/fbPost.html'
             },
             {
                 type: 'instagram',
                 name: 'Instagram',
-                url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
+//                url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
             },
-            {
-                type: 'pinterest',
-                name: 'pinterest',
-//                url: 'https://wwww.pinterest.com/oauth/v2/authorization?client_id=81kqaac7cnusqy&redirect_uri=http://localhost:8084/VizBoard/fbPost.html&state=123908353453&response_type=code'
-            },
+            
             {
                 type: 'adwords',
                 name: 'Google AdWords'
@@ -52,14 +43,14 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 type: 'linkedin',
                 name: 'LinkedIn'
             },
-//            {
-//                type: 'twitter',
-//                name: 'Twitter'
-//            },
-//             {
-//                type: 'bing',
-//                name: 'Bing'
-//            }
+            {
+                type: 'twitter',
+                name: 'Twitter'
+            },
+             {
+                type: 'bing',
+                name: 'Bing'
+            }
         ];
         function getItems() {
             $http.get('admin/ui/dataSource').success(function (response) {

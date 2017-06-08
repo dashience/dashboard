@@ -1606,11 +1606,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     };
     $scope.saveDataSet = function () {
-       
+
         var dataSetList = $scope.dataSet;
         console.log(dataSetList.timeSegment.type);
-        dataSetList.timeSegment =dataSetList.timeSegment.type;
-        dataSetList.productSegment =dataSetList.productSegment.type;
+        dataSetList.timeSegment = dataSetList.timeSegment.type;
+        dataSetList.productSegment = dataSetList.productSegment.type;
         console.log(dataSetList.timeSegment);
 
         var dataSet = dataSetList;//$scope.dataSet;
@@ -1880,7 +1880,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '</tbody>' +
 //                '</table>' +
 //                '</div>',
-                template:'<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
+        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
                 '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
@@ -2029,7 +2029,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</div>' +
                 '<table  class="table table-responsive table-bordered table-l2t">' +
-                '<thead><tr>'+
+                '<thead><tr>' +
                 '<th class="text-capitalize table-bg" ng-repeat="col in dataSetColumns">' +
                 '{{col.fieldName}}' +
                 //Edit
@@ -2282,34 +2282,62 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
-                    console.log(response)
+//                    console.log(response)
                     if (response.data.length == 0) {
                         scope.errorMsg = "No Data Found";
                         scope.showErrorMsg = true;
                     } else {
                         scope.showErrorMsg = false;
                         scope.tableColumns = response.columnDefs;
-                        scope.tableRows = response.data;
-
+                        if (setTimeSegment == "dayOfWeek") {
+                            scope.dayOfWeekDataSet = [];
+                            angular.forEach(response.data, function (valueObj, key) {
+                                var dayOfWeekObj = {
+                                    accountId: valueObj.accountId,
+                                    accountName: valueObj.accountName,
+                                    averageCpc: valueObj.averageCpc,
+                                    averagePosition: valueObj.averagePosition,
+                                    clicks: valueObj.clicks,
+                                    conversionRate: valueObj.conversionRate,
+                                    conversions: valueObj.conversions,
+                                    costPerConversion: valueObj.costPerConversion,
+                                    ctr: valueObj.ctr,
+                                    dayOfWeek: dayOfWeekAsString(valueObj.dayOfWeek - 1),
+                                    gregorianDate: valueObj.gregorianDate,
+                                    hourOfDay: valueObj.hourOfDay,
+                                    impressionLostToBudgetPercent: valueObj.impressionLostToBudgetPercent,
+                                    impressionLostToRankPercent: valueObj.impressionLostToRankPercent,
+                                    impressionSharePercent: valueObj.impressionSharePercent,
+                                    impressions: valueObj.impressions,
+                                    month: valueObj.month,
+                                    phoneCalls: valueObj.phoneCalls,
+                                    qualityScore: valueObj.qualityScore,
+                                    spend: valueObj.spend,
+                                    week: valueObj.week
+                                };
+                                scope.dayOfWeekDataSet.push(dayOfWeekObj);
+                            });
+                            scope.tableRows = scope.dayOfWeekDataSet;
+                        } else {
+                            scope.tableRows = response.data;
+                        }
+                        function dayOfWeekAsString(dayIndex) {
+                            return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
+                        }
                         scope.columns = [];
-                        console.log("dataSourcePath.id-->"+dataSourcePath.id)
-                        console.log(dataSourcePath)
                         scope.dataSetId = dataSourcePath.id;
                         if (dataSourcePath.id != null) {
-                            alert();
                             $http.get("admin/ui/getDatasetById/" + dataSourcePath.id).success(function (resp) {
 //                            scope.ajaxLoadingCompleted = true;
 //                            scope.loadingTable = false;
-                                console.log(resp)
+//                                console.log(resp)
                                 scope.dataSetColumns = [];
                                 console.log("my respo below..");
                                 console.log(resp)
                                 if (resp == "" || resp == null) {
-                                    alert();
                                     scope.dataSetColumns = response.columnDefs;
                                     console.log(scope.dataSetColumns);
                                 } else {
-                                    alert("33");
                                     angular.forEach(resp, function (value, key) {
                                         angular.forEach(scope.tableColumns, function (val, key) {
                                             if (value.fieldName == val.fieldName) {
@@ -2419,10 +2447,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                                     scope.columns.push(columnData);
                                 }
                             });
-                        }
-                        else {
-                            
-                            scope.dataSetColumns=scope.tableColumns;
+                        } else {
+
+                            scope.dataSetColumns = scope.tableColumns;
                         }
                         console.log("*********************************");
                         console.log(scope.dataSetColumns);

@@ -139,7 +139,7 @@ public class ProxyController {
             valueMap.put(key, Arrays.asList(value));
         }
 
-        Map returnMap = getData(valueMap,request, response);
+        Map returnMap = getData(valueMap, request, response);
         Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
         Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
         String dataSourceType = request.getParameter("dataSourceType");
@@ -1134,7 +1134,37 @@ public class ProxyController {
                 valueList.add(property.getPropertyValue());
                 valueMap.put(property.getPropertyName(), valueList);
             }
-            String dataSetReportName=request.getParameter("dataSetReportName");
+            String dataSetId = getFromMultiValueMap(valueMap, "dataSetId");
+            String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+            String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+            String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+            if (timeSegment == null) {
+                timeSegment = "daily";
+            }
+            if (productSegment == null) {
+                productSegment = "none";
+            }
+            Integer dataSetIdInt = null;
+            DataSet dataSet = null;
+            if (dataSetId != null) {
+                try {
+                    dataSetIdInt = Integer.parseInt(dataSetId);
+                } catch (Exception e) {
+
+                }
+                if (dataSetIdInt != null) {
+                    dataSet = uiService.readDataSet(dataSetIdInt);
+                }
+                if (dataSet != null) {
+                    dataSetReportName = dataSet.getReportName();
+                    timeSegment = dataSet.getTimeSegment();
+                    productSegment = dataSet.getProductSegment();
+                }
+            }
+            valueMap.put("timeSegment", Arrays.asList(timeSegment));
+            valueMap.put("productSegment", Arrays.asList(productSegment));
+            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
+
 //            System.out.println("My dataSetReportName -->"+dataSetReportName);
             String url = "../dbApi/admin/bing/getData";
             Integer port = 80;
@@ -1155,8 +1185,6 @@ public class ProxyController {
             log.debug("valuemap: " + valueMap);
             System.out.println("valuemap: " + valueMap);
             String data = Rest.getData(url, valueMap);
-            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&");
-            System.out.println(data);
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(data);
             List dataList = JsonSimpleUtils.toList((JSONArray) jsonObj);
