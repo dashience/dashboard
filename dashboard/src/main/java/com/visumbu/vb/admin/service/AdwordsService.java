@@ -74,7 +74,7 @@ public class AdwordsService {
     //private static String refreshToken = "1/75VMEAe7i9UOm69maPpsPMaYH1e58R1xUGlulN--3Pg";
     private static String refreshToken = "1/0u_BRufKySoAJwzSUaN6YDkpJiCTZ-swHBp-TMi_HYjPuJ9BIEFVAKhwewnySfK3";
     //private static String developerToken = "X4glgfA7zjlwzeL3jNQjkw";
-    private static String developerToken = "e8OVurxJ9mIlIPxfe-eOlw";
+    private static String developerToken = "I-Ivbh_yb3mE7O8L7KRTFA";
 
     private AdWordsSession getSession(String accountId) {
         try {
