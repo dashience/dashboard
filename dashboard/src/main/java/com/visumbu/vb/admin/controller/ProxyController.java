@@ -1213,7 +1213,6 @@ public class ProxyController {
         }
         return propertyAccountId;
     }
-
     private List<Map<String, Object>> getBingData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
         try {
             String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
@@ -1249,9 +1248,9 @@ public class ProxyController {
                     dataSet = uiService.readDataSet(dataSetIdInt);
                 }
                 if (dataSet != null) {
-                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
-                    timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
-                    productSegment = (productSegment == null  || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
+                    dataSetReportName = dataSet.getReportName();
+                    timeSegment = dataSet.getTimeSegment();
+                    productSegment = dataSet.getProductSegment();
                 }
             }
             valueMap.put("timeSegment", Arrays.asList(timeSegment));
@@ -1287,6 +1286,80 @@ public class ProxyController {
         }
         return null;
     }
+
+//    private List<Map<String, Object>> getBingData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+//        try {
+//            String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
+//            Integer accountId = Integer.parseInt(accountIdStr);
+//            Account account = userService.getAccountId(accountId);
+//            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+//
+//            for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+//                Property property = iterator.next();
+//                List<String> valueList = new ArrayList();
+//                valueList.add(property.getPropertyValue());
+//                valueMap.put(property.getPropertyName(), valueList);
+//            }
+//            String dataSetId = getFromMultiValueMap(valueMap, "dataSetId");
+//            String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+//            String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+//            String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+//            if (timeSegment == null) {
+//                timeSegment = "daily";
+//            }
+//            if (productSegment == null) {
+//                productSegment = "none";
+//            }
+//            Integer dataSetIdInt = null;
+//            DataSet dataSet = null;
+//            if (dataSetId != null) {
+//                try {
+//                    dataSetIdInt = Integer.parseInt(dataSetId);
+//                } catch (Exception e) {
+//
+//                }
+//                if (dataSetIdInt != null) {
+//                    dataSet = uiService.readDataSet(dataSetIdInt);
+//                }
+//                if (dataSet != null) {
+//                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+//                    timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+//                    productSegment = (productSegment == null  || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
+//                }
+//            }
+//            valueMap.put("timeSegment", Arrays.asList(timeSegment));
+//            valueMap.put("productSegment", Arrays.asList(productSegment));
+//            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
+//
+////            System.out.println("My dataSetReportName -->"+dataSetReportName);
+//            String url = "../dbApi/admin/bing/getData";
+//            Integer port = 80;
+//            if (request != null) {
+//                port = request.getServerPort();
+//            }
+//
+//            String localUrl = "http://localhost/";
+//            if (request != null) {
+//                localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
+//            }
+//            log.debug("UR:" + url);
+//            if (url.startsWith("../")) {
+//                url = url.replaceAll("\\.\\./", localUrl);
+//            }
+//            log.debug("url: " + url);
+//            System.out.println("url: " + url);
+//            log.debug("valuemap: " + valueMap);
+//            System.out.println("valuemap: " + valueMap);
+//            String data = Rest.getData(url, valueMap);
+//            JSONParser parser = new JSONParser();
+//            Object jsonObj = parser.parse(data);
+//            List dataList = JsonSimpleUtils.toList((JSONArray) jsonObj);
+//            return dataList;
+//        } catch (ParseException ex) {
+//            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
 
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");

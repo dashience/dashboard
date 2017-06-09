@@ -57,6 +57,7 @@ public class PdfService {
     public String generatePdf(String url, String windowStatus) {
         System.out.println("Generating PDF");
         List<String> commandsList = new ArrayList<>();
+        commandsList.add("xvfb-run");
         commandsList.add(pdfGeneratorCommand);
         try {
             // command ===> wkhtmltopdf --window-status done cover http://localhost:8080/dashboard/index.html#/viewPdf/27/Jose/30/Product%201/271?startDate=4~2F28~2F2017\&endDate=5~2F27~2F2017 test.pdf
