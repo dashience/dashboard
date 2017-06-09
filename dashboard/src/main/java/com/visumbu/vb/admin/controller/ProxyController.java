@@ -12,6 +12,7 @@ import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
+import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.UiService;
@@ -116,6 +117,9 @@ public class ProxyController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private TwitterService twitterService;
 
     @Autowired
     private UiDao uiDao;
@@ -240,6 +244,10 @@ public class ProxyController {
             returnMap = (Map) getXlsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("pinterest")) {
             returnMap = (Map) getPinterestData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("twitter")) {
+            List<Map<String, Object>> dataList = getTwitterData(request, response);
+            returnMap.put("data", dataList);
+            returnMap.put("columnDefs", getColumnDefObject(dataList));
         }
         System.out.println("return map ---> " + returnMap);
         return returnMap;
@@ -1019,6 +1027,65 @@ public class ProxyController {
         // System.out.println("Product Segment" + request.getParameter("productSegment"));
         // System.out.println("filter " + request.getParameter("filter"));
         return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null);
+    }
+
+    List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+
+        Integer dataSetIdInt = null;
+        DataSet dataSet = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                dataSet = uiService.readDataSet(dataSetIdInt);
+            }
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
+
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String twitterAccountId = getAccountId(accountProperty, "twitterAccountId");
+        String twitterScreenName = getAccountId(accountProperty, "twitterScreenName");
+        String twitterOauthToken = getAccountId(accountProperty, "twitterOauthToken");
+        String twitterOauthSignature = getAccountId(accountProperty, "twitterOauthSignature");
+        String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
+        String twitterOauthConsumerKey = getAccountId(accountProperty, "twitterConsumerKey");
+
+        //Testing
+        System.out.println("Twitter AccountId-->" + twitterAccountId);
+        System.out.println("Twitter twitterOauthNonce-->" + twitterOauthNonce);
+        System.out.println("Twitter twitterOauthSignature-->" + twitterOauthSignature);
+        System.out.println("Twitter twitterScreenName-->" + twitterScreenName);
+        System.out.println("Twitter twitterOauthToken-->" + twitterOauthToken);
+        try {
+            Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
+            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, twitterAccountId, twitterScreenName,
+                    twitterOauthToken, twitterOauthSignature, twitterOauthNonce, twitterOauthConsumerKey, startDate, endDate, timeSegment, productSegment);
+            return twitterReport;
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 
     Object getFbData(MultiValueMap<String, String> request, HttpServletResponse response) {

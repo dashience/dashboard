@@ -82,6 +82,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
+        } else if (dataSource === "twitter") {
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
+            $scope.nwStatusFlag = false;
+            $scope.report = $scope.twitterPerformance;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
@@ -98,8 +104,25 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'getOrganicData',
             name: 'getOrganicData',
         }
-    ]
-
+    ];
+    $scope.twitterPerformance = [
+        {
+            type: 'pagePerformance',
+            name: 'Page Performance',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }
+    ];
     $scope.bingPerformance = [
         {
             type: 'accountPerformance',
@@ -157,7 +180,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'weekly',
                     name: 'Weekly'
                 },
-
                 {
                     type: 'none',
                     name: 'None'
@@ -252,7 +274,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
     ];
-
     $scope.facebookPerformance = [
         {
             type: 'accountPerformance',
@@ -489,7 +510,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
     ];
-
     $scope.instagramPerformance = [
         {
             type: 'instagramPerformance',
@@ -1430,14 +1450,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-
-
 //    $scope.dataSet={timeSegment:'none'};
 
 
     $scope.getTimeSegements = function () {
-
-        console.log("Data source type-->" + $scope.dataSet.dataSourceId.dataSourceType);
+        if ($scope.dataSet.dataSourceId.dataSourceType === "twitter") {
+            var index = getIndex($scope.dataSet.reportName, $scope.twitterPerformance);
+            $scope.timeSegment = $scope.twitterPerformance[index].timeSegments;
+            $scope.productSegment = $scope.twitterPerformance[index].productSegments;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+        }
         if ($scope.dataSet.dataSourceId.dataSourceType === "bing")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.bingPerformance);
@@ -1468,7 +1494,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
-
             if ($scope.dataSet.reportName !== "") {
                 $scope.nwStatusFlag = false;
                 $scope.timeSegFlag = true;
@@ -1612,8 +1637,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         dataSetList.timeSegment = dataSetList.timeSegment.type;
         dataSetList.productSegment = dataSetList.productSegment.type;
         console.log(dataSetList.timeSegment);
-
-        var dataSet = dataSetList;//$scope.dataSet;
+        var dataSet = dataSetList; //$scope.dataSet;
         dataSet.dataSourceId = dataSet.dataSourceId.id;
         console.log(dataSet);
 //        if (dataSet.networkType !== null && typeof (dataSet.networkType) !== "undefined")
@@ -2250,7 +2274,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 return value;
             };
             var setTimeSegment, setProductSegment;
-
             if (dataSourcePath.timeSegment) {
                 setTimeSegment = dataSourcePath.timeSegment.type;
             } else {
@@ -2466,7 +2489,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     }
 
                 });
-
             };
             scope.dataSetItems();
             scope.dataSetError = false;
@@ -2567,12 +2589,10 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     dataSetColumn.lastNyears = "";
                 }
             };
-
             scope.saveDataSetColumn = function (dataSetColumn) {
                 console.log(dataSetColumn);
                 dataSetColumn.dateRangeName = $("#dateRangeName").text().trim();
                 console.log(dataSetColumn.dateRangeName);
-
                 try {
                     scope.customStartDate = dataSetColumn.dateRangeName != "Select Date" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
                     scope.customEndDate = dataSetColumn.dateRangeName != "Select Date" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -2628,7 +2648,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.dataSetItems();
                 });
             };
-
             scope.editDataset = function (dataSetColumn) {
                 console.log(dataSetColumn)
                 if (dataSetColumn.customStartDate == "" && dataSetColumn.customStartDate == null && dataSetColumn.customEndDate == "" && dataSetColumn.customEndDate == null) {
@@ -2655,7 +2674,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 console.log(editData);
                 scope.dataSetColumn = editData;
             };
-
             scope.deleteDataset = function (dataSetColumn) {
                 $http({method: "DELETE", url: 'admin/ui/dataSetFormulaColumns/' + dataSetColumn.id}).success(function (response) {
                     scope.ajaxLoadingCompleted = false;
