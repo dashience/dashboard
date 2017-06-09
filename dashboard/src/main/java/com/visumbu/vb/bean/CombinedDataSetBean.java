@@ -11,14 +11,31 @@ import java.util.List;
  *
  * @author deeta1
  */
-public class CombinedDatasetBean {
+public class CombinedDataSetBean {
 
+    private Integer id;
+    private String dataSetName;
     private Integer dataSetIdFirst;
     private Integer dataSetIdSecond;
     private String operationType;
-    private List<CombinedDatasetBean> conditionFields;
+    private List<CombinedDataSetBean> conditionFields;
     private String firstDataSetColumn;
     private String secondDataSetColumn;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getDataSetName() {
+        return dataSetName;
+    }
+
+    public void setDataSetName(String dataSetName) {
+        this.dataSetName = dataSetName;
+    }
 
     public Integer getDataSetIdFirst() {
         return dataSetIdFirst;
@@ -44,11 +61,11 @@ public class CombinedDatasetBean {
         this.operationType = operationType;
     }
 
-    public List<CombinedDatasetBean> getConditionFields() {
+    public List<CombinedDataSetBean> getConditionFields() {
         return conditionFields;
     }
 
-    public void setConditionFields(List<CombinedDatasetBean> conditionFields) {
+    public void setConditionFields(List<CombinedDataSetBean> conditionFields) {
         this.conditionFields = conditionFields;
     }
 

@@ -414,7 +414,6 @@
                                             DataSet2 Column
                                         </th>
 
-
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -456,6 +455,39 @@
                                 <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
                                 <button class="btn btn-success" ng-disabled="!combinedDataSetColumn" ng-click="saveCombinedDataSet(combinedDataSetColumn)">Save&Show Result</button>
                                 <button class="btn btn-default" ng-click="cancelCombinationDataSet(combinedDataSetColumn)">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div  ng-show="loadingResult" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+                    <div class="hpanel" ng-if="loadingResultCompleted">
+                        
+                        <div class="panel-heading">{{combinedDataSetNewName}}</div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <div class="text-center" ng-show="errorHide">{{errorMessage}}</div>
+                                <table class="table table-bordered table-l2t" >
+                                    <thead>
+                                        <tr> 
+                                            <th class="text-capitalize table-bg" ng-repeat="combinedColumn in combinedColumns">
+                                                {{combinedColumn.fieldName}}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-repeat="combinedRow in combinedRows|limitTo:5:0">
+                                        <tr class="text-capitalize">
+                                            <td ng-repeat="column in combinedColumns"><div>{{combinedRow[column.fieldName]}}</div></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <div>
+                                    <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
+                                    <button class="btn btn-success">Save</button>
+                                    <button class="btn btn-default">Cancel</button>
+                                </div>
                             </div>
                         </div>
                     </div>

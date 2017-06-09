@@ -11,6 +11,7 @@ import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.CombinedDataSetCondition;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
@@ -479,6 +480,14 @@ public class UiDao extends BaseDao {
         return null;
     }
 
+    public DatasetColumns deleteDataSetColumns(Integer id) {
+        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+        return null;
+    }
+
     public List<UserAccount> getUserAccountById(Integer userId) {
         String queryStr = "select d from UserAccount d where d.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -608,12 +617,11 @@ public class UiDao extends BaseDao {
         query.setParameter("accountId", id);
         return query.list();
     }
-
-    public DatasetColumns deleteDataSetColumns(Integer id) {
-        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+    
+    public List<CombinedDataSetCondition> getCombinedDataSetConditionById(Integer id) {
+        String queryStr = "select d from CombinedDataSetCondition d where d.combinedDataSetId.id = :combinedDataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("dataSetId", id);
-        query.executeUpdate();
-        return null;
+        query.setParameter("combinedDataSetId", id);
+        return query.list();
     }
 }

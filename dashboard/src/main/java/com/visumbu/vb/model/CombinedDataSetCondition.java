@@ -25,14 +25,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author deeta1
  */
 @Entity
-@Table(name = "combined_dataset_condition")
+@Table(name = "combined_data_set_condition")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CombinedDatasetCondition.findAll", query = "SELECT c FROM CombinedDatasetCondition c")
-    , @NamedQuery(name = "CombinedDatasetCondition.findById", query = "SELECT c FROM CombinedDatasetCondition c WHERE c.id = :id")
-    , @NamedQuery(name = "CombinedDatasetCondition.findByConditionFieldFirst", query = "SELECT c FROM CombinedDatasetCondition c WHERE c.conditionFieldFirst = :conditionFieldFirst")
-    , @NamedQuery(name = "CombinedDatasetCondition.findByConditionFieldSecond", query = "SELECT c FROM CombinedDatasetCondition c WHERE c.conditionFieldSecond = :conditionFieldSecond")})
-public class CombinedDatasetCondition implements Serializable {
+    @NamedQuery(name = "CombinedDataSetCondition.findAll", query = "SELECT c FROM CombinedDataSetCondition c")
+    , @NamedQuery(name = "CombinedDataSetCondition.findById", query = "SELECT c FROM CombinedDataSetCondition c WHERE c.id = :id")
+    , @NamedQuery(name = "CombinedDataSetCondition.findByConditionFieldFirst", query = "SELECT c FROM CombinedDataSetCondition c WHERE c.conditionFieldFirst = :conditionFieldFirst")
+    , @NamedQuery(name = "CombinedDataSetCondition.findByConditionFieldSecond", query = "SELECT c FROM CombinedDataSetCondition c WHERE c.conditionFieldSecond = :conditionFieldSecond")})
+public class CombinedDataSetCondition implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,14 +46,14 @@ public class CombinedDatasetCondition implements Serializable {
     @Size(max = 255)
     @Column(name = "condition_field_second")
     private String conditionFieldSecond;
-    @JoinColumn(name = "combined_dataset_id", referencedColumnName = "id")
+    @JoinColumn(name = "combined_data_set_id", referencedColumnName = "id")
     @ManyToOne
-    private CombinedDataset combinedDatasetId;
+    private CombinedDataSet combinedDataSetId;
 
-    public CombinedDatasetCondition() {
+    public CombinedDataSetCondition() {
     }
 
-    public CombinedDatasetCondition(Integer id) {
+    public CombinedDataSetCondition(Integer id) {
         this.id = id;
     }
 
@@ -81,12 +81,12 @@ public class CombinedDatasetCondition implements Serializable {
         this.conditionFieldSecond = conditionFieldSecond;
     }
 
-    public CombinedDataset getCombinedDatasetId() {
-        return combinedDatasetId;
+    public CombinedDataSet getCombinedDataSetId() {
+        return combinedDataSetId;
     }
 
-    public void setCombinedDatasetId(CombinedDataset combinedDatasetId) {
-        this.combinedDatasetId = combinedDatasetId;
+    public void setCombinedDataSetId(CombinedDataSet combinedDataSetId) {
+        this.combinedDataSetId = combinedDataSetId;
     }
 
     @Override
@@ -99,10 +99,10 @@ public class CombinedDatasetCondition implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CombinedDatasetCondition)) {
+        if (!(object instanceof CombinedDataSetCondition)) {
             return false;
         }
-        CombinedDatasetCondition other = (CombinedDatasetCondition) object;
+        CombinedDataSetCondition other = (CombinedDataSetCondition) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -111,7 +111,7 @@ public class CombinedDatasetCondition implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.CombinedDatasetCondition[ id=" + id + " ]";
+        return "com.visumbu.vb.model.CombinedDataSetCondition[ id=" + id + " ]";
     }
     
 }

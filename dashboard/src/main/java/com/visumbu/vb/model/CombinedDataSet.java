@@ -6,7 +6,6 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,29 +16,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author deeta1
  */
 @Entity
-@Table(name = "combined_dataset")
+@Table(name = "combined_data_set")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CombinedDataset.findAll", query = "SELECT c FROM CombinedDataset c")
-    , @NamedQuery(name = "CombinedDataset.findById", query = "SELECT c FROM CombinedDataset c WHERE c.id = :id")
-    , @NamedQuery(name = "CombinedDataset.findByOperationType", query = "SELECT c FROM CombinedDataset c WHERE c.operationType = :operationType")
-})
-public class CombinedDataset implements Serializable {
-
-    @OneToMany(mappedBy = "combinedDatasetId")
-    private Collection<CombinedDatasetCondition> combinedDatasetConditionCollection;
+    @NamedQuery(name = "CombinedDataSet.findAll", query = "SELECT c FROM CombinedDataSet c")
+    , @NamedQuery(name = "CombinedDataSet.findById", query = "SELECT c FROM CombinedDataSet c WHERE c.id = :id")
+    , @NamedQuery(name = "CombinedDataSet.findByOperationType", query = "SELECT c FROM CombinedDataSet c WHERE c.operationType = :operationType")
+    , @NamedQuery(name = "CombinedDataSet.findByDataSetName", query = "SELECT c FROM CombinedDataSet c WHERE c.dataSetName = :dataSetName")})
+public class CombinedDataSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -48,19 +41,22 @@ public class CombinedDataset implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Size(max = 255)
+    @Column(name = "data_set_name")
+    private String dataSetName;
+    @Size(max = 255)
     @Column(name = "operation_type")
     private String operationType;
-    @JoinColumn(name = "dataset_id_first", referencedColumnName = "id")
+    @JoinColumn(name = "data_set_id_first", referencedColumnName = "id")
     @ManyToOne
-    private DataSet datasetIdFirst;
-    @JoinColumn(name = "dataset_id_second", referencedColumnName = "id")
+    private DataSet dataSetIdFirst;
+    @JoinColumn(name = "data_set_id_second", referencedColumnName = "id")
     @ManyToOne
-    private DataSet datasetIdSecond;
+    private DataSet dataSetIdSecond;
 
-    public CombinedDataset() {
+    public CombinedDataSet() {
     }
 
-    public CombinedDataset(Integer id) {
+    public CombinedDataSet(Integer id) {
         this.id = id;
     }
 
@@ -72,6 +68,14 @@ public class CombinedDataset implements Serializable {
         this.id = id;
     }
 
+    public String getDataSetName() {
+        return dataSetName;
+    }
+
+    public void setDataSetName(String dataSetName) {
+        this.dataSetName = dataSetName;
+    }
+
     public String getOperationType() {
         return operationType;
     }
@@ -80,20 +84,20 @@ public class CombinedDataset implements Serializable {
         this.operationType = operationType;
     }
 
-    public DataSet getDatasetIdFirst() {
-        return datasetIdFirst;
+    public DataSet getDataSetIdFirst() {
+        return dataSetIdFirst;
     }
 
-    public void setDatasetIdFirst(DataSet datasetIdFirst) {
-        this.datasetIdFirst = datasetIdFirst;
+    public void setDataSetIdFirst(DataSet dataSetIdFirst) {
+        this.dataSetIdFirst = dataSetIdFirst;
     }
 
-    public DataSet getDatasetIdSecond() {
-        return datasetIdSecond;
+    public DataSet getDataSetIdSecond() {
+        return dataSetIdSecond;
     }
 
-    public void setDatasetIdSecond(DataSet datasetIdSecond) {
-        this.datasetIdSecond = datasetIdSecond;
+    public void setDataSetIdSecond(DataSet dataSetIdSecond) {
+        this.dataSetIdSecond = dataSetIdSecond;
     }
 
     @Override
@@ -106,10 +110,10 @@ public class CombinedDataset implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CombinedDataset)) {
+        if (!(object instanceof CombinedDataSet)) {
             return false;
         }
-        CombinedDataset other = (CombinedDataset) object;
+        CombinedDataSet other = (CombinedDataSet) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -118,17 +122,7 @@ public class CombinedDataset implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.CombinedDataset[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<CombinedDatasetCondition> getCombinedDatasetConditionCollection() {
-        return combinedDatasetConditionCollection;
-    }
-
-    public void setCombinedDatasetConditionCollection(Collection<CombinedDatasetCondition> combinedDatasetConditionCollection) {
-        this.combinedDatasetConditionCollection = combinedDatasetConditionCollection;
+        return "com.visumbu.vb.model.CombinedDataSet[ id=" + id + " ]";
     }
     
 }

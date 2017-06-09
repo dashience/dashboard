@@ -17,8 +17,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'inner', value: 'inner'},
         {name: 'outer', value: 'outer'}
     ];
+
+    var url = "admin/proxy/getData?";
+
     function getPreviewDataSet(dataSet, selectType) {
-        var url = "admin/proxy/getData?";
         var dataSourcePassword;
         if (dataSet.dataSourceId.password) {
             dataSourcePassword = dataSet.dataSourceId.password;
@@ -80,6 +82,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.dataSetColumnList = [];
 
+    $scope.hideCondition = false;
+    $scope.selectJoinType = function (combinedDataSetColumn) {
+        if (combinedDataSetColumn.joinType != null) {
+            $scope.hideCondition = true;
+        }
+    };
+
     $scope.addCombinedColumnList = function () {
         $scope.dataSetColumnList.push({});
     };
@@ -93,46 +102,54 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.hideCondition = true;
         }
     }
+    var combinedDataSetId = null;
+    $scope.loadingResultCompleted = false;
+    $scope.loadingResult = false;
     $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
+        $scope.loadingResultCompleted = false;
+        $scope.loadingResult = true;
+        $scope.errorHide=false;
         var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
         var data = {
-            dataSetName:combinedDataSetColumn.combinedDataSetName,
+            id: combinedDataSetId,
+            dataSetName: combinedDataSetColumn.combinedDataSetName,
             dataSetIdFirst: dataSetIdFirst,
             dataSetIdSecond: dataSetIdSecond,
             operationType: combinedDataSetColumn.joinType,
             conditionFields: $scope.dataSetColumnList
         };
         console.log(data);
-//        $http({method: 'POST', url: 'admin/ui/combinedTableData', data:data}).success(function (response) {
-//            console.log(response);           
-//                   $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
-//                "&dataSourceId=" + dataSet.dataSourceId.id +
-//                "&dataSetId=" + dataSet.id +
-//                "&accountId=" + $stateParams.accountId +
-//                "&dataSetReportName=" + dataSet.reportName +
-//                "&timeSegment=" + dataSet.timeSegment +
-//                "&filter=" + dataSet.networkType +
-//                "&productSegment=" + dataSet.productSegment +
-//                "&driver=" + dataSet.dataSourceId.dataSourceType +
-//                "&dataSourceType=" + dataSet.dataSourceId.dataSourceType +
-//                "&location=" + $stateParams.locationId +
-//                "&startDate=" + $stateParams.startDate +
-//                "&endDate=" + $stateParams.endDate +
-//                '&username=' + dataSet.dataSourceId.userName +
-//                '&password=' + dataSourcePassword +
-//                '&url=' + dataSet.url +
-//                '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
-//                    
-//                });
-//        });
+        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: data}).success(function (response) {
+            $scope.loadingResult = false;
+            $scope.loadingResultCompleted = true;
+            console.log(response);
+            combinedDataSetId = response[0].combinedDataSetId.id;
+            $scope.combinedDataSetNewName = response[0].combinedDataSetId.dataSetName;
+            $http.get(url + 'combinedDataSetId=' + response[0].combinedDataSetId.id +
+                    "&accountId=" + $stateParams.accountId +
+                    "&location=" + $stateParams.locationId +
+                    "&startDate=" + $stateParams.startDate +
+                    "&endDate=" + $stateParams.endDate).success(function (response) {
+                        
+                $scope.combinedColumns = response.columnDefs;
+                $scope.combinedRows = response.data;
+                if(response.columnDefs==""||response.data==""){
+                    $scope.errorHide=true;
+                    $scope.errorMessage="No Data Found";
+                }
+                console.log(response.columnDefs);
+                console.log(response.data);
+            });
+        });
     };
-    $scope.cancelCombinationDataSet=function(combinedDataSetColumn){
-        $scope.combinedDataSetColumn="";
-        $scope.dataSetColumnList=[];
+    $scope.cancelCombinationDataSet = function (combinedDataSetColumn) {
+        $scope.combinedDataSetColumn = "";
+        $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
-         $scope.secondDataSetLoadingCompleted = false;
-         $scope.firstDataSetLoadingCompleted = false;
+        $scope.secondDataSetLoadingCompleted = false;
+        $scope.firstDataSetLoadingCompleted = false;
+        $scope.loadingResultCompleted = false;
     }
     /*
      * 
@@ -1801,7 +1818,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.analyticsPerformance);
             $scope.timeSegment = $scope.analyticsPerformance[index].timeSegments;
             $scope.productSegment = $scope.analyticsPerformance[index].productSegments;
-            
+
             var productList = $scope.productSegment;
             var productSegmentName = dataSet.productSegment;
 
@@ -1811,15 +1828,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
             if (!dataSet.timeSegment) {
-                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
-                } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
-                }
-                if (!dataSet.productSegment) {
-                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
-                } else {
-                    getProductSegment(productList, productSegmentName)
-                }
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            } else {
+                getTimeSegment(timeSegmentList, timeSegmentName)
+            }
+            if (!dataSet.productSegment) {
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            } else {
+                getProductSegment(productList, productSegmentName)
+            }
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "linkedin")
         {
@@ -2061,7 +2078,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
-                '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>'+
+                '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
                 '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataSet" class="modal" role="dialog">' +
                 '<div class="modal-dialog modal-lg">' +
@@ -2250,7 +2267,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div ng-if="dataSetColumn.functionName===\'Custom\'" class="col-md-2">' +
                 '<div class="dropdown editWidgetDropDown">' +
                 '<button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">' +
-                 ' <span ng-class="{\'text-danger\':dateErrorMessage==true}">{{dataSetColumn.dateRangeName?dataSetColumn.dateRangeName:"Select Date"}}</span>' +
+                ' <span ng-class="{\'text-danger\':dateErrorMessage==true}">{{dataSetColumn.dateRangeName?dataSetColumn.dateRangeName:"Select Date"}}</span>' +
                 '<span class="caret"></span></button>' +
                 '<ul class="dropdown-menu scheduler-list-style">' +
                 '<li>' +
@@ -2601,16 +2618,16 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 
             };
             scope.dataSetItems();
-            
-            
-            scope.resetDataSetColumn = function(){
+
+
+            scope.resetDataSetColumn = function () {
                 var dataSetId = dataSourcePath.id;
-                $http({method: 'DELETE', url:'admin/ui/dataSetColumn/'+dataSetId}).success(function(){
+                $http({method: 'DELETE', url: 'admin/ui/dataSetColumn/' + dataSetId}).success(function () {
                     scope.dataSetItems();
                 })
             }
-            
-            
+
+
             scope.dataSetError = false;
             function showDataSetError() {
                 scope.dataSetError = true;
@@ -2667,7 +2684,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 scope.dataSetError = false;
             };
             scope.selectFunctionDuration = function (dateRangeName, dataSetColumn) {
-                
+
                 //scheduler.dateRangeName = dateRangeName;
                 if (dateRangeName == 'Last N Days') {
                     if (dataSetColumn.lastNdays) {
@@ -2716,21 +2733,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             };
 
             scope.saveDataSetColumn = function (dataSetColumn) {
-
-
-
-
                 console.log(dataSetColumn);
                 dataSetColumn.dateRangeName = $("#dateRangeName").text().trim();
                 console.log(dataSetColumn.dateRangeName);
-                
-                if(dataSetColumn.dateRangeName =="Select Date"){
+
+                if (dataSetColumn.dateRangeName == "Select Date") {
                     dataSetColumn.dateRangeName = ""
                 }
 
                 try {
-                    scope.customStartDate =moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') //: $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-                    scope.customEndDate =  moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY')// : $stateParams.endDate;
+                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') //: $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY')// : $stateParams.endDate;
                 } catch (e) {
 
                 }
@@ -2872,18 +2885,19 @@ app.directive('functionDateRange', function ($stateParams, $timeout) {
                     e.stopPropagation();
                 });
                 console.log(scope.widgetTableDateRange)
-                var widget = scope.widgetTableDateRange;
-                var widgetStartDate = widget.customStartDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
-                var widgetEndDate = widget.customEndDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
+                var derivedColumn = scope.widgetTableDateRange;
+                var columnStartDate = derivedColumn.customStartDate ? derivedColumn.customStartDate : $stateParams.startDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
+                var columnEndDate = derivedColumn.customEndDate ? derivedColumn.customEndDate : $stateParams.endDate;
+                ; //JSON.parse(scope.widgetTableDateRange).customEndDate;
                 //Date range as a button
                 $(element[0]).daterangepicker(
                         {
                             ranges: {
                                 'Today': [moment(), moment()],
 //                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                                'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                                'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                                'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                                'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
 //                                'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 ////                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
 //                                'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -2899,8 +2913,8 @@ app.directive('functionDateRange', function ($stateParams, $timeout) {
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                             },
-                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
-                            endDate: widgetEndDate ? widgetEndDate : moment(),
+                            startDate: columnStartDate ? columnStartDate : moment().subtract(30, 'days'),
+                            endDate: columnEndDate ? columnEndDate : moment().subtract(1, 'days'),
                             maxDate: new Date()
                         },
                         function (startDate, endDate) {
