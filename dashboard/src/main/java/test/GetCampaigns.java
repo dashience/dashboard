@@ -38,7 +38,7 @@ public class GetCampaigns {
 
     private static String clientId = "117202177181-dfpvmamitf7acnn8ginmp5d0e813u584.apps.googleusercontent.com";
     private static String clientSecret = "Z144G8Oqa15m93REF0k5z-vJ";
-    private static String refreshToken = "1/i4W9G31Xej2OklH_wihE8AxcDDqd9UeH4Vsi6eJaQshIGy3zvEMB0svvFz4NOj-b";
+    private static String refreshToken = "1/o9ZysN1LtRpqKfSrkBgJ__-0GOq9FeKN_ak7WuIlI4Y";
     private static String developerToken = "zA56sMrpDz_1Hrc_AbRwyA";
 
     public static void main(String[] args) throws Exception {
@@ -58,7 +58,7 @@ public class GetCampaigns {
         // Construct an AdWordsSession.
         AdWordsSession session = new AdWordsSession.Builder()
                 .withDeveloperToken(developerToken)
-                .withClientCustomerId("581-484-4675")
+                .withClientCustomerId("588-780-5455")
                 // ...
                 .withOAuth2Credential(credential)
                 .build();
