@@ -248,7 +248,7 @@ public class TimerService {
         }
     }
     
-    @Scheduled(cron = "0 0 */1 * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void executeWeeklyTask() {
         System.out.println("Executing weekly Tasks....");
         List<Agency> allAgencies = schedulerDao.getAllAgency();
@@ -309,12 +309,12 @@ public class TimerService {
         
     }
     
-    @Scheduled(cron = "0 0 */1 * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void executeOnce() {
         List<Agency> allAgencies = schedulerDao.getAllAgency();
         for (Iterator<Agency> iterator = allAgencies.iterator(); iterator.hasNext();) {
             Agency agency = iterator.next();
-            System.out.println("Executing Montyly Task for Agency " + agency.toString());
+            System.out.println("Executing Once Task for Agency " + agency.toString());
             AgencySettings agencySettings = userDao.getAgencySettingsById(agency.getId());
             String timezone = agencySettings.getTimeZoneId().getShortDescription();
             System.out.println("Monthly Timezone ===> " + timezone);
