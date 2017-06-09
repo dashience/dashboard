@@ -249,26 +249,26 @@ public class ProxyController {
         Map joinDataSetTwoMap = getData(joinValueMapTwo, request, response);
 
         List<Map<String, Object>> dataSetTwoList = (List<Map<String, Object>>) joinDataSetTwoMap.get("data");
-//        for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
-//            Map<String, Object> dataMap = iterator.next();
-//            try {
-//                dataMap.entrySet().forEach((entry) -> {
-//                    String key = entry.getKey();
-//                    Object value = entry.getValue();
-//                    System.out.println("key ---> " + key);
-//                    for (String columnStr : columnSet) {
-//                        System.out.println("columnStr ---> " + columnStr);
-//                        if (key.equalsIgnoreCase(columnStr)) {
-//                            dataMap.remove(key);
-//                            dataMap.put(key + "2", value);
-//                            break;
-//                        }
-//                    }
-//                    System.out.println("dataMap ---> " + dataMap);
-//                });
-//            } catch (ConcurrentModificationException e) {
-//            }
-//        }
+        for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            try {
+                dataMap.entrySet().forEach((entry) -> {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+                    System.out.println("key ---> " + key);
+                    for (String columnStr : columnSet) {
+                        System.out.println("columnStr ---> " + columnStr);
+                        if (key.equalsIgnoreCase(columnStr)) {
+                            dataMap.remove(key);
+                            dataMap.put(key + "2", value);
+                            break;
+                        }
+                    }
+                    System.out.println("dataMap ---> " + dataMap);
+                });
+            } catch (ConcurrentModificationException e) {
+            }
+        }
 //        System.out.println("dataSetTwoList ---> " + dataSetTwoList);
 
         List<Map<String, Object>> combinedData = new ArrayList<>();
@@ -396,7 +396,7 @@ public class ProxyController {
                     String[] fields = condition.split(",");
                     System.out.println("field[0] ---> " + fields[0]);
                     System.out.println("field[1] ---> " + fields[1]);
-                    if (!(map.get(fields[0]) + "").equalsIgnoreCase(e.get(fields[1]) + "")) {
+                    if (!(map.get(fields[1]) + "").equalsIgnoreCase(e.get(fields[0]) + "")) {
                         System.out.println("return false");
                         return false;
                     }
