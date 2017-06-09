@@ -399,8 +399,14 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
-        System.out.println("id --> "+datasetColumnId);
+        System.out.println("id --> " + datasetColumnId);
         return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
+    }
+
+    @RequestMapping(value = "dataSetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns deleteDataSetColumns(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return uiService.deleteDataSetColumns(id);
     }
 
      @RequestMapping(value = "combinedTableData", method = RequestMethod.POST, produces = "application/json")
@@ -414,6 +420,7 @@ public class UiController extends BaseController {
     List getDatasetColumnByDatasetId (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
         return uiService.getDatasetColumnByDatasetId(datasetId);
     }
+
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -495,6 +502,7 @@ public class UiController extends BaseController {
     List getAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.getAccountById(id);
     }
+
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {
@@ -511,7 +519,6 @@ public class UiController extends BaseController {
         return uiService.getUserAccountById(userId);
     }
 
-    
     @RequestMapping(value = "userAccount/{userAccountId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     UserAccount deleteUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userAccountId) {
@@ -594,7 +601,7 @@ public class UiController extends BaseController {
         accountId = 10201209987716903L;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = new Date();
-        String productSegement="";
+        String productSegement = "";
 //       String  stratDates=dateFormat.format(startDate);
         //facebookService.getAccountPerformance(accountId, startDate, startDate, "day",productSegement);
 //        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');

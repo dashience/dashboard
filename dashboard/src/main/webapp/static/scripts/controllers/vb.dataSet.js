@@ -127,6 +127,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                });
 //        });
     };
+    $scope.cancelCombinationDataSet=function(combinedDataSetColumn){
+        $scope.combinedDataSetColumn="";
+        $scope.dataSetColumnList=[];
+        $scope.hideCondition = false;
+         $scope.secondDataSetLoadingCompleted = false;
+         $scope.firstDataSetLoadingCompleted = false;
+    }
     /*
      * 
      * All
@@ -1778,6 +1785,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegment = $scope.adwordsPerformance[index].timeSegments;
             $scope.productSegment = $scope.adwordsPerformance[index].productSegments;
             $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            if ($scope.dataSet.reportName == 'geoPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'City', type: 'city'};
+            } else {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "analytics")
@@ -1785,7 +1801,25 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.analyticsPerformance);
             $scope.timeSegment = $scope.analyticsPerformance[index].timeSegments;
             $scope.productSegment = $scope.analyticsPerformance[index].productSegments;
+            
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
+            if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "linkedin")
         {
@@ -1928,7 +1962,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
-            $scope.getTimeSegements();
+            $scope.getTimeSegements(dataSet);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else if (dataSet.dataSourceId.dataSourceType === "adwords")
@@ -1940,7 +1974,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else if (dataSet.dataSourceId.dataSourceType === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
-            $scope.getTimeSegements();
+            $scope.getTimeSegements(dataSet);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
         } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
@@ -2027,7 +2061,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
-                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
+                '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>'+
+                '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataSet" class="modal" role="dialog">' +
                 '<div class="modal-dialog modal-lg">' +
                 '<div class="modal-content">' +
@@ -2566,6 +2601,16 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 
             };
             scope.dataSetItems();
+            
+            
+            scope.resetDataSetColumn = function(){
+                var dataSetId = dataSourcePath.id;
+                $http({method: 'DELETE', url:'admin/ui/dataSetColumn/'+dataSetId}).success(function(){
+                    scope.dataSetItems();
+                })
+            }
+            
+            
             scope.dataSetError = false;
             function showDataSetError() {
                 scope.dataSetError = true;

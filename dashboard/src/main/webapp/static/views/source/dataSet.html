@@ -82,19 +82,23 @@
         </div>
     </div>
 </div>
-
-<div class="nav-tabs-custom col-md-12">
-    <ul class="nav nav-tabs">
-        <li ng-class="{ active: isSet(1) }">
-            <a href ng-click="setTab(1)"> DataSet
-            </a>
-        </li>
-        <li ng-class="{ active: isSet(2) }">
-            <a ng-click="setTab(2)"> Combined Table
-            </a>
-        </li>
-    </ul>
+<div class="col-md-12">
+    <div class="nav-tabs-custom">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs">
+                <li ng-class="{ active: isSet(1) }">
+                    <a href ng-click="setTab(1)"> DataSet
+                    </a>
+                </li>
+                <li ng-class="{ active: isSet(2) }">
+                    <a ng-click="setTab(2)"> Join DataSet
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
+
 <div>
     <div  class="tab-content" ng-show="isSet(1)">
         <section class="content">
@@ -296,24 +300,24 @@
         <section class="content">
             <div class="row">
                 <div class="col-md-12">
-                <div class="hpanel">
-                    <div class="panel-heading"></div>
-                    <div class="panel-body">
-                        <label class="col-md-2">DataSet Name</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" ng-model="combinedDataSetColumn.combinedDataSetName">
-                        </div>
-                        <label class="col-md-2">JoinType</label>
-                        <div class="col-md-4">
-                            <select class="form-control" ng-model="combinedDataSetColumn.joinType" ng-change="selectJoinType(combinedDataSetColumn)">
-                                <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
-                                    {{joinType.name}}
-                                </option>
-                            </select>
+                    <div class="hpanel">
+                        <div class="panel-heading"></div>
+                        <div class="panel-body">
+                            <label class="col-md-2">DataSet Name</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" ng-model="combinedDataSetColumn.combinedDataSetName">
+                            </div>
+                            <label class="col-md-2">JoinType</label>
+                            <div class="col-md-4">
+                                <select class="form-control" ng-model="combinedDataSetColumn.joinType" ng-change="selectJoinType(combinedDataSetColumn)">
+                                    <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
+                                        {{joinType.name}}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
                 <div class="col-md-12">
                     <div class="hpanel">                
                         <div class="panel-body">
@@ -337,126 +341,129 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-6" >
-                           <div ng-show="firstDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+                            <div ng-show="firstDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
                             <div class="hpanel" ng-if="firstDataSetLoadingCompleted">
                                 <div class="panel-heading">
                                     {{firstDataSetName}}
                                 </div>
-                                 
+
                                 <div class="panel-body" >
-                                    
-                                    <table class="table table-responsive table-bordered table-l2t" >
-                                        <thead>
-                                            <tr> 
-                                                <th class="text-capitalize table-bg" ng-repeat="firstDataSetColumn in firstDataSetColumns|limitTo:5:0">
-                                                    {{firstDataSetColumn.fieldName}}
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody ng-repeat="firstDataSetRow in firstDataSetRows|limitTo:5:0">
-                                            <tr class="text-capitalize">
-                                                <td ng-repeat="column in firstDataSetColumns|limitTo:5:0"><div>{{firstDataSetRow[column.fieldName]}}</div></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-l2t" >
+                                            <thead>
+                                                <tr> 
+                                                    <th class="text-capitalize table-bg" ng-repeat="firstDataSetColumn in firstDataSetColumns">
+                                                        {{firstDataSetColumn.fieldName}}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody ng-repeat="firstDataSetRow in firstDataSetRows|limitTo:5:0">
+                                                <tr class="text-capitalize">
+                                                    <td ng-repeat="column in firstDataSetColumns"><div>{{firstDataSetRow[column.fieldName]}}</div></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                   
-                    <div class="col-md-6">
-                        <div  ng-show="secondDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
-                        <div class="hpanel" ng-if="secondDataSetLoadingCompleted">
-                            <div class="panel-heading">
-                                {{secondDataSetName}}
-                            </div>
-                             
-                            <div class="panel-body" >
-                                
-                                <table class="table table-responsive table-bordered table-l2t" >
-                                    <thead>
-                                        <tr> 
-                                            <th class="text-capitalize table-bg" ng-repeat="secondDataSetColumn in secondDataSetColumns|limitTo:5:0">
-                                                {{secondDataSetColumn.fieldName}}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody ng-repeat="secondDataSetRow in secondDataSetRows|limitTo:5:0">
-                                        <tr class="text-capitalize">
-                                            <td ng-repeat="column in secondDataSetColumns|limitTo:5:0"><div>{{secondDataSetRow[column.fieldName]}}</div></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                        <div class="col-md-6">
+                            <div  ng-show="secondDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+                            <div class="hpanel" ng-if="secondDataSetLoadingCompleted">
+                                <div class="panel-heading">
+                                    {{secondDataSetName}}
+                                </div>
+
+                                <div class="panel-body " >
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-l2t" >
+                                            <thead>
+                                                <tr> 
+                                                    <th class="text-capitalize table-bg" ng-repeat="secondDataSetColumn in secondDataSetColumns">
+                                                        {{secondDataSetColumn.fieldName}}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody ng-repeat="secondDataSetRow in secondDataSetRows|limitTo:5:0">
+                                                <tr class="text-capitalize">
+                                                    <td ng-repeat="column in secondDataSetColumns"><div>{{secondDataSetRow[column.fieldName]}}</div></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-md-12" ng-show="hideCondition">
-                <div class="hpanel">
-                    <div class="panel-heading">Condition</div>
-                    <div class="panel-body">
-                        <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addCombinedColumnList()"><i class="fa fa-plus"></i></button></div>
 
-                        <table class="table table-bordered table-responsive table-scheduler" >
-                            <thead>
-                                <tr>
-                                    <th>
-                                        DataSet1 Column
-                                    </th>
-                                    <th>
-                                        DataSet2 Column
-                                    </th>
+                <div class="col-md-12" ng-show="hideCondition">
+                    <div class="hpanel">
+                        <div class="panel-heading">Condition</div>
+                        <div class="panel-body">
+                            <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addCombinedColumnList()"><i class="fa fa-plus"></i></button></div>
+
+                            <table class="table table-bordered table-responsive table-scheduler" >
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            DataSet1 Column
+                                        </th>
+                                        <th>
+                                            DataSet2 Column
+                                        </th>
 
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="combinedDataSetColumn in dataSetColumnList track by $index">
-                                    <td >
-                                        <div>
-                                            <select class="form-control" ng-model="combinedDataSetColumn.firstDataSetColumn" ng-change="selectFirstDataSetColumn(combinedDataSetColumn)">
-                                                <option ng-repeat="firstDataSetColumn in firstDataSetColumns track by $index " 
-                                                        value="{{firstDataSetColumn.fieldName}}">
-                                                    {{firstDataSetColumn.fieldName}}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <select class="form-control" ng-model="combinedDataSetColumn.secondDataSetColumn" ng-change="selectSecondDataSetColumn(combinedDataSetColumn)">
-                                                <option ng-repeat="secondDataSetColumn in secondDataSetColumns track by $index" 
-                                                        value="{{secondDataSetColumn.fieldName}}">
-                                                    {{secondDataSetColumn.fieldName}}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div><span class="btn btn-default btn-xs" ng-click="removeCombinedDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="hpanel">
-                    <div class="panel-heading"></div>
-                    <div class="panel-body">
-                        <div class="pull-right">
-                            <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
-                            <button class="btn btn-success" ng-disabled="!combinedDataSetColumn" ng-click="saveCombinedDataSet(combinedDataSetColumn)">Show Result</button>
-                            <button class="btn btn-default" ng-click="cancelCombinationDataSet(combinedDataSetColumn)">Cancel</button>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="combinedDataSetColumn in dataSetColumnList track by $index">
+                                        <td >
+                                            <div>
+                                                <select class="form-control" ng-model="combinedDataSetColumn.firstDataSetColumn" ng-change="selectFirstDataSetColumn(combinedDataSetColumn)">
+                                                    <option ng-repeat="firstDataSetColumn in firstDataSetColumns track by $index " 
+                                                            value="{{firstDataSetColumn.fieldName}}">
+                                                        {{firstDataSetColumn.fieldName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <select class="form-control" ng-model="combinedDataSetColumn.secondDataSetColumn" ng-change="selectSecondDataSetColumn(combinedDataSetColumn)">
+                                                    <option ng-repeat="secondDataSetColumn in secondDataSetColumns track by $index" 
+                                                            value="{{secondDataSetColumn.fieldName}}">
+                                                        {{secondDataSetColumn.fieldName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div><span class="btn btn-default btn-xs" ng-click="removeCombinedDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <div class="hpanel">
+                        <div class="panel-heading"></div>
+                        <div class="panel-body">
+                            <div class="pull-right">
+                                <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
+                                <button class="btn btn-success" ng-disabled="!combinedDataSetColumn" ng-click="saveCombinedDataSet(combinedDataSetColumn)">Save&Show Result</button>
+                                <button class="btn btn-default" ng-click="cancelCombinationDataSet(combinedDataSetColumn)">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+        </section>
     </div>
-</section>
-</div>
 </div>
 <script>
     $(document).ready(function () {

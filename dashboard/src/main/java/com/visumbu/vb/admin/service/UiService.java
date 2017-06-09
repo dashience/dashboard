@@ -847,4 +847,7 @@ public class UiService {
         return uiDao.getDatasetColumnByDatasetId(datasetId);
     }
 
+    public DatasetColumns deleteDataSetColumns(Integer id) {
+        return uiDao.deleteDataSetColumns(id);
+    }
 }
