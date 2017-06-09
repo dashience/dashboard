@@ -538,7 +538,6 @@ public class GaService {
         try {
             getGaGoals("43651400", "79919517");
             AnalyticsReporting service = initializeAnalyticsReporting();
-
             GetReportsResponse response = getReport(service);
             printResponse(response);
         } catch (Exception e) {

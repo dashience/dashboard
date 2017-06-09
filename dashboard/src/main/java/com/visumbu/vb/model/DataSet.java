@@ -42,10 +42,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")})
 public class DataSet implements Serializable {
 
-    @OneToMany(mappedBy = "datasetIdFirst")
-    private Collection<CombinedDataset> combinedDatasetCollection;
-    @OneToMany(mappedBy = "datasetIdSecond")
-    private Collection<CombinedDataset> combinedDatasetCollection1;
+    @OneToMany(mappedBy = "dataSetIdFirst")
+    private Collection<CombinedDataSet> combinedDataSetCollection1;
+    @OneToMany(mappedBy = "dataSetIdSecond")
+    private Collection<CombinedDataSet> combinedDataSetCollection2;
 
     @OneToMany(mappedBy = "datasetId")
     private Collection<DatasetColumns> datasetColumnsCollection;
@@ -236,22 +236,22 @@ public class DataSet implements Serializable {
 
     @XmlTransient
     @JsonIgnore
-    public Collection<CombinedDataset> getCombinedDatasetCollection() {
-        return combinedDatasetCollection;
+    public Collection<CombinedDataSet> getCombinedDataSetCollection1() {
+        return combinedDataSetCollection1;
     }
 
-    public void setCombinedDatasetCollection(Collection<CombinedDataset> combinedDatasetCollection) {
-        this.combinedDatasetCollection = combinedDatasetCollection;
+    public void setCombinedDataSetCollection(Collection<CombinedDataSet> combinedDataSetCollection1) {
+        this.combinedDataSetCollection1 = combinedDataSetCollection1;
     }
 
     @XmlTransient
     @JsonIgnore
-    public Collection<CombinedDataset> getCombinedDatasetCollection1() {
-        return combinedDatasetCollection1;
+    public Collection<CombinedDataSet> getCombinedDataSetCollection2() {
+        return combinedDataSetCollection2;
     }
 
-    public void setCombinedDatasetCollection1(Collection<CombinedDataset> combinedDatasetCollection1) {
-        this.combinedDatasetCollection1 = combinedDatasetCollection1;
+    public void setCombinedDataSetCollection2(Collection<CombinedDataSet> combinedDataSetCollection2) {
+        this.combinedDataSetCollection2 = combinedDataSetCollection2;
     }
 
 }

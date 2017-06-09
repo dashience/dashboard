@@ -11,6 +11,7 @@ import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.CombinedDataSetCondition;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
@@ -614,6 +615,13 @@ public class UiDao extends BaseDao {
         String queryStr = "select d from Account d where d.id = :accountId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("accountId", id);
+        return query.list();
+    }
+    
+    public List<CombinedDataSetCondition> getCombinedDataSetConditionById(Integer id) {
+        String queryStr = "select d from CombinedDataSetCondition d where d.combinedDataSetId.id = :combinedDataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("combinedDataSetId", id);
         return query.list();
     }
 }
