@@ -358,7 +358,7 @@
         <div class="nav-tabs-custom col-md-12">
             <ul class="nav nav-tabs">
                 <li ng-class="{ active: isSet(1) }">
-                    <a href ng-click="setTab(1)"> Config
+                    <a href ng-click="setTab(1)"> 
                     </a>
                 </li>
                 <li ng-if="editChartType != 'text'" ng-class="{ active: isSet(2) }">
@@ -426,19 +426,19 @@
                                                 <label>Select Y1-Axis</label>
                                                 <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByY1Column(widget,$item, y1Column)">
                                                     <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
-                                                    <ui-select-choices repeat="y1axis in collectionFields  | filter:$select.search">
+                                                    <ui-select-choices repeat="y1axis in y1SelectedData  | filter:$select.search">
                                                         {{y1axis.displayName}}
                                                     </ui-select-choices>
                                                 </ui-select>
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-if="editChartType != 'pie'">
+                                        <div class="form-group" ng-if="!(editChartType == 'pie'|| editChartType=='stackedbar')">
                                             <div class="col-md-12">
                                                 <label>Select Y2-Axis</label>
                                                 <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
                                                     <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
-                                                    <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
+                                                    <ui-select-choices repeat="y2axis in y2SelectedData  | filter:$select.search">
                                                         {{y2axis.displayName}}
                                                     </ui-select-choices>
                                                 </ui-select>

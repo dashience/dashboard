@@ -152,7 +152,7 @@ public class ProxyController {
             }
         }
 
-        List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+       List<Map<String, Object>>data = (List<Map<String, Object>>) returnMap.get("data");
 
         List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
 
