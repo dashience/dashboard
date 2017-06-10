@@ -108,7 +108,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
         $scope.loadingResultCompleted = false;
         $scope.loadingResult = true;
-        $scope.errorHide=false;
+        $scope.errorHide = false;
         var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
         var data = {
@@ -131,12 +131,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     "&location=" + $stateParams.locationId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate).success(function (response) {
-                        
+
                 $scope.combinedColumns = response.columnDefs;
                 $scope.combinedRows = response.data;
-                if(response.columnDefs==""||response.data==""){
-                    $scope.errorHide=true;
-                    $scope.errorMessage="No Data Found";
+                if (response.columnDefs == "" || response.data == "") {
+                    $scope.errorHide = true;
+                    $scope.errorMessage = "No Data Found";
                 }
                 console.log(response.columnDefs);
                 console.log(response.data);
