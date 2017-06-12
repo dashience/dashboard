@@ -828,8 +828,9 @@ public class UiService {
             CombinedDataSetBean combinedDatasetData = iterator.next();
             CombinedDataSetCondition combinedDataSetCondition = new CombinedDataSetCondition();
             combinedDataSetCondition.setCombinedDataSetId(combinedDataSet);
-            combinedDataSetCondition.setConditionFieldFirst(combinedDatasetData.getFirstDataSetColumn());
-            combinedDataSetCondition.setConditionFieldSecond(combinedDatasetData.getSecondDataSetColumn());
+            combinedDataSetCondition.setId(combinedDatasetData.getConditionId());
+            combinedDataSetCondition.setConditionFieldFirst(combinedDatasetData.getConditionFieldFirst());
+            combinedDataSetCondition.setConditionFieldSecond(combinedDatasetData.getConditionFieldSecond());
             uiDao.saveOrUpdate(combinedDataSetCondition);
             returnList.add(combinedDataSetCondition);
         }

@@ -258,8 +258,8 @@
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
         </div>
         <div class="btn-group" ng-if="permission.downloadReport === true;">
-            <a class="refresh" ng-click="downloadUiPdf()"><i class="fa fa-print"></i> Print</a>
-            <!--<a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{productName}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>-->
+            <!--<a class="refresh" ng-click="downloadUiPdf()"><i class="fa fa-print"></i> Print</a>-->
+            <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{productName}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
         </div>
 <!--                <div class="btn-group">
                     <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>

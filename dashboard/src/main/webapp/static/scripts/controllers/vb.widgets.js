@@ -13,10 +13,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dragEnabled = !$scope.dragEnabled;
     };
 
-    $scope.downloadUiPdf = function () {
-        var url = location.origin + location.pathname.substr(0, location.pathname.indexOf('/', 1) + 1) + "index.html#viewPdf/" + $stateParams.accountId + "/" + $stateParams.accountName + "/" + $stateParams.productId + "/" + $stateParams.productName + "/" + $stateParams.tabId + "?startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
-        window.open(url);
-    }
+//    $scope.downloadUiPdf = function () {
+//        var url = location.origin + location.pathname.substr(0, location.pathname.indexOf('/', 1) + 1) + "index.html#viewPdf/" + $stateParams.accountId + "/" + $stateParams.accountName + "/" + $stateParams.productId + "/" + $stateParams.productName + "/" + $stateParams.tabId + "?startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+//        window.open(url);
+//    }
 
     $scope.firstSortableOptions = {
         start: function (event, ui) {

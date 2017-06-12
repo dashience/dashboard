@@ -420,24 +420,25 @@
                                     <tr ng-repeat="combinedDataSetColumn in dataSetColumnList track by $index">
                                         <td >
                                             <div>
-                                                <select class="form-control" ng-model="combinedDataSetColumn.firstDataSetColumn" ng-change="selectFirstDataSetColumn(combinedDataSetColumn)">
-                                                    <option ng-repeat="firstDataSetColumn in firstDataSetColumns track by $index " 
-                                                            value="{{firstDataSetColumn.fieldName}}">
-                                                        {{firstDataSetColumn.fieldName}}
+                                                <select class="form-control" ng-model="combinedDataSetColumn.conditionFieldFirst" ng-change="selectFirstDataSetColumn(combinedDataSetColumn)">
+                                                    <option ng-repeat="conditionFieldFirst in firstDataSetColumns track by $index " 
+                                                            value="{{conditionFieldFirst.fieldName}}">
+                                                        {{conditionFieldFirst.fieldName}}
                                                     </option>
                                                 </select>
                                             </div>
                                         </td>
                                         <td>
                                             <div>
-                                                <select class="form-control" ng-model="combinedDataSetColumn.secondDataSetColumn" ng-change="selectSecondDataSetColumn(combinedDataSetColumn)">
-                                                    <option ng-repeat="secondDataSetColumn in secondDataSetColumns track by $index" 
-                                                            value="{{secondDataSetColumn.fieldName}}">
-                                                        {{secondDataSetColumn.fieldName}}
+                                                <select class="form-control" ng-model="combinedDataSetColumn.conditionFieldSecond" ng-change="selectSecondDataSetColumn(combinedDataSetColumn)">
+                                                    <option ng-repeat="conditionFieldSecond in secondDataSetColumns track by $index" 
+                                                            value="{{conditionFieldSecond.fieldName}}">
+                                                        {{conditionFieldSecond.fieldName}}
                                                     </option>
                                                 </select>
                                             </div>
                                         </td>
+                                        <td ng-if="operationType==='union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="combinedDataSetColumn.newColumnName"></div></td>
                                         <td>
                                             <div><span class="btn btn-default btn-xs" ng-click="removeCombinedDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
                                         </td>
@@ -485,7 +486,7 @@
                             <div>
                                 <div>
                                     <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
-                                    <button class="btn btn-success">Save</button>
+                                    <button class="btn btn-success" ng-click="saveDataSet()">Save</button>
                                     <button class="btn btn-default">Cancel</button>
                                 </div>
                             </div>

@@ -19,8 +19,9 @@ public class CombinedDataSetBean {
     private Integer dataSetIdSecond;
     private String operationType;
     private List<CombinedDataSetBean> conditionFields;
-    private String firstDataSetColumn;
-    private String secondDataSetColumn;
+    private Integer conditionId;
+    private String conditionFieldFirst;
+    private String conditionFieldSecond;
 
     public Integer getId() {
         return id;
@@ -69,20 +70,27 @@ public class CombinedDataSetBean {
         this.conditionFields = conditionFields;
     }
 
-    public String getFirstDataSetColumn() {
-        return firstDataSetColumn;
+    public Integer getConditionId() {
+        return conditionId;
     }
 
-    public void setFirstDataSetColumn(String firstDataSetColumn) {
-        this.firstDataSetColumn = firstDataSetColumn;
+    public void setConditionId(Integer conditionId) {
+        this.conditionId = conditionId;
+    }
+    
+    public String getConditionFieldFirst() {
+        return conditionFieldFirst;
     }
 
-    public String getSecondDataSetColumn() {
-        return secondDataSetColumn;
+    public void setConditionFieldFirst(String conditionFieldFirst) {
+        this.conditionFieldFirst = conditionFieldFirst;
     }
 
-    public void setSecondDataSetColumn(String secondDataSetColumn) {
-        this.secondDataSetColumn = secondDataSetColumn;
+    public String getConditionFieldSecond() {
+        return conditionFieldSecond;
     }
 
+    public void setConditionFieldSecond(String conditionFieldSecond) {
+        this.conditionFieldSecond = conditionFieldSecond;
+    }
 }
