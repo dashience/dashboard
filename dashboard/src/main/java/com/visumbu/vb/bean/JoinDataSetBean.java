@@ -11,16 +11,17 @@ import java.util.List;
  *
  * @author deeta1
  */
-public class CombinedDataSetBean {
+public class JoinDataSetBean {
 
     private Integer id;
     private String dataSetName;
     private Integer dataSetIdFirst;
     private Integer dataSetIdSecond;
     private String operationType;
-    private List<CombinedDataSetBean> conditionFields;
-    private String firstDataSetColumn;
-    private String secondDataSetColumn;
+    private List<JoinDataSetBean> conditionFields;
+    private Integer conditionId;
+    private String conditionFieldFirst;
+    private String conditionFieldSecond;
 
     public Integer getId() {
         return id;
@@ -61,28 +62,36 @@ public class CombinedDataSetBean {
         this.operationType = operationType;
     }
 
-    public List<CombinedDataSetBean> getConditionFields() {
+    public Integer getConditionId() {
+        return conditionId;
+    }
+
+    public void setConditionId(Integer conditionId) {
+        this.conditionId = conditionId;
+    }
+
+    public List<JoinDataSetBean> getConditionFields() {
         return conditionFields;
     }
 
-    public void setConditionFields(List<CombinedDataSetBean> conditionFields) {
+    public void setConditionFields(List<JoinDataSetBean> conditionFields) {
         this.conditionFields = conditionFields;
     }
 
-    public String getFirstDataSetColumn() {
-        return firstDataSetColumn;
+    public String getConditionFieldFirst() {
+        return conditionFieldFirst;
     }
 
-    public void setFirstDataSetColumn(String firstDataSetColumn) {
-        this.firstDataSetColumn = firstDataSetColumn;
+    public void setConditionFieldFirst(String conditionFieldFirst) {
+        this.conditionFieldFirst = conditionFieldFirst;
     }
 
-    public String getSecondDataSetColumn() {
-        return secondDataSetColumn;
+    public String getConditionFieldSecond() {
+        return conditionFieldSecond;
     }
 
-    public void setSecondDataSetColumn(String secondDataSetColumn) {
-        this.secondDataSetColumn = secondDataSetColumn;
+    public void setConditionFieldSecond(String conditionFieldSecond) {
+        this.conditionFieldSecond = conditionFieldSecond;
     }
 
 }

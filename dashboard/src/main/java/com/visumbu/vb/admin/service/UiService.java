@@ -8,15 +8,13 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
-import com.visumbu.vb.bean.CombinedDataSetBean;
 import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
-import com.visumbu.vb.model.CombinedDataSet;
-import com.visumbu.vb.model.CombinedDataSetCondition;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
@@ -24,6 +22,8 @@ import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
+import com.visumbu.vb.model.JoinDataSet;
+import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
@@ -726,9 +726,6 @@ public class UiService {
         return uiDao.getWidgetByIdAndDataSetId(widgetId, datasetId);
     }
 
-//    public DatasetColumns createDataSetColumns(DatasetColumnBean dataSetColumn) {
-//        return uiDao.createDataSetColumns(dataSetColumn);
-//    }
     public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
         DataSet dataset = uiDao.getDataSetById(dataSetColumn.getDatasetId());
         List<DatasetColumns> datasetList = new ArrayList();
@@ -814,24 +811,25 @@ public class UiService {
         return datasetList;
     }
 
-    public List<CombinedDataSetCondition> createCombinedDataSet(CombinedDataSetBean combinedDataSetBean) {
-        CombinedDataSet combinedDataSet = new CombinedDataSet();
-        List<CombinedDataSetCondition> returnList = new ArrayList<>();
-        combinedDataSet.setId(combinedDataSetBean.getId());
-        combinedDataSet.setDataSetName(combinedDataSetBean.getDataSetName());
-        combinedDataSet.setDataSetIdFirst(readDataSet(combinedDataSetBean.getDataSetIdFirst()));
-        combinedDataSet.setDataSetIdSecond(readDataSet(combinedDataSetBean.getDataSetIdSecond()));
-        combinedDataSet.setOperationType(combinedDataSetBean.getOperationType());
-        uiDao.saveOrUpdate(combinedDataSet);
-        List<CombinedDataSetBean> conditionFields = combinedDataSetBean.getConditionFields();
-        for (Iterator<CombinedDataSetBean> iterator = conditionFields.iterator(); iterator.hasNext();) {
-            CombinedDataSetBean combinedDatasetData = iterator.next();
-            CombinedDataSetCondition combinedDataSetCondition = new CombinedDataSetCondition();
-            combinedDataSetCondition.setCombinedDataSetId(combinedDataSet);
-            combinedDataSetCondition.setConditionFieldFirst(combinedDatasetData.getFirstDataSetColumn());
-            combinedDataSetCondition.setConditionFieldSecond(combinedDatasetData.getSecondDataSetColumn());
-            uiDao.saveOrUpdate(combinedDataSetCondition);
-            returnList.add(combinedDataSetCondition);
+    public List<JoinDataSetCondition> createJoinDataSet(JoinDataSetBean joinDataSetBean) {
+        JoinDataSet joinDataSet = new JoinDataSet();
+        List<JoinDataSetCondition> returnList = new ArrayList<>();
+        joinDataSet.setId(joinDataSetBean.getId());
+        joinDataSet.setDataSetName(joinDataSetBean.getDataSetName());
+        joinDataSet.setDataSetIdFirst(readDataSet(joinDataSetBean.getDataSetIdFirst()));
+        joinDataSet.setDataSetIdSecond(readDataSet(joinDataSetBean.getDataSetIdSecond()));
+        joinDataSet.setOperationType(joinDataSetBean.getOperationType());
+        uiDao.saveOrUpdate(joinDataSet);
+        List<JoinDataSetBean> conditionFields = joinDataSetBean.getConditionFields();
+        for (Iterator<JoinDataSetBean> iterator = conditionFields.iterator(); iterator.hasNext();) {
+            JoinDataSetBean joinDataSetData = iterator.next();
+            JoinDataSetCondition joinDataSetCondition = new JoinDataSetCondition();
+            joinDataSetCondition.setJoinDataSetId(joinDataSet);
+            joinDataSetCondition.setId(joinDataSetData.getId());
+            joinDataSetCondition.setConditionFieldFirst(joinDataSetData.getConditionFieldFirst());
+            joinDataSetCondition.setConditionFieldSecond(joinDataSetData.getConditionFieldSecond());
+            uiDao.saveOrUpdate(joinDataSetCondition);
+            returnList.add(joinDataSetCondition);
         }
         return returnList;
     }
