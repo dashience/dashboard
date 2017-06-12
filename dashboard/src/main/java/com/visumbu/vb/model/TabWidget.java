@@ -222,6 +222,9 @@ public class TabWidget implements Serializable {
     @JoinColumn(name = "tab_id", referencedColumnName = "id")
     @ManyToOne
     private DashboardTabs tabId;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ManyToOne
+    private UserAccount accountId;
 
     @Transient
     private List<WidgetColumn> columns;
@@ -627,6 +630,14 @@ public class TabWidget implements Serializable {
     public void setIsGridLine(String isGridLine) {
         this.isGridLine = isGridLine;
     }
+
+    public UserAccount getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(UserAccount accountId) {
+        this.accountId = accountId;
+    }    
 
     @Override
     public int hashCode() {

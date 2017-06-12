@@ -5,6 +5,8 @@
  */
 package com.visumbu.vb.bean;
 
+import com.visumbu.vb.model.UserAccount;
+import com.visumbu.vb.model.VbUser;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -67,6 +69,8 @@ public class TabWidgetBean {
     private String queryFilter;
     private String isGridLine;
     private List<WidgetColumnBean> widgetColumns;
+    private UserAccount accountId; 
+    private VbUser createdBy;
 
     public Integer getId() {
         return id;
@@ -429,6 +433,23 @@ public class TabWidgetBean {
     public void setIsGridLine(String isGridLine) {
         this.isGridLine = isGridLine;
     }
+
+    public UserAccount getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(UserAccount accountId) {
+        this.accountId = accountId;
+    }
+
+    public VbUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(VbUser createdBy) {
+        this.createdBy = createdBy;
+    }   
+    
     
 
     @Override

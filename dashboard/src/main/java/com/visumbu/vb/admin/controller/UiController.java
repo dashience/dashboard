@@ -155,6 +155,8 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
+        VbUser user = userService.findByUsername(getUser(request));
+        tabWidget.setCreatedBy(user);
         return uiService.saveTabWidget(tabId, tabWidget);
     }
 

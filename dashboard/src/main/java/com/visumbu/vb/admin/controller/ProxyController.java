@@ -1128,12 +1128,12 @@ public class ProxyController {
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
         String productSegment = getFromMultiValueMap(request, "productSegment");
-        if (timeSegment == null) {
-            timeSegment = "daily";
-        }
-        if (productSegment == null) {
-            productSegment = "none";
-        }
+//        if (timeSegment == null) {
+//            timeSegment = "daily";
+//        }
+//        if (productSegment == null) {
+//            productSegment = "none";
+//        }
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
         if (dataSetId != null) {
