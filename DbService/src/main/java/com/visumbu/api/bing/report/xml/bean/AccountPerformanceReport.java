@@ -5,6 +5,7 @@
  */
 package com.visumbu.api.bing.report.xml.bean;
 
+import com.visumbu.api.adwords.report.xml.bean.GenericReport;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlSchema;
  */
 
 @XmlRootElement(name = "Report")
-public class AccountPerformanceReport {
+public class AccountPerformanceReport implements GenericReport {
 
     private List<Column> keywordPerformanceReportColumns;
     private String reportName;
@@ -32,6 +33,9 @@ public class AccountPerformanceReport {
     private String potentialIncompleteData;
     private List<AccountPerformanceRow> accountPerformanceRows;
 
+    public List getRows() {
+        return accountPerformanceRows;
+    }
     public List<AccountPerformanceRow> getAccountPerformanceRows() {
         return accountPerformanceRows;
     }
