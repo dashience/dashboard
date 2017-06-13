@@ -16,7 +16,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'right', value: 'right'},
         {name: 'inner', value: 'inner'},
         {name: 'union', value: 'union'},
-        {name: 'intersection', value: 'intersection'}
+        {name: 'Intersection', value: 'intersection'}
     ];
 
     var url = "admin/proxy/getData?";
@@ -82,7 +82,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         getPreviewDataSet($scope.secondDataSet, "dataSet2");
     };
     $scope.dataSetColumnList = [];
-
+    $scope.joinDataSetList = [];
     $scope.hideCondition = false;
     $scope.selectJoinType = function (joinDataSetColumn) {
         $scope.operationType = joinDataSetColumn.joinType;
@@ -95,13 +95,16 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.addJoinColumnList = function () {
         $scope.dataSetColumnList.push({});
     };
-    $scope.removeJoinDataSetColumn = function (index) {
+    $scope.removeJoinDataSetColumn = function (index, conditionId) {
+        console.log(conditionId)
         $scope.dataSetColumnList.splice(index, 1);
+        $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId}).success(function (response) {
+        });
         console.log($scope.dataSetColumnList)
     }
     var joinDataSetId = null;
 
-    $scope.joinDataSetList = [];
+
     $scope.loadingResultCompleted = false;
     $scope.loadingResult = false;
     $scope.saveJoinDataSet = function (joinDataSetColumn) {
@@ -117,6 +120,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 if (typeof ($scope.joinDataSetList[i]) !== "undefined") {
                     conditionId = $scope.joinDataSetList[i].id;
                 }
+                console.log(conditionId)
                 var conditionData = {
                     conditionFieldFirst: $scope.dataSetColumnList[i].conditionFieldFirst,
                     conditionFieldSecond: $scope.dataSetColumnList[i].conditionFieldSecond,
@@ -124,8 +128,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     conditionId: conditionId
                 };
                 $scope.dataSetLists.push(conditionData);
+                console.log($scope.dataSetLists)
             }
             $scope.dataSetColumnList = $scope.dataSetLists;
+            console.log($scope.dataSetColumnList)
         }
         var data = {
             id: joinDataSetId,
@@ -137,8 +143,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         };
         console.log(data);
         $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
-            $scope.loadingResult = false;
-            $scope.loadingResultCompleted = true;
             console.log(response);
             $scope.joinDataSetList = response;
             joinDataSetId = response[0].joinDataSetId.id;
@@ -148,6 +152,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     "&location=" + $stateParams.locationId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate).success(function (response) {
+                $scope.loadingResult = false;
+                $scope.loadingResultCompleted = true;
 
                 $scope.joinColumns = response.columnDefs;
                 $scope.joinRows = response.data;

@@ -310,7 +310,7 @@
                             <label class="col-md-2">JoinType</label>
                             <div class="col-md-4">
                                 <select class="form-control" ng-model="joinDataSetColumn.joinType" ng-change="selectJoinType(joinDataSetColumn)">
-                                    <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
+                                    <option ng-repeat="joinType in joinTypes" value="{{joinType.value}}">
                                         {{joinType.name}}
                                     </option>
                                 </select>
@@ -417,10 +417,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="joinDataSetColumn in dataSetColumnList track by $index">
+                                    <tr ng-repeat="dataSetColumn in dataSetColumnList track by $index">
                                         <td >
                                             <div>
-                                                <select class="form-control" ng-model="joinDataSetColumn.conditionFieldFirst" ng-change="selectFirstDataSetColumn(joinDataSetColumn)">
+                                                <select class="form-control" ng-model="dataSetColumn.conditionFieldFirst" ng-change="selectFirstDataSetColumn(dataSetColumn)">
                                                     <option ng-repeat="conditionFieldFirst in firstDataSetColumns track by $index " 
                                                             value="{{conditionFieldFirst.fieldName}}">
                                                         {{conditionFieldFirst.fieldName}}
@@ -430,7 +430,7 @@
                                         </td>
                                         <td>
                                             <div>
-                                                <select class="form-control" ng-model="joinDataSetColumn.conditionFieldSecond" ng-change="selectSecondDataSetColumn(joinDataSetColumn)">
+                                                <select class="form-control" ng-model="dataSetColumn.conditionFieldSecond" ng-change="selectSecondDataSetColumn(dataSetColumn)">
                                                     <option ng-repeat="conditionFieldSecond in secondDataSetColumns track by $index" 
                                                             value="{{conditionFieldSecond.fieldName}}">
                                                         {{conditionFieldSecond.fieldName}}
@@ -438,9 +438,9 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td ng-if="operationType==='union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="combinedDataSetColumn.newColumnName"></div></td>
+                                        <td ng-if="operationType==='union'||operationType==='intersection'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="combinedDataSetColumn.newColumnName"></div></td>
                                         <td>
-                                            <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
+                                            <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index,joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
                                         </td>
                                     </tr>
                                 </tbody>
