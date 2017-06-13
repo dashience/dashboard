@@ -83,38 +83,38 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.dataSetColumnList = [];
 
     $scope.hideCondition = false;
-    $scope.selectJoinType = function (combinedDataSetColumn) {
-        $scope.operationType = combinedDataSetColumn.joinType;
+    $scope.selectJoinType = function (joinDataSetColumn) {
+        $scope.operationType = joinDataSetColumn.joinType;
         console.log($scope.operationType);
-        if (combinedDataSetColumn.joinType != null) {
+        if (joinDataSetColumn.joinType != null) {
             $scope.hideCondition = true;
         }
     };
 
-    $scope.addCombinedColumnList = function () {
+    $scope.addJoinColumnList = function () {
         $scope.dataSetColumnList.push({});
     };
-    $scope.removeCombinedDataSetColumn = function (index) {
+    $scope.removeJoinDataSetColumn = function (index) {
         $scope.dataSetColumnList.splice(index, 1);
         console.log($scope.dataSetColumnList)
     }
-    var combinedDataSetId = null;
+    var joinDataSetId = null;
 
-    $scope.dataSetCombinedList = [];
+    $scope.joinDataSetList = [];
     $scope.loadingResultCompleted = false;
     $scope.loadingResult = false;
-    $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
+    $scope.saveCombinedDataSet = function (joinDataSetColumn) {
         $scope.dataSetLists = [];
         $scope.loadingResultCompleted = false;
         $scope.loadingResult = true;
         $scope.errorHide = false;
-        var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
-        var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
-        if (combinedDataSetId != null) {
+        var dataSetIdFirst = JSON.parse(joinDataSetColumn.firstDataSet).id;
+        var dataSetIdSecond = JSON.parse(joinDataSetColumn.secondDataSet).id;
+        if (joinDataSetId != null) {
             for (i = 0; i < $scope.dataSetColumnList.length; i++) {
                 var conditionId = null;
-                if (typeof ($scope.dataSetCombinedList[i]) !== "undefined") {
-                    conditionId = $scope.dataSetCombinedList[i].id;
+                if (typeof ($scope.joinDataSetList[i]) !== "undefined") {
+                    conditionId = $scope.joinDataSetList[i].id;
                 }
                 var conditionData = {
                     conditionFieldFirst: $scope.dataSetColumnList[i].conditionFieldFirst,
@@ -127,30 +127,30 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSetColumnList = $scope.dataSetLists;
         }
         var data = {
-            id: combinedDataSetId,
-            dataSetName: combinedDataSetColumn.combinedDataSetName,
+            id: joinDataSetId,
+            dataSetName: joinDataSetColumn.joinDataSetName,
             dataSetIdFirst: dataSetIdFirst,
             dataSetIdSecond: dataSetIdSecond,
-            operationType: combinedDataSetColumn.joinType,
+            operationType: joinDataSetColumn.joinType,
             conditionFields: $scope.dataSetColumnList
         };
         console.log(data);
-        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: data}).success(function (response) {
+        $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
             $scope.loadingResult = false;
             $scope.loadingResultCompleted = true;
             console.log(response);
-            $scope.dataSetCombinedList = response;
-            console.log($scope.dataSetCombinedList[0].id)
-            combinedDataSetId = response[0].combinedDataSetId.id;
-            $scope.combinedDataSetNewName = response[0].combinedDataSetId.dataSetName;
-            $http.get(url + 'combinedDataSetId=' + response[0].combinedDataSetId.id +
+            $scope.dataSetJoinList = response;
+            console.log($scope.dataSetJoinList[0].id)
+            joinDataSetId = response[0].joinDataSetId.id;
+            $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
+            $http.get(url + 'joinDataSetId=' + response[0].joinDataSetId.id +
                     "&accountId=" + $stateParams.accountId +
                     "&location=" + $stateParams.locationId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate).success(function (response) {
 
-                $scope.combinedColumns = response.columnDefs;
-                $scope.combinedRows = response.data;
+                $scope.joinColumns = response.columnDefs;
+                $scope.joinRows = response.data;
                 if (response.columnDefs == "" || response.data == "") {
                     $scope.errorHide = true;
                     $scope.errorMessage = "No Data Found";
@@ -160,13 +160,26 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             });
         });
     };
-    $scope.cancelCombinationDataSet = function (combinedDataSetColumn) {
-        $scope.combinedDataSetColumn = "";
+    $scope.cancelJoinDataSet = function (joinDataSetColumn) {
+        $scope.joinDataSetColumn = "";
 //        $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
         $scope.secondDataSetLoadingCompleted = false;
         $scope.firstDataSetLoadingCompleted = false;
         $scope.loadingResultCompleted = false;
+    }
+    $scope.saveToDataSet = function (joinDataSetColumn) {
+        var dataSet = JSON.parse(joinDataSetColumn.firstDataSet);
+        var joinDataSetList = {
+            agencyId: dataSet.agencyId,
+            name: joinDataSetColumn.joinDataSetName,
+            userId: dataSet.userId,
+            joinDataSetId: joinDataSetId
+        };
+        var data = joinDataSetList;
+        $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
+            getItems();
+        });
     }
     /*
      * 
@@ -1958,21 +1971,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     };
     $scope.saveDataSet = function () {
-        console.log(combinedDataSetId)
-        var dataSetList = {
-            agencyId: $scope.dataSet.agencyId,
-            dataSourceId: $scope.dataSet.dataSourceId,
-            id: $scope.dataSet.id,
-            name: $scope.dataSet.name,
-            networkType: $scope.dataSet.networkType,
-            productSegment: $scope.dataSet.productSegment,
-            query: $scope.dataSet.query,
-            reportName: $scope.dataSet.reportName,
-            timeSegment: $scope.dataSet.timeSegment,
-            url: $scope.dataSet.url,
-            userId: $scope.dataSet.userId,
-            combineDataSetId: combinedDataSetId
-        };
+        var dataSetList = $scope.dataSet;
         console.log(dataSetList);
         console.log(dataSetList.timeSegment.type);
         dataSetList.timeSegment = dataSetList.timeSegment.type;

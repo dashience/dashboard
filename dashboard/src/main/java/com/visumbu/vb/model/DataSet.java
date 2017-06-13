@@ -27,7 +27,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
- * @author duc-dev-04
+ * @author deeta1
  */
 @Entity
 @Table(name = "data_set")
@@ -36,32 +36,14 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "DataSet.findAll", query = "SELECT d FROM DataSet d")
     , @NamedQuery(name = "DataSet.findById", query = "SELECT d FROM DataSet d WHERE d.id = :id")
     , @NamedQuery(name = "DataSet.findByName", query = "SELECT d FROM DataSet d WHERE d.name = :name")
+    , @NamedQuery(name = "DataSet.findByNetworkType", query = "SELECT d FROM DataSet d WHERE d.networkType = :networkType")
     , @NamedQuery(name = "DataSet.findByProductSegment", query = "SELECT d FROM DataSet d WHERE d.productSegment = :productSegment")
     , @NamedQuery(name = "DataSet.findByReportName", query = "SELECT d FROM DataSet d WHERE d.reportName = :reportName")
+    , @NamedQuery(name = "DataSet.findByReportPerformance", query = "SELECT d FROM DataSet d WHERE d.reportPerformance = :reportPerformance")
     , @NamedQuery(name = "DataSet.findByTimeSegment", query = "SELECT d FROM DataSet d WHERE d.timeSegment = :timeSegment")
-    , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")})
+    , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")
+    , @NamedQuery(name = "DataSet.findBySheetName", query = "SELECT d FROM DataSet d WHERE d.sheetName = :sheetName")})
 public class DataSet implements Serializable {
-
-    @OneToMany(mappedBy = "dataSetIdFirst")
-    private Collection<CombinedDataSet> combinedDataSetCollection1;
-    @OneToMany(mappedBy = "dataSetIdSecond")
-    private Collection<CombinedDataSet> combinedDataSetCollection2;
-
-    @OneToMany(mappedBy = "datasetId")
-    private Collection<DatasetColumns> datasetColumnsCollection;
-
-    @Size(max = 255)
-    @Column(name = "sheet_name")
-    private String sheetName;
-    @OneToMany(mappedBy = "dataSetId")
-    private Collection<TabWidget> tabWidgetCollection;
-
-    @Size(max = 500)
-    @Column(name = "report_performance")
-    private String reportPerformance;
-    @Size(max = 255)
-    @Column(name = "network_type")
-    private String networkType;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -72,31 +54,47 @@ public class DataSet implements Serializable {
     @Size(max = 255)
     @Column(name = "name")
     private String name;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "query")
-    private String query;
+    @Size(max = 255)
+    @Column(name = "network_type")
+    private String networkType;
     @Size(max = 255)
     @Column(name = "product_segment")
     private String productSegment;
+    @Lob
+    @Size(max = 2147483647)
+    @Column(name = "query")
+    private String query;
     @Size(max = 255)
     @Column(name = "report_name")
     private String reportName;
     @Size(max = 255)
+    @Column(name = "report_performance")
+    private String reportPerformance;
+    @Size(max = 255)
     @Column(name = "time_segment")
     private String timeSegment;
-    @Size(max = 4095)
+    @Size(max = 255)
     @Column(name = "url")
     private String url;
-    @JoinColumn(name = "data_source_id", referencedColumnName = "id")
-    @ManyToOne
-    private DataSource dataSourceId;
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne
-    private VbUser userId;
+    @Size(max = 255)
+    @Column(name = "sheet_name")
+    private String sheetName;
+    @OneToMany(mappedBy = "dataSetIdFirst")
+    private Collection<JoinDataSet> joinDataSetCollection;
+    @OneToMany(mappedBy = "dataSetIdSecond")
+    private Collection<JoinDataSet> joinDataSetCollection1;
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne
+    private VbUser userId;
+    @JoinColumn(name = "data_source_id", referencedColumnName = "id")
+    @ManyToOne
+    private DataSource dataSourceId;
+    @JoinColumn(name = "join_data_set_id", referencedColumnName = "id")
+    @ManyToOne
+    private JoinDataSet joinDataSetId;
 
     public DataSet() {
     }
@@ -121,12 +119,12 @@ public class DataSet implements Serializable {
         this.name = name;
     }
 
-    public String getQuery() {
-        return query;
+    public String getNetworkType() {
+        return networkType;
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
     }
 
     public String getProductSegment() {
@@ -137,12 +135,28 @@ public class DataSet implements Serializable {
         this.productSegment = productSegment;
     }
 
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
     public String getReportName() {
         return reportName;
     }
 
     public void setReportName(String reportName) {
         this.reportName = reportName;
+    }
+
+    public String getReportPerformance() {
+        return reportPerformance;
+    }
+
+    public void setReportPerformance(String reportPerformance) {
+        this.reportPerformance = reportPerformance;
     }
 
     public String getTimeSegment() {
@@ -161,12 +175,40 @@ public class DataSet implements Serializable {
         this.url = url;
     }
 
-    public DataSource getDataSourceId() {
-        return dataSourceId;
+    public String getSheetName() {
+        return sheetName;
     }
 
-    public void setDataSourceId(DataSource dataSourceId) {
-        this.dataSourceId = dataSourceId;
+    public void setSheetName(String sheetName) {
+        this.sheetName = sheetName;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<JoinDataSet> getJoinDataSetCollection() {
+        return joinDataSetCollection;
+    }
+
+    public void setJoinDataSetCollection(Collection<JoinDataSet> joinDataSetCollection) {
+        this.joinDataSetCollection = joinDataSetCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<JoinDataSet> getJoinDataSetCollection1() {
+        return joinDataSetCollection1;
+    }
+
+    public void setJoinDataSetCollection1(Collection<JoinDataSet> joinDataSetCollection1) {
+        this.joinDataSetCollection1 = joinDataSetCollection1;
+    }
+
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
     }
 
     public VbUser getUserId() {
@@ -177,12 +219,20 @@ public class DataSet implements Serializable {
         this.userId = userId;
     }
 
-    public Agency getAgencyId() {
-        return agencyId;
+    public DataSource getDataSourceId() {
+        return dataSourceId;
     }
 
-    public void setAgencyId(Agency agencyId) {
-        this.agencyId = agencyId;
+    public void setDataSourceId(DataSource dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
+
+    public JoinDataSet getJoinDataSetId() {
+        return joinDataSetId;
+    }
+
+    public void setJoinDataSetId(JoinDataSet joinDataSetId) {
+        this.joinDataSetId = joinDataSetId;
     }
 
     @Override
@@ -209,49 +259,5 @@ public class DataSet implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DataSet[ id=" + id + " ]";
     }
-
-    public String getReportPerformance() {
-        return reportPerformance;
-    }
-
-    public void setReportPerformance(String reportPerformance) {
-        this.reportPerformance = reportPerformance;
-    }
-
-    public String getNetworkType() {
-        return networkType;
-    }
-
-    public void setNetworkType(String networkType) {
-        this.networkType = networkType;
-    }
-
-    public String getSheetName() {
-        return sheetName;
-    }
-
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<CombinedDataSet> getCombinedDataSetCollection1() {
-        return combinedDataSetCollection1;
-    }
-
-    public void setCombinedDataSetCollection(Collection<CombinedDataSet> combinedDataSetCollection1) {
-        this.combinedDataSetCollection1 = combinedDataSetCollection1;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<CombinedDataSet> getCombinedDataSetCollection2() {
-        return combinedDataSetCollection2;
-    }
-
-    public void setCombinedDataSetCollection2(Collection<CombinedDataSet> combinedDataSetCollection2) {
-        this.combinedDataSetCollection2 = combinedDataSetCollection2;
-    }
-
+    
 }

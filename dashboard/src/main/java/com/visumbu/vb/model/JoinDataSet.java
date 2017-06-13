@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,23 +17,29 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author deeta1
  */
 @Entity
-@Table(name = "combined_data_set")
+@Table(name = "join_data_set")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CombinedDataSet.findAll", query = "SELECT c FROM CombinedDataSet c")
-    , @NamedQuery(name = "CombinedDataSet.findById", query = "SELECT c FROM CombinedDataSet c WHERE c.id = :id")
-    , @NamedQuery(name = "CombinedDataSet.findByOperationType", query = "SELECT c FROM CombinedDataSet c WHERE c.operationType = :operationType")
-    , @NamedQuery(name = "CombinedDataSet.findByDataSetName", query = "SELECT c FROM CombinedDataSet c WHERE c.dataSetName = :dataSetName")})
-public class CombinedDataSet implements Serializable {
+    @NamedQuery(name = "JoinDataSet.findAll", query = "SELECT j FROM JoinDataSet j")
+    , @NamedQuery(name = "JoinDataSet.findById", query = "SELECT j FROM JoinDataSet j WHERE j.id = :id")
+    , @NamedQuery(name = "JoinDataSet.findByDataSetName", query = "SELECT j FROM JoinDataSet j WHERE j.dataSetName = :dataSetName")
+    , @NamedQuery(name = "JoinDataSet.findByOperationType", query = "SELECT j FROM JoinDataSet j WHERE j.operationType = :operationType")})
+public class JoinDataSet implements Serializable {
+
+    @OneToMany(mappedBy = "joinDataSetId")
+    private Collection<JoinDataSetCondition> joinDataSetConditionCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,10 +60,10 @@ public class CombinedDataSet implements Serializable {
     @ManyToOne
     private DataSet dataSetIdSecond;
 
-    public CombinedDataSet() {
+    public JoinDataSet() {
     }
 
-    public CombinedDataSet(Integer id) {
+    public JoinDataSet(Integer id) {
         this.id = id;
     }
 
@@ -110,10 +117,10 @@ public class CombinedDataSet implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CombinedDataSet)) {
+        if (!(object instanceof JoinDataSet)) {
             return false;
         }
-        CombinedDataSet other = (CombinedDataSet) object;
+        JoinDataSet other = (JoinDataSet) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -122,7 +129,17 @@ public class CombinedDataSet implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.CombinedDataSet[ id=" + id + " ]";
+        return "com.visumbu.vb.model.JoinDataSet[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<JoinDataSetCondition> getJoinDataSetConditionCollection() {
+        return joinDataSetConditionCollection;
+    }
+
+    public void setJoinDataSetConditionCollection(Collection<JoinDataSetCondition> joinDataSetConditionCollection) {
+        this.joinDataSetConditionCollection = joinDataSetConditionCollection;
     }
     
 }

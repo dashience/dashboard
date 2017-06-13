@@ -305,11 +305,11 @@
                         <div class="panel-body">
                             <label class="col-md-2">DataSet Name</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" ng-model="combinedDataSetColumn.combinedDataSetName">
+                                <input type="text" class="form-control" ng-model="joinDataSetColumn.joinDataSetName">
                             </div>
                             <label class="col-md-2">JoinType</label>
                             <div class="col-md-4">
-                                <select class="form-control" ng-model="combinedDataSetColumn.joinType" ng-change="selectJoinType(combinedDataSetColumn)">
+                                <select class="form-control" ng-model="joinDataSetColumn.joinType" ng-change="selectJoinType(joinDataSetColumn)">
                                     <option ng-repeat="joinType in joinTypes" value="{{joinType.name}}">
                                         {{joinType.name}}
                                     </option>
@@ -323,16 +323,16 @@
                         <div class="panel-body">
                             <label class="col-md-2">DataSet1</label>
                             <div class="col-md-4">
-                                <select  class="form-control" ng-model="combinedDataSetColumn.firstDataSet" ng-change="selectFirstDataSet(combinedDataSetColumn)">
-                                    <option ng-repeat="combinedDataSet in dataSets" value="{{combinedDataSet}}">{{combinedDataSet.name}}</option>
+                                <select  class="form-control" ng-model="joinDataSetColumn.firstDataSet" ng-change="selectFirstDataSet(joinDataSetColumn)">
+                                    <option ng-repeat="joinDataSet in dataSets" value="{{joinDataSet}}">{{joinDataSet.name}}</option>
                                 </select>
                             </div>
 
 
                             <label class="col-md-2">DataSet2</label>
                             <div class="col-md-4">
-                                <select  class="form-control" ng-model="combinedDataSetColumn.secondDataSet" ng-change="selectSecondDataSet(combinedDataSetColumn)">
-                                    <option ng-repeat="combinedDataSet in dataSets" value="{{combinedDataSet}}">{{combinedDataSet.name}}</option>
+                                <select  class="form-control" ng-model="joinDataSetColumn.secondDataSet" ng-change="selectSecondDataSet(joinDataSetColumn)">
+                                    <option ng-repeat="joinDataSet in dataSets" value="{{joinDataSet}}">{{joinDataSet.name}}</option>
                                 </select>
                             </div>
                         </div>
@@ -402,7 +402,7 @@
                     <div class="hpanel">
                         <div class="panel-heading">Condition</div>
                         <div class="panel-body">
-                            <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addCombinedColumnList()"><i class="fa fa-plus"></i></button></div>
+                            <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addJoinColumnList()"><i class="fa fa-plus"></i></button></div>
 
                             <table class="table table-bordered table-responsive table-scheduler" >
                                 <thead>
@@ -417,10 +417,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="combinedDataSetColumn in dataSetColumnList track by $index">
+                                    <tr ng-repeat="joinDataSetColumn in dataSetColumnList track by $index">
                                         <td >
                                             <div>
-                                                <select class="form-control" ng-model="combinedDataSetColumn.conditionFieldFirst" ng-change="selectFirstDataSetColumn(combinedDataSetColumn)">
+                                                <select class="form-control" ng-model="joinDataSetColumn.conditionFieldFirst" ng-change="selectFirstDataSetColumn(joinDataSetColumn)">
                                                     <option ng-repeat="conditionFieldFirst in firstDataSetColumns track by $index " 
                                                             value="{{conditionFieldFirst.fieldName}}">
                                                         {{conditionFieldFirst.fieldName}}
@@ -430,7 +430,7 @@
                                         </td>
                                         <td>
                                             <div>
-                                                <select class="form-control" ng-model="combinedDataSetColumn.conditionFieldSecond" ng-change="selectSecondDataSetColumn(combinedDataSetColumn)">
+                                                <select class="form-control" ng-model="joinDataSetColumn.conditionFieldSecond" ng-change="selectSecondDataSetColumn(joinDataSetColumn)">
                                                     <option ng-repeat="conditionFieldSecond in secondDataSetColumns track by $index" 
                                                             value="{{conditionFieldSecond.fieldName}}">
                                                         {{conditionFieldSecond.fieldName}}
@@ -440,7 +440,7 @@
                                         </td>
                                         <td ng-if="operationType==='union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="combinedDataSetColumn.newColumnName"></div></td>
                                         <td>
-                                            <div><span class="btn btn-default btn-xs" ng-click="removeCombinedDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
+                                            <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index)"><i class="fa fa-trash"></i></span></div> 
                                         </td>
                                     </tr>
                                 </tbody>
@@ -454,8 +454,8 @@
                         <div class="panel-body">
                             <div class="pull-right">
                                 <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
-                                <button class="btn btn-success" ng-disabled="!combinedDataSetColumn" ng-click="saveCombinedDataSet(combinedDataSetColumn)">Save&Show Result</button>
-                                <button class="btn btn-default" ng-click="cancelCombinationDataSet(combinedDataSetColumn)">Cancel</button>
+                                <button class="btn btn-success" ng-disabled="!joinDataSetColumn" ng-click="saveJoinDataSet(joinDataSetColumn)">Save&Show Result</button>
+                                <button class="btn btn-default" ng-click="cancelJoinDataSet(joinDataSetColumn)">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -464,21 +464,21 @@
                     <div  ng-show="loadingResult" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
                     <div class="hpanel" ng-if="loadingResultCompleted">
                         
-                        <div class="panel-heading">{{combinedDataSetNewName}}</div>
+                        <div class="panel-heading">{{joinDataSetNewName}}</div>
                         <div class="panel-body">
                             <div class="table-responsive">
                                 <div class="text-center" ng-show="errorHide">{{errorMessage}}</div>
                                 <table class="table table-bordered table-l2t" >
                                     <thead>
                                         <tr> 
-                                            <th class="text-capitalize table-bg" ng-repeat="combinedColumn in combinedColumns">
-                                                {{combinedColumn.fieldName}}
+                                            <th class="text-capitalize table-bg" ng-repeat="joinColumn in joinColumns">
+                                                {{joinColumn.fieldName}}
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody ng-repeat="combinedRow in combinedRows|limitTo:5:0">
+                                    <tbody ng-repeat="joinRow in joinRows|limitTo:5:0">
                                         <tr class="text-capitalize">
-                                            <td ng-repeat="column in combinedColumns"><div>{{combinedRow[column.fieldName]}}</div></td>
+                                            <td ng-repeat="column in joinColumns"><div>{{joinRow[column.fieldName]}}</div></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -486,7 +486,7 @@
                             <div>
                                 <div>
                                     <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
-                                    <button class="btn btn-success" ng-click="saveDataSet()">Save</button>
+                                    <button class="btn btn-success" ng-click="saveToDataSet(joinDataSetColumn)">Save</button>
                                     <button class="btn btn-default">Cancel</button>
                                 </div>
                             </div>

@@ -21,12 +21,12 @@ import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
-import com.visumbu.vb.model.CombinedDataSet;
-import com.visumbu.vb.model.CombinedDataSetCondition;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
+import com.visumbu.vb.model.JoinDataSet;
+import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
@@ -218,25 +218,25 @@ public class ProxyController {
         return combinedValueMap;
     }
 
-    public Map getCombinedData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, String combinedDataSetIdStr) {
+    public Map getCombinedData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, String joinDataSetIdStr) {
         DataSet dataSetOne = null;
         DataSet dataSetTwo = null;
         String operationType = null;
-        Integer combinedDataSetIdInt = null;
+        Integer joinDataSetIdInt = null;
 
-        combinedDataSetIdInt = Integer.parseInt(combinedDataSetIdStr);
+        joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
         List<String> conditions = new ArrayList<>();
 
-        List<CombinedDataSetCondition> combinedDatasetConditionList = uiDao.getCombinedDataSetConditionById(combinedDataSetIdInt);
-        for (Iterator<CombinedDataSetCondition> iterator = combinedDatasetConditionList.iterator(); iterator.hasNext();) {
-            CombinedDataSetCondition combinedDataSetCondition = iterator.next();
-            CombinedDataSet combinedDataSet = combinedDataSetCondition.getCombinedDataSetId();
-            String concatCondition = "" + combinedDataSetCondition.getConditionFieldFirst() + "," + combinedDataSetCondition.getConditionFieldSecond() + "2";
+        List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getCombinedDataSetConditionById(joinDataSetIdInt);
+        for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
+            JoinDataSetCondition joinDataSetCondition = iterator.next();
+            JoinDataSet joinDataSet = joinDataSetCondition.getJoinDataSetId();
+            String concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + "2";
             System.out.println("Concat Condition ----> " + concatCondition);
             conditions.add(concatCondition);
-            dataSetOne = combinedDataSet.getDataSetIdFirst();
-            dataSetTwo = combinedDataSet.getDataSetIdSecond();
-            operationType = combinedDataSet.getOperationType();
+            dataSetOne = joinDataSet.getDataSetIdFirst();
+            dataSetTwo = joinDataSet.getDataSetIdSecond();
+            operationType = joinDataSet.getOperationType();
         }
 
         MultiValueMap combinedValueMapOne = getRequest(dataSetOne, valueMap);

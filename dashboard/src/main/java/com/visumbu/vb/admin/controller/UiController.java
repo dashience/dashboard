@@ -36,12 +36,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
-import com.visumbu.vb.bean.CombinedDataSetBean;
 import com.visumbu.vb.bean.DatasetColumnBean;
-import com.visumbu.vb.model.CombinedDataSetCondition;
+import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.model.DatasetColumns;
 
 import com.visumbu.vb.model.Currency;
+import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.WidgetTag;
 
@@ -400,10 +400,10 @@ public class UiController extends BaseController {
         return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
     }
 
-     @RequestMapping(value = "combinedTableData", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "combinedTableData", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    List<CombinedDataSetCondition> createCombinedDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody CombinedDataSetBean combinedDataSetBean) {
-        return uiService.createCombinedDataSet(combinedDataSetBean);
+    List<JoinDataSetCondition> createJoinDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody JoinDataSetBean joinDataSetBean) {
+        return uiService.createJoinDataSet(joinDataSetBean);
     }
     
     @RequestMapping(value = "getDatasetColumnByDatasetId/{datasetId}", method = RequestMethod.GET, produces = "application/json")

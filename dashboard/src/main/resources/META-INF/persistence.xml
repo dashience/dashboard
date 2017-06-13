@@ -22,7 +22,6 @@
     <class>com.visumbu.vb.model.Product</class>
     <class>com.visumbu.vb.model.WidgetColumn</class>
     <class>com.visumbu.vb.model.ReportType</class>
-    <class>com.visumbu.vb.model.DataSet</class>
     <class>com.visumbu.vb.model.DataSource</class>
     <class>com.visumbu.vb.model.Account</class>
     <class>com.visumbu.vb.model.AccountUser</class>
@@ -44,13 +43,12 @@
     <class>com.visumbu.vb.model.Currency</class>
     <class>com.visumbu.vb.model.Timezone</class>
     <class>com.visumbu.vb.model.Settings</class>
-    <class>com.visumbu.vb.model.CombinedDataSet</class>
-    <class>com.visumbu.vb.model.CombinedDataSetCondition</class>
     <class>com.visumbu.vb.model.DataSet_1</class>
     <class>com.visumbu.vb.model.DataSource_1</class>
-    <class>com.visumbu.vb.model.VbUser_1</class>
-    <class>com.visumbu.vb.model.Agency_1</class>
     <class>com.visumbu.vb.model.CombinedDataSet_1</class>
+    <class>com.visumbu.vb.model.JoinDataSet</class>
+    <class>com.visumbu.vb.model.JoinDataSetCondition</class>
+    <class>com.visumbu.vb.model.DataSet</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

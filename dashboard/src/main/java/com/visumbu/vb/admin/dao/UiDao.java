@@ -11,7 +11,6 @@ import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
-import com.visumbu.vb.model.CombinedDataSetCondition;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
@@ -19,6 +18,7 @@ import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
+import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportColumn;
@@ -618,10 +618,10 @@ public class UiDao extends BaseDao {
         return query.list();
     }
     
-    public List<CombinedDataSetCondition> getCombinedDataSetConditionById(Integer id) {
-        String queryStr = "select d from CombinedDataSetCondition d where d.combinedDataSetId.id = :combinedDataSetId";
+    public List<JoinDataSetCondition> getCombinedDataSetConditionById(Integer id) {
+        String queryStr = "select d from JoinDataSetCondition d where d.joinDataSetId.id = :joinDataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("combinedDataSetId", id);
+        query.setParameter("joinDataSetId", id);
         return query.list();
     }
 }
