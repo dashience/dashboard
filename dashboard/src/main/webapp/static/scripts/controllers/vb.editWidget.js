@@ -229,7 +229,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             }
         }
     };
-    $scope.loadColumnDef = true;
+    $scope.loadColumnDef = false;
     function columnHeaderDef(widget) {
         var dataSourcePassword;
         if (!widget.dataSetId) {

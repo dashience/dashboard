@@ -183,6 +183,7 @@
 
                     <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
+                             widget-Obj="{{reportWidget.widgetId}}"
                              ticker-Directive ticker-Source="{{reportWidget.widgetId.dataSetId}}" 
                              ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
                              ticker-Id="{{reportWidget.widgetId.id}}" 

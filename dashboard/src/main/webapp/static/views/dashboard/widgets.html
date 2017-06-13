@@ -290,8 +290,6 @@
 <div>
     <div ng-repeat="widget in widgets">
         <div ng-if="widget.chartType == 'ticker'">
-            <!--            <div class="col-sm-{{widget.width}}">
-                            <div class="hpanel border-table">-->
             <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
                     <div class="panel-tools">
@@ -304,7 +302,7 @@
                         <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="widget.width != 12" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
                     </div>
-                    <div set-Ticker-Fn="setTickerFn(tickerFn)" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+                    <div set-Ticker-Fn="setTickerFn(tickerFn)" widget-Obj="{{widget}}" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
                 </div>
             </div>
             <div id="delete{{widget.id}}" class="modal">

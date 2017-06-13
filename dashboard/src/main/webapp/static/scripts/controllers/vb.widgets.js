@@ -1,9 +1,6 @@
-
-
 function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
-
 
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, localStorageService, $state, $window) {
 
@@ -432,6 +429,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 '</table>' +
                 '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         link: function (scope, element, attr) {
+            var widgetData = JSON.parse(scope.widgetObj);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
@@ -500,7 +498,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             });
 
             scope.isZeroRow = function (row, col) {
-                var widgetData = JSON.parse(scope.widgetObj);
                 if (!widgetData.zeroSuppression || widgetData.zeroSuppression == false) {
                     return false;
                 }
@@ -606,23 +603,30 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 dataSourcePassword = '';
             }
 
+            var setWidgetAccountId;
+            if (!widgetData.accountId) {
+                setWidgetAccountId = $stateParams.accountId;
+            } else {
+                setWidgetAccountId = widgetData.accountId.accountId.id;
+            }
+
             scope.refreshTable = function () {
-                scope.connectionTestUrl = url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
-                        "&dataSetId=" + tableDataSource.id +
-                        "&accountId=" + $stateParams.accountId +
-                        "&driver=" + tableDataSource.dataSourceId.sqlDriver +
-                        "&location=" + $stateParams.locationId +
-                        "&startDate=" + $stateParams.startDate +
-                        "&endDate=" + $stateParams.endDate +
-                        '&username=' + tableDataSource.dataSourceId.userName +
-                        '&password=' + dataSourcePassword +
-                        '&dataSetReportName=' + tableDataSource.reportName +
-                        '&widgetId=' + scope.widgetId +
-                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query);
+//                scope.connectionTestUrl = url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
+//                        "&dataSetId=" + tableDataSource.id +
+//                        "&accountId=" + $stateParams.accountId +
+//                        "&driver=" + tableDataSource.dataSourceId.sqlDriver +
+//                        "&location=" + $stateParams.locationId +
+//                        "&startDate=" + $stateParams.startDate +
+//                        "&endDate=" + $stateParams.endDate +
+//                        '&username=' + tableDataSource.dataSourceId.userName +
+//                        '&password=' + dataSourcePassword +
+//                        '&dataSetReportName=' + tableDataSource.reportName +
+//                        '&widgetId=' + scope.widgetId +
+//                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query);
 
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
-                        "&accountId=" + $stateParams.accountId +
+                        "&accountId=" + setWidgetAccountId +
                         "&driver=" + tableDataSource.dataSourceId.sqlDriver +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
@@ -657,7 +661,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                                 responseData = sortByDay(responseData, sortFields)//                                
                             }
                         });
-                        var widgetData = JSON.parse(scope.widgetObj);
+                        //var widgetData = JSON.parse(scope.widgetObj);
                         if (widgetData.maxRecord > 0) {
                             responseData = responseData.slice(0, widgetData.maxRecord);
                         }
@@ -703,7 +707,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     }
                 });
 
-                var widgetData = JSON.parse(scope.widgetObj);
+//                var widgetData = JSON.parse(scope.widgetObj);
                 if (widgetData.maxRecord > 0) {
                     responseData = responseData.slice(0, widgetData.maxRecord);
                 }
@@ -947,9 +951,11 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             tickerSource: '@',
             tickerId: '@',
             tickerColumns: '@',
-            tickerTitleName: '@'
+            tickerTitleName: '@',
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
+            var getWidgetObj = JSON.parse(scope.widgetObj)
             scope.loadingTicker = true;
             var tickerName = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
@@ -988,10 +994,18 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             } else {
                 dataSourcePassword = '';
             }
+
+            var setWidgetAccountId;
+            
+            if (!getWidgetObj.accountId) {
+                setWidgetAccountId = $stateParams.accountId;
+            } else {
+                setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+            }
             scope.refreshTicker = function () {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
-                        "&accountId=" + $stateParams.accountId +
+                        "&accountId=" + setWidgetAccountId +
                         "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + tickerDataSource.reportName +
                         "&location=" + $stateParams.locationId +
@@ -1217,10 +1231,20 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 } else {
                     dataSourcePassword = '';
                 }
+
+                var getWidgetObj = JSON.parse(scope.widgetObj);
+
+                var setWidgetAccountId;
+                if (!getWidgetObj.accountId) {
+                    setWidgetAccountId = $stateParams.accountId;
+                } else {
+                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+                }
+
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
-                            "&accountId=" + $stateParams.accountId +
+                            "&accountId=" + setWidgetAccountId +
                             "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -1508,6 +1532,15 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
             var barChartDataSource = JSON.parse(scope.barChartSource);
             if (scope.barChartSource) {
+                
+                var getWidgetObj = JSON.parse(scope.widgetObj);
+
+                var setWidgetAccountId;
+                if (!getWidgetObj.accountId) {
+                    setWidgetAccountId = $stateParams.accountId;
+                } else {
+                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+                }
 
                 var url = "admin/proxy/getData?";
                 if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
@@ -1522,7 +1555,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
-                            "&accountId=" + $stateParams.accountId +
+                            "&accountId=" + setWidgetAccountId +
                             "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -1809,11 +1842,19 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     dataSourcePassword = '';
                 }
+                
+                var getWidgetObj = JSON.parse(scope.widgetObj);
+                var setWidgetAccountId;
+                if (!getWidgetObj.accountId) {
+                    setWidgetAccountId = $stateParams.accountId;
+                } else {
+                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+                }
 
                 scope.refreshPieChart = function () {
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
-                            "&accountId=" + $stateParams.accountId +
+                            "&accountId=" + setWidgetAccountId +
                             "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -2100,10 +2141,19 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     dataSourcePassword = '';
                 }
+                
+                var getWidgetObj = JSON.parse(scope.widgetObj);
+                var setWidgetAccountId;
+                if (!getWidgetObj.accountId) {
+                    setWidgetAccountId = $stateParams.accountId;
+                } else {
+                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+                }
+                
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
-                            "&accountId=" + $stateParams.accountId +
+                            "&accountId=" + getWidgetObj +
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -2395,10 +2445,18 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 } else {
                     dataSourcePassword = '';
                 }
+                
+                var getWidgetObj = JSON.parse(scope.widgetObj);
+                var setWidgetAccountId;
+                if (!getWidgetObj.accountId) {
+                    setWidgetAccountId = $stateParams.accountId;
+                } else {
+                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+                }
                 scope.refreshStackedBarChart = function () {
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
-                            "&accountId=" + $stateParams.accountId +
+                            "&accountId=" + getWidgetObj +
                             "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
