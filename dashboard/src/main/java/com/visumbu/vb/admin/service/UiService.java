@@ -852,9 +852,8 @@ public class UiService {
         return uiDao.getDatasetColumnByDatasetId(datasetId);
     }
 
-    public JoinDataSetCondition deleteJoinDataSetConditionById(Integer conditionId) {
-        JoinDataSetCondition joinDataSetCondition = (JoinDataSetCondition) uiDao.read(JoinDataSetCondition.class, conditionId);
-        return (JoinDataSetCondition) uiDao.delete(joinDataSetCondition);
+    public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
+        return uiDao.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
 }

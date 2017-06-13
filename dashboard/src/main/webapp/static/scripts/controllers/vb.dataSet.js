@@ -98,8 +98,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.removeJoinDataSetColumn = function (index, conditionId) {
         console.log(conditionId)
         $scope.dataSetColumnList.splice(index, 1);
-        $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId}).success(function (response) {
+
+        $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId +"/"+ joinDataSetId}).success(function (response) {
+            console.log(response)
+            $scope.joinDataSetList=response;
         });
+        console.log($scope.joinDataSetList)
         console.log($scope.dataSetColumnList)
     }
     var joinDataSetId = null;
@@ -115,6 +119,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSetIdFirst = JSON.parse(joinDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(joinDataSetColumn.secondDataSet).id;
         if (joinDataSetId != null) {
+            console.log($scope.joinDataSetList);
             for (i = 0; i < $scope.dataSetColumnList.length; i++) {
                 var conditionId = null;
                 if (typeof ($scope.joinDataSetList[i]) !== "undefined") {
@@ -168,12 +173,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.cancelJoinDataSet = function (joinDataSetColumn) {
         $scope.joinDataSetColumn = "";
+        $scope.dataSetColumn = "";
 //        $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
         $scope.secondDataSetLoadingCompleted = false;
         $scope.firstDataSetLoadingCompleted = false;
         $scope.loadingResultCompleted = false;
-    };
+        $scope.loadingResult = false;
+    }
     $scope.saveToDataSet = function (joinDataSetColumn) {
         var dataSet = JSON.parse(joinDataSetColumn.firstDataSet);
         var joinDataSetList = {

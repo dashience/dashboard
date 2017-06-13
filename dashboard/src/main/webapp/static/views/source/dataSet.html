@@ -438,7 +438,7 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td ng-if="operationType==='union'||operationType==='intersection'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="combinedDataSetColumn.newColumnName"></div></td>
+                                        <td ng-if="operationType==='union'||operationType==='intersection'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
                                         <td>
                                             <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index,joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
                                         </td>

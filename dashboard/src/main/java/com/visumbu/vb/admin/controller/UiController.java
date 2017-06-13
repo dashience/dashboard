@@ -406,10 +406,10 @@ public class UiController extends BaseController {
         return uiService.createJoinDataSet(joinDataSetBean);
     }
 
-    @RequestMapping(value = "deleteJoinDataSetCondition/{conditionId}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "deleteJoinDataSetCondition/{conditionId}/{joinDataSetId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    JoinDataSetCondition deleteJoinDataSetConditionById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer conditionId) {
-        return uiService.deleteJoinDataSetConditionById(conditionId);
+    List<JoinDataSetCondition> deleteJoinDataSetConditionById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer conditionId,@PathVariable Integer joinDataSetId) {
+        return uiService.deleteJoinDataSetConditionById(conditionId,joinDataSetId);
     }
 
     @RequestMapping(value = "getDatasetColumnByDatasetId/{datasetId}", method = RequestMethod.GET, produces = "application/json")

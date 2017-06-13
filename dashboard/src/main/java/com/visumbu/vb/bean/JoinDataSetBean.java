@@ -101,6 +101,6 @@ public class JoinDataSetBean {
 
     public void setColumnName(String columnName) {
         this.columnName = columnName;
-    }
-    
+    } 
+
 }

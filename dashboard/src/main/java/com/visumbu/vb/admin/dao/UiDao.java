@@ -617,11 +617,20 @@ public class UiDao extends BaseDao {
         query.setParameter("accountId", id);
         return query.list();
     }
-    
+
     public List<JoinDataSetCondition> getJoinDataSetConditionById(Integer id) {
         String queryStr = "select d from JoinDataSetCondition d where d.joinDataSetId.id = :joinDataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("joinDataSetId", id);
         return query.list();
+    }
+
+    public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
+        System.out.println("delete join data set method");
+        String deleteStr = "delete from JoinDataSetCondition d where d.id = :conditionId";
+        Query query = sessionFactory.getCurrentSession().createQuery(deleteStr);
+        query.setParameter("conditionId", conditionId);
+        query.executeUpdate();
+        return getJoinDataSetConditionById(joinDataSetId);
     }
 }
