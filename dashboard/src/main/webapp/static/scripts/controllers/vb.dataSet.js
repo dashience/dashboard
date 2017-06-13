@@ -15,7 +15,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'left', value: 'left'},
         {name: 'right', value: 'right'},
         {name: 'inner', value: 'inner'},
-        {name: 'outer', value: 'outer'}
+        {name: 'union', value: 'union'}
     ];
 
     var url = "admin/proxy/getData?";
@@ -83,47 +83,104 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.dataSetColumnList = [];
 
     $scope.hideCondition = false;
-    $scope.selectJoinType = function (combinedDataSetColumn) {
-        if (combinedDataSetColumn.joinType != null) {
+    $scope.selectJoinType = function (joinDataSetColumn) {
+        $scope.operationType = joinDataSetColumn.joinType;
+        console.log($scope.operationType);
+        if (joinDataSetColumn.joinType != null) {
             $scope.hideCondition = true;
         }
     };
 
-    $scope.addCombinedColumnList = function () {
+    $scope.addJoinColumnList = function () {
         $scope.dataSetColumnList.push({});
     };
-    $scope.removeCombinedDataSetColumn = function (index) {
+    $scope.removeJoinDataSetColumn = function (index) {
         $scope.dataSetColumnList.splice(index, 1);
-    };
-    var combinedDataSetId = null;
-    $scope.saveCombinedDataSet = function (combinedDataSetColumn) {
-        var dataSetIdFirst = JSON.parse(combinedDataSetColumn.firstDataSet).id;
-        var dataSetIdSecond = JSON.parse(combinedDataSetColumn.secondDataSet).id;
+        console.log($scope.dataSetColumnList)
+    }
+    var joinDataSetId = null;
+
+    $scope.joinDataSetList = [];
+    $scope.loadingResultCompleted = false;
+    $scope.loadingResult = false;
+    $scope.saveCombinedDataSet = function (joinDataSetColumn) {
+        $scope.dataSetLists = [];
+        $scope.loadingResultCompleted = false;
+        $scope.loadingResult = true;
+        $scope.errorHide = false;
+        var dataSetIdFirst = JSON.parse(joinDataSetColumn.firstDataSet).id;
+        var dataSetIdSecond = JSON.parse(joinDataSetColumn.secondDataSet).id;
+        if (joinDataSetId != null) {
+            for (i = 0; i < $scope.dataSetColumnList.length; i++) {
+                var conditionId = null;
+                if (typeof ($scope.joinDataSetList[i]) !== "undefined") {
+                    conditionId = $scope.joinDataSetList[i].id;
+                }
+                var conditionData = {
+                    conditionFieldFirst: $scope.dataSetColumnList[i].conditionFieldFirst,
+                    conditionFieldSecond: $scope.dataSetColumnList[i].conditionFieldSecond,
+                    newColumnName: $scope.dataSetColumnList[i].newColumnName,
+                    conditionId: conditionId
+                };
+                $scope.dataSetLists.push(conditionData);
+            }
+            $scope.dataSetColumnList = $scope.dataSetLists;
+        }
         var data = {
-            id: combinedDataSetId,
-            dataSetName: combinedDataSetColumn.combinedDataSetName,
+            id: joinDataSetId,
+            dataSetName: joinDataSetColumn.joinDataSetName,
             dataSetIdFirst: dataSetIdFirst,
             dataSetIdSecond: dataSetIdSecond,
-            operationType: combinedDataSetColumn.joinType,
+            operationType: joinDataSetColumn.joinType,
             conditionFields: $scope.dataSetColumnList
         };
         console.log(data);
-        $http({method: 'POST', url: 'admin/ui/combinedTableData', data: JSON.stringify(data)}).success(function (response) {
+        $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
+            $scope.loadingResult = false;
+            $scope.loadingResultCompleted = true;
             console.log(response);
-            combinedDataSetId = response[0].combinedDataSetId.id;
-            $scope.combinedDataSetNewName=response[0].combinedDataSetId.dataSetName;
-            $http.get(url + 'combinedDataSetId=' + response[0].combinedDataSetId.id +
+            $scope.dataSetJoinList = response;
+            console.log($scope.dataSetJoinList[0].id)
+            joinDataSetId = response[0].joinDataSetId.id;
+            $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
+            $http.get(url + 'joinDataSetId=' + response[0].joinDataSetId.id +
                     "&accountId=" + $stateParams.accountId +
                     "&location=" + $stateParams.locationId +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate).success(function (response) {
-                        $scope.combinedColumns=response.columnDefs;
-                        $scope.combinedRows=response.data;
+
+                $scope.joinColumns = response.columnDefs;
+                $scope.joinRows = response.data;
+                if (response.columnDefs == "" || response.data == "") {
+                    $scope.errorHide = true;
+                    $scope.errorMessage = "No Data Found";
+                }
                 console.log(response.columnDefs);
                 console.log(response.data);
             });
         });
     };
+    $scope.cancelJoinDataSet = function (joinDataSetColumn) {
+        $scope.joinDataSetColumn = "";
+//        $scope.dataSetColumnList = [];
+        $scope.hideCondition = false;
+        $scope.secondDataSetLoadingCompleted = false;
+        $scope.firstDataSetLoadingCompleted = false;
+        $scope.loadingResultCompleted = false;
+    }
+    $scope.saveToDataSet = function (joinDataSetColumn) {
+        var dataSet = JSON.parse(joinDataSetColumn.firstDataSet);
+        var joinDataSetList = {
+            agencyId: dataSet.agencyId,
+            name: joinDataSetColumn.joinDataSetName,
+            userId: dataSet.userId,
+            joinDataSetId: joinDataSetId
+        };
+        var data = joinDataSetList;
+        $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
+            getItems();
+        });
+    }
     /*
      * 
      * All
@@ -1751,15 +1808,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.bingPerformance);
             $scope.timeSegment = $scope.bingPerformance[index].timeSegments;
             $scope.productSegment = $scope.bingPerformance[index].productSegments;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+            $scope.dataSetFlag = true;
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
             if ($scope.dataSet.reportName == 'geoPerformance') {
-                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
-                $scope.dataSet.productSegment = {name: 'City', type: 'city'};
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'City', type: 'city'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
             } else {
-                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
-                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName)
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName)
+                }
             }
         }
         if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
@@ -1893,6 +1972,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
+        console.log(dataSetList);
         console.log(dataSetList.timeSegment.type);
         dataSetList.timeSegment = dataSetList.timeSegment.type;
         dataSetList.productSegment = dataSetList.productSegment.type;
@@ -1946,6 +2026,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else if (dataSet.dataSourceId.dataSourceType === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
+            $scope.getTimeSegements(dataSet);
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+        } else if (dataSet.dataSourceId.dataSourceType === "bing")
+        {
+            $scope.report = $scope.bingPerformance;
             $scope.getTimeSegements(dataSet);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
@@ -2066,99 +2152,107 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<label class="col-md-3">Field Name</label>' +
                 '<div class="col-md-3">' +
                 '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
+                '</div>' +
+                '<div class="col-md-3">' +
                 '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
                 '</div>' +
-                '<label class="col-md-2">Base Field</label>' +
-                '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
-                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
-                '{{dataSetColumn.fieldName}}' +
-                '</option>' +
-                '</select>' +
+//                '<label class="col-md-2">Base Field</label>' +
+//                '<div class="col-md-4">' +
+//                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
+//                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
+//                '{{dataSetColumn.fieldName}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+
                 '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Function</label>' +
-                '<div class="col-md-3">' +
-                '<select  name="functionName" class="form-control" ng-model="dataSetColumn.functionName" ng-change="functionChange(dataSetColumn)" ng-disabled="dataSetColumn.expression?true:false">' +
-                '<option ng-repeat="functionType in functionTypes" value={{functionType.name}}>' +
-                '{{functionType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '<div ng-if="dataSetColumn.functionName===\'Custom\'" class="col-md-2">' +
-                '<div class="dropdown editWidgetDropDown">' +
-                '<button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">' +
-                ' <span ng-class="{\'text-danger\':dateErrorMessage==true}">{{dataSetColumn.dateRangeName?dataSetColumn.dateRangeName:"Select Date"}}</span>' +
-                '<span class="caret"></span></button>' +
-                '<ul class="dropdown-menu scheduler-list-style">' +
-                '<li>' +
-                '<div class="col-md-12">' +
-                '<div>' +
-                '<a class="pull-right custom-daterange-box" function-Date-Range ng-click="selectFunctionDateRange(dataSetColumn)" widget-Table-Date-Range="{{dataSetColumn}}" id="widgetDateRange">' +
-                '<span class="date-border">' +
-                '{{dataSetColumn.customStartDate ? dataSetColumn.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{dataSetColumn.customEndDate ? dataSetColumn.customEndDate : endDate| date: "MM/dd/yyyy"}}' +
-                '</span>' +
-                '</a>' +
-                '</div>' +
-                '</div>' +
-                '</li>' +
-//                            text values
-                '<li>' +
-                '<a>Last <input type="text"' +
-                'ng-model="dataSetColumn.lastNdays"' +
-                'ng-change="selectFunctionDuration(\'Last N Days\', dataSetColumn)" ' +
-                'class="form-control"' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Days' +
-                '</a>' +
-                '</li>' +
-                '<li>' +
-                '<a>Last <input type="text"' +
-                'ng-model="dataSetColumn.lastNweeks"' +
-                'ng-change="selectFunctionDuration(\'Last N Weeks\', dataSetColumn)"' +
-                'class="form-control" ' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Weeks' +
-                '</a>' +
-                '</li>' +
-                '<li>' +
-                '<a>Last <input type="text"' +
-                'ng-model="dataSetColumn.lastNmonths"' +
-                'ng-change="selectFunctionDuration(\'Last N Months\', dataSetColumn)"' +
-                'class="form-control"' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Months' +
-                '</a>' +
-                '</li>' +
-                ' <li>' +
-                '<a>Last <input type="text" ' +
-                'ng-model="dataSetColumn.lastNyears"' +
-                'ng-change="selectFunctionDuration(\'Last N Years\', dataSetColumn)"' +
-                'class="form-control"' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Years' +
-                '</a>' +
-                '</li>' +
-                '</ul>' +
-                ' </div>' +
-                '</div>' +
-                '<label class="col-md-1">Column</label>' +
-                '<div class="col-md-2">' +
-                '<select class="form-control" ng-disabled="dataSetColumn.expression?true:false" ng-model="dataSetColumn.columnName">' +
-                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
-                '{{dataSetColumn.fieldName}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '<div class="col-md-1">' +
-                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
-                '</div>' +
-                '</div>' +
+//                '<div class="form-group">' +
+//                '<label class="col-md-3">Function</label>' +
+//                '<div class="col-md-3">' +
+//                '<select  name="functionName" class="form-control" ng-model="dataSetColumn.functionName" ng-change="functionChange(dataSetColumn)" ng-disabled="dataSetColumn.expression?true:false">' +
+//                '<option ng-repeat="functionType in functionTypes" value={{functionType.name}}>' +
+//                '{{functionType.name}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '<div ng-if="dataSetColumn.functionName===\'Custom\'" class="col-md-2">' +
+//                '<div class="dropdown editWidgetDropDown">' +
+//                '<button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">' +
+//                ' <span ng-class="{\'text-danger\':dateErrorMessage==true}">{{dataSetColumn.dateRangeName?dataSetColumn.dateRangeName:"Select Date"}}</span>' +
+//                '<span class="caret"></span></button>' +
+//                '<ul class="dropdown-menu scheduler-list-style">' +
+//                '<li>' +
+//                '<div class="col-md-12">' +
+//                '<div>' +
+//                '<a class="pull-right custom-daterange-box" function-Date-Range ng-click="selectFunctionDateRange(dataSetColumn)" widget-Table-Date-Range="{{dataSetColumn}}" id="widgetDateRange">' +
+//                '<span class="date-border">' +
+//                '{{dataSetColumn.customStartDate ? dataSetColumn.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{dataSetColumn.customEndDate ? dataSetColumn.customEndDate : endDate| date: "MM/dd/yyyy"}}' +
+//                '</span>' +
+//                '</a>' +
+//                '</div>' +
+//                '</div>' +
+//                '</li>' +
+////                            text values
+//                '<li>' +
+//                '<a>Last <input type="text"' +
+//                'ng-model="dataSetColumn.lastNdays"' +
+//                'ng-change="selectFunctionDuration(\'Last N Days\', dataSetColumn)" ' +
+//                'class="form-control"' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Days' +
+//                '</a>' +
+//                '</li>' +
+//                '<li>' +
+//                '<a>Last <input type="text"' +
+//                'ng-model="dataSetColumn.lastNweeks"' +
+//                'ng-change="selectFunctionDuration(\'Last N Weeks\', dataSetColumn)"' +
+//                'class="form-control" ' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Weeks' +
+//                '</a>' +
+//                '</li>' +
+//                '<li>' +
+//                '<a>Last <input type="text"' +
+//                'ng-model="dataSetColumn.lastNmonths"' +
+//                'ng-change="selectFunctionDuration(\'Last N Months\', dataSetColumn)"' +
+//                'class="form-control"' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Months' +
+//                '</a>' +
+//                '</li>' +
+//                ' <li>' +
+//                '<a>Last <input type="text" ' +
+//                'ng-model="dataSetColumn.lastNyears"' +
+//                'ng-change="selectFunctionDuration(\'Last N Years\', dataSetColumn)"' +
+//                'class="form-control"' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Years' +
+//                '</a>' +
+//                '</li>' +
+//                '</ul>' +
+//                ' </div>' +
+//                '</div>' +
+//                '<label class="col-md-1">Column</label>' +
+//                '<div class="col-md-2">' +
+//                '<select class="form-control" ng-disabled="dataSetColumn.expression?true:false" ng-model="dataSetColumn.columnName">' +
+//                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
+//                '{{dataSetColumn.fieldName}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '<div class="col-md-1">' +
+//                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
+//                '</div>' +
+//                '</div>' +
+
+
+
+
+
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-8">' +
@@ -2190,7 +2284,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success"  ng-disabled="dataSetError||!((dataSetColumn.expression||(dataSetColumn.functionName&&dataSetColumn.columnName))&&dataSetColumn.fieldName&&dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
+                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError||!((dataSetColumn.expression||(dataSetColumn.functionName&&dataSetColumn.columnName))&&dataSetColumn.fieldName&&dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)" >Close</button>' +
                 '</div>' +
                 '</div>' +
@@ -2217,15 +2311,19 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<label class="col-md-3">Field Name</label>' +
                 '<div class="col-md-3">' +
                 '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
+                '</div>' +
+                '<div class="col-md-3">' +
                 '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
                 '</div>' +
-                '<label class="col-md-2">Base Field</label>' +
-                '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
-                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
-                '{{dataSetColumn.fieldName}}' +
-                '</option>' +
-                '</select>' +
+//                '<label class="col-md-2">Base Field</label>' +
+//                '<div class="col-md-4">' +
+//                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
+//                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
+//                '{{dataSetColumn.fieldName}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
@@ -2341,7 +2439,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success" ng-disabled="dataSetError || !((dataSetColumn.expression || (dataSetColumn.functionName && dataSetColumn.columnName)) && dataSetColumn.fieldName && dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
+                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError || !((dataSetColumn.expression || (dataSetColumn.functionName && dataSetColumn.columnName)) && dataSetColumn.fieldName && dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
                 '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)">Close</button>' +
                 '</div>' +
                 '</div>' +
@@ -2456,7 +2554,47 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.dataSetColumns = response.columnDefs;
                     }
                     scope.tableColumns = response.columnDefs;
-                    scope.tableRows = response.data;
+//                    scope.tableRows = response.data;
+
+                    if (setTimeSegment == "dayOfWeek") {
+                        scope.dayOfWeekDataSet = [];
+                        angular.forEach(response.data, function (valueObj, key) {
+                            var dayOfWeekObj = {
+                                accountId: valueObj.accountId,
+                                accountName: valueObj.accountName,
+                                averageCpc: valueObj.averageCpc,
+                                averagePosition: valueObj.averagePosition,
+                                clicks: valueObj.clicks,
+                                conversionRate: valueObj.conversionRate,
+                                conversions: valueObj.conversions,
+                                costPerConversion: valueObj.costPerConversion,
+                                ctr: valueObj.ctr,
+                                dayOfWeek: dayOfWeekAsString(valueObj.dayOfWeek - 1),
+                                gregorianDate: valueObj.gregorianDate,
+                                hourOfDay: valueObj.hourOfDay,
+                                impressionLostToBudgetPercent: valueObj.impressionLostToBudgetPercent,
+                                impressionLostToRankPercent: valueObj.impressionLostToRankPercent,
+                                impressionSharePercent: valueObj.impressionSharePercent,
+                                impressions: valueObj.impressions,
+                                month: valueObj.month,
+                                phoneCalls: valueObj.phoneCalls,
+                                qualityScore: valueObj.qualityScore,
+                                spend: valueObj.spend,
+                                week: valueObj.week
+                            };
+                            scope.dayOfWeekDataSet.push(dayOfWeekObj);
+                        });
+                        scope.tableRows = scope.dayOfWeekDataSet;
+                    } else {
+                        scope.tableRows = response.data;
+                    }
+                    function dayOfWeekAsString(dayIndex) {
+                        return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
+                    }
+
+
+
+
 
                     scope.columns = [];
                     scope.dataSetId = dataSourcePath.id;
@@ -2747,34 +2885,34 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     lastNyears: dataSetColumn.lastNyears
                 };
                 console.log(data);
-                if (!dataSetColumn.dateRangeName && dataSetColumn.functionName == 'Custom') {
-                    scope.dateErrorMessage = true;
-                } else {
-                    scope.dateErrorMessage = false;
-                    $('.modal').modal('hide');
-                    $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
-                        console.log(response);
-                        scope.ajaxLoadingCompleted = false;
-                        scope.loadingTable = true;
-                        dataSetColumn.id = "";
-                        dataSetColumn.expression = "";
-                        dataSetColumn.fieldName = "";
-                        dataSetColumn.fieldType = "";
-                        dataSetColumn.displayFormat = "";
-                        dataSetColumn.functionName = "";
-                        dataSetColumn.columnName = "";
-                        dataSetColumn.dateRangeName = "";
-                        dataSetColumn.customStartDate = $stateParams.startDate;
-                        dataSetColumn.customEndDate = $stateParams.endDate;
-                        dataSetColumn.baseField = "";
-                        dataSetColumn.lastNdays = "";
-                        dataSetColumn.lastNyears = "";
-                        dataSetColumn.lastNweeks = "";
-                        dataSetColumn.lastNmonths = "";
-                        scope.dataSetItems();
-                    });
-                }
-            };
+//                if (!dataSetColumn.dateRangeName && dataSetColumn.functionName == 'Custom') {
+//                    scope.dateErrorMessage = true;
+//                } else {
+//                    scope.dateErrorMessage = false;
+//                    $('.modal').modal('hide');
+                $http({method: 'POST', url: 'admin/ui/dataSetFormulaColumns', data: JSON.stringify(data)}).success(function (response) {
+                    console.log(response);
+                    scope.ajaxLoadingCompleted = false;
+                    scope.loadingTable = true;
+                    dataSetColumn.id = "";
+                    dataSetColumn.expression = "";
+                    dataSetColumn.fieldName = "";
+                    dataSetColumn.fieldType = "";
+                    dataSetColumn.displayFormat = "";
+                    dataSetColumn.functionName = "";
+                    dataSetColumn.columnName = "";
+                    dataSetColumn.dateRangeName = "";
+                    dataSetColumn.customStartDate = $stateParams.startDate;
+                    dataSetColumn.customEndDate = $stateParams.endDate;
+                    dataSetColumn.baseField = "";
+                    dataSetColumn.lastNdays = "";
+                    dataSetColumn.lastNyears = "";
+                    dataSetColumn.lastNweeks = "";
+                    dataSetColumn.lastNmonths = "";
+                    scope.dataSetItems();
+                });
+            }
+//            };
 
             scope.editDataset = function (dataSetColumn) {
                 console.log(dataSetColumn)
