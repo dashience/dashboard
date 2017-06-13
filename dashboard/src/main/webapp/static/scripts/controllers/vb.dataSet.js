@@ -12,10 +12,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         return $scope.tab === tabNum;
     };
     $scope.joinTypes = [
-        {name: 'left', value: 'left'},
-        {name: 'right', value: 'right'},
-        {name: 'inner', value: 'inner'},
-        {name: 'union', value: 'union'},
+        {name: 'Left', value: 'left'},
+        {name: 'Right', value: 'right'},
+        {name: 'Inner', value: 'inner'},
+        {name: 'Union', value: 'union'},
         {name: 'Intersection', value: 'intersection'}
     ];
 
@@ -129,7 +129,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 var conditionData = {
                     conditionFieldFirst: $scope.dataSetColumnList[i].conditionFieldFirst,
                     conditionFieldSecond: $scope.dataSetColumnList[i].conditionFieldSecond,
-                    newColumnName: $scope.dataSetColumnList[i].newColumnName,
+                    columnName: $scope.dataSetColumnList[i].columnName,
                     conditionId: conditionId
                 };
                 $scope.dataSetLists.push(conditionData);
@@ -173,8 +173,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.cancelJoinDataSet = function (joinDataSetColumn) {
         $scope.joinDataSetColumn = "";
-        $scope.dataSetColumn = "";
-//        $scope.dataSetColumnList = [];
+//        $scope.dataSetColumn = "";
+        $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
         $scope.secondDataSetLoadingCompleted = false;
         $scope.firstDataSetLoadingCompleted = false;
