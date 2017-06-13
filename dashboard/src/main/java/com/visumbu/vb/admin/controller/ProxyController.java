@@ -48,11 +48,13 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
@@ -226,14 +228,15 @@ public class ProxyController {
 
         joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
         List<String> conditions = new ArrayList<>();
+        List<String> columnName = new ArrayList<>();
 
-        List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getCombinedDataSetConditionById(joinDataSetIdInt);
+        List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
             JoinDataSetCondition joinDataSetCondition = iterator.next();
             JoinDataSet joinDataSet = joinDataSetCondition.getJoinDataSetId();
             String concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + "2";
-            System.out.println("Concat Condition ----> " + concatCondition);
             conditions.add(concatCondition);
+            columnName.add(joinDataSetCondition.getColumnName());
             dataSetOne = joinDataSet.getDataSetIdFirst();
             dataSetTwo = joinDataSet.getDataSetIdSecond();
             operationType = joinDataSet.getOperationType();
@@ -268,20 +271,24 @@ public class ProxyController {
         }
 //        System.out.println("dataSetTwoList ---> " + dataSetTwoList);
 
-        List<Map<String, Object>> combinedData = new ArrayList<>();
+        List<Map<String, Object>> joinData = new ArrayList<>();
         if (operationType.equalsIgnoreCase("inner")) {
             System.out.println("Innnnnnnnnnnnnerrrrrrrrr");
-            combinedData = innerJoin(dataSetOneList, dataSetTwoList, conditions);
+            joinData = innerJoin(dataSetOneList, dataSetTwoList, conditions);
         } else if (operationType.equalsIgnoreCase("left")) {
             System.out.println("LeeEEeeeeeeeeeeeeft");
-            combinedData = leftJoin(dataSetOneList, dataSetTwoList, conditions);
+            joinData = leftJoin(dataSetOneList, dataSetTwoList, conditions);
         } else if (operationType.equalsIgnoreCase("right")) {
             System.out.println("rightttttttttttttttttt");
-            combinedData = rightJoin(dataSetOneList, dataSetTwoList, conditions);
+            joinData = rightJoin(dataSetOneList, dataSetTwoList, conditions);
+        } else if (operationType.equalsIgnoreCase("union")) {
+            joinData = union(dataSetOneList, dataSetTwoList, conditions, columnName);
+        } else if (operationType.equalsIgnoreCase("intersection")) {
+            joinData = intersection(dataSetOneList, dataSetTwoList, conditions, columnName);
         }
-        System.out.println("combinedData ---> " + combinedData);
+        System.out.println("joinData ---> " + joinData);
 
-        List<Map<String, Object>> data = combinedData;
+        List<Map<String, Object>> data = joinData;
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         Map returnMap = new HashMap<>();
         returnMap.put("columnDefs", columnDefs);
@@ -458,6 +465,104 @@ public class ProxyController {
 //                         e.platform_id == (int)map.get(TypeId.PLATFORM))
 //            .findFirst().map(e -> e.amount).orElse(null)
 //        ));
+        return returnList;
+    }
+
+    public static List<Map<String, Object>> union(List<Map<String, Object>> col1, List<Map<String, Object>> col2, List<String> conditions, List<String> columnName) {
+        List<Map<String, Object>> returnList = new ArrayList<>();
+        String[] fields = null;
+        List<Set<Object>> setList = new ArrayList<>();
+        for (Iterator<String> iterator = conditions.iterator(); iterator.hasNext();) {
+            Set<Object> set = new HashSet<Object>();
+            String condition = iterator.next();
+            fields = condition.split(",");
+            for (Iterator<Map<String, Object>> iterator1 = col1.iterator(); iterator1.hasNext();) {
+                Map<String, Object> dataSetOneData = iterator1.next();
+                set.add(dataSetOneData.get(fields[0]));
+            }
+
+            for (Iterator<Map<String, Object>> iterator2 = col2.iterator(); iterator2.hasNext();) {
+                Map<String, Object> dataSetTwoData = iterator2.next();
+                set.add(dataSetTwoData.get(fields[1]));
+            }
+            setList.add(set);
+        }
+        TreeSet<Integer> treeSet = new TreeSet<Integer>();
+        for (int i = 0; i < setList.size(); i++) {
+            treeSet.add(setList.get(i).size());
+        }
+
+        for (int j = 0; j < treeSet.last(); j++) {
+            Map<String, Object> dataMap = new HashMap<>();
+            for (int k = 0; k < setList.size(); k++) {
+                Set<Object> setData = setList.get(k);
+                int count = 0;
+                for (Object obj : setData) {
+                    if (j == count) {
+                        dataMap.put(columnName.get(k), obj);
+                        break;
+                    }
+                    count++;
+                }
+            }
+            returnList.add(dataMap);
+        }
+        return returnList;
+    }
+
+    public static List<Map<String, Object>> intersection(List<Map<String, Object>> col1, List<Map<String, Object>> col2, List<String> conditions, List<String> columnName) {
+        List<Map<String, Object>> returnList = new ArrayList<>();
+        List<Set<Object>> setList = new ArrayList<>();
+
+        String[] fields = null;
+        for (Iterator<String> iterator = conditions.iterator(); iterator.hasNext();) {
+            Set<Object> setOne = new HashSet<Object>();
+            Set<Object> setTwo = new HashSet<Object>();
+            Set<Object> intersectionSet = new HashSet<Object>();
+
+            String condition = iterator.next();
+            fields = condition.split(",");
+            for (Iterator<Map<String, Object>> iterator1 = col1.iterator(); iterator1.hasNext();) {
+                Map<String, Object> dataSetOneData = iterator1.next();
+                setOne.add(dataSetOneData.get(fields[0]));
+            }
+
+            for (Iterator<Map<String, Object>> iterator2 = col2.iterator(); iterator2.hasNext();) {
+                Map<String, Object> dataSetTwoData = iterator2.next();
+                setTwo.add(dataSetTwoData.get(fields[1]));
+            }
+
+            for (Iterator<Object> iterator1 = setOne.iterator(); iterator1.hasNext();) {
+                Object setDataOne = iterator1.next();
+                for (Iterator<Object> iterator2 = setTwo.iterator(); iterator2.hasNext();) {
+                    Object setDataTwo = iterator2.next();
+                    if (setDataOne.equals(setDataTwo)) {
+                        intersectionSet.add(setDataTwo);
+                    }
+                }
+            }
+            setList.add(intersectionSet);
+        }
+        TreeSet<Integer> treeSet = new TreeSet<Integer>();
+        for (int i = 0; i < setList.size(); i++) {
+            treeSet.add(setList.get(i).size());
+        }
+
+        for (int j = 0; j < treeSet.last(); j++) {
+            Map<String, Object> dataMap = new HashMap<>();
+            for (int k = 0; k < setList.size(); k++) {
+                Set<Object> setData = setList.get(k);
+                int count = 0;
+                for (Object obj : setData) {
+                    if (j == count) {
+                        dataMap.put(columnName.get(k), obj);
+                        break;
+                    }
+                    count++;
+                }
+            }
+            returnList.add(dataMap);
+        }
         return returnList;
     }
 
@@ -1402,6 +1507,7 @@ public class ProxyController {
         }
         return propertyAccountId;
     }
+
     private List<Map<String, Object>> getBingData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
         try {
             String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
@@ -1549,7 +1655,6 @@ public class ProxyController {
 //        }
 //        return null;
 //    }
-
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();

@@ -618,7 +618,7 @@ public class UiDao extends BaseDao {
         return query.list();
     }
     
-    public List<JoinDataSetCondition> getCombinedDataSetConditionById(Integer id) {
+    public List<JoinDataSetCondition> getJoinDataSetConditionById(Integer id) {
         String queryStr = "select d from JoinDataSetCondition d where d.joinDataSetId.id = :joinDataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("joinDataSetId", id);
