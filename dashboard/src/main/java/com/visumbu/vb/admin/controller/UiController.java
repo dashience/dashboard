@@ -163,8 +163,8 @@ public class UiController extends BaseController {
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
         System.out.println("save tab widget");
-        System.out.println("endDate ---> "+request.getParameter("endDate"));
-       return uiService.saveTabWidget(tabId, tabWidget);
+        System.out.println("endDate ---> " + request.getParameter("endDate"));
+        return uiService.saveTabWidget(tabId, tabWidget);
         //return null; //uiService.createTabWidget(tabId, tabWidget);
     }
 
@@ -405,10 +405,16 @@ public class UiController extends BaseController {
     List<JoinDataSetCondition> createJoinDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody JoinDataSetBean joinDataSetBean) {
         return uiService.createJoinDataSet(joinDataSetBean);
     }
-    
+
+    @RequestMapping(value = "deleteJoinDataSetCondition/{conditionId}/{joinDataSetId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    List<JoinDataSetCondition> deleteJoinDataSetConditionById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer conditionId,@PathVariable Integer joinDataSetId) {
+        return uiService.deleteJoinDataSetConditionById(conditionId,joinDataSetId);
+    }
+
     @RequestMapping(value = "getDatasetColumnByDatasetId/{datasetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDatasetColumnByDatasetId (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
+    List getDatasetColumnByDatasetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
         return uiService.getDatasetColumnByDatasetId(datasetId);
     }
 
@@ -432,7 +438,7 @@ public class UiController extends BaseController {
     DataSet deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.deleteDataSet(id);
     }
-    
+
     @RequestMapping(value = "dataSetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DatasetColumns deleteDataSetColumns(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
@@ -443,6 +449,7 @@ public class UiController extends BaseController {
 //    List getUser(HttpServletRequest request, HttpServletResponse response) {
 //        return uiService.getUser();
 //    }
+
     @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getAgencyUser(HttpServletRequest request, HttpServletResponse response) {

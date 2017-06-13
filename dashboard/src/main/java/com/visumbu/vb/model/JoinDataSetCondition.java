@@ -31,7 +31,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "JoinDataSetCondition.findAll", query = "SELECT j FROM JoinDataSetCondition j")
     , @NamedQuery(name = "JoinDataSetCondition.findById", query = "SELECT j FROM JoinDataSetCondition j WHERE j.id = :id")
     , @NamedQuery(name = "JoinDataSetCondition.findByConditionFieldFirst", query = "SELECT j FROM JoinDataSetCondition j WHERE j.conditionFieldFirst = :conditionFieldFirst")
-    , @NamedQuery(name = "JoinDataSetCondition.findByConditionFieldSecond", query = "SELECT j FROM JoinDataSetCondition j WHERE j.conditionFieldSecond = :conditionFieldSecond")})
+    , @NamedQuery(name = "JoinDataSetCondition.findByConditionFieldSecond", query = "SELECT j FROM JoinDataSetCondition j WHERE j.conditionFieldSecond = :conditionFieldSecond")
+    , @NamedQuery(name = "JoinDataSetCondition.findByColumnName", query = "SELECT j FROM JoinDataSetCondition j WHERE j.columnName = :columnName")})
+
 public class JoinDataSetCondition implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,6 +48,9 @@ public class JoinDataSetCondition implements Serializable {
     @Size(max = 255)
     @Column(name = "condition_field_second")
     private String conditionFieldSecond;
+    @Size(max = 255)
+    @Column(name = "column_name")
+    private String columnName;
     @JoinColumn(name = "join_data_set_id", referencedColumnName = "id")
     @ManyToOne
     private JoinDataSet joinDataSetId;
@@ -81,6 +86,14 @@ public class JoinDataSetCondition implements Serializable {
         this.conditionFieldSecond = conditionFieldSecond;
     }
 
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    }
+    
     public JoinDataSet getJoinDataSetId() {
         return joinDataSetId;
     }

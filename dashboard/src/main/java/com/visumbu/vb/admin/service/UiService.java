@@ -826,6 +826,7 @@ public class UiService {
             JoinDataSetCondition joinDataSetCondition = new JoinDataSetCondition();
             joinDataSetCondition.setJoinDataSetId(joinDataSet);
             joinDataSetCondition.setId(joinDataSetData.getConditionId());
+            joinDataSetCondition.setColumnName(joinDataSetData.getColumnName());
             joinDataSetCondition.setConditionFieldFirst(joinDataSetData.getConditionFieldFirst());
             joinDataSetCondition.setConditionFieldSecond(joinDataSetData.getConditionFieldSecond());
             uiDao.saveOrUpdate(joinDataSetCondition);
@@ -849,6 +850,10 @@ public class UiService {
 
     public List<DatasetColumns> getDatasetColumnByDatasetId(Integer datasetId) {
         return uiDao.getDatasetColumnByDatasetId(datasetId);
+    }
+
+    public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
+        return uiDao.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
 }

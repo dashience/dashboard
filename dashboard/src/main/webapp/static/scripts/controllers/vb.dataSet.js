@@ -98,10 +98,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.removeJoinDataSetColumn = function (index, conditionId) {
         console.log(conditionId)
         $scope.dataSetColumnList.splice(index, 1);
-       
-        $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId}).success(function (response) {
-             $scope.joinDataSetList.splice(conditionId,1);
+
+        $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId +"/"+ joinDataSetId}).success(function (response) {
+            console.log(response)
+            $scope.joinDataSetList=response;
         });
+        console.log($scope.joinDataSetList)
         console.log($scope.dataSetColumnList)
     }
     var joinDataSetId = null;
@@ -148,7 +150,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
             console.log(response);
             $scope.joinDataSetList = response;
-            console.log($scope.joinDataSetList[0].id)
             joinDataSetId = response[0].joinDataSetId.id;
             $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
             $http.get(url + 'joinDataSetId=' + response[0].joinDataSetId.id +
@@ -172,7 +173,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.cancelJoinDataSet = function (joinDataSetColumn) {
         $scope.joinDataSetColumn = "";
-        $scope.dataSetColumn="";
+        $scope.dataSetColumn = "";
 //        $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
         $scope.secondDataSetLoadingCompleted = false;
@@ -192,7 +193,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
             getItems();
         });
-    }
+    };
     /*
      * 
      * All

@@ -22,6 +22,7 @@ public class JoinDataSetBean {
     private Integer conditionId;
     private String conditionFieldFirst;
     private String conditionFieldSecond;
+    private String columnName;
 
     public Integer getId() {
         return id;
@@ -93,5 +94,13 @@ public class JoinDataSetBean {
     public void setConditionFieldSecond(String conditionFieldSecond) {
         this.conditionFieldSecond = conditionFieldSecond;
     }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public void setColumnName(String columnName) {
+        this.columnName = columnName;
+    } 
 
 }

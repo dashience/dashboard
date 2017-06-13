@@ -227,7 +227,7 @@ public class ProxyController {
         joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
         List<String> conditions = new ArrayList<>();
 
-        List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getCombinedDataSetConditionById(joinDataSetIdInt);
+        List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
             JoinDataSetCondition joinDataSetCondition = iterator.next();
             JoinDataSet joinDataSet = joinDataSetCondition.getJoinDataSetId();
@@ -255,16 +255,13 @@ public class ProxyController {
                 dataMap.entrySet().forEach((entry) -> {
                     String key = entry.getKey();
                     Object value = entry.getValue();
-                    System.out.println("key ---> " + key);
                     for (String columnStr : columnSet) {
-                        System.out.println("columnStr ---> " + columnStr);
                         if (key.equalsIgnoreCase(columnStr)) {
                             dataMap.remove(key);
                             dataMap.put(key + "2", value);
                             break;
                         }
                     }
-                    System.out.println("dataMap ---> " + dataMap);
                 });
             } catch (ConcurrentModificationException e) {
             }
