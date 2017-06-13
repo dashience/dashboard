@@ -15,7 +15,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'left', value: 'left'},
         {name: 'right', value: 'right'},
         {name: 'inner', value: 'inner'},
-        {name: 'union', value: 'union'}
+        {name: 'union', value: 'union'},
+        {name: 'intersection', value: 'intersection'}
     ];
 
     var url = "admin/proxy/getData?";
@@ -103,7 +104,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.joinDataSetList = [];
     $scope.loadingResultCompleted = false;
     $scope.loadingResult = false;
-    $scope.saveCombinedDataSet = function (joinDataSetColumn) {
+    $scope.saveJoinDataSet = function (joinDataSetColumn) {
         $scope.dataSetLists = [];
         $scope.loadingResultCompleted = false;
         $scope.loadingResult = true;
@@ -139,8 +140,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.loadingResult = false;
             $scope.loadingResultCompleted = true;
             console.log(response);
-            $scope.dataSetJoinList = response;
-            console.log($scope.dataSetJoinList[0].id)
+            $scope.joinDataSetList = response;
             joinDataSetId = response[0].joinDataSetId.id;
             $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
             $http.get(url + 'joinDataSetId=' + response[0].joinDataSetId.id +
@@ -167,7 +167,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.secondDataSetLoadingCompleted = false;
         $scope.firstDataSetLoadingCompleted = false;
         $scope.loadingResultCompleted = false;
-    }
+    };
     $scope.saveToDataSet = function (joinDataSetColumn) {
         var dataSet = JSON.parse(joinDataSetColumn.firstDataSet);
         var joinDataSetList = {
@@ -180,7 +180,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
             getItems();
         });
-    }
+    };
     /*
      * 
      * All

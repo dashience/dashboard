@@ -638,15 +638,15 @@ public class FacebookService {
                     //JSONObject actions = (JSONObject) actionsArr.get(0);
                     List<Map<String, String>> returnList = new ArrayList<>();
                     JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                    Map<String, Object> dataList = getDataValue(data);
+                    Map<String, Object> dataMap = getDataValue(data);
                     if (actionsArr != null) {
-                        dataList.putAll(getActionsData(actionsArr, "actions_"));
+                        dataMap.putAll(getActionsData(actionsArr, "actions_"));
                     }
                     if (costPerActionTypeArr != null) {
-                        dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+                        dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
-                    dataValueList.add(dataList);
+                    dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr") + ""));
+                    dataValueList.add(dataMap);
                 }
                 return dataValueList;  //getActions(actionsArr);
             }
@@ -752,15 +752,15 @@ public class FacebookService {
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
                 List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, Object> dataList = getDataValue(data);
+                Map<String, Object> dataMap = getDataValue(data);
                 if (actionsArr != null) {
-                    dataList.putAll(getActionsData(actionsArr, "actions_"));
+                    dataMap.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
-                    dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+                    dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
-                dataValueList.add(dataList);
+                dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr") + ""));
+                dataValueList.add(dataMap);
             }
             return dataValueList;  //getActions(actionsArr);
             //return getActions(actions); //array.get("data");
@@ -795,22 +795,22 @@ public class FacebookService {
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
             List<Map<String, Object>> dataValueList = new ArrayList();
-            Map<String, Object> dataList = new HashMap();
+            Map<String, Object> dataMap = new HashMap();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
                 List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                dataList = getDataValue(data);
+                dataMap = getDataValue(data);
                 if (actionsArr != null) {
-                    dataList.putAll(getActionsData(actionsArr, "actions_"));
+                    dataMap.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
-                    dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+                    dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
-                dataValueList.add(dataList);
+                dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr") + ""));
+                dataValueList.add(dataMap);
             }
             return dataValueList;
             //return getActions(actions); //array.get("data");
@@ -852,15 +852,15 @@ public class FacebookService {
                     //JSONObject actions = (JSONObject) actionsArr.get(0);
                     List<Map<String, String>> returnList = new ArrayList<>();
                     JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                    Map<String, Object> dataList = getDataValue(data);
+                    Map<String, Object> dataMap = getDataValue(data);
                     if (actionsArr != null) {
-                        dataList.putAll(getActionsData(actionsArr, "actions_"));
+                        dataMap.putAll(getActionsData(actionsArr, "actions_"));
                     }
                     if (costPerActionTypeArr != null) {
-                        dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+                        dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
-                    dataValueList.add(dataList);
+                    dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr") + ""));
+                    dataValueList.add(dataMap);
                 }
                 return dataValueList;
             }
@@ -903,15 +903,15 @@ public class FacebookService {
                     //JSONObject actions = (JSONObject) actionsArr.get(0);
                     List<Map<String, String>> returnList = new ArrayList<>();
                     JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                    Map<String, Object> dataList = getDataValue(data);
+                    Map<String, Object> dataMap = getDataValue(data);
                     if (actionsArr != null) {
-                        dataList.putAll(getActionsData(actionsArr, "actions_"));
+                        dataMap.putAll(getActionsData(actionsArr, "actions_"));
                     }
                     if (costPerActionTypeArr != null) {
-                        dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+                        dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
-                    dataValueList.add(dataList);
+                    dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr") + ""));
+                    dataValueList.add(dataMap);
                 }
                 return dataValueList;
             }
@@ -955,15 +955,15 @@ public class FacebookService {
             List<Map<String, Object>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
-                Map<String, Object> dataList = getDataValue(data);
-                dataList.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataList.get("created_time") + "".replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM/dd/yyyy HH:mm"));
-                dataList.put("date", startDateStr);
-                dataList.put("reactions", getActionsCount((JSONObject) data.get("reactions")) + "");
-                dataList.put("likes", getActionsCount((JSONObject) data.get("likes")) + "");
-                dataList.put("comments", getActionsCount((JSONObject) data.get("comments")) + "");
-                dataList.put("shares", getShareCount((JSONObject) data.get("shares")) + "");
-                dataList.put("engagements", (Long.parseLong(dataList.get("shares") + "") + Long.parseLong(dataList.get("likes") + "") + Long.parseLong(dataList.get("comments") + "")) + "");
-                dataValueList.add(dataList);
+                Map<String, Object> dataMap = getDataValue(data);
+                dataMap.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataMap.get("created_time") + "".replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM/dd/yyyy HH:mm"));
+                dataMap.put("date", startDateStr);
+                dataMap.put("reactions", getActionsCount((JSONObject) data.get("reactions")) + "");
+                dataMap.put("likes", getActionsCount((JSONObject) data.get("likes")) + "");
+                dataMap.put("comments", getActionsCount((JSONObject) data.get("comments")) + "");
+                dataMap.put("shares", getShareCount((JSONObject) data.get("shares")) + "");
+                dataMap.put("engagements", (Long.parseLong(dataMap.get("shares") + "") + Long.parseLong(dataMap.get("likes") + "") + Long.parseLong(dataMap.get("comments") + "")) + "");
+                dataValueList.add(dataMap);
             }
             return dataValueList;
             //return getActions(actions); //array.get("data");
@@ -1094,9 +1094,9 @@ public class FacebookService {
             List<Map<String, Object>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
-                Map<String, Object> dataList = getDataValue(data);
+                Map<String, Object> dataMap = getDataValue(data);
 
-                dataValueList.add(dataList);
+                dataValueList.add(dataMap);
             }
             return dataValueList;
         } catch (ParseException ex) {
@@ -1130,17 +1130,17 @@ public class FacebookService {
                 //JSONObject actions = (JSONObject) actionsArr.get(0);
                 List<Map<String, String>> returnList = new ArrayList<>();
                 JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                Map<String, Object> dataList = getDataValue(data);
+                Map<String, Object> dataMap = getDataValue(data);
                 if (actionsArr != null) {
-                    dataList.putAll(getActionsData(actionsArr, "actions_"));
+                    dataMap.putAll(getActionsData(actionsArr, "actions_"));
                 }
                 if (costPerActionTypeArr != null) {
-                    dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
+                    dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("date_start", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_start") + "", "yyyy-MM-dd"), "MM/dd/yyyy"));
-                dataList.put("date_stop", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_stop") + "", "yyyy-MM-dd"), "MM/dd/yyyy"));
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
-                dataValueList.add(dataList);
+                dataMap.put("date_start", DateUtils.dateToString(DateUtils.toDate(dataMap.get("date_start") + "", "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataMap.put("date_stop", DateUtils.dateToString(DateUtils.toDate(dataMap.get("date_stop") + "", "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr") + ""));
+                dataValueList.add(dataMap);
             }
             return dataValueList;
         } catch (ParseException ex) {
