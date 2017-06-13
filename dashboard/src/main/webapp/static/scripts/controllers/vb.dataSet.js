@@ -99,9 +99,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         console.log(conditionId)
         $scope.dataSetColumnList.splice(index, 1);
 
-        $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId +"/"+ joinDataSetId}).success(function (response) {
+        $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId + "/" + joinDataSetId}).success(function (response) {
             console.log(response)
-            $scope.joinDataSetList=response;
+            $scope.joinDataSetList = response;
         });
         console.log($scope.joinDataSetList)
         console.log($scope.dataSetColumnList)
@@ -190,7 +190,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             joinDataSetId: joinDataSetId
         };
         var data = joinDataSetList;
-        $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
+        $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
             getItems();
         });
     };
@@ -2009,6 +2009,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.nwStatusFlag = true;
         console.log(dataSet.networkType);
         console.log(dataSet);
+        var joinDataSetId = null;
+        if (dataSet.joinDataSetId != null) {
+            joinDataSetId = dataSet.joinDataSetId.id;
+        }
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -2020,61 +2024,65 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             networkType: dataSet.networkType,
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
-            userId: dataSet.userId.id
-
+            userId: dataSet.userId.id,
+            joinDataSetId: joinDataSetId
         };
         console.log(data);
         $scope.dataSet = data;
-        var dataSource = dataSet.dataSourceId;
-        var dataSourceType = dataSet.dataSourceId.dataSourceType;
-        if (dataSourceType == 'xls') {
-            $scope.selectXlsSheet(dataSource);
-        }
-        if (dataSet.dataSourceId.dataSourceType === "instagram")
-        {
-            $scope.report = $scope.instagramPerformance;
-            $scope.getTimeSegements();
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "facebook")
-        {
-            $scope.report = $scope.facebookPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "bing")
-        {
-            $scope.report = $scope.bingPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
-        {
-            $scope.report = $scope.pinterestPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "adwords")
-        {
-            $scope.report = $scope.adwordsPerformance;
-            $scope.getTimeSegements();
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = true;
-        } else if (dataSet.dataSourceId.dataSourceType === "analytics")
-        {
-            $scope.report = $scope.analyticsPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
-        {
-            $scope.report = $scope.linkedinPerformance;
-            $scope.getTimeSegements();
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else {
-            $scope.dataSetFlag = false;
-            $scope.nwStatusFlag = false;
+        var dataSource = null;
+        var dataSourceType = null;
+        if (dataSet.dataSourceId != null) {
+            dataSource = dataSet.dataSourceId;
+            dataSourceType = dataSet.dataSourceId.dataSourceType;
+            if (dataSourceType == 'xls') {
+                $scope.selectXlsSheet(dataSource);
+            }
+            if (dataSet.dataSourceId.dataSourceType === "instagram")
+            {
+                $scope.report = $scope.instagramPerformance;
+                $scope.getTimeSegements();
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "facebook")
+            {
+                $scope.report = $scope.facebookPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "bing")
+            {
+                $scope.report = $scope.bingPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
+            {
+                $scope.report = $scope.pinterestPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "adwords")
+            {
+                $scope.report = $scope.adwordsPerformance;
+                $scope.getTimeSegements();
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = true;
+            } else if (dataSet.dataSourceId.dataSourceType === "analytics")
+            {
+                $scope.report = $scope.analyticsPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
+            {
+                $scope.report = $scope.linkedinPerformance;
+                $scope.getTimeSegements();
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else {
+                $scope.dataSetFlag = false;
+                $scope.nwStatusFlag = false;
+            }
         }
 
 //        if (dataSet.dataSourceId.dataSourceType === "adwords" || dataSet.dataSourceId.dataSourceType === "analytics" || dataSet.dataSourceId.dataSourceType === "facebook" || dataSet.dataSourceId.dataSourceType === "instagram")
@@ -2503,15 +2511,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //            console.log(dataSourcePath.dataSourceId.sqlDriver);
 //            console.log(dataSourcePath.dataSourceId.password);
             var url = "admin/proxy/getData?";
-            if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+            var dataSourcePassword = '';
+            if (dataSourcePath.dataSourceId != null) {
+                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
 
-            var dataSourcePassword;
-            if (dataSourcePath.dataSourceId.password) {
-                dataSourcePassword = dataSourcePath.dataSourceId.password;
-            } else {
-                dataSourcePassword = '';
+                if (dataSourcePath.dataSourceId.password) {
+                    dataSourcePassword = dataSourcePath.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
             }
             console.log(dataSourcePath.networkType);
             scope.format = function (column, value) {
@@ -2542,21 +2552,34 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             } else {
                 setProductSegment = 'none';
             }
+            var connectionUrl = null;
+            var dataSourceId = null;
+            var driver = null;
+            var dataSourceType = null;
+            var userName = null;
+            if (dataSourcePath.dataSourceId != null) {
+                connectionUrl = dataSourcePath.dataSourceId.connectionString;
+                dataSourceId = dataSourcePath.dataSourceId.id;
+                driver = dataSourcePath.dataSourceId.dataSourceType;
+                dataSourceType = dataSourcePath.dataSourceId.dataSourceType;
+                userName = dataSourcePath.dataSourceId.userName;
+            }
             scope.dataSetItems = function () {
-                $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
-                        "&dataSourceId=" + dataSourcePath.dataSourceId.id +
+                $http.get(url + 'connectionUrl=' + connectionUrl +
+                        "&dataSourceId=" + dataSourceId +
                         "&dataSetId=" + dataSourcePath.id +
+                        "&joinDataSetId=" + dataSourcePath.joinDataSetId +
                         "&accountId=" + $stateParams.accountId +
                         "&dataSetReportName=" + dataSourcePath.reportName +
                         "&timeSegment=" + setTimeSegment +
                         "&filter=" + dataSourcePath.networkType +
                         "&productSegment=" + setProductSegment +
-                        "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
-                        "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
+                        "&driver=" + dataSourceType +
+                        "&dataSourceType=" + dataSourceType +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
-                        '&username=' + dataSourcePath.dataSourceId.userName +
+                        '&username=' + userName +
                         '&password=' + dataSourcePassword +
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {

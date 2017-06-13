@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.admin.controller;
 
+import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
@@ -41,6 +42,7 @@ import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.model.DatasetColumns;
 
 import com.visumbu.vb.model.Currency;
+import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.WidgetTag;
@@ -69,6 +71,9 @@ public class UiController extends BaseController {
 
     @Autowired
     private UiService uiService;
+
+    @Autowired
+    private UiDao uiDao;
 
     @Autowired
     private UserService userService;
@@ -376,6 +381,12 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSet", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     DataSet create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
+        String joinDataSetId = request.getParameter("joinDataSetId");
+        Integer joinDataSetIdInt = null;
+        if (joinDataSetId != null) {
+            joinDataSetIdInt = Integer.parseInt(joinDataSetId);
+            dataSet.setJoinDataSetId(uiDao.getJoinDataSetById(joinDataSetIdInt));
+        }
         VbUser user = userService.findByUsername(getUser(request));
         dataSet.setUserId(user);
         dataSet.setAgencyId(user.getAgencyId());
@@ -408,8 +419,8 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "deleteJoinDataSetCondition/{conditionId}/{joinDataSetId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    List<JoinDataSetCondition> deleteJoinDataSetConditionById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer conditionId,@PathVariable Integer joinDataSetId) {
-        return uiService.deleteJoinDataSetConditionById(conditionId,joinDataSetId);
+    List<JoinDataSetCondition> deleteJoinDataSetConditionById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer conditionId, @PathVariable Integer joinDataSetId) {
+        return uiService.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
     @RequestMapping(value = "getDatasetColumnByDatasetId/{datasetId}", method = RequestMethod.GET, produces = "application/json")

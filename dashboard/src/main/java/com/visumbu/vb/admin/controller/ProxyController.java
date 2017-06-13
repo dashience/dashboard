@@ -137,10 +137,11 @@ public class ProxyController {
             valueMap.put(key, Arrays.asList(value));
         }
 
-        String joinDataSetIdStr = getFromMultiValueMap(valueMap, "joinDataSetId");
+        String joinDataSetIdStr = request.getParameter("joinDataSetId");
+        System.out.println("joinDataIdStr ---> " + joinDataSetIdStr);
         Map returnMap = new HashMap<>();
-        if (joinDataSetIdStr != null) {
-            returnMap = getCombinedData(valueMap, request, response, joinDataSetIdStr);
+        if (!joinDataSetIdStr.isEmpty() && joinDataSetIdStr != null) {
+            returnMap = getJoinData(valueMap, request, response, joinDataSetIdStr);
         } else {
             returnMap = getData(valueMap, request, response);
         }
@@ -220,7 +221,7 @@ public class ProxyController {
         return combinedValueMap;
     }
 
-    public Map getCombinedData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, String joinDataSetIdStr) {
+    public Map getJoinData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, String joinDataSetIdStr) {
         DataSet dataSetOne = null;
         DataSet dataSetTwo = null;
         String operationType = null;
