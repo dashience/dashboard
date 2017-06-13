@@ -400,7 +400,7 @@ public class UiController extends BaseController {
         return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
     }
 
-    @RequestMapping(value = "combinedTableData", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "joinDataSet", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     List<JoinDataSetCondition> createJoinDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody JoinDataSetBean joinDataSetBean) {
         return uiService.createJoinDataSet(joinDataSetBean);
