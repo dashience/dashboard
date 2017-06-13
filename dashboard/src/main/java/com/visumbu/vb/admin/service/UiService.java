@@ -825,7 +825,7 @@ public class UiService {
             JoinDataSetBean joinDataSetData = iterator.next();
             JoinDataSetCondition joinDataSetCondition = new JoinDataSetCondition();
             joinDataSetCondition.setJoinDataSetId(joinDataSet);
-            joinDataSetCondition.setId(joinDataSetData.getId());
+            joinDataSetCondition.setId(joinDataSetData.getConditionId());
             joinDataSetCondition.setConditionFieldFirst(joinDataSetData.getConditionFieldFirst());
             joinDataSetCondition.setConditionFieldSecond(joinDataSetData.getConditionFieldSecond());
             uiDao.saveOrUpdate(joinDataSetCondition);

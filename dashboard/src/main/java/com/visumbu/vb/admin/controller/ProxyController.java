@@ -135,10 +135,10 @@ public class ProxyController {
             valueMap.put(key, Arrays.asList(value));
         }
 
-        String combinedDataSetIdStr = getFromMultiValueMap(valueMap, "combinedDataSetId");
+        String joinDataSetIdStr = getFromMultiValueMap(valueMap, "joinDataSetId");
         Map returnMap = new HashMap<>();
-        if (combinedDataSetIdStr != null) {
-            returnMap = getCombinedData(valueMap, request, response, combinedDataSetIdStr);
+        if (joinDataSetIdStr != null) {
+            returnMap = getCombinedData(valueMap, request, response, joinDataSetIdStr);
         } else {
             returnMap = getData(valueMap, request, response);
         }
