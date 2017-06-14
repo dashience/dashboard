@@ -48,13 +48,11 @@ import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
@@ -231,11 +229,6 @@ public class ProxyController {
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
             JoinDataSetCondition joinDataSetCondition = iterator.next();
             JoinDataSet joinDataSet = joinDataSetCondition.getJoinDataSetId();
-            String concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond();
-            if (joinDataSetCondition.getColumnName() != null) {
-                concatCondition += "," + joinDataSetCondition.getColumnName();
-            }
-            conditions.add(concatCondition);
             dataSetOne = joinDataSet.getDataSetIdFirst();
             dataSetTwo = joinDataSet.getDataSetIdSecond();
             operationType = joinDataSet.getOperationType();
@@ -248,7 +241,6 @@ public class ProxyController {
         String dataSetIdOneStr = getFromMultiValueMap(joinValueMapOne, "dataSetId");
         if (dataSetIdOneStr != null && !dataSetIdOneStr.isEmpty()) {
             Integer dataSetIdInt = Integer.parseInt(dataSetIdOneStr);
-            System.out.println("dataSetIdInt 1--> " + dataSetIdInt);
             List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetOneList, joinValueMapOne, request, response);
@@ -267,7 +259,6 @@ public class ProxyController {
         if (dataSetIdTwoStr != null && !dataSetIdTwoStr.isEmpty()) {
 
             Integer dataSetIdInt = Integer.parseInt(dataSetIdTwoStr);
-            System.out.println("dataSetIdInt 2--> " + dataSetIdInt);
 
             List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
             if (dataSetColumnList.size() > 0) {
@@ -276,25 +267,39 @@ public class ProxyController {
                 joinDataSetTwoMap.put("data", dataWithDerivedColumns);
             }
         }
-//        for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
-//            Map<String, Object> dataMap = iterator.next();
-//            try {
-//                dataMap.entrySet().forEach((entry) -> {
-//                    String key = entry.getKey();
-//                    Object value = entry.getValue();
-//                    for (String columnStr : columnSet) {
-//                        if (key.equalsIgnoreCase(columnStr)) {
-//                            dataMap.remove(key);
-//                            dataMap.put(key + "2", value);
-//                            break;
-//                        }
-//                    }
-//                });
-//            } catch (ConcurrentModificationException e) {
-//            }
-//        }
-//        System.out.println("dataSetTwoList ---> " + dataSetTwoList);
-
+        if (!operationType.equalsIgnoreCase("union")) {
+            for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                try {
+                    dataMap.entrySet().forEach((entry) -> {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
+                        for (String columnStr : columnSet) {
+                            if (key.equalsIgnoreCase(columnStr)) {
+                                dataMap.remove(key);
+                                dataMap.put(key + "2", value);
+                                break;
+                            }
+                        }
+                    });
+                } catch (ConcurrentModificationException e) {
+                }
+            }
+        }
+        Map<String, Object> dataSetTwoMap = dataSetTwoList.get(0);
+        for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
+            JoinDataSetCondition joinDataSetCondition = iterator.next();
+            String concatCondition = null;
+            if (dataSetTwoMap.get(joinDataSetCondition.getConditionFieldSecond()) != null) {
+                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond();
+            } else {
+                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + "2";
+            }
+            if (joinDataSetCondition.getColumnName() != null) {
+                concatCondition += "," + joinDataSetCondition.getColumnName();
+            }
+            conditions.add(concatCondition);
+        }
         List<Map<String, Object>> joinData = new ArrayList<>();
         if (operationType.equalsIgnoreCase("inner")) {
             System.out.println("Innnnnnnnnnnnnerrrrrrrrr");
@@ -307,7 +312,7 @@ public class ProxyController {
             joinData = rightJoin(dataSetOneList, dataSetTwoList, conditions);
         } else if (operationType.equalsIgnoreCase("union")) {
             joinData = union(dataSetOneList, dataSetTwoList, conditions);
-        } 
+        }
 //        else if (operationType.equalsIgnoreCase("intersection")) {
 //            joinData = intersection(dataSetOneList, dataSetTwoList, conditions);
 //        }
@@ -582,7 +587,6 @@ public class ProxyController {
 //        }
 //        return returnList;
 //    }
-
     public Map<String, Date> getCustomDate(String dateRangeName, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears, Date endDate) {
         //System.out.println("Date Range Name --> " + dateRangeName);
 
@@ -858,7 +862,7 @@ public class ProxyController {
                     dataSet = uiService.readDataSet(dataSetIdInt);
                 }
                 if (dataSet != null) {
-                    reportName = dataSet.getReportName();
+                    reportName = (reportName == null || reportName.isEmpty()) ? dataSet.getReportName() : reportName;
                 }
             }
             if (reportName.equalsIgnoreCase("getTopBoards")) {
@@ -1077,7 +1081,7 @@ public class ProxyController {
             }
             if (dataSet != null) {
                 if (url == null) {
-                    url = dataSet.getUrl();
+                    url = (url == null || url.isEmpty()) ? dataSet.getUrl() : url;
                 }
             }
         }
@@ -1197,10 +1201,10 @@ public class ProxyController {
             }
 
             if (dataSet != null) {
-                dataSetReportName = (dataSetReportName == null) ? dataSet.getReportName() : dataSetReportName;
-                timeSegment = (timeSegment == null) ? dataSet.getTimeSegment() : timeSegment;
-                productSegment = (productSegment == null) ? dataSet.getProductSegment() : productSegment;
-                filter = (filter == null) ? dataSet.getNetworkType() : filter;
+                dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+                timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+                productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
+                filter = (filter == null || filter.isEmpty()) ? dataSet.getNetworkType() : filter;
             }
         }
         if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
@@ -1360,10 +1364,9 @@ public class ProxyController {
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
         String productSegment = getFromMultiValueMap(request, "productSegment");
 
-        if (timeSegment == null) {
-            timeSegment = "daily";
-        }
-
+//        if (timeSegment == null) {
+//            timeSegment = "daily";
+//        }
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
         if (dataSetId != null) {
@@ -1443,12 +1446,12 @@ public class ProxyController {
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
         String productSegment = getFromMultiValueMap(request, "productSegment");
-        if (timeSegment == null) {
-            timeSegment = "daily";
-        }
-        if (productSegment == null) {
-            productSegment = "none";
-        }
+//        if (timeSegment == null) {
+//            timeSegment = "daily";
+//        }
+//        if (productSegment == null) {
+//            productSegment = "none";
+//        }
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
         if (dataSetId != null) {
@@ -1542,12 +1545,12 @@ public class ProxyController {
             String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
             String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
             String productSegment = getFromMultiValueMap(valueMap, "productSegment");
-            if (timeSegment == null) {
-                timeSegment = "daily";
-            }
-            if (productSegment == null) {
-                productSegment = "none";
-            }
+//            if (timeSegment == null) {
+//                timeSegment = "daily";
+//            }
+//            if (productSegment == null) {
+//                productSegment = "none";
+//            }
             Integer dataSetIdInt = null;
             DataSet dataSet = null;
             if (dataSetId != null) {
@@ -1599,79 +1602,6 @@ public class ProxyController {
         return null;
     }
 
-//    private List<Map<String, Object>> getBingData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
-//        try {
-//            String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
-//            Integer accountId = Integer.parseInt(accountIdStr);
-//            Account account = userService.getAccountId(accountId);
-//            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-//
-//            for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
-//                Property property = iterator.next();
-//                List<String> valueList = new ArrayList();
-//                valueList.add(property.getPropertyValue());
-//                valueMap.put(property.getPropertyName(), valueList);
-//            }
-//            String dataSetId = getFromMultiValueMap(valueMap, "dataSetId");
-//            String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
-//            String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
-//            String productSegment = getFromMultiValueMap(valueMap, "productSegment");
-//            if (timeSegment == null) {
-//                timeSegment = "daily";
-//            }
-//            if (productSegment == null) {
-//                productSegment = "none";
-//            }
-//            Integer dataSetIdInt = null;
-//            DataSet dataSet = null;
-//            if (dataSetId != null) {
-//                try {
-//                    dataSetIdInt = Integer.parseInt(dataSetId);
-//                } catch (Exception e) {
-//
-//                }
-//                if (dataSetIdInt != null) {
-//                    dataSet = uiService.readDataSet(dataSetIdInt);
-//                }
-//                if (dataSet != null) {
-//                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
-//                    timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
-//                    productSegment = (productSegment == null  || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
-//                }
-//            }
-//            valueMap.put("timeSegment", Arrays.asList(timeSegment));
-//            valueMap.put("productSegment", Arrays.asList(productSegment));
-//            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
-//
-////            System.out.println("My dataSetReportName -->"+dataSetReportName);
-//            String url = "../dbApi/admin/bing/getData";
-//            Integer port = 80;
-//            if (request != null) {
-//                port = request.getServerPort();
-//            }
-//
-//            String localUrl = "http://localhost/";
-//            if (request != null) {
-//                localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
-//            }
-//            log.debug("UR:" + url);
-//            if (url.startsWith("../")) {
-//                url = url.replaceAll("\\.\\./", localUrl);
-//            }
-//            log.debug("url: " + url);
-//            System.out.println("url: " + url);
-//            log.debug("valuemap: " + valueMap);
-//            System.out.println("valuemap: " + valueMap);
-//            String data = Rest.getData(url, valueMap);
-//            JSONParser parser = new JSONParser();
-//            Object jsonObj = parser.parse(data);
-//            List dataList = JsonSimpleUtils.toList((JSONArray) jsonObj);
-//            return dataList;
-//        } catch (ParseException ex) {
-//            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();

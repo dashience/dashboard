@@ -15,8 +15,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'Left', value: 'left'},
         {name: 'Right', value: 'right'},
         {name: 'Inner', value: 'inner'},
-        {name: 'Union', value: 'union'},
-        {name: 'Intersection', value: 'intersection'}
+        {name: 'Union', value: 'union'}
+//        {name: 'Intersection', value: 'intersection'}
     ];
 
     var url = "admin/proxy/getData?";
