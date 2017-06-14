@@ -29,7 +29,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         } else {
             return;
         }
-    }
+    };
 //    $scope.clickBtn = function(){
 
 //    }
@@ -600,7 +600,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY1Axis(widget, yAxisItems);
         } else {
-            b
             angular.forEach(widget.columns, function (val, key) {
                 if (val.fieldName == column.fieldName) {
                     val.yAxis = null;
@@ -619,7 +618,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.selectY2Axis(widget, yAxisItems);
         } else {
             angular.forEach(widget.columns, function (val, key) {
-                if (val.fieldName == column.fieldName && val.yAxis == column.yAxis) {
+                if (val.fieldName == column.fieldName) {
                     val.yAxis = null;
                 }
             });
@@ -829,7 +828,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             customEndDate: $scope.customEndDate, //widget.customEndDate
             jsonData: $scope.jsonData ? $scope.jsonData : null,
             queryFilter: $scope.queryFilter ? $scope.queryFilter : null,
-            accountId: widget.accountId.id
+            accountId: widget.accountId?widget.accountId.id:null
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             if (widget.tagName) {
@@ -1085,6 +1084,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.listColumns = JSON.parse(scope.previewColumns);
             scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
             var widget = JSON.parse(scope.previewWidget);
+//            alert(widget)
+//            alert(widget.accountId.id)
+            console.log(widget)
             scope.addList = function (list) {
                 list.isEdit = true;
                 scope.previewTableHeader.push(list);
@@ -1133,7 +1135,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     '&widgetId=' + (widget.id ? widget.id : '') +
                     '&url=' + tableDataSource.url +
                     '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
-                         scope.loading = false;
+                scope.loading = false;
                 if (!response.data) {
                     scope.showErrorMsg = true;
                     scope.errorMsg = "No Data Found";
@@ -1148,9 +1150,11 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             };
             scope.previewTableHeader = JSON.parse(scope.previewColumns);
             scope.save = function () {
-                if ($('.query-builder').queryBuilder('getRules')) {
-                    scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
-                    scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
+                if (widget.chartType != 'text') {
+                    if ($('.query-builder').queryBuilder('getRules')) {
+                        scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
+                        scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
+                    }
                 }
                 widget.dateRangeName = $("#dateRangeName").text().trim();
                 if (widget.dateRangeName === "Custom") {
@@ -1203,7 +1207,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 if (scope.previewWidgetTitle == "Widget Title") {
                     scope.previewWidgetTitle = "";
                 }
-
                 var data = {
                     id: widget.id,
                     chartType: widget.chartType,
@@ -1226,10 +1229,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     width: widget.width,
                     jsonData: scope.jsonRules ? scope.jsonRules : null,
                     queryFilter: scope.queryFilter ? scope.queryFilter : null,
-                    accountId: widget.accountId.id
+                    accountId: widget.accountId?widget.accountId.id:null
                 };
+//                console.log(data)
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-                    sessionStorage.clear();
                     $rootScope.goBack();
                     //$state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
                 });
@@ -1237,7 +1240,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
 //            scope.saveQueryFn({savequeryFn: scope.save});
             scope.closeWidget = function () {
                 widget = "";
-                sessionStorage.clear();
                 $rootScope.goBack();
 //                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
             };

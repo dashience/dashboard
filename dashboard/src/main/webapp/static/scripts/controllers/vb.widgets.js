@@ -61,7 +61,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $window.open(url);
     };
 
-    function getWidgetItem() {      //Default Loading Items
+    function getWidgetItem() {      //Default Loading Itemsloading
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
@@ -2153,7 +2153,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
-                            "&accountId=" + getWidgetObj +
+                            "&accountId=" + setWidgetAccountId +
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -2456,7 +2456,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 scope.refreshStackedBarChart = function () {
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
-                            "&accountId=" + getWidgetObj +
+                            "&accountId=" + setWidgetAccountId +
                             "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
