@@ -127,9 +127,10 @@ public class ProxyController {
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
-        log.debug("Calling of getGenericData function in ProxyController class");
-
+        Map returnMap = new HashMap<>();
         Map<String, String[]> parameterMap = request.getParameterMap();
+        String joinDataSetIdStr = request.getParameter("joinDataSetId");
+
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
@@ -137,14 +138,6 @@ public class ProxyController {
             valueMap.put(key, Arrays.asList(value));
         }
 
-        String joinDataSetIdStr = request.getParameter("joinDataSetId");
-        System.out.println("joinDataIdStr ---> " + joinDataSetIdStr);
-        Map returnMap = new HashMap<>();
-        if (!joinDataSetIdStr.isEmpty() && joinDataSetIdStr != null) {
-            returnMap = getJoinData(valueMap, request, response, joinDataSetIdStr);
-        } else {
-            returnMap = getData(valueMap, request, response);
-        }
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String dataSetId = request.getParameter("dataSetId");
@@ -152,18 +145,23 @@ public class ProxyController {
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
 
             }
         }
 
+        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null")) {
+            returnMap = getJoinData(valueMap, request, response, joinDataSetIdStr);
+        } else {
+            returnMap = getData(valueMap, request, response);
+        }
+
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
-        List<DatasetColumns> datasetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
-
-        if (datasetColumnList.size() > 0) {
-            List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(datasetColumnList, data, valueMap, request, response);
-            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(datasetColumnList, dataWithDerivedFunctions);
+        List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+        if (dataSetColumnList.size() > 0) {
+            List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
+            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
         String widgetIdStr = request.getParameter("widgetId");
@@ -180,7 +178,6 @@ public class ProxyController {
             returnMap.put("data", returnDataMap);
         }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
-        //System.out.println("returnMap final ---> " + returnMap);
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
         if (fieldsOnly != null) {
@@ -199,77 +196,103 @@ public class ProxyController {
     }
 
     public MultiValueMap<String, String> getRequest(DataSet dataSet, MultiValueMap valueMap) {
-        MultiValueMap<String, String> combinedValueMap = new LinkedMultiValueMap<>();
-        combinedValueMap.put("dataSetReportName", Arrays.asList(dataSet.getReportName()));
-        combinedValueMap.put("dataSetId", Arrays.asList(dataSet.getId() + ""));
-        combinedValueMap.put("timeSegment", Arrays.asList(dataSet.getTimeSegment()));
-        combinedValueMap.put("filter", Arrays.asList(dataSet.getNetworkType()));
-        combinedValueMap.put("url", Arrays.asList(dataSet.getUrl()));
-        combinedValueMap.put("query", Arrays.asList(dataSet.getQuery()));
-        combinedValueMap.put("productSegment", Arrays.asList(dataSet.getProductSegment()));
+        MultiValueMap<String, String> joinValueMap = new LinkedMultiValueMap<>();
+        joinValueMap.put("dataSetReportName", Arrays.asList(dataSet.getReportName()));
+        joinValueMap.put("dataSetId", Arrays.asList(dataSet.getId() + ""));
+        joinValueMap.put("timeSegment", Arrays.asList(dataSet.getTimeSegment()));
+        joinValueMap.put("filter", Arrays.asList(dataSet.getNetworkType()));
+        joinValueMap.put("url", Arrays.asList(dataSet.getUrl()));
+        joinValueMap.put("query", Arrays.asList(dataSet.getQuery()));
+        joinValueMap.put("productSegment", Arrays.asList(dataSet.getProductSegment()));
         DataSource dataSource = dataSet.getDataSourceId();
-        combinedValueMap.put("connectionUrl", Arrays.asList(dataSource.getConnectionString()));
-        combinedValueMap.put("dataSourceId", Arrays.asList(dataSource.getId() + ""));
-        combinedValueMap.put("driver", Arrays.asList(dataSource.getDataSourceType()));
-        combinedValueMap.put("dataSourceType", Arrays.asList(dataSource.getDataSourceType()));
-        combinedValueMap.put("username", Arrays.asList(dataSource.getUserName()));
-        combinedValueMap.put("password", Arrays.asList(dataSource.getPassword()));
-        combinedValueMap.put("startDate", Arrays.asList(getFromMultiValueMap(valueMap, "startDate")));
-        combinedValueMap.put("accountId", Arrays.asList(getFromMultiValueMap(valueMap, "accountId")));
-        combinedValueMap.put("locationId", Arrays.asList(getFromMultiValueMap(valueMap, "locationId")));
-        combinedValueMap.put("endDate", Arrays.asList(getFromMultiValueMap(valueMap, "endDate")));
-        return combinedValueMap;
+        System.out.println("dataSourceType --->" + dataSource.getDataSourceType());
+        joinValueMap.put("connectionUrl", Arrays.asList(dataSource.getConnectionString()));
+        joinValueMap.put("dataSourceId", Arrays.asList(dataSource.getId() + ""));
+        joinValueMap.put("driver", Arrays.asList(dataSource.getDataSourceType()));
+        joinValueMap.put("dataSourceType", Arrays.asList(dataSource.getDataSourceType()));
+        joinValueMap.put("username", Arrays.asList(dataSource.getUserName()));
+        joinValueMap.put("password", Arrays.asList(dataSource.getPassword()));
+        joinValueMap.put("startDate", Arrays.asList(getFromMultiValueMap(valueMap, "startDate")));
+        joinValueMap.put("accountId", Arrays.asList(getFromMultiValueMap(valueMap, "accountId")));
+        joinValueMap.put("locationId", Arrays.asList(getFromMultiValueMap(valueMap, "locationId")));
+        joinValueMap.put("endDate", Arrays.asList(getFromMultiValueMap(valueMap, "endDate")));
+        return joinValueMap;
     }
 
     public Map getJoinData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, String joinDataSetIdStr) {
         DataSet dataSetOne = null;
         DataSet dataSetTwo = null;
         String operationType = null;
-        Integer joinDataSetIdInt = null;
+        Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
 
-        joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
         List<String> conditions = new ArrayList<>();
-        List<String> columnName = new ArrayList<>();
 
         List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
             JoinDataSetCondition joinDataSetCondition = iterator.next();
             JoinDataSet joinDataSet = joinDataSetCondition.getJoinDataSetId();
-            String concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + "2";
+            String concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond();
+            if (joinDataSetCondition.getColumnName() != null) {
+                concatCondition += "," + joinDataSetCondition.getColumnName();
+            }
             conditions.add(concatCondition);
-            columnName.add(joinDataSetCondition.getColumnName());
             dataSetOne = joinDataSet.getDataSetIdFirst();
             dataSetTwo = joinDataSet.getDataSetIdSecond();
             operationType = joinDataSet.getOperationType();
         }
 
-        MultiValueMap combinedValueMapOne = getRequest(dataSetOne, valueMap);
-        Map joinValueMapOne = getData(combinedValueMapOne, request, response);
+        MultiValueMap joinValueMapOne = getRequest(dataSetOne, valueMap);
+        Map joinDataSetOneMap = getData(joinValueMapOne, request, response);
 
-        List<Map<String, Object>> dataSetOneList = (List<Map<String, Object>>) joinValueMapOne.get("data");
+        List<Map<String, Object>> dataSetOneList = (List<Map<String, Object>>) joinDataSetOneMap.get("data");
+        String dataSetIdOneStr = getFromMultiValueMap(joinValueMapOne, "dataSetId");
+        if (dataSetIdOneStr != null && !dataSetIdOneStr.isEmpty()) {
+            Integer dataSetIdInt = Integer.parseInt(dataSetIdOneStr);
+            System.out.println("dataSetIdInt 1--> " + dataSetIdInt);
+            List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+            if (dataSetColumnList.size() > 0) {
+                List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetOneList, joinValueMapOne, request, response);
+                List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
+                joinDataSetOneMap.put("data", dataWithDerivedColumns);
+            }
+        }
+
         Set<String> columnSet = dataSetOneList.get(0).keySet();
 
         MultiValueMap joinValueMapTwo = getRequest(dataSetTwo, valueMap);
         Map joinDataSetTwoMap = getData(joinValueMapTwo, request, response);
 
         List<Map<String, Object>> dataSetTwoList = (List<Map<String, Object>>) joinDataSetTwoMap.get("data");
-        for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
-            Map<String, Object> dataMap = iterator.next();
-            try {
-                dataMap.entrySet().forEach((entry) -> {
-                    String key = entry.getKey();
-                    Object value = entry.getValue();
-                    for (String columnStr : columnSet) {
-                        if (key.equalsIgnoreCase(columnStr)) {
-                            dataMap.remove(key);
-                            dataMap.put(key + "2", value);
-                            break;
-                        }
-                    }
-                });
-            } catch (ConcurrentModificationException e) {
+        String dataSetIdTwoStr = getFromMultiValueMap(joinValueMapTwo, "dataSetId");
+        if (dataSetIdTwoStr != null && !dataSetIdTwoStr.isEmpty()) {
+
+            Integer dataSetIdInt = Integer.parseInt(dataSetIdTwoStr);
+            System.out.println("dataSetIdInt 2--> " + dataSetIdInt);
+
+            List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+            if (dataSetColumnList.size() > 0) {
+                List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetTwoList, joinValueMapTwo, request, response);
+                List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
+                joinDataSetTwoMap.put("data", dataWithDerivedColumns);
             }
         }
+//        for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
+//            Map<String, Object> dataMap = iterator.next();
+//            try {
+//                dataMap.entrySet().forEach((entry) -> {
+//                    String key = entry.getKey();
+//                    Object value = entry.getValue();
+//                    for (String columnStr : columnSet) {
+//                        if (key.equalsIgnoreCase(columnStr)) {
+//                            dataMap.remove(key);
+//                            dataMap.put(key + "2", value);
+//                            break;
+//                        }
+//                    }
+//                });
+//            } catch (ConcurrentModificationException e) {
+//            }
+//        }
 //        System.out.println("dataSetTwoList ---> " + dataSetTwoList);
 
         List<Map<String, Object>> joinData = new ArrayList<>();
@@ -283,10 +306,11 @@ public class ProxyController {
             System.out.println("rightttttttttttttttttt");
             joinData = rightJoin(dataSetOneList, dataSetTwoList, conditions);
         } else if (operationType.equalsIgnoreCase("union")) {
-            joinData = union(dataSetOneList, dataSetTwoList, conditions, columnName);
-        } else if (operationType.equalsIgnoreCase("intersection")) {
-            joinData = intersection(dataSetOneList, dataSetTwoList, conditions, columnName);
-        }
+            joinData = union(dataSetOneList, dataSetTwoList, conditions);
+        } 
+//        else if (operationType.equalsIgnoreCase("intersection")) {
+//            joinData = intersection(dataSetOneList, dataSetTwoList, conditions);
+//        }
         System.out.println("joinData ---> " + joinData);
 
         List<Map<String, Object>> data = joinData;
@@ -469,103 +493,95 @@ public class ProxyController {
         return returnList;
     }
 
-    public static List<Map<String, Object>> union(List<Map<String, Object>> col1, List<Map<String, Object>> col2, List<String> conditions, List<String> columnName) {
+    public static List<Map<String, Object>> union(List<Map<String, Object>> dataSet1, List<Map<String, Object>> dataSet2, List<String> mappings) {
+
         List<Map<String, Object>> returnList = new ArrayList<>();
-        String[] fields = null;
-        List<Set<Object>> setList = new ArrayList<>();
-        for (Iterator<String> iterator = conditions.iterator(); iterator.hasNext();) {
-            Set<Object> set = new HashSet<Object>();
-            String condition = iterator.next();
-            fields = condition.split(",");
-            for (Iterator<Map<String, Object>> iterator1 = col1.iterator(); iterator1.hasNext();) {
-                Map<String, Object> dataSetOneData = iterator1.next();
-                set.add(dataSetOneData.get(fields[0]));
+        for (Iterator<Map<String, Object>> iterator = dataSet1.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataSetMap = iterator.next();
+            Map<String, Object> newDataMap = new HashMap<>();
+            for (Iterator<String> iterator1 = mappings.iterator(); iterator1.hasNext();) {
+                String mapping = iterator1.next();
+                String[] mappingArray = mapping.split(",");
+                String dsColumnName = mappingArray[0];
+                String columnName = mappingArray[2];
+                newDataMap.put(columnName, dataSetMap.get(dsColumnName));
             }
-
-            for (Iterator<Map<String, Object>> iterator2 = col2.iterator(); iterator2.hasNext();) {
-                Map<String, Object> dataSetTwoData = iterator2.next();
-                set.add(dataSetTwoData.get(fields[1]));
-            }
-            setList.add(set);
-        }
-        TreeSet<Integer> treeSet = new TreeSet<Integer>();
-        for (int i = 0; i < setList.size(); i++) {
-            treeSet.add(setList.get(i).size());
+            returnList.add(newDataMap);
         }
 
-        for (int j = 0; j < treeSet.last(); j++) {
-            Map<String, Object> dataMap = new HashMap<>();
-            for (int k = 0; k < setList.size(); k++) {
-                Set<Object> setData = setList.get(k);
-                int count = 0;
-                for (Object obj : setData) {
-                    if (j == count) {
-                        dataMap.put(columnName.get(k), obj);
-                        break;
-                    }
-                    count++;
-                }
+        for (Iterator<Map<String, Object>> iterator = dataSet2.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataSetMap = iterator.next();
+            Map<String, Object> newDataMap = new HashMap<>();
+            for (Iterator<String> iterator1 = mappings.iterator(); iterator1.hasNext();) {
+                String mapping = iterator1.next();
+                String[] mappingArray = mapping.split(",");
+                String dsColumnName = mappingArray[1];
+                String columnName = mappingArray[2];
+                newDataMap.put(columnName, dataSetMap.get(dsColumnName));
             }
-            returnList.add(dataMap);
+            returnList.add(newDataMap);
         }
+        System.out.println("returnList ---> " + returnList);
         return returnList;
     }
 
-    public static List<Map<String, Object>> intersection(List<Map<String, Object>> col1, List<Map<String, Object>> col2, List<String> conditions, List<String> columnName) {
-        List<Map<String, Object>> returnList = new ArrayList<>();
-        List<Set<Object>> setList = new ArrayList<>();
-
-        String[] fields = null;
-        for (Iterator<String> iterator = conditions.iterator(); iterator.hasNext();) {
-            Set<Object> setOne = new HashSet<Object>();
-            Set<Object> setTwo = new HashSet<Object>();
-            Set<Object> intersectionSet = new HashSet<Object>();
-
-            String condition = iterator.next();
-            fields = condition.split(",");
-            for (Iterator<Map<String, Object>> iterator1 = col1.iterator(); iterator1.hasNext();) {
-                Map<String, Object> dataSetOneData = iterator1.next();
-                setOne.add(dataSetOneData.get(fields[0]));
-            }
-
-            for (Iterator<Map<String, Object>> iterator2 = col2.iterator(); iterator2.hasNext();) {
-                Map<String, Object> dataSetTwoData = iterator2.next();
-                setTwo.add(dataSetTwoData.get(fields[1]));
-            }
-
-            for (Iterator<Object> iterator1 = setOne.iterator(); iterator1.hasNext();) {
-                Object setDataOne = iterator1.next();
-                for (Iterator<Object> iterator2 = setTwo.iterator(); iterator2.hasNext();) {
-                    Object setDataTwo = iterator2.next();
-                    if (setDataOne.equals(setDataTwo)) {
-                        intersectionSet.add(setDataTwo);
-                    }
-                }
-            }
-            setList.add(intersectionSet);
-        }
-        TreeSet<Integer> treeSet = new TreeSet<Integer>();
-        for (int i = 0; i < setList.size(); i++) {
-            treeSet.add(setList.get(i).size());
-        }
-
-        for (int j = 0; j < treeSet.last(); j++) {
-            Map<String, Object> dataMap = new HashMap<>();
-            for (int k = 0; k < setList.size(); k++) {
-                Set<Object> setData = setList.get(k);
-                int count = 0;
-                for (Object obj : setData) {
-                    if (j == count) {
-                        dataMap.put(columnName.get(k), obj);
-                        break;
-                    }
-                    count++;
-                }
-            }
-            returnList.add(dataMap);
-        }
-        return returnList;
-    }
+//    public static List<Map<String, Object>> intersection(List<Map<String, Object>> dataSet1, List<Map<String, Object>> dataSet2, List<String> mappings) {
+//        List<Map<String, Object>> returnList = new ArrayList<>();
+//        List<Set<Object>> setList = new ArrayList<>();
+//
+//        for (Iterator<String> iterator = mappings.iterator(); iterator.hasNext();) {
+//            Set<Object> setOne = new HashSet<Object>();
+//            Set<Object> setTwo = new HashSet<Object>();
+//            Set<Object> intersectionSet = new HashSet<Object>();
+//
+//            String mapping = iterator.next();
+//            String[] fields = mapping.split(",");
+//            for (Iterator<Map<String, Object>> iterator1 = dataSet1.iterator(); iterator1.hasNext();) {
+//                Map<String, Object> dataSetOneData = iterator1.next();
+//                setOne.add(dataSetOneData.get(fields[0]));
+//            }
+//
+//            for (Iterator<Map<String, Object>> iterator2 = dataSet2.iterator(); iterator2.hasNext();) {
+//                Map<String, Object> dataSetTwoData = iterator2.next();
+//                setTwo.add(dataSetTwoData.get(fields[1]));
+//            }
+//
+//            for (Iterator<Object> iterator1 = setOne.iterator(); iterator1.hasNext();) {
+//                Object setDataOne = iterator1.next();
+//                for (Iterator<Object> iterator2 = setTwo.iterator(); iterator2.hasNext();) {
+//                    Object setDataTwo = iterator2.next();
+//                    if (setDataOne.equals(setDataTwo)) {
+//                        intersectionSet.add(setDataTwo);
+//                    }
+//                }
+//            }
+//            setList.add(intersectionSet);
+//        }
+//        TreeSet<Integer> treeSet = new TreeSet<Integer>();
+//        for (int i = 0; i < setList.size(); i++) {
+//            treeSet.add(setList.get(i).size());
+//        }
+//
+//        for (int j = 0; j < treeSet.last(); j++) {
+//            Map<String, Object> dataMap = new HashMap<>();
+//            for (int k = 0; k < setList.size(); k++) {
+//                String mapping = mappings.get(k);
+//                String[] mappingArray = mapping.split(",");
+//                String columnName = mappingArray[2];
+//                Set<Object> setData = setList.get(k);
+//                int count = 0;
+//                for (Object obj : setData) {
+//                    if (j == count) {
+//                        dataMap.put(columnName, obj);
+//                        break;
+//                    }
+//                    count++;
+//                }
+//            }
+//            returnList.add(dataMap);
+//        }
+//        return returnList;
+//    }
 
     public Map<String, Date> getCustomDate(String dateRangeName, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears, Date endDate) {
         //System.out.println("Date Range Name --> " + dateRangeName);
