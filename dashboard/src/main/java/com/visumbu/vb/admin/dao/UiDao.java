@@ -18,6 +18,7 @@ import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
+import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
@@ -625,6 +626,13 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
+        public JoinDataSet getJoinDataSetById(Integer id) {
+        String queryStr = "select d from JoinDataSet d where d.id = :joinDataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("joinDataSetId", id);
+        return (JoinDataSet) query.uniqueResult();
+    }
+        
     public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
         System.out.println("delete join data set method");
         String deleteStr = "delete from JoinDataSetCondition d where d.id = :conditionId";

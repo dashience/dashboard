@@ -21,6 +21,7 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
 //                $scope.schedularHistoryData = true;
 //            } else {
             $scope.schedularHistoryDetails = response;
+            console.log(response);
 //            }
         });
     };

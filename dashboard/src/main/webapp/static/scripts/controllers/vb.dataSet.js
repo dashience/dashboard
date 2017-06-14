@@ -15,8 +15,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'Left', value: 'left'},
         {name: 'Right', value: 'right'},
         {name: 'Inner', value: 'inner'},
-        {name: 'Union', value: 'union'},
-        {name: 'Intersection', value: 'intersection'}
+        {name: 'Union', value: 'union'}
     ];
 
     var url = "admin/proxy/getData?";
@@ -197,8 +196,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             joinDataSetId: joinDataSetId
         };
         var data = joinDataSetList;
-        $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
-            $scope.setTab(1);
+        $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
             getItems();
         });
     };
@@ -2017,6 +2015,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.nwStatusFlag = true;
         console.log(dataSet.networkType);
         console.log(dataSet);
+        var joinDataSetId = null;
+        if (dataSet.joinDataSetId != null) {
+            joinDataSetId = dataSet.joinDataSetId.id;
+        }
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -2028,61 +2030,65 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             networkType: dataSet.networkType,
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
-            userId: dataSet.userId.id
-
+            userId: dataSet.userId.id,
+            joinDataSetId: joinDataSetId
         };
         console.log(data);
         $scope.dataSet = data;
-        var dataSource = dataSet.dataSourceId;
-        var dataSourceType = dataSet.dataSourceId.dataSourceType;
-        if (dataSourceType == 'xls') {
-            $scope.selectXlsSheet(dataSource);
-        }
-        if (dataSet.dataSourceId.dataSourceType === "instagram")
-        {
-            $scope.report = $scope.instagramPerformance;
-            $scope.getTimeSegements();
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "facebook")
-        {
-            $scope.report = $scope.facebookPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "bing")
-        {
-            $scope.report = $scope.bingPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
-        {
-            $scope.report = $scope.pinterestPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "adwords")
-        {
-            $scope.report = $scope.adwordsPerformance;
-            $scope.getTimeSegements();
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = true;
-        } else if (dataSet.dataSourceId.dataSourceType === "analytics")
-        {
-            $scope.report = $scope.analyticsPerformance;
-            $scope.getTimeSegements(dataSet);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
-        {
-            $scope.report = $scope.linkedinPerformance;
-            $scope.getTimeSegements();
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else {
-            $scope.dataSetFlag = false;
-            $scope.nwStatusFlag = false;
+        var dataSource = null;
+        var dataSourceType = null;
+        if (dataSet.dataSourceId != null) {
+            dataSource = dataSet.dataSourceId;
+            dataSourceType = dataSet.dataSourceId.dataSourceType;
+            if (dataSourceType == 'xls') {
+                $scope.selectXlsSheet(dataSource);
+            }
+            if (dataSet.dataSourceId.dataSourceType === "instagram")
+            {
+                $scope.report = $scope.instagramPerformance;
+                $scope.getTimeSegements();
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "facebook")
+            {
+                $scope.report = $scope.facebookPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "bing")
+            {
+                $scope.report = $scope.bingPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
+            {
+                $scope.report = $scope.pinterestPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "adwords")
+            {
+                $scope.report = $scope.adwordsPerformance;
+                $scope.getTimeSegements();
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = true;
+            } else if (dataSet.dataSourceId.dataSourceType === "analytics")
+            {
+                $scope.report = $scope.analyticsPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
+            {
+                $scope.report = $scope.linkedinPerformance;
+                $scope.getTimeSegements();
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            } else {
+                $scope.dataSetFlag = false;
+                $scope.nwStatusFlag = false;
+            }
         }
 
 //        if (dataSet.dataSourceId.dataSourceType === "adwords" || dataSet.dataSourceId.dataSourceType === "analytics" || dataSet.dataSourceId.dataSourceType === "facebook" || dataSet.dataSourceId.dataSourceType === "instagram")
