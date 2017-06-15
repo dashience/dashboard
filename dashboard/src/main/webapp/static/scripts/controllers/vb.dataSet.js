@@ -1630,7 +1630,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     ];
     $scope.getTimeSegements = function (dataSet) {
-
+console.log(dataSet);
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.instagramPerformance);
@@ -1986,13 +1986,24 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
         console.log(dataSetList);
-        console.log(dataSetList.timeSegment.type);
-        dataSetList.timeSegment = dataSetList.timeSegment.type;
-        dataSetList.productSegment = dataSetList.productSegment.type;
+        if (dataSetList.timeSegment != null) {
+            dataSetList.timeSegment = dataSetList.timeSegment.type;
+        } else {
+            dataSetList.timeSegment = null;
+        }
+        if (dataSetList.productSegment != null) {
+            dataSetList.productSegment = dataSetList.productSegment.type;
+        } else {
+            dataSetList.productSegment = null;
+        }
         console.log(dataSetList.timeSegment);
 
         var dataSet = dataSetList;
-        dataSet.dataSourceId = dataSet.dataSourceId.id;
+        if (dataSet.dataSourceId != null) {
+            dataSet.dataSourceId = dataSet.dataSourceId.id;
+        } else {
+            dataSet.dataSourceId = null;
+        }
         $scope.nwStatusFlag = true;
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
@@ -2627,15 +2638,10 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     function dayOfWeekAsString(dayIndex) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
                     }
-
-
-
-
-
                     scope.columns = [];
                     scope.dataSetId = dataSourcePath.id;
                     if (dataSourcePath.id != null) {
-                        $http.get("admin/ui/getDatasetColumnByDataSetId/" + dataSourcePath.id).success(function (resp) {
+                        $http.get("admin/ui/getDataSetColumnsByDataSetId/" + dataSourcePath.id).success(function (resp) {
                             scope.ajaxLoadingCompleted = true;
                             scope.loadingTable = false;
                             console.log(resp)
@@ -2899,7 +2905,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.customStartDate = "";
                     scope.customEndDate = "";
                 }
-               scope.dataSetId = dataSourcePath.id;
+                scope.dataSetId = dataSourcePath.id;
                 var data = {
                     dataSetId: dataSourcePath.id,
                     id: dataSetColumn.id,

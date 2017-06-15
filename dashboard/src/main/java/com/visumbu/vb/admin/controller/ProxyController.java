@@ -149,14 +149,20 @@ public class ProxyController {
         }
 
         if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null")) {
-            returnMap = getJoinData(valueMap, request, response, joinDataSetIdStr);
+            try {
+              Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
+                            returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
+
+            } catch (NumberFormatException e) {
+
+            }
         } else {
             returnMap = getData(valueMap, request, response);
         }
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
-        List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDatasetId(dataSetIdInt);
+        List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt);
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -216,12 +222,10 @@ public class ProxyController {
         return joinValueMap;
     }
 
-    public Map getJoinData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, String joinDataSetIdStr) {
+    public Map getJoinData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, Integer joinDataSetIdInt) {
         DataSet dataSetOne = null;
         DataSet dataSetTwo = null;
         String operationType = null;
-        Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
-
         List<String> mappings = new ArrayList<>();
 
         List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
@@ -240,7 +244,7 @@ public class ProxyController {
         String dataSetIdOneStr = getFromMultiValueMap(joinValueMapOne, "dataSetId");
         if (dataSetIdOneStr != null && !dataSetIdOneStr.isEmpty()) {
             Integer dataSetIdInt = Integer.parseInt(dataSetIdOneStr);
-            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDatasetId(dataSetIdInt);
+            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetOneList, joinValueMapOne, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -259,7 +263,7 @@ public class ProxyController {
 
             Integer dataSetIdInt = Integer.parseInt(dataSetIdTwoStr);
 
-            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDatasetId(dataSetIdInt);
+            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetTwoList, joinValueMapTwo, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);

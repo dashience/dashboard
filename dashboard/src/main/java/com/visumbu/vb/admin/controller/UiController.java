@@ -423,10 +423,10 @@ public class UiController extends BaseController {
         return uiService.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
-    @RequestMapping(value = "getDataSetColumnByDatasetId/{dataSetId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "getDataSetColumnsByDataSetId/{dataSetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDatasetColumnByDatasetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetId) {
-        return uiService.getDataSetColumnByDatasetId(dataSetId);
+    List getDataSetColumnsByDataSetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetId) {
+        return uiService.getDataSetColumnsByDataSetId(dataSetId);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")

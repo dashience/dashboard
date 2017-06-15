@@ -845,8 +845,8 @@ public class UiService {
         return (DataSetColumns) uiDao.delete(dataSetColumn);
     }
 
-    public List<DataSetColumns> getDataSetColumnByDatasetId(Integer dataSetId) {
-        return uiDao.getDataSetColumnByDatasetId(dataSetId);
+    public List<DataSetColumns> getDataSetColumnsByDataSetId(Integer dataSetId) {
+        return uiDao.getDataSetColumnsByDataSetId(dataSetId);
     }
 
     public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
