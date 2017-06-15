@@ -4,6 +4,7 @@
  */
 package com.visumbu.mail;
 
+import com.visumbu.vb.utils.PropertyReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,6 +22,15 @@ import org.apache.commons.mail.MultiPartEmail;
 public class TextMailWithAttachment {
 
     private MailProperties props = null;
+
+    PropertyReader propReader = new PropertyReader();
+
+    private final String hostName = "smtp.hostname";
+    private final String setPort = "smtp.port";
+    private final String authUser = "smtp.authuser";
+    private final String authPass = "smtp.authpass";
+    private final String fromAddress = "smtp.fromaddress";
+    private final String tlsSslRequired = "smtp.tls.ssl.required";
 
     public TextMailWithAttachment(MailProperties props) {
         this.props = props;
@@ -43,11 +53,13 @@ public class TextMailWithAttachment {
             mailAttachment.setAttachmentPath(attachment);
             mailAttachments.add(mailAttachment);
         }
-        this.props.setHostName("gator3272.hostgator.com");
-        this.props.setPort(587);
-        this.props.setAuthUser("jp@digitalanalystteam.com");
-        this.props.setAuthPasswd("d@tjp527");
-        this.props.setFrom("jp@digitalanalystteam.com");
+        this.props.setHostName(propReader.readProperties(hostName));
+        int portNo = Integer.parseInt(propReader.readProperties(setPort));
+        this.props.setPort(portNo);
+        this.props.setAuthUser(propReader.readProperties(authUser));
+        this.props.setAuthPasswd(propReader.readProperties(authPass));
+        this.props.setFrom(propReader.readProperties(fromAddress));
+        this.props.setSetSSLOnConnect(Boolean.parseBoolean(propReader.readProperties(tlsSslRequired)));
         this.props.setHtmlMessage(message);
         this.props.setTxtMessage(message);
         this.props.setSubject(subject);
@@ -63,7 +75,7 @@ public class TextMailWithAttachment {
             email.setHostName(props.getHostName());
             email.setSmtpPort(props.getPort());
             email.setAuthentication(props.getAuthUser(), props.getAuthPasswd());
-            //email.setSSLOnConnect(props.isSetSSLOnConnect());
+            email.setSSLOnConnect(props.isSetSSLOnConnect());
             email.setFrom(props.getFrom());
             email.setSubject(props.getSubject());
             email.setMsg(props.getTxtMessage());

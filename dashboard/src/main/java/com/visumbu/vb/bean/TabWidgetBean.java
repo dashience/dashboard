@@ -63,6 +63,7 @@ public class TabWidgetBean {
     private Integer lastNmonths;
     private Integer lastNweeks;
     private Integer lastNyears;
+    private String jsonData;
     private String queryFilter;
     private String isGridLine;
     private List<WidgetColumnBean> widgetColumns;
@@ -403,6 +404,15 @@ public class TabWidgetBean {
     public void setLastNyears(Integer lastNyears) {
         this.lastNyears = lastNyears;
     }
+
+    public String getJsonData() {
+        return jsonData;
+    }
+
+    public void setJsonData(String jsonData) {
+        this.jsonData = jsonData;
+    }
+    
 
     public String getQueryFilter() {
         return queryFilter;

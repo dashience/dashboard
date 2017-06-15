@@ -6,7 +6,6 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,12 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 /**
@@ -39,28 +35,6 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "Agency.findByStatus", query = "SELECT a FROM Agency a WHERE a.status = :status")
     , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")})
 public class Agency implements Serializable {
-
-    @Lob()
-    @Column(name = "logo")
-    private byte[] logo;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<Scheduler> schedulerCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<Report> reportCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<DataSet> dataSetCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<DataSource> dataSourceCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<AgencyProduct> agencyProductCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<Account> accountCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<AgencyUser> agencyUserCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<VbUser> vbUserCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<AgencyLicence> agencyLicenceCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -81,6 +55,9 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "email")
     private String email;
+    @Type(type = "org.hibernate.type.StringClobType")
+    @Column(name = "logo")
+    private String logo;
 
     public Agency() {
     }
@@ -129,7 +106,14 @@ public class Agency implements Serializable {
         this.email = email;
     }
 
-    
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -152,104 +136,7 @@ public class Agency implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.Agency[ id=" + id + " ]";
+        return "Agency{" + "id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
     }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencyLicence> getAgencyLicenceCollection() {
-        return agencyLicenceCollection;
-    }
-
-    public void setAgencyLicenceCollection(Collection<AgencyLicence> agencyLicenceCollection) {
-        this.agencyLicenceCollection = agencyLicenceCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<VbUser> getVbUserCollection() {
-        return vbUserCollection;
-    }
-
-    public void setVbUserCollection(Collection<VbUser> vbUserCollection) {
-        this.vbUserCollection = vbUserCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencyUser> getAgencyUserCollection() {
-        return agencyUserCollection;
-    }
-
-    public void setAgencyUserCollection(Collection<AgencyUser> agencyUserCollection) {
-        this.agencyUserCollection = agencyUserCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Account> getAccountCollection() {
-        return accountCollection;
-    }
-
-    public void setAccountCollection(Collection<Account> accountCollection) {
-        this.accountCollection = accountCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencyProduct> getAgencyProductCollection() {
-        return agencyProductCollection;
-    }
-
-    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
-        this.agencyProductCollection = agencyProductCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DataSet> getDataSetCollection() {
-        return dataSetCollection;
-    }
-
-    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
-        this.dataSetCollection = dataSetCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DataSource> getDataSourceCollection() {
-        return dataSourceCollection;
-    }
-
-    public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
-        this.dataSourceCollection = dataSourceCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Report> getReportCollection() {
-        return reportCollection;
-    }
-
-    public void setReportCollection(Collection<Report> reportCollection) {
-        this.reportCollection = reportCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Scheduler> getSchedulerCollection() {
-        return schedulerCollection;
-    }
-
-    public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
-        this.schedulerCollection = schedulerCollection;
-    }
-
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
-    }
+    
 }

@@ -158,14 +158,4 @@ public class Account implements Serializable {
         return "com.visumbu.vb.model.Account[ id=" + id + " ]";
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Scheduler> getSchedulerCollection() {
-        return schedulerCollection;
-    }
-
-    public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
-        this.schedulerCollection = schedulerCollection;
-    }
-
 }

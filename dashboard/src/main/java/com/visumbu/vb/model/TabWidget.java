@@ -79,7 +79,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByLastNdays", query = "SELECT t FROM TabWidget t WHERE t.lastNdays = :lastNdays")
     , @NamedQuery(name = "TabWidget.findByLastNmonths", query = "SELECT t FROM TabWidget t WHERE t.lastNmonths = :lastNmonths")
     , @NamedQuery(name = "TabWidget.findByLastNweeks", query = "SELECT t FROM TabWidget t WHERE t.lastNweeks = :lastNweeks")
-    , @NamedQuery(name = "TabWidget.findByLastNyears", query = "SELECT t FROM TabWidget t WHERE t.lastNyears = :lastNyears")})
+    , @NamedQuery(name = "TabWidget.findByLastNyears", query = "SELECT t FROM TabWidget t WHERE t.lastNyears = :lastNyears")
+    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")})
 public class TabWidget implements Serializable {
 
     @OneToMany(mappedBy = "widgetId")
@@ -189,11 +190,15 @@ public class TabWidget implements Serializable {
     @Size(max = 45)
     @Column(name = "is_grid_line")
     private String isGridLine;
-    
+
     @Lob
     @Size(max = 65535)
     @Column(name = "content")
     private String content;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "json_data")
+    private String jsonData;
     @Lob
     @Size(max = 65535)
     @Column(name = "query_filter")
@@ -599,6 +604,14 @@ public class TabWidget implements Serializable {
         this.lastNyears = lastNyears;
     }
 
+    public String getJsonData() {
+        return jsonData;
+    }
+
+    public void setJsonData(String jsonData) {
+        this.jsonData = jsonData;
+    }
+
     public String getQueryFilter() {
         return queryFilter;
     }
@@ -614,7 +627,7 @@ public class TabWidget implements Serializable {
     public void setIsGridLine(String isGridLine) {
         this.isGridLine = isGridLine;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -640,16 +653,14 @@ public class TabWidget implements Serializable {
         return "com.visumbu.vb.model.TabWidget[ id=" + id + " ]";
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<ReportWidget> getReportWidgetCollection() {
-        return reportWidgetCollection;
-    }
-
-    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
-        this.reportWidgetCollection = reportWidgetCollection;
-    }
-
-   
+//    @XmlTransient
+//    @JsonIgnore
+//    public Collection<ReportWidget> getReportWidgetCollection() {
+//        return reportWidgetCollection;
+//    }
+//
+//    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
+//        this.reportWidgetCollection = reportWidgetCollection;
+//    }
 
 }

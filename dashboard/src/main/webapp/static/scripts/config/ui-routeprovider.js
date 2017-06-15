@@ -1,5 +1,5 @@
 
-app.config(function ($stateProvider, $urlRouterProvider) {
+app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $stateProvider
             .state("index", {
                 url: "/index",
@@ -98,20 +98,59 @@ app.config(function ($stateProvider, $urlRouterProvider) {
                 templateUrl: "static/views/fieldSettings/fieldSettings.html",
                 controller: 'FieldSettingsController'
             })
-            .state("index.tag", {
-                url: "/tag/:accountId/:accountName?:startDate/:endDate",
-                templateUrl: "static/views/tag/tag.html",
-                controller: 'TagController'
+//            .state("index.favourites", {
+//                url: "/favourites/:accountId/:accountName?:startDate/:endDate",
+//                templateUrl: "static/views/admin/favourites.html",
+//                controller: 'FavouritesController'
+//            })
+            .state("index.viewFavouritesWidget", {
+                url: "/viewFavouritesWidget/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate",
+                templateUrl: "static/views/admin/viewFavouritesWidget.html",
+                controller: 'ViewFavouritesWidgetController'
+            })
+            .state("index.settings", {
+                url: "/settings?:startDate/:endDate",
+                templateUrl: "static/views/admin/settings.html",
+                controller: 'SettingsController'
+            })
+            .state("viewPdf", {
+                url: "/viewPdf/:accountId/:accountName/:productId/:productName/:tabId?:startDate/:endDate",
+                templateUrl: "static/views/pdf/vb.pdf.html",
+                controller:'PdfController'
+            })
+            .state("viewReportPdf", {
+                url: "/viewReportPdf/:accountId/:reportId?:startDate/:endDate",
+                templateUrl: "static/views/pdf/vb.reportPdf.html",
+                controller:'ReportPdfController'
+            })
+            .state("viewFavouritesPdf", {
+                url: "/viewFavouritesPdf/:accountId/:favouriteName?:startDate/:endDate",
+                templateUrl: "static/views/pdf/vb.favouritesPdf.html",
+                controller:'FavouritesPdfController'
             });
+//            .state("index.viewFavouritesWidget", {
+//                url: "/viewFavouritesWidget/:accountId/:accountName/:favouriteId/:favouriteName?:startDate/:endDate",
+//                templateUrl: "static/views/admin/viewFavouritesWidget.html",
+//                controller: 'ViewFavouritesWidgetController'
+//            });
 
 
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('index.dashboard');
     });
+
+
+//    $routeProvider.when('/viewPdf', {
+//        url: '/viewPdf/:accountId/:accountName/:tabId',
+//        templateUrl: 'static/views/pdf/vb.pdf.html'});
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });
-//
-//Array.prototype.move = function (from, to) {
-//    this.splice(to, 0, this.splice(from, 1)[0]);
-//    return this;
-//};
+app.run(['$window', '$rootScope', '$stateParams',
+    function ($window, $rootScope, $stateParams) {
+        console.log($stateParams)
+        //$rootScope.accountNameByPdf = $stateParams.accountName; 
+
+        $rootScope.goBack = function () {
+            $window.history.back();
+        }
+    }])

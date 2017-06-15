@@ -61,10 +61,18 @@ import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.bean.GaReport;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.utils.ApiUtils;
+import static com.visumbu.vb.utils.ShuntingYard.postfix;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.StringTokenizer;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.visumbu.vb.utils.ParsePost;
+import java.math.BigDecimal;
 
 /**
  *
@@ -89,7 +97,7 @@ public class GaService {
     private static AnalyticsReporting analyticsReporting = initializeAnalyticsReporting();
 
     private static Analytics initializeAnalytics() throws Exception {
-    // Initializes an authorized analytics service object.
+        // Initializes an authorized analytics service object.
 
         // Construct a GoogleCredential object with the service account email
         // and p12 file downloaded from the developer console.
@@ -99,7 +107,7 @@ public class GaService {
         GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com", "xXIHWHPBQ9B9KpkFs_1tmniu",
                 Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                        dataStoreFactory).build();
+                dataStoreFactory).build();
         // Authorize.
         Credential credential = new AuthorizationCodeInstalledApp(flow1,
                 new LocalServerReceiver()).authorize("user");
@@ -135,7 +143,7 @@ public class GaService {
             GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
                     httpTransport, JSON_FACTORY, "384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com", "1nJygCmZKdFCOykaGmbjBpKy",
                     Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                            dataStoreFactory).build();
+                    dataStoreFactory).build();
             // Authorize.
             Credential credential = new AuthorizationCodeInstalledApp(flow1,
                     new LocalServerReceiver()).authorize("user");
@@ -150,7 +158,7 @@ public class GaService {
         return null;
     }
 
-    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments) {
+    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
@@ -249,7 +257,8 @@ public class GaService {
                     .setDateRanges(dateRangeList)
                     //.setDimensions(dimensionList)
                     //.setFiltersExpression(filter)
-                    .setMetrics(metricList);
+                    .setMetrics(metricList)
+                    .setPageSize(100000);
             if (filter != null) {
                 request.setFiltersExpression(filter);
             }
@@ -263,6 +272,7 @@ public class GaService {
                     .setReportRequests(requests);
 
             // Call the batchGet method.
+            System.out.println("get Report ---> " + getReport);
             GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
 
             // Return the response.
@@ -414,7 +424,6 @@ public class GaService {
                     }
                 }
                 data.add(dataMap);
-
             }
             returnMap.put("data", data);
         }

@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.DealerDao;
 import com.visumbu.vb.admin.dao.UserDao;
+import com.visumbu.vb.bean.AgencyBean;
 import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.model.Account;
@@ -14,6 +15,8 @@ import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.AgencySettings;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
@@ -23,6 +26,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -89,7 +93,8 @@ public class UserService {
         LoginUserBean loginUserBean = null;
         if (!users.isEmpty()) {
             VbUser user = users.get(0);
-            if (user.getPassword().equals(userBean.getPassword())) {
+            if (user.getPassword().equals(userBean.getPassword()) &&
+                    user.getUserName().equals(userBean.getUsername())) {
                 user.setFailedLoginCount(0);
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
@@ -97,6 +102,7 @@ public class UserService {
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
                 if (user != null) {
+                    user.setFailedLoginCount(0);
                     user.setFailedLoginCount(user.getFailedLoginCount() + 1);
                     loginUserBean = toLoginUserBean(user);
                 }
@@ -111,10 +117,25 @@ public class UserService {
         return loginUserBean;
     }
 
+    private AgencyBean toAgencyBean(Agency agency) {
+        if(agency == null) {
+            return null;
+        }
+        AgencyBean agencyBean = new AgencyBean();
+        agencyBean.setAgencyName(agency.getAgencyName());
+        agencyBean.setDescription(agency.getDescription());
+        agencyBean.setEmail(agency.getEmail());
+        agencyBean.setStatus(agency.getStatus());
+        agencyBean.setId(agency.getId());
+        return agencyBean;
+    }
+    
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
-        userBean.setAgencyId(teUser.getAgencyId());
+        System.out.println("Agency Id " + teUser.getAgencyId());
+        userBean.setAgencyId(toAgencyBean(teUser.getAgencyId()));
+        System.out.println("AGENCY BEAN " + userBean.getAgencyId());
 //        userBean.setPassword(teUser.getPassword());
         userBean.setFailLoginCount(teUser.getFailedLoginCount());
         userBean.setIsAdmin(teUser.getIsAdmin() != null && teUser.getIsAdmin() == true ? "admin" : "");
@@ -337,4 +358,23 @@ public class UserService {
         return userDao.deleteAgencyProduct(agencyProductId);
     }
 
+     public AgencySettings createAgencySettings(AgencySettings agencySettings) {
+         System.out.println(agencySettings.getAgencyId()+"....."+agencySettings.getCurrencyId()+"....."+agencySettings.getTimeZoneId());
+        return (AgencySettings) userDao.create(agencySettings);
+    }
+     
+     public AgencySettings updateAgencySettings(AgencySettings agencysettings) {
+        return (AgencySettings) userDao.update(agencysettings);
+    }
+     
+    public AgencySettings getAgencySettingsById(Integer agencyId) {
+        return userDao.getAgencySettingsById(agencyId);
+    }
+
+     public Currency getCurrencyById(Integer id) {
+        return (Currency) userDao.read(Property.class, id);
+    }
+     public TimeZone getTimezoneById(Integer id) {
+        return (TimeZone) userDao.read(Property.class, id);
+    }
 }

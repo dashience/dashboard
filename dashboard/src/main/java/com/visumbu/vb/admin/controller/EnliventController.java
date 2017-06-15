@@ -5,6 +5,8 @@
  */
 package com.visumbu.vb.admin.controller;
 
+import com.visumbu.vb.admin.service.EnlivantService;
+import static com.visumbu.vb.admin.service.EnlivantService.getTopBoards;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
@@ -23,17 +25,23 @@ import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
+import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
 import com.visumbu.vb.utils.VbUtils;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +66,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import static test.Linkedin.getColumnDefObject;
-import static test.Pinterest.getColumnDefObject;
+//import static test.Pinterest.getColumnDefObject;
 import static test.Pinterest.processFollowings;
 
 /**
@@ -74,25 +82,71 @@ public class EnliventController extends BaseController {
     @Autowired
     private UiService uiService;
 
+    public String LINKEDIN_ACCESS_TOKEN = "AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM";
+
     @RequestMapping(value = "linkedIn", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map getLinkedIn(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String url = "https://api.linkedin.com/v1/companies/10671978/historical-status-update-statistics:(time,like-count,impression-count,click-count,engagement)?oauth2_access_token=AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM&time-granularity=day&start-timestamp=1466899200000&format=json";
-            MultiValueMap<String, String> valueMap = null;
-            String data = Rest.getData(url, valueMap);
-            JSONParser parser = new JSONParser();
-            Object jsonObj = parser.parse(data);
-            JSONObject json = (JSONObject) jsonObj;
-            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-            System.out.println(jsonToMap.get("_total"));
-            List<Map<String, Object>> myData = (List<Map<String, Object>>) jsonToMap.get("values");
+//            String accountId = request.getParameter("linkedinAccountId");
+                String endDate=request.getParameter("endDate");//for linkedin we are using enddate
+              Long timeStamp=DateUtils.dateToTimeStamp(endDate);
+              System.out.println("timestamp-->");
+            String accountId ="10671978";
+            if (accountId != null) {
+                String url = "https://api.linkedin.com/v1/companies/" + accountId + "/"
+                        + "historical-status-update-statistics:(time,like-count,impression-count,click-count,engagement)?"
+                        + "oauth2_access_token=" + LINKEDIN_ACCESS_TOKEN
+                        + "&time-granularity=day&start-timestamp=1466899200000&format=json";
+                MultiValueMap<String, String> valueMap = null;
+                String data = Rest.getData(url, valueMap);
+                JSONParser parser = new JSONParser();
+                Object jsonObj = parser.parse(data);
+                JSONObject json = (JSONObject) jsonObj;
+                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+                System.out.println(jsonToMap.get("_total"));
+                try {
+                    List<Map<String, Object>> myData = (List<Map<String, Object>>) jsonToMap.get("values");
 
-            List<ColumnDef> columnDefObject = getColumnDefObject(myData);
-            Map returnMap = new HashMap();
-            returnMap.put("columnDefs", columnDefObject);
-            returnMap.put("data", myData);
-            return returnMap;
+                    List<Map<String, Object>> linkedInData = new ArrayList<>();
+
+                    for (Iterator<Map<String, Object>> iterator = myData.iterator(); iterator.hasNext();) {
+                        Map<String, Object> twitterMapData = new HashMap<>();
+                        Map<String, Object> mapData = iterator.next();
+                        twitterMapData.put("clickCount", mapData.get("clickCount"));
+                        twitterMapData.put("engagement", mapData.get("engagement"));
+                        twitterMapData.put("likeCount", mapData.get("likeCount"));
+                        System.out.println(mapData.get("time"));
+                        Timestamp timestamp = new Timestamp((long) mapData.get("time"));
+                        Date date = new Date(timestamp.getTime());
+                        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                        TimeZone obj = TimeZone.getTimeZone("CST");
+                        formatter.setTimeZone(obj);
+                        System.out.println("***************** Time**********");
+//                System.out.println(date);
+                        twitterMapData.put("time", formatter.format(date));
+                        twitterMapData.put("impressionCount", mapData.get("impressionCount"));
+
+                        linkedInData.add(twitterMapData);
+
+                    }
+
+                    System.out.println(linkedInData);
+                    List<ColumnDef> columnDefObject = getColumnDefObject(linkedInData);
+
+//            List<ColumnDef> columnDefObject = getColumnDefObject(myData);
+                    Map returnMap = new HashMap();
+                    returnMap.put("columnDefs", columnDefObject);
+                    returnMap.put("data", linkedInData);
+                    return returnMap;
+                } catch (NullPointerException e) {
+                    Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, e);
+                    return null;
+                }
+            }
+            else {
+                return null;
+            }
         } catch (ParseException ex) {
             Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -103,7 +157,8 @@ public class EnliventController extends BaseController {
     public @ResponseBody
     Map getTwitter(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1493999004&oauth_nonce=458542271&oauth_version=1.0&oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&oauth_signature=bfeMg7mE0MiRLT5xvvcb9fYa7KA%3D";
+
+            String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1494260023&oauth_nonce=-242141800&oauth_version=1.0&oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&oauth_signature=%2Bhm2aCgnsjQ6YW%2B5isNho9%2B6OvM%3D";
 
             MultiValueMap<String, String> valueMap = null;
             String data = Rest.getData(url, valueMap);
@@ -121,6 +176,7 @@ public class EnliventController extends BaseController {
                 twitterMapData.put("friends_count", mapData.get("friends_count"));
                 twitterMapData.put("listed_count", mapData.get("listed_count"));
                 twitterMapData.put("statuses_count", mapData.get("statuses_count"));
+                twitterMapData.put("favourites_count", mapData.get("favourites_count"));
 
                 twitterData.add(twitterMapData);
 
@@ -136,172 +192,18 @@ public class EnliventController extends BaseController {
         return null;
     }
 
-    @RequestMapping(value = "pinterest/topRecentBoards", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List<Map<String, String>> getTopBoards() {
-
-        try {
-            String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
-            String data = Rest.getData(fbUrl);
-            JSONParser parser = new JSONParser();
-            Object jsonObj = parser.parse(data);
-            JSONObject json = (JSONObject) jsonObj;
-            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-            Map returnMap = new HashMap<>();
-            List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
-            List<ColumnDef> columnDefObject = getColumnDefObject(fbData);
-            returnMap.put("columnDefs", columnDefObject);
-            returnMap.put("data", fbData);
-            List<Map<String, String>> listData = new ArrayList<>();
-            listData.add(returnMap);
-            return listData;
-        } catch (ParseException ex) {
-            Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "pinterest/topRecentPins", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List<Map<String, String>> getTopPins() {
-
-        try {
-            String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
-            String data = Rest.getData(fbUrl);
-            JSONParser parser = new JSONParser();
-            Object jsonObj = parser.parse(data);
-            JSONObject json = (JSONObject) jsonObj;
-            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-            Map returnMap = new HashMap<>();
-            List<Map<String, Object>> fbData = (List<Map<String, Object>>) jsonToMap.get("data");
-            List<ColumnDef> columnDefObject = getColumnDefObject(fbData);
-            returnMap.put("columnDefs", columnDefObject);
-            returnMap.put("data", fbData);
-            List<Map<String, String>> listData = new ArrayList<>();
-            listData.add(returnMap);
-            return listData;
-        } catch (ParseException ex) {
-            Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-    
-    @RequestMapping(value = "pinterest/pinsLikeCount", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List<Map<String, String>> getPinsLikeCount(){
-        try {
-            String fbUrl = "https://api.pinterest.com/v1/me/likes/?access_token=AS94T9w2BZ8g5z1i47YGkp7c6U88FLtkVt0cCntD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Coriginal_link%2Cmetadata%2Cimage%2Cmedia%2Ccreator";
-            String data = Rest.getData(fbUrl);
-            JSONParser parser = new JSONParser();
-            Object jsonObj = parser.parse(data);
-            JSONObject json = (JSONObject) jsonObj;
-            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-            Map returnMap = new HashMap<>();
-            List fbData = (List<Map>) jsonToMap.get("data");
-            fbData.lastIndexOf(jsonObj);
-            String likesCount = fbData.size() + "";
-            Map<String, String> boardsSize = new HashMap<>();
-            boardsSize.put("total_pin_likes", likesCount);
-            List<Map<String, String>> listData = new ArrayList<>();
-            listData.add(boardsSize);
-            return listData;
-        } catch (ParseException ex) {
-            Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "pinterest/followingsCount", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List<Map<String, String>> getFollowingsCount() {
-        ArrayList<String> followingsApiUrls = new ArrayList<String>();
-
-        followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername");
-        followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveU56azVPVGMwTXpreU5ERXpOVGczTXpBNk9USXlNek0zTURVMU9UWTJNelk1TXpnek1WOUZ8ZDdiZWVlOWQ5NDZlMmE4MjgwZjcyZTAxY2YyM2NiZDVmOGE5MjllMWIwMWZjY2MxYThlNjAzMjg4Yzk1MjhiMg%3D%3D");
-        followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveE9EY3pNakU0TURNeE5Ua3pOelV6TURnNk9USXlNek0zTURVM01USTNOVE13TmpNeE5GOUZ8MTMzODE2NzlmMmYwNDMwYTc5NzU4MDg5YTE1OTU3Nzc4YTYzODFlNjFmY2YzN2ZkYzQyMzJkMDUwMzM5MWQ2MA%3D%3D");
-        followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TXpveU5EVXlNelV5TnprMk1UYzFPVEF6TnpjNk9USXlNek0zTURVNE1UZzNOekUyT1RVM05WOUZ8MmU0YzRmZWYwYmZhM2JlZTRmZGM2MjM0NzViNWMzMTg5NDJjZmQ4YjljNGZhYjc1ZWIxN2QzMWQyZmY4ZmU2NA%3D%3D");
-        followingsApiUrls.add("https://api.pinterest.com/v1/me/followers/?access_token=AXCeGz6mwYDUI1eKrMbJ4PFKErp9FLtlVR4iV_hD--hbPkA-ZQAAAAA&fields=first_name%2Cid%2Clast_name%2Curl%2Caccount_type%2Cbio%2Ccounts%2Cimage%2Ccreated_at%2Cusername&cursor=Pz9Nakl5TkRveU5UZzJNRFV6TkRFd01URXpOVEUwTVRRNk9USXlNek0zTURVMU16WXhPVFk0TVRVNU4xOUp8YWQxZjViZjlmNTQ2YTg2YzI3NGU0MmQ0Nzg5ODVjMmVmNTY2MDRlZDZjZDZhMzAzNzE5MTU5YjQ1NWVkZjc5NQ%3D%3D");
-
-        String fbUrl = "https://api.pinterest.com/v1/me/likes/?access_token=AS94T9w2BZ8g5z1i47YGkp7c6U88FLtkVt0cCntD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl%2Cattribution%2Cboard%2Ccolor%2Ccounts%2Ccreated_at%2Coriginal_link%2Cmetadata%2Cimage%2Cmedia%2Ccreator";
-
-        int maxCount = 0;
-        for (int i = 0; i < followingsApiUrls.size(); i++) {
-            try {
-                int getFollowingsCount = processFollowings(followingsApiUrls.get(i));
-                maxCount = maxCount + getFollowingsCount;
-            } catch (ParseException ex) {
-                Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
+    private List<ColumnDef> getColumnDefs(List<Map<String, String>> data) {
+        List<ColumnDef> columnDefs = new ArrayList<>();
+        for (Iterator<Map<String, String>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, String> mapData = iterator.next();
+            for (Map.Entry<String, String> entrySet : mapData.entrySet()) {
+                String key = entrySet.getKey();
+                String value = entrySet.getValue();
+                columnDefs.add(new ColumnDef(key, "string", key));
             }
+            return columnDefs;
         }
-        Map returnMap = new HashMap<>();
-        returnMap.put("followings_count",maxCount);
-        List<Map<String, String>> listData = new ArrayList<>();
-        listData.add(returnMap);
-        return listData;
-    }
-    
-    public static int processFollowings(String fbUrl) throws ParseException {
-
-        String data = Rest.getData(fbUrl);
-        JSONParser parser = new JSONParser();
-        Object jsonObj = parser.parse(data);
-        JSONObject json = (JSONObject) jsonObj;
-        Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-        Map returnMap = new HashMap<>();
-        List fbData = (List<Map>) jsonToMap.get("data");
-        fbData.lastIndexOf(jsonObj);
-        int followingsCount = fbData.size();
-        return followingsCount;
-    }
-    
-    @RequestMapping(value = "pinterest/totalBoards", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List<Map<String, String>> getTotalBoards() {
-        try {
-            String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
-            String data = Rest.getData(fbUrl);
-            JSONParser parser = new JSONParser();
-            Object jsonObj = parser.parse(data);
-            JSONObject json = (JSONObject) jsonObj;
-            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-            Map returnMap = new HashMap<>();
-            List fbData = (List<Map>) jsonToMap.get("data");
-            fbData.lastIndexOf(jsonObj);
-            String boardsCount = fbData.size() + "";
-            Map<String, String> boardsSize = new HashMap<>();
-            boardsSize.put("total_boards", boardsCount);
-            List<Map<String, String>> listData = new ArrayList<>();
-            listData.add(boardsSize);
-            return listData;
-        } catch (ParseException ex) {
-            Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "pinterest/totalPins", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List<Map<String, String>> getTotalPins() throws ParseException {
-        try {
-            String fbUrl = "https://api.pinterest.com/v1/me/pins/?access_token=AZ3tcCqL10kF4AhAKjY4YHzUBwZJFLtfDUst59xD--hbPkA-ZQAAAAA&fields=id%2Clink%2Cnote%2Curl";
-            String data = Rest.getData(fbUrl);
-            JSONParser parser = new JSONParser();
-            Object jsonObj = parser.parse(data);
-            JSONObject json = (JSONObject) jsonObj;
-            Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-            Map returnMap = new HashMap<>();
-            List fbData = (List<Map>) jsonToMap.get("data");
-            fbData.lastIndexOf(jsonObj);
-            String pinsCount = fbData.size() + "";
-            Map<String, String> pinsSize = new HashMap<>();
-            pinsSize.put("total_pins", pinsCount);
-            List<Map<String, String>> listData = new ArrayList<>();
-            listData.add(pinsSize);
-            return listData;
-        } catch (ParseException ex) {
-            Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+        return columnDefs;
     }
 
     public static List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
@@ -319,6 +221,20 @@ public class EnliventController extends BaseController {
             return columnDefs;
         }
         return columnDefs;
+    }
+
+    public static int processFollowings(String fbUrl) throws ParseException {
+
+        String data = Rest.getData(fbUrl);
+        JSONParser parser = new JSONParser();
+        Object jsonObj = parser.parse(data);
+        JSONObject json = (JSONObject) jsonObj;
+        Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
+        Map returnMap = new HashMap<>();
+        List fbData = (List<Map>) jsonToMap.get("data");
+        fbData.lastIndexOf(jsonObj);
+        int followingsCount = fbData.size();
+        return followingsCount;
     }
 
     @ExceptionHandler

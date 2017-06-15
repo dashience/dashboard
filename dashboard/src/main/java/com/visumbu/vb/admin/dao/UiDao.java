@@ -6,13 +6,17 @@
 package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.admin.dao.bean.ProductBean;
+import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.Report;
@@ -20,13 +24,16 @@ import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javax.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.transform.Transformers;
@@ -170,7 +177,7 @@ public class UiDao extends BaseDao {
         query.setParameter("id", widgetId);
         return query.list();
     }
-    
+
     public List<WidgetTag> getWidgetTagsByWidgetId(Integer widgetId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetTag.findByWidgetId");
         query.setParameter("id", widgetId);
@@ -208,7 +215,7 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("widgetId", id);
         query.executeUpdate();
-        
+
         String queryTag = "delete from WidgetTag d where d.widgetId.id = :widgetId";
         Query querys = sessionFactory.getCurrentSession().createQuery(queryTag);
         querys.setParameter("widgetId", id);
@@ -418,6 +425,7 @@ public class UiDao extends BaseDao {
     }
 
     public DataSet getDataSetById(Integer dataSetId) {
+        System.out.println("datasetID ---> " + dataSetId);
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
@@ -454,8 +462,16 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
+    public void removeDataSetColumns(Integer id) {
+        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+    }
+
     public DataSet deleteDataSet(Integer id) {
         removeDataSetFromWidget(id);
+        removeDataSetColumns(id);
         String queryStr = "delete DataSet d where d.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
@@ -536,10 +552,68 @@ public class UiDao extends BaseDao {
 //        query.setParameter("agencyId", user.getAgencyId().getId());
 //        return query.list();
 //    }    
-
     public List<WidgetTag> getTagWidgetByWidgetId(Integer widgetId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetTag.findByWidgetId");
         query.setParameter("id", widgetId);
         return query.list();
+    }
+
+    public List<DatasetColumns> getDatasetColumnsByDatasetId(Integer datasetId) {
+        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", datasetId);
+        return query.list();
+    }
+
+    public List<Currency> getCurrenciesTypes() {
+        // System.out.println("dao is calling....");
+        String queryStr = "SELECT c FROM Currency c";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        return query.list();
+    }
+
+    public List<Timezone> getTimezoneTypes() {
+        // System.out.println("dao is calling....");
+        String queryStr = "SELECT t FROM Timezone t";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        return query.list();
+
+    }
+
+    public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
+        String queryStr = "Select t FROM TabWidget t where t.dataSetId.id = :datasetId and id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", widgetId);
+        query.setParameter("datasetId", datasetId);
+        List tabWidgetData = query.list();
+        if (tabWidgetData == null || tabWidgetData.isEmpty()) {
+            return null;
+        }
+        System.out.println("tabWidgetData ---> " + tabWidgetData);
+        TabWidget tabWidget = (TabWidget) tabWidgetData.get(0);
+        tabWidget.setColumns(getColumns(tabWidget));
+        return tabWidget;
+    }
+
+    public List getDatasetById(Integer datasetId) {
+        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", datasetId);
+        return query.list();
+    }
+
+    public List<Account> getAccountById(Integer id) {
+        String queryStr = "select d from Account d where d.id = :accountId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", id);
+        return query.list();
+    }
+
+    public DatasetColumns deleteDataSetColumns(Integer id) {
+        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+        return null;
     }
 }

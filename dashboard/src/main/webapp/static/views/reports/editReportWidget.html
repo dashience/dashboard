@@ -267,8 +267,8 @@
             <div class="col-md-4">
                 <label>Date Range</label>
                 <div>
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
+                    <div class="dropdown editWidgetDropDown">
+                        <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
                             {{widget.dateRangeName?widget.dateRangeName:"Select Date Duration"}}
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style">
@@ -327,6 +327,7 @@
                                     Years
                                 </a>
                             </li>
+                            <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widget)">None</a></li>
                         </ul>
                     </div>
                 </div>
@@ -363,10 +364,10 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li ng-class="{ active: isSet(2) }">
-                    <a href ng-click="setTab(2)"> Filter
-                    </a>
-                </li>
+                <!--                <li ng-class="{ active: isSet(2) }">
+                                    <a href ng-click="setTab(2)"> Filter
+                                    </a>
+                                </li>-->
                 <!--            <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
                                 <a href ng-click="setTab(3)"> User
                                 </a>

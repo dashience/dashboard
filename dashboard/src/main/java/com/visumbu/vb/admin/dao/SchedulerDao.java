@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
@@ -51,43 +52,48 @@ public class SchedulerDao extends BaseDao {
         return query.list();
     }
 
-    public List<Scheduler> getDailyTasks(Integer hour, Date today) {
+    public List<Scheduler> getDailyTasks(Integer hour, Date today, Agency agency) {
 
         String scheduledHour = hour + ":00";
         if (hour < 10) {
             scheduledHour = "0" + hour + ":00";
         }
-        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour";
+        System.out.println("schedulerHour: "+scheduledHour);
+        System.out.println("agency: "+agency);
+        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour and d.agencyId = :agency";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Daily");
         query.setParameter("hour", scheduledHour);
+        query.setParameter("agency", agency);
         return query.list();
     }
 
-    public List<Scheduler> getWeeklyTasks(Integer hour, String weekDay, Date today) {
+    public List<Scheduler> getWeeklyTasks(Integer hour, String weekDay, Date today, Agency agency) {
 
         String scheduledHour = hour + ":00";
         if (hour < 10) {
             scheduledHour = "0" + hour + ":00";
         }
 
-        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerWeekly = :schedulerWeekly and d.schedulerTime = :hour";
+        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerWeekly = :schedulerWeekly and d.schedulerTime = :hour and d.agencyId = :agency";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Weekly");
         query.setParameter("schedulerWeekly", weekDay);
         query.setParameter("hour", scheduledHour);
+        query.setParameter("agency", agency);
         return query.list();
     }
 
-    public List<Scheduler> getMonthlyTasks(String currentDateHour, Date today) {
+    public List<Scheduler> getMonthlyTasks(String currentDateHour, Date today, Agency agency) {
         System.out.println("Query: ");
         Calendar now = Calendar.getInstance();
         System.out.println(currentDateHour);
-        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = 'Monthly' "
+        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = 'Monthly' and d.agencyId = :agency "
                 + "and dayofmonth(str_to_date(d.schedulerMonthly, '%m/%d/%y %H')) =" + now.get(Calendar.DAY_OF_MONTH)
                 + "and hour(str_to_date(d.schedulerMonthly, '%m/%d/%y %H')) = " + now.get(Calendar.HOUR_OF_DAY);
         System.out.println(queryStr);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agency", agency);
         System.out.println(query.list());
 //        query.setParameter("hour", scheduledHour);
         return query.list();
@@ -132,7 +138,7 @@ public class SchedulerDao extends BaseDao {
         return query.list();
     }
 
-    public List<Scheduler> getOnce(Integer hour, Date today) {
+    public List<Scheduler> getOnce(Integer hour, Date today, Agency agency) {
 
         System.out.println(hour);
         System.out.println(today);
@@ -140,11 +146,12 @@ public class SchedulerDao extends BaseDao {
         if (hour < 10) {
             scheduledHour = "0" + hour + ":00";
         }
-        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerTime = :hour";
+        String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.startDate = :startDate and d.schedulerTime = :hour and d.agencyId = :agency";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Once");
         query.setParameter("startDate", today);
         query.setParameter("hour", scheduledHour);
+        query.setParameter("agency", agency);
         System.out.println(query.list());
         return query.list();
     }
@@ -165,7 +172,7 @@ public class SchedulerDao extends BaseDao {
             queryStr = "update Scheduler d set status = 'Active' where d.id = :schedulerId";
         } else {
             queryStr = "update Scheduler d set status = 'InActive' where d.id = :schedulerId";
-        }   
+        }
         System.out.println(queryStr);
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerId", schedulerId);
@@ -173,4 +180,7 @@ public class SchedulerDao extends BaseDao {
         return null;
     }
 
+    public List<Agency> getAllAgency() {
+        return (List<Agency>) read(Agency.class);
+    }
 }

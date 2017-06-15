@@ -8,16 +8,20 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
+import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Permission;
 import com.visumbu.vb.model.Product;
@@ -25,6 +29,7 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
@@ -33,10 +38,12 @@ import com.visumbu.vb.model.WidgetTag;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
@@ -203,10 +210,8 @@ public class UiService {
         Integer lastNmonths = null;
         Integer lastNweeks = null;
         Integer lastNyears = null;
-        if (dateRangeName == null || dateRangeName.isEmpty()) {
-            startDate = null;
-            endDate = null;
-        } else if (dateRangeName != null) {
+        if (dateRangeName != null) {
+
             System.out.println("tabWidgetBean.getLastNdays() ----> " + tabWidgetBean.getLastNdays());
             if (tabWidgetBean.getLastNdays() != null) {
                 lastNdays = tabWidgetBean.getLastNdays();
@@ -236,54 +241,15 @@ public class UiService {
 
             System.out.println("dateRangename ----> " + dateRangeName);
 
-            Range dateRangeSelect = null;
-//            if (dateRangeName.equalsIgnoreCase("Today")) {
-//                dateRangeSelect = Range.TODAY;
-//            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
-//                dateRangeSelect = Range.YESTERDAY;
-//            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
-//                dateRangeSelect = Range.THIS_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
-//                dateRangeSelect = Range.LAST_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
-//                dateRangeSelect = Range.THIS_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
-//                dateRangeSelect = Range.LAST_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
-//                dateRangeSelect = Range.THIS_YEAR;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
-//                dateRangeSelect = Range.LAST_YEAR;
-//            }
             if (dateRangeName.equalsIgnoreCase("Custom")) {
-                dateRangeSelect = null;
-            } else if (lastNdays != null) {
-                dateRangeSelect = Range.DAY;
-            } else if (lastNweeks != null) {
-                dateRangeSelect = Range.WEEK;
-            } else if (lastNmonths != null) {
-                dateRangeSelect = Range.MONTH;
-            } else if (lastNyears != null) {
-                dateRangeSelect = Range.YEAR;
-            }
-
-            if (dateRangeSelect == null) {
                 startDate = tabWidgetBean.getCustomStartDate();
                 endDate = tabWidgetBean.getCustomEndDate();
-            } else if (dateRangeSelect.equals(Range.DAY)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
-            } else if (dateRangeSelect.equals(Range.WEEK)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
-            } else if (dateRangeSelect.equals(Range.MONTH)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
-            } else if (dateRangeSelect.equals(Range.YEAR)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
-            } else {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect);
-            }
-
-            if (dateRange != null) {
-                startDate = df.format(dateRange.getStartDate());
-                endDate = df.format(dateRange.getEndDate());
+            } else if (dateRangeName.equalsIgnoreCase("Select Date Duration")) {
+                startDate = null;
+                endDate = null;
+            } else if (dateRangeName.equalsIgnoreCase("None")) {
+                startDate = null;
+                endDate = null;
             }
         }
         System.out.println("dateRange start Date-----> " + startDate);
@@ -315,6 +281,8 @@ public class UiService {
         tabWidget.setLastNweeks(lastNweeks);
         tabWidget.setLastNyears(lastNyears);
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
+        tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
+        tabWidget.setJsonData(tabWidgetBean.getJsonData());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -451,7 +419,7 @@ public class UiService {
 
         return uiDao.getTabWidgetById(id);
     }
-    
+
     public List<WidgetTag> getTagWidget(Integer widgetId) {
         return uiDao.getTagWidgetByWidgetId(widgetId);
     }
@@ -697,6 +665,10 @@ public class UiService {
         return userAccount;
     }
 
+    public List<Account> getAccountById(Integer id) {
+        return uiDao.getAccountById(id);
+    }
+
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         return uiDao.getUserAccountByUser(user);
     }
@@ -752,5 +724,115 @@ public class UiService {
 
     public TabWidget getWidgetById(Integer widgetId) {
         return uiDao.getTabWidgetById(widgetId);
+    }
+
+    public TabWidget getWidgetByIdAndDataSetId(Integer widgetId, Integer datasetId) {
+        return uiDao.getWidgetByIdAndDataSetId(widgetId, datasetId);
+    }
+
+//    public DatasetColumns createDataSetColumns(DatasetColumnBean dataSetColumn) {
+//        return uiDao.createDataSetColumns(dataSetColumn);
+//    }
+    public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
+        DataSet dataset = uiDao.getDataSetById(dataSetColumn.getDatasetId());
+        List<DatasetColumns> datasetList = new ArrayList();
+        System.out.println("create columns function");
+        List<DatasetColumnBean> datasetColumnList = dataSetColumn.getTableColumns();
+        System.out.println("datasetColumnList ----> " + datasetColumnList);
+        for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
+            System.out.println("create Data set columns ----> ");
+            DatasetColumnBean allDataSetColumn = datasetColumnBean.next();
+            System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumn.getId());
+            if (allDataSetColumn.getId() == null && dataSetColumn.getId() == null) {
+                System.out.println("if");
+                DatasetColumns datasetFields = new DatasetColumns();
+                datasetFields.setId(allDataSetColumn.getId());
+                datasetFields.setExpression(allDataSetColumn.getExpression());
+                datasetFields.setFieldName(allDataSetColumn.getFieldName());
+                datasetFields.setDisplayName(allDataSetColumn.getDisplayName());
+                datasetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                datasetFields.setStatus(allDataSetColumn.getStatus());
+                datasetFields.setFunctionName(allDataSetColumn.getFunctionName());
+                datasetFields.setColumnName(allDataSetColumn.getColumnName());
+                datasetFields.setBaseField(allDataSetColumn.getBaseField());
+                datasetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
+                datasetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                datasetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                datasetFields.setLastNdays(allDataSetColumn.getLastNdays());
+                datasetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
+                datasetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
+                datasetFields.setLastNyears(allDataSetColumn.getLastNyears());
+                datasetFields.setFieldType(allDataSetColumn.getFieldType());
+                datasetFields.setDatasetId(dataset);
+                uiDao.saveOrUpdate(datasetFields);
+                datasetList.add(datasetFields);
+            } else if (!Objects.equals(allDataSetColumn.getId(), dataSetColumn.getId())) {
+                System.out.println("else if");
+                DatasetColumns datasetFields = new DatasetColumns();
+                datasetFields.setId(allDataSetColumn.getId());
+                datasetFields.setExpression(allDataSetColumn.getExpression());
+                datasetFields.setFieldName(allDataSetColumn.getFieldName());
+                datasetFields.setDisplayName(allDataSetColumn.getDisplayName());
+                datasetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                datasetFields.setStatus(allDataSetColumn.getStatus());
+                datasetFields.setFunctionName(allDataSetColumn.getFunctionName());
+                datasetFields.setColumnName(allDataSetColumn.getColumnName());
+                datasetFields.setBaseField(allDataSetColumn.getBaseField());
+                datasetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
+                datasetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                datasetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                datasetFields.setLastNdays(allDataSetColumn.getLastNdays());
+                datasetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
+                datasetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
+                datasetFields.setLastNyears(allDataSetColumn.getLastNyears());
+                datasetFields.setFieldType(allDataSetColumn.getFieldType());
+                datasetFields.setDatasetId(dataset);
+                uiDao.saveOrUpdate(datasetFields);
+                datasetList.add(datasetFields);
+            }
+        }
+        DatasetColumns datasetColumns = new DatasetColumns();
+        datasetColumns.setId(dataSetColumn.getId());
+        datasetColumns.setExpression(dataSetColumn.getExpression());
+        datasetColumns.setFieldName(dataSetColumn.getFieldName());
+        datasetColumns.setFieldType(dataSetColumn.getFieldType());
+        datasetColumns.setDisplayName(dataSetColumn.getDisplayName());
+        datasetColumns.setDisplayFormat(dataSetColumn.getDisplayFormat());
+        datasetColumns.setStatus(dataSetColumn.getStatus());
+        datasetColumns.setFunctionName(dataSetColumn.getFunctionName());
+        datasetColumns.setColumnName(dataSetColumn.getColumnName());
+        datasetColumns.setBaseField(dataSetColumn.getBaseField());
+        datasetColumns.setDateRangeName(dataSetColumn.getDateRangeName());
+        datasetColumns.setCustomStartDate(dataSetColumn.getCustomStartDate());
+        datasetColumns.setCustomEndDate(dataSetColumn.getCustomEndDate());
+        datasetColumns.setLastNdays(dataSetColumn.getLastNdays());
+        datasetColumns.setLastNmonths(dataSetColumn.getLastNmonths());
+        datasetColumns.setLastNweeks(dataSetColumn.getLastNweeks());
+        datasetColumns.setLastNyears(dataSetColumn.getLastNyears());
+        datasetColumns.setDatasetId(dataset);
+        uiDao.saveOrUpdate(datasetColumns);
+        datasetList.add(datasetColumns);
+        return datasetList;
+    }
+
+    public List<Currency> getCurrencies() {
+        return uiDao.getCurrenciesTypes();
+    }
+
+    public List<Timezone> getTimeZones() {
+        return uiDao.getTimezoneTypes();
+    }
+
+    public DatasetColumns deleteDataSetFormulaColumnById(Integer datasetColumnId) {
+        DatasetColumns datasetColumn = (DatasetColumns) uiDao.read(DatasetColumns.class, datasetColumnId);
+        return (DatasetColumns) uiDao.delete(datasetColumn);
+    }
+
+    public List<DatasetColumns> getDatasetById(Integer datasetId) {
+        return uiDao.getDatasetById(datasetId);
+    }
+
+    public DatasetColumns deleteDataSetColumns(Integer id) {
+        return uiDao.deleteDataSetColumns(id);
     }
 }

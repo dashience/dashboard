@@ -17,9 +17,8 @@ import javax.xml.bind.annotation.XmlSchema;
  *
  * @author user
  */
-
 @XmlRootElement(name = "Report")
-public class AccountPerformanceReport {
+public class AccountPerformanceReport implements GenericReport{
 
     private List<Column> keywordPerformanceReportColumns;
     private String reportName;
@@ -32,6 +31,13 @@ public class AccountPerformanceReport {
     private String potentialIncompleteData;
     private List<AccountPerformanceRow> accountPerformanceRows;
 
+    @Override
+    public List getRows() {
+        return accountPerformanceRows;
+    }
+
+    
+    
     public List<AccountPerformanceRow> getAccountPerformanceRows() {
         return accountPerformanceRows;
     }
@@ -41,7 +47,7 @@ public class AccountPerformanceReport {
     public void setAccountPerformanceRows(List<AccountPerformanceRow> accountPerformanceRows) {
         this.accountPerformanceRows = accountPerformanceRows;
     }
-    
+
     public String getXmlns() {
         return xmlns;
     }
@@ -50,7 +56,7 @@ public class AccountPerformanceReport {
     public void setXmlns(String xmlns) {
         this.xmlns = xmlns;
     }
-    
+
     public String getReportName() {
         return reportName;
     }

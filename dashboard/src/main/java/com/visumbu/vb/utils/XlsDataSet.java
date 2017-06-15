@@ -28,7 +28,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class XlsDataSet {
 
-    public static Map XlsDataSet(String filename, String sheetName) throws FileNotFoundException, IOException {
+    public static List<Map<String, String>> XlsDataSet(String filename, String sheetName) throws FileNotFoundException, IOException {
         Map returnMap = new HashMap();
 
         try {
@@ -67,15 +67,15 @@ public class XlsDataSet {
             }
             returnMap.put("columnDefs", columnDefs);
             returnMap.put("data", data);
-
-            System.out.println(returnMap);
+            // System.out.println(returnMap);
+            return data;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return returnMap;
+        return null;
     }
 
     public Map<Integer, String> getSheetListXls(String filename) {
@@ -112,7 +112,7 @@ public class XlsDataSet {
         return returnMap;
     }
 
-    public static Map XlsDataSet(String filename, Integer sheetNo) throws FileNotFoundException, IOException {
+    public static List<Map<String, String>> XlsDataSet(String filename, Integer sheetNo) throws FileNotFoundException, IOException {
         Map returnMap = new HashMap();
 
         try {
@@ -153,18 +153,18 @@ public class XlsDataSet {
             }
             returnMap.put("columnDefs", columnDefs);
             returnMap.put("data", data);
-
             System.out.println(returnMap);
+            return data;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return returnMap;
+        return null;
     }
 
-    public static Map XlsxDataSet(String filename, String sheetName) throws FileNotFoundException, IOException {
+    public static List<Map<String, String>> XlsxDataSet(String filename, String sheetName) throws FileNotFoundException, IOException {
         Map returnMap = new HashMap();
 
         try {
@@ -204,12 +204,13 @@ public class XlsDataSet {
             returnMap.put("columnDefs", columnDefs);
             returnMap.put("data", data);
             System.out.println(returnMap);
+            return data;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return returnMap;
+        return null;
     }
 
     public static Map XlsxDataSet(String filename, Integer sheetNo) throws FileNotFoundException, IOException {

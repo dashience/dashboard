@@ -6,11 +6,6 @@
         -moz-user-select: -moz-none;
         -khtml-user-select: none;
         -webkit-user-select: none;
-
-        /*
-          Introduced in IE 10.
-          See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-        */
         -ms-user-select: none;
         user-select: none;
     }
@@ -31,11 +26,11 @@
         opacity: 1;
     }
     .ns-popover-tooltip > li {
-        /*        display:block;*/
+        display:block;
         padding: 3px 20px;
         clear: both;
         font-weight: normal;
-        /*line-height: 1.42857143;*/
+        line-height: 1.42857143;
         color: #333;
         white-space: nowrap;
 
@@ -153,29 +148,15 @@
     .ui-sortable-placeholder * { 
         opacity: 0.0; visibility: hidden; 
     }
-    .group{
-        background-color: #fff;
-        padding: 15px;
-        border-radius: 5px;
-        border: solid 1px #666;
+    .builder, .builder:hover{
+        background-color: #83a958;
+        border-color: #83a958;
+        color: #fff !important;
+    }
+    .builderAnd{
+        color: #6a6c6f;
     }
 
-    .group-conditions{
-        margin-left: 20px;
-    }
-
-    .alert-group{
-        margin-top: 10px;
-        margin-bottom: 10px;
-        border-color: rgb(192, 152, 83);
-        border-color: rgb(251, 238, 213);
-        border-color: rgb(220, 200, 150);
-    }
-
-    .condition, .group{
-        margin-top: 15px;
-        margin-bottom: 15px;
-    }
 </style>
 <div class="normalheader transition animated fadeIn">
     <div class="hpanel">
@@ -188,6 +169,7 @@
         </div>
     </div>
 </div>
+<div ng-show="loadingEditWidget" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
 
@@ -256,14 +238,13 @@
                             <input type="checkbox" ng-model="widget.zeroSuppression" ng-checked="widget.zeroSuppression == 1">
                             <label>Zero Suppression</label>
                         </div>
-                     </div>
+                    </div>
                 </div> 
             </div>
         </div>
         <div class="row col-md-12">
             <div class="col-md-4">
                 <label>Date Range</label>
-
                 <div>
                     <div class="dropdown editWidgetDropDown">
                         <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
@@ -271,7 +252,7 @@
                             <span class="caret"></span></button>
                         <ul class="dropdown-menu scheduler-list-style">
                             <li>
-<!--                                <a>Custom</a>-->
+                                <!--                                <a>Custom</a>-->
                                 <div class="col-md-12">
                                     <div>
                                         <a class="pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widget)" widget-Table-Date-Range="{{widget}}" id="widgetDateRange">
@@ -331,6 +312,7 @@
                                     Years
                                 </a>
                             </li>
+                            <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widget)">None</a></li>
                         </ul>
                     </div>
                 </div>
@@ -357,7 +339,20 @@
                         </ui-select-choices>
                     </ui-select>
                 </div>
-            </div>
+            </div> 
+
+            <!-------------------Currency Format----------------------------->
+            <!--            <div class="col-md-4">
+                            <label>Currency</label>
+                            <div>
+                                <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.tagName"  on-remove="removedTags($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                                    <ui-select-match placeholder="Tags...">{{$item}}</ui-select-match>
+                                    <ui-select-choices repeat="tag in tags | filter:$select.search">
+                                        {{tag}}
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>-->
         </div>
 
         <div class="nav-tabs-custom col-md-12">
@@ -366,14 +361,14 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li ng-class="{ active: isSet(2) }">
-                    <a href ng-click="setTab(2)"> Filter
+                <li ng-disabled="true" ng-if="editChartType != 'text'" ng-class="{ active: isSet(2) }">
+                    <a ng-click="setTab(2)"> Filter
                     </a>
                 </li>
-                <!--            <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
-                                <a href ng-click="setTab(3)"> User
-                                </a>
-                            </li>-->
+                <!--                <li ng-if="permission.assignAccount === true;" ng-class="{ active: isSet(3) }">
+                                    <a href ng-click="setTab(3)"> User
+                                    </a>
+                                </li>-->
             </ul>
         </div>
         <div class="tab-content">
@@ -438,7 +433,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-if="editChartType != 'pie'">
+                                        <div class="form-group" ng-if="!(editChartType == 'pie'||editChartType == 'stackedbar')">
                                             <div class="col-md-12">
                                                 <label>Select Y2-Axis</label>
                                                 <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
@@ -451,10 +446,10 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <div class="col-md-6">
+                                            <div class="col-md-8">
                                                 <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
                                             </div>
-                                            <div class="col-md-6" ng-if="editChartType != 'pie'">
+                                            <div class="col-md-4" ng-if="editChartType != 'pie'">
                                                 <label>Grid Line</label>
                                                 <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='widget.isGridLine' ng-change="setGridLine(widget)">
                                                     <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
@@ -508,7 +503,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            
+
                                         </div>
 
                                     </div>
@@ -602,8 +597,6 @@
                                             </div>                            
                                         </div>
                                     </div>
-
-
                                 </div> 
                                 <div class='panel-footer'>
                                     <div>
@@ -613,14 +606,13 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="row edit-widget" ng-if="editChartType === 'table'">
                     <div class="col-lg-12">
                         <div class="preview-table">
                             <div widget-Preview-Table 
-                                 set-Query-Fn="setQueryFn(queryFn)"
+                                 save-Query-Fn="saveQueryFn(savequeryFn)"
                                  preview-Table-List='{{collectionFields}}'
                                  preview-Urls='{{previewChartUrl}}' 
                                  preview-Columns='{{widget.columns}}' 
@@ -637,12 +629,10 @@
                                  last-N-Days="{{widget.lastNdays}}"
                                  last-N-Weeks="{{widget.lastNweeks}}"
                                  last-N-Months="{{widget.lastNmonths}}"
-                                 last-N-Years="{{widget.lastNyears}}"
-                                 >
+                                 last-N-Years="{{widget.lastNyears}}">
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="row" ng-if="editChartType === 'text'">
                     <div class="col-sm-12">
@@ -676,46 +666,24 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="isSet(2)" class="license">
-                <div class="col-lg-12">
-                    <div class="alert alert-info">
-                        <strong>Output</strong><br>
-                        <span ng-bind-html="buildQuery"></span>
+            <div ng-show="isSet(2) && editChartType != 'text'" class="license">
+                <div class="col-lg-12" ng-if="dispQueryBuilder == true">
+                    <div jquery-Query-Builder query-Data="{{previewColumn}}"></div>
+                    <div class='panel-footer'>
+                        <div class="pull-right">
+
+                            <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
+                            <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
+                            <!--<button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>-->
+                        </div>
+                        <div>
+                            <!--<button class='btn btn-default' ng-click='saveQuery()'><span class='fa fa-arrow-left'></span> Back</button>-->
+                            <button class='btn btn-info' ng-click='saveQuery()'> Apply Filter</button>
+                            <!--<button class='btn btn-info' ng-click='widget.isQueryBuilder = true; save(widget)'> Apply Filter</button>-->
+                        </div>
                     </div>
-                    <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>
-                    <div>
-                        <button ng-if="widget.chartType == 'table'" class="btn btn-success" ng-click="setFilterType(widget);">Save</button>
-                        <button ng-if="widget.chartType != 'table'" class="btn btn-success" ng-click="save(widget);">Save</button>
-                    </div>                    
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script type="text/ng-template" id="/queryBuilderDirective.html">
-    <div class="alert alert-warning alert-group">
-    <div class="form-inline">
-    <select ng-options="o.name as o.name for o in operators" ng-model="group.operator" class="form-control input-sm"></select>
-    <button style="margin-left: 5px" ng-click="addCondition()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Condition</button>
-    <button style="margin-left: 5px" ng-click="addGroup()" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Add Group</button>
-    <button style="margin-left: 5px" ng-click="removeGroup()" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-minus-sign"></span> Remove Group</button>
-    </div>
-    <div class="group-conditions">
-    <div ng-repeat="rule in group.rules | orderBy:'index'" class="condition">
-    <div ng-switch="rule.hasOwnProperty('group')">
-    <div ng-switch-when="true">
-    <query-builder group="rule.group" collection="{{columns}}"></query-builder>
-    </div>
-    <div ng-switch-default="ng-switch-default">
-    <div class="form-inline">
-    <select ng-options="t.name as t.name for t in fields" ng-model="rule.field" class="form-control input-sm"></select>
-    <select style="margin-left: 5px" ng-options="c.name as c.name for c in conditions" ng-model="rule.condition" class="form-control input-sm"></select>
-    <input style="margin-left: 5px" type="text" ng-model="rule.data" class="form-control input-sm"/>
-    <button style="margin-left: 5px" ng-click="removeCondition($index)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-minus-sign"></span></button>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-</script>

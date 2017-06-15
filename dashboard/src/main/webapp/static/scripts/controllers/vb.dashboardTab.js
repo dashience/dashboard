@@ -17,7 +17,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             } else {
                 if ($stateParams.tabId == 0) {
                     setTabId = response[0].id;
-                }else{
+                } else {
                     setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0)
                 }
             }
@@ -41,12 +41,19 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.getDay = function () {
         var today = new Date();
         var yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 29);
+        yesterday.setDate(today.getDate() - 30);
+        return yesterday;
+    };
+
+    $scope.getBeforeDay = function () {
+        var today = new Date();
+        var yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
         return yesterday;
     };
 
     $scope.firstDate = $stateParams.startDate ? $scope.toDate(decodeURIComponent($stateParams.startDate)) : $scope.getDay().toLocaleDateString("en-US");
-    $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : new Date().toLocaleDateString("en-US");
+    $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : $scope.getBeforeDay().toLocaleDateString("en-US");
 
     if (!$stateParams.startDate) {
         $stateParams.startDate = $scope.firstDate;

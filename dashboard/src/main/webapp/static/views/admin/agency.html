@@ -108,6 +108,13 @@
                 <a href ng-click="setTabAgency(4)"> Product
                 </a>
             </li>
+
+            <!--   currency-format-->
+            <li ng-class="{ active: isSetAgency(5) }">
+                <a href ng-click="setTabAgency(5)"> Settings
+                </a>
+            </li>  
+            <!--   currency-format-->
         </ul>
     </div>
 
@@ -391,6 +398,29 @@
                                 </div>
                             </section>
                         </div>
+
+                        <!--   currency-format-->
+                        <div ng-show="isSetAgency(5)" class="license">
+                            <div class="col-md-12">
+
+                                <form class="form-horizontal">
+                                    <div class="form-group" data-ng-init="getCurrencyDataFromServer()">
+                                        <label>Currency</label>
+                                        <select class="form-control" ng-model="agencySetting.currencyId" ng-options="(currency.nation + ' - ' + currency.currencyCode) for currency in currencies track by currency.id"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>TimeZone</label>
+                                        <select class="form-control" 
+                                                ng-model="agencySetting.timeZoneId" 
+                                                ng-options="(timezone.longName + ' - ' + timezone.shortDescription + '(' + timezone.description + ')' + ' - ' + timezone.relativeToGMT) for timezone in timezones track by timezone.id"></select>
+                                    </div>
+                                    <div class="form-group pull-right">
+                                        <button class="btn btn-info" ng-click="saveAgencySettings(agencySetting)">Save</button>
+                                    </div>
+                                </form>
+                            </div> 
+                        </div> 
+
                     </div>
                 </div>
             </div>
@@ -402,17 +432,17 @@
                         <div class="data-search col-sm-12">
                             <input type="text" class="form-control" ng-model="searchAgency" placeholder="Search...">
                         </div>
-                        <!--                                <div class="col-sm-4">
-                                                            <ui-select ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
-                                                                <ui-select-match placeholder="Search Agency Name...">
-                                                                    {{$select.selected.agencyName}}
-                                                                </ui-select-match>
-                                                                <ui-select-choices repeat="agency in agencies | filter: $select.search">                                
-                                                                    <div ng-bind-html="agency.agencyName | highlight: $select.search" style="display: inline">
-                                                                    </div>                                
-                                                                </ui-select-choices>
-                                                            </ui-select>
-                                                        </div>-->
+                        <!--  <div class="col-sm-4">
+                                    <ui-select multiselect ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
+                                             <ui-select-match placeholder="Search Agency Name...">
+                                                    {{$select.selected.agencyName}}
+                                                        </ui-select-match>
+                                                           <ui-select-choices repeat="agency in agencies | filter: $select.search">                                
+                                                               <div ng-bind-html="agency.agencyName | highlight: $select.search" style="display: inline">
+                                                                </div>                                
+                                                             </ui-select-choices>
+                                                                 </ui-select>
+                                </div>-->
                     </div>
                     <table class="table table-responsive table-fixed">
                         <thead>

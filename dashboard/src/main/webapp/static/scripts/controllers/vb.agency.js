@@ -1,5 +1,49 @@
 app.controller('AgencyController', function ($scope, $http) {
 
+    // currency-format
+//   $scope.getCurrencyDataFromServer = function() {
+    $http.get('admin/ui/currencies/').
+            success(function (data, status, headers, config) {
+                $scope.currencies = data;
+                console.log(data)
+            }).
+            error(function (data, status, headers, config) {
+//                alert("error!");
+            });
+//    };  
+//    
+
+//    $scope.getTimezoneDataFromServer = function() {
+    $http.get('admin/ui/timezones/').
+            success(function (data, status, headers, config) {
+                $scope.timezones = data;
+                console.log(data)
+            }).
+            error(function (data, status, headers, config) {
+//                alert("error!");
+            });
+//    }; 
+
+
+    //currency-format
+
+//    $scope.currencies = [
+//        {currencyName: "US", currencyFormat: '$'},
+//        {currencyName: "UK", currencyFormat: '£'},
+//        {currencyName: "INR", currencyFormat: '₹'},
+//        {currencyName: "JPN", currencyFormat: '¥'},
+//        {currencyName: "EU", currencyFormat: '€'}
+//    ];
+//
+//    $scope.timezone = [
+//        {countrName: "US", timezoneFormat: '$'},
+//        {countryName: "UK", timezoneFormat: '£'},
+//        {countryName: "INR", timezoneFormat: '₹'},
+//        {countryName: "JPN", timezoneFormat: '¥'},
+//        {countryName: "EU", timezoneFormat: '€'}
+//    ];
+
+
 //Tabs
     $scope.tab = 1;
     $scope.setTabAgency = function (newTab) {
@@ -46,27 +90,32 @@ app.controller('AgencyController', function ($scope, $http) {
             logo: $scope.agency.logo
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
+            $scope.agencyById = data;
+            console.log(response)
             getAgency();
-             if (response.status == true) {
-                    $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
-                } else {
-                    var dialog = bootbox.dialog({
-                        title: 'Alert',
-                        message: response.message
-                    });
-                    dialog.init(function () {
-                        setTimeout(function () {
-                            dialog.modal('hide');
-                        }, 2000);
-                    });
-                }
+            if (response.status == true) {
+                $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+            } else if (response.status == false) {
+                var dialog = bootbox.dialog({
+                    title: 'Alert',
+                    message: response.message
+                });
+                dialog.init(function () {
+                    setTimeout(function () {
+                        dialog.modal('hide');
+                    }, 2000);
+                });
+            } else {
+                $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+            }
         });
-        
+
     };
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
         getAgencyLicence(agency)
         $scope.agencyById = agency;
+
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
@@ -108,6 +157,17 @@ app.controller('AgencyController', function ($scope, $http) {
         $http.get('admin/user/agencyProduct/' + agency.id).success(function (response) {
             $scope.agencyProducts = response;
         });
+
+        $http.get('admin/user/agencySetting/' + agency.id).success(function (response) {
+            $scope.agencySetting = {}
+            $scope.agencysettings = response;
+
+
+            $scope.agencySetting.id = response.id;
+            $scope.agencySetting.currencyId = response.currencyId;
+            $scope.agencySetting.timeZoneId = response.timeZoneId;
+
+        });
     }
 
     $scope.saveAgencyLicence = function (agencyLicence) {
@@ -135,6 +195,36 @@ app.controller('AgencyController', function ($scope, $http) {
             $http({method: agencyLicence.id ? 'PUT' : 'POST', url: 'admin/user/agencyLicence', data: data}).success(function (response) {
                 $scope.agencyLicences = response;
             });
+        }
+    };
+
+    $scope.saveAgencySettings = function (agencySettings) {
+        console.log(agencySettings);
+        if (!$scope.agencyById) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Agency</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            var data = {
+                id: agencySettings.id,
+                agencyId: $scope.agencyById.id,
+                currencyId: agencySettings.currencyId,
+                timeZoneId: agencySettings.timeZoneId
+            };
+
+            console.log(data)
+            $http({method: agencySettings.id ? 'PUT' : 'POST', url: 'admin/user/agencySetting', data: data}).success(function (response) {
+                console.log(data)
+                $scope.agencySettings = response;
+            });
+
+            $scope.agencySetting = ""
         }
     };
 

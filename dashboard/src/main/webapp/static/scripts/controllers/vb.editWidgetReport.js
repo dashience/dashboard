@@ -18,15 +18,13 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
-    console.log($scope.tabId)
     $http.get("admin/ui/reportWidgetByWidgetId/" + $stateParams.reportWidgetId).success(function (response) {
         $scope.widgets = response;
-        console.log(response)
         if ($stateParams.reportWidgetId != 0) {
             $scope.editWidgetData.push($filter('filter')($scope.widgets, {id: $stateParams.widgetId})[0]);
             angular.forEach($scope.editWidgetData, function (value, key) {
                 $scope.editWidget(value)
-            })
+            });
         } else {
             $scope.editWidgetData.push({width: 12, columns: []})
         }
@@ -118,7 +116,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         {name: 'Bar Chart', value: "bar"}
 
     ];
-    $scope.gridLine=[
+    $scope.gridLine = [
         {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}
     ]
@@ -219,12 +217,6 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
-        if (widget.dataSetId.dataSourceId.dataSourceType == "csv") {
-            url = "admin/csv/getData?";
-        }
-        if (widget.dataSetId.dataSourceId.dataSourceType == "facebook") {
-            url = "admin/proxy/getData?";
-        }
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
                 "&accountId=" + $stateParams.accountId +
@@ -306,12 +298,6 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         var url = "admin/proxy/getData?";
         if (dataSet.dataSourceId.dataSourceType == "sql") {
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
-        if (dataSet.dataSourceId.dataSourceType == "csv") {
-            url = "admin/csv/getData?";
-        }
-        if (dataSet.dataSourceId.dataSourceType == "facebook") {
-            url = "admin/proxy/getData?";
         }
         var dataSourcePassword;
         if (dataSet.dataSourceId.password) {
@@ -470,7 +456,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 } else {
                     if (val.fieldName == y1data.removeItem) {
                         val.yAxis = null;
-                        val.groupField=null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -502,7 +488,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 } else {
                     if (val.fieldName == y2data.removeItem) {
                         val.yAxis = null;
-                        val.groupField=null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -658,7 +644,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 //        })
 //        $scope.selectGrouping(widget, groupList)
 //    };
-    $scope.setGridLine=function(widget){
+    $scope.setGridLine = function (widget) {
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
@@ -761,8 +747,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             customStartDate: $scope.customStartDate, //widget.customStartDate,
-            customEndDate: $scope.customEndDate,//widget.customEndDate
-            isGridLine:widget.isGridLine
+            customEndDate: $scope.customEndDate, //widget.customEndDate
+            isGridLine: widget.isGridLine
         };
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/report/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             if (widget.tagName) {
@@ -799,27 +785,27 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     };
 
     //Query Builder
-    var data = '{"group": {"operator": "AND","rules": []}}';
-    function htmlEntities(str) {
-        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-    function computed(group) {
-        if (!group)
-            return "";
-        for (var str = "(", i = 0; i < group.rules.length; i++) {
-            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
-            str += group.rules[i].group ?
-                    computed(group.rules[i].group) :
-                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
-        }
-        return str + ")";
-    }
-    $scope.json = null;
-    $scope.filter = JSON.parse(data);
-    $scope.$watch('filter', function (newValue) {
-        $scope.json = JSON.stringify(newValue, null, 2);
-        $scope.output = computed(newValue.group);
-    }, true);
+//    var data = '{"group": {"operator": "AND","rules": []}}';
+//    function htmlEntities(str) {
+//        return String(str).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+//    }
+//    function computed(group) {
+//        if (!group)
+//            return "";
+//        for (var str = "(", i = 0; i < group.rules.length; i++) {
+//            i > 0 && (str += " <strong>" + group.operator + "</strong> ");
+//            str += group.rules[i].group ?
+//                    computed(group.rules[i].group) :
+//                    group.rules[i].field + " " + htmlEntities(group.rules[i].condition) + " " + group.rules[i].data;
+//        }
+//        return str + ")";
+//    }
+//    $scope.json = null;
+//    $scope.filter = JSON.parse(data);
+//    $scope.$watch('filter', function (newValue) {
+//        $scope.json = JSON.stringify(newValue, null, 2);
+//        $scope.output = computed(newValue.group);
+//    }, true);
     $scope.currentLocation = "index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
     $scope.selectDateRangeName = function (widget) {
         widget.dateRangeName = "Custom";
@@ -948,7 +934,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                 "<button class='btn btn-info' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fa fa-list'></i> List" +
                 "</button>" +
                 //list columns
-                "<ul class='dropdown-menu list-unstyled'>" +
+                "<ul class='dropdown-menu'>" +
                 "<li ng-repeat='column in tableList'>" +
                 "<button class='btn btn-link dropdown-item' ng-click='addList(column)'>" +
                 "{{column.displayName}}" +
@@ -1003,7 +989,7 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
                 "<div class='triangle'></div>" +
                 "<div class='ns-popover-tooltip'>" +
                 "<form class='form-inline'>" +
-                "<ul class='scheduler-list-style'>" +
+                "<ul>" +
                 //Aggregation Function
                 "<li class='input-group col-sm-12'>" +
                 "<label>Aggregation function</label>" +
@@ -1125,13 +1111,6 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
             if (tableDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (tableDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (tableDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
-
             var dataSourcePassword;
             if (tableDataSource.dataSourceId.password) {
                 dataSourcePassword = tableDataSource.dataSourceId.password;
@@ -1336,7 +1315,6 @@ app.directive('customReportWidgetDateRange', function ($stateParams) {
                 $(".scheduler-list-style").click(function (e) {
                     e.stopPropagation();
                 });
-
                 console.log(JSON.parse(scope.widgetTableDateRange).customStartDate);
                 console.log(JSON.parse(scope.widgetTableDateRange).customEndDate);
                 var widget = JSON.parse(scope.widgetTableDateRange);

@@ -42,6 +42,12 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "AgencyProduct.findByStatus", query = "SELECT a FROM AgencyProduct a WHERE a.status = :status")})
 public class AgencyProduct implements Serializable {
 
+    @Type(type = "org.hibernate.type.StringClobType")
+    @Column(name = "icon")
+    private String icon;
+    @OneToMany(mappedBy = "agencyProductId")
+    private Collection<DashboardTabs> dashboardTabsCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,9 +57,6 @@ public class AgencyProduct implements Serializable {
     @Size(max = 4096)
     @Column(name = "product_name")
     private String productName;
-    @Type(type = "org.hibernate.type.StringClobType")
-    @Column(name = "icon")
-    private String icon;
     @Column(name = "show_product")
     private Boolean showProduct;
     @Column(name = "product_order")
@@ -88,13 +91,6 @@ public class AgencyProduct implements Serializable {
         this.productName = productName;
     }
 
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
 
     public Boolean getShowProduct() {
         return showProduct;
@@ -151,6 +147,14 @@ public class AgencyProduct implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.AgencyProduct[ id=" + id + " ]";
+    }   
+
+    public String getIcon() {
+        return icon;
     }
 
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+    
 }
