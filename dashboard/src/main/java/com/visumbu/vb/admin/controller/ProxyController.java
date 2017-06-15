@@ -156,7 +156,9 @@ public class ProxyController {
 
             }
         } else {
+            System.out.println("valueMap ---> " + valueMap);
             returnMap = getData(valueMap, request, response);
+            System.out.println("returnMap ---> " + returnMap);
         }
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
@@ -1007,6 +1009,7 @@ public class ProxyController {
     }
 
     private Object getAnalyticsData(MultiValueMap request, HttpServletResponse response) {
+        System.out.println("Analytics");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
@@ -1035,6 +1038,9 @@ public class ProxyController {
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
             }
         }
+        System.out.println("timeSegment ---> " + timeSegment);
+        System.out.println("productSegment ---> " + productSegment);
+
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
 

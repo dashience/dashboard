@@ -86,11 +86,11 @@
     <div class="nav-tabs-custom">
         <div class="col-sm-12">
             <ul class="nav nav-tabs">
-                <li ng-class="{ active: isSet(1) }">
+                <li ng-if="permission.createDataSet===true" ng-class="{ active: isSet(1) }" >
                     <a href ng-click="setTab(1)"> DataSet
                     </a>
                 </li>
-                <li ng-class="{ active: isSet(2) }">
+                <li ng-if="permission.createJoinDataSet===true" ng-class="{ active: isSet(2) }">
                     <a ng-click="setTab(2)"> Join DataSet
                     </a>
                 </li>
@@ -196,7 +196,7 @@
 
                                     <div ng-show="dataSetFlag">
                                         <label>Report</label>
-                                        <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(); refreshDataSet(dataSet)">
+                                        <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(dataSet); refreshDataSet(dataSet)">
                                             <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                             <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
                                                 {{reportPerformances.name}}</option>
@@ -438,7 +438,7 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td ng-if="operationType==='union'||operationType==='intersection'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
+                                        <td ng-if="operationType==='union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
                                         <td>
                                             <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index,joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
                                         </td>
@@ -455,7 +455,7 @@
                             <div class="pull-right">
                                 <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
                                 <button class="btn btn-success" ng-disabled="!joinDataSetColumn" ng-click="saveJoinDataSet(joinDataSetColumn)">Save&Show Result</button>
-                                <button class="btn btn-default" ng-click="cancelJoinDataSet(joinDataSetColumn)">Cancel</button>
+                                <button class="btn btn-default" ng-click="cancelJoinDataSet()">Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -487,7 +487,7 @@
                                 <div>
                                     <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
                                     <button class="btn btn-success" ng-click="saveToDataSet(joinDataSetColumn)">Save</button>
-                                    <button class="btn btn-default">Cancel</button>
+                                    <button class="btn btn-default" ng-click="cancelJoinDataSet()">Cancel</button>
                                 </div>
                             </div>
                         </div>

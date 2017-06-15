@@ -1,11 +1,10 @@
-app.controller('UserController', function ($scope, $http, localStorageService, $cookies) {
+app.controller('UserController', function ($scope, $http, localStorageService, $cookies, $stateParams) {
     $scope.permission = localStorageService.get("permission");
     $scope.checkAdmin = $cookies.getObject("isAdmin");
     $scope.users = [];
 
     //Tabs
     $scope.tab = 1;
-
     $scope.setTabUser = function (newTab) {
         $scope.tab = newTab;
     };
