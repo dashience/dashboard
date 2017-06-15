@@ -25,28 +25,28 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author deeta1
  */
 @Entity
-@Table(name = "dataset_columns")
+@Table(name = "data_set_columns")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "DatasetColumns.findAll", query = "SELECT d FROM DatasetColumns d")
-    , @NamedQuery(name = "DatasetColumns.findById", query = "SELECT d FROM DatasetColumns d WHERE d.id = :id")
-    , @NamedQuery(name = "DatasetColumns.findByDisplayName", query = "SELECT d FROM DatasetColumns d WHERE d.displayName = :displayName")
-    , @NamedQuery(name = "DatasetColumns.findByFieldName", query = "SELECT d FROM DatasetColumns d WHERE d.fieldName = :fieldName")
-    , @NamedQuery(name = "DatasetColumns.findByFieldType", query = "SELECT d FROM DatasetColumns d WHERE d.fieldType = :fieldType")
-    , @NamedQuery(name = "DatasetColumns.findByExpression", query = "SELECT d FROM DatasetColumns d WHERE d.expression = :expression")
-    , @NamedQuery(name = "DatasetColumns.findByStatus", query = "SELECT d FROM DatasetColumns d WHERE d.status = :status")
-    , @NamedQuery(name = "DatasetColumns.findByDisplayFormat", query = "SELECT d FROM DatasetColumns d WHERE d.displayFormat = :displayFormat")
-    , @NamedQuery(name = "DatasetColumns.findByFunctionName", query = "SELECT d FROM DatasetColumns d WHERE d.functionName = :functionName")
-    , @NamedQuery(name = "DatasetColumns.findByColumnName", query = "SELECT d FROM DatasetColumns d WHERE d.columnName = :columnName")
-    , @NamedQuery(name = "DatasetColumns.findByBaseField", query = "SELECT d FROM DatasetColumns d WHERE d.baseField = :baseField")
-    , @NamedQuery(name = "DatasetColumns.findByDateRangeName", query = "SELECT d FROM DatasetColumns d WHERE d.dateRangeName = :dateRangeName")
-    , @NamedQuery(name = "DatasetColumns.findByCustomStartDate", query = "SELECT d FROM DatasetColumns d WHERE d.customStartDate = :customStartDate")
-    , @NamedQuery(name = "DatasetColumns.findByCustomEndDate", query = "SELECT d FROM DatasetColumns d WHERE d.customEndDate = :customEndDate")
-    , @NamedQuery(name = "DatasetColumns.findByLastNdays", query = "SELECT d FROM DatasetColumns d WHERE d.lastNdays = :lastNdays")
-    , @NamedQuery(name = "DatasetColumns.findByLastNweeks", query = "SELECT d FROM DatasetColumns d WHERE d.lastNweeks = :lastNweeks")
-    , @NamedQuery(name = "DatasetColumns.findByLastNmonths", query = "SELECT d FROM DatasetColumns d WHERE d.lastNmonths = :lastNmonths")
-    , @NamedQuery(name = "DatasetColumns.findByLastNyears", query = "SELECT d FROM DatasetColumns d WHERE d.lastNyears = :lastNyears")})
-public class DatasetColumns implements Serializable {
+    @NamedQuery(name = "DataSetColumns.findAll", query = "SELECT d FROM DataSetColumns d")
+    , @NamedQuery(name = "DataSetColumns.findById", query = "SELECT d FROM DataSetColumns d WHERE d.id = :id")
+    , @NamedQuery(name = "DataSetColumns.findByDisplayName", query = "SELECT d FROM DataSetColumns d WHERE d.displayName = :displayName")
+    , @NamedQuery(name = "DataSetColumns.findByFieldName", query = "SELECT d FROM DataSetColumns d WHERE d.fieldName = :fieldName")
+    , @NamedQuery(name = "DataSetColumns.findByFieldType", query = "SELECT d FROM DataSetColumns d WHERE d.fieldType = :fieldType")
+    , @NamedQuery(name = "DataSetColumns.findByExpression", query = "SELECT d FROM DataSetColumns d WHERE d.expression = :expression")
+    , @NamedQuery(name = "DataSetColumns.findByStatus", query = "SELECT d FROM DataSetColumns d WHERE d.status = :status")
+    , @NamedQuery(name = "DataSetColumns.findByDisplayFormat", query = "SELECT d FROM DataSetColumns d WHERE d.displayFormat = :displayFormat")
+    , @NamedQuery(name = "DataSetColumns.findByFunctionName", query = "SELECT d FROM DataSetColumns d WHERE d.functionName = :functionName")
+    , @NamedQuery(name = "DataSetColumns.findByColumnName", query = "SELECT d FROM DataSetColumns d WHERE d.columnName = :columnName")
+    , @NamedQuery(name = "DataSetColumns.findByBaseField", query = "SELECT d FROM DataSetColumns d WHERE d.baseField = :baseField")
+    , @NamedQuery(name = "DataSetColumns.findByDateRangeName", query = "SELECT d FROM DataSetColumns d WHERE d.dateRangeName = :dateRangeName")
+    , @NamedQuery(name = "DataSetColumns.findByCustomStartDate", query = "SELECT d FROM DataSetColumns d WHERE d.customStartDate = :customStartDate")
+    , @NamedQuery(name = "DataSetColumns.findByCustomEndDate", query = "SELECT d FROM DataSetColumns d WHERE d.customEndDate = :customEndDate")
+    , @NamedQuery(name = "DataSetColumns.findByLastNdays", query = "SELECT d FROM DataSetColumns d WHERE d.lastNdays = :lastNdays")
+    , @NamedQuery(name = "DataSetColumns.findByLastNweeks", query = "SELECT d FROM DataSetColumns d WHERE d.lastNweeks = :lastNweeks")
+    , @NamedQuery(name = "DataSetColumns.findByLastNmonths", query = "SELECT d FROM DataSetColumns d WHERE d.lastNmonths = :lastNmonths")
+    , @NamedQuery(name = "DataSetColumns.findByLastNyears", query = "SELECT d FROM DataSetColumns d WHERE d.lastNyears = :lastNyears")})
+public class DataSetColumns implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -100,14 +100,14 @@ public class DatasetColumns implements Serializable {
     private Integer sortPriority;
     @Column(name = "last_nyears")
     private Integer lastNyears;
-    @JoinColumn(name = "dataset_id", referencedColumnName = "id")
+    @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
-    private DataSet datasetId;
+    private DataSet dataSetId;
 
-    public DatasetColumns() {
+    public DataSetColumns() {
     }
 
-    public DatasetColumns(Integer id) {
+    public DataSetColumns(Integer id) {
         this.id = id;
     }
 
@@ -247,12 +247,12 @@ public class DatasetColumns implements Serializable {
         this.lastNyears = lastNyears;
     }
 
-    public DataSet getDatasetId() {
-        return datasetId;
+    public DataSet getDataSetId() {
+        return dataSetId;
     }
 
-    public void setDatasetId(DataSet datasetId) {
-        this.datasetId = datasetId;
+    public void setDataSetId(DataSet dataSetId) {
+        this.dataSetId = dataSetId;
     }
 
     public Integer getSortPriority() {
@@ -275,10 +275,10 @@ public class DatasetColumns implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof DatasetColumns)) {
+        if (!(object instanceof DataSetColumns)) {
             return false;
         }
-        DatasetColumns other = (DatasetColumns) object;
+        DataSetColumns other = (DataSetColumns) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -287,7 +287,7 @@ public class DatasetColumns implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.DatasetColumns[ id=" + id + " ]";
+        return "com.visumbu.vb.model.DataSetColumns[ id=" + id + " ]";
     }
     
 }
