@@ -6,7 +6,7 @@
 package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.admin.dao.bean.ProductBean;
-import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
@@ -16,7 +16,7 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
-import com.visumbu.vb.model.DatasetColumns;
+import com.visumbu.vb.model.DataSetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -465,7 +465,7 @@ public class UiDao extends BaseDao {
     }
 
     public void removeDataSetColumns(Integer id) {
-        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+        String queryStr = "delete DataSetColumns d where d.datasetId.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();
@@ -481,8 +481,8 @@ public class UiDao extends BaseDao {
         return null;
     }
 
-    public DatasetColumns deleteDataSetColumns(Integer id) {
-        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+    public DataSetColumns deleteDataSetColumns(Integer id) {
+        String queryStr = "delete DataSetColumns d where d.datasetId.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();
@@ -568,8 +568,8 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<DatasetColumns> getDatasetColumnsByDatasetId(Integer datasetId) {
-        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+    public List<DataSetColumns> getDataSetColumnsByDatasetId(Integer datasetId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.datasetId.id = :id";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", datasetId);
         return query.list();
@@ -605,10 +605,10 @@ public class UiDao extends BaseDao {
         return tabWidget;
     }
 
-    public List getDatasetColumnByDatasetId(Integer datasetId) {
-        String queryStr = "SELECT d FROM DatasetColumns d where d.datasetId.id = :id";
+    public List getDataSetColumnByDatasetId(Integer dataSetId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("id", datasetId);
+        query.setParameter("id", dataSetId);
         return query.list();
     }
 

@@ -37,9 +37,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
-import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
-import com.visumbu.vb.model.DatasetColumns;
+import com.visumbu.vb.model.DataSetColumns;
 
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.JoinDataSet;
@@ -401,14 +401,14 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dataSetFormulaColumns", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    List<DatasetColumns> createDataSetFormulaColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DatasetColumnBean dataSetColumn) {
-        return uiService.createDataSetFormulaColumn(dataSetColumn);
+    List<DataSetColumns> createDataSetFormulaColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSetColumnBean dataSetColumnBean) {
+        return uiService.createDataSetFormulaColumn(dataSetColumnBean);
     }
 
-    @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
+    @RequestMapping(value = "dataSetFormulaColumns/{dataSetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
-        return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
+    DataSetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetColumnId) {
+        return uiService.deleteDataSetFormulaColumnById(dataSetColumnId);
     }
 
     @RequestMapping(value = "joinDataSet", method = RequestMethod.POST, produces = "application/json")
@@ -423,10 +423,10 @@ public class UiController extends BaseController {
         return uiService.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
-    @RequestMapping(value = "getDatasetColumnByDatasetId/{datasetId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "getDataSetColumnByDatasetId/{dataSetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDatasetColumnByDatasetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
-        return uiService.getDatasetColumnByDatasetId(datasetId);
+    List getDatasetColumnByDatasetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetId) {
+        return uiService.getDataSetColumnByDatasetId(dataSetId);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
@@ -452,7 +452,7 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dataSetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    DatasetColumns deleteDataSetColumns(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+    DataSetColumns deleteDataSetColumns(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
         return uiService.deleteDataSetColumns(id);
     }
 //    @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")

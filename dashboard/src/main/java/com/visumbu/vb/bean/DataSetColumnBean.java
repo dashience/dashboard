@@ -11,9 +11,9 @@ import java.util.List;
  *
  * @author deeta1
  */
-public class DatasetColumnBean {
+public class DataSetColumnBean {
 
-    private Integer Id;
+    private Integer id;
     private String fieldName;
     private String displayName;
     private String fieldType;
@@ -31,12 +31,12 @@ public class DatasetColumnBean {
     private Integer lastNmonths;
     private Integer lastNweeks;
     private Integer lastNyears;
-    private Integer datasetId;
+    private Integer dataSetId;
     private Integer sortPriority;
     private String agregationFunction;
     private Integer groupPriority;
     private String sortOrder;
-    private List<DatasetColumnBean> tableColumns;
+    private List<DataSetColumnBean> tableColumns;
 
     public String getFieldName() {
         return fieldName;
@@ -166,19 +166,19 @@ public class DatasetColumnBean {
         this.lastNyears = lastNyears;
     }
 
-    public Integer getDatasetId() {
-        return datasetId;
+    public Integer getDataSetId() {
+        return dataSetId;
     }
 
-    public void setDatasetId(Integer datasetId) {
-        this.datasetId = datasetId;
+    public void setDataSetId(Integer dataSetId) {
+        this.dataSetId = dataSetId;
     }
 
-    public List<DatasetColumnBean> getTableColumns() {
+    public List<DataSetColumnBean> getTableColumns() {
         return tableColumns;
     }
 
-    public void setTableColumns(List<DatasetColumnBean> tableColumns) {
+    public void setTableColumns(List<DataSetColumnBean> tableColumns) {
         this.tableColumns = tableColumns;
     }
 
@@ -223,16 +223,16 @@ public class DatasetColumnBean {
     }
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
-    public void setId(Integer Id) {
-        this.Id = Id;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
     public String toString() {
-        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", type=" + type + ", status=" + status + ", expression=" + expression + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", displayFormat=" + displayFormat + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", datasetId=" + datasetId + ", sortPriority=" + sortPriority + ", tableColumns=" + tableColumns + '}';
+        return "DatasetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", type=" + type + ", status=" + status + ", expression=" + expression + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", displayFormat=" + displayFormat + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", dataSetId=" + dataSetId + ", sortPriority=" + sortPriority + ", tableColumns=" + tableColumns + '}';
     }
 
 }

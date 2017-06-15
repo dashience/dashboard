@@ -23,7 +23,7 @@ import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
-import com.visumbu.vb.model.DatasetColumns;
+import com.visumbu.vb.model.DataSetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -156,7 +156,7 @@ public class ProxyController {
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
-        List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+        List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDatasetId(dataSetIdInt);
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -203,7 +203,6 @@ public class ProxyController {
         joinValueMap.put("query", Arrays.asList(dataSet.getQuery()));
         joinValueMap.put("productSegment", Arrays.asList(dataSet.getProductSegment()));
         DataSource dataSource = dataSet.getDataSourceId();
-        System.out.println("dataSourceType --->" + dataSource.getDataSourceType());
         joinValueMap.put("connectionUrl", Arrays.asList(dataSource.getConnectionString()));
         joinValueMap.put("dataSourceId", Arrays.asList(dataSource.getId() + ""));
         joinValueMap.put("driver", Arrays.asList(dataSource.getDataSourceType()));
@@ -223,7 +222,7 @@ public class ProxyController {
         String operationType = null;
         Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
 
-        List<String> conditions = new ArrayList<>();
+        List<String> mappings = new ArrayList<>();
 
         List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
@@ -241,7 +240,7 @@ public class ProxyController {
         String dataSetIdOneStr = getFromMultiValueMap(joinValueMapOne, "dataSetId");
         if (dataSetIdOneStr != null && !dataSetIdOneStr.isEmpty()) {
             Integer dataSetIdInt = Integer.parseInt(dataSetIdOneStr);
-            List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDatasetId(dataSetIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetOneList, joinValueMapOne, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -260,7 +259,7 @@ public class ProxyController {
 
             Integer dataSetIdInt = Integer.parseInt(dataSetIdTwoStr);
 
-            List<DatasetColumns> dataSetColumnList = uiDao.getDatasetColumnsByDatasetId(dataSetIdInt);
+            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDatasetId(dataSetIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetTwoList, joinValueMapTwo, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -298,25 +297,18 @@ public class ProxyController {
             if (joinDataSetCondition.getColumnName() != null) {
                 concatCondition += "," + joinDataSetCondition.getColumnName();
             }
-            conditions.add(concatCondition);
+            mappings.add(concatCondition);
         }
         List<Map<String, Object>> joinData = new ArrayList<>();
         if (operationType.equalsIgnoreCase("inner")) {
-            System.out.println("Innnnnnnnnnnnnerrrrrrrrr");
-            joinData = innerJoin(dataSetOneList, dataSetTwoList, conditions);
+            joinData = innerJoin(dataSetOneList, dataSetTwoList, mappings);
         } else if (operationType.equalsIgnoreCase("left")) {
-            System.out.println("LeeEEeeeeeeeeeeeeft");
-            joinData = leftJoin(dataSetOneList, dataSetTwoList, conditions);
+            joinData = leftJoin(dataSetOneList, dataSetTwoList, mappings);
         } else if (operationType.equalsIgnoreCase("right")) {
-            System.out.println("rightttttttttttttttttt");
-            joinData = rightJoin(dataSetOneList, dataSetTwoList, conditions);
+            joinData = rightJoin(dataSetOneList, dataSetTwoList, mappings);
         } else if (operationType.equalsIgnoreCase("union")) {
-            joinData = union(dataSetOneList, dataSetTwoList, conditions);
+            joinData = union(dataSetOneList, dataSetTwoList, mappings);
         }
-//        else if (operationType.equalsIgnoreCase("intersection")) {
-//            joinData = intersection(dataSetOneList, dataSetTwoList, conditions);
-//        }
-        System.out.println("joinData ---> " + joinData);
 
         List<Map<String, Object>> data = joinData;
         List<ColumnDef> columnDefs = getColumnDefObject(data);
@@ -370,19 +362,19 @@ public class ProxyController {
         return returnMap;
     }
 
-    public static List<Map<String, Object>> leftJoin(final List<Map<String, Object>> col1, final List<Map<String, Object>> col2, final List<String> conditions) {
-        Set<String> columnSet = col2.get(0).keySet();
+    public static List<Map<String, Object>> leftJoin(final List<Map<String, Object>> dataSet1, final List<Map<String, Object>> dataSet2, final List<String> mappings) {
+        Set<String> columnSet = dataSet2.get(0).keySet();
         System.out.println("columnSet ---> " + columnSet);
         List<Map<String, Object>> returnList = new ArrayList<>();
-        col1.forEach(map -> {
-            Stream<Map<String, Object>> filters = col2.stream().filter(e -> {
+        dataSet1.forEach(map -> {
+            Stream<Map<String, Object>> filters = dataSet2.stream().filter(e -> {
                 boolean isValid = true;
-                for (Iterator<String> iterator = conditions.iterator(); iterator.hasNext();) {
-                    String condition = iterator.next();
-                    String[] fields = condition.split(",");
-                    System.out.println("field[0] ---> " + fields[0]);
-                    System.out.println("field[1] ---> " + fields[1]);
-                    if (!(map.get(fields[0]) + "").equalsIgnoreCase(e.get(fields[1]) + "")) {
+                for (Iterator<String> iterator = mappings.iterator(); iterator.hasNext();) {
+                    String mapping = iterator.next();
+                    String[] mappingArray = mapping.split(",");
+                    System.out.println("field[0] ---> " + mappingArray[0]);
+                    System.out.println("field[1] ---> " + mappingArray[1]);
+                    if (!(map.get(mappingArray[0]) + "").equalsIgnoreCase(e.get(mappingArray[1]) + "")) {
                         System.out.println("return false");
                         return false;
                     }
@@ -418,20 +410,16 @@ public class ProxyController {
         return returnList;
     }
 
-    public static List<Map<String, Object>> rightJoin(final List<Map<String, Object>> col1, final List<Map<String, Object>> col2, final List<String> conditions) {
-        Set<String> columnSet = col1.get(0).keySet();
-        System.out.println("columnSet ---> " + columnSet);
+    public static List<Map<String, Object>> rightJoin(final List<Map<String, Object>> dataSet1, final List<Map<String, Object>> dataSet2, final List<String> mappings) {
+        Set<String> columnSet = dataSet1.get(0).keySet();
         List<Map<String, Object>> returnList = new ArrayList<>();
-        col2.forEach(map -> {
-            Stream<Map<String, Object>> filters = col1.stream().filter(e -> {
+        dataSet2.forEach(map -> {
+            Stream<Map<String, Object>> filters = dataSet1.stream().filter(e -> {
                 boolean isValid = true;
-                for (Iterator<String> iterator = conditions.iterator(); iterator.hasNext();) {
+                for (Iterator<String> iterator = mappings.iterator(); iterator.hasNext();) {
                     String condition = iterator.next();
-                    String[] fields = condition.split(",");
-                    System.out.println("field[0] ---> " + fields[0]);
-                    System.out.println("field[1] ---> " + fields[1]);
-                    if (!(map.get(fields[1]) + "").equalsIgnoreCase(e.get(fields[0]) + "")) {
-                        System.out.println("return false");
+                    String[] mappingArray = condition.split(",");
+                    if (!(map.get(mappingArray[1]) + "").equalsIgnoreCase(e.get(mappingArray[0]) + "")) {
                         return false;
                     }
                 }
@@ -466,15 +454,15 @@ public class ProxyController {
         return returnList;
     }
 
-    public static List<Map<String, Object>> innerJoin(List<Map<String, Object>> col1, List<Map<String, Object>> col2, List<String> conditions) {
+    public static List<Map<String, Object>> innerJoin(List<Map<String, Object>> dataSet1, List<Map<String, Object>> dataSet2, List<String> mappings) {
         List<Map<String, Object>> returnList = new ArrayList<>();
-        col1.forEach(map -> {
-            Stream<Map<String, Object>> filters = col2.stream().filter(e -> {
+        dataSet1.forEach(map -> {
+            Stream<Map<String, Object>> filters = dataSet2.stream().filter(e -> {
                 boolean isValid = true;
-                for (Iterator<String> iterator = conditions.iterator(); iterator.hasNext();) {
-                    String condition = iterator.next();
-                    String[] fields = condition.split(",");
-                    if (!(map.get(fields[0]) + "").equalsIgnoreCase(e.get(fields[1]) + "")) {
+                for (Iterator<String> iterator = mappings.iterator(); iterator.hasNext();) {
+                    String mapping = iterator.next();
+                    String[] mappingArray = mapping.split(",");
+                    if (!(map.get(mappingArray[0]) + "").equalsIgnoreCase(e.get(mappingArray[1]) + "")) {
                         return false;
                     }
                 }
@@ -488,9 +476,8 @@ public class ProxyController {
             }
         });
 
-//        
-//    col1.forEach(map -> map.put(TypeId.AMOUNT, 
-//        col2.stream()
+//    dataSet1.forEach(map -> map.put(TypeId.AMOUNT, 
+//        dataSet2.stream()
 //            .filter(e -> e.player_id == (int)map.get(TypeId.PLAYER) && 
 //                         e.platform_id == (int)map.get(TypeId.PLATFORM))
 //            .findFirst().map(e -> e.amount).orElse(null)
@@ -530,66 +517,7 @@ public class ProxyController {
         return returnList;
     }
 
-//    public static List<Map<String, Object>> intersection(List<Map<String, Object>> dataSet1, List<Map<String, Object>> dataSet2, List<String> mappings) {
-//        List<Map<String, Object>> returnList = new ArrayList<>();
-//        List<Set<Object>> setList = new ArrayList<>();
-//
-//        for (Iterator<String> iterator = mappings.iterator(); iterator.hasNext();) {
-//            Set<Object> setOne = new HashSet<Object>();
-//            Set<Object> setTwo = new HashSet<Object>();
-//            Set<Object> intersectionSet = new HashSet<Object>();
-//
-//            String mapping = iterator.next();
-//            String[] fields = mapping.split(",");
-//            for (Iterator<Map<String, Object>> iterator1 = dataSet1.iterator(); iterator1.hasNext();) {
-//                Map<String, Object> dataSetOneData = iterator1.next();
-//                setOne.add(dataSetOneData.get(fields[0]));
-//            }
-//
-//            for (Iterator<Map<String, Object>> iterator2 = dataSet2.iterator(); iterator2.hasNext();) {
-//                Map<String, Object> dataSetTwoData = iterator2.next();
-//                setTwo.add(dataSetTwoData.get(fields[1]));
-//            }
-//
-//            for (Iterator<Object> iterator1 = setOne.iterator(); iterator1.hasNext();) {
-//                Object setDataOne = iterator1.next();
-//                for (Iterator<Object> iterator2 = setTwo.iterator(); iterator2.hasNext();) {
-//                    Object setDataTwo = iterator2.next();
-//                    if (setDataOne.equals(setDataTwo)) {
-//                        intersectionSet.add(setDataTwo);
-//                    }
-//                }
-//            }
-//            setList.add(intersectionSet);
-//        }
-//        TreeSet<Integer> treeSet = new TreeSet<Integer>();
-//        for (int i = 0; i < setList.size(); i++) {
-//            treeSet.add(setList.get(i).size());
-//        }
-//
-//        for (int j = 0; j < treeSet.last(); j++) {
-//            Map<String, Object> dataMap = new HashMap<>();
-//            for (int k = 0; k < setList.size(); k++) {
-//                String mapping = mappings.get(k);
-//                String[] mappingArray = mapping.split(",");
-//                String columnName = mappingArray[2];
-//                Set<Object> setData = setList.get(k);
-//                int count = 0;
-//                for (Object obj : setData) {
-//                    if (j == count) {
-//                        dataMap.put(columnName, obj);
-//                        break;
-//                    }
-//                    count++;
-//                }
-//            }
-//            returnList.add(dataMap);
-//        }
-//        return returnList;
-//    }
     public Map<String, Date> getCustomDate(String dateRangeName, Integer lastNdays, Integer lastNweeks, Integer lastNmonths, Integer lastNyears, Date endDate) {
-        //System.out.println("Date Range Name --> " + dateRangeName);
-
         Map returnDateMap = new HashMap<>();
         Range dateRangeSelect = null;
         DateRange dateRange = null;
@@ -639,7 +567,7 @@ public class ProxyController {
         return dateRange;
     }
 
-    public List<Map<String, Object>> addDerivedColumnsFunction(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data, MultiValueMap request, HttpServletRequest httpRequest, HttpServletResponse response) {
+    public List<Map<String, Object>> addDerivedColumnsFunction(List<DataSetColumns> dataSetColumns, List<Map<String, Object>> data, MultiValueMap request, HttpServletRequest httpRequest, HttpServletResponse response) {
         // Supported Functions : yoy, mom, wow, custom
         String format = "yyyy-MM-dd";
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
@@ -648,18 +576,18 @@ public class ProxyController {
         Map<String, List> cachedData = new HashMap<>();
         cachedData.put(cachedRange, data);
         Map<String, List> derivedColumnData = new HashMap<>();
-        for (Iterator<DatasetColumns> iterator = datasetColumns.iterator(); iterator.hasNext();) {
-            DatasetColumns datasetColumn = iterator.next();
-            boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
+        for (Iterator<DataSetColumns> iterator = dataSetColumns.iterator(); iterator.hasNext();) {
+            DataSetColumns dataSetColumn = iterator.next();
+            boolean isDerivedColumn = checkIsDerivedFunction(dataSetColumn);
             if (isDerivedColumn) {
-                String functionName = datasetColumn.getFunctionName();
-                String dateRangeName = datasetColumn.getDateRangeName();
-                Integer lastNdays = datasetColumn.getLastNdays();
-                Integer lastNweeks = datasetColumn.getLastNweeks();
-                Integer lastNmonths = datasetColumn.getLastNmonths();
-                Integer lastNyears = datasetColumn.getLastNyears();
-                String customStartDate = datasetColumn.getCustomStartDate();
-                String customEndDate = datasetColumn.getCustomEndDate();
+                String functionName = dataSetColumn.getFunctionName();
+                String dateRangeName = dataSetColumn.getDateRangeName();
+                Integer lastNdays = dataSetColumn.getLastNdays();
+                Integer lastNweeks = dataSetColumn.getLastNweeks();
+                Integer lastNmonths = dataSetColumn.getLastNmonths();
+                Integer lastNyears = dataSetColumn.getLastNyears();
+                String customStartDate = dataSetColumn.getCustomStartDate();
+                String customEndDate = dataSetColumn.getCustomEndDate();
                 if (dateRangeName != null && !dateRangeName.isEmpty()) {
                     if (!dateRangeName.equalsIgnoreCase("custom")) {
                         Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
@@ -683,7 +611,7 @@ public class ProxyController {
                 } else {
 
                 }
-                derivedColumnData.put(datasetColumn.getFieldName(), cachedData.get(cachedRangeForFunction));
+                derivedColumnData.put(dataSetColumn.getFieldName(), cachedData.get(cachedRangeForFunction));
             } else {
 
             }
@@ -693,18 +621,18 @@ public class ProxyController {
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
             Map<String, Object> returnDataMap = new HashMap<>();
-            for (Iterator<DatasetColumns> iterator1 = datasetColumns.iterator(); iterator1.hasNext();) {
-                DatasetColumns datasetColumn = iterator1.next();
-                boolean isDerivedColumn = checkIsDerivedFunction(datasetColumn);
+            for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
+                DataSetColumns dataSetColumn = iterator1.next();
+                boolean isDerivedColumn = checkIsDerivedFunction(dataSetColumn);
                 if (isDerivedColumn) {
-                    String functionName = datasetColumn.getFunctionName();
-                    String dateRangeName = datasetColumn.getDateRangeName();
-                    Integer lastNdays = datasetColumn.getLastNdays();
-                    Integer lastNweeks = datasetColumn.getLastNweeks();
-                    Integer lastNmonths = datasetColumn.getLastNmonths();
-                    Integer lastNyears = datasetColumn.getLastNyears();
-                    String customStartDate = datasetColumn.getCustomStartDate();
-                    String customEndDate = datasetColumn.getCustomEndDate();
+                    String functionName = dataSetColumn.getFunctionName();
+                    String dateRangeName = dataSetColumn.getDateRangeName();
+                    Integer lastNdays = dataSetColumn.getLastNdays();
+                    Integer lastNweeks = dataSetColumn.getLastNweeks();
+                    Integer lastNmonths = dataSetColumn.getLastNmonths();
+                    Integer lastNyears = dataSetColumn.getLastNyears();
+                    String customStartDate = dataSetColumn.getCustomStartDate();
+                    String customEndDate = dataSetColumn.getCustomEndDate();
                     if (dateRangeName != null && !dateRangeName.isEmpty()) {
                         if (!dateRangeName.equalsIgnoreCase("custom")) {
                             Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
@@ -716,10 +644,10 @@ public class ProxyController {
                     }
                     DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
                     String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
-                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(datasetColumn.getBaseField()), datasetColumn);
-                    returnDataMap.put(datasetColumn.getFieldName(), derivedFunctionValue);
+                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(dataSetColumn.getBaseField()), dataSetColumn);
+                    returnDataMap.put(dataSetColumn.getFieldName(), derivedFunctionValue);
                 } else {
-                    returnDataMap.put(datasetColumn.getFieldName(), dataMap.get(datasetColumn.getFieldName()));
+                    returnDataMap.put(dataSetColumn.getFieldName(), dataMap.get(dataSetColumn.getFieldName()));
                 }
             }
             //System.out.println(returnDataMap);
@@ -729,66 +657,66 @@ public class ProxyController {
         return returnData;
     }
 
-    public Object getDataForDerivedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DatasetColumns datasetColumn) {
+    public Object getDataForDerivedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DataSetColumns dataSetColumn) {
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
             System.out.println("MapData ---->" + mapData);
-            if ((mapData.get(datasetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
+            if ((mapData.get(dataSetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
                 System.out.println("Matching MapData ---->" + mapData);
-                return mapData.get(datasetColumn.getColumnName());
+                return mapData.get(dataSetColumn.getColumnName());
             }
         }
         return null;
     }
 
-    public static List<Map<String, Object>> addDerivedColumnsExpr(List<DatasetColumns> datasetColumns, List<Map<String, Object>> data) {
+    public static List<Map<String, Object>> addDerivedColumnsExpr(List<DataSetColumns> dataSetColumns, List<Map<String, Object>> data) {
         List<Map<String, Object>> returnData = new ArrayList<>();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
-            returnData.add(addDerivedColumnsExpr(datasetColumns, dataMap));
+            returnData.add(addDerivedColumnsExpr(dataSetColumns, dataMap));
         }
         return returnData;
     }
 
-    public static Map<String, Object> addDerivedColumnsExpr(List<DatasetColumns> datasetColumns, Map<String, Object> data) {
+    public static Map<String, Object> addDerivedColumnsExpr(List<DataSetColumns> dataSetColumns, Map<String, Object> data) {
         Map<String, Object> returnMap = new HashMap<>();
-        for (Iterator<DatasetColumns> iterator = datasetColumns.iterator(); iterator.hasNext();) {
-            DatasetColumns datasetColumn = iterator.next();
-            boolean isDerivedColumn = checkIsDerivedExpr(datasetColumn);
+        for (Iterator<DataSetColumns> iterator = dataSetColumns.iterator(); iterator.hasNext();) {
+            DataSetColumns dataSetColumn = iterator.next();
+            boolean isDerivedColumn = checkIsDerivedExpr(dataSetColumn);
             if (isDerivedColumn) {
-                if (datasetColumn.getExpression() != null) {
-                    String expressionValue = executeExpression(datasetColumn, data);
+                if (dataSetColumn.getExpression() != null) {
+                    String expressionValue = executeExpression(dataSetColumn, data);
                     // //System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
                     if ((expressionValue.startsWith("'") && expressionValue.endsWith("'"))) {
                         Object expValue = expressionValue.substring(1, expressionValue.length() - 1);
-                        returnMap.put(datasetColumn.getFieldName(), expValue);
+                        returnMap.put(dataSetColumn.getFieldName(), expValue);
                     } else {
                         Object expValue = expressionValue;
-                        returnMap.put(datasetColumn.getFieldName(), expValue);
+                        returnMap.put(dataSetColumn.getFieldName(), expValue);
                     }
                 }
             } else {
-                returnMap.put(datasetColumn.getFieldName(), data.get(datasetColumn.getFieldName()));
+                returnMap.put(dataSetColumn.getFieldName(), data.get(dataSetColumn.getFieldName()));
             }
 
         }
         return returnMap;
     }
 
-    private static String executeExpression(DatasetColumns datasetColumn, Map<String, Object> data) {
-        String postFixRule = ShuntingYard.postfix(datasetColumn.getExpression());
+    private static String executeExpression(DataSetColumns dataSetColumn, Map<String, Object> data) {
+        String postFixRule = ShuntingYard.postfix(dataSetColumn.getExpression());
         return ShuntingYard.executeExpression(data, postFixRule);
     }
 
-    private static boolean checkIsDerivedExpr(DatasetColumns datasetColumn) {
-        if (datasetColumn.getExpression() != null && !datasetColumn.getExpression().isEmpty()) {
+    private static boolean checkIsDerivedExpr(DataSetColumns dataSetColumn) {
+        if (dataSetColumn.getExpression() != null && !dataSetColumn.getExpression().isEmpty()) {
             return true;
         }
         return false;
     }
 
-    private static boolean checkIsDerivedFunction(DatasetColumns datasetColumn) {
-        if (datasetColumn.getFunctionName() != null && !datasetColumn.getFunctionName().isEmpty()) {
+    private static boolean checkIsDerivedFunction(DataSetColumns dataSetColumn) {
+        if (dataSetColumn.getFunctionName() != null && !dataSetColumn.getFunctionName().isEmpty()) {
             return true;
         }
         return false;
@@ -833,16 +761,12 @@ public class ProxyController {
 
         String reportName = getFromMultiValueMap(request, "dataSetReportName");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
-
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
-
-        //System.out.println("Pinterst access token--->" + accessToken);
         if (accessToken == null) {
-            //System.out.println("pinterest accesstoken data not found now...");
             Map pinterestData = new HashMap();
             List<ColumnDef> columnDefs = new ArrayList();
             List<Map<String, String>> returnData = new ArrayList<>();
@@ -869,9 +793,6 @@ public class ProxyController {
                 try {
                     String fbUrl = "https://api.pinterest.com/v1/me/boards/?access_token=" + accessToken
                             + "&fields=id%2Cname%2Curl%2Ccounts%2Ccreated_at%2Ccreator%2Cdescription%2Creason";
-                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&PINTEREST&&&&&&&&");
-                    //System.out.println(fbUrl);
-
                     String data = Rest.getData(fbUrl);
                     JSONParser parser = new JSONParser();
                     Object jsonObj = parser.parse(data);
@@ -893,16 +814,11 @@ public class ProxyController {
                     Map pinterestData = new HashMap();
                     List<ColumnDef> columnDefs = getColumnDef(returnData);
                     returnMap.put("columnDefs", columnDefs);
-
                     returnMap.put("data", returnData);
-                    //System.out.println("************* Controller &********************");
-                    //System.out.println(returnMap);
-
                     return returnMap;
                 } catch (ParseException ex) {
                     java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//            return null;
             }
             if (reportName.equalsIgnoreCase("getTopPins")) {
                 try {
@@ -930,13 +846,10 @@ public class ProxyController {
                     List<ColumnDef> columnDefs = getColumnDef(returnData);
                     returnMap.put("columnDefs", columnDefs);
                     returnMap.put("data", returnData);
-                    //System.out.println("************* Controller &********************");
-                    //System.out.println(returnMap);
                     return returnMap;
                 } catch (ParseException ex) {
                     java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//            return null;
             }
             if (reportName.equalsIgnoreCase("getOrganicData")) {
                 try {
@@ -944,13 +857,8 @@ public class ProxyController {
                             + "&fields=first_name%2Cid%2Clast_name%2Curl%2Ccounts";
                     String data = Rest.getData(fbUrl);
                     JSONParser parser = new JSONParser();
-//                Object jsonObj = parser.parse(data);
-//                JSONObject json = (JSONObject) jsonObj;
-//                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
                     Map returnMap = new HashMap<>();
-//                List fbData = (List<Map<String,Object>>) jsonToMap.get("data");
 
-                    //////////////////////////
                     JSONObject jsonArray = (JSONObject) parser.parse(data);
 
                     Map<String, Object> myData = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) jsonArray).get("data")).get("counts");
@@ -965,26 +873,12 @@ public class ProxyController {
                     twitterData.add(myMapData);
 
                     List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
-
-                    /////////////////////////////////////////////////////////
-                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                    //System.out.println(twitterData);
-                    //System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//                fbData.lastIndexOf(jsonObj);
-//                String likesCount = fbData.size() + "";
-//                Map<String, String> boardsSize = new HashMap<>();
-//                boardsSize.put("total_pin_likes", likesCount);
-//                List<Map<String, String>> listData = new ArrayList<>();
-//                listData.add(boardsSize);
-//
                     returnMap.put("columnDefs", columnDefObject);
-
                     returnMap.put("data", twitterData);
                     return returnMap;
                 } catch (ParseException ex) {
                     java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//            return null;
             }
         }
         return null;
@@ -1142,17 +1036,12 @@ public class ProxyController {
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
 
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
-        //System.out.println("widgetID ---> " + widgetIdStr);
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-        //System.out.println("startDate 1 ----> " + startDate);
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-        //System.out.println("endDate 1 ----> " + endDate);
 
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
-            //System.out.println("Widget title --->" + widget.getWidgetTitle());
-            //System.out.println("Date Range Name ---> " + widget.getDateRangeName());
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
                 if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
@@ -1169,8 +1058,6 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
-        //System.out.println("SSSSSSSStartDAaaaaaaaaaaaTe ---> " + startDate);
-        //System.out.println("EEEEEEEEndDAaaaaaaaaaaaTe ---> " + endDate);
 
         Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
         List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");

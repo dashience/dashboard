@@ -8,7 +8,7 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
-import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
@@ -20,7 +20,7 @@ import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
-import com.visumbu.vb.model.DatasetColumns;
+import com.visumbu.vb.model.DataSetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -580,8 +580,8 @@ public class UiService {
         return (DataSet) uiDao.deleteDataSet(id);
     }
 
-    public DatasetColumns deleteDataSetColumns(Integer id) {
-        return (DatasetColumns) uiDao.deleteDataSetColumns(id);
+    public DataSetColumns deleteDataSetColumns(Integer id) {
+        return (DataSetColumns) uiDao.deleteDataSetColumns(id);
     }
 
     public DataSource deleteDataSource(Integer id) {
@@ -726,89 +726,86 @@ public class UiService {
         return uiDao.getWidgetByIdAndDataSetId(widgetId, datasetId);
     }
 
-    public List<DatasetColumns> createDataSetFormulaColumn(DatasetColumnBean dataSetColumn) {
-        DataSet dataset = uiDao.getDataSetById(dataSetColumn.getDatasetId());
-        List<DatasetColumns> datasetList = new ArrayList();
-        System.out.println("create columns function");
-        List<DatasetColumnBean> datasetColumnList = dataSetColumn.getTableColumns();
-        System.out.println("datasetColumnList ----> " + datasetColumnList);
-        for (Iterator<DatasetColumnBean> datasetColumnBean = datasetColumnList.iterator(); datasetColumnBean.hasNext();) {
-            System.out.println("create Data set columns ----> ");
-            DatasetColumnBean allDataSetColumn = datasetColumnBean.next();
-            System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumn.getId());
-            if (allDataSetColumn.getId() == null && dataSetColumn.getId() == null) {
+    public List<DataSetColumns> createDataSetFormulaColumn(DataSetColumnBean dataSetColumnBean) {
+        DataSet dataSet = uiDao.getDataSetById(dataSetColumnBean.getDataSetId());
+        List<DataSetColumns> dataSetList = new ArrayList();
+        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
+        for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
+            DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
+            System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
+            if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
-                DatasetColumns datasetFields = new DatasetColumns();
-                datasetFields.setId(allDataSetColumn.getId());
-                datasetFields.setExpression(allDataSetColumn.getExpression());
-                datasetFields.setFieldName(allDataSetColumn.getFieldName());
-                datasetFields.setDisplayName(allDataSetColumn.getDisplayName());
-                datasetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
-                datasetFields.setStatus(allDataSetColumn.getStatus());
-                datasetFields.setFunctionName(allDataSetColumn.getFunctionName());
-                datasetFields.setColumnName(allDataSetColumn.getColumnName());
-                datasetFields.setBaseField(allDataSetColumn.getBaseField());
-                datasetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
-                datasetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
-                datasetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
-                datasetFields.setLastNdays(allDataSetColumn.getLastNdays());
-                datasetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
-                datasetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
-                datasetFields.setLastNyears(allDataSetColumn.getLastNyears());
-                datasetFields.setFieldType(allDataSetColumn.getFieldType());
-                datasetFields.setSortPriority(allDataSetColumn.getSortPriority());
-                datasetFields.setDatasetId(dataset);
-                uiDao.saveOrUpdate(datasetFields);
-                datasetList.add(datasetFields);
-            } else if (!Objects.equals(allDataSetColumn.getId(), dataSetColumn.getId())) {
+                DataSetColumns dataSetFields = new DataSetColumns();
+                dataSetFields.setId(allDataSetColumn.getId());
+                dataSetFields.setExpression(allDataSetColumn.getExpression());
+                dataSetFields.setFieldName(allDataSetColumn.getFieldName());
+                dataSetFields.setDisplayName(allDataSetColumn.getDisplayName());
+                dataSetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                dataSetFields.setStatus(allDataSetColumn.getStatus());
+                dataSetFields.setFunctionName(allDataSetColumn.getFunctionName());
+                dataSetFields.setColumnName(allDataSetColumn.getColumnName());
+                dataSetFields.setBaseField(allDataSetColumn.getBaseField());
+                dataSetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
+                dataSetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                dataSetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                dataSetFields.setLastNdays(allDataSetColumn.getLastNdays());
+                dataSetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
+                dataSetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
+                dataSetFields.setLastNyears(allDataSetColumn.getLastNyears());
+                dataSetFields.setFieldType(allDataSetColumn.getFieldType());
+                dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
+                dataSetFields.setDataSetId(dataSet);
+                uiDao.saveOrUpdate(dataSetFields);
+                dataSetList.add(dataSetFields);
+            } else if (!Objects.equals(allDataSetColumn.getId(), dataSetColumnBean.getId())) {
                 System.out.println("else if");
-                DatasetColumns datasetFields = new DatasetColumns();
-                datasetFields.setId(allDataSetColumn.getId());
-                datasetFields.setExpression(allDataSetColumn.getExpression());
-                datasetFields.setFieldName(allDataSetColumn.getFieldName());
-                datasetFields.setDisplayName(allDataSetColumn.getDisplayName());
-                datasetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
-                datasetFields.setStatus(allDataSetColumn.getStatus());
-                datasetFields.setFunctionName(allDataSetColumn.getFunctionName());
-                datasetFields.setColumnName(allDataSetColumn.getColumnName());
-                datasetFields.setBaseField(allDataSetColumn.getBaseField());
-                datasetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
-                datasetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
-                datasetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
-                datasetFields.setLastNdays(allDataSetColumn.getLastNdays());
-                datasetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
-                datasetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
-                datasetFields.setLastNyears(allDataSetColumn.getLastNyears());
-                datasetFields.setFieldType(allDataSetColumn.getFieldType());
-                datasetFields.setSortPriority(allDataSetColumn.getSortPriority());
-                datasetFields.setDatasetId(dataset);
-                uiDao.saveOrUpdate(datasetFields);
-                datasetList.add(datasetFields);
+                DataSetColumns dataSetFields = new DataSetColumns();
+                dataSetFields.setId(allDataSetColumn.getId());
+                dataSetFields.setExpression(allDataSetColumn.getExpression());
+                dataSetFields.setFieldName(allDataSetColumn.getFieldName());
+                dataSetFields.setDisplayName(allDataSetColumn.getDisplayName());
+                dataSetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                dataSetFields.setStatus(allDataSetColumn.getStatus());
+                dataSetFields.setFunctionName(allDataSetColumn.getFunctionName());
+                dataSetFields.setColumnName(allDataSetColumn.getColumnName());
+                dataSetFields.setBaseField(allDataSetColumn.getBaseField());
+                dataSetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
+                dataSetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                dataSetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                dataSetFields.setLastNdays(allDataSetColumn.getLastNdays());
+                dataSetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
+                dataSetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
+                dataSetFields.setLastNyears(allDataSetColumn.getLastNyears());
+                dataSetFields.setFieldType(allDataSetColumn.getFieldType());
+                dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
+                dataSetFields.setDataSetId(dataSet);
+                uiDao.saveOrUpdate(dataSetFields);
+                dataSetList.add(dataSetFields);
             }
         }
-        DatasetColumns datasetColumns = new DatasetColumns();
-        datasetColumns.setId(dataSetColumn.getId());
-        datasetColumns.setExpression(dataSetColumn.getExpression());
-        datasetColumns.setFieldName(dataSetColumn.getFieldName());
-        datasetColumns.setFieldType(dataSetColumn.getFieldType());
-        datasetColumns.setDisplayName(dataSetColumn.getDisplayName());
-        datasetColumns.setDisplayFormat(dataSetColumn.getDisplayFormat());
-        datasetColumns.setStatus(dataSetColumn.getStatus());
-        datasetColumns.setFunctionName(dataSetColumn.getFunctionName());
-        datasetColumns.setColumnName(dataSetColumn.getColumnName());
-        datasetColumns.setBaseField(dataSetColumn.getBaseField());
-        datasetColumns.setDateRangeName(dataSetColumn.getDateRangeName());
-        datasetColumns.setCustomStartDate(dataSetColumn.getCustomStartDate());
-        datasetColumns.setCustomEndDate(dataSetColumn.getCustomEndDate());
-        datasetColumns.setLastNdays(dataSetColumn.getLastNdays());
-        datasetColumns.setSortPriority(dataSetColumn.getSortPriority());
-        datasetColumns.setLastNmonths(dataSetColumn.getLastNmonths());
-        datasetColumns.setLastNweeks(dataSetColumn.getLastNweeks());
-        datasetColumns.setLastNyears(dataSetColumn.getLastNyears());
-        datasetColumns.setDatasetId(dataset);
-        uiDao.saveOrUpdate(datasetColumns);
-        datasetList.add(datasetColumns);
-        return datasetList;
+        DataSetColumns dataSetColumns = new DataSetColumns();
+        dataSetColumns.setId(dataSetColumnBean.getId());
+        dataSetColumns.setExpression(dataSetColumnBean.getExpression());
+        dataSetColumns.setFieldName(dataSetColumnBean.getFieldName());
+        dataSetColumns.setFieldType(dataSetColumnBean.getFieldType());
+        dataSetColumns.setDisplayName(dataSetColumnBean.getDisplayName());
+        dataSetColumns.setDisplayFormat(dataSetColumnBean.getDisplayFormat());
+        dataSetColumns.setStatus(dataSetColumnBean.getStatus());
+        dataSetColumns.setFunctionName(dataSetColumnBean.getFunctionName());
+        dataSetColumns.setColumnName(dataSetColumnBean.getColumnName());
+        dataSetColumns.setBaseField(dataSetColumnBean.getBaseField());
+        dataSetColumns.setDateRangeName(dataSetColumnBean.getDateRangeName());
+        dataSetColumns.setCustomStartDate(dataSetColumnBean.getCustomStartDate());
+        dataSetColumns.setCustomEndDate(dataSetColumnBean.getCustomEndDate());
+        dataSetColumns.setLastNdays(dataSetColumnBean.getLastNdays());
+        dataSetColumns.setSortPriority(dataSetColumnBean.getSortPriority());
+        dataSetColumns.setLastNmonths(dataSetColumnBean.getLastNmonths());
+        dataSetColumns.setLastNweeks(dataSetColumnBean.getLastNweeks());
+        dataSetColumns.setLastNyears(dataSetColumnBean.getLastNyears());
+        dataSetColumns.setDataSetId(dataSet);
+        uiDao.saveOrUpdate(dataSetColumns);
+        dataSetList.add(dataSetColumns);
+        return dataSetList;
     }
 
     public List<JoinDataSetCondition> createJoinDataSet(JoinDataSetBean joinDataSetBean) {
@@ -843,13 +840,13 @@ public class UiService {
         return uiDao.getTimezoneTypes();
     }
 
-    public DatasetColumns deleteDataSetFormulaColumnById(Integer datasetColumnId) {
-        DatasetColumns datasetColumn = (DatasetColumns) uiDao.read(DatasetColumns.class, datasetColumnId);
-        return (DatasetColumns) uiDao.delete(datasetColumn);
+    public DataSetColumns deleteDataSetFormulaColumnById(Integer dataSetColumnId) {
+        DataSetColumns dataSetColumn = (DataSetColumns) uiDao.read(DataSetColumns.class, dataSetColumnId);
+        return (DataSetColumns) uiDao.delete(dataSetColumn);
     }
 
-    public List<DatasetColumns> getDatasetColumnByDatasetId(Integer datasetId) {
-        return uiDao.getDatasetColumnByDatasetId(datasetId);
+    public List<DataSetColumns> getDataSetColumnByDatasetId(Integer dataSetId) {
+        return uiDao.getDataSetColumnByDatasetId(dataSetId);
     }
 
     public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
