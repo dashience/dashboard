@@ -364,15 +364,18 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //            console.log(dataSourcePath.dataSourceId.sqlDriver);
 //            console.log(dataSourcePath.dataSourceId.password);
             var url = "admin/proxy/getData?";
-            if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+            var dataSourcePassword = '';
 
-            var dataSourcePassword;
-            if (dataSourcePath.dataSourceId.password) {
-                dataSourcePassword = dataSourcePath.dataSourceId.password;
-            } else {
-                dataSourcePassword = '';
+            if (dataSourcePath.dataSourceId != null) {
+                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
+
+                if (dataSourcePath.dataSourceId.password) {
+                    dataSourcePassword = dataSourcePath.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
             }
             console.log(dataSourcePath.networkType);
             scope.format = function (column, value) {
@@ -403,21 +406,34 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             } else {
                 setProductSegment = 'none';
             }
+            var connectionUrl = null;
+            var driver = null;
+            var dataSourceType = null;
+            var userName = null;
+            var dataSourceId= null;
+            if (dataSourcePath.dataSourceId != null) {
+                connectionUrl = dataSourcePath.dataSourceId.connectionString;
+                dataSourceId = dataSourcePath.dataSourceId.id;
+                driver = dataSourcePath.dataSourceId.dataSourceType;
+                dataSourceType = dataSourcePath.dataSourceId.dataSourceType;
+                userName = dataSourcePath.dataSourceId.userName;
+            }
             scope.dataSetItems = function () {
-                $http.get(url + 'connectionUrl=' + dataSourcePath.dataSourceId.connectionString +
-                        "&dataSourceId=" + dataSourcePath.dataSourceId.id +
+                $http.get(url + 'connectionUrl=' + connectionUrl +
+                        "&dataSourceId=" + dataSourceId +
                         "&dataSetId=" + dataSourcePath.id +
+                        "&joinDataSetId=" + dataSourcePath.joinDataSetId +
                         "&accountId=" + $stateParams.accountId +
                         "&dataSetReportName=" + dataSourcePath.reportName +
                         "&timeSegment=" + setTimeSegment +
                         "&filter=" + dataSourcePath.networkType +
                         "&productSegment=" + setProductSegment +
-                        "&driver=" + dataSourcePath.dataSourceId.dataSourceType +
-                        "&dataSourceType=" + dataSourcePath.dataSourceId.dataSourceType +
+                        "&driver=" + dataSourceType +
+                        "&dataSourceType=" + dataSourceType +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
-                        '&username=' + dataSourcePath.dataSourceId.userName +
+                        '&username=' + userName +
                         '&password=' + dataSourcePassword +
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
@@ -466,14 +482,10 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
                     }
 
-
-
-
-
                     scope.columns = [];
                     scope.dataSetId = dataSourcePath.id;
                     if (dataSourcePath.id != null) {
-                        $http.get("admin/ui/getDatasetColumnByDatasetId/" + dataSourcePath.id).success(function (resp) {
+                        $http.get("admin/ui/getDataSetColumnsByDataSetId/" + dataSourcePath.id).success(function (resp) {
                             scope.ajaxLoadingCompleted = true;
                             scope.loadingTable = false;
                             console.log(resp)
@@ -609,8 +621,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 var dataSetId = dataSourcePath.id;
                 $http({method: 'DELETE', url: 'admin/ui/dataSetColumn/' + dataSetId}).success(function () {
                     scope.dataSetItems();
-                })
-            }
+                });
+            };
 
 
             scope.dataSetError = false;
@@ -725,9 +737,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.customStartDate = "";
                     scope.customEndDate = "";
                 }
-                scope.datasetId = dataSourcePath.id;
+                scope.dataSetId = dataSourcePath.id;
                 var data = {
-                    datasetId: dataSourcePath.id,
+                    dataSetId: dataSourcePath.id,
                     id: dataSetColumn.id,
                     tableColumns: scope.columns,
                     expression: dataSetColumn.expression,

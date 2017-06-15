@@ -1,6 +1,6 @@
 app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService) {
     $scope.permission = localStorageService.get("permission");
-        $scope.dataSetFlag = false;
+    $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
     $scope.timeSegFlag = false;
     $scope.startDate = $stateParams.startDate;
@@ -18,30 +18,48 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'Inner', value: 'inner'},
         {name: 'Union', value: 'union'}
     ];
-    console.log($scope.permission)
     var url = "admin/proxy/getData?";
 
     function getPreviewDataSet(dataSet, selectType) {
-        var dataSourcePassword;
-        if (dataSet.dataSourceId.password) {
-            dataSourcePassword = dataSet.dataSourceId.password;
-        } else {
-            dataSourcePassword = '';
+        console.log(dataSet);
+        var dataSourcePassword = '';
+        var connectionUrl = null;
+        var driver = null;
+        var dataSourceType = null;
+        var userName = null;
+        var dataSourceId = null;
+        if (dataSet.dataSourceId != null) {
+            if (dataSet.dataSourceId.password) {
+                dataSourcePassword = dataSet.dataSourceId.password;
+            } else {
+                dataSourcePassword = '';
+            }
+
+            connectionUrl = dataSet.dataSourceId.connectionString;
+            dataSourceId = dataSet.dataSourceId.id;
+            driver = dataSet.dataSourceId.dataSourceType;
+            dataSourceType = dataSet.dataSourceId.dataSourceType;
+            userName = dataSet.dataSourceId.userName;
         }
-        $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
-                "&dataSourceId=" + dataSet.dataSourceId.id +
+        var joinDataSetId = null;
+        if (dataSet.joinDataSetId != null) {
+            joinDataSetId = dataSet.joinDataSetId.id;
+        }
+        $http.get(url + 'connectionUrl=' + connectionUrl +
+                "&dataSourceId=" + dataSourceId +
                 "&dataSetId=" + dataSet.id +
+                "&joinDataSetId=" + joinDataSetId +
                 "&accountId=" + $stateParams.accountId +
                 "&dataSetReportName=" + dataSet.reportName +
                 "&timeSegment=" + dataSet.timeSegment +
                 "&filter=" + dataSet.networkType +
                 "&productSegment=" + dataSet.productSegment +
-                "&driver=" + dataSet.dataSourceId.dataSourceType +
-                "&dataSourceType=" + dataSet.dataSourceId.dataSourceType +
+                "&driver=" + dataSourceType +
+                "&dataSourceType=" + dataSourceType +
                 "&location=" + $stateParams.locationId +
                 "&startDate=" + $stateParams.startDate +
                 "&endDate=" + $stateParams.endDate +
-                '&username=' + dataSet.dataSourceId.userName +
+                '&username=' + userName +
                 '&password=' + dataSourcePassword +
                 '&url=' + dataSet.url +
                 '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
@@ -87,7 +105,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         if ($scope.operationType == 'union' || $scope.operationType == 'intersection') {
             dataSetColumn.columnName = dataSetColumn.conditionFieldFirst;
         }
-    }
+    };
     $scope.dataSetColumnList = [];
     $scope.joinDataSetList = [];
     $scope.hideCondition = false;
@@ -107,11 +125,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetColumnList.splice(index, 1);
 
         $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId + "/" + joinDataSetId}).success(function (response) {
-            console.log(response)
+            console.log(response);
             $scope.joinDataSetList = response;
         });
-        console.log($scope.joinDataSetList)
-        console.log($scope.dataSetColumnList)
+        console.log($scope.joinDataSetList);
+        console.log($scope.dataSetColumnList);
     }
     var joinDataSetId = null;
 
@@ -1638,7 +1656,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     ];
     $scope.getTimeSegements = function (dataSet) {
-console.log(dataSet);
+        console.log(dataSet);
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.instagramPerformance);

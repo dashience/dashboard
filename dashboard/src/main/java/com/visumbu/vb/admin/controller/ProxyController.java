@@ -148,7 +148,7 @@ public class ProxyController {
             }
         }
 
-        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && dataSourceId == null) {
+        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceId == null || dataSourceId.isEmpty() || dataSourceId.equalsIgnoreCase("null"))) {
             try {
                 Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
                 returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
@@ -156,9 +156,7 @@ public class ProxyController {
 
             }
         } else {
-            System.out.println("valueMap ---> " + valueMap);
             returnMap = getData(valueMap, request, response);
-            System.out.println("returnMap ---> " + returnMap);
         }
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
@@ -204,18 +202,32 @@ public class ProxyController {
         MultiValueMap<String, String> joinValueMap = new LinkedMultiValueMap<>();
         joinValueMap.put("dataSetReportName", Arrays.asList(dataSet.getReportName()));
         joinValueMap.put("dataSetId", Arrays.asList(dataSet.getId() + ""));
+        if (dataSet.getJoinDataSetId() != null) {
+            joinValueMap.put("joinDataSetId", Arrays.asList(dataSet.getJoinDataSetId().getId() + ""));
+        } else {
+            joinValueMap.put("joinDataSetId", null);
+        }
         joinValueMap.put("timeSegment", Arrays.asList(dataSet.getTimeSegment()));
         joinValueMap.put("filter", Arrays.asList(dataSet.getNetworkType()));
         joinValueMap.put("url", Arrays.asList(dataSet.getUrl()));
         joinValueMap.put("query", Arrays.asList(dataSet.getQuery()));
         joinValueMap.put("productSegment", Arrays.asList(dataSet.getProductSegment()));
         DataSource dataSource = dataSet.getDataSourceId();
-        joinValueMap.put("connectionUrl", Arrays.asList(dataSource.getConnectionString()));
-        joinValueMap.put("dataSourceId", Arrays.asList(dataSource.getId() + ""));
-        joinValueMap.put("driver", Arrays.asList(dataSource.getDataSourceType()));
-        joinValueMap.put("dataSourceType", Arrays.asList(dataSource.getDataSourceType()));
-        joinValueMap.put("username", Arrays.asList(dataSource.getUserName()));
-        joinValueMap.put("password", Arrays.asList(dataSource.getPassword()));
+        if (dataSource != null) {
+            joinValueMap.put("connectionUrl", Arrays.asList(dataSource.getConnectionString()));
+            joinValueMap.put("dataSourceId", Arrays.asList(dataSource.getId() + ""));
+            joinValueMap.put("driver", Arrays.asList(dataSource.getDataSourceType()));
+            joinValueMap.put("dataSourceType", Arrays.asList(dataSource.getDataSourceType()));
+            joinValueMap.put("username", Arrays.asList(dataSource.getUserName()));
+            joinValueMap.put("password", Arrays.asList(dataSource.getPassword()));
+        } else {
+            joinValueMap.put("connectionUrl", null);
+            joinValueMap.put("dataSourceId", null);
+            joinValueMap.put("driver", null);
+            joinValueMap.put("dataSourceType", null);
+            joinValueMap.put("username", null);
+            joinValueMap.put("password", null);
+        }
         joinValueMap.put("startDate", Arrays.asList(getFromMultiValueMap(valueMap, "startDate")));
         joinValueMap.put("accountId", Arrays.asList(getFromMultiValueMap(valueMap, "accountId")));
         joinValueMap.put("locationId", Arrays.asList(getFromMultiValueMap(valueMap, "locationId")));
@@ -228,6 +240,8 @@ public class ProxyController {
         DataSet dataSetTwo = null;
         String operationType = null;
         List<String> mappings = new ArrayList<>();
+        Map joinDataSetOneMap = new HashMap<>();
+        Map joinDataSetTwoMap = new HashMap<>();
 
         List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
@@ -239,8 +253,18 @@ public class ProxyController {
         }
 
         MultiValueMap joinValueMapOne = getRequest(dataSetOne, valueMap);
-        Map joinDataSetOneMap = getData(joinValueMapOne, request, response);
+        String joinDataSetIdStr1 = getFromMultiValueMap(joinValueMapOne, "joinDataSetId");
+        String dataSourceId1 = getFromMultiValueMap(joinValueMapOne, "dataSourceId");
+        if (joinDataSetIdStr1 != null && !joinDataSetIdStr1.isEmpty() && !joinDataSetIdStr1.equalsIgnoreCase("null") && (dataSourceId1 == null || dataSourceId1.isEmpty() || dataSourceId1.equalsIgnoreCase("null"))) {
+            try {
+                Integer joinDataSetIdNum = Integer.parseInt(joinDataSetIdStr1);
+                joinDataSetOneMap = getJoinData(joinValueMapOne, request, response, joinDataSetIdNum);
+            } catch (NumberFormatException e) {
 
+            }
+        } else {
+            joinDataSetOneMap = getData(joinValueMapOne, request, response);
+        }
         List<Map<String, Object>> dataSetOneList = (List<Map<String, Object>>) joinDataSetOneMap.get("data");
         String dataSetIdOneStr = getFromMultiValueMap(joinValueMapOne, "dataSetId");
         if (dataSetIdOneStr != null && !dataSetIdOneStr.isEmpty()) {
@@ -256,8 +280,19 @@ public class ProxyController {
         Set<String> columnSet = dataSetOneList.get(0).keySet();
 
         MultiValueMap joinValueMapTwo = getRequest(dataSetTwo, valueMap);
-        Map joinDataSetTwoMap = getData(joinValueMapTwo, request, response);
+        String joinDataSetIdStr2 = getFromMultiValueMap(joinValueMapTwo, "joinDataSetId");
+        String dataSourceId2 = getFromMultiValueMap(joinValueMapTwo, "dataSourceId");
+        if (joinDataSetIdStr2 != null && !joinDataSetIdStr2.isEmpty() && !joinDataSetIdStr2.equalsIgnoreCase("null") && (dataSourceId2 == null || dataSourceId2.isEmpty() || dataSourceId2.equalsIgnoreCase("null"))) {
+            try {
+                Integer joinDataSetIdNum = Integer.parseInt(joinDataSetIdStr2);
+                joinDataSetTwoMap = getJoinData(joinValueMapTwo, request, response, joinDataSetIdNum);
+            } catch (NumberFormatException e) {
 
+            }
+        } else {
+            joinDataSetTwoMap = getData(joinValueMapTwo, request, response);
+
+        }
         List<Map<String, Object>> dataSetTwoList = (List<Map<String, Object>>) joinDataSetTwoMap.get("data");
         String dataSetIdTwoStr = getFromMultiValueMap(joinValueMapTwo, "dataSetId");
         if (dataSetIdTwoStr != null && !dataSetIdTwoStr.isEmpty()) {
@@ -369,7 +404,6 @@ public class ProxyController {
 
     public static List<Map<String, Object>> leftJoin(final List<Map<String, Object>> dataSet1, final List<Map<String, Object>> dataSet2, final List<String> mappings) {
         Set<String> columnSet = dataSet2.get(0).keySet();
-        System.out.println("columnSet ---> " + columnSet);
         List<Map<String, Object>> returnList = new ArrayList<>();
         dataSet1.forEach(map -> {
             Stream<Map<String, Object>> filters = dataSet2.stream().filter(e -> {
@@ -377,10 +411,7 @@ public class ProxyController {
                 for (Iterator<String> iterator = mappings.iterator(); iterator.hasNext();) {
                     String mapping = iterator.next();
                     String[] mappingArray = mapping.split(",");
-                    System.out.println("field[0] ---> " + mappingArray[0]);
-                    System.out.println("field[1] ---> " + mappingArray[1]);
                     if (!(map.get(mappingArray[0]) + "").equalsIgnoreCase(e.get(mappingArray[1]) + "")) {
-                        System.out.println("return false");
                         return false;
                     }
                 }
@@ -518,7 +549,6 @@ public class ProxyController {
             }
             returnList.add(newDataMap);
         }
-        System.out.println("returnList ---> " + returnList);
         return returnList;
     }
 
@@ -536,7 +566,6 @@ public class ProxyController {
             dateRangeSelect = Range.YEAR;
         }
 
-        //System.out.println("dateRangeSelect ---> " + dateRangeSelect);
         if (dateRangeSelect.equals(Range.DAY)) {
             dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays, endDate);
         } else if (dateRangeSelect.equals(Range.WEEK)) {
