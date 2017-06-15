@@ -1,5 +1,6 @@
-app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout) {
-    $scope.dataSetFlag = false;
+app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService) {
+    $scope.permission = localStorageService.get("permission");
+        $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
     $scope.timeSegFlag = false;
     $scope.startDate = $stateParams.startDate;
@@ -17,7 +18,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {name: 'Inner', value: 'inner'},
         {name: 'Union', value: 'union'}
     ];
-
+    console.log($scope.permission)
     var url = "admin/proxy/getData?";
 
     function getPreviewDataSet(dataSet, selectType) {
@@ -177,7 +178,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             });
         });
     };
-    $scope.cancelJoinDataSet = function (joinDataSetColumn) {
+    $scope.cancelJoinDataSet = function () {
         $scope.joinDataSetColumn = "";
 //        $scope.dataSetColumn = "";
         $scope.dataSetColumnList = [];
@@ -197,6 +198,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         };
         var data = joinDataSetList;
         $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
+            $scope.cancelJoinDataSet();
             getItems();
         });
     };

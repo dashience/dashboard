@@ -32,6 +32,7 @@ public class Permission {
     private Boolean scheduleReport;
     private Boolean viewReport;
     private Boolean viewFieldSettings;
+    private Boolean createJoinDataSet;
     
     public Boolean getViewReport() {
         return viewReport;
@@ -159,6 +160,14 @@ public class Permission {
 
     public void setViewFieldSettings(Boolean viewFieldSettings) {
         this.viewFieldSettings = viewFieldSettings;
+    }
+
+    public Boolean getCreateJoinDataSet() {
+        return createJoinDataSet;
+    }
+
+    public void setCreateJoinDataSet(Boolean createJoinDataSet) {
+        this.createJoinDataSet = createJoinDataSet;
     }
            
     public String setPermission(String permissionName, Boolean permission) {
