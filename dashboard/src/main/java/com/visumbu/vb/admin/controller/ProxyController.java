@@ -128,7 +128,7 @@ public class ProxyController {
         Map returnMap = new HashMap<>();
         Map<String, String[]> parameterMap = request.getParameterMap();
         String joinDataSetIdStr = request.getParameter("joinDataSetId");
-
+        String dataSourceId = request.getParameter("dataSourceId");
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
@@ -148,11 +148,10 @@ public class ProxyController {
             }
         }
 
-        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null")) {
+        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && dataSourceId == null) {
             try {
-              Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
-                            returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
-
+                Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
+                returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
             } catch (NumberFormatException e) {
 
             }
@@ -336,7 +335,7 @@ public class ProxyController {
             }
             if (dataSetIdInt != null) {
                 DataSet dataSet = uiService.readDataSet(dataSetIdInt);
-                dataSourceType = dataSet.getDataSourceId().getDataSourceType();
+                dataSourceType = (dataSourceType == null || dataSourceType.isEmpty()) ? dataSet.getDataSourceId().getDataSourceType() : dataSourceType;
             }
         }
 
