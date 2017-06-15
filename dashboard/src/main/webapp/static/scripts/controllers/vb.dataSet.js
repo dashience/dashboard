@@ -2899,9 +2899,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.customStartDate = "";
                     scope.customEndDate = "";
                 }
-                scope.datasetId = dataSourcePath.id;
+               scope.dataSetId = dataSourcePath.id;
                 var data = {
-                    datasetId: dataSourcePath.id,
+                    dataSetId: dataSourcePath.id,
                     id: dataSetColumn.id,
                     tableColumns: scope.columns,
                     expression: dataSetColumn.expression,
