@@ -218,6 +218,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
             $scope.cancelJoinDataSet();
             getItems();
+            $scope.isSet(1);
         });
     };
     /*
