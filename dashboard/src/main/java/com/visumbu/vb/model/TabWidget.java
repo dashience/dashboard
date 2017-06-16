@@ -222,6 +222,9 @@ public class TabWidget implements Serializable {
     @JoinColumn(name = "tab_id", referencedColumnName = "id")
     @ManyToOne
     private DashboardTabs tabId;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ManyToOne
+    private Account accountId;
 
     @Transient
     private List<WidgetColumn> columns;
@@ -532,6 +535,14 @@ public class TabWidget implements Serializable {
         this.tabId = tabId;
     }
 
+    public Account getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Account accountId) {
+        this.accountId = accountId;
+    }
+   
     public List<WidgetColumn> getColumns() {
         return columns;
     }

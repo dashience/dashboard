@@ -35,16 +35,15 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Table(name = "dashboard_tabs")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "DashboardTabs.findAll", query = "SELECT d FROM DashboardTabs d"),
-    @NamedQuery(name = "DashboardTabs.findById", query = "SELECT d FROM DashboardTabs d WHERE d.id = :id"),
-    @NamedQuery(name = "DashboardTabs.findByDashboard", 
-            query = "SELECT d FROM DashboardTabs d WHERE d.dashboardId = :dashboardId"),
-    @NamedQuery(name = "DashboardTabs.findByTabName", query = "SELECT d FROM DashboardTabs d WHERE d.tabName = :tabName"),
-    @NamedQuery(name = "DashboardTabs.findByCreatedTime", query = "SELECT d FROM DashboardTabs d WHERE d.createdTime = :createdTime"),
-    @NamedQuery(name = "DashboardTabs.findByModifiedTime", query = "SELECT d FROM DashboardTabs d WHERE d.modifiedTime = :modifiedTime"),
-    @NamedQuery(name = "DashboardTabs.findByRemarks", query = "SELECT d FROM DashboardTabs d WHERE d.remarks = :remarks"),
-    @NamedQuery(name = "DashboardTabs.findByStatus", query = "SELECT d FROM DashboardTabs d WHERE d.status = :status"),
-    @NamedQuery(name = "DashboardTabs.findByTabOrder", query = "SELECT d FROM DashboardTabs d WHERE d.tabOrder = :tabOrder")})
+    @NamedQuery(name = "DashboardTabs.findAll", query = "SELECT d FROM DashboardTabs d")
+    ,@NamedQuery(name = "DashboardTabs.findById", query = "SELECT d FROM DashboardTabs d WHERE d.id = :id")
+    ,@NamedQuery(name = "DashboardTabs.findByDashboard", query = "SELECT d FROM DashboardTabs d WHERE d.dashboardId = :dashboardId")
+    ,@NamedQuery(name = "DashboardTabs.findByTabName", query = "SELECT d FROM DashboardTabs d WHERE d.tabName = :tabName")
+    ,@NamedQuery(name = "DashboardTabs.findByCreatedTime", query = "SELECT d FROM DashboardTabs d WHERE d.createdTime = :createdTime")
+    ,@NamedQuery(name = "DashboardTabs.findByModifiedTime", query = "SELECT d FROM DashboardTabs d WHERE d.modifiedTime = :modifiedTime")
+    ,@NamedQuery(name = "DashboardTabs.findByRemarks", query = "SELECT d FROM DashboardTabs d WHERE d.remarks = :remarks")
+    ,@NamedQuery(name = "DashboardTabs.findByStatus", query = "SELECT d FROM DashboardTabs d WHERE d.status = :status")
+    ,@NamedQuery(name = "DashboardTabs.findByTabOrder", query = "SELECT d FROM DashboardTabs d WHERE d.tabOrder = :tabOrder")})
 public class DashboardTabs implements Serializable {
 
     @OneToMany(mappedBy = "tabId")
@@ -80,6 +79,12 @@ public class DashboardTabs implements Serializable {
     @JoinColumn(name = "agency_product_id", referencedColumnName = "id")
     @ManyToOne
     private AgencyProduct agencyProductId;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ManyToOne
+    private Account accountId;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne
+    private VbUser userId; 
 
     public DashboardTabs() {
     }
@@ -153,7 +158,6 @@ public class DashboardTabs implements Serializable {
 //    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
 //        this.tabWidgetCollection = tabWidgetCollection;
 //    }
-
     public Dashboard getDashboardId() {
         return dashboardId;
     }
@@ -168,9 +172,24 @@ public class DashboardTabs implements Serializable {
 
     public void setAgencyProductId(AgencyProduct agencyProductId) {
         this.agencyProductId = agencyProductId;
-    }    
-    
+    }
 
+    public Account getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Account accountId) {
+        this.accountId = accountId;
+    }
+
+    public VbUser getUserId() {
+        return userId;
+    }
+
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -205,5 +224,4 @@ public class DashboardTabs implements Serializable {
 //    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
 //        this.tabWidgetCollection = tabWidgetCollection;
 //    }
-
-    }
+}

@@ -41,6 +41,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //        $scope.accountLogo;
             }
         });
+        console.log($scope.name)
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
@@ -53,6 +54,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $scope.getAccountId = function (account) {
         console.log(account)
+        if ($stateParams.accountId != account.accountId.id) {
+            $stateParams.tabId = "";
+        }
         if (account.accountId.logo) {
             $scope.accountLogo = account.accountId.logo;
         } else {
@@ -287,10 +291,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $stateParams.startDate = startDate;
         $stateParams.endDate = endDate;
-        console.log($scope.startDate);
-        console.log($scope.endDate);
+
         console.log($stateParams.startDate);
         console.log($stateParams.endDate);
+        console.log($stateParams.tabId)
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
                 accountId: $stateParams.accountId,
@@ -545,8 +549,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
-                    startDate: $stateParams.startDate?$stateParams.startDate:moment().subtract(30, 'days'),
-                    endDate: $stateParams.endDate?$stateParams.endDate:moment().subtract(1, 'days'),
+                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(30, 'days'),
+                    endDate: $stateParams.endDate ? $stateParams.endDate : moment().subtract(1, 'days'),
                     maxDate: new Date()
                 },
                 function (startDate, endDate) {

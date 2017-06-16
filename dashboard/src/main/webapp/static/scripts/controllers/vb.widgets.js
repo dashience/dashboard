@@ -64,12 +64,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $window.open(url);
     };
 
-    function getWidgetItem() {      //Default Loading Items
+    function getWidgetItem() {    
+        //Default Loading Items
+        console.log($stateParams.tabId)
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
         $scope.loading = true;
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+            console.log(response)
             $scope.loading = false;
             var widgetItems = [];
             widgetItems = response;

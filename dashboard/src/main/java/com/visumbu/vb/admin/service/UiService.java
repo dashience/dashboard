@@ -97,8 +97,8 @@ public class UiService {
         return uiDao.updateTabOrder(agencyProductId, tabOrder);
     }
 
-    public List<DashboardTabs> getAgencyProductTab(Integer agencyProductId) {
-        return uiDao.getAgencyProductTab(agencyProductId);
+    public List<DashboardTabs> getAgencyProductTab(Integer agencyProductId, Integer accountId, Integer userId) {
+        return uiDao.getAgencyProductTab(agencyProductId, accountId, userId);
     }
 //    public List<DashboardTabs> getDashboardTabs(Integer dbId) {
 //        return uiDao.getDashboardTabs(dbId);

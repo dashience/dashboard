@@ -5,9 +5,10 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.accountName = $stateParams.accountName;
     //$scope.tabId = $stateParams.tabId;
     $scope.tabs = [];
-
+    console.log($stateParams.productId)
     if ($stateParams.productId) {
-        $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
+        $http.get("admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
+            console.log(response)
             var setTabId;
             if (!response) {
                 setTabId = "";
@@ -18,9 +19,10 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 if ($stateParams.tabId == 0) {
                     setTabId = response[0].id;
                 } else {
-                    setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0)
+                    setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
                 }
             }
+            console.log(setTabId)
             $scope.loadTab = false;
             $scope.tabs = response;
             angular.forEach($scope.tabs, function (value, key) {
@@ -99,7 +101,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         var data = {
             tabName: tab.tabName
         };
-        $http({method: 'POST', url: 'admin/ui/dbTabs/' + $stateParams.productId, data: data}).success(function (response) {
+        $http({method: 'POST', url: 'admin/ui/dbTabs/' + $stateParams.productId + "/" + $stateParams.accountId, data: data}).success(function (response) {
             $stateParams.tabId = "";
             $scope.tabs.push({id: response.id, tabName: tab.tabName, tabClose: true});
             $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
@@ -110,7 +112,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     $scope.deleteTab = function (index, tab) {
         $http({method: 'DELETE', url: 'admin/ui/dbTab/' + tab.id}).success(function (response) {
-            $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
+            $http.get("admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
                 $scope.loadTab = false;
                 $scope.tabs = response;
                 $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
@@ -169,9 +171,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             remarks: tab.remarks,
             status: tab.status,
             tabName: tab.tabName,
-            tabOrder: tab.tabOrder
+            tabOrder: tab.tabOrder,
+            accountId: tab.accountId,
+            userId: tab.userId
         };
-        $http({method: 'PUT', url: 'admin/ui/dbTabs/' + $stateParams.productId, data: data})
+        $http({method: 'PUT', url: 'admin/ui/dbTabs/' + $stateParams.productId, data: data});
         tab.editing = false;
         $scope.editedItem = null;
     };
