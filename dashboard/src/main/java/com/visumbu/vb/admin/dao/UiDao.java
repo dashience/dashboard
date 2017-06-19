@@ -465,7 +465,7 @@ public class UiDao extends BaseDao {
     }
 
     public void removeDataSetColumns(Integer id) {
-        String queryStr = "delete DataSetColumns d where d.datasetId.id = :dataSetId";
+        String queryStr = "delete DataSetColumns d where d.dataSetId.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();

@@ -584,7 +584,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY1Axis(widget, yAxisItems);
         } else {
-            b
             angular.forEach(widget.columns, function (val, key) {
                 if (val.fieldName == column.fieldName) {
                     val.yAxis = null;
@@ -1259,8 +1258,8 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                 e.stopPropagation();
             });
             var widget = JSON.parse(scope.widgetTableDateRange);
-            var widgetStartDate = widget.customStartDate?widget.customStartDate:$stateParams.startDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
-            var widgetEndDate = widget.customEndDate?widget.customEndDate:$stateParams.endDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
+            var widgetStartDate = widget.customStartDate ? widget.customStartDate : $stateParams.startDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
+            var widgetEndDate = widget.customEndDate ? widget.customEndDate : $stateParams.endDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
             //Date range as a button
             $(element[0]).daterangepicker(
                     {

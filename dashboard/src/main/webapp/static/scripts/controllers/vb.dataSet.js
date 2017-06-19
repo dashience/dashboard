@@ -2163,7 +2163,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         dataSet.timeSegment = '';
         dataSet.productSegment = '';
     };
-    $scope.clearDataSet = function (dataSet) {
+    $scope.clearDataSet = function (dataSet) {alert()
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
@@ -2173,6 +2173,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.deleteDataSet = function (dataSet, index) {
         $http({method: 'DELETE', url: 'admin/ui/dataSet/' + dataSet.id}).success(function (response) {
             $scope.dataSets.splice(index, 1);
+            getItems();
         });
     };
     $scope.selectedRow = null;
