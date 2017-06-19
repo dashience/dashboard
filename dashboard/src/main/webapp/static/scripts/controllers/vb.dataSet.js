@@ -1795,9 +1795,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
-        console.log(dataSetList.timeSegment.type);
-        dataSetList.timeSegment = dataSetList.timeSegment.type;
-        dataSetList.productSegment = dataSetList.productSegment.type;
+//        console.log(dataSetList.timeSegment.type);
+        dataSetList.timeSegment = dataSetList.timeSegment?dataSetList.timeSegment.type:null;
+        dataSetList.productSegment = dataSetList.productSegment?dataSetList.productSegment.type:null;
         console.log(dataSetList.timeSegment);
 
         var dataSet = dataSetList;

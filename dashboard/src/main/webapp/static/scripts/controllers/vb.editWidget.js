@@ -1362,9 +1362,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             queryData: '@',
         },
         link: function (scope, element, attr) {
-
-            console.log(scope.queryData)
-
             scope.columns = scope.queryData;
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
@@ -1389,10 +1386,10 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
             }
 
-            scope.buildQuery = filterList;
-            if (jsonFilter.jsonData != null) {
-                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
-            }
+//            scope.buildQuery = filterList;
+//            if (jsonFilter.jsonData != null) {
+//                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+//            }
 
             $(document).ready(function ()
             {

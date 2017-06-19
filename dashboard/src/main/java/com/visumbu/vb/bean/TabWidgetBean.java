@@ -71,6 +71,9 @@ public class TabWidgetBean {
     private List<WidgetColumnBean> widgetColumns;
     private UserAccount accountId; 
     private VbUser createdBy;
+    private String timeSegment;
+    private String productSegment;
+    private String networkType;
 
     public Integer getId() {
         return id;
@@ -449,12 +452,34 @@ public class TabWidgetBean {
     public void setCreatedBy(VbUser createdBy) {
         this.createdBy = createdBy;
     }   
-    
-    
+
+    public String getTimeSegment() {
+        return timeSegment;
+    }
+
+    public void setTimeSegment(String timeSegment) {
+        this.timeSegment = timeSegment;
+    }
+
+    public String getProductSegment() {
+        return productSegment;
+    }
+
+    public void setProductSegment(String productSegment) {
+        this.productSegment = productSegment;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
+    }
 
     @Override
     public String toString() {
-        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", widgetColumns=" + widgetColumns + '}';
-    }
+        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", jsonData=" + jsonData + ", queryFilter=" + queryFilter + ", isGridLine=" + isGridLine + ", widgetColumns=" + widgetColumns + ", accountId=" + accountId + ", createdBy=" + createdBy + ", timeSegment=" + timeSegment + ", productSegment=" + productSegment + ", networkType=" + networkType + '}';
+    }   
 
 }

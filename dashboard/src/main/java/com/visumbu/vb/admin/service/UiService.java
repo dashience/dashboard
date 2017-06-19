@@ -285,6 +285,9 @@ public class UiService {
         tabWidget.setJsonData(tabWidgetBean.getJsonData());
         tabWidget.setAccountId(tabWidgetBean.getAccountId());
         tabWidget.setCreatedBy(tabWidgetBean.getCreatedBy());
+        tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
+        tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
+        tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
