@@ -7,6 +7,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.tags = [];
     $scope.dragEnabled = true;
     $scope.showFilter = false;
+    $scope.showColumnDefs = false;
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -486,17 +487,38 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
 
-    $scope.previewChart = function (chartType) {
-        $scope.showPreviewChart = false; 
+    $scope.selectChart = function (chartType) {
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
         $scope.showFilter = false;
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
     };
 
+    $scope.showListOfColumns = function () {
+        $scope.loadingColumnsGif = true;
+        $scope.showFilter = false;
+        $scope.showColumnDefs = true;
+        $scope.showPreviewChart = false;
+    };
+
+    $scope.showFilterList = function () {
+        $scope.loadingColumnsGif = true;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+        $scope.showFilter = true;
+    };
+
+    $scope.showEditor = function () {
+        $scope.showPreviewChart = true;
+    };
+
     $scope.showPreview = function (widgetObj) {
         var chartType = $scope.chartTypeName;
+        $scope.showPreviewChart = true;
+        $scope.showFilter = false;
+        $scope.showColumnDefs = false;
         $scope.chartTypeName = null;
-        console.log(widgetObj)
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
@@ -513,9 +535,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectColumnItem = function (obj, widget) {
+        console.log(obj.selectColumnDef)
         $scope.dispHideBuilder = true;
         obj.columnsButtons = true;
-        widget.columns.push(obj);
+        var checkColumnDef = obj.selectColumnDef;
+        if (checkColumnDef === 1) {
+            widget.columns.push(obj);
+        } else {
+            var getIndexOfcolumns = widget.columns.indexOf(obj);
+            widget.columns.splice(getIndexOfcolumns, 1);
+        }
         $timeout(function () {
             resetQueryBuilder();
         }, 40);
@@ -771,38 +800,38 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widgetObj.columns.push(column);
         }
     };
-    
-    
+
+
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
         var groupVar = [];
 //        if (chartTypeName == 'stackedbar') {
-            angular.forEach(y1data, function (value, key) {
-                if (!value) {
-                    return;
-                }
-                var exists = false;
-                angular.forEach(widget.columns, function (val, key) {
-                    if (val.fieldName === value.fieldName) {
-                        exists = true;
-                        val.yAxis = 1;
+        angular.forEach(y1data, function (value, key) {
+            if (!value) {
+                return;
+            }
+            var exists = false;
+            angular.forEach(widget.columns, function (val, key) {
+                if (val.fieldName === value.fieldName) {
+                    exists = true;
+                    val.yAxis = 1;
 //                        val.groupField = widget.columns.indexOf(val.fieldName) + 1;
-                        val.groupField = y1data.indexOf(value) + 1;  //If Stacked Bar
-                        console.log(val.groupField);
-                    } else {
-                        if (val.fieldName == y1data.removeItem) {
-                            val.yAxis = null;
-                            val.groupField = null;
-                        }
-                    }
-                });
-                if (exists == false) {
-                    if (value.displayName) {
-                        value.yAxis = 1;
-                        value.groupField = y1data.indexOf(value) + 1;
-                        widget.columns.push(value);
+                    val.groupField = y1data.indexOf(value) + 1;  //If Stacked Bar
+                    console.log(val.groupField);
+                } else {
+                    if (val.fieldName == y1data.removeItem) {
+                        val.yAxis = null;
+                        val.groupField = null;
                     }
                 }
             });
+            if (exists == false) {
+                if (value.displayName) {
+                    value.yAxis = 1;
+                    value.groupField = y1data.indexOf(value) + 1;
+                    widget.columns.push(value);
+                }
+            }
+        });
 //        }
 //        angular.forEach(y1data, function (value, key) {
 //            if (!value) {
@@ -827,7 +856,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            }
 //        });
     };
-    
+
 
 //    $scope.selectY1Axis = function (widgetObj, y1data, chartTypeName) {
 ////        console.log(y1data)
@@ -1071,11 +1100,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $('.showEditWidget').modal('hide');
         });
         $scope.widgetObj = "";
+        $scope.showFilter = false;
+        $scope.showPreviewChart = false;
+        $scope.showColumnDefs = false;
     };
 
     $scope.cancel = function (widgetObj) {
-        $scope.chartTypeName = "";
         $scope.widgetObj = "";
+        $scope.chartTypeName = "";
+        $scope.showPreviewChart = false;
+        $scope.showColumnDefs = false;
+        $scope.showFilter = false;
+        $scope.loadingColumnsGif = false;
         $('.showEditWidget').modal('hide');
     };
 });

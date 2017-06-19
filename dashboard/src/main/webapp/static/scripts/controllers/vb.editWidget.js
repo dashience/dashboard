@@ -1306,7 +1306,8 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                         },
                         startDate: widgetStartDate ? widgetStartDate : moment().subtract(30, 'days'),
                         endDate: widgetEndDate ? widgetEndDate : moment().subtract(1, 'days'),
-                        maxDate: new Date()
+                        maxDate: new Date(),
+                        drops: "up" //down
                     },
                     function (startDate, endDate) {
                         $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));

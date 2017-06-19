@@ -54,7 +54,7 @@
             <label>Chart Type</label>
             <div>
                 <a class="" ng-repeat="chartType in chartTypes track by chartType.id" 
-                   ng-click="previewChart(chartType, widgetObj)"> 
+                   ng-click="selectChart(chartType, widgetObj)"> 
                     <span class="btn btn-app" title="{{chartType.name}}">
                         <i style="cursor: pointer" class="fa {{chartType.icon}}" 
                            ng-class="{'selected': chartType.type == (selectedChartType?selectedChartType:widgetObj.chartType)}"></i> 
@@ -105,23 +105,17 @@
         </div>
         <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
             <button class="btn btn-success" 
-                    ng-click="loadingColumnsGif = true;
-                        showFilter = false;
-                        showColumnDefs = true;
-                        showPreviewChart = false;">
+                    ng-click="showListOfColumns()">
                 Choose Columns
             </button>
             <button class="btn btn-default" 
-                    ng-click="loadingColumnsGif = true;
-                        showColumnDefs = false;
-                        showPreviewChart = false;
-                        showFilter = true;">
+                    ng-click="showFilterList()">
                 Filter
             </button>
         </div>
         <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
             <button class="btn btn-success" 
-                    ng-click="showPreviewChart = true;">
+                    ng-click="showEditor()">
                 Show Editor
             </button>
         </div>
@@ -190,19 +184,14 @@
         </div>
         <div class="form-group">
             <button class="btn btn-info" id="btn-save" 
-                    ng-click="save(widgetObj); 
-                        showFilter = false; 
-                        showPreviewChart = false; 
-                        showColumnDefs = false;">
+                    ng-click="save(widgetObj)">
                 <i class="fa fa-save"></i> Save
             </button>
             <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default" 
-                    ng-click="showColumnDefs = false; 
-                        showFilter = false; showPreviewChart = true; showPreview(widgetObj)">Preview
+                    ng-click="showPreview(widgetObj)">Preview
             </button>
             <button class="btn btn-default" id="btn-cancel" 
-                    ng-click="cancel(widgetObj); showPreviewChart = false; 
-                        showColumnDefs = false; showFilter = false;">
+                    ng-click="cancel(widgetObj)">
                 <i class="fa fa-close"></i> Cancel
             </button>
         </div>
@@ -319,8 +308,8 @@
     </div>
     <div ng-show="afterLoadWidgetColumns" class="form-group">
         <button ng-show="showColumnDefs" class="btn btn-info btn-sm" ng-click="showColumnDefs = false"><i class="fa fa-check"></i> Ok</button>
-    </div>
-    <div class="col-sm-8" ng-show="showPreviewChart">
+    </div> 
+    <div class="col-sm-8" ng-if="showPreviewChart == true;">
         <div ng-if="chartTypeName === 'ticker'">
             <div ticker-Directive ticker-Source="{{displayPreviewChart.dataSetId}}" 
                  widget-Obj="{{displayPreviewChart}}" 
