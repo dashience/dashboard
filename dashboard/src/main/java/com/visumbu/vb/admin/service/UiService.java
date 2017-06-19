@@ -275,12 +275,6 @@ public class UiService {
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
         tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
         tabWidget.setJsonData(tabWidgetBean.getJsonData());
-//        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
-//        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
-//        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
-//        tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
-//        tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
-//        tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
 
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
@@ -356,19 +350,13 @@ public class UiService {
         tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
         tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
+        tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
+        tabWidget.setAccountId(tabWidgetBean.getAccountId());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
-        System.out.println("new Widget id ----> " + id);
-        System.out.println("-------------->1");
         List<WidgetColumn> widgetColumns = uiDao.getWidgetColumnsByWidgetId(widgetId);
-        System.out.println("widgetColumns ----> " + widgetColumns);
-
         List<WidgetTag> widgetTags = uiDao.getWidgetTagsByWidgetId(widgetId);
-        System.out.println("widgetTags ----> " + widgetTags);
-
-//        uiDao.deleteWidgetColumns(tabWidget.getId());
         for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
-            System.out.println("-------------->2");
             WidgetColumn widgetColumnBean = iterate.next();
             WidgetColumn widgetColumn = new WidgetColumn();
             widgetColumn.setFieldName(widgetColumnBean.getFieldName());
@@ -386,7 +374,6 @@ public class UiService {
             widgetColumn.setFieldType(widgetColumnBean.getFieldType());
             widgetColumn.setGroupField(widgetColumnBean.getGroupField());
             widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
-//                widgetColumn.setWidgetId(tabWidget);
             Integer columnHide = null;
             if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
                 columnHide = 1;
