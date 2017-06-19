@@ -5,7 +5,6 @@
  */
 package com.visumbu.vb.admin.controller;
 
-//import static com.visumbu.vb.admin.controller.EnliventController.processFollowings;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
@@ -317,6 +316,7 @@ public class ProxyController {
                             if (key.equalsIgnoreCase(columnStr)) {
                                 dataMap.remove(key);
                                 dataMap.put(key + "2", value);
+                                System.out.println("dataMap ---> "+dataMap);
                                 break;
                             }
                         }
@@ -397,8 +397,6 @@ public class ProxyController {
         } else if (dataSourceType.equalsIgnoreCase("linkedin")) {
             returnMap = (Map) getLinkedInData(request, response);
         }
-
-        //System.out.println("return map ---> " + returnMap);
         return returnMap;
     }
 

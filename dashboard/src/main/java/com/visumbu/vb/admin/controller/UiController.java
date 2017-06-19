@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DataSetColumns;
 
 import com.visumbu.vb.model.Currency;
@@ -111,17 +112,21 @@ public class UiController extends BaseController {
 //        dashboardTabs.setDashboardId(uiService.getDashboardById(dashboardId));
 //        return uiService.createDashboardTabs(dashboardTabs);
 //    }
-    @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{agencyProductId}/{accountId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @RequestBody DashboardTabs dashboardTabs) {
+    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId,@PathVariable Integer accountId, @RequestBody DashboardTabs dashboardTabs) {
         dashboardTabs.setAgencyProductId(uiService.getAgencyProductById(agencyProductId));
+        List<Account> account = uiService.getAccountById(accountId);
+        dashboardTabs.setAccountId(account.get(0));
+        VbUser user = userService.findByUsername(getUser(request));
+        dashboardTabs.setUserId(user);
         return uiService.createDashboardTabs(dashboardTabs);
     }
 
     @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    DashboardTabs updateAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @RequestBody DashboardTabs dashboardTab) {
-        return uiService.updateTab(dashboardTab);
+    DashboardTabs updateAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId,@RequestBody DashboardTabs dashboardTabs) {
+        return uiService.updateTab(dashboardTabs);
     }
 
 //    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.PUT, produces = "application/json")
@@ -137,10 +142,12 @@ public class UiController extends BaseController {
         return null;
     }
 
-    @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{agencyProductId}/{accountId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
-        return uiService.getAgencyProductTab(agencyProductId);
+    List getAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId,@PathVariable Integer accountId) {
+        VbUser user = userService.findByUsername(getUser(request));
+        Integer userId = user.getId();
+        return uiService.getAgencyProductTab(agencyProductId,accountId,userId);
     }
 
 //    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
