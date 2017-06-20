@@ -75,6 +75,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class VbUser implements Serializable {
 
     @OneToMany(mappedBy = "userId")
+    private Collection<DashboardTemplate> dashboardTemplateCollection;
+
+    @OneToMany(mappedBy = "userId")
     private Collection<AgencyUser> agencyUserCollection;
 
     @OneToMany(mappedBy = "userId")
@@ -345,6 +348,16 @@ public class VbUser implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.VbUser[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
+        return dashboardTemplateCollection;
+    }
+
+    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
+        this.dashboardTemplateCollection = dashboardTemplateCollection;
     }
 
 }

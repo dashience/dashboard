@@ -49,6 +49,7 @@
     <class>com.visumbu.vb.model.JoinDataSet</class>
     <class>com.visumbu.vb.model.JoinDataSetCondition</class>
     <class>com.visumbu.vb.model.DataSet</class>
+    <class>com.visumbu.vb.model.DashboardTemplate</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

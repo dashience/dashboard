@@ -290,7 +290,6 @@ public class ProxyController {
             }
         } else {
             joinDataSetTwoMap = getData(joinValueMapTwo, request, response);
-
         }
         List<Map<String, Object>> dataSetTwoList = (List<Map<String, Object>>) joinDataSetTwoMap.get("data");
         String dataSetIdTwoStr = getFromMultiValueMap(joinValueMapTwo, "dataSetId");

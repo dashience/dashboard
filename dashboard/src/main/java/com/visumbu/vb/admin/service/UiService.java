@@ -18,6 +18,7 @@ import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
+import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
@@ -838,6 +839,27 @@ public class UiService {
 
     public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
         return uiDao.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
+    }
+
+    public DashboardTemplate createDashboardTemplate(DashboardTemplate template) {
+        DashboardTemplate dashboardTemplate = new DashboardTemplate();
+        if (template.getId() != null) {
+            dashboardTemplate.setId(template.getId());
+            dashboardTemplate.setTemplateName(template.getTemplateName());
+            dashboardTemplate.setAgencyId(template.getAgencyId());
+            dashboardTemplate.setAgencyProductId(template.getAgencyProductId());
+            dashboardTemplate.setAccountId(template.getAccountId());
+            dashboardTemplate.setUserId(template.getUserId());
+            uiDao.saveOrUpdate(dashboardTemplate);
+        } else {
+            dashboardTemplate.setTemplateName(template.getTemplateName());
+            dashboardTemplate.setAgencyId(template.getAgencyId());
+            dashboardTemplate.setAgencyProductId(template.getAgencyProductId());
+            dashboardTemplate.setAccountId(template.getAccountId());
+            dashboardTemplate.setUserId(template.getUserId());
+            uiDao.saveOrUpdate(dashboardTemplate);
+        }
+        return dashboardTemplate;
     }
 
 }
