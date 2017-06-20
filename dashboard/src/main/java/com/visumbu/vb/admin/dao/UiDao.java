@@ -14,6 +14,7 @@ import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
+import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
@@ -651,4 +652,30 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
         return getJoinDataSetConditionById(joinDataSetId);
     }
+
+    public DashboardTemplate getTemplateId(Integer accountId, Integer productId, Integer userId) {
+        String queryStr = "select d from DashboardTemplate d where d.accountId.id = :accountId and d.agencyProductId.id=:productId and d.userId.id=:userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", accountId);
+        query.setParameter("productId", productId);
+        query.setParameter("userId", userId);
+        return (DashboardTemplate) query.uniqueResult();
+    }
+
+    public List<DashboardTabs> getDashboardTabsByProductId(Integer userId, Integer accountId, Integer productId) {
+        String queryStr = "select d from DashboardTabs d where d.accountId.id = :accountId and d.agencyProductId.id=:productId and d.userId.id=:userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", accountId);
+        query.setParameter("productId", productId);
+        query.setParameter("userId", userId);
+        return query.list();
+    }
+
+    public List<DashboardTemplate> getTemplateByAgencyId(Integer agencyId) {
+        String queryStr = "select d from DashboardTemplate d where d.agencyId.id=:agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", agencyId);
+        return query.list();
+    }
+
 }

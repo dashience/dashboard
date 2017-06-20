@@ -20,7 +20,7 @@
                                     ns-popover-timeout="1000" 
                                     ns-popover-hide-on-inside-click="false" 
                                     ns-popover-hide-on-outside-click="true" 
-                                    ns-popover-hide-on-button-click="true">
+                                    ns-popover-hide-on-button-click="true" ng-click="getTemplateId()">
                                 SaveAsTemplate
                             </button>
                         </div>
@@ -133,7 +133,8 @@
   <ul>
   <li class="input-group">
       <input type="text" ng-model="tab.templateName" placeholder="Enter template name" class="form-control"/>
-  <button class="btn btn-success btn-sm" ng-click="saveTemplate(tab)">Save</button>
+      <button ng-if="!templateId" class="btn btn-success btn-sm" ng-click="saveTemplate(tab)">Save</button>
+      <button  ng-if="templateId" class="btn btn-success btn-sm" ng-click="saveTemplate(tab)">Update</button>
   </li>
   </ul>
      </form>

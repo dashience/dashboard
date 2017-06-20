@@ -42,6 +42,9 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "AgencyProduct.findByStatus", query = "SELECT a FROM AgencyProduct a WHERE a.status = :status")})
 public class AgencyProduct implements Serializable {
 
+    @OneToMany(mappedBy = "agencyProductId")
+    private Collection<DashboardTemplate> dashboardTemplateCollection;
+
     @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "icon")
     private String icon;
@@ -155,6 +158,16 @@ public class AgencyProduct implements Serializable {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
+        return dashboardTemplateCollection;
+    }
+
+    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
+        this.dashboardTemplateCollection = dashboardTemplateCollection;
     }
     
 }

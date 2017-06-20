@@ -37,12 +37,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
+import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.DataSetColumns;
 
 import com.visumbu.vb.model.Currency;
+import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Timezone;
@@ -653,6 +657,38 @@ public class UiController extends BaseController {
         List<Timezone> timezones = uiService.getTimeZones();
         //System.out.println("size of currencies"+currencies.size());
         return timezones;
+    }
+
+    @RequestMapping(value = "saveTemplate/{accountId}/{productId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DashboardTemplate createDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate, @PathVariable Integer accountId, @PathVariable Integer productId) {
+        VbUser user = userService.findByUsername(getUser(request));
+        dashboardTemplate.setUserId(user);
+        AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
+        dashboardTemplate.setAgencyProductId(agencyProduct);
+        List<Account> account = uiService.getAccountById(accountId);
+        dashboardTemplate.setAccountId(account.get(0));
+        dashboardTemplate.setAgencyId(agencyProduct.getAgencyId());
+        return uiService.createDashboardTemplate(dashboardTemplate, user.getId(), accountId, productId);
+    }
+
+    @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    DashboardTemplate getTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId, @PathVariable Integer productId) {
+        //System.out.println("size of currencies"+currencies.size());
+        VbUser user = userService.findByUsername(getUser(request));
+        Integer userId = user.getId();
+        return uiService.getTemplateId(accountId, productId, userId);
+    }
+
+    @RequestMapping(value = "dashboardTemplate/{productId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
+        //System.out.println("size of currencies"+currencies.size());
+        AgencyProduct agencyProduct=uiDao.getAgencyProductById(productId);
+        Agency agency =agencyProduct.getAgencyId();
+        Integer agencyId =agency.getId();
+        return uiService.getTemplateByAgencyId(agencyId);
     }
 
     @ExceptionHandler

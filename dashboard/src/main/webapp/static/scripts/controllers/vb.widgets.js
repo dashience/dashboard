@@ -67,13 +67,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function getWidgetItem() {
         $scope.loading = true;
         //Default Loading Items
-        console.log($stateParams.tabId)
+        console.log($stateParams.tabId);
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
 
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
-            console.log(response)
+            console.log(response);
             $scope.loading = false;
             var widgetItems = [];
             widgetItems = response;
@@ -91,7 +91,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         value.isFav = false;
                     }
                 });
-            })
+            });
             $scope.widgets = widgetItems;
         });
     }
@@ -111,7 +111,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removeBackDrop = function () {
         $('body').removeClass().removeAttr('style');
         $('.modal-backdrop').remove();
-        $state.go('index.dataSource', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        $state.go('index.dataSource', {accountId: $stateParams.accountId, accountName: $stateParams.accountName, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
@@ -122,12 +122,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.widgetDuplicate = function (widgetData) {
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
+           console.log(response);
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
                 response["tags"] = dataTag[0];
                 $scope.widgets.push(response);
+                console.log($scope.widgets);
             });
         });
-    }
+    };
 
     $scope.pageRefresh = function () {          //Page Refresh
         getWidgetItem();

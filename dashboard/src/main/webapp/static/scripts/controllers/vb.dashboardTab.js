@@ -185,11 +185,22 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         tab.editing = false;
         $scope.editedItem = null;
     };
+    $scope.templateId = null;
+    $scope.getTemplateId = function () {
+        $http.get('admin/ui/getTemplateId/' + $stateParams.accountId + '/' + $stateParams.productId).success(function (response) {
+            if (!response) {
+                return;
+            } else {
+                $scope.templateId = response.id;
+            }
+        })
+    }
     //save Template
     $scope.saveTemplate = function (tab) {
-        console.log(tab.templateName)
+        console.log(tab.templateName);
+
         var data = {
-            id: tab.templateId ? tab.templateId : null,
+            id: $scope.templateId,
             templateName: tab.templateName,
         }
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {

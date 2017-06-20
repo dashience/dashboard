@@ -44,6 +44,12 @@ public class Agency implements Serializable {
     @Column(name = "logo")
     private byte[] logo;
     @OneToMany(mappedBy = "agencyId")
+    private Collection<DashboardTemplate> dashboardTemplateCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<AgencyProduct> agencyProductCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<Account> accountCollection;
+    @OneToMany(mappedBy = "agencyId")
     private Collection<VbUser> vbUserCollection;
     @OneToMany(mappedBy = "agencyId")
     private Collection<DataSet> dataSetCollection;
@@ -180,6 +186,36 @@ public class Agency implements Serializable {
 
     public void setLogo(byte[] logo) {
         this.logo = logo;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
+        return dashboardTemplateCollection;
+    }
+
+    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
+        this.dashboardTemplateCollection = dashboardTemplateCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyProduct> getAgencyProductCollection() {
+        return agencyProductCollection;
+    }
+
+    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
+        this.agencyProductCollection = agencyProductCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Account> getAccountCollection() {
+        return accountCollection;
+    }
+
+    public void setAccountCollection(Collection<Account> accountCollection) {
+        this.accountCollection = accountCollection;
     }
     
 }

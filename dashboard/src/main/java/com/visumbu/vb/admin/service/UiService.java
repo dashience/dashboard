@@ -18,6 +18,7 @@ import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
+import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
@@ -275,12 +276,6 @@ public class UiService {
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
         tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
         tabWidget.setJsonData(tabWidgetBean.getJsonData());
-//        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
-//        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
-//        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
-//        tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
-//        tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
-//        tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
 
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
@@ -356,19 +351,13 @@ public class UiService {
         tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
         tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
+        tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
+        tabWidget.setAccountId(tabWidgetBean.getAccountId());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
-        System.out.println("new Widget id ----> " + id);
-        System.out.println("-------------->1");
         List<WidgetColumn> widgetColumns = uiDao.getWidgetColumnsByWidgetId(widgetId);
-        System.out.println("widgetColumns ----> " + widgetColumns);
-
         List<WidgetTag> widgetTags = uiDao.getWidgetTagsByWidgetId(widgetId);
-        System.out.println("widgetTags ----> " + widgetTags);
-
-//        uiDao.deleteWidgetColumns(tabWidget.getId());
         for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
-            System.out.println("-------------->2");
             WidgetColumn widgetColumnBean = iterate.next();
             WidgetColumn widgetColumn = new WidgetColumn();
             widgetColumn.setFieldName(widgetColumnBean.getFieldName());
@@ -386,7 +375,6 @@ public class UiService {
             widgetColumn.setFieldType(widgetColumnBean.getFieldType());
             widgetColumn.setGroupField(widgetColumnBean.getGroupField());
             widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
-//                widgetColumn.setWidgetId(tabWidget);
             Integer columnHide = null;
             if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
                 columnHide = 1;
@@ -853,6 +841,48 @@ public class UiService {
         return uiDao.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
+    public DashboardTemplate createDashboardTemplate(DashboardTemplate template, Integer userId, Integer accountId, Integer productId) {
+
+        DashboardTemplate dashboardTemplate = new DashboardTemplate();
+        if (template.getId() != null) {
+            dashboardTemplate.setId(template.getId());
+            dashboardTemplate.setTemplateName(template.getTemplateName());
+            dashboardTemplate.setAgencyId(template.getAgencyId());
+            dashboardTemplate.setAgencyProductId(template.getAgencyProductId());
+            dashboardTemplate.setAccountId(template.getAccountId());
+            dashboardTemplate.setUserId(template.getUserId());
+            uiDao.saveOrUpdate(dashboardTemplate);
+        } else {
+            dashboardTemplate.setTemplateName(template.getTemplateName());
+            dashboardTemplate.setAgencyId(template.getAgencyId());
+            dashboardTemplate.setAgencyProductId(template.getAgencyProductId());
+            dashboardTemplate.setAccountId(template.getAccountId());
+            dashboardTemplate.setUserId(template.getUserId());
+            uiDao.saveOrUpdate(dashboardTemplate);
+        }
+        List<DashboardTabs> dashboardTabList = uiDao.getDashboardTabsByProductId(userId, accountId, productId);
+        if (dashboardTabList.size() > 0) {
+            for (Iterator<DashboardTabs> iterator = dashboardTabList.iterator(); iterator.hasNext();) {
+                DashboardTabs dashboardTabs = new DashboardTabs();
+                DashboardTabs dashboardTab = iterator.next();
+                dashboardTabs.setAccountId(dashboardTab.getAccountId());
+                dashboardTabs.setAgencyProductId(dashboardTab.getAgencyProductId());
+                dashboardTabs.setCreatedTime(dashboardTab.getCreatedTime());
+                dashboardTabs.setDashboardId(dashboardTab.getDashboardId());
+                dashboardTabs.setId(dashboardTab.getId());
+                dashboardTabs.setModifiedTime(dashboardTab.getModifiedTime());
+                dashboardTabs.setRemarks(dashboardTab.getRemarks());
+                dashboardTabs.setStatus(dashboardTab.getStatus());
+                dashboardTabs.setTabName(dashboardTab.getTabName());
+                dashboardTabs.setTabOrder(dashboardTab.getTabOrder());
+                dashboardTabs.setTemplateId(dashboardTemplate);
+                dashboardTabs.setUserId(dashboardTab.getUserId());
+                uiDao.saveOrUpdate(dashboardTabs);
+            }
+        }
+        return dashboardTemplate;
+    }
+
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
         List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName());
         System.out.println("dataSource" + dataSource.getName());
@@ -873,5 +903,13 @@ public class UiService {
             uiDao.saveOrUpdate(newDataSource);
         }
         return newDataSource;
+    }
+
+    public DashboardTemplate getTemplateId(Integer accountId, Integer productId, Integer userId) {
+        return uiDao.getTemplateId(accountId, productId, userId);
+    }
+
+    public List<DashboardTemplate> getTemplateByAgencyId(Integer agencyId) {
+        return uiDao.getTemplateByAgencyId(agencyId);
     }
 }

@@ -24,8 +24,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -85,6 +83,9 @@ public class DashboardTabs implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId; 
+    @JoinColumn(name = "template_id", referencedColumnName = "id")
+    @ManyToOne
+    private DashboardTemplate templateId; 
 
     public DashboardTabs() {
     }
@@ -188,6 +189,14 @@ public class DashboardTabs implements Serializable {
 
     public void setUserId(VbUser userId) {
         this.userId = userId;
+    }
+
+    public DashboardTemplate getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(DashboardTemplate templateId) {
+        this.templateId = templateId;
     }
     
     @Override
