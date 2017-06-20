@@ -442,6 +442,14 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
+    public List<DataSource> getJoinDataSource(String name) {
+        String queryStr = "select d from DataSource d where d.name = :name and d.dataSourceType IS NULL";
+//        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("name", name);
+        return query.list();
+    }
+
     public void removeDsFromWidget(Integer id) {
         String queryStr = "update TabWidget d set dataSourceId=NULL, dataSetId=NULL  where d.dataSourceId.id = :dataSourceId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);

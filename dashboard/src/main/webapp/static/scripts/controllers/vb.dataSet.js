@@ -205,20 +205,35 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.firstDataSetLoadingCompleted = false;
         $scope.loadingResultCompleted = false;
         $scope.loadingResult = false;
-    }
+    };
     $scope.saveToDataSet = function (joinDataSetColumn) {
         var dataSet = JSON.parse(joinDataSetColumn.firstDataSet);
-        var joinDataSetList = {
+        var dataSourceId = null;
+        var joinDataSource = {
+            name: "Join DataSource",
+            id: null,
             agencyId: dataSet.agencyId,
-            name: joinDataSetColumn.joinDataSetName,
-            userId: dataSet.userId,
-            joinDataSetId: joinDataSetId
+            userId: dataSet.userId
         };
-        var data = joinDataSetList;
-        $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
-            $scope.cancelJoinDataSet();
-            getItems();
-            $scope.isSet(1);
+        $http({method: 'POST', url: 'admin/ui/joinDataSource', data: joinDataSource}).success(function (response) {
+            console.log(response)
+            dataSourceId = response.id;
+
+            var joinDataSetList = {
+                agencyId: dataSet.agencyId,
+                name: joinDataSetColumn.joinDataSetName,
+                userId: dataSet.userId,
+                joinDataSetId: joinDataSetId,
+                dataSourceId: dataSourceId
+            };
+            var data = joinDataSetList;
+            console.log(data);
+            $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
+                console.log(response);
+                $scope.cancelJoinDataSet();
+                getItems();
+                $scope.setTab(1);
+            });
         });
     };
     /*
@@ -2164,7 +2179,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         dataSet.timeSegment = '';
         dataSet.productSegment = '';
     };
-    $scope.clearDataSet = function (dataSet) {alert()
+    $scope.clearDataSet = function (dataSet) {
+        alert()
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;

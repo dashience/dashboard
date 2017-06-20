@@ -1,12 +1,45 @@
+
+<style>
+    .popover {
+        width: 304px;
+        max-width: 100%;
+    }
+</style>
 <div ng-controller="UiController">
     <div class="normalheader transition animated fadeIn">
         <div class="hpanel">
             <div class="panel-body header-title">
                 <div id="hbreadcrumb" class="pull-right">
+                    <div class="col-sm-11">
+                        <div class="col-sm-5">
+                            <button class="btn btn-default btn-xs" ns-popover=""
+                                    ns-popover-template="popover"
+                                    ns-popover-trigger="click"
+                                    ns-popover-placement="bottom"
+                                    ns-popover-theme="ns-popover-tooltip-theme" 
+                                    ns-popover-timeout="1000" 
+                                    ns-popover-hide-on-inside-click="false" 
+                                    ns-popover-hide-on-outside-click="true" 
+                                    ns-popover-hide-on-button-click="true">
+                                SaveAsTemplate
+                            </button>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <ui-select ng-model="selectAccount.selected" on-select="getTemplateId(selectTemplate.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
+                                    <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
+                                    <ui-select-choices repeat="template in templates | filter: $select.search">
+                                        <span ng-bind-html="template.templateId.templateName | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <h2 class="font-bold m-b-xs">
                     {{dashboardName}}
-                </h2>               
+                </h2> 
+
             </div>
         </div>
     </div>
@@ -93,3 +126,16 @@
         </div>
     </section>
 </div>
+<script type="text/ng-template" id="popover">
+    <div class="triangle"> </div>
+    <div class="ns-popover-tooltip">
+  <form class="form-inline">
+  <ul>
+  <li class="input-group">
+      <input type="text" ng-model="tab.templateName" placeholder="Enter template name" class="form-control"/>
+  <button class="btn btn-success btn-sm" ng-click="saveTemplate(tab)">Save</button>
+  </li>
+  </ul>
+     </form>
+         </div>
+</script>

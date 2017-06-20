@@ -853,4 +853,25 @@ public class UiService {
         return uiDao.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
+    public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName());
+        System.out.println("dataSource" + dataSource.getName());
+        DataSource newDataSource = new DataSource();
+        if (joinDataSourceList.size() > 0) {
+            System.out.println("if update --->");
+            DataSource joinDataSource = joinDataSourceList.get(0);
+            newDataSource.setId(joinDataSource.getId());
+            newDataSource.setName(joinDataSource.getName());
+            newDataSource.setUserId(joinDataSource.getUserId());
+            newDataSource.setAgencyId(joinDataSource.getAgencyId());
+            uiDao.saveOrUpdate(newDataSource);
+        } else {
+            System.out.println("else create ---> ");
+            newDataSource.setName(dataSource.getName());
+            newDataSource.setUserId(dataSource.getUserId());
+            newDataSource.setAgencyId(dataSource.getAgencyId());
+            uiDao.saveOrUpdate(newDataSource);
+        }
+        return newDataSource;
+    }
 }

@@ -64,13 +64,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $window.open(url);
     };
 
-    function getWidgetItem() {    
+    function getWidgetItem() {
+        $scope.loading = true;
         //Default Loading Items
         console.log($stateParams.tabId)
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
-        $scope.loading = true;
+
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
             console.log(response)
             $scope.loading = false;
@@ -613,6 +614,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 scope.connectionTestUrl = url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
                         "&accountId=" + $stateParams.accountId +
+                        "&joinDataSetId=" + tableDataSource.joinDataSetId.id +
+                        "&dataSourceId=" + tableDataSource.dataSourceId.id +
+                        "&dataSourceType=" + tableDataSource.dataSourceId.dataSourceType +
                         "&driver=" + tableDataSource.dataSourceId.sqlDriver +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
@@ -626,6 +630,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
                         "&accountId=" + $stateParams.accountId +
+                        "&joinDataSetId=" + tableDataSource.joinDataSetId.id +
+                        "&dataSourceId=" + tableDataSource.dataSourceId.id +
+                        "&dataSourceType=" + tableDataSource.dataSourceId.dataSourceType +
                         "&driver=" + tableDataSource.dataSourceId.sqlDriver +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +

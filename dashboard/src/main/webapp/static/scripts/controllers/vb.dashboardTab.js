@@ -4,6 +4,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     //$scope.tabId = $stateParams.tabId;
+    //get Templates
+    $http.get('admin/ui/dashboardTemplates').success(function (response) {
+        $scope.templates = response;
+    })
+    //product tabs
     $scope.tabs = [];
     console.log($stateParams.productId)
     if ($stateParams.productId) {
@@ -71,7 +76,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     } catch (e) {
     }
 
-
+//Edit Dashboard Tab
     $scope.editDashboardTab = function (tab) {
         var data = {
             tabNames: tab.tabName
@@ -97,6 +102,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     var dates = $(".pull-right i").text();
 
     $scope.tabs = [];
+    //Add Tab
     $scope.addTab = function (tab) {
         var data = {
             tabName: tab.tabName
@@ -109,7 +115,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         });
         $scope.tab = "";
     };
-
+//Delete Tab
     $scope.deleteTab = function (index, tab) {
         $http({method: 'DELETE', url: 'admin/ui/dbTab/' + tab.id}).success(function (response) {
             $http.get("admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
@@ -128,11 +134,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.addChild = function (report) {
         report.childItems.push({isEdit: true});
     };
-
+    //Get Reports
     $http.get('static/datas/report.json').success(function (response) {
         $scope.reports = response;
     });
-
+//Drag and Drop in Tab
     $scope.moveItem = function (list, from, to) {
         list.splice(to, 0, list.splice(from, 1)[0]);
         return list;
@@ -179,6 +185,18 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         tab.editing = false;
         $scope.editedItem = null;
     };
+    //save Template
+    $scope.saveTemplate = function (tab) {
+        console.log(tab.templateName)
+        var data = {
+            id: tab.templateId ? tab.templateId : null,
+            templateName: tab.templateName,
+        }
+        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
+
+        })
+
+    }
 })
         .directive('ngBlur', function () {
             return function (scope, elem, attrs) {

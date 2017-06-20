@@ -52,6 +52,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             });
         } else {
             $scope.editWidgetData.push({width: 12, columns: []})
+            console.log($scope.editWidgetData)
         }
     });
     $scope.selectAggregations = [
@@ -197,13 +198,17 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $scope.dataSources = response;
     });
     $scope.selectDataSource = function (dataSourceName, widget) {
-        if (!dataSourceName) {
-            return;
-        }
+//        if (!dataSourceName) {
+//            return;
+//        }
+        console.log(widget)
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = [];
             angular.forEach(response, function (value, key) {
+                console.log(value);
                 if (value.dataSourceId.name == dataSourceName.name) {
+                    $scope.dataSets.push(value);
+                } else if (value.joinDataSetId) {
                     $scope.dataSets.push(value);
                 }
             });
@@ -215,6 +220,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         currentColumn.displayName = $scope.filterName.displayName;
     };
     $scope.tableDef = function (widget) {
+        console.log(widget)
         if (widget.columns) {
             if (widget.dataSetId) {
                 columnHeaderDef(widget)
@@ -226,6 +232,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }
     };
     function columnHeaderDef(widget) {
+        alert(widget)
+        console.log(widget);
         var dataSourcePassword;
         if (!widget.dataSetId) {
             return;
@@ -239,9 +247,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
+        console.log(widget);
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
                 "&accountId=" + $stateParams.accountId +
+                "&joinDataSetId=" + widget.joinDataSetId.id +
+                "&dataSourceId=" + widget.dataSetId.dataSourceId.id +
+                "&dataSourceType=" + widget.dataSetId.dataSourceId.dataSourceType +
                 "&dataSetReportName=" + widget.dataSetId.reportName +
                 "&driver=" + widget.dataSetId.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
@@ -338,6 +350,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
                 "&dataSetId=" + dataSet.id +
                 "&accountId=" + $stateParams.accountId +
+                "&joinDataSetId=" + dataSet.joinDataSetId.id +
+                "&dataSourceId=" + dataSet.dataSourceId.id +
+                "&dataSourceType=" + dataSet.dataSourceId.dataSourceType +
                 "&dataSetReportName=" + dataSet.reportName +
                 "&driver=" + dataSet.dataSourceId.sqlDriver +
                 "&startDate=" + $stateParams.startDate +
@@ -349,9 +364,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             widget.columns = response.columnDefs;
+            console.log(widget.columns)
             angular.forEach(response.columnDefs, function (value, key) {
                 $scope.collectionFields.push(value);
             });
+            console.log($scope.collectionFields)
             //$timeout(function () {
             $scope.previewChart(chartType, widget)
             // }, 50);
@@ -803,6 +820,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             widgetColumns: widgetColumnsData,
             dataSourceId: dataSourceTypeId,
             dataSetId: dataSetTypeId,
+            joinDataSetId:widget.joinDataSetId,
             tableFooter: widget.tableFooter,
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
@@ -1112,6 +1130,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     "&dataSetId=" + tableDataSource.id +
                     "&driver=" + tableDataSource.dataSourceId.sqlDriver +
                     "&accountId=" + $stateParams.accountId +
+                    "&joinDataSetId=" + tableDataSource.joinDataSetId.id +
+                    "&dataSourceId=" + tableDataSource.dataSourceId.id +
+                    "&dataSourceType=" + tableDataSource.dataSourceId.dataSourceType +
                     "&startDate=" + $stateParams.startDate +
                     "&endDate=" + $stateParams.endDate +
                     "&dataSetReportName=" + tableDataSource.reportName +

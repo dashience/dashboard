@@ -128,13 +128,15 @@ public class ProxyController {
         Map<String, String[]> parameterMap = request.getParameterMap();
         String joinDataSetIdStr = request.getParameter("joinDataSetId");
         String dataSourceId = request.getParameter("dataSourceId");
+        String dataSourceType = request.getParameter("dataSourceType");
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
             String[] value = entrySet.getValue();
             valueMap.put(key, Arrays.asList(value));
         }
-
+        System.out.println("dataSourceId    " + dataSourceId);
+        System.out.println("dataSourceType  " + dataSourceType);
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String dataSetId = request.getParameter("dataSetId");
@@ -147,7 +149,7 @@ public class ProxyController {
             }
         }
 
-        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceId == null || dataSourceId.isEmpty() || dataSourceId.equalsIgnoreCase("null"))) {
+        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
             try {
                 Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
                 returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
@@ -316,7 +318,7 @@ public class ProxyController {
                             if (key.equalsIgnoreCase(columnStr)) {
                                 dataMap.remove(key);
                                 dataMap.put(key + "2", value);
-                                System.out.println("dataMap ---> "+dataMap);
+                                System.out.println("dataMap ---> " + dataMap);
                                 break;
                             }
                         }

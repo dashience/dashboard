@@ -114,7 +114,7 @@ public class UiController extends BaseController {
 //    }
     @RequestMapping(value = "dbTabs/{agencyProductId}/{accountId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId,@PathVariable Integer accountId, @RequestBody DashboardTabs dashboardTabs) {
+    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @PathVariable Integer accountId, @RequestBody DashboardTabs dashboardTabs) {
         dashboardTabs.setAgencyProductId(uiService.getAgencyProductById(agencyProductId));
         List<Account> account = uiService.getAccountById(accountId);
         dashboardTabs.setAccountId(account.get(0));
@@ -125,7 +125,7 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
-    DashboardTabs updateAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId,@RequestBody DashboardTabs dashboardTabs) {
+    DashboardTabs updateAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @RequestBody DashboardTabs dashboardTabs) {
         return uiService.updateTab(dashboardTabs);
     }
 
@@ -144,10 +144,10 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dbTabs/{agencyProductId}/{accountId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId,@PathVariable Integer accountId) {
+    List getAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @PathVariable Integer accountId) {
         VbUser user = userService.findByUsername(getUser(request));
         Integer userId = user.getId();
-        return uiService.getAgencyProductTab(agencyProductId,accountId,userId);
+        return uiService.getAgencyProductTab(agencyProductId, accountId, userId);
     }
 
 //    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
@@ -328,6 +328,15 @@ public class UiController extends BaseController {
         dataSource.setUserId(user);
         dataSource.setAgencyId(user.getAgencyId());
         return uiService.saveDataSource(dataSource);
+    }
+
+    @RequestMapping(value = "joinDataSource", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSource createDataSourceForJoinDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
+        VbUser user = userService.findByUsername(getUser(request));
+        dataSource.setUserId(user);
+        dataSource.setAgencyId(user.getAgencyId());
+        return uiService.createDataSourceForJoinDataSet(dataSource);
     }
 
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
