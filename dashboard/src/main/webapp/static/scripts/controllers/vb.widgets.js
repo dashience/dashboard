@@ -536,6 +536,24 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = false;
     };
 
+    $scope.showListOfColumns = function () {
+        $scope.loadingColumnsGif = true;
+        $scope.showFilter = false;
+        $scope.showColumnDefs = true;
+        $scope.showPreviewChart = false;
+    };
+
+    $scope.showFilterList = function () {
+        $scope.loadingColumnsGif = true;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+        $scope.showFilter = true;
+    };
+
+    $scope.showEditor = function () {
+        $scope.showPreviewChart = true;
+    };
+
     $scope.showPreview = function (widgetObj) {
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
@@ -1062,7 +1080,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     //Derived Column
     $scope.showDerived = false;
     $scope.addDerived = function () {
-        $scope.dataSetColumn = "";
+        $scope.dataSetColumn ="";
         $scope.showDerived = true;
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
@@ -1253,7 +1271,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         count = 1;
                        if(value.id == dataSetColumnData.id){
                            value.fieldName = dataSetColumn.fieldName;
-                           value.displayName = dataSetColumn.displayName;
+//                           value.displayName = dataSetColumn.displayName;
                        } 
                     }
                 });
@@ -2084,6 +2102,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
                         "&accountId=" + setWidgetAccountId +
+                        "&userId=" + (tickerDataSource.userId ? tickerDataSource.userId.id : null) +
                         "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + tickerDataSource.reportName +
                         "&location=" + $stateParams.locationId +
@@ -2323,6 +2342,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
                             "&accountId=" + setWidgetAccountId +
+                            "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
                             "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
                             "&startDate=" + $stateParams.startDate +
@@ -2634,6 +2654,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
                             "&accountId=" + setWidgetAccountId +
+                            "&userId=" + (barChartDataSource.userId ? barChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -2934,6 +2955,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
                             "&accountId=" + setWidgetAccountId +
+                            "&userId=" + (pieChartDataSource.userId ? pieChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -3233,6 +3255,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
                             "&accountId=" + setWidgetAccountId +
+                            "&userId=" + (areaChartDataSource.userId ? areaChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -3534,6 +3557,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
                             "&accountId=" + setWidgetAccountId +
+                            "&userId=" + (stackedBarChartDataSource.userId ? stackedBarChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +

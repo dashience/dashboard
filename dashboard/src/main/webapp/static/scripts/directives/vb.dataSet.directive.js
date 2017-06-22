@@ -414,7 +414,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             if (dataSourcePath.dataSourceId != null) {
                 connectionUrl = dataSourcePath.dataSourceId.connectionString;
                 dataSourceId = dataSourcePath.dataSourceId.id;
-                driver = dataSourcePath.dataSourceId.dataSourceType;
+                driver = dataSourcePath.dataSourceId.sqlDriver;
                 dataSourceType = dataSourcePath.dataSourceId.dataSourceType;
                 userName = dataSourcePath.dataSourceId.userName;
             }
@@ -428,7 +428,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         "&timeSegment=" + setTimeSegment +
                         "&filter=" + dataSourcePath.networkType +
                         "&productSegment=" + setProductSegment +
-                        "&driver=" + dataSourceType +
+                        "&driver=" + driver +
                         "&dataSourceType=" + dataSourceType +
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
