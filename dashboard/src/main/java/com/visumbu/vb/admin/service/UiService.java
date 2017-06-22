@@ -369,6 +369,13 @@ public class UiService {
         tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
         tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
+        tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
+        tabWidget.setJsonData(tabWidgetBean.getJsonData());
+        tabWidget.setAccountId(tabWidgetBean.getAccountId());
+        tabWidget.setCreatedBy(tabWidgetBean.getCreatedBy());
+        tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
+        tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
+        tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
         System.out.println("new Widget id ----> " + id);

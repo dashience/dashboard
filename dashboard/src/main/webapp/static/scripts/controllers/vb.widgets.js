@@ -493,6 +493,36 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showFilter = false;
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
+        $scope.showDateRange = false;
+    };
+
+    $scope.showListOfColumns = function () {
+        $scope.loadingColumnsGif = true;
+        $scope.showFilter = false;
+        $scope.showColumnDefs = true;
+        $scope.showPreviewChart = false;
+        $scope.showDateRange = false;
+    };
+
+    $scope.showFilterList = function () {
+        $scope.loadingColumnsGif = true;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+        $scope.showFilter = true;
+        $scope.showDateRange = false;
+    };
+
+    $scope.showEditor = function () {
+        $scope.showPreviewChart = true;
+        $scope.showDateRange = false;
+    };
+    
+    $scope.showDateDurations = function(){
+        $scope.showDateRange = true;
+        $scope.loadingColumnsGif = false;
+        $scope.showFilter = false;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
     };
 
     $scope.showListOfColumns = function () {
@@ -518,6 +548,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
+        $scope.showDateRange = false;
         $scope.chartTypeName = null;
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
@@ -992,6 +1023,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         $scope.ticker(widgetObj, tickerItem);
     };
+    
+    $scope.selectPieChartX = function (widget, column) {
+        if (!column) {
+            return;
+        }
+        var exists = false;
+        angular.forEach(widget.columns, function (value, key) {
+            if (column.fieldName == value.fieldName) {
+                exists = true;
+                value.xAxis = 1;
+            } else {
+                value.xAxis = null;
+            }
+        });
+        if (exists == false) {
+            column.xAxis = 1;
+            widget.columns.push(column);
+        }       
+    };
+    
+    $scope.selectPieChartY = function (widget, column) {
+        var exists = false;
+        angular.forEach(widget.columns, function (value, key) {
+            if (column.fieldName == value.fieldName) {
+                exists = true;
+                value.yAxis = 1;
+            } else {
+                value.yAxis = null;
+            }
+        });
+        if (exists == false) {
+            column.yAxis = 1;
+            widget.columns.push(column);
+        }       
+    };
+    
     function resetQueryBuilder() {
         $scope.dispHideBuilder = false;
     }
@@ -1103,6 +1170,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showFilter = false;
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
+        $scope.showDateRange = false;
     };
 
     $scope.cancel = function (widgetObj) {
@@ -1112,6 +1180,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
+        $scope.showDateRange = false;
         $('.showEditWidget').modal('hide');
     };
 });
@@ -3000,7 +3069,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 })
                                 //chartData = scope.orderData(chartData, sortFields);
                             }
-
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
