@@ -2180,7 +2180,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         dataSet.productSegment = '';
     };
     $scope.clearDataSet = function (dataSet) {
-        alert()
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
