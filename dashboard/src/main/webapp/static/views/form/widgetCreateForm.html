@@ -70,6 +70,7 @@
     label {
         margin-bottom: 5px;
         margin-top: 5px;
+        font-weight: normal;
     }
     input, input::-webkit-input-placeholder {
         font-size: 12px;
@@ -135,8 +136,11 @@
     }
     span.input-group-addon {
         width: 76px;
-        font-size: 16px;
+        font-size: 14px;
         white-space: normal;
+        letter-spacing: 0.5px;
+        font-family: 'enigmaticregular';
+        font-weight: normal !important;
     }
     .previewChart {
         border-radius: 5px;
@@ -163,25 +167,25 @@
 
     .btnAddon1{
         background-color: #b7d5ab;
-        color: #fff;
+        color: #333;
         font-weight: bold;
         font-size: 20px;
     }
     .btnAddon2{
         background-color: #80bd95;
-        color: #fff;
+        color: #333;
         font-weight: bold;
         font-size: 20px;
     }
     .btnAddon3{
         background-color:#5ba689;
-        color: #fff;
+        color: #333;
         font-weight: bold;
         font-size: 20px;
     }
     .btnAddon4{
         background-color:#3c8e7c;
-        color: #fff;
+        color: #333;
         font-weight: bold;
         font-size: 20px;
     }
@@ -256,16 +260,48 @@
         box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.21) !important;
         margin-bottom: 5px;
     }
-    
-   .query-builder .rule-value-container {
-    border-left: none !important;
-    padding-left: 0px !important;
-    margin-top: 5px !important;
+
+    .query-builder .rule-value-container {
+        border-left: none !important;
+        padding-left: 0px !important;
+        margin-top: 5px !important;
+    }
+
+    .footer-filter {
+        margin: 5px;
+        overflow: hidden;
+    }
+
+    .date-widget .input-group {
+        width:auto !important;
+    }
+
+    .date-widget .form-control {
+        padding: 6px 12px !important;
+    }
+
+    .input-group label {
+        font-size: 12px;
+        font-family: "proxima_nova_rgregular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #333;
+        font-weight: 400;
+    }
+
+    .daterangepicker_input .form-control {
+         padding: 6px 24px !important;
+         line-height: normal;
+    }
+    .code{
+        min-height: 0px !important;
+    }
+    textarea.form-control {
+    min-height: 100px !important;
+    clear: both;
+    position: relative !important;
 }
 
-.footer-filter {
-   margin: 5px;
-overflow: hidden;
+.sa-fakeArea {
+    display:none;
 }
 
 </style>
@@ -775,68 +811,68 @@ overflow: hidden;
                     <div class="input-group"> <span class="input-group-addon btnAddon4">Date Range</span>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12"> 
-                    <button class="btn btn-success" ng-click="showDateDurations()">Date Range</button>
-<!--                                <label>Date Range</label>
-                                <div class="dropdown editWidgetDropDown form-control">
-                                    <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
-                                        {{widgetObj.dateRangeName?widgetObj.dateRangeName:"Date Duration"}}
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu scheduler-list-style">
-                                        <li>
-                                            <div class="col-md-12">
-                                                <div>
-                                                    <a class="pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
-                                                        <span class="date-border">
-                                                            {{widgetObj.customStartDate ? widgetObj.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widgetObj.customEndDate ? widgetObj.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                                                        </span>
-                                                    </a> 
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text"
-                                                           ng-model="widgetObj.lastNdays" 
-                                                           ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Days
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text" 
-                                                           ng-model="widgetObj.lastNweeks" 
-                                                           ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Weeks
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text" 
-                                                           ng-model="widgetObj.lastNmonths" 
-                                                           ng-change="selectWidgetDuration('Last N Months', widgetObj)"
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Months
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text" 
-                                                           ng-model="widgetObj.lastNyears" 
-                                                           ng-change="selectWidgetDuration('Last N Years', widgetObj)"
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Years
-                                            </a>
-                                        </li>
-                                        <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widgetObj)">None</a></li>
-                                    </ul>
-                                </div>-->
+                                <button class="btn btn-success" ng-click="showDateDurations()">Date Range</button>
+                                <!--                                <label>Date Range</label>
+                                                                <div class="dropdown editWidgetDropDown form-control">
+                                                                    <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
+                                                                        {{widgetObj.dateRangeName?widgetObj.dateRangeName:"Date Duration"}}
+                                                                        <span class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu scheduler-list-style">
+                                                                        <li>
+                                                                            <div class="col-md-12">
+                                                                                <div>
+                                                                                    <a class="pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
+                                                                                        <span class="date-border">
+                                                                                            {{widgetObj.customStartDate ? widgetObj.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widgetObj.customEndDate ? widgetObj.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                                                                        </span>
+                                                                                    </a> 
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a>Last <input type="text"
+                                                                                           ng-model="widgetObj.lastNdays" 
+                                                                                           ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
+                                                                                           class="form-control" 
+                                                                                           ng-model-options="{debounce: 500}"
+                                                                                           style="width: 60px; display: contents; height: 25px;"> 
+                                                                                Days
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a>Last <input type="text" 
+                                                                                           ng-model="widgetObj.lastNweeks" 
+                                                                                           ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
+                                                                                           class="form-control" 
+                                                                                           ng-model-options="{debounce: 500}"
+                                                                                           style="width: 60px; display: contents; height: 25px;"> 
+                                                                                Weeks
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a>Last <input type="text" 
+                                                                                           ng-model="widgetObj.lastNmonths" 
+                                                                                           ng-change="selectWidgetDuration('Last N Months', widgetObj)"
+                                                                                           class="form-control" 
+                                                                                           ng-model-options="{debounce: 500}"
+                                                                                           style="width: 60px; display: contents; height: 25px;"> 
+                                                                                Months
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a>Last <input type="text" 
+                                                                                           ng-model="widgetObj.lastNyears" 
+                                                                                           ng-change="selectWidgetDuration('Last N Years', widgetObj)"
+                                                                                           class="form-control" 
+                                                                                           ng-model-options="{debounce: 500}"
+                                                                                           style="width: 60px; display: contents; height: 25px;"> 
+                                                                                Years
+                                                                            </a>
+                                                                        </li>
+                                                                        <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widgetObj)">None</a></li>
+                                                                    </ul>
+                                                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -875,7 +911,7 @@ overflow: hidden;
                 <div ng-show="loadingColumnsGif" class="text-center">
                     <img ng-hide="afterLoadWidgetColumns" src="static/img/logos/loader.gif" width="40">
                 </div>
-                
+
                 <div class="col-sm-6 form-left-side-menu-border">
                     <ul ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="list-group">
                         <li class="list-group-item justify-content-between" ng-repeat="collectionField in collectionFields">
@@ -914,6 +950,58 @@ overflow: hidden;
                         </ul>
                     </div>
                 </div>
+                
+                <div class="col-sm-6" ng-show="showDerived">
+                    <form name="dataSetForm" class="form-horizontal">
+                        <div class="form-group col-xs-12">
+                            <label>Field Name</label>{{dataSetColumn.fieldName}}
+                            <input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">
+
+                            <span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>
+
+                        </div>
+                        <div class="form-group col-xs-12">
+                            <label>Expression</label>
+
+                            <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
+                                      class="form-control code expression" 
+                                      ng-model="dataSetColumn.expression" 
+                                ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
+                            </textarea>
+
+                            <!--                            <div>
+                                                            <i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(dataSetColumn)"></i>
+                                                        </div>-->
+                        </div>
+                        <div class="form-group col-xs-12">
+                            <label>Field Type</label>
+
+                            <select class="form-control" ng-model="dataSetColumn.fieldType">
+                                <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
+                                    {{fieldType.name}}
+                                </option>
+                            </select>
+
+                            <label>Format</label>
+
+                            <select class="form-control" ng-model="dataSetColumn.displayFormat">
+                                <option  ng-repeat="formatType in formats" value="{{formatType.value}}">
+                                    {{formatType.name}}
+                                </option>
+                            </select>
+
+                        </div>
+                        <div class="form-group col-xs-12"><button class="btn btn-info" id="btn-save" 
+                                     ng-click="saveDerivedColumn(dataSetColumn, widgetObj)">
+                                <i class="fa fa-save"></i> Save
+                            </button><button class="btn btn-default" id="btn-cancel" 
+                                             ng-click="cancelDerivedColumn(dataSetColumn)">
+                                <i class="fa fa-close"></i> Cancel
+                            </button></div>
+                    </form>
+                </div>
+
+                
             </div>
             <div class="row">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker')" ng-show="showColumnDefs">
@@ -988,71 +1076,107 @@ overflow: hidden;
                     </div>
                 </div>
             </div>            
-        <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
-            <button ng-show="showColumnDefs" class="btn btn-info btn-sm" ng-click="showColumnDefs = false"><i class="fa fa-check"></i> Ok</button>
-        </div>
-    </div>
-
-    <div class="row"  ng-show="showDateRange">
-        <div class="col-sm-8">
-            <div class="form-group">
-                <ul class="">
-                    <li>
-                        <div class="col-md-12">
-                            <div>
-                                <a class="pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
-                                    <span class="date-border">
-                                                            {{widgetObj.customStartDate ? widgetObj.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{widgetObj.customEndDate ? widgetObj.customEndDate : endDate| date: "MM/dd/yyyy"}} dgregrg
-                                                        </span>
-                                                    </a> 
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text"
-                                                           ng-model="widgetObj.lastNdays" 
-                                                           ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Days
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text" 
-                                                           ng-model="widgetObj.lastNweeks" 
-                                                           ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Weeks
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text" 
-                                                           ng-model="widgetObj.lastNmonths" 
-                                                           ng-change="selectWidgetDuration('Last N Months', widgetObj)"
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Months
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>Last <input type="text" 
-                                                           ng-model="widgetObj.lastNyears" 
-                                                           ng-change="selectWidgetDuration('Last N Years', widgetObj)"
-                                                           class="form-control" 
-                                                           ng-model-options="{debounce: 500}"
-                                                           style="width: 60px; display: contents; height: 25px;"> 
-                                                Years
-                                            </a>
-                                        </li>
-                                        <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widgetObj)">None</a></li>
-                                    </ul>
-                    </div>
-                </div>
+            <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
+                <button class="btn btn-default" ng-click="addDerived(); showDerived = true;">Add Column</button>
+                <button ng-show="showColumnDefs" class="btn btn-info btn-sm" ng-click="showColumnDefs = false"><i class="fa fa-check"></i> Ok</button>
             </div>
+        </div>
+
+        <div class="row"  ng-show="showDateRange">
+            <div class="col-sm-12">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading btnAddon5">
+                        <h3 class="panel-title">
+                            Date Range Picker</h3>
+                    </div>
+                    <div class="panel-body date-widget">
+                        <div class="col-md-6">
+
+
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        Last</button>
+                                </span>
+                                <input type="text"
+                                           ng-model="widgetObj.lastNdays" 
+                                           ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
+                                           class="form-control" 
+                                           ng-model-options="{debounce: 500}" placeholder="Days"> 
+                               
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        Last</button>
+                                </span>
+                                <input type="text" 
+                                           ng-model="widgetObj.lastNweeks" 
+                                           ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
+                                           class="form-control" 
+                                           ng-model-options="{debounce: 500}" placeholder="Weeks"> 
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        Last</button>
+                                </span>
+                                <input type="text" 
+                                           ng-model="widgetObj.lastNmonths" 
+                                           ng-change="selectWidgetDuration('Last N Months', widgetObj)"
+                                           class="form-control" 
+                                           ng-model-options="{debounce: 500}" placeholder="Months"> 
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        Last</button>
+                                </span>
+                                <input type="text" 
+                                           ng-model="widgetObj.lastNyears" 
+                                           ng-change="selectWidgetDuration('Last N Years', widgetObj)"
+                                           class="form-control" 
+                                           ng-model-options="{debounce: 500}"
+                                           placeholder="Years"> 
+                              
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                           
+<div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        Custom</button>
+                                </span>
+
+                                <a class="form-control pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
+                                    <span class="date-border">
+                                        {{widgetObj.customStartDate ? widgetObj.customStartDate : widgetStartDate| date: "MM/dd/yyyy"}} - {{widgetObj.customEndDate ? widgetObj.customEndDate : widgetEndDate| date: "MM/dd/yyyy"}}
+                                    </span>
+                                </a> 
+</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+               
+                
+                
+            </div>
+        </div>
 
 
 
@@ -1141,25 +1265,25 @@ overflow: hidden;
                 </div>
             </div>
         </div>
-        
+
         <div class="panel panel-default" ng-show="showFilter">
-                <div class="panel-heading btnAddon5">
-                    <h3 class="panel-title">
-                        Filters</h3>
-                </div>
-        <div class="row">
-            <div ng-if="dispHideBuilder == false;" class="col-md-12">
-                <div class='panel-body'>
-                    <div jquery-Query-Builder query-Data="{{widgetObj}}"></div>
-                </div>
-                <div class="footer-filter">
-                    <div class="pull-right">
-                        <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
-                        <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
+            <div class="panel-heading btnAddon5">
+                <h3 class="panel-title">
+                    Filters</h3>
+            </div>
+            <div class="row">
+                <div ng-if="dispHideBuilder == false;" class="col-md-12">
+                    <div class='panel-body'>
+                        <div jquery-Query-Builder query-Data="{{widgetObj}}"></div>
+                    </div>
+                    <div class="footer-filter">
+                        <div class="pull-right">
+                            <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
+                            <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
 
 
