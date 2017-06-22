@@ -179,6 +179,7 @@
                     <div class="hpanel col-fixed-{{favPdfWidget.widgetId.width}} pageBreak" ng-if="favPdfWidget.widgetId.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
                              ticker-Directive 
+                             widget-Obj="{{favPdfWidget.widgetId}}"
                              ticker-Source="{{favPdfWidget.widgetId.dataSetId}}" 
                              ticker-Title-Name="{{favPdfWidget.widgetId.widgetTitle}}" 
                              ticker-Id="{{favPdfWidget.widgetId.id}}" 

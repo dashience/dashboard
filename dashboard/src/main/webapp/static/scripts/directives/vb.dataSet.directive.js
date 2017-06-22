@@ -410,7 +410,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             var driver = null;
             var dataSourceType = null;
             var userName = null;
-            var dataSourceId= null;
+            var dataSourceId = null;
             if (dataSourcePath.dataSourceId != null) {
                 connectionUrl = dataSourcePath.dataSourceId.connectionString;
                 dataSourceId = dataSourcePath.dataSourceId.id;
@@ -514,7 +514,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                                                 lastNdays: value.lastNdays,
                                                 lastNweeks: value.lastNweeks,
                                                 lastNmonths: value.lastNmonths,
-                                                lastNyears: value.lastNyears
+                                                lastNyears: value.lastNyears,
+                                                userId: value.userId
                                             };
                                             console.log(data);
                                             scope.dataSetColumns.push(data);
@@ -597,7 +598,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                                     lastNdays: scope.dataSetColumns[i].lastNdays,
                                     lastNweeks: scope.dataSetColumns[i].lastNweeks,
                                     lastNmonths: scope.dataSetColumns[i].lastNmonths,
-                                    lastNyears: scope.dataSetColumns[i].lastNyears
+                                    lastNyears: scope.dataSetColumns[i].lastNyears,
+                                    userId:scope.dataSetColumns[i].userId
                                 };
                                 scope.columns.push(columnData);
                             }
@@ -663,6 +665,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSetColumn.expression = "";
             }
             scope.dataSetFieldsClose = function (dataSetColumn) {
+                if(!dataSetColumn){
+                    return;
+                }
                 scope.dataSetColumn = "";
                 dataSetColumn.customStartDate = $stateParams.startDate;
                 dataSetColumn.customEndDate = $stateParams.endDate;
@@ -756,7 +761,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     lastNdays: dataSetColumn.lastNdays,
                     lastNweeks: dataSetColumn.lastNweeks,
                     lastNmonths: dataSetColumn.lastNmonths,
-                    lastNyears: dataSetColumn.lastNyears
+                    lastNyears: dataSetColumn.lastNyears,
+                    userId: dataSetColumn.userId ? dataSetColumn.userId: null
                 };
                 console.log(data);
 //                if (!dataSetColumn.dateRangeName && dataSetColumn.functionName == 'Custom') {
@@ -797,7 +803,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     lastNdays: dataSetColumn.lastNdays,
                     lastNyears: dataSetColumn.lastNyears,
                     lastNweeks: dataSetColumn.lastNweeks,
-                    lastNmonths: dataSetColumn.lastNmonths
+                    lastNmonths: dataSetColumn.lastNmonths,
+                    userId: dataSetColumn.userId
                 };
                 console.log(editData);
                 scope.dataSetColumn = editData;

@@ -606,6 +606,5 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
 
         });
-
     });
 });

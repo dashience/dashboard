@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.admin.dao.bean.ProductBean;
+import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
@@ -179,6 +180,13 @@ public class UiDao extends BaseDao {
 
     public List<WidgetColumn> getWidgetColumnsByWidgetId(Integer widgetId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetColumn.findByWidgetId");
+        query.setParameter("id", widgetId);
+        return query.list();
+    }
+    
+    public List<WidgetColumn> getDerivedWidgetColumnsByWidgetId(Integer widgetId) {
+        String queryStr = "select w from WidgetColumn w where w.widgetId.id = :id and w.expression IS NOT NULL";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", widgetId);
         return query.list();
     }
@@ -434,7 +442,7 @@ public class UiDao extends BaseDao {
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
-
+    
     public void removeDsFromDataSet(Integer id) {
         String queryStr = "delete DataSet d where d.dataSourceId.id = :dataSourceId";
 //        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
@@ -579,10 +587,11 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<DataSetColumns> getDataSetColumnsByDataSetId(Integer dataSetId) {
-        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id";
+    public List<DataSetColumns> getDataSetColumnsByDataSetId(Integer dataSetId, Integer userId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id and (d.userId IS NULL or d.userId.id = :userId)";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", dataSetId);
+        query.setParameter("userId", userId);
         return query.list();
     }
 
@@ -676,6 +685,28 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", agencyId);
         return query.list();
+    }
+
+    public DataSetColumns getDataSetColumn(String fieldName, Integer userId, Integer dataSetId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.fieldName = :fieldName and d.dataSetId.id = :id and (d.userId IS NULL or d.userId.id = :userId)";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", dataSetId);
+        query.setParameter("userId", userId);
+        query.setParameter("fieldName", fieldName);
+        List<DataSetColumns> list = query.list();
+        if(list.size() >0) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    public DataSetColumns createDataSetColumn(ColumnDef columnDef, Integer dataSetId) {
+        DataSetColumns dataSetColumn = new DataSetColumns();
+        dataSetColumn.setFieldName(columnDef.getFieldName());
+        dataSetColumn.setFieldType(columnDef.getType());
+        dataSetColumn.setDisplayName(columnDef.getDisplayName());
+        dataSetColumn.setDisplayFormat(columnDef.getDisplayFormat());
+        return (DataSetColumns)create(dataSetColumn);
     }
 
 }

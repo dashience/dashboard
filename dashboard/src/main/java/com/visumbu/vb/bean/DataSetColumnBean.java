@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.bean;
 
+import com.visumbu.vb.model.VbUser;
 import java.util.List;
 
 /**
@@ -37,6 +38,7 @@ public class DataSetColumnBean {
     private Integer groupPriority;
     private String sortOrder;
     private List<DataSetColumnBean> tableColumns;
+    private VbUser userId;
 
     public String getFieldName() {
         return fieldName;
@@ -229,6 +231,14 @@ public class DataSetColumnBean {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public VbUser getUserId() {
+        return userId;
+    }
+
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
+    }    
 
     @Override
     public String toString() {

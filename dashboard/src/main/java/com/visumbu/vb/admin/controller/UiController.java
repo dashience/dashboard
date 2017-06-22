@@ -172,6 +172,8 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
+        VbUser user = userService.findByUsername(getUser(request));
+        tabWidget.setCreatedBy(user);
         return uiService.saveTabWidget(tabId, tabWidget);
     }
 
@@ -425,6 +427,13 @@ public class UiController extends BaseController {
         return uiService.createDataSetFormulaColumn(dataSetColumnBean);
     }
 
+    @RequestMapping(value = "createWidgetColumn", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSetColumns createWidgetColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSetColumnBean dataSetColumnBean) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.createWidgetColumn(dataSetColumnBean, user);
+    }
+
     @RequestMapping(value = "dataSetFormulaColumns/{dataSetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DataSetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetColumnId) {
@@ -446,7 +455,8 @@ public class UiController extends BaseController {
     @RequestMapping(value = "getDataSetColumnsByDataSetId/{dataSetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSetColumnsByDataSetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetId) {
-        return uiService.getDataSetColumnsByDataSetId(dataSetId);
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getDataSetColumnsByDataSetId(dataSetId, user.getId());
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
@@ -685,9 +695,9 @@ public class UiController extends BaseController {
     public @ResponseBody
     List<DashboardTemplate> getTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
         //System.out.println("size of currencies"+currencies.size());
-        AgencyProduct agencyProduct=uiDao.getAgencyProductById(productId);
-        Agency agency =agencyProduct.getAgencyId();
-        Integer agencyId =agency.getId();
+        AgencyProduct agencyProduct = uiDao.getAgencyProductById(productId);
+        Agency agency = agencyProduct.getAgencyId();
+        Integer agencyId = agency.getId();
         return uiService.getTemplateByAgencyId(agencyId);
     }
 

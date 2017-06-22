@@ -142,7 +142,7 @@
                             <label>Name</label>
                             <input class="form-control" type="text" ng-change="authenticateStatus(dataSource.name)" ng-model="dataSource.name" placeholder="Name">
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType != null">
+                        <div class="form-group">
                             <label>Type</label>
                             <select class="form-control" ng-model="dataSource.dataSourceType" ng-change="selectSourceType(dataSource)">
                                 <option value="" selected="selected" ng-disabled="true">Choose one</option>

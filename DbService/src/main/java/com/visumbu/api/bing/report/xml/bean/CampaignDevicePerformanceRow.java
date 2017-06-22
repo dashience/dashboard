@@ -34,6 +34,16 @@ public class CampaignDevicePerformanceRow {
     private Data campaignId;
     private Data deviceType;
     private Data phoneCalls;
+    private Data gregorianDate;
+
+    public Data getGregorianDate() {
+        return gregorianDate;
+    }
+
+    @XmlElement(name = "GregorianDate")
+    public void setGregorianDate(Data gregorianDate) {
+        this.gregorianDate = gregorianDate;
+    }
 
     public Data getImpressions() {
         return impressions;
