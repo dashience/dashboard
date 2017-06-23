@@ -30,6 +30,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             type: 'YOUTUBE_WATCH',
             name: 'Youtube Watch'
+        },
+        {
+            type: 'none',
+            name: 'None'
         }
     ];
     $scope.dataSetFlagValidation = function (dataSource)
@@ -38,8 +42,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             $scope.report = $scope.adwordsPerformance;
             $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = true;
-            $scope.timeSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
         } else if (dataSource === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
@@ -48,7 +53,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
         } else if (dataSource === "facebook")
         {
-            $scope.report = $scope.facebookPerformance;
+            $scope.report = $scope.facebookPerformance; 
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
@@ -98,6 +103,26 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             productSegments: []
         }
     ];
+
+    $scope.twitterPerformance = [
+        {
+            type: 'pagePerformance',
+            name: 'Page Performance',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }
+    ];
+
     $scope.pinterestPerformance = [
         {
             type: 'getTopBoards',
@@ -1330,6 +1355,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ],
+
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
         },
         {
             type: 'geoPerformance',
@@ -1455,6 +1487,17 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //            $scope.productSegment = $scope.facebookPerformance[index].productSegments;
 //            $scope.nwStatusFlag = false;
 //        }
+
+        if ($scope.dataSet.dataSourceId.dataSourceType === "twitter") {
+            var index = getIndex($scope.dataSet.reportName, $scope.twitterPerformance);
+            $scope.timeSegment = $scope.twitterPerformance[index].timeSegments;
+            $scope.productSegment = $scope.twitterPerformance[index].productSegments;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+        }
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
         {
@@ -1682,9 +1725,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             if ($scope.dataSet.reportName == 'geoPerformance') {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 $scope.dataSet.productSegment = {name: 'City', type: 'city'};
+//                $scope.networkTypes={name: 'None', type: 'none'};
             } else {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+//                $scope.networkTypes={name: 'None', type: 'none'};
             }
         }
 
@@ -2371,53 +2416,19 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.dataSetColumns = [];
+                    scope.loadingTable = false;
+                    if (response.data.length == 0) {
+                        scope.errorMsg = "No Data Found";
+                        scope.showErrorMsg = true;
+                    }
                     if (dataSourcePath.id == null) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.dataSetColumns = response.columnDefs;
                     }
                     scope.tableColumns = response.columnDefs;
+                    scope.tableRows = response.data;
 //                    scope.tableRows = response.data;
-
-                    if (setTimeSegment == "dayOfWeek") {
-                        scope.dayOfWeekDataSet = [];
-                        angular.forEach(response.data, function (valueObj, key) {
-                            var dayOfWeekObj = {
-                                accountId: valueObj.accountId,
-                                accountName: valueObj.accountName,
-                                averageCpc: valueObj.averageCpc,
-                                averagePosition: valueObj.averagePosition,
-                                clicks: valueObj.clicks,
-                                conversionRate: valueObj.conversionRate,
-                                conversions: valueObj.conversions,
-                                costPerConversion: valueObj.costPerConversion,
-                                ctr: valueObj.ctr,
-                                dayOfWeek: dayOfWeekAsString(valueObj.dayOfWeek - 1),
-                                gregorianDate: valueObj.gregorianDate,
-                                hourOfDay: valueObj.hourOfDay,
-                                impressionLostToBudgetPercent: valueObj.impressionLostToBudgetPercent,
-                                impressionLostToRankPercent: valueObj.impressionLostToRankPercent,
-                                impressionSharePercent: valueObj.impressionSharePercent,
-                                impressions: valueObj.impressions,
-                                month: valueObj.month,
-                                phoneCalls: valueObj.phoneCalls,
-                                qualityScore: valueObj.qualityScore,
-                                spend: valueObj.spend,
-                                week: valueObj.week
-                            };
-                            scope.dayOfWeekDataSet.push(dayOfWeekObj);
-                        });
-                        scope.tableRows = scope.dayOfWeekDataSet;
-                    } else {
-                        scope.tableRows = response.data;
-                    }
-                    function dayOfWeekAsString(dayIndex) {
-                        return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
-                    }
-
-
-
-
 
                     scope.columns = [];
                     scope.dataSetId = dataSourcePath.id;

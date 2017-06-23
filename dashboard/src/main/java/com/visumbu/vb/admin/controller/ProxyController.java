@@ -17,6 +17,7 @@ import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.SettingsService;
+import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
@@ -124,6 +125,9 @@ public class ProxyController {
 
     @Autowired
     private SettingsService settingsService;
+
+    @Autowired
+    private TwitterService twitterService;
 
     @Autowired
     private SettingsDao settingsDao;
@@ -253,6 +257,10 @@ public class ProxyController {
             returnMap = (Map) getPinterestData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("linkedin")) {
             returnMap = (Map) getLinkedInData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("twitter")) {
+            List<Map<String, Object>> dataList = getTwitterData(request, response);
+            returnMap.put("data", dataList);
+            returnMap.put("columnDefs", getColumnDefObject(dataList));
         }
 
         System.out.println("return map ---> " + returnMap);
@@ -506,20 +514,19 @@ public class ProxyController {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
 
         String accountIdStr = getFromMultiValueMap(request, "accountId");
-        System.out.println("Pinterest Account ID -->"+accountIdStr);
+        System.out.println("Pinterest Account ID -->" + accountIdStr);
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
 //        System.out.println(account);
 //        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
 //        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
 //        
-        
+
         //get the acces token from settings
         List<Settings> pinterestAccessToken = settingsDao.getProperty("pinterestAccessToken");
         System.out.println("***************************");
         System.out.println(pinterestAccessToken);
         String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");
-        
 
         System.out.println("Pinterst access token--->" + accessToken);
         if (accessToken == null) {
@@ -890,9 +897,9 @@ public class ProxyController {
         String productSegment = getFromMultiValueMap(request, "productSegment");
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
-        
-        System.out.println("Time Segment ------>"+timeSegment);
-        System.out.println("Product Segment ------>"+productSegment);
+
+        System.out.println("Time Segment ------>" + timeSegment);
+        System.out.println("Product Segment ------>" + productSegment);
 
         if (dataSetId != null) {
             try {
@@ -949,74 +956,90 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
-        List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
-        if (dataSetReportName.equalsIgnoreCase("geoPerformance")) {
+        try {
+            List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
+            if (dataSetReportName.equalsIgnoreCase("geoPerformance")) {
+                for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                    Map<String, Object> dataMap = iterator.next();
+                    Object cityCriteria = dataMap.get("city");
+                    Object regionCriteria = dataMap.get("region");
+                    Object countryCriteria = dataMap.get("countryTerritory");
+                    try {
+                        if (cityCriteria != null) {
+                            // System.out.println("CITY CRITERIA CLASS  " + cityCriteria.getClass());
+                            Integer criteriaId = Integer.parseInt(cityCriteria + "");
+                            AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                            if (criteria != null) {
+                                dataMap.put("cityName", criteria.getCriteriaName());
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+
+                    }
+                    try {
+                        if (regionCriteria != null) {
+                            Integer criteriaId = Integer.parseInt(regionCriteria + "");
+                            AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                            if (criteria != null) {
+                                dataMap.put("regionName", criteria.getCriteriaName());
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+
+                    }
+                    try {
+                        if (countryCriteria != null) {
+                            Integer criteriaId = Integer.parseInt(countryCriteria + "");
+                            AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
+                            if (criteria != null) {
+                                dataMap.put("countryName", criteria.getCriteriaName());
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+
+                    }
+
+                }
+            }
             for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
-                Object cityCriteria = dataMap.get("city");
-                Object regionCriteria = dataMap.get("region");
-                Object countryCriteria = dataMap.get("countryTerritory");
-                try {
-                    if (cityCriteria != null) {
-                        // System.out.println("CITY CRITERIA CLASS  " + cityCriteria.getClass());
-                        Integer criteriaId = Integer.parseInt(cityCriteria + "");
-                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
-                        if (criteria != null) {
-                            dataMap.put("cityName", criteria.getCriteriaName());
-                        }
+                List<String> costFields = Arrays.asList(new String[]{"avgCPC", "cost", "costConv"});
+                for (Iterator<String> iterator1 = costFields.iterator(); iterator1.hasNext();) {
+                    String costField = iterator1.next();
+                    Object cost = dataMap.get(costField);
+                    if (cost != null) {
+                        dataMap.put(costField, covertAdwordsCost(cost));
                     }
-                } catch (NumberFormatException e) {
-
-                }
-                try {
-                    if (regionCriteria != null) {
-                        Integer criteriaId = Integer.parseInt(regionCriteria + "");
-                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
-                        if (criteria != null) {
-                            dataMap.put("regionName", criteria.getCriteriaName());
-                        }
-                    }
-                } catch (NumberFormatException e) {
-
-                }
-                try {
-                    if (countryCriteria != null) {
-                        Integer criteriaId = Integer.parseInt(countryCriteria + "");
-                        AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
-                        if (criteria != null) {
-                            dataMap.put("countryName", criteria.getCriteriaName());
-                        }
-                    }
-                } catch (NumberFormatException e) {
-
-                }
-
-            }
-        }
-        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
-            Map<String, Object> dataMap = iterator.next();
-            List<String> costFields = Arrays.asList(new String[]{"avgCPC", "cost", "costConv"});
-            for (Iterator<String> iterator1 = costFields.iterator(); iterator1.hasNext();) {
-                String costField = iterator1.next();
-                Object cost = dataMap.get(costField);
-                if (cost != null) {
-                    dataMap.put(costField, covertAdwordsCost(cost));
                 }
             }
-        }
-        // System.out.println(data);
-        Map returnMap = new HashMap();
-        if (data == null) {
-            return null;
-        }
+            // System.out.println(data);
+            Map returnMap = new HashMap();
+            if (data == null) {
+                return null;
+            }
 
-        List<ColumnDef> columnDefs = getColumnDefObject(data);
-        returnMap.put("columnDefs", columnDefs);
+            List<ColumnDef> columnDefs = getColumnDefObject(data);
+            returnMap.put("columnDefs", columnDefs);
 //        if (fieldsOnly != null) {
 //            return returnMap;
 //        }
-        returnMap.put("data", data);
-        return returnMap;
+            returnMap.put("data", data);
+            return returnMap;
+        } catch (NullPointerException e) {
+
+            System.out.println("Null Pointer Exception in google Adwords");
+            Map returnMap = new HashMap();
+            List<ColumnDef> columnDefs = new ArrayList<>();
+            returnMap.put("columnDefs", columnDefs);
+//        if (fieldsOnly != null) {
+//            return returnMap;
+//        }
+            List<Map<String, Object>> data = new ArrayList();
+            returnMap.put("data", data);
+            return returnMap;
+
+        }
+
     }
 
     private Double covertAdwordsCost(Object costData) {
@@ -1071,7 +1094,6 @@ public class ProxyController {
 //        if (timeSegment == null) {
 //            timeSegment = "daily";
 //        }
-
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
         if (dataSetId != null) {
@@ -1115,7 +1137,6 @@ public class ProxyController {
         }
 
 //        String accessToken = "AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM";
-
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
@@ -1143,6 +1164,65 @@ public class ProxyController {
             return linkedInData;
         }
 
+    }
+
+    List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+
+        Integer dataSetIdInt = null;
+        DataSet dataSet = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                dataSet = uiService.readDataSet(dataSetIdInt);
+            }
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        System.out.println("startDate 1 ----> " + startDate);
+
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        System.out.println("endDate 1 ----> " + endDate);
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String twitterAccountId = getAccountId(accountProperty, "twitterAccountId");
+        String twitterScreenName = getAccountId(accountProperty, "twitterScreenName");
+        String twitterOauthToken = getAccountId(accountProperty, "twitterOauthToken");
+        String twitterOauthSignature = getAccountId(accountProperty, "twitterOauthSignature");
+        String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
+        String twitterOauthConsumerKey = getAccountId(accountProperty, "twitterConsumerKey");
+
+        //Testing
+        System.out.println("Twitter AccountId-->" + twitterAccountId);
+        System.out.println("Twitter twitterOauthNonce-->" + twitterOauthNonce);
+        System.out.println("Twitter twitterOauthSignature-->" + twitterOauthSignature);
+        System.out.println("Twitter twitterScreenName-->" + twitterScreenName);
+        System.out.println("Twitter twitterOauthToken-->" + twitterOauthToken);
+        try {
+            Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
+            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, twitterAccountId, twitterScreenName,
+                    twitterOauthToken, twitterOauthSignature, twitterOauthNonce, twitterOauthConsumerKey, startDate, endDate, timeSegment, productSegment);
+            return twitterReport;
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 
     Object getFbData(final MultiValueMap<String, String> request, HttpServletResponse response) {
@@ -1220,7 +1300,6 @@ public class ProxyController {
         //code to get access token from settings
 //        List<Settings> facebookAccessToken = settingsService.getProperty("facebookAccessToken");
 //        String accessToken =SettingsProperty.getSettingsProperty(facebookAccessToken, "facebookAccessToken");
-
 //        String accessToken = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
         log.debug("Report Name ---- " + dataSetReportName);
         log.debug("Account Id ---- " + facebookAccountIdInt);
