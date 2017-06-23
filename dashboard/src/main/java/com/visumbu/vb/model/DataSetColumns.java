@@ -103,9 +103,12 @@ public class DataSetColumns implements Serializable {
     @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet dataSetId;
-     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
+    @JoinColumn(name = "widget_id", referencedColumnName = "id")
+    @ManyToOne
+    private TabWidget widgetId;
 
     public DataSetColumns() {
     }
@@ -273,7 +276,15 @@ public class DataSetColumns implements Serializable {
     public void setUserId(VbUser userId) {
         this.userId = userId;
     }
-    
+
+    public TabWidget getWidgetId() {
+        return widgetId;
+    }
+
+    public void setWidgetId(TabWidget widgetId) {
+        this.widgetId = widgetId;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -298,5 +309,5 @@ public class DataSetColumns implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DataSetColumns[ id=" + id + " ]";
     }
-    
+
 }

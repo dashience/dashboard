@@ -476,7 +476,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                        });
 //                        scope.tableRows = scope.dayOfWeekDataSet;
 //                    } else {
-                        scope.tableRows = response.data.slice(0, 5);
+                    scope.tableRows = response.data.slice(0, 5);
 //                    }
                     function dayOfWeekAsString(dayIndex) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
@@ -515,7 +515,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                                                 lastNweeks: value.lastNweeks,
                                                 lastNmonths: value.lastNmonths,
                                                 lastNyears: value.lastNyears,
-                                                userId: value.userId
+                                                userId: value.userId,
+                                                widget: value.widgetId
                                             };
                                             console.log(data);
                                             scope.dataSetColumns.push(data);
@@ -599,7 +600,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                                     lastNweeks: scope.dataSetColumns[i].lastNweeks,
                                     lastNmonths: scope.dataSetColumns[i].lastNmonths,
                                     lastNyears: scope.dataSetColumns[i].lastNyears,
-                                    userId:scope.dataSetColumns[i].userId
+                                    userId: scope.dataSetColumns[i].userId,
+                                    widgetId: scope.dataSetColumns[i].widgetId
                                 };
                                 scope.columns.push(columnData);
                             }
@@ -618,14 +620,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             };
             scope.dataSetItems();
 
-
             scope.resetDataSetColumn = function () {
                 var dataSetId = dataSourcePath.id;
                 $http({method: 'DELETE', url: 'admin/ui/dataSetColumn/' + dataSetId}).success(function () {
                     scope.dataSetItems();
                 });
             };
-
 
             scope.dataSetError = false;
             function showDataSetError() {
@@ -665,7 +665,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSetColumn.expression = "";
             }
             scope.dataSetFieldsClose = function (dataSetColumn) {
-                if(!dataSetColumn){
+                if (!dataSetColumn) {
                     return;
                 }
                 scope.dataSetColumn = "";
@@ -762,7 +762,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     lastNweeks: dataSetColumn.lastNweeks,
                     lastNmonths: dataSetColumn.lastNmonths,
                     lastNyears: dataSetColumn.lastNyears,
-                    userId: dataSetColumn.userId ? dataSetColumn.userId: null
+                    userId: dataSetColumn.userId ? dataSetColumn.userId : null,
+                    widgetId: dataSetColumn.widgetId ? dataSetColumn.widget : null
                 };
                 console.log(data);
 //                if (!dataSetColumn.dateRangeName && dataSetColumn.functionName == 'Custom') {

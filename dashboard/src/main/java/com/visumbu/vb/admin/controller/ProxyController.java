@@ -181,34 +181,16 @@ public class ProxyController {
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
         List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
-//        if (widgetIdStr != null) {
-//            try {
-//                widgetIdInt = Integer.parseInt(widgetIdStr);
-//                List<WidgetColumn> widgetColumnList = uiDao.getDerivedWidgetColumnsByWidgetId(widgetIdInt);
-//                for (Iterator<WidgetColumn> iterator = widgetColumnList.iterator(); iterator.hasNext();) {
-//                    WidgetColumn widgetColumn = iterator.next();
-//                    dataSetColumnList.add(uiService.addWidgetColumnToDataSetColumnList(widgetColumn));
-//                }
-//            } catch (NumberFormatException e) {
-//
-//            }
-//        }
-        System.out.println("data ---> " + data);
 
         if (dataSetColumnList.size() > 0) {
-            System.out.println("inside dataSetColumnList");
-            System.out.println("dataSetColumnList ---> " + dataSetColumnList);
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
-            System.out.println("dataWithDerivedFunctions ---> " + dataWithDerivedFunctions);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
-        System.out.println("returnMap ---> " + returnMap);
-
-        if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
             String queryFilter = null;
-            Integer widgetId = Integer.parseInt(widgetIdStr);
-            TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetId, dataSetIdInt);
+            widgetIdInt = Integer.parseInt(widgetIdStr);
+            TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetIdInt, dataSetIdInt);
             if (tabWidget != null) {
                 queryFilter = tabWidget.getQueryFilter();
             }
@@ -220,7 +202,7 @@ public class ProxyController {
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
         if (dataSetIdInt != null) {
-            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt));
+            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
         }
         if (fieldsOnly != null) {
             return dataMap;
@@ -230,11 +212,11 @@ public class ProxyController {
         return dataMap;
     }
 
-    private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId) {
+    private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
-            DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId);
+            DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
             column.setId(dataSetColumn.getId());
             column.setExpression(dataSetColumn.getExpression());
             column.setDisplayFormat(dataSetColumn.getDisplayFormat());

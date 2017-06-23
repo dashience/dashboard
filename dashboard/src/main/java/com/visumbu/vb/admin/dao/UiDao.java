@@ -687,12 +687,13 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public DataSetColumns getDataSetColumn(String fieldName, Integer userId, Integer dataSetId) {
-        String queryStr = "SELECT d FROM DataSetColumns d where d.fieldName = :fieldName and d.dataSetId.id = :id and (d.userId IS NULL or d.userId.id = :userId)";
+    public DataSetColumns getDataSetColumn(String fieldName, Integer userId, Integer dataSetId, Integer widgetId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.fieldName = :fieldName and d.dataSetId.id = :id and ( d.widgetId IS NULL or d.widgetId.id = :widgetId) and (d.userId IS NULL or d.userId.id = :userId)";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", dataSetId);
         query.setParameter("userId", userId);
         query.setParameter("fieldName", fieldName);
+        query.setParameter("widgetId", widgetId);
         List<DataSetColumns> list = query.list();
         if(list.size() >0) {
             return list.get(0);

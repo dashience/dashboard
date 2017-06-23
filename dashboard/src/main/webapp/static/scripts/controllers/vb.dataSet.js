@@ -1976,8 +1976,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     };
 
-
-
     function getProductSegment(productList, productSegmentName) {
         productList.forEach(function (val, key) {
             if (productSegmentName == val.type) {
@@ -1993,8 +1991,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
         });
     }
-
-
 
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;

@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.bean;
 
+import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.VbUser;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class DataSetColumnBean {
     private String sortOrder;
     private List<DataSetColumnBean> tableColumns;
     private VbUser userId;
+    private TabWidget widgetId;
 
     public String getFieldName() {
         return fieldName;
@@ -238,7 +240,15 @@ public class DataSetColumnBean {
 
     public void setUserId(VbUser userId) {
         this.userId = userId;
-    }    
+    }   
+
+    public TabWidget getWidgetId() {
+        return widgetId;
+    }
+
+    public void setWidgetId(TabWidget widgetId) {
+        this.widgetId = widgetId;
+    }
 
     @Override
     public String toString() {
