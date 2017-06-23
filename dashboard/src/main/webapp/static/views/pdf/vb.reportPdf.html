@@ -171,7 +171,7 @@
 
                 <div class="pull-right">
                     <div class="section-right-block">                    
-                        <p>Email: info@dashience.com<br>Phone: 773-446-7565</p>                    
+                        <p class="pdf-subtitle-color">Email: info@dashience.com<br>Phone: 773-446-7565</p>                    
                     </div>
                 </div>
             </div>
@@ -183,6 +183,7 @@
 
                     <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
+                             widget-Obj="{{reportWidget.widgetId}}"
                              ticker-Directive ticker-Source="{{reportWidget.widgetId.dataSetId}}" 
                              ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
                              ticker-Id="{{reportWidget.widgetId.id}}" 
@@ -190,7 +191,7 @@
                         </div>
                     </div>
 
-                    <div class="hpanel col-fixed-{{reportWidget.widgetId.width}}" ng-if="reportWidget.widgetId.chartType != 'ticker'">
+                    <div class="hpanel pageBreak col-fixed-{{reportWidget.widgetId.width}}" ng-if="reportWidget.widgetId.chartType != 'ticker'">
                         <div class="panel-heading">                           
                             <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle?reportWidget.widgetId.widgetTitle:'Widget'}}</span>
                         </div>

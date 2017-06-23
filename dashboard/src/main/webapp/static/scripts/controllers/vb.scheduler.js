@@ -13,6 +13,7 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
         });
     };
 //    $scope.schedularHistoryData = false;
+    var recentDate = [];
     $scope.showSchedulerHistory = function (scheduler) {
         $scope.schedularHistoryDetails = [];
         $http({method: 'GET', url: 'admin/scheduler/schedulerHistory/' + scheduler.id}).success(function (response) {
@@ -24,6 +25,13 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
             console.log(response);
 //            }
         });
+
+        angular.forEach($scope.schedularHistoryDetails, function (value, key) {alert()
+            angular.forEach(value.schedulerId, function (val, key) {
+                recentDate = value.lastExecutionStatus;
+                console.log(recentDate)
+            })
+        })
     };
 
     $scope.saveSchedulerStatus = function (scheduler) {

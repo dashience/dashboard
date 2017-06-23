@@ -180,6 +180,7 @@
                     <div class="hpanel col-fixed-{{widget.width}} pageBreak" ng-if="widget.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
                              ticker-Directive 
+                             widget-Obj="{{widget}}"
                              ticker-Source="{{widget.dataSetId}}" 
                              ticker-Title-Name="{{widget.widgetTitle}}" 
                              ticker-Id="{{widget.id}}" 

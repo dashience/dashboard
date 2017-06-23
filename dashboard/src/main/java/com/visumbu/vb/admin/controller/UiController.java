@@ -41,6 +41,7 @@ import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.DataSetColumns;
 
@@ -171,6 +172,8 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
+        VbUser user = userService.findByUsername(getUser(request));
+        tabWidget.setCreatedBy(user);
         return uiService.saveTabWidget(tabId, tabWidget);
     }
 
@@ -333,6 +336,15 @@ public class UiController extends BaseController {
         return uiService.saveDataSource(dataSource);
     }
 
+    @RequestMapping(value = "joinDataSource", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSource createDataSourceForJoinDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
+        VbUser user = userService.findByUsername(getUser(request));
+        dataSource.setUserId(user);
+        dataSource.setAgencyId(user.getAgencyId());
+        return uiService.createDataSourceForJoinDataSet(dataSource);
+    }
+
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
     public @ResponseBody
     Object continueFileUpload(HttpServletRequest request, HttpServletResponse response) {
@@ -415,6 +427,13 @@ public class UiController extends BaseController {
         return uiService.createDataSetFormulaColumn(dataSetColumnBean);
     }
 
+    @RequestMapping(value = "createWidgetColumn", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSetColumns createWidgetColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSetColumnBean dataSetColumnBean) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.createWidgetColumn(dataSetColumnBean, user);
+    }
+
     @RequestMapping(value = "dataSetFormulaColumns/{dataSetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DataSetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetColumnId) {
@@ -436,7 +455,8 @@ public class UiController extends BaseController {
     @RequestMapping(value = "getDataSetColumnsByDataSetId/{dataSetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSetColumnsByDataSetId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSetId) {
-        return uiService.getDataSetColumnsByDataSetId(dataSetId);
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getDataSetColumnsByDataSetId(dataSetId, user.getId());
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
@@ -651,7 +671,7 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "saveTemplate/{accountId}/{productId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTemplate createDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate,@PathVariable Integer accountId, @PathVariable Integer productId) {
+    DashboardTemplate createDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate, @PathVariable Integer accountId, @PathVariable Integer productId) {
         VbUser user = userService.findByUsername(getUser(request));
         dashboardTemplate.setUserId(user);
         AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
@@ -659,7 +679,26 @@ public class UiController extends BaseController {
         List<Account> account = uiService.getAccountById(accountId);
         dashboardTemplate.setAccountId(account.get(0));
         dashboardTemplate.setAgencyId(agencyProduct.getAgencyId());
-        return uiService.createDashboardTemplate(dashboardTemplate);
+        return uiService.createDashboardTemplate(dashboardTemplate, user.getId(), accountId, productId);
+    }
+
+    @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    DashboardTemplate getTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId, @PathVariable Integer productId) {
+        //System.out.println("size of currencies"+currencies.size());
+        VbUser user = userService.findByUsername(getUser(request));
+        Integer userId = user.getId();
+        return uiService.getTemplateId(accountId, productId, userId);
+    }
+
+    @RequestMapping(value = "dashboardTemplate/{productId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
+        //System.out.println("size of currencies"+currencies.size());
+        AgencyProduct agencyProduct = uiDao.getAgencyProductById(productId);
+        Agency agency = agencyProduct.getAgencyId();
+        Integer agencyId = agency.getId();
+        return uiService.getTemplateByAgencyId(agencyId);
     }
 
     @ExceptionHandler

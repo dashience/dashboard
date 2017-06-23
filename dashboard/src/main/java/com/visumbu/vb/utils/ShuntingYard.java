@@ -155,6 +155,7 @@ public class ShuntingYard {
     }
 
     public static String executeExpression(Map<String, Object> mapData, String postFixRules) {
+        System.out.println("mapData ---> "+mapData);
         String[] postfixRulesList = postFixRules.trim().split("\\s+");
         Deque<String> stack = new LinkedList<>();
         for (int i = 0; i < postfixRulesList.length; i++) {
@@ -163,6 +164,7 @@ public class ShuntingYard {
                 String operator = postFixToken;
                 String operand2 = getOperand(stack.pop(), mapData);
                 String operand1 = getOperand(stack.pop(), mapData);
+                System.out.println("operand1 " + operand1 + " operand 2 " + operand2 + " operator " + operator);
                 stack.push(calculateValue(operand1, operand2, operator) + "");
             } else {
                 stack.push(postFixToken);

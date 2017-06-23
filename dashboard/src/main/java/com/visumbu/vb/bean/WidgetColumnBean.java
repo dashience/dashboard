@@ -25,6 +25,7 @@ public class WidgetColumnBean {
     private String agregationFunction;
     private String functionParameters;
     private String fieldType;
+    private String expression;
     private String baseFieldName;
     private String fieldGenerationFunction;
     private String fieldGenerationFields;
@@ -148,6 +149,14 @@ public class WidgetColumnBean {
 
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
     public String getBaseFieldName() {

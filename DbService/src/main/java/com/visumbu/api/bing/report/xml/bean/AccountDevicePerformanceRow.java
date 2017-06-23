@@ -31,6 +31,17 @@ public class AccountDevicePerformanceRow {
     private Data deviceType;
     private Data timePeriod;
     private Data phoneCalls;
+    private Data gregorianDate;
+
+    public Data getGregorianDate() {
+        return gregorianDate;
+    }
+
+    @XmlElement(name="GregorianDate")
+    public void setGregorianDate(Data gregorianDate) {
+        this.gregorianDate = gregorianDate;
+    }
+    
 
     public Data getImpressions() {
         return impressions;

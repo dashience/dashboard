@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
+import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
@@ -276,6 +277,17 @@ public class UiService {
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
         tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
         tabWidget.setJsonData(tabWidgetBean.getJsonData());
+        tabWidget.setAccountId(tabWidgetBean.getAccountId());
+        tabWidget.setCreatedBy(tabWidgetBean.getCreatedBy());
+        tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
+        tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
+        tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
+//        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
+//        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
+//        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
+//        tabWidget.setLastNmonths(tabWidgetBean.getLastNmonths());
+//        tabWidget.setLastNweeks(tabWidgetBean.getLastNweeks());
+//        tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
 
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         List<WidgetColumnBean> widgetColumns = tabWidgetBean.getWidgetColumns();
@@ -287,6 +299,7 @@ public class UiService {
             widgetColumn.setDisplayFormat(widgetColumnBean.getDisplayFormat());
             widgetColumn.setDisplayName(widgetColumnBean.getDisplayName());
             widgetColumn.setSortOrder(widgetColumnBean.getSortOrder());
+            widgetColumn.setExpression(widgetColumnBean.getExpression());
             widgetColumn.setGroupPriority(widgetColumnBean.getGroupPriority());
             widgetColumn.setAgregationFunction(widgetColumnBean.getAgregationFunction());
             widgetColumn.setxAxis(widgetColumnBean.getxAxis());
@@ -352,7 +365,12 @@ public class UiService {
         tabWidget.setLastNyears(tabWidgetBean.getLastNyears());
         tabWidget.setIsGridLine(tabWidgetBean.getIsGridLine());
         tabWidget.setQueryFilter(tabWidgetBean.getQueryFilter());
+        tabWidget.setJsonData(tabWidgetBean.getJsonData());
         tabWidget.setAccountId(tabWidgetBean.getAccountId());
+        tabWidget.setCreatedBy(tabWidgetBean.getCreatedBy());
+        tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
+        tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
+        tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
         List<WidgetColumn> widgetColumns = uiDao.getWidgetColumnsByWidgetId(widgetId);
@@ -365,6 +383,7 @@ public class UiService {
             widgetColumn.setDisplayName(widgetColumnBean.getDisplayName());
             widgetColumn.setSortOrder(widgetColumnBean.getSortOrder());
             widgetColumn.setGroupPriority(widgetColumnBean.getGroupPriority());
+            widgetColumn.setExpression(widgetColumnBean.getExpression());
             widgetColumn.setAgregationFunction(widgetColumnBean.getAgregationFunction());
             widgetColumn.setxAxis(widgetColumnBean.getxAxis());
             widgetColumn.setyAxis(widgetColumnBean.getyAxis());
@@ -743,6 +762,7 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
+                dataSetFields.setUserId(allDataSetColumn.getUserId());
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetList.add(dataSetFields);
             } else if (!Objects.equals(allDataSetColumn.getId(), dataSetColumnBean.getId())) {
@@ -767,10 +787,12 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
+                dataSetFields.setUserId(allDataSetColumn.getUserId());
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetList.add(dataSetFields);
             }
         }
+
         DataSetColumns dataSetColumns = new DataSetColumns();
         dataSetColumns.setId(dataSetColumnBean.getId());
         dataSetColumns.setExpression(dataSetColumnBean.getExpression());
@@ -791,9 +813,92 @@ public class UiService {
         dataSetColumns.setLastNweeks(dataSetColumnBean.getLastNweeks());
         dataSetColumns.setLastNyears(dataSetColumnBean.getLastNyears());
         dataSetColumns.setDataSetId(dataSet);
+        dataSetColumns.setUserId(dataSetColumnBean.getUserId());
         uiDao.saveOrUpdate(dataSetColumns);
         dataSetList.add(dataSetColumns);
         return dataSetList;
+    }
+
+    public DataSetColumns createWidgetColumn(DataSetColumnBean dataSetColumnBean,VbUser user) {
+        DataSet dataSet = uiDao.getDataSetById(dataSetColumnBean.getDataSetId());
+        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
+        for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
+            DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
+            System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
+            if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
+                System.out.println("if");
+                DataSetColumns dataSetFields = new DataSetColumns();
+                dataSetFields.setId(allDataSetColumn.getId());
+                dataSetFields.setExpression(allDataSetColumn.getExpression());
+                dataSetFields.setFieldName(allDataSetColumn.getFieldName());
+                dataSetFields.setDisplayName(allDataSetColumn.getDisplayName());
+                dataSetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                dataSetFields.setStatus(allDataSetColumn.getStatus());
+                dataSetFields.setFunctionName(allDataSetColumn.getFunctionName());
+                dataSetFields.setColumnName(allDataSetColumn.getColumnName());
+                dataSetFields.setBaseField(allDataSetColumn.getBaseField());
+                dataSetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
+                dataSetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                dataSetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                dataSetFields.setLastNdays(allDataSetColumn.getLastNdays());
+                dataSetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
+                dataSetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
+                dataSetFields.setLastNyears(allDataSetColumn.getLastNyears());
+                dataSetFields.setFieldType(allDataSetColumn.getFieldType());
+                dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
+                dataSetFields.setDataSetId(dataSet);
+                dataSetFields.setUserId(allDataSetColumn.getUserId());
+                uiDao.saveOrUpdate(dataSetFields);
+            } else if (!Objects.equals(allDataSetColumn.getId(), dataSetColumnBean.getId())) {
+                System.out.println("else if");
+                DataSetColumns dataSetFields = new DataSetColumns();
+                dataSetFields.setId(allDataSetColumn.getId());
+                dataSetFields.setExpression(allDataSetColumn.getExpression());
+                dataSetFields.setFieldName(allDataSetColumn.getFieldName());
+                dataSetFields.setDisplayName(allDataSetColumn.getDisplayName());
+                dataSetFields.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                dataSetFields.setStatus(allDataSetColumn.getStatus());
+                dataSetFields.setFunctionName(allDataSetColumn.getFunctionName());
+                dataSetFields.setColumnName(allDataSetColumn.getColumnName());
+                dataSetFields.setBaseField(allDataSetColumn.getBaseField());
+                dataSetFields.setDateRangeName(allDataSetColumn.getDateRangeName());
+                dataSetFields.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                dataSetFields.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                dataSetFields.setLastNdays(allDataSetColumn.getLastNdays());
+                dataSetFields.setLastNmonths(allDataSetColumn.getLastNmonths());
+                dataSetFields.setLastNweeks(allDataSetColumn.getLastNweeks());
+                dataSetFields.setLastNyears(allDataSetColumn.getLastNyears());
+                dataSetFields.setFieldType(allDataSetColumn.getFieldType());
+                dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
+                dataSetFields.setDataSetId(dataSet);
+                dataSetFields.setUserId(allDataSetColumn.getUserId());
+                uiDao.saveOrUpdate(dataSetFields);
+            }
+        }
+
+        DataSetColumns dataSetColumns = new DataSetColumns();
+        dataSetColumns.setId(dataSetColumnBean.getId());
+        dataSetColumns.setExpression(dataSetColumnBean.getExpression());
+        dataSetColumns.setFieldName(dataSetColumnBean.getFieldName());
+        dataSetColumns.setFieldType(dataSetColumnBean.getFieldType());
+        dataSetColumns.setDisplayName(dataSetColumnBean.getDisplayName());
+        dataSetColumns.setDisplayFormat(dataSetColumnBean.getDisplayFormat());
+        dataSetColumns.setStatus(dataSetColumnBean.getStatus());
+        dataSetColumns.setFunctionName(dataSetColumnBean.getFunctionName());
+        dataSetColumns.setColumnName(dataSetColumnBean.getColumnName());
+        dataSetColumns.setBaseField(dataSetColumnBean.getBaseField());
+        dataSetColumns.setDateRangeName(dataSetColumnBean.getDateRangeName());
+        dataSetColumns.setCustomStartDate(dataSetColumnBean.getCustomStartDate());
+        dataSetColumns.setCustomEndDate(dataSetColumnBean.getCustomEndDate());
+        dataSetColumns.setLastNdays(dataSetColumnBean.getLastNdays());
+        dataSetColumns.setSortPriority(dataSetColumnBean.getSortPriority());
+        dataSetColumns.setLastNmonths(dataSetColumnBean.getLastNmonths());
+        dataSetColumns.setLastNweeks(dataSetColumnBean.getLastNweeks());
+        dataSetColumns.setLastNyears(dataSetColumnBean.getLastNyears());
+        dataSetColumns.setDataSetId(dataSet);
+        dataSetColumns.setUserId(user);
+        uiDao.saveOrUpdate(dataSetColumns);
+        return dataSetColumns;
     }
 
     public List<JoinDataSetCondition> createJoinDataSet(JoinDataSetBean joinDataSetBean) {
@@ -833,15 +938,16 @@ public class UiService {
         return (DataSetColumns) uiDao.delete(dataSetColumn);
     }
 
-    public List<DataSetColumns> getDataSetColumnsByDataSetId(Integer dataSetId) {
-        return uiDao.getDataSetColumnsByDataSetId(dataSetId);
+    public List<DataSetColumns> getDataSetColumnsByDataSetId(Integer dataSetId, Integer userId) {
+        return uiDao.getDataSetColumnsByDataSetId(dataSetId, userId);
     }
 
     public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
         return uiDao.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
-    public DashboardTemplate createDashboardTemplate(DashboardTemplate template) {
+    public DashboardTemplate createDashboardTemplate(DashboardTemplate template, Integer userId, Integer accountId, Integer productId) {
+
         DashboardTemplate dashboardTemplate = new DashboardTemplate();
         if (template.getId() != null) {
             dashboardTemplate.setId(template.getId());
@@ -859,7 +965,75 @@ public class UiService {
             dashboardTemplate.setUserId(template.getUserId());
             uiDao.saveOrUpdate(dashboardTemplate);
         }
+        List<DashboardTabs> dashboardTabList = uiDao.getDashboardTabsByProductId(userId, accountId, productId);
+        if (dashboardTabList.size() > 0) {
+            for (Iterator<DashboardTabs> iterator = dashboardTabList.iterator(); iterator.hasNext();) {
+                DashboardTabs dashboardTabs = new DashboardTabs();
+                DashboardTabs dashboardTab = iterator.next();
+                dashboardTabs.setAccountId(dashboardTab.getAccountId());
+                dashboardTabs.setAgencyProductId(dashboardTab.getAgencyProductId());
+                dashboardTabs.setCreatedTime(dashboardTab.getCreatedTime());
+                dashboardTabs.setDashboardId(dashboardTab.getDashboardId());
+                dashboardTabs.setId(dashboardTab.getId());
+                dashboardTabs.setModifiedTime(dashboardTab.getModifiedTime());
+                dashboardTabs.setRemarks(dashboardTab.getRemarks());
+                dashboardTabs.setStatus(dashboardTab.getStatus());
+                dashboardTabs.setTabName(dashboardTab.getTabName());
+                dashboardTabs.setTabOrder(dashboardTab.getTabOrder());
+                dashboardTabs.setTemplateId(dashboardTemplate);
+                dashboardTabs.setUserId(dashboardTab.getUserId());
+                uiDao.saveOrUpdate(dashboardTabs);
+            }
+        }
         return dashboardTemplate;
     }
 
+    public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName());
+        System.out.println("dataSource" + dataSource.getName());
+        DataSource newDataSource = new DataSource();
+        if (joinDataSourceList.size() > 0) {
+            System.out.println("if update --->");
+            DataSource joinDataSource = joinDataSourceList.get(0);
+            newDataSource.setId(joinDataSource.getId());
+            newDataSource.setName(joinDataSource.getName());
+            newDataSource.setUserId(joinDataSource.getUserId());
+            newDataSource.setAgencyId(joinDataSource.getAgencyId());
+            uiDao.saveOrUpdate(newDataSource);
+        } else {
+            System.out.println("else create ---> ");
+            newDataSource.setName(dataSource.getName());
+            newDataSource.setUserId(dataSource.getUserId());
+            newDataSource.setAgencyId(dataSource.getAgencyId());
+            uiDao.saveOrUpdate(newDataSource);
+        }
+        return newDataSource;
+    }
+
+    public DashboardTemplate getTemplateId(Integer accountId, Integer productId, Integer userId) {
+        return uiDao.getTemplateId(accountId, productId, userId);
+    }
+
+    public List<DashboardTemplate> getTemplateByAgencyId(Integer agencyId) {
+        return uiDao.getTemplateByAgencyId(agencyId);
+    }
+
+//    public DataSetColumns addWidgetColumnToDataSetColumnList(WidgetColumn widgetColumn) {
+//        DataSetColumns dataSetColumn = new DataSetColumns();
+//        dataSetColumn.setBaseField(widgetColumn.getBaseFieldName());
+//        dataSetColumn.setExpression(widgetColumn.getExpression());
+//        dataSetColumn.setDisplayName(widgetColumn.getDisplayName());
+//        dataSetColumn.setDisplayFormat(widgetColumn.getDisplayFormat());
+//        dataSetColumn.setFieldName(widgetColumn.getFieldName());
+//        dataSetColumn.setFieldType(widgetColumn.getFieldType());
+//        return dataSetColumn;
+//    }
+
+    public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef,Integer userId, Integer dataSetId) {
+        DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId);
+        if(column == null) {
+            column = uiDao.createDataSetColumn(columnDef,dataSetId);
+        }
+        return column;
+    }
 }

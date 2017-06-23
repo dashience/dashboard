@@ -103,6 +103,9 @@ public class DataSetColumns implements Serializable {
     @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet dataSetId;
+     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @ManyToOne
+    private VbUser userId;
 
     public DataSetColumns() {
     }
@@ -262,9 +265,15 @@ public class DataSetColumns implements Serializable {
     public void setSortPriority(Integer sortPriority) {
         this.sortPriority = sortPriority;
     }
-    
-    
 
+    public VbUser getUserId() {
+        return userId;
+    }
+
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
