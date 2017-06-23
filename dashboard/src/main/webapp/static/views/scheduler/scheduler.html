@@ -97,7 +97,7 @@
                                             </tr>                                            
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="history in schedularHistoryDetails | limitTo:-10 | orderBy: '-startTime'">
+                                            <tr ng-repeat="history in schedularHistoryDetails | limitTo:-10 | orderBy: '-executedDate'">
                                                 <td>{{$index+1}}</td>
                                                 <td>{{history.schedulerName}}</td>
                                                 <td>{{history.executionStartTime}}</td>

@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.controller;
 
 //import static com.visumbu.vb.admin.controller.EnliventController.processFollowings;
 import com.google.api.services.analyticsreporting.v4.model.GetReportsResponse;
+import com.visumbu.vb.admin.dao.SettingsDao;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
@@ -15,6 +16,7 @@ import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
+import com.visumbu.vb.admin.service.SettingsService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
@@ -30,6 +32,7 @@ import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
+import com.visumbu.vb.model.Settings;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.CsvDataSet;
@@ -38,6 +41,7 @@ import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.ParsePost;
 import com.visumbu.vb.utils.PropertyReader;
 import com.visumbu.vb.utils.Rest;
+import com.visumbu.vb.utils.SettingsProperty;
 import com.visumbu.vb.utils.ShuntingYard;
 import static com.visumbu.vb.utils.ShuntingYard.postfix;
 import com.visumbu.vb.utils.XlsDataSet;
@@ -117,6 +121,12 @@ public class ProxyController {
 
     @Autowired
     private LinkedinService linkedinService;
+
+    @Autowired
+    private SettingsService settingsService;
+
+    @Autowired
+    private SettingsDao settingsDao;
 
     @Autowired
     private UiDao uiDao;
@@ -496,10 +506,20 @@ public class ProxyController {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
 
         String accountIdStr = getFromMultiValueMap(request, "accountId");
+        System.out.println("Pinterest Account ID -->"+accountIdStr);
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
-        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
+//        System.out.println(account);
+//        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+//        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
+//        
+        
+        //get the acces token from settings
+        List<Settings> pinterestAccessToken = settingsDao.getProperty("pinterestAccessToken");
+        System.out.println("***************************");
+        System.out.println(pinterestAccessToken);
+        String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");
+        
 
         System.out.println("Pinterst access token--->" + accessToken);
         if (accessToken == null) {
@@ -615,7 +635,7 @@ public class ProxyController {
                     JSONObject jsonArray = (JSONObject) parser.parse(data);
 
                     Map<String, Object> myData = (Map<String, Object>) ((Map<String, Object>) ((Map<String, Object>) jsonArray).get("data")).get("counts");
-                    List<Map<String, Object>> twitterData = new ArrayList<>();
+                    List<Map<String, Object>> pinterestData = new ArrayList<>();
 
                     Map<String, Object> myMapData = new HashMap<>();
                     for (Map.Entry<String, Object> entry : myData.entrySet()) {
@@ -623,13 +643,13 @@ public class ProxyController {
                         Object value = entry.getValue();
                         myMapData.put(key, value + "");
                     }
-                    twitterData.add(myMapData);
+                    pinterestData.add(myMapData);
 
-                    List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
+                    List<ColumnDef> columnDefObject = getColumnDefObject(pinterestData);
 
                     /////////////////////////////////////////////////////////
                     System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-                    System.out.println(twitterData);
+                    System.out.println(pinterestData);
                     System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 
 //                fbData.lastIndexOf(jsonObj);
@@ -641,7 +661,7 @@ public class ProxyController {
 //
                     returnMap.put("columnDefs", columnDefObject);
 
-                    returnMap.put("data", twitterData);
+                    returnMap.put("data", pinterestData);
                     return returnMap;
                 } catch (ParseException ex) {
                     java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -870,6 +890,9 @@ public class ProxyController {
         String productSegment = getFromMultiValueMap(request, "productSegment");
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
+        
+        System.out.println("Time Segment ------>"+timeSegment);
+        System.out.println("Product Segment ------>"+productSegment);
 
         if (dataSetId != null) {
             try {
@@ -1045,9 +1068,9 @@ public class ProxyController {
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
         String productSegment = getFromMultiValueMap(request, "productSegment");
 
-        if (timeSegment == null) {
-            timeSegment = "daily";
-        }
+//        if (timeSegment == null) {
+//            timeSegment = "daily";
+//        }
 
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
@@ -1062,7 +1085,7 @@ public class ProxyController {
             }
             if (dataSet != null) {
                 dataSetReportName = (dataSetReportName == null) ? dataSet.getReportName() : dataSetReportName;
-                timeSegment = (timeSegment == null) ? dataSet.getTimeSegment() : timeSegment;
+                timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
             }
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
@@ -1091,7 +1114,7 @@ public class ProxyController {
             }
         }
 
-        String accessToken = "AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM";
+//        String accessToken = "AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM";
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
@@ -1100,7 +1123,7 @@ public class ProxyController {
         try {
             Long linkedInaccountId = Long.parseLong(linkedinAccountId);
 
-            List<Map<String, Object>> data = linkedinService.get(accessToken, linkedInaccountId, dataSetReportName,
+            List<Map<String, Object>> data = linkedinService.get(linkedInaccountId, dataSetReportName,
                     startDate, endDate, timeSegment, productSegment);
             log.debug(data);
             System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
@@ -1128,12 +1151,12 @@ public class ProxyController {
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
         String productSegment = getFromMultiValueMap(request, "productSegment");
-        if (timeSegment == null) {
-            timeSegment = "daily";
-        }
-        if (productSegment == null) {
-            productSegment = "none";
-        }
+//        if (timeSegment == null) {
+//            timeSegment = "daily";
+//        }
+//        if (productSegment == null) {
+//            productSegment = "none";
+//        }
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
         if (dataSetId != null) {
@@ -1146,9 +1169,17 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
+                System.out.println("dataset is not null");
+                System.out.println("timeSegment ---> " + timeSegment);
+                System.out.println("productSegment ---> " + productSegment);
                 dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
+//                timeSegment=dataSet.getTimeSegment();
+//                productSegment=dataSet.getProductSegment();
+                System.out.println("************** DataSet ****************************");
+                System.out.println(productSegment);
+                System.out.println(timeSegment);
             }
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
@@ -1185,12 +1216,17 @@ public class ProxyController {
         if (facebookOrganicAccountId != null) {
             facebookOrganicAccountIdInt = Long.parseLong(facebookOrganicAccountId);
         }
-        String accessToken = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
+
+        //code to get access token from settings
+//        List<Settings> facebookAccessToken = settingsService.getProperty("facebookAccessToken");
+//        String accessToken =SettingsProperty.getSettingsProperty(facebookAccessToken, "facebookAccessToken");
+
+//        String accessToken = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
         log.debug("Report Name ---- " + dataSetReportName);
         log.debug("Account Id ---- " + facebookAccountIdInt);
         log.debug("Time segment ---- " + timeSegment);
         log.debug("Start Date ---- " + startDate);
-        List<Map<String, Object>> data = facebookService.get(accessToken, dataSetReportName, facebookAccountIdInt,
+        List<Map<String, Object>> data = facebookService.get(dataSetReportName, facebookAccountIdInt,
                 facebookOrganicAccountIdInt, startDate, endDate, timeSegment, productSegment);
         // System.out.println("FbData list ----> " + data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
@@ -1213,6 +1249,7 @@ public class ProxyController {
         }
         return propertyAccountId;
     }
+
     private List<Map<String, Object>> getBingData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
         try {
             String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
@@ -1360,7 +1397,6 @@ public class ProxyController {
 //        }
 //        return null;
 //    }
-
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();

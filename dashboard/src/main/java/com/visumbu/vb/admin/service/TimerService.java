@@ -101,7 +101,6 @@ public class TimerService {
             Integer lastNweeks = null;
             Integer lastNyears = null;
             System.out.println("startdate ----> " + scheduler.getCustomStartDate());
-
             if (dateRangeName != null) {
                 if (scheduler.getLastNdays() != null) {
                     lastNdays = scheduler.getLastNdays();
@@ -159,16 +158,13 @@ public class TimerService {
                     endDate = dateRange.getEndDate();
                 }
             }
-
             System.out.println("dateRange start Date-----> " + startDate);
             System.out.println("dateRange End Date-----> " + endDate);
             schedulerHistory.setStartTime(startDate);
             schedulerHistory.setEndTime(endDate);
-
             String filename = "/tmp/" + scheduler.getSchedulerName() + "_" + currentDateStr + "." + exportType;
             filename = filename.replaceAll(" ", "_");
             String toAddress = accountMailId;
-
             if (toAddress != null && !toAddress.isEmpty()) {
                 toAddress += "," + scheduler.getSchedulerEmail();
             } else {
@@ -178,21 +174,23 @@ public class TimerService {
             System.out.println(toAddress);
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = subject + "\n\n- System";
-//            String status = scheduler.getStatus();
+            //            String status = scheduler.getStatus();
 //            if (status.equalsIgnoreCase("Active")) {
-                Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
-                schedulerHistory.setFileName(filename);
-                schedulerHistory.setEmailId(toAddress);
-                schedulerHistory.setEmailSubject(subject);
-                schedulerHistory.setEmailMessage(message);
-                scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
-                schedulerDao.update(scheduler);
-                schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
-                Date schedulerEndTime = new Date();
-                schedulerHistory.setExecutionEndTime(schedulerEndTime);
-                schedulerHistory.setSchedulerId(schedulerById);
-                schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
-                schedulerService.createSchedulerHistory(schedulerHistory);
+            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+            schedulerHistory.setFileName(filename);
+            schedulerHistory.setEmailId(toAddress);
+            schedulerHistory.setEmailSubject(subject);
+            schedulerHistory.setEmailMessage(message);
+            scheduler.setLastExecutionStatus(new Date() + " " + (schedulerStatus ? "Success" : "Failed"));
+            schedulerDao.update(scheduler);
+            schedulerHistory.setStatus(schedulerStatus ? "Success" : "Failed");
+            Date schedulerEndTime = new Date();
+            schedulerHistory.setExecutionEndTime(schedulerEndTime);
+            schedulerHistory.setSchedulerId(schedulerById);
+            schedulerHistory.setSchedulerName(schedulerById.getSchedulerName());
+            Date schedulerExecutedDate = new Date();
+            schedulerHistory.setExecutedDate(schedulerExecutedDate);
+            schedulerService.createSchedulerHistory(schedulerHistory);
 //            } else {
 //                System.out.println("Scheduler is InActive");
 //            }
@@ -312,14 +310,13 @@ public class TimerService {
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-            String url = propReader.readUrl(reportDownloadUrl)+ accountId + "/" + reportId + "?startDate=" + startDateStr + "&endDate=" + endDateStr;
-            String pdfGenerator = propReader.readUrl(urlGenerator)+URLEncoder.encode(url,"UTF-8");
+            String url = propReader.readUrl(reportDownloadUrl) + accountId + "/" + reportId + "?startDate=" + startDateStr + "&endDate=" + endDateStr;
+            String pdfGenerator = propReader.readUrl(urlGenerator) + URLEncoder.encode(url, "UTF-8");
             downloadUrlAndSave(filename, pdfGenerator);
             //String urlStr = propReader.readUrl(urlDownloadReport) + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;
 
             //System.out.println(urlStr);
-           // URL website = new URL(urlStr);
-
+            // URL website = new URL(urlStr);
 //            File file = new File(filename);
 //            System.out.println("filename: " + filename);
 //            FileUtils.copyURLToFile(website, file);

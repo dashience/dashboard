@@ -400,7 +400,7 @@
                                                 <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                                         class="form-control" ng-model="xColumn" 
                                                         ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
-                                                        ng-change="selectX1Axis(widget, xColumn)">
+                                                        ng-change="selectX1Axis(widget, xColumn);">
                                                 </select>
                                             </div>
                                             <div class="col-md-12" ng-show="editChartType == 'pie'">
@@ -424,7 +424,9 @@
                                         <div class="form-group" ng-if="editChartType != 'pie'">
                                             <div class="col-md-12">
                                                 <label>Select Y1-Axis</label>
-                                                <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByY1Column(widget,$item, y1Column)">
+                                                <ui-select multiple ng-model="y1Column" theme="bootstrap" 
+                                                           
+                                                           on-select="selectY1Axis(widget, y1Column,'y1')" on-remove="removedByY1Column(widget,$item, y1Column)">
                                                     <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
                                                     <ui-select-choices repeat="y1axis in collectionFields  | filter:$select.search">
                                                         {{y1axis.displayName}}
@@ -438,7 +440,7 @@
                                                 <label>Select Y2-Axis</label>
                                                 <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
                                                     <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
-                                                    <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
+                                                    <ui-select-choices repeat="y2axis in columnYAxis  | filter:$select.search">
                                                         {{y2axis.displayName}}
                                                     </ui-select-choices>
                                                 </ui-select>

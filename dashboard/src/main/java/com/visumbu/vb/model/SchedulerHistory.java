@@ -45,6 +45,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "SchedulerHistory.findByEmailMessage", query = "SELECT s FROM SchedulerHistory s WHERE s.emailMessage = :emailMessage")})
 public class SchedulerHistory implements Serializable {
 
+    @Column(name = "executed_date")
+    @Temporal(TemporalType.DATE)
+    private Date executedDate;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -212,6 +216,14 @@ public class SchedulerHistory implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.SchedulerHistory[ id=" + id + " ]";
+    }
+
+    public Date getExecutedDate() {
+        return executedDate;
+    }
+
+    public void setExecutedDate(Date executedDate) {
+        this.executedDate = executedDate;
     }
     
 }
