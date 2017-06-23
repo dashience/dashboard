@@ -446,38 +446,38 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.tableColumns = response.columnDefs;
 //                    scope.tableRows = response.data;
 
-                    if (setTimeSegment == "dayOfWeek") {
-                        scope.dayOfWeekDataSet = [];
-                        angular.forEach(response.data, function (valueObj, key) {
-                            var dayOfWeekObj = {
-                                accountId: valueObj.accountId,
-                                accountName: valueObj.accountName,
-                                averageCpc: valueObj.averageCpc,
-                                averagePosition: valueObj.averagePosition,
-                                clicks: valueObj.clicks,
-                                conversionRate: valueObj.conversionRate,
-                                conversions: valueObj.conversions,
-                                costPerConversion: valueObj.costPerConversion,
-                                ctr: valueObj.ctr,
-                                dayOfWeek: dayOfWeekAsString(valueObj.dayOfWeek - 1),
-                                gregorianDate: valueObj.gregorianDate,
-                                hourOfDay: valueObj.hourOfDay,
-                                impressionLostToBudgetPercent: valueObj.impressionLostToBudgetPercent,
-                                impressionLostToRankPercent: valueObj.impressionLostToRankPercent,
-                                impressionSharePercent: valueObj.impressionSharePercent,
-                                impressions: valueObj.impressions,
-                                month: valueObj.month,
-                                phoneCalls: valueObj.phoneCalls,
-                                qualityScore: valueObj.qualityScore,
-                                spend: valueObj.spend,
-                                week: valueObj.week
-                            };
-                            scope.dayOfWeekDataSet.push(dayOfWeekObj);
-                        });
-                        scope.tableRows = scope.dayOfWeekDataSet;
-                    } else {
-                        scope.tableRows = response.data;
-                    }
+//                    if (setTimeSegment == "dayOfWeek") {
+//                        scope.dayOfWeekDataSet = [];
+//                        angular.forEach(response.data, function (valueObj, key) {
+//                            var dayOfWeekObj = {
+//                                accountId: valueObj.accountId,
+//                                accountName: valueObj.accountName,
+//                                averageCpc: valueObj.averageCpc,
+//                                averagePosition: valueObj.averagePosition,
+//                                clicks: valueObj.clicks,
+//                                conversionRate: valueObj.conversionRate,
+//                                conversions: valueObj.conversions,
+//                                costPerConversion: valueObj.costPerConversion,
+//                                ctr: valueObj.ctr,
+//                                dayOfWeek: dayOfWeekAsString(valueObj.dayOfWeek - 1),
+//                                gregorianDate: valueObj.gregorianDate,
+//                                hourOfDay: valueObj.hourOfDay,
+//                                impressionLostToBudgetPercent: valueObj.impressionLostToBudgetPercent,
+//                                impressionLostToRankPercent: valueObj.impressionLostToRankPercent,
+//                                impressionSharePercent: valueObj.impressionSharePercent,
+//                                impressions: valueObj.impressions,
+//                                month: valueObj.month,
+//                                phoneCalls: valueObj.phoneCalls,
+//                                qualityScore: valueObj.qualityScore,
+//                                spend: valueObj.spend,
+//                                week: valueObj.week
+//                            };
+//                            scope.dayOfWeekDataSet.push(dayOfWeekObj);
+//                        });
+//                        scope.tableRows = scope.dayOfWeekDataSet;
+//                    } else {
+                        scope.tableRows = response.data.slice(0, 5);
+//                    }
                     function dayOfWeekAsString(dayIndex) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
                     }
