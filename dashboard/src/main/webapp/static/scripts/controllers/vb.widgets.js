@@ -601,15 +601,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
 //        console.log(widget)
         $timeout(function () {
-            $scope.list = widget;
-            $scope.list.columns.forEach(function (val, key) {
-                val.userId = null;
-                val.widgetId = null;
-            });
+//            $scope.list = widget;
+//            $scope.list.columns.forEach(function (val, key) {
+//                val.userId = val.userId.id;
+//                val.widgetId = val.widgetId.id;
+//            });
 
-            $scope.queryBuilderList = $scope.list;
-            $scope.dispHideBuilder = false;
-            //resetQueryBuilder();
+            $scope.queryBuilderList = widget;
+//            $scope.dispHideBuilder = false;
+            resetQueryBuilder();
         }, 50);
 
     };
@@ -1443,17 +1443,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             console.log(response.id);
-            $scope.getDerivedColumns.forEach(function (val, key) {
-                var filter = $.grep($scope.collectionFields, function (col) {
-                    return val.fieldName === col.fieldName;
-                });
-
-                if (filter.length > 0) {
-                    filter.userId = $scope.userId;
-                } 
-                console.log(filter);
-                console.log($scope.collectionFields);
-            });
+//            $scope.getDerivedColumns.forEach(function (val, key) {
+//                var filter = $.grep($scope.collectionFields, function (col) {
+//                    return val.fieldName === col.fieldName;
+//                });
+//
+//                if (filter.length > 0) {
+//                    filter.userId = $scope.userId;
+//                } 
+//                console.log(filter);
+//                console.log($scope.collectionFields);
+//            });
             $scope.columns = [];
             console.log($scope.collectionFields);
             $scope.collectionFields.forEach(function (value, key) {
@@ -1820,7 +1820,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
 //                        '&dataSetReportName=' + tableDataSource.reportName +
 //                        '&widgetId=' + scope.widgetId +
 //                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query);
-
+console.log(tableDataSource)
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
                         "&accountId=" + setWidgetAccountId +
