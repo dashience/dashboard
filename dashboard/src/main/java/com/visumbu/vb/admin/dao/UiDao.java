@@ -716,7 +716,7 @@ public class UiDao extends BaseDao {
     public DataSetColumns createDataSetColumn(ColumnDef columnDef, Integer dataSetId) {
         DataSetColumns dataSetColumn = new DataSetColumns();
         dataSetColumn.setFieldName(columnDef.getFieldName());
-        dataSetColumn.setFieldType(columnDef.getType());
+        dataSetColumn.setFieldType(columnDef.getFieldType());
         dataSetColumn.setDisplayName(columnDef.getDisplayName());
         dataSetColumn.setDisplayFormat(columnDef.getDisplayFormat());
         return (DataSetColumns) create(dataSetColumn);

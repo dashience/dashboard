@@ -16,7 +16,7 @@ public class ColumnDef {
 
     private Integer id;
     private String fieldName;
-    private String type;
+    private String fieldType;
     private String sortPriority;
     private String sortOrder;
     private String agregationFunction;
@@ -58,31 +58,31 @@ public class ColumnDef {
         public static final String INTEGER = ",.0f";
     }
 
-    public ColumnDef(String fieldName, String type, String displayName) {
+    public ColumnDef(String fieldName, String fieldType, String displayName) {
         this.fieldName = fieldName;
-        this.type = type;
+        this.fieldType = fieldType;
         this.displayName = displayName;
     }
 
-    public ColumnDef(String fieldName, String type, String displayName, Integer groupPriority) {
+    public ColumnDef(String fieldName, String fieldType, String displayName, Integer groupPriority) {
         this.fieldName = fieldName;
-        this.type = type;
+        this.fieldType = fieldType;
         this.displayName = displayName;
         this.groupPriority = groupPriority;
     }
 
-    public ColumnDef(String fieldName, String type, String displayName, String agregationFunction, String displayFormat) {
+    public ColumnDef(String fieldName, String fieldType, String displayName, String agregationFunction, String displayFormat) {
         this.fieldName = fieldName;
-        this.type = type;
+        this.fieldType = fieldType;
         this.agregationFunction = agregationFunction;
         this.displayName = displayName;
         this.displayFormat = displayFormat;
     }
 
-    public ColumnDef(Integer id, String fieldName, String type, String displayName, String agregationFunction, String displayFormat, String status, String expression, String functionName) {
+    public ColumnDef(Integer id, String fieldName, String fieldType, String displayName, String agregationFunction, String displayFormat, String status, String expression, String functionName) {
         this.id = id;
         this.fieldName = fieldName;
-        this.type = type;
+        this.fieldType = fieldType;
         this.agregationFunction = agregationFunction;
         this.displayName = displayName;
         this.displayFormat = displayFormat;
@@ -91,16 +91,16 @@ public class ColumnDef {
         this.functionName = functionName;
     }
 
-    public ColumnDef(String fieldName, String type, String displayName, String agregationFunction) {
+    public ColumnDef(String fieldName, String fieldType, String displayName, String agregationFunction) {
         this.fieldName = fieldName;
         this.agregationFunction = agregationFunction;
         this.displayName = displayName;
     }
 
-    public ColumnDef(Integer id, String fieldName, String type, String sortPriority, String sortOrder, String agregationFunction, String displayName, Integer groupPriority, String displayFormat) {
+    public ColumnDef(Integer id, String fieldName, String fieldType, String sortPriority, String sortOrder, String agregationFunction, String displayName, Integer groupPriority, String displayFormat) {
         this.id = id;
         this.fieldName = fieldName;
-        this.type = type;
+        this.fieldType = fieldType;
         this.sortPriority = sortPriority;
         this.sortOrder = sortOrder;
         this.agregationFunction = agregationFunction;
@@ -120,12 +120,12 @@ public class ColumnDef {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getFieldType() {
+        return fieldType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
     }
 
     public String getDisplayFormat() {
@@ -226,7 +226,7 @@ public class ColumnDef {
 
     @Override
     public String toString() {
-        return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';
+        return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';
     }
 
 }
