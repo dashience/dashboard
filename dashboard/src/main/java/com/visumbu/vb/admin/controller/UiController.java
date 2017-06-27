@@ -154,6 +154,11 @@ public class UiController extends BaseController {
         return uiService.getAgencyProductTab(agencyProductId, accountId, userId);
     }
 
+    @RequestMapping(value = "dbTabs/{templateId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgencyProductTabByTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
+        return uiService.getAgencyProductTabByTemplateId(templateId);
+    }
 //    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
@@ -163,6 +168,7 @@ public class UiController extends BaseController {
 //        }
 //        return uiService.getDashboardTabsByProductDashboard(dashboardId, user.getId());
 //    }
+
     @RequestMapping(value = "dbTab/{tabId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DashboardTabs deleteDashboardTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
@@ -173,7 +179,12 @@ public class UiController extends BaseController {
     public @ResponseBody
     TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
         VbUser user = userService.findByUsername(getUser(request));
+//        UserAccount userAccount = uiService.findUserAccountById(tabWidget.getAccountId());
+//        System.out.println(userAccount);
+//        System.out.println("userAccount"+userAccount);
+//        tabWidget.setAccountId(userAccount);
         tabWidget.setCreatedBy(user);
+        
         return uiService.saveTabWidget(tabId, tabWidget);
     }
 
@@ -206,10 +217,10 @@ public class UiController extends BaseController {
         return null;
     }
 
-    @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dbWidget/{tabId}/{accountId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-        return uiService.getTabWidget(tabId);
+    List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId,@PathVariable Integer accountId) {
+        return uiService.getTabWidget(tabId,accountId);
     }
 
     @RequestMapping(value = "reportWidgetByWidgetId/{widgetId}", method = RequestMethod.GET, produces = "application/json")
@@ -699,6 +710,11 @@ public class UiController extends BaseController {
         Agency agency = agencyProduct.getAgencyId();
         Integer agencyId = agency.getId();
         return uiService.getTemplateByAgencyId(agencyId);
+    }
+    @RequestMapping(value = "getDefaultTemplate", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getDefaultTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getDefaultTemplateById();
     }
 
     @ExceptionHandler

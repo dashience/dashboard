@@ -222,9 +222,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
-        $http.get("admin/ui/dbWidget/" + $stateParams.tabId).success(function (response) {
+        $http.get("admin/ui/dbWidget/" + $stateParams.tabId + '/' + $stateParams.accountId).success(function (response) {
             var widgetItems = [];
             widgetItems = response;
+            console.log(response);
             if (response) {
                 $scope.productName = response[0].tabId.agencyProductId.productName;
             }
@@ -248,6 +249,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetObj = {};
     $scope.loadingColumnsGif = false;
     $scope.setWidgetItems = function (widget) {
+//        console.log(widget.accountId.id)
         $scope.showDerived = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
@@ -257,6 +259,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
         });
+
+        if (widget.accountId === null) {
+            widget.allAccount = 1;
+        } else {
+
+            widget.allAccount = 0;
+        }
 
         angular.forEach(widget.columns, function (value, key) {
             var exists = false;
@@ -577,6 +586,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectColumnItem = function (obj, widget) {
+        console.log(widget)
+        console.log(obj)
         console.log(obj.fieldName)
         obj.displayName = obj.fieldName;
         $scope.dispHideBuilder = true;
@@ -1080,7 +1091,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     //Derived Column
     $scope.showDerived = false;
     $scope.addDerived = function () {
-        $scope.dataSetColumn ="";
+        $scope.dataSetColumn = "";
         $scope.showDerived = true;
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
@@ -1163,7 +1174,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget) {
-    $scope.tableColumns = [];
+        $scope.tableColumns = [];
         console.log(dataSetColumn);
         console.log(widget);
         console.log($scope.tableColumns)
@@ -1269,10 +1280,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         console.log($scope.collectionFields.indexOf(dataSetColumnData.fieldName))
 //                        columnHeaderDef
                         count = 1;
-                       if(value.id == dataSetColumnData.id){
-                           value.fieldName = dataSetColumn.fieldName;
+                        if (value.id == dataSetColumnData.id) {
+                            value.fieldName = dataSetColumn.fieldName;
 //                           value.displayName = dataSetColumn.displayName;
-                       } 
+                        }
                     }
                 });
                 $scope.collectionFields;
@@ -1285,12 +1296,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.dataSetColumn = "";
             });
             $scope.dataSetColumn = "";
-           // $scope.collectionField.fieldName = dataSetColumnData.fieldName;
+            // $scope.collectionField.fieldName = dataSetColumnData.fieldName;
 
         });
     };
     $scope.save = function (widget) {
         console.log(widget);
+        console.log(widget.allAccount)
+
         console.log($scope.tableColumns);
         if (widget.chartType != 'text') {
             if ($('.query-builder').queryBuilder('getRules')) {
@@ -1355,7 +1368,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
-
+        if (widget.allAccount === 1) {
+            widget.accountId = null;
+        } else {
+            widget.accountId = parseInt($stateParams.accountId);
+        }
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
@@ -1379,7 +1396,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             customEndDate: $scope.customEndDate, //widget.customEndDate
             jsonData: $scope.jsonData ? $scope.jsonData : null,
             queryFilter: $scope.queryFilter ? $scope.queryFilter : null,
-            accountId: widget.accountId ? widget.accountId.id : null,
+            accountId: widget.accountId,
             timeSegment: widget.timeSegment ? widget.timeSegment.type : null,
             productSegment: widget.productSegment ? widget.productSegment.type : null,
             networkType: widget.networkType ? widget.networkType.type : null
@@ -1698,12 +1715,12 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             } else {
                 dataSourcePassword = '';
             }
-
+            console.log(widgetData)
             var setWidgetAccountId;
-            if (!widgetData.accountId) {
+            if (widgetData.accountId === null || widgetData.accountId === "undefined") {
                 setWidgetAccountId = $stateParams.accountId;
             } else {
-                setWidgetAccountId = widgetData.accountId.accountId.id;
+                setWidgetAccountId = widgetData.accountId ? widgetData.accountId.id : null;
             }
 
             scope.refreshTable = function () {
@@ -2091,17 +2108,17 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 dataSourcePassword = '';
             }
 
-            var setWidgetAccountId;
-
-            if (!getWidgetObj.accountId) {
-                setWidgetAccountId = $stateParams.accountId;
-            } else {
-                setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-            }
+//            var setWidgetAccountId;
+//
+//            if (!getWidgetObj.accountId) {
+//                setWidgetAccountId = $stateParams.accountId;
+//            } else {
+//                setWidgetAccountId = getWidgetObj.accountId.id;
+//            }
             scope.refreshTicker = function () {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
-                        "&accountId=" + setWidgetAccountId +
+                        "&accountId=" + $stateParams.accountId +
                         "&userId=" + (tickerDataSource.userId ? tickerDataSource.userId.id : null) +
                         "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + tickerDataSource.reportName +

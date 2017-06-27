@@ -1730,8 +1730,8 @@ public class ProxyController {
                 String[] value = entrySet.getValue();
                 valueMap.put(key, Arrays.asList(value));
             }
-
-            List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
+            Integer accountId = Integer.parseInt(dealerId);
+            List<TabWidget> tabWidgets = uiService.getTabWidget(tabId, accountId);
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
                 try {
@@ -1980,8 +1980,8 @@ public class ProxyController {
             // //System.out.println("key ---> " + key + " value ---> " + value);
             valueMap.put(key, Arrays.asList(value));
         }
-
-        List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
+        Integer accountId = Integer.parseInt(dealerId);
+        List<TabWidget> tabWidgets = uiService.getTabWidget(tabId, accountId);
         String account = null;
         String product = "Analytics";
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {

@@ -288,30 +288,30 @@
     }
 
     .daterangepicker_input .form-control {
-         padding: 6px 24px !important;
-         line-height: normal;
+        padding: 6px 24px !important;
+        line-height: normal;
     }
     .code{
         min-height: 0px !important;
     }
     textarea.form-control {
-    min-height: 100px !important;
-    clear: both;
-    position: relative !important;
-}
+        min-height: 100px !important;
+        clear: both;
+        position: relative !important;
+    }
 
-.sa-fakeArea {
-    display:none;
-}
+    .sa-fakeArea {
+        display:none;
+    }
 
-textarea.sa-realArea {
-    -webkit-text-fill-color: black !important;
-    /*position: absolute;*/
-    top: 0;
-    left: 0;
-    background: transparent;
-    border-color: transparent;
-}
+    textarea.sa-realArea {
+        -webkit-text-fill-color: black !important;
+        /*position: absolute;*/
+        top: 0;
+        left: 0;
+        background: transparent;
+        border-color: transparent;
+    }
 
 </style>
 
@@ -879,7 +879,7 @@ textarea.sa-realArea {
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="form-group">
                     <button class="btn btn-info" id="btn-save" 
                             ng-click="save(widgetObj)">
@@ -892,6 +892,8 @@ textarea.sa-realArea {
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
+                    <input type="checkbox" ng-model="widgetObj.allAccount" ng-true-value="1" ng-false-value="0">
+                    <label>All Account</label>
                 </div>
             </div>
         </div>
@@ -948,7 +950,7 @@ textarea.sa-realArea {
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="col-sm-6" ng-show="showDerived">
                     <form name="dataSetForm" class="form-horizontal">
                         <div class="form-group col-xs-12">
@@ -964,7 +966,7 @@ textarea.sa-realArea {
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
                                       ng-model="dataSetColumn.expression" 
-                                ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
+                                      ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
 
                             <!--                            <div>
@@ -990,7 +992,7 @@ textarea.sa-realArea {
 
                         </div>
                         <div class="form-group col-xs-12"><button class="btn btn-info" id="btn-save" 
-                                     ng-click="saveDerivedColumn(dataSetColumn, widgetObj)">
+                                                                  ng-click="saveDerivedColumn(dataSetColumn, widgetObj)">
                                 <i class="fa fa-save"></i> Save
                             </button><button class="btn btn-default" id="btn-cancel" 
                                              ng-click="cancelDerivedColumn(dataSetColumn)">
@@ -999,7 +1001,7 @@ textarea.sa-realArea {
                     </form>
                 </div>
 
-                
+
             </div>
             <div class="row">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker')" ng-show="showColumnDefs">
@@ -1098,11 +1100,11 @@ textarea.sa-realArea {
                                         Last</button>
                                 </span>
                                 <input type="text"
-                                           ng-model="widgetObj.lastNdays" 
-                                           ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
-                                           class="form-control" 
-                                           ng-model-options="{debounce: 500}" placeholder="Days"> 
-                               
+                                       ng-model="widgetObj.lastNdays" 
+                                       ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
+                                       class="form-control" 
+                                       ng-model-options="{debounce: 500}" placeholder="Days"> 
+
                             </div>
 
                         </div>
@@ -1113,11 +1115,11 @@ textarea.sa-realArea {
                                         Last</button>
                                 </span>
                                 <input type="text" 
-                                           ng-model="widgetObj.lastNweeks" 
-                                           ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
-                                           class="form-control" 
-                                           ng-model-options="{debounce: 500}" placeholder="Weeks"> 
-                                
+                                       ng-model="widgetObj.lastNweeks" 
+                                       ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
+                                       class="form-control" 
+                                       ng-model-options="{debounce: 500}" placeholder="Weeks"> 
+
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1127,11 +1129,11 @@ textarea.sa-realArea {
                                         Last</button>
                                 </span>
                                 <input type="text" 
-                                           ng-model="widgetObj.lastNmonths" 
-                                           ng-change="selectWidgetDuration('Last N Months', widgetObj)"
-                                           class="form-control" 
-                                           ng-model-options="{debounce: 500}" placeholder="Months"> 
-                                
+                                       ng-model="widgetObj.lastNmonths" 
+                                       ng-change="selectWidgetDuration('Last N Months', widgetObj)"
+                                       class="form-control" 
+                                       ng-model-options="{debounce: 500}" placeholder="Months"> 
+
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1141,18 +1143,18 @@ textarea.sa-realArea {
                                         Last</button>
                                 </span>
                                 <input type="text" 
-                                           ng-model="widgetObj.lastNyears" 
-                                           ng-change="selectWidgetDuration('Last N Years', widgetObj)"
-                                           class="form-control" 
-                                           ng-model-options="{debounce: 500}"
-                                           placeholder="Years"> 
-                              
+                                       ng-model="widgetObj.lastNyears" 
+                                       ng-change="selectWidgetDuration('Last N Years', widgetObj)"
+                                       class="form-control" 
+                                       ng-model-options="{debounce: 500}"
+                                       placeholder="Years"> 
+
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                           
-<div class="input-group">
+
+                            <div class="input-group">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="button">
                                         Custom</button>
@@ -1163,16 +1165,16 @@ textarea.sa-realArea {
                                         {{widgetObj.customStartDate ? widgetObj.customStartDate : widgetStartDate| date: "MM/dd/yyyy"}} - {{widgetObj.customEndDate ? widgetObj.customEndDate : widgetEndDate| date: "MM/dd/yyyy"}}
                                     </span>
                                 </a> 
-</div>
+                            </div>
                         </div>
 
                     </div>
 
                 </div>
 
-               
-                
-                
+
+
+
             </div>
         </div>
 
