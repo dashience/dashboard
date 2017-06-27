@@ -280,6 +280,7 @@ app.controller('AgencyController', function ($scope, $http) {
     $scope.clearAgencyUser = function () {
         $scope.showAgencyUserForm = false;
         $scope.agencyUser = "";
+        
     };
 
     $scope.addAgencyProduct = function () {
