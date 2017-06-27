@@ -879,7 +879,7 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="form-group">
                     <button class="btn btn-info" id="btn-save" 
                             ng-click="save(widgetObj)">
@@ -892,6 +892,8 @@
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
+                    <input type="checkbox" ng-model="widgetObj.allAccount" ng-true-value="1" ng-false-value="0">
+                    <label>All Account</label>
                 </div>
             </div>
         </div>

@@ -48,8 +48,8 @@
             <div class="col-lg-12">
                 <div class="hpanel hgreen">
                     <ul class="nav nav-tabs">
-                        <li ng-repeat="tab in tabs" ui-sref-active="active" ng-dblclick="startEditing(tab);" ng-drop="true" ng-drop-success="onDropTabComplete($index, $data,$event)">
-                            <a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">
+                        <li ng-repeat="tab in tabs" ng-click="setTmpIdByTab(tempObj)" ui-sref-active="active" ng-dblclick="startEditing(tab);" ng-drop="true" ng-drop-success="onDropTabComplete($index, $data,$event)">
+                            <a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboardTemplate.widget({accountId: accountId, accountName: accountName, templateId: rootTemplateId, tabId: tab.id})">
                             <!--<a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">-->
                                 <span ng-hide="tab.editing">{{tab.tabName}}</span>
                                 <form ng-submit="doneEditing(tab)" ng-show="tab.editing">

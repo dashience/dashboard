@@ -140,8 +140,8 @@ public class UiService {
         return uiDao.deleteTabWidget(id);
     }
 
-    public List<TabWidget> getTabWidget(Integer tabId) {
-        return uiDao.getTabWidget(tabId);
+    public List<TabWidget> getTabWidget(Integer tabId, Integer accountId) {
+        return uiDao.getTabWidget(tabId, accountId);
     }
 
     public List<TabWidget> getReportWidgetByWidgetId(Integer widgetId) {
@@ -685,6 +685,14 @@ public class UiService {
         return uiDao.deleteUserAccount(userAccountId);
     }
 
+    public UserAccount findUserAccountById(UserAccount accountId) {
+        List <UserAccount> userAccount = uiDao.findUserAccountById(accountId);
+        if (!userAccount.isEmpty()) {
+            return userAccount.get(0);
+        }
+        return null;
+    }
+
 //    public List getUserAccountId(Integer userId) {
 //        return uiDao.getUserAccountId(userId);
 //    }
@@ -1040,5 +1048,13 @@ public class UiService {
             column = uiDao.createDataSetColumn(columnDef, dataSetId);
         }
         return column;
+    }
+
+    public List getAgencyProductTabByTemplateId(Integer templateId) {
+        return uiDao.getTabByTemplateId(templateId);
+    }
+
+    public List<DashboardTemplate> getDefaultTemplateById() {
+        return uiDao.getDefaultTemplateById();
     }
 }
