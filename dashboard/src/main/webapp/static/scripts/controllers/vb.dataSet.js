@@ -45,6 +45,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         if (dataSet.joinDataSetId != null) {
             joinDataSetId = dataSet.joinDataSetId.id;
         }
+        console.log("account Id ---------->"+$stateParams.accountId);
         $http.get(url + 'connectionUrl=' + connectionUrl +
                 "&dataSourceId=" + dataSourceId +
                 "&dataSetId=" + dataSet.id +
