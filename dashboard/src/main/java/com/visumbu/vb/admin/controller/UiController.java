@@ -427,11 +427,11 @@ public class UiController extends BaseController {
         return uiService.createDataSetFormulaColumn(dataSetColumnBean);
     }
 
-    @RequestMapping(value = "createWidgetColumn", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "createWidgetColumn/{widgetId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DataSetColumns createWidgetColumn(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSetColumnBean dataSetColumnBean) {
+    List<DataSetColumns> createWidgetColumn(HttpServletRequest request, HttpServletResponse response,@PathVariable Integer widgetId, @RequestBody DataSetColumnBean dataSetColumnBean) {
         VbUser user = userService.findByUsername(getUser(request));
-        return uiService.createWidgetColumn(dataSetColumnBean, user);
+        return uiService.createWidgetColumn(dataSetColumnBean, user, widgetId);
     }
 
     @RequestMapping(value = "dataSetFormulaColumns/{dataSetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
@@ -476,8 +476,8 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dataSet/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    DataSet deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
-        return uiService.deleteDataSet(id);
+    void deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+         uiService.deleteDataSet(id);
     }
 
     @RequestMapping(value = "dataSetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")

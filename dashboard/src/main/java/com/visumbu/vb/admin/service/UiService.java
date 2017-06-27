@@ -190,7 +190,7 @@ public class UiService {
         }
 
         DataSet dataSet = null;
-        if (tabWidgetBean.getDataSourceId() != null) {
+        if (tabWidgetBean.getDataSetId() != null) {
             dataSet = uiDao.getDataSetById(tabWidgetBean.getDataSetId());
 
         } else {
@@ -320,9 +320,10 @@ public class UiService {
             }
             widgetColumn.setColumnHide(columnHide);
             widgetColumn.setWidgetId(savedTabWidget);
+            widgetColumn.setDerivedId(widgetColumnBean.getDerivedId());
             uiDao.saveOrUpdate(widgetColumn);
         }
-        return uiDao.getTabWidgetById(tabWidgetBean.getId());
+        return uiDao.getTabWidgetById(savedTabWidget.getId());
     }
 
     public TabWidget getWidget(Integer widgetId, Integer tabId) {
@@ -583,8 +584,8 @@ public class UiService {
         return (DataSet) uiDao.read(DataSet.class, id);
     }
 
-    public DataSet deleteDataSet(Integer id) {
-        return (DataSet) uiDao.deleteDataSet(id);
+    public void deleteDataSet(Integer id) {
+         uiDao.deleteDataSet(id);
     }
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
@@ -762,6 +763,7 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
+                dataSetFields.setWidgetId(allDataSetColumn.getWidgetId());
                 dataSetFields.setUserId(allDataSetColumn.getUserId());
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetList.add(dataSetFields);
@@ -787,6 +789,7 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
+                dataSetFields.setWidgetId(allDataSetColumn.getWidgetId());
                 dataSetFields.setUserId(allDataSetColumn.getUserId());
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetList.add(dataSetFields);
@@ -814,16 +817,30 @@ public class UiService {
         dataSetColumns.setLastNyears(dataSetColumnBean.getLastNyears());
         dataSetColumns.setDataSetId(dataSet);
         dataSetColumns.setUserId(dataSetColumnBean.getUserId());
+        dataSetColumns.setWidgetId(dataSetColumnBean.getWidgetId());
         uiDao.saveOrUpdate(dataSetColumns);
         dataSetList.add(dataSetColumns);
         return dataSetList;
     }
 
-    public DataSetColumns createWidgetColumn(DataSetColumnBean dataSetColumnBean,VbUser user) {
-        DataSet dataSet = uiDao.getDataSetById(dataSetColumnBean.getDataSetId());
-        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
+    public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
+        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();        
+        List<DataSetColumns> dataSetColumn = new ArrayList<>();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
             DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
+            DataSet dataSet = null;
+            System.out.println("-----------------------------------------------------------------------");
+            System.out.println(allDataSetColumn.getDataSetId());
+            System.out.println("-----------------------------------------------------------------------");
+        if (allDataSetColumn.getDataSetId() != null) {
+            System.out.println("*******************************************************");
+            System.out.println(allDataSetColumn.getDataSetId());
+            System.out.println("*******************************************************");
+            dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
+        } else {
+            dataSet = new DataSet();
+        }
+            
             System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
             if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
@@ -846,9 +863,16 @@ public class UiService {
                 dataSetFields.setLastNyears(allDataSetColumn.getLastNyears());
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
+//                DataSet dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
                 dataSetFields.setDataSetId(dataSet);
-                dataSetFields.setUserId(allDataSetColumn.getUserId());
+                if (allDataSetColumn.getUserId() != null) {
+                    TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
+                    dataSetFields.setWidgetId(tabWidget);
+                    dataSetFields.setUserId(allDataSetColumn.getUserId());
+                } 
                 uiDao.saveOrUpdate(dataSetFields);
+                dataSetColumn.add(dataSetFields);
+
             } else if (!Objects.equals(allDataSetColumn.getId(), dataSetColumnBean.getId())) {
                 System.out.println("else if");
                 DataSetColumns dataSetFields = new DataSetColumns();
@@ -871,34 +895,16 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
-                dataSetFields.setUserId(allDataSetColumn.getUserId());
+                  if (allDataSetColumn.getUserId() != null) {
+                    TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
+                    dataSetFields.setWidgetId(tabWidget);
+                    dataSetFields.setUserId(allDataSetColumn.getUserId());
+                } 
                 uiDao.saveOrUpdate(dataSetFields);
+                dataSetColumn.add(dataSetFields);
             }
         }
-
-        DataSetColumns dataSetColumns = new DataSetColumns();
-        dataSetColumns.setId(dataSetColumnBean.getId());
-        dataSetColumns.setExpression(dataSetColumnBean.getExpression());
-        dataSetColumns.setFieldName(dataSetColumnBean.getFieldName());
-        dataSetColumns.setFieldType(dataSetColumnBean.getFieldType());
-        dataSetColumns.setDisplayName(dataSetColumnBean.getDisplayName());
-        dataSetColumns.setDisplayFormat(dataSetColumnBean.getDisplayFormat());
-        dataSetColumns.setStatus(dataSetColumnBean.getStatus());
-        dataSetColumns.setFunctionName(dataSetColumnBean.getFunctionName());
-        dataSetColumns.setColumnName(dataSetColumnBean.getColumnName());
-        dataSetColumns.setBaseField(dataSetColumnBean.getBaseField());
-        dataSetColumns.setDateRangeName(dataSetColumnBean.getDateRangeName());
-        dataSetColumns.setCustomStartDate(dataSetColumnBean.getCustomStartDate());
-        dataSetColumns.setCustomEndDate(dataSetColumnBean.getCustomEndDate());
-        dataSetColumns.setLastNdays(dataSetColumnBean.getLastNdays());
-        dataSetColumns.setSortPriority(dataSetColumnBean.getSortPriority());
-        dataSetColumns.setLastNmonths(dataSetColumnBean.getLastNmonths());
-        dataSetColumns.setLastNweeks(dataSetColumnBean.getLastNweeks());
-        dataSetColumns.setLastNyears(dataSetColumnBean.getLastNyears());
-        dataSetColumns.setDataSetId(dataSet);
-        dataSetColumns.setUserId(user);
-        uiDao.saveOrUpdate(dataSetColumns);
-        return dataSetColumns;
+        return dataSetColumn;
     }
 
     public List<JoinDataSetCondition> createJoinDataSet(JoinDataSetBean joinDataSetBean) {
@@ -1028,11 +1034,10 @@ public class UiService {
 //        dataSetColumn.setFieldType(widgetColumn.getFieldType());
 //        return dataSetColumn;
 //    }
-
-    public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef,Integer userId, Integer dataSetId) {
-        DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId);
-        if(column == null) {
-            column = uiDao.createDataSetColumn(columnDef,dataSetId);
+    public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
+        DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId, widgetId);
+        if (column == null) {
+            column = uiDao.createDataSetColumn(columnDef, dataSetId);
         }
         return column;
     }

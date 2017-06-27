@@ -128,6 +128,7 @@ public class UserController extends BaseController {
         session.setAttribute("isAuthenticated", userBean.getAuthenticated());
         session.setAttribute("username", userBean.getUsername());
         session.setAttribute("agencyId", userBean.getAgencyId());
+        session.setAttribute("id",userBean.getId());
         if (userBean != null && userBean.getUsername() != null && userBean.getAuthenticated()) {
             VbUser user = userService.findByUsername(userBean.getUsername());
             userBean.setPermission(VbUtils.getPermissions(user, uiService.getUserPermissionById(user.getId())));

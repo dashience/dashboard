@@ -183,7 +183,7 @@ public class UiDao extends BaseDao {
         query.setParameter("id", widgetId);
         return query.list();
     }
-    
+
     public List<WidgetColumn> getDerivedWidgetColumnsByWidgetId(Integer widgetId) {
         String queryStr = "select w from WidgetColumn w where w.widgetId.id = :id and w.expression IS NOT NULL";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -219,6 +219,11 @@ public class UiDao extends BaseDao {
     }
 
     public TabWidget deleteTabWidget(Integer id) {
+        String removeWidget = "delete from DataSetColumns d where d.widgetId.id = :widgetId";
+        Query findDataSet = sessionFactory.getCurrentSession().createQuery(removeWidget);
+        findDataSet.setParameter("widgetId", id);
+        findDataSet.executeUpdate();
+
         String queryReport = "delete from ReportWidget d where d.widgetId.id = :widgetId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryReport);
         querySess.setParameter("widgetId", id);
@@ -442,7 +447,7 @@ public class UiDao extends BaseDao {
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
-    
+
     public void removeDsFromDataSet(Integer id) {
         String queryStr = "delete DataSet d where d.dataSourceId.id = :dataSourceId";
 //        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
@@ -490,14 +495,21 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
-    public DataSet deleteDataSet(Integer id) {
+    public void removeJoinDataSet(Integer id) {
+        String queryStr = "delete JoinDataSet d where d.dataSetIdFirst.id = :dataSetId or d.dataSetIdSecond.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+    }
+
+    public void deleteDataSet(Integer id) {
         removeDataSetFromWidget(id);
         removeDataSetColumns(id);
+        removeJoinDataSet(id);
         String queryStr = "delete DataSet d where d.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();
-        return null;
     }
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
@@ -687,14 +699,15 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public DataSetColumns getDataSetColumn(String fieldName, Integer userId, Integer dataSetId) {
-        String queryStr = "SELECT d FROM DataSetColumns d where d.fieldName = :fieldName and d.dataSetId.id = :id and (d.userId IS NULL or d.userId.id = :userId)";
+    public DataSetColumns getDataSetColumn(String fieldName, Integer userId, Integer dataSetId, Integer widgetId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.fieldName = :fieldName and d.dataSetId.id = :id and ( d.widgetId IS NULL or d.widgetId.id = :widgetId) and (d.userId IS NULL or d.userId.id = :userId)";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", dataSetId);
         query.setParameter("userId", userId);
         query.setParameter("fieldName", fieldName);
+        query.setParameter("widgetId", widgetId);
         List<DataSetColumns> list = query.list();
-        if(list.size() >0) {
+        if (list.size() > 0) {
             return list.get(0);
         }
         return null;
@@ -703,10 +716,10 @@ public class UiDao extends BaseDao {
     public DataSetColumns createDataSetColumn(ColumnDef columnDef, Integer dataSetId) {
         DataSetColumns dataSetColumn = new DataSetColumns();
         dataSetColumn.setFieldName(columnDef.getFieldName());
-        dataSetColumn.setFieldType(columnDef.getType());
+        dataSetColumn.setFieldType(columnDef.getFieldType());
         dataSetColumn.setDisplayName(columnDef.getDisplayName());
         dataSetColumn.setDisplayFormat(columnDef.getDisplayFormat());
-        return (DataSetColumns)create(dataSetColumn);
+        return (DataSetColumns) create(dataSetColumn);
     }
 
 }

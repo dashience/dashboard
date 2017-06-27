@@ -5,15 +5,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.accountName = $stateParams.accountName;
     //$scope.tabId = $stateParams.tabId;
     //get Templates
-    $http.get('admin/ui/dashboardTemplates').success(function (response) {
+    $http.get('admin/ui/dashboardTemplates/'+$stateParams.productId).success(function (response) {
         $scope.templates = response;
-    })
+    });
     //product tabs
     $scope.tabs = [];
-    console.log($stateParams.productId)
+    console.log($stateParams.productId);
     if ($stateParams.productId) {
         $http.get("admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
-            console.log(response)
+            console.log(response);
             var setTabId;
             if (!response) {
                 setTabId = "";
@@ -26,8 +26,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 } else {
                     setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
                 }
-            }
-            console.log(setTabId)
+            };
+            console.log(setTabId);
             $scope.loadTab = false;
             $scope.tabs = response;
             angular.forEach($scope.tabs, function (value, key) {

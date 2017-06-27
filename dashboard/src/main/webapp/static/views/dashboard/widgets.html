@@ -8,7 +8,7 @@
         margin-top: -2px;
         padding: 0px;
     }
-   
+
     .wid i{
         font-size:30px;
         color: #99a5aa !important;
@@ -49,7 +49,7 @@
         width: 260px;
     }
 
-    
+
 
     .lay-wid {
         text-align:left;
@@ -347,28 +347,54 @@
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'line'">
                         <div>
-                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}">                                     
+                            </div>
                         </div>
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'bar'">
                         <div>
-                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}">                                     
+                            </div>
                         </div>
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
-                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
+                                 pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}">                                     
+                            </div>
                         </div>
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'area'">
                         <div>
-                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
+                                 area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}"
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}">                                     
+                            </div>
                         </div>
                     </div>
                     <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
                             <div id="changes-height" class="project-list">
-                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" dynamic-Table pdf-function="addToPdf(test)" dynamic-Table-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Obj="{{widget}}" table-Footer="{{widget.tableFooter}}" widget-Columns="{{widget.columns}}"></div>
+                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                     dynamic-Table pdf-function="addToPdf(test)" 
+                                     dynamic-Table-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" widget-Obj="{{widget}}" 
+                                     table-Footer="{{widget.tableFooter}}" 
+                                     widget-Columns="{{widget.columns}}">                                         
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -381,7 +407,11 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
                         <div>
-                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
+                                 stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}">                                     
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -474,7 +504,7 @@
     <div id="editWidget" class="showEditWidget modal">
         <div class="editWidget-modal-top modal-dialog modal-lg">
             <div class="modal-content">
-                
+
                 <div class="modal-body">
                     <div ng-include="'static/views/form/widgetCreateForm.html'"></div>
                 </div>
