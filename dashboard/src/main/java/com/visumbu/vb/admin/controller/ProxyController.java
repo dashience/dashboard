@@ -139,8 +139,6 @@ public class ProxyController {
             String[] value = entrySet.getValue();
             valueMap.put(key, Arrays.asList(value));
         }
-        System.out.println("dataSourceId    " + dataSourceId);
-        System.out.println("dataSourceType  " + dataSourceType);
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String dataSetId = request.getParameter("dataSetId");
@@ -164,7 +162,7 @@ public class ProxyController {
 
             }
         }
-
+        System.out.println("dataSetId ---> " +dataSetId);
         if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
             try {
                 System.out.println("with joinDataSet");
@@ -220,8 +218,11 @@ public class ProxyController {
             column.setId(dataSetColumn.getId());
             column.setExpression(dataSetColumn.getExpression());
             column.setDisplayFormat(dataSetColumn.getDisplayFormat());
+            column.setUserId(dataSetColumn.getUserId());
+            column.setWidgetId(dataSetColumn.getWidgetId());
             columnDef.add(column);
         }
+        System.out.println("columnDef ---> "+columnDef);
         return columnDef;
     }
 

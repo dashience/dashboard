@@ -607,14 +607,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                             }
                         });
                     }
-//                    var tableColumnsData = {
-//                        datasetId: dataSourcePath.id,
-//                        tableColumns: scope.columns,
-//                    };
-//                    console.log(tableColumnsData);
-//                    $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: JSON.stringify(tableColumnsData)}).success(function (response) {
-//                        console.log(response);
-//                    });
+                    var tableColumnsData = {
+                        datasetId: dataSourcePath.id,
+                        tableColumns: scope.columns,
+                    };
+                    console.log(tableColumnsData);
+                    $http({method: 'POST', url: 'admin/ui/dataSetColumns', data: JSON.stringify(tableColumnsData)}).success(function (response) {
+                        console.log(response);
+                    });
                 });
 
             };

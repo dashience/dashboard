@@ -5,6 +5,9 @@
  */
 package com.visumbu.vb.bean;
 
+import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.VbUser;
+
 /**
  *
  * @author user
@@ -23,6 +26,8 @@ public class ColumnDef {
     private String functionName;
     private String expression;
     private String status;
+    private VbUser userId;
+    private TabWidget widgetId;
 
     public static class Aggregation {
 
@@ -74,7 +79,7 @@ public class ColumnDef {
         this.displayFormat = displayFormat;
     }
 
-    public ColumnDef(Integer id, String fieldName, String type, String displayName, String agregationFunction, String displayFormat, String status, String expression,String functionName) {
+    public ColumnDef(Integer id, String fieldName, String type, String displayName, String agregationFunction, String displayFormat, String status, String expression, String functionName) {
         this.id = id;
         this.fieldName = fieldName;
         this.type = type;
@@ -178,7 +183,7 @@ public class ColumnDef {
     public void setGroupPriority(Integer groupPriority) {
         this.groupPriority = groupPriority;
     }
-    
+
     public String getFunctionName() {
         return functionName;
     }
@@ -203,9 +208,25 @@ public class ColumnDef {
         this.status = status;
     }
 
+    public VbUser getUserId() {
+        return userId;
+    }
+
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
+    }
+
+    public TabWidget getWidgetId() {
+        return widgetId;
+    }
+
+    public void setWidgetId(TabWidget widgetId) {
+        this.widgetId = widgetId;
+    }
+
     @Override
     public String toString() {
-        return "ColumnDef{" + "fieldName=" + fieldName + ", type=" + type + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + '}';
+        return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';
     }
 
 }

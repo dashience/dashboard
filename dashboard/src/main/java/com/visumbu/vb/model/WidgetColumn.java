@@ -127,6 +127,8 @@ public class WidgetColumn implements Serializable {
     @Size(max = 255)
     @Column(name = "combination_type")
     private String combinationType;
+    @Column(name = "derived_id")
+    private Integer derivedId;
     
     @Size(max = 128)
     @Column(name = "group_field")
@@ -346,7 +348,14 @@ public class WidgetColumn implements Serializable {
     public void setCombinationType(String combinationType) {
         this.combinationType = combinationType;
     }
-       
+
+    public Integer getDerivedId() {
+        return derivedId;
+    }
+
+    public void setDerivedId(Integer derivedId) {
+        this.derivedId = derivedId;
+    } 
     
     @XmlTransient
     @JsonIgnore

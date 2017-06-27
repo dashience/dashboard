@@ -476,8 +476,8 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dataSet/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    DataSet deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
-        return uiService.deleteDataSet(id);
+    void deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+         uiService.deleteDataSet(id);
     }
 
     @RequestMapping(value = "dataSetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
