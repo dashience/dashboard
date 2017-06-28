@@ -195,7 +195,7 @@ public class UiController extends BaseController {
         System.out.println("endDate ---> " + request.getParameter("endDate"));
         VbUser user = userService.findByUsername(getUser(request));
         tabWidget.setTemplateUserId(user.getId());
-        
+
         return uiService.saveTabWidget(tabId, tabWidget);
         //return null; //uiService.createTabWidget(tabId, tabWidget);
     }
@@ -622,7 +622,7 @@ public class UiController extends BaseController {
     }
 
     /*
-        code for linkedin - sabari
+     code for linkedin - sabari
      */
     @RequestMapping(value = "oauthCode/{accessToken}/{dataSourceType}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -705,10 +705,13 @@ public class UiController extends BaseController {
     public @ResponseBody
     List<DashboardTemplate> getTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
         //System.out.println("size of currencies"+currencies.size());
+        VbUser user = userService.findByUsername(getUser(request));
         AgencyProduct agencyProduct = uiDao.getAgencyProductById(productId);
         Agency agency = agencyProduct.getAgencyId();
-        Integer agencyId = agency.getId();
-        return uiService.getTemplateByAgencyId(agencyId);
+        return uiService.getTemplates(agency, agencyProduct);
+        
+//        Integer agencyId = agency.getId();
+//        return uiService.getTemplateByAgencyId(agencyId);
     }
 
     @RequestMapping(value = "getDefaultTemplate", method = RequestMethod.GET, produces = "application/json")

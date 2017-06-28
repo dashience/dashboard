@@ -16,6 +16,7 @@ import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
@@ -1056,5 +1057,9 @@ public class UiService {
 
     public List<DashboardTemplate> getDefaultTemplate() {
         return uiDao.getDefaultTemplate();
+    }
+
+    public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
+        return uiDao.getTemplates(agency, agencyProduct);
     }
 }

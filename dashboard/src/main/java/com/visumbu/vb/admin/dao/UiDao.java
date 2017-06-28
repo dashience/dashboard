@@ -11,6 +11,7 @@ import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
@@ -112,7 +113,7 @@ public class UiDao extends BaseDao {
         return null;
     }
 
-    public List<TabWidget> getTabWidget(Integer tabId,Integer accountId) {
+    public List<TabWidget> getTabWidget(Integer tabId, Integer accountId) {
         String queryStr = "select d from TabWidget d where d.tabId.id = :tabId and (d.accountId.id=:accountId or d.accountId IS NULL) and (status is null or status != 'Deleted') order by widgetOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("tabId", tabId);
@@ -527,14 +528,13 @@ public class UiDao extends BaseDao {
         query.setParameter("userId", userId);
         return query.list();
     }
-    
+
     public List<UserAccount> findUserAccountById(UserAccount accountId) {
         String queryStr = "select d from UserAccount d where d.id = :accountId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("accountId", accountId);
         return query.list();
     }
-
 
     public UserAccount deleteUserAccount(Integer userAccountId) {
         String queryString = "delete UserAccount d where d.id = :userAccountId";
@@ -681,7 +681,7 @@ public class UiDao extends BaseDao {
         return getJoinDataSetConditionById(joinDataSetId);
     }
 
-    public List <DashboardTemplate> getTemplateId(Integer accountId, Integer productId, Integer userId) {
+    public List<DashboardTemplate> getTemplateId(Integer accountId, Integer productId, Integer userId) {
         String queryStr = "select d from DashboardTemplate d where d.accountId.id = :accountId and d.agencyProductId.id=:productId and d.userId.id=:userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("accountId", accountId);
@@ -729,12 +729,12 @@ public class UiDao extends BaseDao {
         return (DataSetColumns) create(dataSetColumn);
     }
 
-    public List <DashboardTabs> getTabByTemplateId(Integer templateId) {
+    public List<DashboardTabs> getTabByTemplateId(Integer templateId) {
         String queryStr = "SELECT d FROM DashboardTabs d where d.templateId.id = :templateId and (d.status is null or d.status != 'Deleted'))";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("templateId", templateId);
         return query.list();
-    }    
+    }
 
     public List<DashboardTemplate> getDefaultTemplate() {
         String queryStr = "SELECT d FROM DashboardTemplate d";
@@ -753,5 +753,13 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("templateId", dashboardTemplate);
         query.executeUpdate();
+    }
+
+    public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
+        String queryStr = "SELECT d from DashboardTemplate where d.agencyProductId = :agencyProduct and d.agencyId = :agency";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyProduct", agencyProduct);
+        query.setParameter("agency", agency);
+        return query.list();
     }
 }
