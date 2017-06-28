@@ -283,26 +283,14 @@
                                                         Years
                                                     </a>
                                                 </li>
-                                                <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widget)">None</a></li>
+                                                <!--<li><a class="col-md-12" ng-click="selectDuration('None', scheduler)">None</a></li>-->
                                             </ul>
                                         </div>
                                     </div>
+                                    
+                                    <span class="text-danger" ng-show="showSchedulerMsg">{{showErrorDateRangeMessage}}</span>
                                 </div>
                             </div>
-
-                            <!--                            <div class="form-group" ng-show="scheduler.dateRangeName === 'Custom'">
-                                                            <div class="col-md-12">
-                                                                <label>Custom Range</label>
-                                                                <div>
-                                                                    <a class="pull-right custom-daterange-box" id="customDateRange">
-                                                                        <span class="date-border">
-                                                                            {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
-                                                                            <i class="custom-daterange-box-icon fa fa-caret-down"></i>
-                                                                        </span>
-                                                                    </a> 
-                                                                </div>
-                                                            </div>
-                                                        </div>-->
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <label>Email Ids</label>
@@ -330,7 +318,7 @@
                                             <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" /> 
                                         </div>  
                                     </div>
-                                    <div class="col-sm-2">
+<!--                                    <div class="col-sm-2">
                                         <label class="scheduler-checkBox-label">
                                             <span>PPT</span>
                                         </label>
@@ -338,7 +326,7 @@
                                             <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'ppt'" ng-true-value="'ppt'" ng-model="scheduler.schedulerType" /> 
 
                                         </div>
-                                    </div>
+                                    </div>-->
                                     <!--                                    <div class="col-sm-2">
                                                                             <label class="scheduler-checkBox-label">
                                                                                 <span>XLS</span>

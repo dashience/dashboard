@@ -24,7 +24,6 @@
                             </a>
                             <button ng-if="permission.deleteTab === true;" class="close closeTab" data-toggle="modal" data-target="#deleteTabModal{{tab.id}}" type="button">×</button>
 
-
                             <div class="modal hmodal-success" id="deleteTabModal{{tab.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -45,7 +44,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </li> 
                         <li ng-if="permission.addTab === true;" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> Add Tab</li> 
                         <div class="modal fade hmodal-success" id="tabModal" tabindex="-1" role="dialog"  aria-hidden="true">
                             <div class="modal-dialog">
@@ -78,6 +76,7 @@
                                             </button>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>

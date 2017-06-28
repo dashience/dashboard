@@ -51,16 +51,15 @@
             <artifactId>google-oauth-client-jetty</artifactId>
             <version>1.22.0</version>
         </dependency>
-        
         <dependency>
             <groupId>com.google.api-ads</groupId>
             <artifactId>ads-lib</artifactId>
-            <version>3.2.0</version>
+            <version>2.20.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.api-ads</groupId>
             <artifactId>adwords-axis</artifactId>
-            <version>3.2.0</version>
+            <version>2.20.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
@@ -69,7 +68,7 @@
             <version>1.7.25</version>
         </dependency>
 
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>com.microsoft.bingads</groupId>
             <artifactId>microsoft.bingads</artifactId>
             <version>10.4.10</version>
@@ -323,6 +322,24 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.3.2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.9.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>core</artifactId>
+            <version>1.47.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
@@ -405,6 +422,46 @@
         
         <!-- liniked in code ends -->
         
+        <!-- twitter code starts -->
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.0.1</version>
+            <type>jar</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.5</version>
+            <type>jar</type>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.oltu.oauth2/org.apache.oltu.oauth2.client -->
+        <dependency>
+            <groupId>org.apache.oltu.oauth2</groupId>
+            <artifactId>org.apache.oltu.oauth2.client</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>22.0</version>
+</dependency>
+
+        <!-- twitter code ends -->
+        
+        <!-- bing ads -->
+<!--        <dependency>
+            <groupId>com.microsoft.bingads</groupId>
+            <artifactId>microsoft.bingads</artifactId>
+            <version>10.4.10</version>
+        </dependency>-->
+        <!-- bing ads ends -->
         
     </dependencies>
 

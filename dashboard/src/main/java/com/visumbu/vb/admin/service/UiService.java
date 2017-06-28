@@ -13,6 +13,7 @@ import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
@@ -240,58 +241,15 @@ public class UiService {
 
             System.out.println("dateRangename ----> " + dateRangeName);
 
-            Range dateRangeSelect = null;
-//            if (dateRangeName.equalsIgnoreCase("Today")) {
-//                dateRangeSelect = Range.TODAY;
-//            } else if (dateRangeName.equalsIgnoreCase("Yesterday")) {
-//                dateRangeSelect = Range.YESTERDAY;
-//            } else if (dateRangeName.equalsIgnoreCase("This Week")) {
-//                dateRangeSelect = Range.THIS_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Week")) {
-//                dateRangeSelect = Range.LAST_WEEK;
-//            } else if (dateRangeName.equalsIgnoreCase("This Month")) {
-//                dateRangeSelect = Range.THIS_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Month")) {
-//                dateRangeSelect = Range.LAST_MONTH;
-//            } else if (dateRangeName.equalsIgnoreCase("This Year")) {
-//                dateRangeSelect = Range.THIS_YEAR;
-//            } else if (dateRangeName.equalsIgnoreCase("Last Year")) {
-//                dateRangeSelect = Range.LAST_YEAR;
-//            }
-            if (lastNdays != null) {
-                dateRangeSelect = Range.DAY;
-            } else if (lastNweeks != null) {
-                dateRangeSelect = Range.WEEK;
-            } else if (lastNmonths != null) {
-                dateRangeSelect = Range.MONTH;
-            } else if (lastNyears != null) {
-                dateRangeSelect = Range.YEAR;
-            }
-
-            if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Custom")) {
+            if (dateRangeName.equalsIgnoreCase("Custom")) {
                 startDate = tabWidgetBean.getCustomStartDate();
                 endDate = tabWidgetBean.getCustomEndDate();
-            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("Select Date Duration")) {
+            } else if (dateRangeName.equalsIgnoreCase("Select Date Duration")) {
                 startDate = null;
                 endDate = null;
-            } else if (dateRangeSelect == null && dateRangeName.equalsIgnoreCase("None")) {
+            } else if (dateRangeName.equalsIgnoreCase("None")) {
                 startDate = null;
                 endDate = null;
-            } else if (dateRangeSelect.equals(Range.DAY)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNdays);
-            } else if (dateRangeSelect.equals(Range.WEEK)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNweeks);
-            } else if (dateRangeSelect.equals(Range.MONTH)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNmonths);
-            } else if (dateRangeSelect.equals(Range.YEAR)) {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect, lastNyears);
-            } else {
-                dateRange = DateRangeFactory.getRange(dateRangeSelect);
-            }
-
-            if (dateRange != null) {
-                startDate = df.format(dateRange.getStartDate());
-                endDate = df.format(dateRange.getEndDate());
             }
         }
         System.out.println("dateRange start Date-----> " + startDate);
@@ -707,6 +665,10 @@ public class UiService {
         return userAccount;
     }
 
+    public List<Account> getAccountById(Integer id) {
+        return uiDao.getAccountById(id);
+    }
+
     public List<UserAccount> getUserAccountByUser(VbUser user) {
         return uiDao.getUserAccountByUser(user);
     }
@@ -868,5 +830,9 @@ public class UiService {
 
     public List<DatasetColumns> getDatasetById(Integer datasetId) {
         return uiDao.getDatasetById(datasetId);
+    }
+
+    public DatasetColumns deleteDataSetColumns(Integer id) {
+        return uiDao.deleteDataSetColumns(id);
     }
 }

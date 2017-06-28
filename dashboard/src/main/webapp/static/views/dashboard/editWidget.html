@@ -169,6 +169,7 @@
         </div>
     </div>
 </div>
+<div ng-show="loadingEditWidget" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
 
@@ -244,7 +245,6 @@
         <div class="row col-md-12">
             <div class="col-md-4">
                 <label>Date Range</label>
-
                 <div>
                     <div class="dropdown editWidgetDropDown">
                         <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
@@ -361,7 +361,7 @@
                     <a href ng-click="setTab(1)"> Config
                     </a>
                 </li>
-                <li ng-if="editChartType != 'text'" ng-class="{ active: isSet(2) }">
+                <li ng-disabled="true" ng-if="editChartType != 'text'" ng-class="{ active: isSet(2) }">
                     <a ng-click="setTab(2)"> Filter
                     </a>
                 </li>
@@ -433,7 +433,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group" ng-if="editChartType != 'pie'">
+                                        <div class="form-group" ng-if="!(editChartType == 'pie'||editChartType == 'stackedbar')">
                                             <div class="col-md-12">
                                                 <label>Select Y2-Axis</label>
                                                 <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
@@ -597,8 +597,6 @@
                                             </div>                            
                                         </div>
                                     </div>
-
-
                                 </div> 
                                 <div class='panel-footer'>
                                     <div>
@@ -608,7 +606,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="row edit-widget" ng-if="editChartType === 'table'">
@@ -636,7 +633,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="row" ng-if="editChartType === 'text'">
                     <div class="col-sm-12">
@@ -670,7 +666,7 @@
                     </div>
                 </div>
             </div>
-            <div ng-show="isSet(2) && editChartType != 'text'" class="license">{{dispQueryBuilder}}
+            <div ng-show="isSet(2) && editChartType != 'text'" class="license">
                 <div class="col-lg-12" ng-if="dispQueryBuilder == true">
                     <div jquery-Query-Builder query-Data="{{previewColumn}}"></div>
                     <div class='panel-footer'>
@@ -680,8 +676,8 @@
                             <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
                             <!--<button id="btn-get" class="btn btn-primary parse-json" data-target="basic">see Rules</button>-->
                         </div>
-                        <div>[
-                            <!--<button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>-->
+                        <div>
+                            <!--<button class='btn btn-default' ng-click='saveQuery()'><span class='fa fa-arrow-left'></span> Back</button>-->
                             <button class='btn btn-info' ng-click='saveQuery()'> Apply Filter</button>
                             <!--<button class='btn btn-info' ng-click='widget.isQueryBuilder = true; save(widget)'> Apply Filter</button>-->
                         </div>
