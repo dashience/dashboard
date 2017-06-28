@@ -37,7 +37,8 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")
     , @NamedQuery(name = "Account.findById", query = "SELECT a FROM Account a WHERE a.id = :id")
     , @NamedQuery(name = "Account.findByAccountName", query = "SELECT a FROM Account a WHERE a.accountName = :accountName")
-    , @NamedQuery(name = "Account.findByGeoLocation", query = "SELECT a FROM Account a WHERE a.geoLocation = :geoLocation")})
+    , @NamedQuery(name = "Account.findByGeoLocation", query = "SELECT a FROM Account a WHERE a.geoLocation = :geoLocation")
+ , @NamedQuery(name = "Account.findByAccountCount", query = "SELECT count(a) FROM Account a WHERE a.agencyId = :agencyId")})
 public class Account implements Serializable {
 
     @OneToMany(mappedBy = "accountId")
@@ -156,16 +157,6 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.Account[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Scheduler> getSchedulerCollection() {
-        return schedulerCollection;
-    }
-
-    public void setSchedulerCollection(Collection<Scheduler> schedulerCollection) {
-        this.schedulerCollection = schedulerCollection;
     }
 
 }

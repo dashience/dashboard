@@ -64,8 +64,6 @@ import com.visumbu.vb.bean.GaReport;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.utils.ApiUtils;
-import com.visumbu.vb.utils.DerivedColumnFormulae;
-import com.visumbu.vb.utils.DerivedColumnUtils;
 import static com.visumbu.vb.utils.ShuntingYard.postfix;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -259,7 +257,8 @@ public class GaService {
                     .setDateRanges(dateRangeList)
                     //.setDimensions(dimensionList)
                     //.setFiltersExpression(filter)
-                    .setMetrics(metricList);
+                    .setMetrics(metricList)
+                    .setPageSize(100000);
             if (filter != null) {
                 request.setFiltersExpression(filter);
             }

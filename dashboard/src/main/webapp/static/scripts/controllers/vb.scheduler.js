@@ -1,17 +1,51 @@
-app.controller("SchedulerController", function ($scope, $http, localStorageService, $stateParams) {
+app.controller("SchedulerController", function ($scope, $http, localStorageService, $stateParams,$state) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $http.get("admin/scheduler/scheduler").success(function (response) {
+       
         $scope.schedulers = response;
+       
     });
+    
+     
+    $scope.checkmaxschedulercount = function () { 
+        $http.get("admin/ui/getschedulerreportscount").success(function (response) {
+             
+            if (response.code === 2) {
+                  
+                //  $scope.permission.addWidget=false;
+             //  bootbox.alert(response.message);
+             bootbox.alert({ 
+                                
+                                title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+                                message: response.message
+                                
+                        
+           });
+       
+       }
+       else {
+            $state.go("index.schedulerIndex.editOrNewScheduler", {
+            accountId: $stateParams.accountId,
+       
+            accountName: $stateParams.accountName,
+            schedulerId: 0,
+            startDate: $stateParams.startDate,
+            endDate: $stateParams.endDate
+        });
+       }
+   });
+    };
+    
     $scope.deleteScheduler = function (scheduler, index) {
         $http({method: 'DELETE', url: 'admin/scheduler/scheduler/' + scheduler.id}).success(function (response) {
             $scope.schedulers.splice(index, 1);
         });
     };
+   
 //    $scope.schedularHistoryData = false;
     $scope.showSchedulerHistory = function (scheduler) {
         $scope.schedularHistoryDetails = [];

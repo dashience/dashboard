@@ -1,10 +1,9 @@
-app.controller('AgencyController', function ($scope, $http) {
+app.controller('AgencyController', function ($scope, $http, $window) {
 
     // currency-format
 //   $scope.getCurrencyDataFromServer = function() {
     $http.get('admin/ui/currencies/').
-            success(function (data, status, headers, config) {
-                $scope.currencies = data;
+            success(function (data, status, headers, config) {               $scope.currencies = data;
                 console.log(data)
             }).
             error(function (data, status, headers, config) {
@@ -91,13 +90,11 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             $scope.agencyById = data;
-
+            console.log(response)
             getAgency();
             if (response.status == true) {
                 $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
-
-
-            } else {
+            } else if (response.status == false) {
                 var dialog = bootbox.dialog({
                     title: 'Alert',
                     message: response.message
@@ -107,6 +104,8 @@ app.controller('AgencyController', function ($scope, $http) {
                         dialog.modal('hide');
                     }, 2000);
                 });
+            } else {
+                $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
             }
         });
 
@@ -146,7 +145,7 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agencyLicence = {}
             $scope.agencyLicences = response;
             angular.forEach(response, function (value, key) {
-                $scope.agencyLicence = {id: value.id, maxNoTab: value.maxNoTab, maxNoUser: value.maxNoUser, maxNoClient: value.maxNoClient, maxNoAccount: value.maxNoAccount, expiryDate: value.expiryDate, maxNoWidgetPerTab: value.maxNoWidgetPerTab}
+                $scope.agencyLicence = {id: value.id, maxNoTab: value.maxNoTab, maxNoUser: value.maxNoUser, maxNoClient: value.maxNoClient, maxNoAccount: value.maxNoAccount, expiryDate: value.expiryDate, maxNoWidgetPerTab: value.maxNoWidgetPerTab, maxNoschedulerReports: value.maxNoschedulerReports}
             });
         });
 
@@ -190,7 +189,8 @@ app.controller('AgencyController', function ($scope, $http) {
                 maxNoClient: agencyLicence.maxNoClient,
                 maxNoAccount: agencyLicence.maxNoAccount,
                 expiryDate: new Date(agencyLicence.expiryDate),
-                maxNoWidgetPerTab: agencyLicence.maxNoWidgetPerTab
+                maxNoWidgetPerTab: agencyLicence.maxNoWidgetPerTab,
+                maxNoschedulerReports:agencyLicence.maxNoschedulerReports
             };
             $http({method: agencyLicence.id ? 'PUT' : 'POST', url: 'admin/user/agencyLicence', data: data}).success(function (response) {
                 $scope.agencyLicences = response;
@@ -229,8 +229,24 @@ app.controller('AgencyController', function ($scope, $http) {
     };
 
     $scope.addAgencyUser = function () {
-        $scope.agencyUser = "";
-        $scope.showAgencyUserForm = true;
+         $http.get('admin/ui/getvbusercount/' + $scope.agencyById.id).success(function (response) {
+
+            if (response.code === 2) {
+                bootbox.alert({
+
+                    title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+                    message: response.message
+
+                });
+
+
+            } else {
+                 $scope.agencyUser = "";
+                 $scope.showAgencyUserForm = true;
+            }
+
+        });
+       
     };
 
     $scope.saveAgencyUser = function (agencyUser) {
@@ -257,6 +273,7 @@ app.controller('AgencyController', function ($scope, $http) {
                 agencyId: $scope.agencyById.id,
             };
             $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
+              
                 getAgencyLicence($scope.agencyById);
                 if (response.status == true) {
                     $scope.agencyUser = "";
@@ -273,7 +290,8 @@ app.controller('AgencyController', function ($scope, $http) {
                     });
                 }
                 console.log(response);
-            });
+            
+                  });
         }
     };
 

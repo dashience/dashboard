@@ -44,7 +44,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     @NamedQuery(name = "DashboardTabs.findByModifiedTime", query = "SELECT d FROM DashboardTabs d WHERE d.modifiedTime = :modifiedTime"),
     @NamedQuery(name = "DashboardTabs.findByRemarks", query = "SELECT d FROM DashboardTabs d WHERE d.remarks = :remarks"),
     @NamedQuery(name = "DashboardTabs.findByStatus", query = "SELECT d FROM DashboardTabs d WHERE d.status = :status"),
-    @NamedQuery(name = "DashboardTabs.findByTabOrder", query = "SELECT d FROM DashboardTabs d WHERE d.tabOrder = :tabOrder")})
+    @NamedQuery(name = "DashboardTabs.findByTabOrder", query = "SELECT d FROM DashboardTabs d WHERE d.tabOrder = :tabOrder")
+ , @NamedQuery(name = "DashboardTabs.findByTabscount", query = "SELECT count(d) FROM DashboardTabs d WHERE d.agencyProductId = :agencyProductId and d.status = :status")})
 public class DashboardTabs implements Serializable {
 
     @OneToMany(mappedBy = "tabId")
@@ -196,14 +197,14 @@ public class DashboardTabs implements Serializable {
         return "com.visumbu.vb.model.DashboardTabs[ id=" + id + " ]";
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<TabWidget> getTabWidgetCollection() {
-        return tabWidgetCollection;
-    }
-
-    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
-        this.tabWidgetCollection = tabWidgetCollection;
-    }
+//    @XmlTransient
+//    @JsonIgnore
+//    public Collection<TabWidget> getTabWidgetCollection() {
+//        return tabWidgetCollection;
+//    }
+//
+//    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
+//        this.tabWidgetCollection = tabWidgetCollection;
+//    }
 
     }

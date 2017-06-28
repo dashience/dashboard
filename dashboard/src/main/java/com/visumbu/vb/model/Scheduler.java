@@ -55,7 +55,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Scheduler.findByLastNyears", query = "SELECT s FROM Scheduler s WHERE s.lastNyears = :lastNyears")
     , @NamedQuery(name = "Scheduler.findByIsAccountEmail", query = "SELECT s FROM Scheduler s WHERE s.isAccountEmail = :isAccountEmail")
     , @NamedQuery(name = "Scheduler.findByStatus", query = "SELECT s FROM Scheduler s WHERE s.status = :status")
-    , @NamedQuery(name = "Scheduler.findByLastExecutionStatus", query = "SELECT s FROM Scheduler s WHERE s.lastExecutionStatus = :lastExecutionStatus")})
+    , @NamedQuery(name = "Scheduler.findByLastExecutionStatus", query = "SELECT s FROM Scheduler s WHERE s.lastExecutionStatus = :lastExecutionStatus")
+    ,@NamedQuery(name = "Scheduler.findByAccountCount", query = "SELECT count(s) FROM Scheduler s WHERE s.agencyId = :agencyId and s.schedulerStatus = :schedulerStatus")})
 public class Scheduler implements Serializable {
 
     private static final long serialVersionUID = 1L;

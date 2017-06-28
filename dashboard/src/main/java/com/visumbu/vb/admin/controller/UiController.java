@@ -37,6 +37,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DatasetColumnBean;
+import com.visumbu.vb.bean.Result;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.Agency;
+import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.DatasetColumns;
 
 import com.visumbu.vb.model.Currency;
@@ -48,11 +53,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -106,9 +114,24 @@ public class UiController extends BaseController {
 //    }
     @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @RequestBody DashboardTabs dashboardTabs) {
-        dashboardTabs.setAgencyProductId(uiService.getAgencyProductById(agencyProductId));
-        return uiService.createDashboardTabs(dashboardTabs);
+    Object createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @RequestBody DashboardTabs dashboardTabs) {
+        AgencyProduct agencyProduct = uiService.getAgencyProductById(agencyProductId);
+        Agency agency = agencyProduct.getAgencyId();
+        Integer agencyId = agency.getId();
+        Integer maxNoTab = uiService.getTotalTabsCount(agencyId);
+        Integer numberOfTabsOfAgencyProdcut = uiService.getTabsCount(agencyProduct);
+
+        System.out.println(maxNoTab + "===========new=============" + numberOfTabsOfAgencyProdcut);
+
+        if (maxNoTab > numberOfTabsOfAgencyProdcut) {
+            dashboardTabs.setAgencyProductId(uiService.getAgencyProductById(agencyProductId));
+            dashboardTabs.setStatus("Active");
+            return uiService.createDashboardTabs(dashboardTabs);
+        } else {
+            Result result = new Result(Result.ERROR, "LE", "Tab limit has been reahced!");
+            return result;
+        }
+
     }
 
     @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.PUT, produces = "application/json")
@@ -394,15 +417,22 @@ public class UiController extends BaseController {
     @RequestMapping(value = "dataSetFormulaColumns/{datasetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DatasetColumns deleteDataSetFormulaColumnById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetColumnId) {
-        System.out.println("id --> "+datasetColumnId);
+        System.out.println("id --> " + datasetColumnId);
         return uiService.deleteDataSetFormulaColumnById(datasetColumnId);
+    }
+
+    @RequestMapping(value = "dataSetColumn/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DatasetColumns deleteDataSetColumns(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return uiService.deleteDataSetColumns(id);
     }
 
     @RequestMapping(value = "getDatasetById/{datasetId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getDatasetById (HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
+    List getDatasetById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer datasetId) {
         return uiService.getDatasetById(datasetId);
     }
+
     @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -442,6 +472,7 @@ public class UiController extends BaseController {
     @RequestMapping(value = "user", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Object createUser(HttpServletRequest request, HttpServletResponse response, @RequestBody VbUser vbUser) {
+
         if (vbUser.getAgencyId() == null) {
             VbUser loggedInUser = userService.findByUsername(getUser(request));
             vbUser.setAgencyId(loggedInUser.getAgencyId());
@@ -479,6 +510,12 @@ public class UiController extends BaseController {
         return uiService.getUserAccount();
     }
 
+    @RequestMapping(value = "getAccount/{id}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return uiService.getAccountById(id);
+    }
+
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountByUser(HttpServletRequest request, HttpServletResponse response) {
@@ -495,7 +532,6 @@ public class UiController extends BaseController {
         return uiService.getUserAccountById(userId);
     }
 
-    
     @RequestMapping(value = "userAccount/{userAccountId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     UserAccount deleteUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userAccountId) {
@@ -578,8 +614,9 @@ public class UiController extends BaseController {
         accountId = 10201209987716903L;
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = new Date();
+        String productSegement = "";
 //       String  stratDates=dateFormat.format(startDate);
-        facebookService.getAccountPerformance(accountId, startDate, startDate, "day");
+        //facebookService.getAccountPerformance(accountId, startDate, startDate, "day",productSegement);
 //        facebookService.getAccountPerformance(accountId,startDate, startDate,'day');
 
         return null;
@@ -599,6 +636,145 @@ public class UiController extends BaseController {
         List<Timezone> timezones = uiService.getTimeZones();
         //System.out.println("size of currencies"+currencies.size());
         return timezones;
+    }
+
+    @RequestMapping(value = "dbwidgetscount/{tabId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Result getAgencyWidgetCount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
+
+        DashboardTabs dashboardTabs = uiService.getDashboardTabsById(tabId);
+
+        AgencyProduct agencyProduct = dashboardTabs.getAgencyProductId();
+        Agency agency = agencyProduct.getAgencyId();
+
+        // AgencyLicence agencyLicese = (AgencyLicence) userService.getAgencyLicenceById(agency.getId()).get(0);
+        // Integer maxNoWidget = agencyLicese.getMaxNoWidgetPerTab();
+        Integer maxNoWidget = uiService.getTotalWidgetCount(agency.getId());
+        Integer presentWidgetCount = uiService.getWidgetCount(dashboardTabs);
+        System.out.println("widgets count....." + maxNoWidget + "=============" + presentWidgetCount);
+        if (maxNoWidget > presentWidgetCount) {
+            Result result = new Result(Result.SUCCESS, "LE", "Max Widget limit hasbeen reached!");
+            return result;
+        } else {
+            Result result = new Result(Result.ERROR, "LE", "max limit reached, unable to add widget!");
+            return result;
+        }
+    }
+
+    /*  @RequestMapping(value = "dbwidgettabscount/{agencyProductId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Result getAgencyTAbsCount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId) {
+        System.out.println("new method for diasble add tad=======================>");
+        AgencyProduct agencyProduct = uiService.getAgencyProductById(agencyProductId);
+        Agency agency = agencyProduct.getAgencyId();
+        System.out.println("Agency id...." + agency.getId());
+        List l = userService.getAgencyLicenceById(agency.getId());
+        System.out.println("=====================================>");
+        System.out.println("List : " + l);
+        System.out.println("======================================>");
+        System.out.println(l.size() + " size of agencyLicesnse");
+        AgencyLicence agencyLicese = (AgencyLicence) userService.getAgencyLicenceById(agency.getId()).get(0);
+        System.out.println(agencyLicese.getMaxNoTab() + " number of AgencyLicense of this agencyProduct........");
+        System.out.println(uiService.getTabsCount(agencyProduct) + "changing Number of tabs for this AgencyProduct....");
+
+        Integer maxNoTab = agencyLicese.getMaxNoTab();
+        Integer numberOfTabsOfAgencyProdcut = uiService.getTabsCount(agencyProduct);
+
+        if (maxNoTab > numberOfTabsOfAgencyProdcut) {
+            Result result = new Result(Result.SUCCESS, "LE", "we are able to add widget!");
+            return result;
+        } else {
+            Result result = new Result(Result.ERROR, "LE", "max limit reached, unable to add widget!");
+            return result;
+        }
+    }  */
+    @RequestMapping(value = "getaccountagencycount", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Result getAgencyAccountCount(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("Notifying expiry date............");
+        VbUser loggedInUser = userService.findByUsername(getUser(request));
+        Agency agency = loggedInUser.getAgencyId();
+
+        // AgencyLicence agencyLicese = (AgencyLicence) userService.getAgencyLicenceById(agency.getId()).get(0);
+        Integer maxNoAccount = uiService.getTotalAccountCount(agency.getId());
+
+        Integer numberOfAccountsOfAgency = uiService.getAccountCount(agency);
+        System.out.println(maxNoAccount + "No===============================Yes" + numberOfAccountsOfAgency);
+        if (maxNoAccount > numberOfAccountsOfAgency) {
+            Result result = new Result(Result.SUCCESS, "LE", "you are able to Account !");
+            return result;
+        } else {
+            Result result = new Result(Result.ERROR, "LE", "Max account limit hasbeen reached!");
+            return result;
+        }
+    }
+
+    @RequestMapping(value = "getschedulerreportscount", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Result getAgencyLicenceSchedulerReportsCount(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("entering........................");
+        VbUser loggedInUser = userService.findByUsername(getUser(request));
+        Agency agency = loggedInUser.getAgencyId();
+
+        // AgencyLicence agencyLicese = (AgencyLicence) userService.getAgencyLicenceById(agency.getId()).get(0);
+        Integer maxSchedulerCount = uiService.getTotalSchedulerCount(agency.getId());
+        Integer countSchedulerReports = uiService.getSchedulerReports(agency);
+        System.out.println("oooooooooooooooooooooooooooo" + maxSchedulerCount + "++++++" + countSchedulerReports);
+        if (maxSchedulerCount > countSchedulerReports) {
+            Result result = new Result(Result.SUCCESS, "LE", "you are able to add SchedulerREports !");
+            return result;
+        } else {
+            Result result = new Result(Result.ERROR, "LE", "Max account limit has been reached!");
+            return result;
+        }
+    }
+
+    @RequestMapping(value = "getvbusercount/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Result getVbUserCount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+
+        //gettting the existing users count
+        Integer countUsers = uiService.getVbUserCount(agencyId);
+
+        System.out.println("existing user count -->" + countUsers);
+
+        //get the total number of users
+        Integer linceseUsersCount = uiService.getLicenseUserCount(agencyId);
+
+        System.out.println("Total number of Licenced users allowed -->" + linceseUsersCount + "...count...." + countUsers);
+
+        if (linceseUsersCount > countUsers) {
+            Result result = new Result(Result.SUCCESS, "LE", "you are able to add Agency user !");
+
+            return result;
+        } else {
+            Result result = new Result(Result.ERROR, "LE", "Max user limit has been reached!");
+
+            return result;
+        }
+
+//        System.out.println("new method for diasble add tad=======================>");
+//        AgencyProduct agencyProduct = uiService.getAgencyProductById(agencyId);
+//        Agency agency = agencyProduct.getAgencyId();
+//        System.out.println("Agency id...." + agency.getId());
+////        List l = userService.getAgencyLicenceById(agency.getId());
+//        List l = userService.getAgencyLicenceById(agencyId);
+//        System.out.println("=====================================>");
+//        System.out.println("List : " + l);
+//        System.out.println("======================================>");
+//        System.out.println(l.size() + " size of agencyLicesnse");
+//        AgencyLicence agencyLicese = (AgencyLicence) userService.getAgencyLicenceById(agency.getId()).get(0);
+//        Integer maxUserCount = agencyLicese.getMaxNoUser();
+////        Integer countUsers = uiService.getVbUserCount(agency);
+//        System.out.println("oooooooooooooooooooooooooooo" + maxUserCount + "++++++" + countUsers);
+//        if (maxUserCount > countUsers) {
+//            Result result = new Result(Result.SUCCESS, "LE", "you are able to add Agency user !");
+//            return result;
+//        } else {
+//            Result result = new Result(Result.ERROR, "LE", "Max user limit has been reached!");
+//            return result;
+//        }
+//        return null;
     }
 
     @ExceptionHandler

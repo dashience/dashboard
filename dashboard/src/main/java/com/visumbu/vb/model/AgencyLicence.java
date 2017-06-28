@@ -37,6 +37,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "AgencyLicence.findByMaxNoClient", query = "SELECT a FROM AgencyLicence a WHERE a.maxNoClient = :maxNoClient")
     , @NamedQuery(name = "AgencyLicence.findByMaxNoAccount", query = "SELECT a FROM AgencyLicence a WHERE a.maxNoAccount = :maxNoAccount")
     , @NamedQuery(name = "AgencyLicence.findByExpiryDate", query = "SELECT a FROM AgencyLicence a WHERE a.expiryDate = :expiryDate")
+    , @NamedQuery(name = "AgencyLicence.findByLincenceUserCount", query = "SELECT a.maxNoUser FROM AgencyLicence a WHERE a.agencyId.id=:agencyId")
+    ,@NamedQuery(name = "AgencyLicence.findByLincenceTabCount", query = "SELECT a.maxNoTab FROM AgencyLicence a WHERE a.agencyId.id=:agencyId") 
+    ,@NamedQuery(name = "AgencyLicence.findByLincenceWidgetCount", query = "SELECT a.maxNoWidgetPerTab FROM AgencyLicence a WHERE a.agencyId.id=:agencyId")  
+    ,@NamedQuery(name = "AgencyLicence.findByLincenceAccountCount", query = "SELECT a.maxNoAccount FROM AgencyLicence a WHERE a.agencyId.id=:agencyId")        
+    ,@NamedQuery(name = "AgencyLicence.findByLincenceSchedulerCount", query = "SELECT a.maxNoschedulerReports FROM AgencyLicence a WHERE a.agencyId.id=:agencyId") 
     , @NamedQuery(name = "AgencyLicence.findByMaxNoWidgetPerTab", query = "SELECT a FROM AgencyLicence a WHERE a.maxNoWidgetPerTab = :maxNoWidgetPerTab")})
 public class AgencyLicence implements Serializable {
 
@@ -59,6 +64,8 @@ public class AgencyLicence implements Serializable {
     private Date expiryDate;
     @Column(name = "max_no_widget_per_tab")
     private Integer maxNoWidgetPerTab;
+    @Column(name = "max_no_scheduler_reports")
+    private Integer maxNoschedulerReports;
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
@@ -124,6 +131,14 @@ public class AgencyLicence implements Serializable {
 
     public void setMaxNoWidgetPerTab(Integer maxNoWidgetPerTab) {
         this.maxNoWidgetPerTab = maxNoWidgetPerTab;
+    }
+
+    public Integer getMaxNoschedulerReports() {
+        return maxNoschedulerReports;
+    }
+
+    public void setMaxNoschedulerReports(Integer maxNoschedulerReports) {
+        this.maxNoschedulerReports = maxNoschedulerReports;
     }
 
     public Agency getAgencyId() {

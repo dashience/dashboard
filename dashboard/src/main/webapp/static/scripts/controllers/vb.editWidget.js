@@ -529,38 +529,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         }, 50);
     };
     $scope.selectY2Axis = function (widget, y2data) {
-        if (widget.chartType == 'stackedbar') {
-            $scope.editChartType = null;
-            angular.forEach(y2data, function (value, key) {
-                if (!value) {
-                    return;
-                }
-                var exists = false;
-                angular.forEach(widget.columns, function (val, key) {
-                    if (val.fieldName === value.fieldName) {
-                        exists = true;
-                        val.yAxis = 2;
-                        val.groupField = y2data.indexOf(value) + 1;
-                        console.log(val.groupField);
-                    } else {
-                        if (val.fieldName == y2data.removeItem) {
-                            val.yAxis = null;
-                            val.groupField = null;
-                        }
-                    }
-                });
-                if (exists == false) {
-                    if (value.displayName) {
-                        value.yAxis = 2;
-                        widget.columns.push(value);
-                    }
-                }
-            });
-            var chartType = widget;
-            $timeout(function () {
-                $scope.previewChart(chartType, widget)
-            }, 50);
-        }
         $scope.editChartType = null;
         angular.forEach(y2data, function (value, key) {
             if (!value) {
@@ -610,10 +578,12 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
+
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY1Axis(widget, yAxisItems);
         } else {
+            b
             angular.forEach(widget.columns, function (val, key) {
                 if (val.fieldName == column.fieldName) {
                     val.yAxis = null;
@@ -627,12 +597,16 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.removedByY2Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
+        console.log(widget.columns);
+        console.log(yAxisItems);
+        console.log(column);
+        console.log(column.fieldName);
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
             $scope.selectY2Axis(widget, yAxisItems);
         } else {
             angular.forEach(widget.columns, function (val, key) {
-                if (val.fieldName == column.fieldName) {
+                if (val.fieldName == column.fieldName && val.yAxis == column.yAxis) {
                     val.yAxis = null;
                 }
             });
@@ -750,10 +724,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     function tagWidgetId(widget) {
         widget.tagName = [];
         $http.get("admin/tag/widgetTag/" + widget.id).success(function (response) {
-            console.log(response)
             $scope.widgetTags = response;
             angular.forEach(response, function (value, key) {
-                console.log(value)
                 widget.tagName.push(value.tagId.tagName)
             });
         });
@@ -965,17 +937,14 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "</div>" + //End Panel Title
                 "</div>" +
                 "</div>" +
-//                "<pre>{{previewTableHeader | json}}</pre>" +
-//                " <pre ng-repeat='header in previewTableHeader'>{{header.displayName}} </pre>" +
                 //Table
                 "<div class=''>" +
                 "<div class='table-responsive tbl-preview'>" +
-                "<table  class='defaultTable table table-bordered table-hover'>" +
+                "<table  class='table table-bordered table-hover'>" +
                 "<thead>" +
-                "<tr>" +
-                "<th id='{{collectionField.displayName}}'  ng-repeat='collectionField in previewTableHeader'>" +
-                "<div  ng-hide='collectionField.isEdit'>" +
-//                "<div class='preview-table-settings' ng-click='collectionField.isEdit=true'>" +
+                "<tr ng-model='previewTableHeader' ui-sortable='sortableOptions'>" +
+                "<th ng-repeat='collectionField in previewTableHeader'>" +
+                "<div ng-hide='collectionField.isEdit'>" +
                 "<div class='preview-table-settings' ng-hide='collectionField.isEdit'>" +
                 "<a ng-click='collectionField.isEdit = true'>{{collectionField.displayName}}</a>" +
                 "</div></div>" +
@@ -983,9 +952,9 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 "<div ng-show='collectionField.isEdit'><input class='form-control-btn' ng-model='collectionField.displayName'>" +
                 "<a class='btn btn-default btn-xs' ng-click='collectionField.isEdit=false'><i class='fa fa-save'></i></a>" +
                 "<a class='btn btn-default btn-xs' ng-click='collectionField.isEdit=false'><i class='fa fa-close'></i></a></div>" +
-                "</th>" +
-                "</tr>" +
-                "<tr><th ng-repeat='collectionField in previewTableHeader'>" +
+//                "</th>" +
+//                "</tr>" +
+//                "<tr><th ng-repeat='collectionField in previewTableHeader'>" +
                 "<button class='settings btn btn-default btn-xs'" +
                 "ns-popover=''" +
                 "ns-popover-template='close'" +
@@ -1095,7 +1064,18 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             {
                 scope.editPreviewTitle = true;
             };
-            scope.previewTableHeader = JSON.parse(scope.previewColumns);
+
+            scope.sortableOptions = {
+                start: function (event, ui) {
+                    console.log('start1');
+//                    console.log(ui);
+                },
+                stop: function (event, ui) {
+                    console.log('stop1');
+//                    console.log(ui);
+                }
+            };
+
             scope.listColumns = [];
             scope.listColumns = JSON.parse(scope.previewColumns);
             scope.previewWidgetTitle = JSON.parse(scope.previewWidget).widgetTitle;
@@ -1128,12 +1108,6 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             } else {
                 dataSourcePassword = '';
             }
-
-
-
-            console.log()
-
-
             $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                     "&dataSetId=" + tableDataSource.id +
                     "&driver=" + tableDataSource.dataSourceId.sqlDriver +
@@ -1149,58 +1123,10 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 scope.tableData = response.data;
                 scope.tableList = response.columnDefs;
             });
-            $(document).ready(function () {
-                $('.defaultTable').dragtable({
-                    persistState: function (table) {
-
-                        if (!window.sessionStorage)
-                            return;
-                        table.el.find('th').each(function (i) {
-                            if (this.id != '') {
-                                table.sortOrder[this.id] = i;
-                            }
-                        });
-                        scope.mapJson(table.sortOrder);
-                    },
-                    clickDelay: 200,
-                });
-            });
-            scope.mapJson = function (object) {
-                scope.draggedObject = [];
-                scope.newHeaders = [];
-                $.each(object, function (key, value) {
-                    scope.draggedObject[value] = key;
-                });
-                angular.forEach(scope.previewTableHeader, function (value, key) {
-                    scope.filterReturnItem = orderByFilter(scope.previewTableHeader, function (item) {
-                        return scope.draggedObject.indexOf(item.displayName)
-                    });
-                });
+            scope.deleteColumn = function (collectionField, index) {
+                scope.previewTableHeader.splice(index, 1)
             };
-            scope.deleteColumn = function (collectionField, $index) {
-                if (typeof (scope.filterReturnItem) == "undefined")
-                {
-                    scope.previewTableHeader.splice($index, 1);
-                } else {
-                    var dragDeletedIndexPos = scope.filterReturnItem.indexOf(collectionField);
-                    scope.filterReturnItem.splice(dragDeletedIndexPos, 1);
-                    scope.previewTableHeader = scope.filterReturnItem;
-//                    var returnItems = scope.previewTableHeader;
-//                    scope.previewTableHeader = ""
-//                    scope.previewTableHeader = returnItems;
-//                    scope.$apply();
-//                    var previewHeaderObject = scope.previewTableHeader[$index];
-//                    console.log(previewHeaderObject);
-//                    console.log(scope.filterReturnItem);
-//                    var dragableHeaderIndex = scope.filterReturnItem.indexOf(previewHeaderObject);
-//                    console.log("dragableHeaderIndex="+dragableHeaderIndex);
-//                    scope.filterReturnItem.splice(dragableHeaderIndex, 1);
-////                    scope.previewTableHeader = [];
-//                    console.log(scope.filterReturnItem);
-//                    scope.previewTableHeader = scope.filterReturnItem;
-//                    console.log(scope.previewTableHeader);
-                }
-            };
+            scope.previewTableHeader = JSON.parse(scope.previewColumns);
             scope.save = function () {
                 if ($('.query-builder').queryBuilder('getRules')) {
                     scope.jsonRules = JSON.stringify($('.query-builder').queryBuilder('getRules'));
@@ -1223,7 +1149,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                 console.log(scope.customStartDate);
                 console.log(scope.customEndDate);
                 var widgetColumnsData = [];
-                var saveWidgetColumnList = scope.filterReturnItem ? scope.filterReturnItem : scope.previewTableHeader;
+                var saveWidgetColumnList = scope.previewTableHeader;
                 angular.forEach(saveWidgetColumnList, function (value, key) {
                     var hideColumn = value.columnHide;
                     if (value.groupPriority > 0) {
@@ -1294,7 +1220,8 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
             scope.closeWidget = function () {
                 widget = "";
                 sessionStorage.clear();
-                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+                $rootScope.goBack();
+//                $state.go("index.dashboard.widget", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
             };
         }
     };
@@ -1326,82 +1253,85 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
             widgetTableDateRange: '@',
         },
         link: function (scope, element, attr) {
-            $(document).ready(function (e) {
-                $(".scheduler-list-style").click(function (e) {
-                    e.stopPropagation();
-                });
-                var widget = JSON.parse(scope.widgetTableDateRange);
-                var widgetStartDate = widget.customStartDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
-                var widgetEndDate = widget.customEndDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
-                //Date range as a button
-                $(element[0]).daterangepicker(
-                        {
-                            ranges: {
-                                'Today': [moment(), moment()],
-                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                                'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                                'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+//            $(document).ready(function (e) {
+            $(".scheduler-list-style").click(function (e) {
+                e.stopPropagation();
+            });
+            var widget = JSON.parse(scope.widgetTableDateRange);
+            var widgetStartDate = widget.customStartDate?widget.customStartDate:$stateParams.startDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
+            var widgetEndDate = widget.customEndDate?widget.customEndDate:$stateParams.endDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
+            //Date range as a button
+            $(element[0]).daterangepicker(
+                    {
+                        ranges: {
+                            'Today': [moment(), moment()],
+                            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                            'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                            'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                            'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
+                            'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
-                                'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+                            'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
-                                'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 //                        'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 //                        'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                                'This Year': [moment().startOf('year'), moment().endOf(new Date())],
-                                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                            'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                            'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-                            },
-                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
-                            endDate: widgetEndDate ? widgetEndDate : moment(),
-                            maxDate: new Date()
                         },
-                        function (startDate, endDate) {
-                            $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
-                        }
-                );
-                $(".ranges ul").find("li").addClass("custom-picker");
-                $(".custom-picker").click(function (e) {
-                    $(".scheduler-list-style").hide();
-                    scope.$apply();
-                });
-                $(".editWidgetDropDown").click(function (e) {
-                    $(".scheduler-list-style").removeAttr("style");
-                    $(".scheduler-list-style").css("display", "block");
-                    $(".daterangepicker").css("display", "none");
-//                        e.bind();
-                });
-                $(document).on("click", function (e) {
-                    var selectedElement = e.target.className;
-                    if (selectedElement == "custom-picker" ||
-                            selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
-                            selectedElement == "month" ||
-                            selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
-                            selectedElement == "next available" ||
-                            selectedElement == "input-mini form-control active" ||
-                            selectedElement == "calendar-table" || selectedElement == "table-condensed" ||
-                            selectedElement == "daterangepicker_input")
-                    {
-                        $(".scheduler-list-style").css("display", "block");
-                    } else {
-                        $(".scheduler-list-style").css("display", "none");
+                        startDate: widgetStartDate ? widgetStartDate : moment().subtract(30, 'days'),
+                        endDate: widgetEndDate ? widgetEndDate : moment().subtract(1, 'days'),
+                        maxDate: new Date()
+                    },
+                    function (startDate, endDate) {
+                        $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
                     }
-                });
-                $(".applyBtn").click(function (e) {
-                    try {
-                        scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-                        scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
-                    } catch (e) {
-                    }
-
-                    $(".scheduler-list-style").hide(); //                    
-                });
+            );
+            $(".ranges ul").find("li").addClass("custom-pickers");
+            $(".custom-pickers").click(function (e) {
+                $(".scheduler-list-style").hide();
+                scope.$apply();
             });
+            $(".editWidgetDropDown").click(function (e) {
+                $(".scheduler-list-style").removeAttr("style");
+                $(".scheduler-list-style").css("display", "block");
+                $(".daterangepicker").css("display", "none");
+//                        e.bind();
+            });
+            $(".date-range-none").click(function (e) {
+                $(".scheduler-list-style").css("display", "none");
+            });
+            $(document).on("click", function (e) {
+                var selectedElement = e.target.className;
+                if (selectedElement == "custom-pickers" ||
+                        selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
+                        selectedElement == "month" ||
+                        selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
+                        selectedElement == "next available" ||
+                        selectedElement == "input-mini form-control active" ||
+                        selectedElement == "calendar-table" || selectedElement == "table-condensed" ||
+                        selectedElement == "daterangepicker_input")
+                {
+                    $(".scheduler-list-style").css("display", "block");
+                } else {
+                    $(".scheduler-list-style").css("display", "none");
+                }
+            });
+            $(".applyBtn").click(function (e) {
+                try {
+                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                } catch (e) {
+                }
+
+                $(".scheduler-list-style").hide(); //                    
+            });
+//            });
         }
     };
 });
@@ -1449,7 +1379,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                             filters: filterList,
                             rules: scope.jsonBuild ? scope.jsonBuild : null
                         });
-                console.log(element[0]);
                 $('#btn-clear').on('click', function () {
                     $(element[0]).queryBuilder('reset');
                 });

@@ -16,11 +16,12 @@ public class LoginUserBean {
     private String password;
     private String isAdmin;
     private Boolean authenticated;
+   
     private Integer failLoginCount;
     private String errorMessage;
     private String announcement;
     private Permission permission;
-    private Agency agencyId;
+    private AgencyBean agencyId;
     
     public String getUsername() {
         return username;
@@ -86,17 +87,20 @@ public class LoginUserBean {
         this.permission = permission;
     }
 
-    public Agency getAgencyId() {
+    public AgencyBean getAgencyId() {
         return agencyId;
     }
 
-    public void setAgencyId(Agency agencyId) {
+    public void setAgencyId(AgencyBean agencyId) {
         this.agencyId = agencyId;
     }
 
+   
+    
+
     @Override
     public String toString() {
-        return "LoginUserBean{" + "username=" + username + ", password=" + password + ", isAdmin=" + isAdmin + ", authenticated=" + authenticated + ", failLoginCount=" + failLoginCount + ", errorMessage=" + errorMessage + ", announcement=" + announcement + '}';
-    }   
+        return "LoginUserBean{" + "username=" + username + ", password=" + password + ", isAdmin=" + isAdmin + ", authenticated=" + authenticated + ", failLoginCount=" + failLoginCount + ", errorMessage=" + errorMessage + ", announcement=" + announcement + ", permission=" + permission + ", agencyId=" + agencyId + '}';
+    }
     
 }

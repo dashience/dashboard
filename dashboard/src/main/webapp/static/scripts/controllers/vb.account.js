@@ -6,7 +6,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     $scope.accountUsers = [];
 //Tabs
     $scope.tab = 1;
-
+     $scope.permission.addAccount=true;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
     };
@@ -46,8 +46,28 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
         $scope.users = response;
     });
 
+
+    
     $scope.addAccount = function () {
+        $http.get("admin/ui/getaccountagencycount").success(function (response) {
+        if (response.code === 2) {
+                  
+               
+            //    $scope.permission.addAccount=false;
+               // bootbox.alert(response.message);
+               bootbox.alert({ 
+                                
+                                title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+                                message: response.message, 
+                                //callback: function(){ /* your callback code */ }
+                    })
+                
+           }
+           else {
         $scope.account = "";
+        $scope.permission.addAccount=false;
+    }
+    });
     };
 
     function getAccount() {
@@ -58,7 +78,25 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     }
     getAccount();
 
+
+
+  
     $scope.saveAccount = function (account) {
+         $http.get("admin/ui/getaccountagencycount").success(function (response) {
+            if (response.code === 2) {
+                  
+               
+            //    $scope.permission.addAccount=false;
+               // bootbox.alert(response.message);
+               bootbox.alert({ 
+                                
+                                title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+                                message: response.message, 
+                                //callback: function(){ /* your callback code */ }
+                    })
+                
+           }else {
+      
         if ($scope.account.logo === "static/img/logos/deeta-logo.png") {
             $scope.account.logo = "";
         }
@@ -69,10 +107,12 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             if (response.status == true) {
                 $scope.account = {logo: "static/img/logos/deeta-logo.png"};
             } else {
+                
                 if (!response.message) {
                     $scope.account = "";
                     $scope.account = {logo: "static/img/logos/deeta-logo.png"};
                     $scope.selectedRow = null;
+                     $scope.permission.addAccount=true;
                     return;
                 }
                 var dialog = bootbox.dialog({
@@ -84,9 +124,11 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
                         dialog.modal('hide');
                     }, 2000);
                 });
+               
             }
         });
-
+           }
+ });
     };
 
     $scope.selectedRow = null;

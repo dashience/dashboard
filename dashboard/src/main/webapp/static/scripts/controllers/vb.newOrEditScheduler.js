@@ -1,4 +1,4 @@
-app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter, $timeout) {
+app.controller("NewOrEditSchedulerController", function ($scope, $http, $window, $stateParams, $filter, $timeout) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -10,8 +10,55 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     $http.get("admin/report/getReport").success(function (response) {
         $scope.reports = response;
     });
-    $scope.accounts = [];
 
+
+    /* $http.get("admin/ui/getschedulerreportscount").success(function (response) {
+     if (response.code === 2) {
+     
+     //  $scope.permission.addWidget=false;
+     //  bootbox.alert(response.message);
+     bootbox.alert({ 
+     
+     title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+     message: response.message,
+     
+     callback: function(){ 
+     
+     window.history.back(); 
+     }  
+     
+     })
+     
+     //  $scope.permission.addWidget=false;
+     }
+     //  $window.location.href = 'static/views/scheduler/schedulerIndex.html';
+     }); */
+    /*  $http.get("admin/ui/getschedulerreportscount").success(function (response) {
+     if (response.code === 2) {
+     
+     //  $scope.permission.addWidget=false;
+     //  bootbox.alert(response.message);
+     bootbox.alert({ 
+     
+     title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+     message: response.message,
+     
+     callback: function(){ 
+     
+     window.history.back(); 
+     }  
+     
+     })
+     
+     //  $scope.permission.addWidget=false;
+     }
+     //  $window.location.href = 'static/views/scheduler/schedulerIndex.html';
+     }); */
+    function goBack() {
+        window.history.back();
+    }
+
+    $scope.accounts = [];
 
     var unique = function (origArr) {
         var newArr = [],
@@ -91,7 +138,25 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         console.log($scope.scheduler);
     });
     $scope.addNewScheduler = function () {
-        $scope.scheduler = "";
+        $http.get("admin/ui/getschedulerreportscount").success(function (response) {
+
+            if (response.code === 2) {
+
+                //  $scope.permission.addWidget=false;
+                //  bootbox.alert(response.message);
+                bootbox.alert({
+
+                    title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+                    message: response.message
+
+
+                });
+
+            } else {
+                $scope.scheduler = "";
+            }
+        });
+
     };
 
     function getWeeks(d) {
@@ -162,90 +227,135 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $scope.scheduler.lastNmonths = "";
             $scope.scheduler.lastNyears = "";
         }
+
+        $scope.showSchedulerMsg = false
+        $scope.showErrorDateRangeMessage = ""
+
         console.log(scheduler)
     }
     $scope.saveScheduler = function (scheduler) {
-        scheduler.dateRangeName = $("#customDateRangeName").text();
-        try {
-            $scope.customStartDate = scheduler.dateRangeName !== "Select Date Duration" && scheduler.dateRangeName !== "None" ? moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+        $http.get("admin/ui/getschedulerreportscount").success(function (response) {
 
-            $scope.customEndDate = scheduler.dateRangeName !== "Select Date Duration" && scheduler.dateRangeName !== "None" ? moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
-        } catch (e) {
+            if (response.code === 2) {
 
-        }
-        if (scheduler.schedulerRepeatType === "Now") {
-            scheduler.schedulerNow = new Date();
-            scheduler.schedulerTime = null;
-            scheduler.startDate = null;
-            scheduler.endDate = null;
-            scheduler.schedulerWeekly = null;
-            scheduler.schedulerMonthly = null;
-            scheduler.schedulerYearly = null;
-            scheduler.schedulerYearOfWeek = null;
-        } else if (scheduler.schedulerRepeatType === "Once") {
-            scheduler.schedulerNow = null;
-            //scheduler.schedulerTime = scheduler.schedulerTime;
-            scheduler.schedulerWeekly = null;
-            scheduler.schedulerMonthly = null;
-            scheduler.schedulerYearly = null;
-            scheduler.schedulerYearOfWeek = null;
-        } else if (scheduler.schedulerRepeatType === "Daily") {
-            scheduler.schedulerNow = null;
-            //scheduler.schedulerTime = scheduler.schedulerTime;
-            scheduler.schedulerWeekly = null;
-            scheduler.schedulerMonthly = null;
-            scheduler.schedulerYearly = null;
-            scheduler.schedulerYearOfWeek = null;
-        } else if (scheduler.schedulerRepeatType === "Weekly") {
-            scheduler.schedulerNow = null;
-            //scheduler.schedulerTime = scheduler.schedulerTime;
+                //  $scope.permission.addWidget=false;
+                //  bootbox.alert(response.message);
+                bootbox.alert({
+
+                    title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+                    message: response.message
+
+
+                });
+
+            } else {
+                scheduler.dateRangeName = $("#customDateRangeName").text();
+
+                if (scheduler.dateRangeName == "Select Date Duration") {
+                    scheduler.dateRangeName = ""
+                }
+
+                try {
+                    $scope.customStartDate = moment($('#customDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY')//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+                    $scope.customEndDate = moment($('#customDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') //: $stateParams.endDate;
+                } catch (e) {
+
+                }
+                if (scheduler.schedulerRepeatType === "Now") {
+                    scheduler.schedulerNow = new Date();
+                    scheduler.schedulerTime = null;
+                    scheduler.startDate = null;
+                    scheduler.endDate = null;
+                    scheduler.schedulerWeekly = null;
+                    scheduler.schedulerMonthly = null;
+                    scheduler.schedulerYearly = null;
+                    scheduler.schedulerYearOfWeek = null;
+                } else if (scheduler.schedulerRepeatType === "Once") {
+                    scheduler.schedulerNow = null;
+                    //scheduler.schedulerTime = scheduler.schedulerTime;
+                    scheduler.schedulerWeekly = null;
+                    scheduler.schedulerMonthly = null;
+                    scheduler.schedulerYearly = null;
+                    scheduler.schedulerYearOfWeek = null;
+                } else if (scheduler.schedulerRepeatType === "Daily") {
+                    scheduler.schedulerNow = null;
+                    //scheduler.schedulerTime = scheduler.schedulerTime;
+                    scheduler.schedulerWeekly = null;
+                    scheduler.schedulerMonthly = null;
+                    scheduler.schedulerYearly = null;
+                    scheduler.schedulerYearOfWeek = null;
+                } else if (scheduler.schedulerRepeatType === "Weekly") {
+                    scheduler.schedulerNow = null;
+                    //scheduler.schedulerTime = scheduler.schedulerTime;
 //            scheduler.schedulerWeekly= null;
-            scheduler.schedulerMonthly = null;
-            scheduler.schedulerYearly = null;
-            scheduler.schedulerYearOfWeek = null;
-        } else if (scheduler.schedulerRepeatType === "Monthly") {
-            scheduler.schedulerNow = null;
-            scheduler.schedulerTime = null;
-            scheduler.schedulerWeekly = null;
+                    scheduler.schedulerMonthly = null;
+                    scheduler.schedulerYearly = null;
+                    scheduler.schedulerYearOfWeek = null;
+                } else if (scheduler.schedulerRepeatType === "Monthly") {
+                    scheduler.schedulerNow = null;
+                    scheduler.schedulerTime = null;
+                    scheduler.schedulerWeekly = null;
 //            scheduler.schedulerMonthly = null;
-            scheduler.schedulerYearly = null;
-            scheduler.schedulerYearOfWeek = null;
-        } else if (scheduler.schedulerRepeatType === "Yearly") {
-            scheduler.schedulerNow = null;
-            scheduler.schedulerTime = null;
-            scheduler.schedulerWeekly = null;
-            scheduler.schedulerMonthly = null;
+                    scheduler.schedulerYearly = null;
+                    scheduler.schedulerYearOfWeek = null;
+                } else if (scheduler.schedulerRepeatType === "Yearly") {
+                    scheduler.schedulerNow = null;
+                    scheduler.schedulerTime = null;
+                    scheduler.schedulerWeekly = null;
+                    scheduler.schedulerMonthly = null;
 //            scheduler.schedulerYearly = null;
-            scheduler.schedulerYearOfWeek = null;
-        } else if (scheduler.schedulerRepeatType === "Year Of Week") {
-            scheduler.schedulerNow = null;
+                    scheduler.schedulerYearOfWeek = null;
+                } else if (scheduler.schedulerRepeatType === "Year Of Week") {
+                    scheduler.schedulerNow = null;
 //            scheduler.schedulerTime = null;
 //            scheduler.schedulerWeekly = null;
-            scheduler.schedulerMonthly = null;
-            scheduler.schedulerYearly = null;
+                    scheduler.schedulerMonthly = null;
+                    scheduler.schedulerYearly = null;
 //            scheduler.schedulerYearOfWeek = null;
-        } else {
-            return null;
-        }
+                } else if (scheduler.schedulerRepeatType === "None") {
+                    scheduler.schedulerNow = null;
+                    scheduler.schedulerTime = null;
+                    scheduler.startDate = null;
+                    scheduler.endDate = null;
+                    scheduler.schedulerWeekly = null;
+                    scheduler.schedulerMonthly = null;
+                    scheduler.schedulerYearly = null;
+                    scheduler.schedulerYearOfWeek = null;
+                } else {
+                    //return null;
+                }
+                if (scheduler.schedulerEmail) {
+                    var emails = scheduler.schedulerEmail.map(function (value, key) {
+                        if (value) {
+                            return value;
+                        }
+                    }).join(',');
+                }
+                if (scheduler.dateRangeName === 'Custom') {
+                    scheduler.customStartDate = $scope.customStartDate;
+                    scheduler.customEndDate = $scope.customEndDate;
+                } else {
+                    scheduler.customStartDate = "";
+                    scheduler.customEndDate = "";
+                }
 
-        var emails = scheduler.schedulerEmail.map(function (value, key) {
-            if (value) {
-                return value;
+
+                if (!scheduler.dateRangeName) {
+                    $scope.showSchedulerMsg = true;
+                    $scope.showErrorDateRangeMessage = "Select Date Duration"
+                } else {
+                    $scope.showSchedulerMsg = false;
+                    scheduler.schedulerEmail = emails;
+                    $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
+                    });
+                    $scope.scheduler = "";
+                    $scope.showErrorDateRangeMessage = ""
+                }
             }
-        }).join(',');
-        if (scheduler.dateRangeName === 'Custom' || scheduler.dateRangeName === "Select Date Duration" || scheduler.dateRangeName === "None") {
-            scheduler.customStartDate = $scope.customStartDate;
-            scheduler.customEndDate = $scope.customEndDate;
-        } else {
-            scheduler.customStartDate = "";
-            scheduler.customEndDate = "";
-        }
-        console.log(scheduler.customStartDate);
-        console.log(scheduler.customEndDate);
-        scheduler.schedulerEmail = emails;
-        $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
+
         });
-        $scope.scheduler = "";
+
     };
 
     $timeout(function () {
@@ -263,14 +373,16 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             //Date range picker with time picker
             $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
             //Date range as a button
+            var customStartDate = $scope.scheduler.customStartDate ? $scope.scheduler.customStartDate : $stateParams.startDate;
+            var customEndDate = $scope.scheduler.customEndDate ? $scope.scheduler.customEndDate : $stateParams.endDate;
             $('#customDateRange').daterangepicker(
                     {
                         ranges: {
                             'Today': [moment(), moment()],
                             'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                            'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                            'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                            'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                            'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
                             'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
                             'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -286,8 +398,8 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                         },
-                        startDate: $scope.scheduler.customStartDate ? $scope.scheduler.customStartDate : moment().subtract(29, 'days'),
-                        endDate: $scope.scheduler.customEndDate ? $scope.scheduler.customEndDate : moment(),
+                        startDate: customStartDate ? customStartDate : moment().subtract(30, 'days'),
+                        endDate: customEndDate ? customEndDate : moment().subtract(1, 'days'),
                         maxDate: new Date()
                     },
                     function (startDate, endDate) {
@@ -334,7 +446,9 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $(".scheduler-list-style").find("li").click(function (e) {
                 e.stopPropagation();
             });
-
+            $(".scheduler-dateRange-none").click(function (e) {
+                $(".scheduler-list-style").css("display", "none");
+            });
 
             $(document).click(function (e) {
                 console.log(e.target.className);

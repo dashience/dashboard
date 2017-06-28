@@ -1,10 +1,11 @@
-app.controller('UiController', function ($scope, $http, $stateParams, $state, $filter, $cookies, $timeout, localStorageService) {
+app.controller('UiController', function ($scope, $http, $stateParams, $state, $filter, $cookies, $timeout, $window, localStorageService) {
     $scope.userName = $cookies.getObject("username");
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     //$scope.tabId = $stateParams.tabId;
     $scope.tabs = [];
+    // $scope.permission.addTab=true;
 
     if ($stateParams.productId) {
         $http.get("admin/ui/dbTabs/" + $stateParams.productId).success(function (response) {
@@ -17,7 +18,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             } else {
                 if ($stateParams.tabId == 0) {
                     setTabId = response[0].id;
-                }else{
+                } else {
                     setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0)
                 }
             }
@@ -41,12 +42,19 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.getDay = function () {
         var today = new Date();
         var yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 29);
+        yesterday.setDate(today.getDate() - 30);
+        return yesterday;
+    };
+
+    $scope.getBeforeDay = function () {
+        var today = new Date();
+        var yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
         return yesterday;
     };
 
     $scope.firstDate = $stateParams.startDate ? $scope.toDate(decodeURIComponent($stateParams.startDate)) : $scope.getDay().toLocaleDateString("en-US");
-    $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : new Date().toLocaleDateString("en-US");
+    $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : $scope.getBeforeDay().toLocaleDateString("en-US");
 
     if (!$stateParams.startDate) {
         $stateParams.startDate = $scope.firstDate;
@@ -87,17 +95,49 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     var dates = $(".pull-right i").text();
 
+//        ..............licencetab................
+//console.log("PRINTING CONSOLE MSG 2 with agencyId"+$cookies.getObject('agencyId').id);
+
+
+  //   var agencyLicence={};
+       //$http.get('admin/user/agencyLicence/' + $cookies.getObject('agencyId').id).success(function (response) {       
+          // $scope.agencyLicences = response;
+         // angular.forEach(response, function (value, key) {
+         //     $scope.agencyLicence = {id: value.id, maxNoTab: value.maxNoTab, maxNoUser: value.maxNoUser, maxNoClient: value.maxNoClient, maxNoAccount: value.maxNoAccount, expiryDate: value.expiryDate, maxNoWidgetPerTab: value.maxNoWidgetPerTab};
+       //        console.log(agencyLicence.maxNoTab+".............NO of tabs..........");
+     // });
+   //   });     
+  //         ..............licencetab................
+       
     $scope.tabs = [];
     $scope.addTab = function (tab) {
         var data = {
             tabName: tab.tabName
         };
         $http({method: 'POST', url: 'admin/ui/dbTabs/' + $stateParams.productId, data: data}).success(function (response) {
+                console.log("My bootbox response")
+                
+               if (response.code === 2) {
+                   console.log("there is no data....");
+                   // $scope.permission.addTab=false;
+                //   bootbox.alert(response.message);
+                   bootbox.alert({ 
+                                
+                                title: "<img  src='static/img/1497916017_Error.png'>&nbsp;&nbsp;&nbsp;&nbsp; Agency Licence Error!",
+                                message: response.message, 
+                                
+                                //callback: function(){ /* your callback code */ }
+                    })
+                  
+//                $window.alert('max limit reached');
+           }
+           else {
             $stateParams.tabId = "";
             $scope.tabs.push({id: response.id, tabName: tab.tabName, tabClose: true});
             $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
             $state.go("index.dashboard.widget", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
-        });
+        }
+       });
         $scope.tab = "";
     };
 
@@ -109,6 +149,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
                 $state.go("index.dashboard.widget", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
             });
+        //    $scope.permission.addTab=true;
         });
     };
 

@@ -52,11 +52,13 @@ public class SchedulerController extends BaseController {
         schedulerBean.setAgencyId(user.getAgencyId());
         System.out.println("Test");
         Scheduler scheduler = schedulerService.createScheduler(schedulerBean);
+        // scheduler.setSchedulerStatus("Active");
         if (scheduler.getSchedulerRepeatType().equalsIgnoreCase("Now")) {
             System.out.println("Test 1");
             List<Scheduler> scheduledTasks = new ArrayList<>();
+
             scheduledTasks.add(scheduler);
-            System.out.println("scheduledTasks: "+scheduledTasks);
+            System.out.println("scheduledTasks: " + scheduledTasks);
             timeService.executeTasks(scheduledTasks);
         }
         return scheduler;
@@ -68,6 +70,7 @@ public class SchedulerController extends BaseController {
         VbUser user = userService.findByUsername(getUser(request));
         schedulerBean.setAgencyId(user.getAgencyId());
         Scheduler scheduler = schedulerService.updateScheduler(schedulerBean);
+        //scheduler.setSchedulerStatus("Active");
         if (scheduler.getSchedulerRepeatType().equalsIgnoreCase("Now")) {
             System.out.println("Test 1");
             List<Scheduler> scheduledTasks = new ArrayList<>();
@@ -104,12 +107,12 @@ public class SchedulerController extends BaseController {
     List getSchedulerHistoryById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer schedulerId) {
         return schedulerService.getSchedulerHistoryById(schedulerId);
     }
-
 //    @RequestMapping(value = "schedulerByReport/{reportId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    Scheduler getSchedulerByReportId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
 //        return schedulerService.getSchedulerByReportId(reportId);
 //    }
+
     @RequestMapping(value = "scheduler/{schedulerId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     Scheduler deleteScheduler(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer schedulerId) {

@@ -71,7 +71,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     ,
     @NamedQuery(name = "VbUser.findByTheme", query = "SELECT v FROM VbUser v WHERE v.theme = :theme")
     ,
-    @NamedQuery(name = "VbUser.findByUserName", query = "SELECT v FROM VbUser v WHERE v.userName = :userName")})
+    @NamedQuery(name = "VbUser.findByUserName", query = "SELECT v FROM VbUser v WHERE v.userName = :userName")
+,@NamedQuery(name = "VbUser.findUserCountById", query = "SELECT count(v) FROM VbUser v WHERE v.agencyId.id = :agencyId")})
 public class VbUser implements Serializable {
 
     @OneToMany(mappedBy = "userId")
@@ -345,129 +346,6 @@ public class VbUser implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.VbUser[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<TabWidget> getTabWidgetCollection() {
-        return tabWidgetCollection;
-    }
-
-    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
-        this.tabWidgetCollection = tabWidgetCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Report> getReportCollection() {
-        return reportCollection;
-    }
-
-    public void setReportCollection(Collection<Report> reportCollection) {
-        this.reportCollection = reportCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<ReportType> getReportTypesCollection() {
-        return reportTypesCollection;
-    }
-
-    public void setReportTypesCollection(Collection<ReportType> reportTypesCollection) {
-        this.reportTypesCollection = reportTypesCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<ReportType> getReportTypesCollection1() {
-        return reportTypesCollection1;
-    }
-
-    public void setReportTypesCollection1(Collection<ReportType> reportTypesCollection1) {
-        this.reportTypesCollection1 = reportTypesCollection1;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Dashboard> getDashboardCollection() {
-        return dashboardCollection;
-    }
-
-    public void setDashboardCollection(Collection<Dashboard> dashboardCollection) {
-        this.dashboardCollection = dashboardCollection;
-    }
-
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<WidgetTag> getWidgetTagCollection() {
-        return widgetTagCollection;
-    }
-
-    public void setWidgetTagCollection(Collection<WidgetTag> widgetTagCollection) {
-        this.widgetTagCollection = widgetTagCollection;
-    }
-
-    
-    
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DataSet> getDataSetCollection() {
-        return dataSetCollection;
-    }
-
-    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
-        this.dataSetCollection = dataSetCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DataSource> getDataSourceCollection() {
-        return dataSourceCollection;
-    }
-
-    public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
-        this.dataSourceCollection = dataSourceCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AccountUser> getAccountUserCollection() {
-        return accountUserCollection;
-    }
-
-    public void setAccountUserCollection(Collection<AccountUser> accountUserCollection) {
-        this.accountUserCollection = accountUserCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<UserAccount> getUserAccountCollection() {
-        return userAccountCollection;
-    }
-
-    public void setUserAccountCollection(Collection<UserAccount> userAccountCollection) {
-        this.userAccountCollection = userAccountCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<UserPermission> getUserPermissionCollection() {
-        return userPermissionCollection;
-    }
-
-    public void setUserPermissionCollection(Collection<UserPermission> userPermissionCollection) {
-        this.userPermissionCollection = userPermissionCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencyUser> getAgencyUserCollection() {
-        return agencyUserCollection;
-    }
-
-    public void setAgencyUserCollection(Collection<AgencyUser> agencyUserCollection) {
-        this.agencyUserCollection = agencyUserCollection;
     }
 
 }

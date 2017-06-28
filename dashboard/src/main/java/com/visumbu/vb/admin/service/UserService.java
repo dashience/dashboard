@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.DealerDao;
 import com.visumbu.vb.admin.dao.UserDao;
+import com.visumbu.vb.bean.AgencyBean;
 import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.model.Account;
@@ -51,6 +52,11 @@ public class UserService {
             teUser.setStatus("Active");
             teUser.setCreatedTime(new Date());
             teUser.setTheme("default");
+            if(teUser.getAgencyId() != null) {
+                teUser.setIsAdmin(Boolean.FALSE);
+            } else {
+                teUser.setIsAdmin(Boolean.TRUE);
+            }
             return (VbUser) userDao.create(teUser);
         }
         return null;
@@ -92,14 +98,17 @@ public class UserService {
         LoginUserBean loginUserBean = null;
         if (!users.isEmpty()) {
             VbUser user = users.get(0);
-            if (user.getPassword().equals(userBean.getPassword())) {
+            if (user.getPassword().equals(userBean.getPassword()) &&
+                    user.getUserName().equals(userBean.getUsername())) {
                 user.setFailedLoginCount(0);
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
+                
                 System.out.println(loginUserBean);
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
                 if (user != null) {
+                    user.setFailedLoginCount(0);
                     user.setFailedLoginCount(user.getFailedLoginCount() + 1);
                     loginUserBean = toLoginUserBean(user);
                 }
@@ -114,10 +123,25 @@ public class UserService {
         return loginUserBean;
     }
 
+    private AgencyBean toAgencyBean(Agency agency) {
+        if(agency == null) {
+            return null;
+        }
+        AgencyBean agencyBean = new AgencyBean();
+        agencyBean.setAgencyName(agency.getAgencyName());
+        agencyBean.setDescription(agency.getDescription());
+        agencyBean.setEmail(agency.getEmail());
+        agencyBean.setStatus(agency.getStatus());
+        agencyBean.setId(agency.getId());
+        return agencyBean;
+    }
+    
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
-        userBean.setAgencyId(teUser.getAgencyId());
+        System.out.println("Agency Id " + teUser.getAgencyId());
+        userBean.setAgencyId(toAgencyBean(teUser.getAgencyId()));
+        System.out.println("AGENCY BEAN " + userBean.getAgencyId());
 //        userBean.setPassword(teUser.getPassword());
         userBean.setFailLoginCount(teUser.getFailedLoginCount());
         userBean.setIsAdmin(teUser.getIsAdmin() != null && teUser.getIsAdmin() == true ? "admin" : "");

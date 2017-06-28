@@ -8,12 +8,14 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.bean.DatasetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
@@ -461,8 +463,16 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
+    public void removeDataSetColumns(Integer id) {
+        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+    }
+
     public DataSet deleteDataSet(Integer id) {
         removeDataSetFromWidget(id);
+        removeDataSetColumns(id);
         String queryStr = "delete DataSet d where d.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
@@ -593,4 +603,120 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
+    public List<Account> getAccountById(Integer id) {
+        String queryStr = "select d from Account d where d.id = :accountId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("accountId", id);
+        return query.list();
+    }
+
+    public DatasetColumns deleteDataSetColumns(Integer id) {
+        String queryStr = "delete DatasetColumns d where d.datasetId.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+        return null;
+    }
+
+    public Integer getTabsCount(AgencyProduct id) {
+        System.out.println("id ---> " + id);
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("DashboardTabs.findByTabscount");
+        query.setParameter("agencyProductId", id).setParameter("status", "Active");
+        //query.setParameter("status", null);
+
+        int count = (int) (long) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
+
+    public Integer getVbUserCount(int agencyId) {
+//        System.out.println("id ---> " + id);
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("VbUser.findUserCountById");
+        query.setParameter("agencyId", agencyId);
+        System.out.println("My query");
+        System.out.println(query.list().get(0));
+        int count=(int) (long)query.list().get(0);
+//        int count = (int) (long) query.list().get(0);
+//        System.out.println("count ---> " + count);
+        return count;
+    }
+
+    public Integer getWidgetCount(DashboardTabs id) {
+        System.out.println("id ---> " + id);
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("TabWidget.findByWidgetcount");
+        query.setParameter("tabId", id);
+
+        int count = (int) (long) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
+
+    public DashboardTabs getDashboardTabsById(Integer tabId) {
+        return (DashboardTabs) sessionFactory.getCurrentSession().get(DashboardTabs.class, tabId);
+    }
+
+    public Integer getAccountCount(Agency id) {
+        System.out.println("id ---> " + id);
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("Account.findByAccountCount");
+        query.setParameter("agencyId", id);
+
+        int count = (int) (long) query.list().get(0);
+
+        System.out.println("count ---> " + count);
+        return count;
+    }
+
+    public Integer getSchedulerReports(Agency id) {
+        System.out.println("id ---> " + id);
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("Scheduler.findByAccountCount");
+        query.setParameter("agencyId", id).setParameter("schedulerStatus", "Active");
+        int count = (int) (long) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
+
+    public Integer getLicenseUserCount(Integer agencyId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("AgencyLicence.findByLincenceUserCount");
+        query.setParameter("agencyId", agencyId);
+
+        int count = (int) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
+    
+     public Integer getTotalTabsCount(Integer agencyId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("AgencyLicence.findByLincenceTabCount");
+        query.setParameter("agencyId", agencyId);
+
+        int count = (int) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
+     
+     public Integer getTotalWidgetsCount(Integer agencyId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("AgencyLicence.findByLincenceWidgetCount");
+        query.setParameter("agencyId", agencyId);
+
+        int count = (int) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
+     
+      
+     public Integer getTotalAccountCount(Integer agencyId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("AgencyLicence.findByLincenceAccountCount");
+        query.setParameter("agencyId", agencyId);
+
+        int count = (int) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
+      public Integer getTotalSchedulerCount(Integer agencyId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("AgencyLicence.findByLincenceSchedulerCount");
+        query.setParameter("agencyId", agencyId);
+
+        int count = (int) query.list().get(0);
+        System.out.println("count ---> " + count);
+        return count;
+    }
 }

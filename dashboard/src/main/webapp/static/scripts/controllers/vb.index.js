@@ -32,4 +32,5 @@ app.controller('IndexController', function ($scope, $http, $state, $filter, $sta
 //            $state.go("index.dashboard", {productId: findProductId});
 //        }
 //    });
+
 });

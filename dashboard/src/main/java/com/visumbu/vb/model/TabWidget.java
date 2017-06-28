@@ -80,7 +80,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByLastNmonths", query = "SELECT t FROM TabWidget t WHERE t.lastNmonths = :lastNmonths")
     , @NamedQuery(name = "TabWidget.findByLastNweeks", query = "SELECT t FROM TabWidget t WHERE t.lastNweeks = :lastNweeks")
     , @NamedQuery(name = "TabWidget.findByLastNyears", query = "SELECT t FROM TabWidget t WHERE t.lastNyears = :lastNyears")
-    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")})
+    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")
+  , @NamedQuery(name = "TabWidget.findByWidgetcount", query = "SELECT count(t) FROM TabWidget t WHERE t.tabId = :tabId")   })
 public class TabWidget implements Serializable {
 
     @OneToMany(mappedBy = "widgetId")
@@ -653,14 +654,14 @@ public class TabWidget implements Serializable {
         return "com.visumbu.vb.model.TabWidget[ id=" + id + " ]";
     }
 
-    @XmlTransient
-    @JsonIgnore
-    public Collection<ReportWidget> getReportWidgetCollection() {
-        return reportWidgetCollection;
-    }
-
-    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
-        this.reportWidgetCollection = reportWidgetCollection;
-    }
+//    @XmlTransient
+//    @JsonIgnore
+//    public Collection<ReportWidget> getReportWidgetCollection() {
+//        return reportWidgetCollection;
+//    }
+//
+//    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
+//        this.reportWidgetCollection = reportWidgetCollection;
+//    }
 
 }

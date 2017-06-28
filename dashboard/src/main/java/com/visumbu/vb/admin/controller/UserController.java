@@ -9,6 +9,7 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.Permission;
+import com.visumbu.vb.bean.Result;
 import com.visumbu.vb.bean.UrlBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthRoleBean;
@@ -26,7 +27,12 @@ import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.VbUtils;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -34,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -129,10 +136,16 @@ public class UserController extends BaseController {
         session.setAttribute("username", userBean.getUsername());
         session.setAttribute("agencyId", userBean.getAgencyId());
         if (userBean != null && userBean.getUsername() != null && userBean.getAuthenticated()) {
+            // Result result=checkLicenseExpiryDate(request, response);
+            // userBean.setResult(result);
+
             VbUser user = userService.findByUsername(userBean.getUsername());
+
             userBean.setPermission(VbUtils.getPermissions(user, uiService.getUserPermissionById(user.getId())));
             session.setAttribute("permission", userBean.getPermission());
         }
+        System.out.println("----------------------------------------------->2");
+
         return userBean;
     }
 
@@ -465,7 +478,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agency", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Object createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
-       
+
         return userService.createAgency(agency);
     }
 
@@ -490,6 +503,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agencyLicence", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     AgencyLicence createAgencyLicence(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencyLicence agencyLicence) {
+        System.out.println("+++++++++++++++++++++++agencySecheduler" + agencyLicence.getMaxNoschedulerReports());
         return userService.createAgencyLicence(agencyLicence);
     }
 
@@ -502,12 +516,14 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agencyLicence", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getAgencyLicence(HttpServletRequest request, HttpServletResponse response) {
+
         return userService.getAgencyLicence();
     }
 
     @RequestMapping(value = "agencyLicence/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getAgencyLicenceById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+        System.out.println("calling get in controller...." + agencyId);
         return userService.getAgencyLicenceById(agencyId);
     }
 
@@ -559,7 +575,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agencySetting", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     AgencySettings createAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
-     
+
         return userService.createAgencySettings(agencySettings);
     }
 
@@ -568,11 +584,105 @@ public class UserController extends BaseController {
     AgencySettings updateAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
         return userService.updateAgencySettings(agencySettings);
     }
-    
+
     @RequestMapping(value = "agencySetting/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     AgencySettings getAgencySettingsById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
         return userService.getAgencySettingsById(agencyId);
+    }
+
+    @RequestMapping(value = "checkexpirydate", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Result checkLicenseExpiryDate(HttpServletRequest request, HttpServletResponse response) {
+
+        VbUser loggedInUser = userService.findByUsername(getUser(request));
+        System.out.println(loggedInUser.getIsAdmin() + "<----------------------=============>");
+
+        if (loggedInUser.getIsAdmin() == false) {
+
+            System.out.println("user logging.........");
+            Agency agency = loggedInUser.getAgencyId();
+            AgencyLicence agencyLicese = (AgencyLicence) userService.getAgencyLicenceById(agency.getId()).get(0);
+
+            Date licensexpieryDate = agencyLicese.getExpiryDate();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar cal = Calendar.getInstance();
+
+            String s = dateFormat.format(cal.getTime());
+            Date currentDate = null;
+            Date convertedDate = null;
+            try {
+                System.out.println("ddd6=================licenseexpiry......");
+                currentDate = dateFormat.parse(s);
+                convertedDate = dateFormat.parse(licensexpieryDate.toString());
+
+            } catch (ParseException e) {
+                // handle 
+            }
+            System.out.println("dddstartdate......" + currentDate + "================" + convertedDate);
+            int number = convertedDate.compareTo(currentDate);
+            System.out.println("ssscount" + number);
+            if (number < 0) {
+                System.out.println("ssssExpired!");
+                Result result = new Result(Result.ERROR, "LE", "Agency License hasbeen expired!");
+                return result;
+            } else {
+                Result result = new Result(Result.SUCCESS, "LE", "Agency License not yet expired!");
+                return result;
+            }
+        } else {
+            System.out.println("admin logging.........");
+            return new Result(Result.SUCCESS, "LE", "Agency License not yet expired!");
+        }
+    }
+
+    @RequestMapping(value = "notifylicenceexpirydate", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Result notifyLicenseExpiryDate(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("checknotification.........");
+        VbUser loggedInUser = userService.findByUsername(getUser(request));
+        if (loggedInUser.getIsAdmin() == false) {
+
+            System.out.println("user logging.........");
+            Agency agency = loggedInUser.getAgencyId();
+            AgencyLicence agencyLicese = (AgencyLicence) userService.getAgencyLicenceById(agency.getId()).get(0);
+
+            Date licensexpieryDate = agencyLicese.getExpiryDate();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar cal = Calendar.getInstance();
+
+            String s = dateFormat.format(cal.getTime());
+            Date currentDate = null;
+            Date convertedDate = null;
+            try {
+
+                currentDate = dateFormat.parse(s);
+                convertedDate = dateFormat.parse(licensexpieryDate.toString());
+
+            } catch (ParseException e) {
+                // handle 
+            }
+            System.out.println("dddstartdate......" + currentDate + "================" + convertedDate);
+            long diff = currentDate.getTime() - convertedDate.getTime();
+            long number = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+            System.out.println("ssscount" + number);
+            if (number == 0) {
+
+                Result result = new Result(Result.ERROR, "LE", "your licence will expiry today!");
+                return result;
+            } //else if(number<=10 && number>0) {
+            else if (number <= 10) {
+
+                Result result = new Result(Result.ERROR, "LE", "your licence will expiry after " + number + " days!");
+                return result;
+            } else {
+                Result result = new Result(Result.SUCCESS, "LE", "Agency License not yet expired!");
+                return result;
+            }
+        } else {
+            System.out.println("admin logging.........");
+            return new Result(Result.SUCCESS, "LE", "Agency License not yet expired!");
+        }
     }
 
     @ExceptionHandler
@@ -581,4 +691,3 @@ public class UserController extends BaseController {
         e.printStackTrace();
     }
 }
- 
