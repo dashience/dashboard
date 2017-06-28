@@ -42,7 +42,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSet.findByReportPerformance", query = "SELECT d FROM DataSet d WHERE d.reportPerformance = :reportPerformance")
     , @NamedQuery(name = "DataSet.findByTimeSegment", query = "SELECT d FROM DataSet d WHERE d.timeSegment = :timeSegment")
     , @NamedQuery(name = "DataSet.findByUrl", query = "SELECT d FROM DataSet d WHERE d.url = :url")
-    , @NamedQuery(name = "DataSet.findBySheetName", query = "SELECT d FROM DataSet d WHERE d.sheetName = :sheetName")})
+    , @NamedQuery(name = "DataSet.findBySheetName", query = "SELECT d FROM DataSet d WHERE d.sheetName = :sheetName")
+    , @NamedQuery(name = "DataSet.findByPublish", query = "SELECT d FROM DataSet d WHERE d.publish = :publish")})
 public class DataSet implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -79,6 +80,9 @@ public class DataSet implements Serializable {
     @Size(max = 255)
     @Column(name = "sheet_name")
     private String sheetName;
+    @Size(max = 255)
+    @Column(name = "publish")
+    private String publish;
     @OneToMany(mappedBy = "dataSetIdFirst")
     private Collection<JoinDataSet> joinDataSetCollection;
     @OneToMany(mappedBy = "dataSetIdSecond")
@@ -183,6 +187,14 @@ public class DataSet implements Serializable {
         this.sheetName = sheetName;
     }
 
+    public String getPublish() {
+        return publish;
+    }
+
+    public void setPublish(String publish) {
+        this.publish = publish;
+    }
+    
     @XmlTransient
     @JsonIgnore
     public Collection<JoinDataSet> getJoinDataSetCollection() {
@@ -259,5 +271,5 @@ public class DataSet implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DataSet[ id=" + id + " ]";
     }
-    
+
 }
