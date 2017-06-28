@@ -4,6 +4,28 @@
         width: 304px;
         max-width: 100%;
     }
+    .select-template {
+        float: left;
+        height: 52px;
+        padding: 0;
+        margin-top: 0px;
+        width: 180px;
+    }
+
+    .selectize-control > .selectize-dropdown {
+        width: 100%;
+        overflow: hidden;
+        clear: both;
+        position: relative;
+        top: 0px !important;
+        z-index: 9999;
+    }
+
+    .selectize-dropdown [data-selectable], .selectize-dropdown .optgroup-header {
+        padding: 1px 0px;
+        position: relative;
+        z-index: 9999;
+    }
 </style>
 <div>
     <div class="normalheader transition animated fadeIn">
@@ -25,7 +47,7 @@
                             </button>
                         </div>
                         <div class="col-sm-6">
-                            <div class="form-group">
+                            <div class="form-group select-template">
                                 <ui-select ng-model="selectTemplate.selected" on-select="getTemplateBYId(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize" style="width:180px;">
                                     <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
                                     <ui-select-choices repeat="template in templates | filter: $select.search">
@@ -50,7 +72,7 @@
                     <ul class="nav nav-tabs">
                         <li ng-repeat="tab in tabs" ui-sref-active="active" ng-dblclick="startEditing(tab);" ng-drop="true" ng-drop-success="onDropTabComplete($index, $data,$event)">
                             <a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">
-                            <!--<a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">-->
+                                <!--<a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">-->
                                 <span ng-hide="tab.editing">{{tab.tabName}}</span>
                                 <form ng-submit="doneEditing(tab)" ng-show="tab.editing">
                                     <input class="form-control" ng-model="tab.tabName" ng-blur="doneEditing(tab)" ng-focus="tab == editedItem">

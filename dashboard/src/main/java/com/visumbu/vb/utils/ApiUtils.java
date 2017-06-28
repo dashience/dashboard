@@ -115,19 +115,19 @@ public class ApiUtils {
                     "SearchImpressionShare", "SearchExactMatchImpressionShare", "SearchBudgetLostImpressionShare", "SearchRankLostImpressionShare",
                     "ContentImpressionShare", "ContentBudgetLostImpressionShare", "ContentRankLostImpressionShare",
                     "Conversions", "AveragePosition", "AllConversions",
-                    "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId"},
+                    "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId","AdNetworkType2"},
                         ReportDefinitionReportType.ACCOUNT_PERFORMANCE_REPORT));
         adwordsReports.put("campaignPerformance",
                 new AdwordsReport("campaignPerformance", new String[]{"CampaignId", "AccountDescriptiveName", "CampaignName",
                     "Impressions", "Clicks", "Amount", "SearchImpressionShare", "SearchExactMatchImpressionShare", "SearchBudgetLostImpressionShare", "SearchRankLostImpressionShare",
                     "ContentImpressionShare", "ContentBudgetLostImpressionShare", "ContentRankLostImpressionShare", "Conversions", "AveragePosition", "AllConversions",
-                    "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId"},
+                    "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId","AdNetworkType2"},
                         ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT));
 
         adwordsReports.put("adGroupPerformance",
                 new AdwordsReport("adGroupPerformance", new String[]{"AccountDescriptiveName", "Impressions", "Clicks", "AdGroupId", "AdGroupName",
                     "Conversions", "AveragePosition",
-                    "AllConversions", "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId"},
+                    "AllConversions", "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId","AdNetworkType2"},
                         ReportDefinitionReportType.ADGROUP_PERFORMANCE_REPORT));
 
         adwordsReports.put("keywordPerformance",
@@ -171,7 +171,7 @@ public class ApiUtils {
         adwordsReports.put("searchQueryReport",
                 new AdwordsReport("searchQueryReport", new String[]{"AccountDescriptiveName", "CampaignId", "CampaignName", "Impressions", "Clicks", "AdGroupId", "AdGroupName",
                     "Conversions", "AveragePosition", "AllConversions", "AdGroupName", "AdGroupId", "AverageCpc", "Ctr", "Cost", "CostPerConversion",
-                    "ConversionRate", "ExternalCustomerId", "DestinationUrl", "FinalUrl", "KeywordTextMatchingQuery", "KeywordId", "Query"},
+                    "ConversionRate", "ExternalCustomerId", "DestinationUrl", "FinalUrl", "KeywordTextMatchingQuery", "KeywordId", "Query","QueryMatchTypeWithVariant"},
                         ReportDefinitionReportType.SEARCH_QUERY_PERFORMANCE_REPORT));
 
         return adwordsReports;

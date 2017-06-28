@@ -1172,10 +1172,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 displayName: collectionField.displayName,
                 userId: collectionField.userId,
                 displayFormat: collectionField.displayFormat,
-                widgetId: collectionField.id
+                widgetId: widgetObj.id
             };
             $scope.dataSetColumn = data;
         }
+        console.log($scope.dataSetColumn)
 //        });
     };
     //Save DerivedColumn
@@ -1569,7 +1570,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 console.log(response);
             });
             $('.showEditWidget').modal('hide');
-            getWidgetItem();
+            if (!data.id) {
+                getWidgetItem();
+            }
         });
         $scope.widgetObj = "";
         $scope.showFilter = false;
@@ -1875,13 +1878,13 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             } else {
                 dataSourcePassword = '';
             }
-            console.log(widgetData)
-            var setWidgetAccountId;
-            if (widgetData.accountId === null || widgetData.accountId === "undefined") {
-                setWidgetAccountId = $stateParams.accountId;
-            } else {
-                setWidgetAccountId = widgetData.accountId ? widgetData.accountId.id : null;
-            }
+
+//            var setWidgetAccountId;
+//            if (!widgetData.accountId) {
+//                setWidgetAccountId = $stateParams.accountId;
+//            } else {
+//                setWidgetAccountId = widgetData.accountId ? widgetData.accountId.id : null;
+//            }
 
             scope.refreshTable = function () {
 //                scope.connectionTestUrl = url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
@@ -1899,7 +1902,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 console.log(tableDataSource)
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
-                        "&accountId=" + setWidgetAccountId +
+                        "&accountId=" + (widgetData.accountId ? (widgetData.accountId.id ? widgetData.accountId.id : widgetData.accountId) : $stateParams.accountId) +
                         "&userId=" + (tableDataSource.userId ? tableDataSource.userId.id : null) +
                         "&driver=" + tableDataSource.dataSourceId.sqlDriver +
                         "&location=" + $stateParams.locationId +

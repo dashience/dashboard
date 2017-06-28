@@ -1192,6 +1192,16 @@ public class ProxyController {
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
+            
+            String widgetProductSegment = widget.getProductSegment();
+            String widgetTimeSegment = widget.getTimeSegment();
+            String widgetNetworkType = widget.getNetworkType();
+            if(widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
+                productSegment = widgetProductSegment;
+            }
+            if(widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
+                timeSegment = widgetTimeSegment;
+            }
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
                 if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
@@ -1264,6 +1274,20 @@ public class ProxyController {
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
+            
+            String widgetProductSegment = widget.getProductSegment();
+            String widgetTimeSegment = widget.getTimeSegment();
+            String widgetNetworkType = widget.getNetworkType();
+            
+            if(widgetNetworkType != null || !widgetNetworkType.isEmpty() || !widgetNetworkType.equalsIgnoreCase("none") || !widgetNetworkType.equalsIgnoreCase("undefined")) {
+                filter = widgetNetworkType;
+            }
+            if(widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
+                productSegment = widgetProductSegment;
+            }
+            if(widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
+                timeSegment = widgetTimeSegment;
+            }
             //System.out.println("Widget title --->" + widget.getWidgetTitle());
             //System.out.println("Date Range Name ---> " + widget.getDateRangeName());
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {

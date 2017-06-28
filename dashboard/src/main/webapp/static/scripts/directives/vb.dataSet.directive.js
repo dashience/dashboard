@@ -198,90 +198,90 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '</select>' +
 //                '</div>' +
 
+//                '</div>' +
                 '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Function</label>' +
-                '<div class="col-md-3">' +
-                '<select  name="functionName" class="form-control" ng-model="dataSetColumn.functionName" ng-change="functionChange(dataSetColumn.functionName)" ng-disabled="dataSetColumn.expression?true:false">' +
-                '<option ng-repeat="functionType in functionTypes" value={{functionType.name}}>' +
-                '{{functionType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '<div ng-if="dataSetColumn.functionName===\'Custom\'" class="col-md-2">' +
-                '<div class="dropdown editWidgetDropDown">' +
-                '<button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">' +
-                ' <span ng-class="{\'text-danger\':dateErrorMessage==true}">{{dataSetColumn.dateRangeName?dataSetColumn.dateRangeName:"Select Date"}}</span>' +
-                '<span class="caret"></span></button>' +
-                '<ul class="dropdown-menu scheduler-list-style">' +
-                '<li>' +
-                '<div class="col-md-12">' +
-                '<div>' +
-                '<a class="pull-right custom-daterange-box" function-Date-Range ng-click="selectFunctionDateRange(dataSetColumn)" widget-Table-Date-Range="{{dataSetColumn}}" id="widgetDateRange">' +
-                '<span class="date-border">' +
-                '{{dataSetColumn.customStartDate ? dataSetColumn.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{dataSetColumn.customEndDate ? dataSetColumn.customEndDate : endDate| date: "MM/dd/yyyy"}}' +
-                '</span>' +
-                '</a>' +
-                '</div>' +
-                '</div>' +
-                '</li>' +
-//                            text values
-                '<li>' +
-                '<a>Last <input type="text"' +
-                'ng-model="dataSetColumn.lastNdays"' +
-                'ng-change="selectFunctionDuration(\'Last N Days\', dataSetColumn)" ' +
-                'class="form-control"' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Days' +
-                '</a>' +
-                '</li>' +
-                '<li>' +
-                '<a>Last <input type="text"' +
-                'ng-model="dataSetColumn.lastNweeks"' +
-                'ng-change="selectFunctionDuration(\'Last N Weeks\', dataSetColumn)"' +
-                'class="form-control" ' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Weeks' +
-                '</a>' +
-                '</li>' +
-                '<li>' +
-                '<a>Last <input type="text"' +
-                'ng-model="dataSetColumn.lastNmonths"' +
-                'ng-change="selectFunctionDuration(\'Last N Months\', dataSetColumn)"' +
-                'class="form-control"' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Months' +
-                '</a>' +
-                '</li>' +
-                ' <li>' +
-                '<a>Last <input type="text" ' +
-                'ng-model="dataSetColumn.lastNyears"' +
-                'ng-change="selectFunctionDuration(\'Last N Years\', dataSetColumn)"' +
-                'class="form-control"' +
-                'ng-model-options="{debounce: 500}"' +
-                'style="width: 60px; display: contents; height: 25px;"> ' +
-                'Years' +
-                '</a>' +
-                '</li>' +
-                '</ul>' +
-                ' </div>' +
-                '</div>' +
-                '<label class="col-md-1">Column</label>' +
-                '<div class="col-md-2">' +
-                '<select class="form-control" ng-disabled="dataSetColumn.expression?true:false" ng-model="dataSetColumn.columnName">' +
-                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
-                '{{dataSetColumn.fieldName}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '<div class="col-md-1">' +
-                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
-                '</div>' +
-                '</div>' +
+//                '<div class="form-group">' +
+//                '<label class="col-md-3">Function</label>' +
+//                '<div class="col-md-3">' +
+//                '<select  name="functionName" class="form-control" ng-model="dataSetColumn.functionName" ng-change="functionChange(dataSetColumn.functionName)" ng-disabled="dataSetColumn.expression?true:false">' +
+//                '<option ng-repeat="functionType in functionTypes" value={{functionType.name}}>' +
+//                '{{functionType.name}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '<div ng-if="dataSetColumn.functionName===\'Custom\'" class="col-md-2">' +
+//                '<div class="dropdown editWidgetDropDown">' +
+//                '<button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">' +
+//                ' <span ng-class="{\'text-danger\':dateErrorMessage==true}">{{dataSetColumn.dateRangeName?dataSetColumn.dateRangeName:"Select Date"}}</span>' +
+//                '<span class="caret"></span></button>' +
+//                '<ul class="dropdown-menu scheduler-list-style">' +
+//                '<li>' +
+//                '<div class="col-md-12">' +
+//                '<div>' +
+//                '<a class="pull-right custom-daterange-box" function-Date-Range ng-click="selectFunctionDateRange(dataSetColumn)" widget-Table-Date-Range="{{dataSetColumn}}" id="widgetDateRange">' +
+//                '<span class="date-border">' +
+//                '{{dataSetColumn.customStartDate ? dataSetColumn.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{dataSetColumn.customEndDate ? dataSetColumn.customEndDate : endDate| date: "MM/dd/yyyy"}}' +
+//                '</span>' +
+//                '</a>' +
+//                '</div>' +
+//                '</div>' +
+//                '</li>' +
+////                            text values
+//                '<li>' +
+//                '<a>Last <input type="text"' +
+//                'ng-model="dataSetColumn.lastNdays"' +
+//                'ng-change="selectFunctionDuration(\'Last N Days\', dataSetColumn)" ' +
+//                'class="form-control"' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Days' +
+//                '</a>' +
+//                '</li>' +
+//                '<li>' +
+//                '<a>Last <input type="text"' +
+//                'ng-model="dataSetColumn.lastNweeks"' +
+//                'ng-change="selectFunctionDuration(\'Last N Weeks\', dataSetColumn)"' +
+//                'class="form-control" ' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Weeks' +
+//                '</a>' +
+//                '</li>' +
+//                '<li>' +
+//                '<a>Last <input type="text"' +
+//                'ng-model="dataSetColumn.lastNmonths"' +
+//                'ng-change="selectFunctionDuration(\'Last N Months\', dataSetColumn)"' +
+//                'class="form-control"' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Months' +
+//                '</a>' +
+//                '</li>' +
+//                ' <li>' +
+//                '<a>Last <input type="text" ' +
+//                'ng-model="dataSetColumn.lastNyears"' +
+//                'ng-change="selectFunctionDuration(\'Last N Years\', dataSetColumn)"' +
+//                'class="form-control"' +
+//                'ng-model-options="{debounce: 500}"' +
+//                'style="width: 60px; display: contents; height: 25px;"> ' +
+//                'Years' +
+//                '</a>' +
+//                '</li>' +
+//                '</ul>' +
+//                ' </div>' +
+//                '</div>' +
+//                '<label class="col-md-1">Column</label>' +
+//                '<div class="col-md-2">' +
+//                '<select class="form-control" ng-disabled="dataSetColumn.expression?true:false" ng-model="dataSetColumn.columnName">' +
+//                '<option ng-if="!dataSetColumn.functionName && !dataSetColumn.expression" ng-repeat="dataSetColumn in dataSetColumns" value={{dataSetColumn.fieldName}}>' +
+//                '{{dataSetColumn.fieldName}}' +
+//                '</option>' +
+//                '</select>' +
+//                '</div>' +
+//                '<div class="col-md-1">' +
+//                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
+//                '</div>' +
+//                '</div>' +
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-8">' +
