@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -32,6 +36,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DashboardTemplate.findById", query = "SELECT d FROM DashboardTemplate d WHERE d.id = :id")
     , @NamedQuery(name = "DashboardTemplate.findByTemplateName", query = "SELECT d FROM DashboardTemplate d WHERE d.templateName = :templateName")})
 public class DashboardTemplate implements Serializable {
+
+    @OneToMany(mappedBy = "templateId")
+    private Collection<TemplateTabs> templateTabsCollection;
+    @OneToMany(mappedBy = "templateId")
+    private Collection<DashboardTabs> dashboardTabsCollection;
+    @OneToMany(mappedBy = "templateId")
+    private Collection<AgencyProduct> agencyProductCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -48,9 +59,6 @@ public class DashboardTemplate implements Serializable {
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    @ManyToOne
-    private Account accountId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
@@ -94,14 +102,6 @@ public class DashboardTemplate implements Serializable {
         this.agencyId = agencyId;
     }
 
-    public Account getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Account accountId) {
-        this.accountId = accountId;
-    }
-
     public VbUser getUserId() {
         return userId;
     }
@@ -133,6 +133,36 @@ public class DashboardTemplate implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.DashboardTemplate[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<TemplateTabs> getTemplateTabsCollection() {
+        return templateTabsCollection;
+    }
+
+    public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
+        this.templateTabsCollection = templateTabsCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTabs> getDashboardTabsCollection() {
+        return dashboardTabsCollection;
+    }
+
+    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
+        this.dashboardTabsCollection = dashboardTabsCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyProduct> getAgencyProductCollection() {
+        return agencyProductCollection;
+    }
+
+    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
+        this.agencyProductCollection = agencyProductCollection;
     }
 
 }

@@ -23,7 +23,11 @@
         z-index: 9999;
     }
     .saveTemplate{
-        left: -39px;
+        min-width: 110px !important;
+    }
+    input.templateInput{
+        margin-top: 5px !important;
+        padding: 0px 2px!important;
     }
 </style>
 <div>
@@ -54,18 +58,23 @@
                             </ui-select>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-xs" ng-click="updateTemplate(tab)">Save</button>
+                            <button type="button" class="btn btn-default btn-xs" ng-click="updateTemplate(template)">Save</button>
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                            <ul class="dropdown-menu saveTemplate">
-                                <li><input class="form-control" type="text" ng-model="tab.templateName"></li>
-                                <li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li><!--
+                            <div class="dropdown-menu saveTemplate">
+                                <div class="col-md-12"> 
+                                    <div class="form-group">
+                                        <input class="form-control templateInput col-md-8" type="text" ng-model="template.templateName">
+                                        <button class="btn btn-success btn-xs" ng-click="saveTemplate(template);">SaveAs</button>
+                                    </div>
+                                </div>
+                                <!--<li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li>
                                 <li><a href="#">Something else here</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#">Separated link</a></li>-->
-                            </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

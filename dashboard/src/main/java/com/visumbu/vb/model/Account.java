@@ -41,6 +41,9 @@ import org.hibernate.annotations.Type;
 public class Account implements Serializable {
 
     @OneToMany(mappedBy = "accountId")
+    private Collection<DashboardTabs> dashboardTabsCollection;
+
+    @OneToMany(mappedBy = "accountId")
     private Collection<DashboardTemplate> dashboardTemplateCollection;
 
     @OneToMany(mappedBy = "accountId")
@@ -169,6 +172,16 @@ public class Account implements Serializable {
 
     public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
         this.dashboardTemplateCollection = dashboardTemplateCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTabs> getDashboardTabsCollection() {
+        return dashboardTabsCollection;
+    }
+
+    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
+        this.dashboardTabsCollection = dashboardTabsCollection;
     }
 
 }

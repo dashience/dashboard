@@ -58,6 +58,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -120,8 +121,7 @@ public class UiController extends BaseController {
     public @ResponseBody
     DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @PathVariable Integer accountId, @RequestBody DashboardTabs dashboardTabs) {
         dashboardTabs.setAgencyProductId(uiService.getAgencyProductById(agencyProductId));
-        List<Account> account = uiService.getAccountById(accountId);
-        dashboardTabs.setAccountId(account.get(0));
+        dashboardTabs.setAccountId(uiService.getAccountById(accountId));
         VbUser user = userService.findByUsername(getUser(request));
         dashboardTabs.setUserId(user);
         return uiService.createDashboardTabs(dashboardTabs);
@@ -558,7 +558,9 @@ public class UiController extends BaseController {
     @RequestMapping(value = "getAccount/{id}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
-        return uiService.getAccountById(id);
+        List<Account> accounts = new ArrayList<>();
+        accounts.add(uiService.getAccountById(id));
+        return accounts;
     }
 
     @RequestMapping(value = "userAccountByUser", method = RequestMethod.GET, produces = "application/json")
@@ -683,17 +685,11 @@ public class UiController extends BaseController {
         return timezones;
     }
 
-    @RequestMapping(value = "saveTemplate/{accountId}/{productId}", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "saveTemplate/{productId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTemplate createDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate, @PathVariable Integer accountId, @PathVariable Integer productId) {
+    DashboardTemplate createDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplateBean dashboardTemplate, @PathVariable Integer productId) {
         VbUser user = userService.findByUsername(getUser(request));
-        dashboardTemplate.setUserId(user);
-        AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
-        dashboardTemplate.setAgencyProductId(agencyProduct);
-        List<Account> account = uiService.getAccountById(accountId);
-        dashboardTemplate.setAccountId(account.get(0));
-        dashboardTemplate.setAgencyId(agencyProduct.getAgencyId());
-        return uiService.createDashboardTemplate(dashboardTemplate, user.getId(), accountId, productId);
+        return uiService.createDashboardTemplate(dashboardTemplate, user, productId);
     }
 
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")

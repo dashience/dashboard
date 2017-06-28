@@ -287,19 +287,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.editedItem = null;
     };
     $scope.templateId = null;
-    $scope.getTemplateId = function () {
-        $http.get('admin/ui/getTemplateId/' + $stateParams.accountId + '/' + $stateParams.productId).success(function (response) {
-            if (!response) {
-                return;
-            } else {
-                $scope.templateId = response.id;
-                $scope.templateName = response.templateName;
-            }
-        })
-    }
     //save Template
     $scope.saveTemplate = function (tab) {
-        console.log(tab.templateName);
+        console.log(tab);
 
         var data = {
             id: tab.templateId ? tab.templateId : null,
@@ -313,33 +303,34 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     };
     $scope.updateTemplate = function (tab) {
-        $http.get('admin/ui/getTemplateId/' + $stateParams.accountId + '/' + $stateParams.productId).success(function (response) {
-            console.log(response);
-            if (response.length === 0) {
-                var dialog = bootbox.dialog({
-                    title: 'Alert',
-                    message: "You Should Save First"
-                });
-                dialog.init(function () {
-                    setTimeout(function () {
-                        dialog.modal('hide');
-                    }, 2000);
-                });
-                return;
-            } else {
-                $scope.templateId = response[0].id;
-                $scope.templateName = response[0].templateName;
-            }
-        })
+        console.log(tab)
+//        $http.get('admin/ui/getTemplateId/' + $stateParams.accountId + '/' + $stateParams.productId).success(function (response) {
+//            console.log(response);
+//            if (response.length === 0) {
+//                var dialog = bootbox.dialog({
+//                    title: 'Alert',
+//                    message: "You Should Save First"
+//                });
+//                dialog.init(function () {
+//                    setTimeout(function () {
+//                        dialog.modal('hide');
+//                    }, 2000);
+//                });
+//                return;
+//            } else {
+//                $scope.templateId = response[0].id;
+//                $scope.templateName = response[0].templateName;
+//            }
+//        })
         var data = {
             id: $scope.templateId,
             templateName: $scope.templateName,
         }
-        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
-            $scope.tab = "";
-            $scope.templateId = "";
-            getAllTemplate();
-        });
+//        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
+//            $scope.tab = "";
+//            $scope.templateId = "";
+//            getAllTemplate();
+//        });
     }
 
 })

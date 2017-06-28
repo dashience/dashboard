@@ -9,6 +9,7 @@ import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
@@ -32,6 +33,7 @@ import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
@@ -679,7 +681,7 @@ public class UiService {
         return userAccount;
     }
 
-    public List<Account> getAccountById(Integer id) {
+    public Account getAccountById(Integer id) {
         return uiDao.getAccountById(id);
     }
 
@@ -970,44 +972,32 @@ public class UiService {
         return uiDao.deleteJoinDataSetConditionById(conditionId, joinDataSetId);
     }
 
-    public DashboardTemplate createDashboardTemplate(DashboardTemplate template, Integer userId, Integer accountId, Integer productId) {
-
-        DashboardTemplate dashboardTemplate = new DashboardTemplate();
-        if (template.getId() != null) {
-            dashboardTemplate.setId(template.getId());
-            dashboardTemplate.setTemplateName(template.getTemplateName());
-            dashboardTemplate.setAgencyId(template.getAgencyId());
-            dashboardTemplate.setAgencyProductId(template.getAgencyProductId());
-            dashboardTemplate.setAccountId(template.getAccountId());
-            dashboardTemplate.setUserId(template.getUserId());
-            uiDao.saveOrUpdate(dashboardTemplate);
+    public DashboardTemplate createDashboardTemplate(DashboardTemplateBean template, VbUser userId, Integer productId) {
+        Integer templateId = template.getId();
+        DashboardTemplate dashboardTemplate;
+        if (templateId != null) {
+            dashboardTemplate = uiDao.getDashboardTemplateById(templateId);
         } else {
-            dashboardTemplate.setTemplateName(template.getTemplateName());
-            dashboardTemplate.setAgencyId(template.getAgencyId());
-            dashboardTemplate.setAgencyProductId(template.getAgencyProductId());
-            dashboardTemplate.setAccountId(template.getAccountId());
-            dashboardTemplate.setUserId(template.getUserId());
-            uiDao.saveOrUpdate(dashboardTemplate);
+            dashboardTemplate = new DashboardTemplate();
+            dashboardTemplate.setAgencyId(userId.getAgencyId());
+            dashboardTemplate.setUserId(userId);
+            dashboardTemplate.setAgencyProductId(uiDao.getAgencyProductById(productId));
         }
-        List<DashboardTabs> dashboardTabList = uiDao.getDashboardTabsByProductId(userId, accountId, productId);
-        if (dashboardTabList.size() > 0) {
-            for (Iterator<DashboardTabs> iterator = dashboardTabList.iterator(); iterator.hasNext();) {
-                DashboardTabs dashboardTabs = new DashboardTabs();
-                DashboardTabs dashboardTab = iterator.next();
-                dashboardTabs.setAccountId(dashboardTab.getAccountId());
-                dashboardTabs.setAgencyProductId(dashboardTab.getAgencyProductId());
-                dashboardTabs.setCreatedTime(dashboardTab.getCreatedTime());
-                dashboardTabs.setDashboardId(dashboardTab.getDashboardId());
-                dashboardTabs.setId(dashboardTab.getId());
-                dashboardTabs.setModifiedTime(dashboardTab.getModifiedTime());
-                dashboardTabs.setRemarks(dashboardTab.getRemarks());
-                dashboardTabs.setStatus(dashboardTab.getStatus());
-                dashboardTabs.setTabName(dashboardTab.getTabName());
-                dashboardTabs.setTabOrder(dashboardTab.getTabOrder());
-                dashboardTabs.setTemplateId(dashboardTemplate);
-                dashboardTabs.setUserId(dashboardTab.getUserId());
-                uiDao.saveOrUpdate(dashboardTabs);
-            }
+        dashboardTemplate.setTemplateName(template.getTemplateName());
+        uiDao.saveOrUpdate(dashboardTemplate);
+
+        String[] tabs = template.getTabIds().split(",");
+
+        uiDao.deleteTemplateTabs(dashboardTemplate);
+        for (int i = 0; i < tabs.length; i++) {
+            String tabIdStr = tabs[i];
+            Integer tabId = Integer.parseInt(tabIdStr);
+            DashboardTabs dashboardTab = uiDao.getTabById(tabId);
+            TemplateTabs templateTab = new TemplateTabs();
+            templateTab.setTabId(dashboardTab);
+            templateTab.setTemplateId(dashboardTemplate);
+            templateTab.setUserId(userId);
+            uiDao.saveOrUpdate(templateTab);
         }
         return dashboardTemplate;
     }

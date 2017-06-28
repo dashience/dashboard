@@ -653,11 +653,9 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<Account> getAccountById(Integer id) {
-        String queryStr = "select d from Account d where d.id = :accountId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("accountId", id);
-        return query.list();
+    public Account getAccountById(Integer id) {
+        Account account = (Account) sessionFactory.getCurrentSession().get(Account.class, id);
+        return account;
     }
 
     public List<JoinDataSetCondition> getJoinDataSetConditionById(Integer id) {
@@ -743,5 +741,17 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         //query.setParameter("agencyId", agencyId);
         return query.list();
+    }
+
+    public DashboardTemplate getDashboardTemplateById(Integer templateId) {
+        DashboardTemplate dashboardTemplate = (DashboardTemplate) sessionFactory.getCurrentSession().get(DashboardTemplate.class, templateId);
+        return dashboardTemplate;
+    }
+
+    public void deleteTemplateTabs(DashboardTemplate dashboardTemplate) {
+        String queryStr = "delete FROM DashboardTemplate d where d.templateId = :templateId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("templateId", dashboardTemplate);
+        query.executeUpdate();
     }
 }
