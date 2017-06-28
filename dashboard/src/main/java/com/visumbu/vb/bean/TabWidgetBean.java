@@ -74,6 +74,7 @@ public class TabWidgetBean {
     private String timeSegment;
     private String productSegment;
     private String networkType;
+    private Integer templateUserId;
 
     public Integer getId() {
         return id;
@@ -475,6 +476,14 @@ public class TabWidgetBean {
 
     public void setNetworkType(String networkType) {
         this.networkType = networkType;
+    }
+
+    public Integer getTemplateUserId() {
+        return templateUserId;
+    }
+
+    public void setTemplateUserId(Integer templateUserId) {
+        this.templateUserId = templateUserId;
     }
 
     @Override

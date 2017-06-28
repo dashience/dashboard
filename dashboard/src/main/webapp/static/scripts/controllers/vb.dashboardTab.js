@@ -1,6 +1,7 @@
 app.controller('UiController', function ($scope, $http, $stateParams, $state, $filter, $cookies, $timeout, localStorageService, $rootScope) {
     $scope.userName = $cookies.getObject("username");
     $scope.permission = localStorageService.get("permission");
+    $scope.isAdmin = $cookies.getObject("isAdmin");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
 //    $scope.templateId = $stateParams.templateId;
@@ -292,7 +293,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 return;
             } else {
                 $scope.templateId = response.id;
-                $scope.templateName=response.templateName;
+                $scope.templateName = response.templateName;
             }
         })
     }
@@ -301,7 +302,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         console.log(tab.templateName);
 
         var data = {
-            id: tab.templateId?tab.templateId:null,
+            id: tab.templateId ? tab.templateId : null,
             templateName: tab.templateName,
         }
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
@@ -311,7 +312,27 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         });
 
     };
-    $scope.updateTemplate=function(tab){
+    $scope.updateTemplate = function (tab) {
+        $http.get('admin/ui/getTemplateId/' + $stateParams.accountId + '/' + $stateParams.productId).success(function (response) {
+            console.log(response);
+            if (response.length === 0) {
+                alert("if")
+                var dialog = bootbox.dialog({
+                    title: 'Alert',
+                    message: "You Should Save First"
+                });
+                dialog.init(function () {
+                    setTimeout(function () {
+                        dialog.modal('hide');
+                    }, 2000);
+                });
+                return;
+            } else {
+                alert("else")
+                $scope.templateId = response[0].id;
+                $scope.templateName = response[0].templateName;
+            }
+        })
         var data = {
             id: $scope.templateId,
             templateName: $scope.templateName,

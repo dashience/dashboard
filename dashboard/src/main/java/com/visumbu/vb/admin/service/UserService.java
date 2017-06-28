@@ -96,6 +96,7 @@ public class UserService {
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
                 System.out.println(loginUserBean);
+                loginUserBean.setId(user.getId());
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
                 if (user != null) {

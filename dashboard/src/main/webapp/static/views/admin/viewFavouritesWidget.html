@@ -146,7 +146,7 @@
 <div class="row content">
     <div ng-repeat="favouritesWidget in favouritesWidgets">
         <div class="col-md-{{favouritesWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
-            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
+            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="favouritesWidget.widgetId">
                 <div class="panel-heading">
                     <div class="panel-tools">
                         <a title="Favourites" ng-click="toggleFavourite(favouritesWidget, $index)">

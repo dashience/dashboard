@@ -1,4 +1,5 @@
-app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state, $rootScope) {
+app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state,
+        $rootScope) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -354,6 +355,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         } else {
             dataSourcePassword = '';
         }
+        $scope.columnYAxis = [];
         $http.get(url + 'connectionUrl=' + dataSet.dataSourceId.connectionString +
                 "&dataSetId=" + dataSet.id +
                 "&accountId=" + $stateParams.accountId +
@@ -500,10 +502,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.previewChart(chartType, widget)
         }, 50);
     };
-    $scope.selectY1Axis = function (widget, y1data) {
-        var groupVar = [];
-        if (widget.chartType == 'stackedbar') {
-            $scope.editChartType = null;
+    $scope.selectY1Axis = function (widget, y1data, axis) {
+//        alert(axis);
+        $scope.editChartType=null;
+        console.log("****************");
+        console.log(widget);
+        console.log(y1data);
+        angular.forEach($scope.columnYAxis, function (val, key) {
             angular.forEach(y1data, function (value, key) {
                 if (!value) {
                     return;
@@ -529,12 +534,8 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                     }
                 }
             });
-            var chartType = widget;
-            $timeout(function () {
-                $scope.previewChart(chartType, widget)
-            }, 50);
-        }
-        $scope.editChartType = null;
+        });
+
         angular.forEach(y1data, function (value, key) {
             if (!value) {
                 return;
@@ -544,9 +545,13 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 if (val.fieldName === value.fieldName) {
                     exists = true;
                     val.yAxis = 1;
+//                        val.groupField = widget.columns.indexOf(val.fieldName) + 1;
+                    val.groupField = y1data.indexOf(value) + 1;
+                    console.log(val.groupField);
                 } else {
                     if (val.fieldName == y1data.removeItem) {
                         val.yAxis = null;
+                        val.groupField = null;
                     }
                 }
             });
@@ -557,6 +562,65 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 }
             }
         });
+        console.log(widget.columns)
+        console.log($scope.columnYAxis);
+//        var groupVar = [];
+//        if (widget.chartType == 'stackedbar') {
+//            $scope.editChartType = null;
+//            angular.forEach(y1data, function (value, key) {
+//                if (!value) {
+//                    return;
+//                }
+//                var exists = false;
+//                angular.forEach(widget.columns, function (val, key) {
+//                    if (val.fieldName === value.fieldName) {
+//                        exists = true;
+//                        val.yAxis = 1;
+////                        val.groupField = widget.columns.indexOf(val.fieldName) + 1;
+//                        val.groupField = y1data.indexOf(value) + 1;
+//                        console.log(val.groupField);
+//                    } else {
+//                        if (val.fieldName == y1data.removeItem) {
+//                            val.yAxis = null;
+//                            val.groupField = null;
+//                        }
+//                    }
+//                });
+//                if (exists == false) {
+//                    if (value.displayName) {
+//                        value.yAxis = 1;
+//                        widget.columns.push(value);
+//                    }
+//                }
+//            });
+//            var chartType = widget;
+//            $timeout(function () {
+//                $scope.previewChart(chartType, widget)
+//            }, 50);
+//        }
+//        $scope.editChartType = null;
+//        angular.forEach(y1data, function (value, key) {
+//            if (!value) {
+//                return;
+//            }
+//            var exists = false;
+//            angular.forEach(widget.columns, function (val, key) {
+//                if (val.fieldName === value.fieldName) {
+//                    exists = true;
+//                    val.yAxis = 1;
+//                } else {
+//                    if (val.fieldName == y1data.removeItem) {
+//                        val.yAxis = null;
+//                    }
+//                }
+//            });
+//            if (exists == false) {
+//                if (value.displayName) {
+//                    value.yAxis = 1;
+//                    widget.columns.push(value);
+//                }
+//            }
+//        });
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -564,11 +628,30 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     };
     $scope.selectY2Axis = function (widget, y2data) {
         $scope.editChartType = null;
+
+        console.log("****************");
+        console.log(widget);
+        console.log(y2data);
+//        $scope.collectionFields = widget.columns;
+        angular.forEach(widget.columns, function (val, key) {
+            angular.forEach(y2data, function (value, key) {
+                console.log(value.fieldName);
+                if (val.fieldName === value.fieldName) {
+                    var index = $scope.collectionFields.indexOf(val);
+                    $scope.collectionFields.splice(index, 1);
+                }
+            });
+        });
+
+        console.log("********************************************");
+        console.log($scope.collectionFields);
+
         angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
             }
             var exists = false;
+//            widget.columns = $scope.collectionFields;
             angular.forEach(widget.columns, function (val, key) {
                 if (val.fieldName === value.fieldName) {
                     exists = true;
@@ -586,6 +669,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
                 }
             }
         });
+        console.log(widget.columns)
         var chartType = widget;
         $timeout(function () {
             $scope.previewChart(chartType, widget)
@@ -610,8 +694,17 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             return;
         }
     };
+
+//    $scope.removeObject=function(obj,axis){
+//      alert(axis);
+//      console.log("remove object axis");
+//      cosnole.log(obj);
+//    };
     $scope.removedByY1Column = function (widget, column, yAxisItems) {
         $scope.editChartType = null;
+
+        $scope.columnYAxis.push(column);
+        console.log($scope.columnYAxis);
 
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
@@ -888,6 +981,11 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         widget.lastNmonths = "";
         widget.lastNyears = "";
     };
+
+
+
+
+
 });
 app.filter('xAxis', [function () {
         return function (chartXAxis) {
@@ -1436,3 +1534,4 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
 
     };
 });
+

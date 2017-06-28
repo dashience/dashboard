@@ -1,9 +1,5 @@
 
 <style>
-    .popover {
-        width: 304px;
-        max-width: 100%;
-    }
     .select-template {
         float: left;
         height: 52px;
@@ -26,56 +22,51 @@
         position: relative;
         z-index: 9999;
     }
-
-
-
+    .saveTemplate{
+        left: -39px;
+    }
 </style>
 <div>
     <div class="normalheader transition animated fadeIn">
         <div class="hpanel">
             <div class="panel-body header-title">
                 <div id="hbreadcrumb" class="pull-right">
-                    <div class="col-sm-11">
-                        <!--                        <div class="col-sm-5">
-                                                                                <button class="btn btn-default btn-xs" ns-popover=""
-                                                                                        ns-popover-template="popover"
-                                                                                        ns-popover-trigger="click"
-                                                                                        ns-popover-placement="bottom"
-                                                                                        ns-popover-theme="ns-popover-tooltip-theme" 
-                                                                                        ns-popover-timeout="1000" 
-                                                                                        ns-popover-hide-on-inside-click="false" 
-                                                                                        ns-popover-hide-on-outside-click="true" 
-                                                                                        ns-popover-hide-on-button-click="true" ng-click="getTemplateId();">
-                                                                                    SaveAsTemplate
-                                                                                </button>
-                                                                            </div>-->
-                        <div class="col-sm-12">
-                            <div class="form-group select-template">
-                                <ui-select ng-model="selectTemplate.selected" on-select="getTemplateBYId(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize">
-                                    <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
-                                    <ui-select-choices repeat="template in templates | filter: $select.search">
-                                        <span ng-bind-html="template.templateName | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-xs" ng-click="getTemplateId();updateTemplate(tab)">Save</button>
-                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><input class="form-control" type="text" ng-model="tab.templateName"></li>
-                                    <li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li><!--
-                                    <li><a href="#">Something else here</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>-->
-                                </ul>
-                            </div>
-
-
+                    <!--                        <div class="col-sm-5">
+                                                        <button class="btn btn-default btn-xs" ns-popover=""
+                                                                ns-popover-template="popover"
+                                                                ns-popover-trigger="click"
+                                                                ns-popover-placement="bottom"
+                                                                ns-popover-theme="ns-popover-tooltip-theme" 
+                                                                ns-popover-timeout="1000" 
+                                                                ns-popover-hide-on-inside-click="false" 
+                                                                ns-popover-hide-on-outside-click="true" 
+                                                                ns-popover-hide-on-button-click="true" ng-click="getTemplateId();">
+                                                            SaveAsTemplate
+                                                        </button>
+                                                    </div>-->
+                    <div class="col-sm-12" ng-if="isAdmin != 'admin'">
+                        <div class="form-group select-template">
+                            <ui-select ng-model="selectTemplate.selected" on-select="getTemplateBYId(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize">
+                                <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
+                                <ui-select-choices repeat="template in templates | filter: $select.search">
+                                    <span ng-bind-html="template.templateName | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
-
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs" ng-click="updateTemplate(tab)">Save</button>
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu saveTemplate">
+                                <li><input class="form-control" type="text" ng-model="tab.templateName"></li>
+                                <li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li><!--
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Separated link</a></li>-->
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <h2 class="font-bold m-b-xs">

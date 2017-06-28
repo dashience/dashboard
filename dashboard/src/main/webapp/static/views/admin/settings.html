@@ -1,3 +1,11 @@
+<style>
+    table{
+        table-layout: fixed;
+    }
+    td{
+        word-wrap:break-word
+    }
+</style>
 <div class="normalheader transition animated fadeIn">
     <div class="hpanel">
         <div class="panel-body header-title">
@@ -14,17 +22,59 @@
     <div class="row">
         <div class="col-lg-12 data-table-set">
             <div class="panel-group" id="accordion">
-                <div class="panel panel-default" ng-repeat="group in productArray">
+                <!--<button class="btn btn-success btn-xs" ng-click="addSettings()"><i class="fa fa-plus"></i></button>-->
+                <div ng-hide="showSettings">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label>Group Name</label>
+                            <div>
+                                <input type="text" class="form-control" ng-model="settings.groupName" placeholder="Group Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Property Name</label>
+                            <div>
+                                <input type="text" class="form-control" ng-model="settings.propertyName" placeholder="Property Name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Property Type</label>
+                            <div>
+                                <input type="text" class="form-control" ng-model="settings.propertyType" placeholder="Property Name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Property Value</label>
+                            <div>
+                                <input type="text" class="form-control" ng-model="settings.propertyValue" placeholder="Property Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Remarks</label>
+                            <div>
+                                <textarea class="form-control" ng-model="settings.remarks" placeholder="Remark" rows="1" style="min-height: 100px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group pull-right">
+                            <button class="btn btn-info" ng-click="saveSettings(settings)">Save</button>
+                            <button class="btn btn-warning" ng-click="clearSettings()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel panel-default" ng-repeat="group in productArray" ng-show="showSettings">
                     <div class="panel-heading" style="background-color: white;border-bottom: 1px solid lightgray">
+
                         <h4 class="panel-title" ng-click="getGroupName(group, files)">
                             <i class="fa fa-plus-square-o" style="cursor: pointer;" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index + 1}}"></i> 
-                             {{group}}
+                            {{group}}
                         </h4>
                     </div>
                     <div id="collapse{{$index + 1}}" class="panel-collapse collapse" style="border-bottom: 1px solid lightgray;">
                         <form name="myForm" novalidate>
                             <ul class="list-group">
-                                <li ng-if="file.groupName = 'ftp'" class="list-unstyled">
+                                <li  class="list-unstyled"> 
                                     <table class="table table-striped">
                                         <tr>
                                             <th>Property Name</th>
@@ -114,17 +164,41 @@
                                                 <td>
                                                     <div ng-show="fileList.isEdit">
                                                         <button class="btn btn-primary btn-xs" 
-                                                                ng-click="save(fileList); fileList.isEdit = false;" 
+                                                                ng-click="saveSettings(fileList); fileList.isEdit = false;" 
                                                                 ng-disabled="myForm.string{{$index + 1}}.$dirty && myForm.string{{$index + 1}}.$invalid || myForm.int{{$index + 1}}.$dirty && myForm.int{{$index + 1}}.$invalid || myForm.email{{$index + 1}}.$dirty && myForm.email{{$index + 1}}.$invalid || myForm.date{{$index + 1}}.$dirty && myForm.date{{$index + 1}}.$invalid || myForm.url{{$index + 1}}.$dirty && myForm.url{{$index + 1}}.$invalid || myForm.time{{$index + 1}}.$dirty && myForm.time{{$index + 1}}.$invalid || myForm.datetime{{$index + 1}}.$dirty && myForm.datetime{{$index + 1}}.$invalid || myForm.month{{$index + 1}}.$dirty && myForm.month{{$index + 1}}.$invalid || myForm.week{{$index + 1}}.$dirty && myForm.week{{$index + 1}}.$invalid || myForm.range{{$index + 1}}.$dirty && myForm.range{{$index + 1}}.$invalid">
                                                             <i class="fa fa-save"></i>
                                                         </button>
                                                     </div>
 
                                                     <div ng-hide="fileList.isEdit">
-                                                        <button class="btn btn-primary btn-xs" ng-click="fileList.isEdit = true">
+                                                        <button class="btn btn-primary btn-xs" 
+                                                                ng-click="fileList.isEdit = true;">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
+                                                        <!--                                                        <button class="btn btn-default btn-xs" data-toggle="modal" 
+                                                                                                                        data-target="#deletesettings{{fileList.id}}">
+                                                                                                                    <i class="fa fa-trash-o"></i></button>-->
+
                                                     </div>
+                                                    <!--                                                    <div id="deletesettings{{fileList.id}}" class="modal fade" role="dialog">
+                                                                                                            <div class="modal-dialog">
+                                                    
+                                                                                                                 Modal content
+                                                                                                                <div class="modal-content">
+                                                                                                                    <div class="modal-header">
+                                                                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                                        <h4 class="modal-title">Modal Header</h4>
+                                                                                                                    </div>
+                                                                                                                    <div class="modal-body">
+                                                                                                                        <p>Some text in the modal.</p>
+                                                                                                                    </div>
+                                                                                                                    <div class="modal-footer">
+                                                                                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                    
+                                                                                                            </div>
+                                                                                                        </div>-->
                                                 </td>
                                             </tr>
                                         </tbody>
