@@ -316,7 +316,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $http.get('admin/ui/getTemplateId/' + $stateParams.accountId + '/' + $stateParams.productId).success(function (response) {
             console.log(response);
             if (response.length === 0) {
-                alert("if")
                 var dialog = bootbox.dialog({
                     title: 'Alert',
                     message: "You Should Save First"
@@ -328,7 +327,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 });
                 return;
             } else {
-                alert("else")
                 $scope.templateId = response[0].id;
                 $scope.templateName = response[0].templateName;
             }
