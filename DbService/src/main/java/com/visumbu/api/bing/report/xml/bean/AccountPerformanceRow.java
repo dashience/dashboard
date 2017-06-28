@@ -34,6 +34,28 @@ public class AccountPerformanceRow {
     private Data phoneCalls;
     private Data dayOfWeek;
     private Data hourOfDay;
+    private Data month;
+    private Data week;
+
+    public Data getMonth() {
+        return month;
+    }
+
+    @XmlElement(name="Month")
+    public void setMonth(Data month) {
+        this.month = month;
+    }
+
+    public Data getWeek() {
+        return week;
+    }
+
+    @XmlElement(name="Week")
+    public void setWeek(Data week) {
+        this.week = week;
+    }
+    
+    
 
     public Data getHourOfDay() {
         return hourOfDay;

@@ -43,6 +43,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "WidgetColumn.findByAgregationFunction", query = "SELECT w FROM WidgetColumn w WHERE w.agregationFunction = :agregationFunction")
     , @NamedQuery(name = "WidgetColumn.findByFunctionParameters", query = "SELECT w FROM WidgetColumn w WHERE w.functionParameters = :functionParameters")
     , @NamedQuery(name = "WidgetColumn.findByFieldType", query = "SELECT w FROM WidgetColumn w WHERE w.fieldType = :fieldType")
+    , @NamedQuery(name = "WidgetColumn.findByExpression", query = "SELECT w FROM WidgetColumn w WHERE w.expression = :expression")
     , @NamedQuery(name = "WidgetColumn.findByBaseFieldName", query = "SELECT w FROM WidgetColumn w WHERE w.baseFieldName = :baseFieldName")
     , @NamedQuery(name = "WidgetColumn.findByFieldGenerationFields", query = "SELECT w FROM WidgetColumn w WHERE w.fieldGenerationFields = :fieldGenerationFields")
     , @NamedQuery(name = "WidgetColumn.findByRemarks", query = "SELECT w FROM WidgetColumn w WHERE w.remarks = :remarks")})
@@ -89,6 +90,9 @@ public class WidgetColumn implements Serializable {
     @Column(name = "field_type")
     private String fieldType;
     @Size(max = 1024)
+    @Column(name = "expression")
+    private String expression;
+    @Size(max = 1024)
     @Column(name = "base_field_name")
     private String baseFieldName;
     @Lob
@@ -123,6 +127,8 @@ public class WidgetColumn implements Serializable {
     @Size(max = 255)
     @Column(name = "combination_type")
     private String combinationType;
+    @Column(name = "derived_id")
+    private Integer derivedId;
     
     @Size(max = 128)
     @Column(name = "group_field")
@@ -239,6 +245,14 @@ public class WidgetColumn implements Serializable {
         this.fieldType = fieldType;
     }
 
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+    
     public String getBaseFieldName() {
         return baseFieldName;
     }
@@ -334,7 +348,14 @@ public class WidgetColumn implements Serializable {
     public void setCombinationType(String combinationType) {
         this.combinationType = combinationType;
     }
-       
+
+    public Integer getDerivedId() {
+        return derivedId;
+    }
+
+    public void setDerivedId(Integer derivedId) {
+        this.derivedId = derivedId;
+    } 
     
     @XmlTransient
     @JsonIgnore

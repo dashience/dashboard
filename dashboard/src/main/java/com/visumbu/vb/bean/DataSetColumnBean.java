@@ -5,18 +5,21 @@
  */
 package com.visumbu.vb.bean;
 
+import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.VbUser;
 import java.util.List;
 
 /**
  *
  * @author deeta1
  */
-public class DatasetColumnBean {
+public class DataSetColumnBean {
 
-    private Integer Id;
+    private Integer id;
     private String fieldName;
     private String displayName;
     private String fieldType;
+    private String type;
     private String status;
     private String expression;
     private String functionName;
@@ -30,8 +33,14 @@ public class DatasetColumnBean {
     private Integer lastNmonths;
     private Integer lastNweeks;
     private Integer lastNyears;
-    private Integer datasetId;
-    private List<DatasetColumnBean> tableColumns;
+    private Integer dataSetId;
+    private Integer sortPriority;
+    private String agregationFunction;
+    private Integer groupPriority;
+    private String sortOrder;
+    private List<DataSetColumnBean> tableColumns;
+    private VbUser userId;
+    private TabWidget widgetId;
 
     public String getFieldName() {
         return fieldName;
@@ -49,12 +58,12 @@ public class DatasetColumnBean {
         this.displayName = displayName;
     }
 
-    public String getFieldType() {
-        return fieldType;
+    public String getType() {
+        return type;
     }
 
-    public void setFieldType(String fieldType) {
-        this.fieldType = fieldType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getStatus() {
@@ -160,34 +169,90 @@ public class DatasetColumnBean {
     public void setLastNyears(Integer lastNyears) {
         this.lastNyears = lastNyears;
     }
-    
-    public Integer getDatasetId() {
-        return datasetId;
+
+    public Integer getDataSetId() {
+        return dataSetId;
     }
 
-    public void setDatasetId(Integer datasetId) {
-        this.datasetId = datasetId;
+    public void setDataSetId(Integer dataSetId) {
+        this.dataSetId = dataSetId;
     }
 
-    public List<DatasetColumnBean> getTableColumns() {
+    public List<DataSetColumnBean> getTableColumns() {
         return tableColumns;
     }
 
-    public void setTableColumns(List<DatasetColumnBean> tableColumns) {
+    public void setTableColumns(List<DataSetColumnBean> tableColumns) {
         this.tableColumns = tableColumns;
     }
 
-    public Integer getId() {
-        return Id;
+    public Integer getSortPriority() {
+        return sortPriority;
     }
 
-    public void setId(Integer Id) {
-        this.Id = Id;
+    public void setSortPriority(Integer sortPriority) {
+        this.sortPriority = sortPriority;
+    }
+
+    public String getAgregationFunction() {
+        return agregationFunction;
+    }
+
+    public void setAgregationFunction(String agregationFunction) {
+        this.agregationFunction = agregationFunction;
+    }
+
+    public Integer getGroupPriority() {
+        return groupPriority;
+    }
+
+    public void setGroupPriority(Integer groupPriority) {
+        this.groupPriority = groupPriority;
+    }
+
+    public String getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(String sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public String getFieldType() {
+        return fieldType;
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public VbUser getUserId() {
+        return userId;
+    }
+
+    public void setUserId(VbUser userId) {
+        this.userId = userId;
+    }   
+
+    public TabWidget getWidgetId() {
+        return widgetId;
+    }
+
+    public void setWidgetId(TabWidget widgetId) {
+        this.widgetId = widgetId;
     }
 
     @Override
     public String toString() {
-        return "DatasetColumnBean{" + "Id=" + Id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", status=" + status + ", functionName=" + functionName + ", expression=" + expression + ", displayFormat=" + displayFormat + ", datasetId=" + datasetId + ", tableColumns=" + tableColumns + '}';
+        return "DatasetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", type=" + type + ", status=" + status + ", expression=" + expression + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", displayFormat=" + displayFormat + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", dataSetId=" + dataSetId + ", sortPriority=" + sortPriority + ", tableColumns=" + tableColumns + '}';
     }
 
 }

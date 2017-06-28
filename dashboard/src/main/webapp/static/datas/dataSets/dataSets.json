@@ -1,0 +1,1309 @@
+{
+    "bing": [{
+            "type": "accountPerformance",
+            "name": "Account Performance",
+            "timeSegments": [
+                {
+                    "type": "daily",
+                    "name": "Daily"
+                },
+                {
+                    "type": "monthly",
+                    "name": "Monthly"
+                },
+                {
+                    "type": "weekly",
+                    "name": "Weekly"
+                },
+                {
+                    "type": "dayOfWeek",
+                    "name": "Day Of Week"
+                },
+                {
+                    "type": "hourOfDay",
+                    "name": "Hour Of Day"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "device",
+                    "name": "Device"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "campaignPerformance",
+            "name": "Campaign Performance",
+            "timeSegments": [
+                {
+                    "type": "daily",
+                    "name": "Daily"
+                },
+                {
+                    "type": "monthly",
+                    "name": "Monthly"
+                },
+                {
+                    "type": "weekly",
+                    "name": "Weekly"
+                },
+
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "device",
+                    "name": "Device"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "adGroupPerformance",
+            "name": "Ad Group Performance",
+            "timeSegments": [
+                {
+                    "type": "daily",
+                    "name": "Daily"
+                },
+                {
+                    "type": "monthly",
+                    "name": "Monthly"
+                },
+                {
+                    "type": "weekly",
+                    "name": "Weekly"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "adPerformance",
+            "name": "Ad Performance",
+            "timeSegments": [
+                {
+                    "type": "daily",
+                    "name": "Daily"
+                },
+                {
+                    "type": "monthly",
+                    "name": "Monthly"
+                },
+                {
+                    "type": "weekly",
+                    "name": "Weekly"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "geoPerformance",
+            "name": "Geo Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+
+                {
+                    "type": "zip",
+                    "name": "Zip"
+                },
+                {
+                    "type": "city",
+                    "name": "City"
+                }
+            ]
+        }
+    ],
+    "facebook": [{
+            "type": "accountPerformance",
+            "name": "Account Performance",
+            "timeSegments": [
+                {
+                    "type": "day",
+                    "name": "Day"
+                },
+                {
+                    "type": "week",
+                    "name": "Week"
+                },
+                {
+                    "type": "month",
+                    "name": "Month"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "device",
+                    "name": "Device"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "campaignPerformance",
+            "name": "Campaign Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "device",
+                    "name": "Device"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "adPerformance",
+            "name": "Ad Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "adSetPerformance",
+            "name": "Ad Set Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "agePerformance",
+            "name": "Age Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "age",
+                    "name": "Age"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, 
+        {
+            "type": "genderPerformance",
+            "name": "Gender Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "gender",
+                    "name": "Gender"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, 
+        {
+            "type": "postPerformance",
+            "name": "Post Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "engagements",
+            "name": "Engagements",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, 
+        {
+            "type": "reach",
+            "name": "Reach",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, 
+        {
+            "type": "pageLikes",
+            "name": "Page Likes",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "city",
+                    "name": "City"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, 
+        {
+            "type": "pageViews",
+            "name": "Page Views",
+            "timeSegments": [
+                {
+                    "type": "day",
+                    "name": "Day"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "device",
+                    "name": "Device"
+                },
+                {
+                    "type": "gender",
+                    "name": "Gender"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, 
+        {
+            "type": "pageReactions",
+            "name": "Page Reaction",
+            "timeSegments": [
+                {
+                    "type": "day",
+                    "name": "Day"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
+    "analytics": [
+        {
+            "type": "overallPerformance",
+            "name": "Overall Performance",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:yearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "ga:dateHour",
+                    "name": "Hour of Week"
+                },
+                {
+                    "type": "ga:dayOfWeekName",
+                    "name": "Day of Week"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "ga:browser",
+                    "name": "Browser"
+                },
+                {
+                    "type": "ga:operatingSystem",
+                    "name": "OS"
+                },
+                {
+                    "type": "ga:deviceCategory",
+                    "name": "Device"
+                },
+                {
+                    "type": "ga:source",
+                    "name": "Source"
+                },
+                {
+                    "type": "ga:previousPagePath",
+                    "name": "Previous Page Path"
+                },
+                {
+                    "type": "ga:secondPagePath",
+                    "name": "Next Page Path"
+                },
+                {
+                    "type": "ga:city",
+                    "name": "City"
+                },
+                {
+                    "type": "ga:country",
+                    "name": "Country"
+                },
+                {
+                    "type": "ga:metro",
+                    "name": "Metro"
+                },
+                {
+                    "type": "ga:channelGrouping",
+                    "name": "ChannelGrouping"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "referralReport",
+            "name": "Referral Report",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:yearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "ga:browser",
+                    "name": "Browser"
+                },
+                {
+                    "type": "ga:operatingSystem",
+                    "name": "OS"
+                },
+                {
+                    "type": "ga:deviceCategory",
+                    "name": "Device"
+                },
+                {
+                    "type": "ga:source",
+                    "name": "Source"
+                },
+                {
+                    "type": "ga:channelGrouping",
+                    "name": "ChannelGrouping"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "pagePerformance",
+            "name": "Page Performance",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:yearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "ga:browser",
+                    "name": "Browser"
+                },
+                {
+                    "type": "ga:operatingSystem",
+                    "name": "OS"
+                },
+                {
+                    "type": "ga:deviceCategory",
+                    "name": "Device"
+                },
+                {
+                    "type": "ga:source",
+                    "name": "Source"
+                },
+                {
+                    "type": "ga:city",
+                    "name": "City"
+                },
+                {
+                    "type": "ga:country",
+                    "name": "Country"
+                },
+                {
+                    "type": "ga:region",
+                    "name": "Region"
+                },
+                {
+                    "type": "ga:metro",
+                    "name": "Metro"
+                },
+                {
+                    "type": "ga:channelGrouping",
+                    "name": "ChannelGrouping"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "visitorsTypeReport",
+            "name": "Visitors Type Report",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:yearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "frequencyReport",
+            "name": "Frequency Report",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:yearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "goalsReport",
+            "name": "Goals Report",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:YearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "ga:dayOfWeek",
+                    "name": "Day of Week"
+                },
+                {
+                    "type": "ga:dateHour",
+                    "name": "Hour of Day"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "ga:browser",
+                    "name": "Browser"
+                },
+                {
+                    "type": "ga:operatingSystem",
+                    "name": "OS"
+                },
+                {
+                    "type": "ga:deviceCategory",
+                    "name": "Device"
+                },
+                {
+                    "type": "ga:source",
+                    "name": "Source"
+                },
+                {
+                    "type": "ga:city",
+                    "name": "City"
+                },
+                {
+                    "type": "ga:country",
+                    "name": "Country"
+                },
+                {
+                    "type": "ga:region",
+                    "name": "Region"
+                },
+                {
+                    "type": "ga:metro",
+                    "name": "Metro"
+                },
+                {
+                    "type": "ga:channelGrouping",
+                    "name": "ChannelGrouping"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "pageGoalsReport",
+            "name": "Page Goal Report",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:YearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "ga:browser",
+                    "name": "Browser"
+                },
+                {
+                    "type": "ga:operatingSystem",
+                    "name": "OS"
+                },
+                {
+                    "type": "ga:deviceCategory",
+                    "name": "Device"
+                },
+                {
+                    "type": "ga:source",
+                    "name": "Source"
+                },
+                {
+                    "type": "ga:channelGrouping",
+                    "name": "ChannelGrouping"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "eventsReport",
+            "name": "Events Report",
+            "timeSegments": [
+                {
+                    "type": "ga:date",
+                    "name": "Day"
+                },
+                {
+                    "type": "ga:isoYearIsoWeek",
+                    "name": "Week"
+                },
+                {
+                    "type": "ga:YearMonth",
+                    "name": "Month"
+                },
+                {
+                    "type": "ga:year",
+                    "name": "Year"
+                },
+                {
+                    "type": "ga:dayOfWeek",
+                    "name": "Day of Week"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "ga:browser",
+                    "name": "Browser"
+                },
+                {
+                    "type": "ga:operatingSystem",
+                    "name": "OS"
+                },
+                {
+                    "type": "ga:deviceCategory",
+                    "name": "Device"
+                },
+                {
+                    "type": "ga:source",
+                    "name": "Source"
+                },
+                {
+                    "type": "ga:eventLabel",
+                    "name": "EventLabel"
+                },
+                {
+                    "type": "ga:eventAction",
+                    "name": "EventAction"
+                },
+                {
+                    "type": "ga:channelGrouping",
+                    "name": "ChannelGrouping"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
+    "adwords": [
+        {
+            "type": "accountPerformance",
+            "name": "Account",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "HourOfDay",
+                    "name": "Hour Of The Day"
+                },
+                {
+                    "type": "DayOfWeek",
+                    "name": "Day Of Week"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "campaignPerformance",
+            "name": "Campaign",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "HourOfDay",
+                    "name": "Hour Of The Day"
+                },
+                {
+                    "type": "DayOfWeek",
+                    "name": "Day Of Week"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "adGroupPerformance",
+            "name": "AdGroup",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "keywordPerformance",
+            "name": "Keyword",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "adPerformance",
+            "name": "AdCopy",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "searchQueryReport",
+            "name": "Search Query Report",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "finalUrlReport",
+            "name": "Final URL Report",
+            "timeSegments": [
+                {
+                    "type": "Day",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "placementReport",
+            "name": "Placement Report",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "geoPerformance",
+            "name": "Geo",
+            "timeSegments": [
+                {
+                    "type": "Day",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "DayOfWeek",
+                    "name": "Day Of Week"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "RegionCriteriaId",
+                    "name": "Region"
+                },
+                {
+                    "type": "CityCriteriaId,RegionCriteriaId",
+                    "name": "City"
+                },
+                {
+                    "type": "MetroCriteriaId,RegionCriteriaId,CityCriteriaId",
+                    "name": "Metro Area"
+                },
+                {
+                    "type": "CityCriteriaId,RegionCriteriaId,MostSpecificCriteriaId",
+                    "name": "Zip"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "videoPerformance",
+            "name": "Video",
+            "timeSegments": [
+                {
+                    "type": "Date",
+                    "name": "Day"
+                },
+                {
+                    "type": "Week",
+                    "name": "Week"
+                },
+                {
+                    "type": "Month",
+                    "name": "Month"
+                },
+                {
+                    "type": "Year",
+                    "name": "Year"
+                },
+                {
+                    "type": "Quarter",
+                    "name": "Quarter"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
+    "pinterest": [
+        {
+            "type": "getTopBoards",
+            "name": "getTopBoards"
+        },
+        {
+            "type": "getTopPins",
+            "name": "getTopPins"
+        }, 
+        {
+            "type": "getOrganicData",
+            "name": "getOrganicData"
+        }
+    ]
+}
+    

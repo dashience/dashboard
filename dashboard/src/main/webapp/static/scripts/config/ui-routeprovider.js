@@ -7,10 +7,21 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 //controller: "IndexController"
             })
             .state("index.dashboard", {
-                url: "/dashboard/:accountId/:accountName/:productId",
+                url: "/dashboard/:accountId/:accountName/:productId/:templateId",
                 templateUrl: "static/views/dashboard/dashboard.html",
+                controller: "UiController"
+            })
+            .state("index.dashboardTemplate", {
+                url: "/dashboardTemplate/:accountId/:accountName/:productId/:templateId",
+                templateUrl: "static/views/dashboardTemplate/dashboardTemplate.html",
+                controller: "UiController"
             })
             .state("index.dashboard.widget", {
+                url: "/widget/:tabId?:startDate/:endDate",
+                templateUrl: "static/views/dashboard/widgets.html",
+                controller: 'WidgetController'
+            })
+            .state("index.dashboardTemplate.widget", {
                 url: "/widget/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
@@ -116,17 +127,17 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
             .state("viewPdf", {
                 url: "/viewPdf/:accountId/:accountName/:productId/:productName/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.pdf.html",
-                controller:'PdfController'
+                controller: 'PdfController'
             })
             .state("viewReportPdf", {
                 url: "/viewReportPdf/:accountId/:reportId?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.reportPdf.html",
-                controller:'ReportPdfController'
+                controller: 'ReportPdfController'
             })
             .state("viewFavouritesPdf", {
                 url: "/viewFavouritesPdf/:accountId/:favouriteName?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.favouritesPdf.html",
-                controller:'FavouritesPdfController'
+                controller: 'FavouritesPdfController'
             });
 //            .state("index.viewFavouritesWidget", {
 //                url: "/viewFavouritesWidget/:accountId/:accountName/:favouriteId/:favouriteName?:startDate/:endDate",
@@ -145,12 +156,33 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //        templateUrl: 'static/views/pdf/vb.pdf.html'});
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });
-app.run(['$window', '$rootScope', '$stateParams',
-    function ($window, $rootScope, $stateParams) {
+app.run(['$window', '$rootScope', '$stateParams', '$state',
+    function ($window, $rootScope, $stateParams, $state) {
         console.log($stateParams)
         //$rootScope.accountNameByPdf = $stateParams.accountName; 
 
         $rootScope.goBack = function () {
             $window.history.back();
-        }
-    }])
+        };
+
+        $rootScope.setParamByTemplateId = function (template) {
+            if ($stateParams.templateId != template.id) {
+                $state.go("index.dashboard.widget", {
+                    accountId: template.accountId.id,
+                    accountName: template.accountId.accountName,
+                    productId: template.agencyProductId.id,
+                    templateId: template.id,
+                    tabId: 0,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate})
+            }
+            $rootScope.setTmpIdByTab(template)
+            $stateParams.templateId = template.id;
+        };
+
+        $rootScope.setTmpIdByTab = function (template) {
+            $stateParams.templateId = template.id;
+            this.rootTemplateId = template.id;//$stateParams.templateId;
+        };
+
+    }]);

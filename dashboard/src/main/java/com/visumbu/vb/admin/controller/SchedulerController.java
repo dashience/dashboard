@@ -11,7 +11,6 @@ import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.SchedulerBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Scheduler;
-import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +58,7 @@ public class SchedulerController extends BaseController {
             System.out.println("scheduledTasks: "+scheduledTasks);
             timeService.executeTasks(scheduledTasks);
         }
+        System.out.println("scheduler"+scheduler);
         return scheduler;
     }
 

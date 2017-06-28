@@ -10,6 +10,7 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
 
         })
     }
+
     $scope.addFieldSettings = function () {
         $scope.fieldSettings.push({isEdit: true});
     }
@@ -49,3 +50,4 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         $scope.fieldSettings.splice(index, 1);
     }
 });
+

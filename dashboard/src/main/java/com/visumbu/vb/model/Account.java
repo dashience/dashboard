@@ -41,6 +41,9 @@ import org.hibernate.annotations.Type;
 public class Account implements Serializable {
 
     @OneToMany(mappedBy = "accountId")
+    private Collection<DashboardTemplate> dashboardTemplateCollection;
+
+    @OneToMany(mappedBy = "accountId")
     private Collection<Scheduler> schedulerCollection;
 
     private static final long serialVersionUID = 1L;
@@ -156,6 +159,16 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.Account[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
+        return dashboardTemplateCollection;
+    }
+
+    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
+        this.dashboardTemplateCollection = dashboardTemplateCollection;
     }
 
 }

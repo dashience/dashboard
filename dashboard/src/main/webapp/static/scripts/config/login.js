@@ -6,10 +6,12 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
             return;
         }
         $http({method: "POST", url: "admin/user/login", data: login}).success(function (response) {
+            console.log(response);
             if (!response.authenticated) {
                 $scope.showErrorMessage = true;
                 $scope.errorMessage = response.errorMessage;
             } else {
+                $cookies.putObject("userId",response.id);
                 $cookies.putObject("fullname", response.username);
                 $cookies.putObject("username", response.username);
                 localStorageService.set("permission", response.permission);

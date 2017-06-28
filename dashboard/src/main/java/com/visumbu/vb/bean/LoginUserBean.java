@@ -12,6 +12,7 @@ import com.visumbu.vb.model.Agency;
  * @author user
  */
 public class LoginUserBean {
+    private Integer id;
     private String username;
     private String password;
     private String isAdmin;
@@ -21,7 +22,15 @@ public class LoginUserBean {
     private String announcement;
     private Permission permission;
     private AgencyBean agencyId;
-    
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }

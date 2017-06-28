@@ -80,7 +80,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByLastNmonths", query = "SELECT t FROM TabWidget t WHERE t.lastNmonths = :lastNmonths")
     , @NamedQuery(name = "TabWidget.findByLastNweeks", query = "SELECT t FROM TabWidget t WHERE t.lastNweeks = :lastNweeks")
     , @NamedQuery(name = "TabWidget.findByLastNyears", query = "SELECT t FROM TabWidget t WHERE t.lastNyears = :lastNyears")
-    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")})
+    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")
+    , @NamedQuery(name = "TabWidget.findByTimeSegment", query = "SELECT t FROM TabWidget t WHERE t.timeSegment = :timeSegment")
+    , @NamedQuery(name = "TabWidget.findByProductSegment", query = "SELECT t FROM TabWidget t WHERE t.productSegment = :productSegment")
+    , @NamedQuery(name = "TabWidget.findByNetworkType", query = "SELECT t FROM TabWidget t WHERE t.networkType = :networkType")})
 public class TabWidget implements Serializable {
 
     @OneToMany(mappedBy = "widgetId")
@@ -210,6 +213,15 @@ public class TabWidget implements Serializable {
     @Size(max = 255)
     @Column(name = "datasource")
     private String datasource;
+    @Size(max = 255)
+    @Column(name = "time_segment")
+    private String timeSegment;
+    @Size(max = 255)
+    @Column(name = "product_segment")
+    private String productSegment;
+    @Size(max = 255)
+    @Column(name = "network_type")
+    private String networkType;
     @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet dataSetId;
@@ -222,6 +234,9 @@ public class TabWidget implements Serializable {
     @JoinColumn(name = "tab_id", referencedColumnName = "id")
     @ManyToOne
     private DashboardTabs tabId;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ManyToOne
+    private UserAccount accountId;
 
     @Transient
     private List<WidgetColumn> columns;
@@ -531,7 +546,7 @@ public class TabWidget implements Serializable {
     public void setTabId(DashboardTabs tabId) {
         this.tabId = tabId;
     }
-
+    
     public List<WidgetColumn> getColumns() {
         return columns;
     }
@@ -628,6 +643,39 @@ public class TabWidget implements Serializable {
         this.isGridLine = isGridLine;
     }
 
+    public UserAccount getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(UserAccount accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getTimeSegment() {
+        return timeSegment;
+    }
+
+    public void setTimeSegment(String timeSegment) {
+        this.timeSegment = timeSegment;
+    }
+
+    public String getProductSegment() {
+        return productSegment;
+    }
+
+    public void setProductSegment(String productSegment) {
+        this.productSegment = productSegment;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
+    }    
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -662,5 +710,4 @@ public class TabWidget implements Serializable {
 //    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
 //        this.reportWidgetCollection = reportWidgetCollection;
 //    }
-
 }

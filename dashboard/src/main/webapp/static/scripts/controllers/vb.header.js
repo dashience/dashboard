@@ -10,7 +10,16 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         var setTabId = 0;
         if ($stateParams.productId != product.id) {
             $stateParams.productId = product.id;
-            $state.go("index.dashboard.widget", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, productId: $stateParams.productId, tabId: setTabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
+            $stateParams.templateId = product.templateId ? product.templateId.id : 0;
+            $state.go("index.dashboard.widget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                templateId: $stateParams.templateId,
+                tabId: setTabId,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
         } else {
             return;//$stateParams.productId = product.id;
         }
@@ -52,7 +61,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     });
 
     $scope.getAccountId = function (account) {
-        console.log(account)
+        if ($stateParams.accountId != account.accountId.id) {
+            $stateParams.tabId = "";
+        }
         if (account.accountId.logo) {
             $scope.accountLogo = account.accountId.logo;
         } else {
@@ -74,8 +85,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             if (!response[0]) {
                 return;
             }
+            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
-//        $state.go("index.dashboard", {productId: $stateParams.productId});
+            $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+
             try {
                 var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -87,6 +100,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
                     productId: $stateParams.productId,
+                    templateId: $stateParams.templateId,
                     tabId: $stateParams.tabId,
                     startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                     endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
@@ -245,7 +259,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         var yesterday = new Date(today);
         yesterday.setDate(today.getDate() - 30);
         return yesterday;
-    }
+    };
+
+    $scope.getBeforeDay = function () {
+        var today = new Date();
+        var yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        return yesterday;
+    };
 
     $scope.getBeforeDay = function () {
         var today = new Date();
@@ -280,15 +301,16 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $stateParams.startDate = startDate;
         $stateParams.endDate = endDate;
-        console.log($scope.startDate);
-        console.log($scope.endDate);
+
         console.log($stateParams.startDate);
         console.log($stateParams.endDate);
+        console.log($stateParams.tabId)
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
+                templateId: $stateParams.templateId,
                 tabId: $stateParams.tabId,
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
@@ -438,6 +460,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         if (url.indexOf("widget") > 0) {
             return "dashboard";
         }
+        if (url.indexOf("dashboardTemplate") > 0) {
+            return "dashboardTemplate";
+        }
         if (url.indexOf("editWidget") > 0) {
             return "editWidget";
         }
@@ -515,7 +540,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         //Date range as a button
         $('#daterange-btn').daterangepicker(
                 {
-
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -539,8 +563,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
-                    startDate: $stateParams.startDate?$stateParams.startDate:moment().subtract(30, 'days'),
-                    endDate: $stateParams.endDate?$stateParams.endDate:moment().subtract(1, 'days'),
+                    startDate: $stateParams.startDate ? $stateParams.startDate : moment().subtract(30, 'days'),
+                    endDate: $stateParams.endDate ? $stateParams.endDate : moment().subtract(1, 'days'),
                     maxDate: new Date()
                 },
                 function (startDate, endDate) {
@@ -596,6 +620,5 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
 
         });
-
     });
 });

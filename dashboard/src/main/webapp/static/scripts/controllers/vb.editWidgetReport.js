@@ -673,10 +673,10 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     }
 
     $scope.saveReportWidget = function (widget) {
+        widget.dateRangeName = $("#dateRangeName").text().trim();
         try {
-            $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-            $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+            $scope.customStartDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+            $scope.customEndDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
         } catch (e) {
 
         }
@@ -1202,10 +1202,16 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
             }
 
             scope.save = function (column) {
+                widget.dateRangeName = $("#dateRangeName").text().trim();
+                if (widget.dateRangeName === "Custom") {
+                    scope.lastNDays = "";
+                    scope.lastNWeeks = "";
+                    scope.lastNMonths = "";
+                    scope.lastNYears = "";
+                }
                 try {
-                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                    scope.customStartDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    scope.customEndDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
                 } catch (e) {
 
                 }
@@ -1323,11 +1329,11 @@ app.directive('customReportWidgetDateRange', function ($stateParams) {
                 $(element[0]).daterangepicker(
                         {
                             ranges: {
-//                        'Today': [moment(), moment()],
+                                'Today': [moment(), moment()],
                                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                                'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                                'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                                'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                                'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
                                 'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
                                 'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -1343,8 +1349,8 @@ app.directive('customReportWidgetDateRange', function ($stateParams) {
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                             },
-                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
-                            endDate: widgetEndDate ? widgetEndDate : moment(),
+                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(30, 'days'),
+                            endDate: widgetEndDate ? widgetEndDate : moment().subtract(1, 'days'),
                             maxDate: new Date(),
                         },
                         function (startDate, endDate) {

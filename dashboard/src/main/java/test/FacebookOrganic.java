@@ -6,6 +6,8 @@
 package test;
 
 import com.google.common.collect.HashBiMap;
+import com.visumbu.vb.admin.service.SettingsService;
+import com.visumbu.vb.model.Settings;
 import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
@@ -21,6 +23,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -28,6 +31,8 @@ import org.json.simple.parser.ParseException;
  */
 public class FacebookOrganic {
 
+    @Autowired
+    private SettingsService settingsService;
     //***********************************************************
     public static List<Map<String,String>> getAdSetDetails() throws ParseException
     {
@@ -336,9 +341,15 @@ return null;
 
     public static void main(String[] argv) throws ParseException {
 //        List<Map<String, String>> recentPosts = getTotalOrganicLikes();
+        
         List<Map<String, String>> recentPosts = (List<Map<String, String>>) getViewsByDevice();
 //        System.out.println(recentPosts);
     }
+    
+//    public static List<Settings> getProperty(){
+//        List<Settings> facebookAccessToken=settingsService.getProperty("facebook");
+//        return facebookAccessToken;
+//    }
 
     public static List<Map<String, String>> getPageLikesByCity() throws ParseException {
         String fbUrl = "https://graph.facebook.com/185042698207211/insights/page_fans_city?access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";

@@ -11,7 +11,6 @@ import com.visumbu.vb.bean.AgencyBean;
 import com.visumbu.vb.bean.LoginUserBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.model.Account;
-import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.AgencyProduct;
@@ -21,8 +20,6 @@ import com.visumbu.vb.model.Dealer;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
-import com.visumbu.vb.utils.VbUtils;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -99,6 +96,7 @@ public class UserService {
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
                 System.out.println(loginUserBean);
+                loginUserBean.setId(user.getId());
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
                 if (user != null) {
