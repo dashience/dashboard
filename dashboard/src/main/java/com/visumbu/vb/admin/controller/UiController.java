@@ -713,8 +713,8 @@ public class UiController extends BaseController {
     }
     @RequestMapping(value = "getDefaultTemplate", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List<DashboardTemplate> getDefaultTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response) {
-        return uiService.getDefaultTemplateById();
+    List<DashboardTemplate> getDefaultTemplate(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getDefaultTemplate();
     }
 
     @ExceptionHandler

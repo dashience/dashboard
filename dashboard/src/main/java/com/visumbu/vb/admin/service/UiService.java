@@ -1048,7 +1048,7 @@ public class UiService {
         return uiDao.getTabByTemplateId(templateId);
     }
 
-    public List<DashboardTemplate> getDefaultTemplateById() {
-        return uiDao.getDefaultTemplateById();
+    public List<DashboardTemplate> getDefaultTemplate() {
+        return uiDao.getDefaultTemplate();
     }
 }

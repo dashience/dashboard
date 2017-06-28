@@ -17,7 +17,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
 //        $scope.templates = response;
     })
-    
+
     $scope.getTemplateBYId = function (template) {
         $stateParams.accountId = template.accountId.id;
         $stateParams.accountName = template.accountId.accountName;
@@ -57,7 +57,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             angular.forEach($scope.tabs, function (value, key) {
                 $scope.dashboardName = value.agencyProductId.productName;
             });
-            
+
             var setTabId;
             if (!response) {
                 setTabId = "";
@@ -67,12 +67,12 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             } else {
                 if ($stateParams.tabId == 0) {
                     setTabId = response[0].id;
-                getCurrentUrl = $scope.getCurrentPage();
+                    getCurrentUrl = $scope.getCurrentPage();
                 } else {
                     setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
-                getCurrentUrl = $scope.getCurrentPage();
+                    getCurrentUrl = $scope.getCurrentPage();
                 }
-            }            
+            }
 
 //            if (getCurrentUrl === "dashboardTemplate") {
 //                alert("Template")
@@ -87,15 +87,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 //                });
 //            } else {alert("Empty Template")
 //                alert("dashboard")
-                $state.go("index.dashboard.widget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    productId: $stateParams.productId,
-                    templateId: $stateParams.templateId,
-                    tabId: setTabId,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
+            $state.go("index.dashboard.widget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                templateId: $stateParams.templateId,
+                tabId: setTabId,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
 //            }
         });
     }
@@ -292,6 +292,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 return;
             } else {
                 $scope.templateId = response.id;
+                $scope.templateName=response.templateName;
             }
         })
     }
@@ -300,15 +301,28 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         console.log(tab.templateName);
 
         var data = {
-            id: $scope.templateId,
+            id: tab.templateId?tab.templateId:null,
             templateName: tab.templateName,
         }
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
+            $scope.tab = "";
+            $scope.templateId = "";
             getAllTemplate();
         });
 
-    };    
-    
+    };
+    $scope.updateTemplate=function(tab){
+        var data = {
+            id: $scope.templateId,
+            templateName: $scope.templateName,
+        }
+        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
+            $scope.tab = "";
+            $scope.templateId = "";
+            getAllTemplate();
+        });
+    }
+
 })
         .directive('ngBlur', function () {
             return function (scope, elem, attrs) {
