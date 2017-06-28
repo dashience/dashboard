@@ -1,4 +1,5 @@
-app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state, $location, $rootScope) {
+app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state,
+        $location, $rootScope) {
     $scope.permission = localStorageService.get("permission");
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
@@ -25,6 +26,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
 
     };
+    $scope.themes = [{name: "Green", value: "green"},
+        {name: "Blue", value: "blue"},
+        {name: "Cyan", value: "cyan"},
+        {name: "Pink", value: "pink"},
+        {name: "Gray", value: "gray"}];
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
@@ -522,6 +528,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             return "widget";
         }
         return "widget";
+    };
+
+    $scope.dropdownChange = function (data) {
+        $http({
+            url: 'admin/ui/userPrefrences',
+            method: 'POST',
+            data: JSON.stringify(data)
+        }).success(function (response) {
+            console.log("success data");
+        }).error(function (response) {
+            console.log("Error data");
+
+        })
     };
 
     $(function () {

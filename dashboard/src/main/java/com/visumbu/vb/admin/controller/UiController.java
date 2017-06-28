@@ -50,6 +50,7 @@ import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Timezone;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.WidgetTag;
 
 import com.visumbu.vb.utils.Rest;
@@ -692,7 +693,13 @@ public class UiController extends BaseController {
         dashboardTemplate.setAgencyId(agencyProduct.getAgencyId());
         return uiService.createDashboardTemplate(dashboardTemplate, user.getId(), accountId, productId);
     }
-
+    
+    @RequestMapping(value = "userPrefrences", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    UserPreferences addUserPreferences(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
+        return uiService.updateThemeSettings(userPreferences);
+    }
+    
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     DashboardTemplate getTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId, @PathVariable Integer productId) {

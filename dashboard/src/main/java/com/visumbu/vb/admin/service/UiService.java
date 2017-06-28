@@ -35,6 +35,7 @@ import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
@@ -1056,5 +1057,10 @@ public class UiService {
 
     public List<DashboardTemplate> getDefaultTemplateById() {
         return uiDao.getDefaultTemplateById();
+    }
+    
+    //added by Paramvir for theme settings
+    public UserPreferences updateThemeSettings(UserPreferences userPreferences) {
+        return (UserPreferences) uiDao.update(userPreferences);
     }
 }
