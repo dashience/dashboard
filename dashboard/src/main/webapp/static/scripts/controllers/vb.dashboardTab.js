@@ -19,9 +19,10 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 //        $scope.templates = response;
     })
 
-    $scope.getTemplateBYId = function (template) {
-        $stateParams.accountId = template.accountId.id;
-        $stateParams.accountName = template.accountId.accountName;
+    $scope.getTemplateById = function (template) {
+        console.log(template);
+//        $stateParams.accountId = template.accountId.id;
+//        $stateParams.accountName = template.accountId.accountName;
         $stateParams.productId = template.agencyProductId.id;
         $scope.templateId = template.id;
         $scope.accountId = $stateParams.accountId;
@@ -290,12 +291,18 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     //save Template
     $scope.saveTemplate = function (tab) {
         console.log(tab);
-
+        console.log($scope.tabs);
+        var tabIds = $scope.tabs.map(function (value, key) {
+            if (value) {
+                return value.id;
+            }
+        }).join(',');
         var data = {
             id: tab.templateId ? tab.templateId : null,
             templateName: tab.templateName,
+            tabIds: tabIds
         }
-        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
+        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
             $scope.tab = "";
             $scope.templateId = "";
             getAllTemplate();

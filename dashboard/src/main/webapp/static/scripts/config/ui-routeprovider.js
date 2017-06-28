@@ -168,8 +168,8 @@ app.run(['$window', '$rootScope', '$stateParams', '$state',
         $rootScope.setParamByTemplateId = function (template) {
             if ($stateParams.templateId != template.id) {
                 $state.go("index.dashboard.widget", {
-                    accountId: template.accountId.id,
-                    accountName: template.accountId.accountName,
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
                     productId: template.agencyProductId.id,
                     templateId: template.id,
                     tabId: 0,
