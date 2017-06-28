@@ -154,6 +154,11 @@ public class UiController extends BaseController {
         return uiService.getAgencyProductTab(agencyProductId, accountId, userId);
     }
 
+    @RequestMapping(value = "dbTabs/{templateId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgencyProductTabByTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
+        return uiService.getAgencyProductTabByTemplateId(templateId);
+    }
 //    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getDashboardTabs(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dashboardId) {
@@ -163,6 +168,7 @@ public class UiController extends BaseController {
 //        }
 //        return uiService.getDashboardTabsByProductDashboard(dashboardId, user.getId());
 //    }
+
     @RequestMapping(value = "dbTab/{tabId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     DashboardTabs deleteDashboardTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
@@ -206,10 +212,10 @@ public class UiController extends BaseController {
         return null;
     }
 
-    @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "dbWidget/{tabId}/{accountId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-        return uiService.getTabWidget(tabId);
+    List getTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId,@PathVariable Integer accountId) {
+        return uiService.getTabWidget(tabId,accountId);
     }
 
     @RequestMapping(value = "reportWidgetByWidgetId/{widgetId}", method = RequestMethod.GET, produces = "application/json")
@@ -404,16 +410,18 @@ public class UiController extends BaseController {
     public @ResponseBody
     DataSet create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         String joinDataSetId = request.getParameter("joinDataSetId");
-        Integer joinDataSetIdInt = null;
-        if (joinDataSetId != null) {
-            joinDataSetIdInt = Integer.parseInt(joinDataSetId);
-            dataSet.setJoinDataSetId(uiDao.getJoinDataSetById(joinDataSetIdInt));
-        }
         VbUser user = userService.findByUsername(getUser(request));
         dataSet.setUserId(user);
         dataSet.setAgencyId(user.getAgencyId());
-        return uiService.create(dataSet);
+        return uiService.create(dataSet, joinDataSetId);
     }
+    
+    
+//    @RequestMapping(value = "dataSet/enableOrDisable", method = RequestMethod.PUT, produces = "application/json")
+//    public @ResponseBody
+//    DataSet updateDataSetEnableDisable(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
+//        return uiService.updateDataSetEnableDisable(dataSet);
+//    }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
@@ -468,6 +476,17 @@ public class UiController extends BaseController {
         }
         return uiService.getDataSetByUser(user);
     }
+    
+    @RequestMapping(value = "dataSet/publishDataSet", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getPublishDataSet(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getPublishDataSetByUser(user);
+    }
+    
 //    @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -699,6 +718,11 @@ public class UiController extends BaseController {
         Agency agency = agencyProduct.getAgencyId();
         Integer agencyId = agency.getId();
         return uiService.getTemplateByAgencyId(agencyId);
+    }
+    @RequestMapping(value = "getDefaultTemplate", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getDefaultTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response) {
+        return uiService.getDefaultTemplateById();
     }
 
     @ExceptionHandler

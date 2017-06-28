@@ -197,6 +197,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '</option>' +
 //                '</select>' +
 //                '</div>' +
+
 //                '</div>' +
                 '</div>' +
 //                '<div class="form-group">' +

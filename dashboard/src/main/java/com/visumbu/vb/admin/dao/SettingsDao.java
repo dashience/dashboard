@@ -6,6 +6,9 @@
 package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Settings;
+import java.util.List;
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,5 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Repository("settingsDao")
 public class SettingsDao extends BaseDao{
+
+    public List<Settings> getProperty(String property) {
+       Query query=sessionFactory.getCurrentSession().getNamedQuery("Settings.findByPropertyName");
+       query.setParameter("propertyName", property);
+       return query.list();
+    }
     
 }

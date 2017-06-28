@@ -70,6 +70,9 @@ public class AgencyProduct implements Serializable {
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
+    @JoinColumn(name = "template_id", referencedColumnName = "id")
+    @ManyToOne
+    private DashboardTemplate templateId;
 
     public AgencyProduct() {
     }
@@ -127,6 +130,14 @@ public class AgencyProduct implements Serializable {
         this.agencyId = agencyId;
     }
 
+    public DashboardTemplate getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(DashboardTemplate templateId) {
+        this.templateId = templateId;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -158,16 +169,6 @@ public class AgencyProduct implements Serializable {
 
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
-        return dashboardTemplateCollection;
-    }
-
-    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
-        this.dashboardTemplateCollection = dashboardTemplateCollection;
     }
     
 }

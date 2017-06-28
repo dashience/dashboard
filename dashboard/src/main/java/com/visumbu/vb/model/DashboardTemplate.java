@@ -134,5 +134,5 @@ public class DashboardTemplate implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DashboardTemplate[ id=" + id + " ]";
     }
-    
+
 }

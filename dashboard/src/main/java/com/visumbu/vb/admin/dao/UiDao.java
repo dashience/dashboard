@@ -112,10 +112,11 @@ public class UiDao extends BaseDao {
         return null;
     }
 
-    public List<TabWidget> getTabWidget(Integer tabId) {
-        String queryStr = "select d from TabWidget d where d.tabId.id = :tabId and (status is null or status != 'Deleted') order by widgetOrder";
+    public List<TabWidget> getTabWidget(Integer tabId, Integer accountId) {
+        String queryStr = "select d from TabWidget d where d.tabId.id = :tabId and (d.accountId.id=:accountId or d.accountId IS NULL) and (status is null or status != 'Deleted') order by widgetOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("tabId", tabId);
+        query.setParameter("accountId", accountId);
 
         List<TabWidget> tabWidgets = query.list();
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
@@ -527,6 +528,11 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
+    public UserAccount findUserAccountById(UserAccount accountId) {
+        UserAccount userAccount = (UserAccount) sessionFactory.getCurrentSession().get(UserAccount.class, accountId.getId());
+        return userAccount;
+    }
+
     public UserAccount deleteUserAccount(Integer userAccountId) {
         String queryString = "delete UserAccount d where d.id = :userAccountId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
@@ -573,6 +579,14 @@ public class UiDao extends BaseDao {
 
     public List<DataSet> getDataSetByUser(VbUser user) {
         String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", user.getId());
+        query.setParameter("agencyId", user.getAgencyId());
+        return query.list();
+    }
+    
+    public List<DataSet> getPublishDataSetByUser(VbUser user) {
+        String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId and d.publish = 'Active' ";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());
@@ -722,4 +736,35 @@ public class UiDao extends BaseDao {
         return (DataSetColumns) create(dataSetColumn);
     }
 
+    public List<DashboardTabs> getTabByTemplateId(Integer templateId) {
+        String queryStr = "SELECT d FROM DashboardTabs d where d.templateId.id = :templateId and (d.status is null or d.status != 'Deleted'))";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("templateId", templateId);
+        return query.list();
+    }
+
+    public List<DashboardTemplate> getDefaultTemplateById() {
+        String queryStr = "SELECT d FROM DashboardTemplate d";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        //query.setParameter("agencyId", agencyId);
+        return query.list();
+    }
+
+//    public DataSet updateDataSetEnableDisable(DataSet dataSet) {
+//        String queryStr;
+//        Integer dataSetId = dataSet.getId();
+//        System.out.println("dataSet.getPublish ---> "+dataSet.getPublish());
+//        Boolean activeStatus = Boolean.parseBoolean(dataSet.getPublish());
+//        System.out.println("activeStatus ---> "+activeStatus);
+//        if (activeStatus == true) {
+//            queryStr = "update DataSet d set publish = 'Active' where d.id = :dataSetId";
+//        } else {
+//            queryStr = "update DataSet d set publish = 'InActive' where d.id = :dataSetId";
+//        }
+//        System.out.println(queryStr);
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("dataSetId", dataSetId);
+//        query.executeUpdate();
+//        return null;
+//    }
 }

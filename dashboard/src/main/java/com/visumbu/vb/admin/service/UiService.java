@@ -140,8 +140,8 @@ public class UiService {
         return uiDao.deleteTabWidget(id);
     }
 
-    public List<TabWidget> getTabWidget(Integer tabId) {
-        return uiDao.getTabWidget(tabId);
+    public List<TabWidget> getTabWidget(Integer tabId, Integer accountId) {
+        return uiDao.getTabWidget(tabId, accountId);
     }
 
     public List<TabWidget> getReportWidgetByWidgetId(Integer widgetId) {
@@ -572,11 +572,32 @@ public class UiService {
         return uiDao.getDataSetByUser(user);
     }
 
-    public DataSet create(DataSet dataSet) {
+    public List getPublishDataSetByUser(VbUser user) {
+        return uiDao.getPublishDataSetByUser(user);
+    }
+
+    public DataSet create(DataSet dataSet, String joinDataSetId) {
+        Integer joinDataSetIdInt = null;
+        if (joinDataSetId != null) {
+            joinDataSetIdInt = Integer.parseInt(joinDataSetId);
+            dataSet.setJoinDataSetId(uiDao.getJoinDataSetById(joinDataSetIdInt));
+        }
+        Boolean activeStatus = Boolean.parseBoolean(dataSet.getPublish());
+        if (activeStatus == true) {
+            dataSet.setPublish("Active");
+        } else {
+            dataSet.setPublish("InActive");
+        }
         return (DataSet) uiDao.create(dataSet);
     }
 
     public DataSet update(DataSet dataSet) {
+        Boolean activeStatus = Boolean.parseBoolean(dataSet.getPublish());
+        if (activeStatus == true) {
+            dataSet.setPublish("Active");
+        } else {
+            dataSet.setPublish("InActive");
+        }
         return (DataSet) uiDao.update(dataSet);
     }
 
@@ -585,7 +606,7 @@ public class UiService {
     }
 
     public void deleteDataSet(Integer id) {
-         uiDao.deleteDataSet(id);
+        uiDao.deleteDataSet(id);
     }
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
@@ -683,6 +704,14 @@ public class UiService {
 
     public UserAccount deleteUserAccount(Integer userAccountId) {
         return uiDao.deleteUserAccount(userAccountId);
+    }
+
+    public UserAccount findUserAccountById(UserAccount accountId) {
+        UserAccount userAccount = uiDao.findUserAccountById(accountId);
+        if (userAccount != null) {
+            return userAccount;
+        }
+        return null;
     }
 
 //    public List getUserAccountId(Integer userId) {
@@ -824,7 +853,7 @@ public class UiService {
     }
 
     public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
-        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();        
+        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         List<DataSetColumns> dataSetColumn = new ArrayList<>();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
             DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
@@ -832,15 +861,15 @@ public class UiService {
             System.out.println("-----------------------------------------------------------------------");
             System.out.println(allDataSetColumn.getDataSetId());
             System.out.println("-----------------------------------------------------------------------");
-        if (allDataSetColumn.getDataSetId() != null) {
-            System.out.println("*******************************************************");
-            System.out.println(allDataSetColumn.getDataSetId());
-            System.out.println("*******************************************************");
-            dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
-        } else {
-            dataSet = new DataSet();
-        }
-            
+            if (allDataSetColumn.getDataSetId() != null) {
+                System.out.println("*******************************************************");
+                System.out.println(allDataSetColumn.getDataSetId());
+                System.out.println("*******************************************************");
+                dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
+            } else {
+                dataSet = new DataSet();
+            }
+
             System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
             if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
@@ -869,7 +898,7 @@ public class UiService {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
                     dataSetFields.setUserId(allDataSetColumn.getUserId());
-                } 
+                }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
 
@@ -895,11 +924,11 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
-                  if (allDataSetColumn.getUserId() != null) {
+                if (allDataSetColumn.getUserId() != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
                     dataSetFields.setUserId(allDataSetColumn.getUserId());
-                } 
+                }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
             }
@@ -1041,4 +1070,16 @@ public class UiService {
         }
         return column;
     }
+
+    public List getAgencyProductTabByTemplateId(Integer templateId) {
+        return uiDao.getTabByTemplateId(templateId);
+    }
+
+    public List<DashboardTemplate> getDefaultTemplateById() {
+        return uiDao.getDefaultTemplateById();
+    }
+
+//    public DataSet updateDataSetEnableDisable(DataSet dataSet) {
+//        return uiDao.updateDataSetEnableDisable(dataSet);
+//    }
 }
