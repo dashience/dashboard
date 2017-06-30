@@ -251,8 +251,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.widgetObj = {};
     $scope.loadingColumnsGif = false;
+    var setDefaultChartType;
     $scope.setWidgetItems = function (widget) {
 //        console.log(widget.accountId.id)
+        setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
@@ -1508,11 +1510,26 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             accountId: widget.accountId,
             timeSegment: widget.timeSegment ? widget.timeSegment.type : null,
             productSegment: widget.productSegment ? widget.productSegment.type : null,
-            networkType: widget.networkType ? widget.networkType.type : null
+            networkType: widget.networkType ? widget.networkType.type : null,
+            createdBy: widget.createdBy
         };
         widget.chartType = "";
         console.log(data);
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+            console.log(response)
+            if (!response) {
+                var dialog = bootbox.dialog({
+                    title: 'Alert',
+                    message: "Access Denied"
+                });
+                dialog.init(function () {
+                    setTimeout(function () {
+                        dialog.modal('hide');
+                    }, 2000);
+                });
+                widget.chartType=setDefaultChartType;
+                return;
+            }
             widget.chartType = data.chartType;
             $scope.chartTypeName = "";
             widget = data;
@@ -1551,6 +1568,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 tableColumns: $scope.derivedColumns
             };
             console.log(colData);
+            if (!response.id) {
+                return;
+            }
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
                 console.log(response);
             });

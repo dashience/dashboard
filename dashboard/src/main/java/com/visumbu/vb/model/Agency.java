@@ -180,13 +180,6 @@ public class Agency implements Serializable {
         this.dataSourceCollection = dataSourceCollection;
     }
 
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
-    }
 
     @XmlTransient
     @JsonIgnore
@@ -216,6 +209,14 @@ public class Agency implements Serializable {
 
     public void setAccountCollection(Collection<Account> accountCollection) {
         this.accountCollection = accountCollection;
+    }
+
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
     }
     
 }

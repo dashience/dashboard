@@ -5,8 +5,6 @@
  */
 package com.visumbu.vb.admin.controller;
 
-import com.visumbu.vb.admin.dao.SettingsDao;
-import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
@@ -126,12 +124,6 @@ public class ProxyController {
     @Autowired
     private TwitterService twitterService;
 
-    @Autowired
-    private SettingsDao settingsDao;
-
-    @Autowired
-    private UiDao uiDao;
-
     PropertyReader propReader = new PropertyReader();
 
     private final String urlDownload = "url.download";
@@ -192,13 +184,14 @@ public class ProxyController {
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
-        List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+        List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
 
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
+        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
             String queryFilter = null;
             widgetIdInt = Integer.parseInt(widgetIdStr);
@@ -210,7 +203,6 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
-        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
         if (dataSetIdInt != null) {
@@ -304,7 +296,7 @@ public class ProxyController {
             }
         }
 
-        List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
+        List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetIdInt);
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
             JoinDataSetCondition joinDataSetCondition = iterator.next();
             JoinDataSet joinDataSet = joinDataSetCondition.getJoinDataSetId();
@@ -330,7 +322,7 @@ public class ProxyController {
         String dataSetIdOneStr = getFromMultiValueMap(joinValueMapOne, "dataSetId");
         if (dataSetIdOneStr != null && !dataSetIdOneStr.isEmpty()) {
             Integer dataSetIdInt = Integer.parseInt(dataSetIdOneStr);
-            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+            List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetOneList, joinValueMapOne, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -359,7 +351,7 @@ public class ProxyController {
 
             Integer dataSetIdInt = Integer.parseInt(dataSetIdTwoStr);
 
-            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+            List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetTwoList, joinValueMapTwo, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -873,7 +865,7 @@ public class ProxyController {
 //        
 
         //get the acces token from settings
-        List<Settings> pinterestAccessToken = settingsDao.getProperty("pinterestAccessToken");
+        List<Settings> pinterestAccessToken = settingsService.getProperty("pinterestAccessToken");
         System.out.println("***************************");
         System.out.println(pinterestAccessToken);
         String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");

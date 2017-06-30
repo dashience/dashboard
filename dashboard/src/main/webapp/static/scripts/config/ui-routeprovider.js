@@ -3,7 +3,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $stateProvider
             .state("index", {
                 url: "/index",
-                templateUrl: "static/views/vb.index.html",
+                templateUrl: "static/views/vb.index.html"
                 //controller: "IndexController"
             })
             .state("index.dashboard", {
@@ -76,7 +76,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //            })
             .state("index.schedulerIndex", {
                 url: "/schedulerIndex/:accountId/:accountName",
-                templateUrl: "static/views/scheduler/schedulerIndex.html",
+                templateUrl: "static/views/scheduler/schedulerIndex.html"
 //                controller: 'SchedulerController'
             })
             .state("index.schedulerIndex.scheduler", {
@@ -158,7 +158,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 });
 app.run(['$window', '$rootScope', '$stateParams', '$state',
     function ($window, $rootScope, $stateParams, $state) {
-        console.log($stateParams)
         //$rootScope.accountNameByPdf = $stateParams.accountName; 
 
         $rootScope.goBack = function () {
@@ -168,15 +167,16 @@ app.run(['$window', '$rootScope', '$stateParams', '$state',
         $rootScope.setParamByTemplateId = function (template) {
             if ($stateParams.templateId != template.id) {
                 $state.go("index.dashboard.widget", {
-                    accountId: template.accountId.id,
-                    accountName: template.accountId.accountName,
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
                     productId: template.agencyProductId.id,
                     templateId: template.id,
                     tabId: 0,
                     startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate})
+                    endDate: $stateParams.endDate
+                });
             }
-            $rootScope.setTmpIdByTab(template)
+            $rootScope.setTmpIdByTab(template);
             $stateParams.templateId = template.id;
         };
 

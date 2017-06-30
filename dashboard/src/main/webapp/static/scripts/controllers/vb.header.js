@@ -2,6 +2,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.permission = localStorageService.get("permission");
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
+    console.log($scope.isAdmin);
     $scope.agencyId = $cookies.getObject("agencyId");
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;

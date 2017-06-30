@@ -17,7 +17,9 @@ public class DashboardTemplateBean {
     private Integer accountId;
     private Integer userId;
     private Integer agencyProductId;
-
+    private String tabIds;
+    
+    
     public Integer getId() {
         return id;
     }
@@ -26,6 +28,14 @@ public class DashboardTemplateBean {
         this.id = id;
     }
 
+    public String getTabIds() {
+        return tabIds;
+    }
+
+    public void setTabIds(String tabIds) {
+        this.tabIds = tabIds;
+    }
+    
     public String getTemplateName() {
         return templateName;
     }

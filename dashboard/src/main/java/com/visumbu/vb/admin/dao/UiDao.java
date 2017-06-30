@@ -11,6 +11,7 @@ import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dashboard;
@@ -110,6 +111,19 @@ public class UiDao extends BaseDao {
         query.setParameter("dashboardTabId", id);
         query.executeUpdate();
         return null;
+    }
+    
+    public List<TabWidget> getWidgetsByTab(Integer tabId) {
+        String queryStr = "select d from TabWidget d where d.tabId.id = :tabId and(status is null or status != 'Deleted') order by widgetOrder";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("tabId", tabId);
+        List<TabWidget> tabWidgets = query.list();
+        for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
+            TabWidget widget = iterator.next();
+            widget.setColumns(getColumns(widget));
+        }
+
+        return tabWidgets;
     }
 
     public List<TabWidget> getTabWidget(Integer tabId, Integer accountId) {
@@ -601,12 +615,6 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-//    public List<Report> getAgencyReport(VbUser user) {
-//        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
-//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-//        query.setParameter("agencyId", user.getAgencyId().getId());
-//        return query.list();
-//    }    
     public List<WidgetTag> getTagWidgetByWidgetId(Integer widgetId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetTag.findByWidgetId");
         query.setParameter("id", widgetId);
@@ -622,14 +630,12 @@ public class UiDao extends BaseDao {
     }
 
     public List<Currency> getCurrenciesTypes() {
-        // System.out.println("dao is calling....");
         String queryStr = "SELECT c FROM Currency c";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         return query.list();
     }
 
     public List<Timezone> getTimezoneTypes() {
-        // System.out.println("dao is calling....");
         String queryStr = "SELECT t FROM Timezone t";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         return query.list();
@@ -658,11 +664,9 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<Account> getAccountById(Integer id) {
-        String queryStr = "select d from Account d where d.id = :accountId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("accountId", id);
-        return query.list();
+    public Account getAccountById(Integer id) {
+        Account account = (Account) sessionFactory.getCurrentSession().get(Account.class, id);
+        return account;
     }
 
     public List<JoinDataSetCondition> getJoinDataSetConditionById(Integer id) {
@@ -688,13 +692,13 @@ public class UiDao extends BaseDao {
         return getJoinDataSetConditionById(joinDataSetId);
     }
 
-    public DashboardTemplate getTemplateId(Integer accountId, Integer productId, Integer userId) {
+    public List<DashboardTemplate> getTemplateId(Integer accountId, Integer productId, Integer userId) {
         String queryStr = "select d from DashboardTemplate d where d.accountId.id = :accountId and d.agencyProductId.id=:productId and d.userId.id=:userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("accountId", accountId);
         query.setParameter("productId", productId);
         query.setParameter("userId", userId);
-        return (DashboardTemplate) query.uniqueResult();
+        return query.list();
     }
 
     public List<DashboardTabs> getDashboardTabsByProductId(Integer userId, Integer accountId, Integer productId) {
@@ -737,34 +741,36 @@ public class UiDao extends BaseDao {
     }
 
     public List<DashboardTabs> getTabByTemplateId(Integer templateId) {
-        String queryStr = "SELECT d FROM DashboardTabs d where d.templateId.id = :templateId and (d.status is null or d.status != 'Deleted'))";
+        String queryStr = "SELECT d FROM TemplateTabs d where d.templateId.id = :templateId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("templateId", templateId);
         return query.list();
     }
 
-    public List<DashboardTemplate> getDefaultTemplateById() {
+    public List<DashboardTemplate> getDefaultTemplate() {
         String queryStr = "SELECT d FROM DashboardTemplate d";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         //query.setParameter("agencyId", agencyId);
         return query.list();
     }
 
-//    public DataSet updateDataSetEnableDisable(DataSet dataSet) {
-//        String queryStr;
-//        Integer dataSetId = dataSet.getId();
-//        System.out.println("dataSet.getPublish ---> "+dataSet.getPublish());
-//        Boolean activeStatus = Boolean.parseBoolean(dataSet.getPublish());
-//        System.out.println("activeStatus ---> "+activeStatus);
-//        if (activeStatus == true) {
-//            queryStr = "update DataSet d set publish = 'Active' where d.id = :dataSetId";
-//        } else {
-//            queryStr = "update DataSet d set publish = 'InActive' where d.id = :dataSetId";
-//        }
-//        System.out.println(queryStr);
-//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-//        query.setParameter("dataSetId", dataSetId);
-//        query.executeUpdate();
-//        return null;
-//    }
+    public DashboardTemplate getDashboardTemplateById(Integer templateId) {
+        DashboardTemplate dashboardTemplate = (DashboardTemplate) sessionFactory.getCurrentSession().get(DashboardTemplate.class, templateId);
+        return dashboardTemplate;
+    }
+
+    public void deleteTemplateTabs(DashboardTemplate dashboardTemplate) {
+        String queryStr = "delete FROM TemplateTabs d where d.templateId = :templateId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("templateId", dashboardTemplate);
+        query.executeUpdate();
+    }
+
+    public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
+        String queryStr = "SELECT d from DashboardTemplate d where d.agencyProductId = :agencyProduct and d.agencyId = :agency";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyProduct", agencyProduct);
+        query.setParameter("agency", agency);
+        return query.list();
+    }
 }
