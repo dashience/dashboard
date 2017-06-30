@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -32,6 +36,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "DashboardTemplate.findById", query = "SELECT d FROM DashboardTemplate d WHERE d.id = :id")
     , @NamedQuery(name = "DashboardTemplate.findByTemplateName", query = "SELECT d FROM DashboardTemplate d WHERE d.templateName = :templateName")})
 public class DashboardTemplate implements Serializable {
+
+    @OneToMany(mappedBy = "templateId")
+    private Collection<ProductAccountUserTemplate> accountTemplateCollection;
+    @OneToMany(mappedBy = "templateId")
+    private Collection<AgencyProduct> agencyProductCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -133,6 +142,26 @@ public class DashboardTemplate implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.DashboardTemplate[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<ProductAccountUserTemplate> getAccountTemplateCollection() {
+        return accountTemplateCollection;
+    }
+
+    public void setAccountTemplateCollection(Collection<ProductAccountUserTemplate> accountTemplateCollection) {
+        this.accountTemplateCollection = accountTemplateCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyProduct> getAgencyProductCollection() {
+        return agencyProductCollection;
+    }
+
+    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
+        this.agencyProductCollection = agencyProductCollection;
     }
 
 }

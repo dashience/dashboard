@@ -75,6 +75,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class VbUser implements Serializable {
 
     @OneToMany(mappedBy = "userId")
+    private Collection<ProductAccountUserTemplate> accountTemplateCollection;
+
+    @OneToMany(mappedBy = "userId")
     private Collection<DashboardTemplate> dashboardTemplateCollection;
 
     @OneToMany(mappedBy = "userId")
@@ -358,6 +361,16 @@ public class VbUser implements Serializable {
 
     public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
         this.dashboardTemplateCollection = dashboardTemplateCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<ProductAccountUserTemplate> getAccountTemplateCollection() {
+        return accountTemplateCollection;
+    }
+
+    public void setAccountTemplateCollection(Collection<ProductAccountUserTemplate> accountTemplateCollection) {
+        this.accountTemplateCollection = accountTemplateCollection;
     }
 
 }

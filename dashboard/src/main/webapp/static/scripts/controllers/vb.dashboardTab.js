@@ -16,8 +16,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     }
     $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
 //        $scope.templates = response;
-    })
-    
+    });
+
     $scope.getTemplateBYId = function (template) {
         $stateParams.accountId = template.accountId.id;
         $stateParams.accountName = template.accountId.accountName;
@@ -27,6 +27,14 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.accountName = $stateParams.accountName;
         $scope.productId = $stateParams.productId;
         $scope.tempObj = template;
+
+        var data = {
+            accountId: $stateParams.accountId,
+            productId: $stateParams.productId,
+            templateId: template.id
+        };
+
+        $http({method: 'POST', url: 'admin/template/productAccountUserTemplate', data: data})
     };
     //product tabs
     $scope.tabs = [];
@@ -57,7 +65,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             angular.forEach($scope.tabs, function (value, key) {
                 $scope.dashboardName = value.agencyProductId.productName;
             });
-            
+
             var setTabId;
             if (!response) {
                 setTabId = "";
@@ -67,12 +75,12 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             } else {
                 if ($stateParams.tabId == 0) {
                     setTabId = response[0].id;
-                getCurrentUrl = $scope.getCurrentPage();
+                    getCurrentUrl = $scope.getCurrentPage();
                 } else {
                     setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
-                getCurrentUrl = $scope.getCurrentPage();
+                    getCurrentUrl = $scope.getCurrentPage();
                 }
-            }            
+            }
 
 //            if (getCurrentUrl === "dashboardTemplate") {
 //                alert("Template")
@@ -87,15 +95,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 //                });
 //            } else {alert("Empty Template")
 //                alert("dashboard")
-                $state.go("index.dashboard.widget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    productId: $stateParams.productId,
-                    templateId: $stateParams.templateId,
-                    tabId: setTabId,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
+            $state.go("index.dashboard.widget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                templateId: $stateParams.templateId,
+                tabId: setTabId,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
 //            }
         });
     }
@@ -307,8 +315,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             getAllTemplate();
         });
 
-    };    
-    
+    };
+
 })
         .directive('ngBlur', function () {
             return function (scope, elem, attrs) {

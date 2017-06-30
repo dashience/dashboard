@@ -8,22 +8,33 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.selectTabID = $state;
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
+        var productId = product.id;
+        var lastTemplateId;
+        var setTemplateId = product.templateId ? product.templateId.id : 0;
         if ($stateParams.productId != product.id) {
-            $stateParams.productId = product.id;
-            $stateParams.templateId = product.templateId ? product.templateId.id : 0;
-            $state.go("index.dashboard.widget", {
-                accountId: $stateParams.accountId,
-                accountName: $stateParams.accountName,
-                productId: $stateParams.productId,
-                templateId: $stateParams.templateId,
-                tabId: setTabId,
-                startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+            $http.get("admin/template/getProduct/" + productId).success(function (response) {
+                var responseObj = response;
+                if (!responseObj) {
+                    return;
+                }
+                responseObj.forEach(function (val, key) {
+                    lastTemplateId = val.templateId.id;
+                });
+                $stateParams.productId = product.id;
+                $stateParams.templateId = lastTemplateId ? lastTemplateId : setTemplateId;//product.templateId ? product.templateId.id : 0;
+                $state.go("index.dashboard.widget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    productId: $stateParams.productId,
+                    templateId: $stateParams.templateId,
+                    tabId: setTabId,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
             });
         } else {
-            return;//$stateParams.productId = product.id;
+            return;
         }
-
     };
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
@@ -85,16 +96,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             if (!response[0]) {
                 return;
             }
-            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0
+            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0;
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
             $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
 
-            try {
-                var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-                var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
-            } catch (e) {
-            }
             if ($scope.getCurrentPage() === "dashboard") {
                 $state.go("index.dashboard." + $scope.getCurrentTab(), {
                     accountId: $stateParams.accountId,
