@@ -49,6 +49,7 @@ import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
+import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.WidgetTag;
 
@@ -156,8 +157,8 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dbTabs/{templateId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getAgencyProductTabByTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
-        return uiService.getAgencyProductTabByTemplateId(templateId);
+    List getTabByTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
+        return uiService.getTabByTemplateId(templateId);
     }
 //    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
@@ -716,7 +717,7 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "getDefaultTemplate", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List<DashboardTemplate> getDefaultTemplate(HttpServletRequest request, HttpServletResponse response) {
+    List<TemplateTabs> getDefaultTemplate(HttpServletRequest request, HttpServletResponse response) {
         return uiService.getDefaultTemplate();
     }
 

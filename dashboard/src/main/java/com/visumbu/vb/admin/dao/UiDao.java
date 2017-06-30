@@ -29,6 +29,7 @@ import com.visumbu.vb.model.ReportColumn;
 import com.visumbu.vb.model.ReportType;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
@@ -729,14 +730,14 @@ public class UiDao extends BaseDao {
         return (DataSetColumns) create(dataSetColumn);
     }
 
-    public List<DashboardTabs> getTabByTemplateId(Integer templateId) {
-        String queryStr = "SELECT d FROM DashboardTabs d where d.templateId.id = :templateId and (d.status is null or d.status != 'Deleted'))";
+    public List<TemplateTabs> getTabByTemplateId(Integer templateId) {
+        String queryStr = "SELECT d FROM TemplateTabs d where d.templateId.id = :templateId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("templateId", templateId);
         return query.list();
     }
 
-    public List<DashboardTemplate> getDefaultTemplate() {
+    public List<TemplateTabs> getDefaultTemplate() {
         String queryStr = "SELECT d FROM DashboardTemplate d";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         //query.setParameter("agencyId", agencyId);
@@ -749,7 +750,7 @@ public class UiDao extends BaseDao {
     }
 
     public void deleteTemplateTabs(DashboardTemplate dashboardTemplate) {
-        String queryStr = "delete FROM DashboardTemplate d where d.templateId = :templateId";
+        String queryStr = "delete FROM TemplateTabs d where d.templateId = :templateId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("templateId", dashboardTemplate);
         query.executeUpdate();

@@ -40,8 +40,6 @@ public class DashboardTemplate implements Serializable {
     @OneToMany(mappedBy = "templateId")
     private Collection<TemplateTabs> templateTabsCollection;
     @OneToMany(mappedBy = "templateId")
-    private Collection<DashboardTabs> dashboardTabsCollection;
-    @OneToMany(mappedBy = "templateId")
     private Collection<AgencyProduct> agencyProductCollection;
 
     private static final long serialVersionUID = 1L;
@@ -143,16 +141,6 @@ public class DashboardTemplate implements Serializable {
 
     public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
         this.templateTabsCollection = templateTabsCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DashboardTabs> getDashboardTabsCollection() {
-        return dashboardTabsCollection;
-    }
-
-    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
-        this.dashboardTabsCollection = dashboardTabsCollection;
     }
 
     @XmlTransient

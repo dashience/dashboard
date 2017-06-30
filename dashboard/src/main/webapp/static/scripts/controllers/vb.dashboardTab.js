@@ -7,17 +7,17 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 //    $scope.templateId = $stateParams.templateId;
     //$scope.tabId = $stateParams.tabId;
     //get Templates
-    $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
+    $http.get('admin/ui/getDefaultTemplate').success(function (response) {
         $scope.templates = response;
     })
     function getAllTemplate() {
-        $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
+        $http.get('admin/ui/getDefaultTemplate').success(function (response) {
             $scope.templates = response;
         });
     }
-    $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
+//    $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
 //        $scope.templates = response;
-    })
+//    })
 
     $scope.getTemplateById = function (template) {
         console.log(template);
@@ -45,37 +45,60 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         }
     };
     var tabUrl;
-    if ($stateParams.templateId > 0) {
+    if ($stateParams.templateId > 0) {alert("templateId")
         tabUrl = 'admin/ui/dbTabs/' + $stateParams.templateId;
     } else {
         tabUrl = "admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId;
     }
-
     if ($stateParams.productId) {
         $http.get(tabUrl).success(function (response) {
             var getCurrentUrl;
             $scope.loadTab = false;
-            $scope.tabs = response;
-            angular.forEach($scope.tabs, function (value, key) {
-                $scope.dashboardName = value.agencyProductId.productName;
-            });
+            console.log($scope.tabs)
+            console.log($scope.tabs)
+            if (!response[0].templateId) {
+                $scope.tabs = response;
+                angular.forEach($scope.tabs, function (value, key) {
+                    $scope.dashboardName = value.agencyProductId.productName;
+                });
 
-            var setTabId;
-            if (!response) {
-                setTabId = "";
-            }
-            if (!response[0]) {
-                setTabId = "";
-            } else {
-                if ($stateParams.tabId == 0) {
-                    setTabId = response[0].id;
-                    getCurrentUrl = $scope.getCurrentPage();
+                var setTabId;
+                if (!response) {
+                    setTabId = "";
+                }
+                if (!response[0]) {
+                    setTabId = "";
                 } else {
-                    setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
-                    getCurrentUrl = $scope.getCurrentPage();
+                    if ($stateParams.tabId == 0) {
+                        setTabId = response[0].id;
+                        getCurrentUrl = $scope.getCurrentPage();
+                    } else {
+                        setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].id ? response[0].id : 0);
+                        getCurrentUrl = $scope.getCurrentPage();
+                    }
+                }
+            } else {
+                angular.forEach(response, function (value, key) {
+                    $scope.tabs.push(value.tabId);
+                    $scope.dashboardName = value.templateId.agencyProductId.productName;
+                });
+
+                var setTabId;
+                if (!response) {
+                    setTabId = "";
+                }
+                if (!response[0]) {
+                    setTabId = "";
+                } else {
+                    if ($stateParams.tabId == 0) {
+                        setTabId = response[0].tabId.id;
+                        getCurrentUrl = $scope.getCurrentPage();
+                    } else {
+                        setTabId = $stateParams.tabId ? $stateParams.tabId : (response[0].tabId ? response[0].tabId.id : 0);
+                        getCurrentUrl = $scope.getCurrentPage();
+                    }
                 }
             }
-
 //            if (getCurrentUrl === "dashboardTemplate") {
 //                alert("Template")
 //                $state.go("index.dashboardTemplate.widget", {
@@ -302,6 +325,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             templateName: tab.templateName,
             tabIds: tabIds
         }
+        console.log(data);
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
             $scope.tab = "";
             $scope.templateId = "";

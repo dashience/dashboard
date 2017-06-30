@@ -1051,11 +1051,11 @@ public class UiService {
         return column;
     }
 
-    public List getAgencyProductTabByTemplateId(Integer templateId) {
+    public List getTabByTemplateId(Integer templateId) {
         return uiDao.getTabByTemplateId(templateId);
     }
 
-    public List<DashboardTemplate> getDefaultTemplate() {
+    public List<TemplateTabs> getDefaultTemplate() {
         return uiDao.getDefaultTemplate();
     }
 
