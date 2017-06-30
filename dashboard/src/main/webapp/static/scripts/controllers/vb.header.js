@@ -8,10 +8,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
     $scope.setParamsProduct = function (product) {
+        console.log(product);
         var setTabId = 0;
-        if ($stateParams.productId != product.id) {
+        if ($stateParams.productId != product.id || product.templateId == null) {
             $stateParams.productId = product.id;
-            $stateParams.templateId = product.templateId ? product.templateId.id : 0;
+            $stateParams.templateId = product.templateId ? product.templateId.id : null;
             $state.go("index.dashboard.widget", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,

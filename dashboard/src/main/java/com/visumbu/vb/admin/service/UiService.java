@@ -92,8 +92,18 @@ public class UiService {
         return uiDao.getDashboards(user);
     }
 
-    public DashboardTabs createDashboardTabs(DashboardTabs dashboardTabs) {
-        return (DashboardTabs) uiDao.create(dashboardTabs);
+    public DashboardTabs createDashboardTabs(DashboardTabs dashboardTabs, Integer templateId, VbUser user) {
+        DashboardTabs dashboardTab = (DashboardTabs) uiDao.create(dashboardTabs);
+        TemplateTabs templateTab = new TemplateTabs();
+        templateTab.setTemplateId(uiDao.getDashboardTemplateById(templateId));
+        templateTab.setUserId(user);
+        templateTab.setTabId(dashboardTabs);
+        uiDao.saveOrUpdate(templateTab);
+        return dashboardTab;
+    }
+
+    public DashboardTemplate getTemplateById(Integer id) {
+        return uiDao.getDashboardTemplateById(id);
     }
 
     public DashboardTabs updateTab(DashboardTabs dashboardTab) {
@@ -116,6 +126,7 @@ public class UiService {
     }
 
     public DashboardTabs deleteDashboardTab(Integer id) {
+        uiDao.deleteTabFromTemplate(id);
         return uiDao.deleteDashboardTab(id);
     }
 
@@ -174,6 +185,10 @@ public class UiService {
 
     public WidgetColumn deleteWidgetColumn(Integer id) {
         return uiDao.deleteWidgetColumn(id);
+    }
+
+    public DataSet getDataSetById(Integer dataSetId) {
+        return uiDao.getDataSetById(dataSetId);
     }
 
     public TabWidget saveTabWidget(Integer tabId, TabWidgetBean tabWidgetBean) {
@@ -347,10 +362,17 @@ public class UiService {
         newDashboardTab.setTabName(dashboardTab.getTabName());
         newDashboardTab.setUserId(userId);
         newDashboardTab.setTabOrder(dashboardTab.getTabOrder());
-        
-        return null; // Have to change return statement
+        uiDao.saveOrUpdate(newDashboardTab);
+        List<TabWidget> widgets = uiDao.getWidgetsByTab(tabId);
+        for (Iterator<TabWidget> iterator = widgets.iterator(); iterator.hasNext();) {
+            TabWidget widget = iterator.next();
+            TabWidget tabWidget = duplicateWidget(widget.getId(), newDashboardTab.getId());
+            tabWidget.setTabId(newDashboardTab);
+            uiDao.saveOrUpdate(tabWidget);
+        }
+        return newDashboardTab;
     }
-    
+
     public TabWidget duplicateWidget(Integer widgetId, Integer tabId) {
 
         List<TabWidget> widgetDuplicate = uiDao.getWidget(widgetId);
@@ -401,6 +423,8 @@ public class UiService {
         id = savedTabWidget.getId();
         List<WidgetColumn> widgetColumns = uiDao.getWidgetColumnsByWidgetId(widgetId);
         List<WidgetTag> widgetTags = uiDao.getWidgetTagsByWidgetId(widgetId);
+        DataSet dataSet = tabWidgetBean.getDataSetId();
+        List<DataSetColumns> dataSetColumns = uiDao.getDataSetColumnByDatasetId(dataSet.getId());
         for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
             WidgetColumn widgetColumnBean = iterate.next();
             WidgetColumn widgetColumn = new WidgetColumn();
@@ -440,6 +464,34 @@ public class UiService {
             widgetTag.setWidgetId(savedTabWidget);
             widgetTag.setStatus(tagWidgetBean.getStatus());
             uiDao.saveOrUpdate(widgetTag);
+        }
+        // Duplicate Data Set Columns for a widget
+        for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
+            DataSetColumns dataSetColumn = iterator1.next();
+            DataSetColumns newDataSetColumn = new DataSetColumns();
+            newDataSetColumn.setId(null);
+            newDataSetColumn.setFieldName(dataSetColumn.getFieldName());
+            newDataSetColumn.setFieldType(dataSetColumn.getFieldType());
+            newDataSetColumn.setDataSetId(dataSetColumn.getDataSetId());
+            newDataSetColumn.setDisplayFormat(dataSetColumn.getDisplayFormat());
+            newDataSetColumn.setDisplayName(dataSetColumn.getDisplayName());
+            newDataSetColumn.setExpression(dataSetColumn.getExpression());
+            newDataSetColumn.setFunctionName(dataSetColumn.getFunctionName());
+            newDataSetColumn.setBaseField(dataSetColumn.getBaseField());
+            newDataSetColumn.setColumnName(dataSetColumn.getColumnName());
+            newDataSetColumn.setCustomStartDate(dataSetColumn.getCustomStartDate());
+            newDataSetColumn.setCustomEndDate(dataSetColumn.getCustomEndDate());
+            newDataSetColumn.setDateRangeName(dataSetColumn.getDateRangeName());
+            newDataSetColumn.setLastNdays(dataSetColumn.getLastNdays());
+            newDataSetColumn.setLastNdays(dataSetColumn.getLastNdays());
+            newDataSetColumn.setLastNmonths(dataSetColumn.getLastNmonths());
+            newDataSetColumn.setLastNweeks(dataSetColumn.getLastNweeks());
+            newDataSetColumn.setLastNyears(dataSetColumn.getLastNyears());
+            if (dataSetColumn.getUserId() != null) {
+                newDataSetColumn.setUserId(dataSetColumn.getUserId());
+                newDataSetColumn.setWidgetId(savedTabWidget);
+            }
+            uiDao.saveOrUpdate(newDataSetColumn);
         }
 
         return uiDao.getTabWidgetById(id);
@@ -1001,7 +1053,7 @@ public class UiService {
     public List<DataSetColumns> getDataSetColumnsByDataSetId(Integer dataSetId, Integer userId) {
         return uiDao.getDataSetColumnsByDataSetId(dataSetId, userId);
     }
-    
+
     public List<JoinDataSetCondition> getJoinDataSetConditionById(Integer id) {
         return uiDao.getJoinDataSetConditionById(id);
     }
@@ -1030,22 +1082,17 @@ public class UiService {
         for (int i = 0; i < tabs.length; i++) {
             String tabIdStr = tabs[i];
             Integer tabId = Integer.parseInt(tabIdStr);
-            DashboardTabs dashboardTab = uiDao.getTabById(tabId);
-            DashboardTabs dashboardNewTab = SerializationUtils.clone(dashboardTab);
-            dashboardNewTab.setId(null);
-            uiDao.saveOrUpdate(dashboardNewTab);
-            
+            // DashboardTabs dashboardTab = uiDao.getTabById(tabId);
+            DashboardTabs duplicateTab = duplicateTab(tabId, userId);
             TemplateTabs templateTab = new TemplateTabs();
-            templateTab.setTabId(dashboardNewTab);
             templateTab.setTemplateId(dashboardTemplate);
             templateTab.setUserId(userId);
+            templateTab.setTabId(duplicateTab);
             uiDao.saveOrUpdate(templateTab);
         }
         return dashboardTemplate;
     }
 
-    
-    
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
         List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName());
         System.out.println("dataSource" + dataSource.getName());

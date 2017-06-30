@@ -164,11 +164,15 @@ public class ProxyController {
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
+                DataSet dataSet = uiService.getDataSetById(dataSetIdInt);
+                if (dataSet.getJoinDataSetId() != null) {
+                    joinDataSetIdStr = dataSet.getJoinDataSetId().getId() + "";
+                }
             } catch (NumberFormatException e) {
 
             }
         }
-        System.out.println("dataSetId ---> " + dataSetId);
+
         if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
             try {
                 System.out.println("with joinDataSet");

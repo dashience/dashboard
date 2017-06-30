@@ -10,7 +10,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
     $scope.permission = localStorageService.get("permission");
-    console.log($scope.permission)
+    console.log($scope.permission);
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
@@ -230,7 +230,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widgetItems = response;
             console.log(response);
             if (response) {
-                $scope.productName = response[0].tabId.agencyProductId.productName;
+               // $scope.productName = response[0].tabId.agencyProductId.productName;
             }
             $http.get("admin/tag/getAllFav/").success(function (favResponse) {
                 widgetItems.forEach(function (value, key) {
@@ -879,6 +879,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectX1Axis = function (widgetObj, column) {
+        $scope.dispHideBuilder = true;
         var exists = false;
         angular.forEach(widgetObj.columns, function (value, key) {
             if (column.fieldName === value.fieldName) {
@@ -892,10 +893,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             column.xAxis = 1;
             widgetObj.columns.push(column);
         }
+        $timeout(function () {
+            $scope.queryBuilderList = widgetObj;
+            resetQueryBuilder();
+        }, 50);
     };
 
 
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
+        $scope.dispHideBuilder = true;
         var groupVar = [];
 //        if (chartTypeName == 'stackedbar') {
         angular.forEach(y1data, function (value, key) {
@@ -924,6 +930,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     widget.columns.push(value);
                 }
             }
+            $timeout(function () {
+                $scope.queryBuilderList = widget;
+                resetQueryBuilder();
+            }, 50);
         });
 //        }
 //        angular.forEach(y1data, function (value, key) {
@@ -1018,6 +1028,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //    };
 
     $scope.selectY2Axis = function (widget, y2data) {
+        $scope.dispHideBuilder = true;
         angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
@@ -1040,8 +1051,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }
         });
+        $timeout(function () {
+            $scope.queryBuilderList = widget;
+            resetQueryBuilder();
+        }, 50);
     };
-
+    
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
         if (yAxisItems.length > 0) {
             yAxisItems.removeItem = column.fieldName;
@@ -1087,6 +1102,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectPieChartX = function (widget, column) {
+         $scope.dispHideBuilder = true;
         if (!column) {
             return;
         }
@@ -1103,9 +1119,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             column.xAxis = 1;
             widget.columns.push(column);
         }
+         $timeout(function () {
+            $scope.queryBuilderList = widget;
+            resetQueryBuilder();
+        }, 50);
     };
 
     $scope.selectPieChartY = function (widget, column) {
+                 $scope.dispHideBuilder = true;
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
             if (column.fieldName == value.fieldName) {
@@ -1119,6 +1140,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             column.yAxis = 1;
             widget.columns.push(column);
         }
+         $timeout(function () {
+            $scope.queryBuilderList = widget;
+            resetQueryBuilder();
+        }, 50);
     };
 
     function resetQueryBuilder() {
@@ -1724,11 +1749,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             scope.showTotal = function () {
                 scope.totalShown = 1;
                 return "Total :"
-            }
+            };
             scope.initTotalPrint = function () {
                 scope.totalShown = 0;
                 return "";
-            }
+            };
             scope.hideParent = function (grouping, hideStatus) {
                 if (!grouping)
                     return;
@@ -1737,7 +1762,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         value.$hideRows = hideStatus;
                         scope.hideParent(value, hideStatus);
                         scope.hideParent(value.data, false)
-                    }
+                    };
                 });
             };
 
@@ -2822,7 +2847,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 if (!getWidgetObj.accountId) {
                     setWidgetAccountId = $stateParams.accountId;
                 } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+                    setWidgetAccountId = getWidgetObj.accountId.id;
                 }
 
                 var url = "admin/proxy/getData?";

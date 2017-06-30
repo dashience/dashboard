@@ -773,4 +773,11 @@ public class UiDao extends BaseDao {
         query.setParameter("agency", agency);
         return query.list();
     }
+
+    public void deleteTabFromTemplate(Integer id) {
+        String queryStr = "DELETE from TemplateTabs t where t.tabId.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", id);
+        query.executeUpdate();
+    }
 }
