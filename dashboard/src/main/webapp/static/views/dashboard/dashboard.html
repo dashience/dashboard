@@ -23,18 +23,24 @@
         z-index: 9999;
     }
     .saveTemplate{
-        min-width: 110px !important;
+        min-width: 30px !important;
     }
     input.templateInput{
         margin-top: 5px !important;
         padding: 0px 2px!important;
     }
-    .select-template .selectize-dropdown {
-        height: 60px;
-        overflow-y: scroll;
-        z-index: 9999;
-        position: relative;
-    }
+/*    .select2-container {
+        width: 172px !important;
+        cursor: pointer;
+        z-index: 99999;
+    }*/
+
+        .select-template .selectize-dropdown {
+            height: 60px;
+            overflow-y: scroll;
+            z-index: 9999;
+            position: relative;
+        }
 
 </style>
 <div>
@@ -56,6 +62,7 @@
                                                         </button>
                                                     </div>-->
                     <div class="col-sm-12" ng-if="isAdmin != 'admin'">
+
                         <div class="form-group select-template">
                             <ui-select ng-model="selectTemplate.selected" on-select="getTemplateById(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize">
                                 <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
@@ -64,25 +71,37 @@
                                 </ui-select-choices>
                             </ui-select>
                         </div>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-xs" ng-click="updateTemplate(template)">Save</button>
-                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu saveTemplate">
-                                <div class="col-md-12"> 
-                                    <div class="form-group">
-                                        <input class="form-control templateInput col-md-8" type="text" ng-model="template.templateName">
+
+<!--                                                <div class="col-sm-4">
+                                                    <div class="form-group select-template">
+                                                        <select  ui-select2  ng-model="selectTemplate.selected"  
+                                                                 ng-options ="template as template.templateName for template in templates" 
+                                                                 ng-change="getTemplateById(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" 
+                                                                 theme="selectize" placeholder="Select Template">
+                                                            <option></option>
+                                                        </select>
+                                                    </div>
+                                                </div>-->
+
+                        <!--<div class="col-sm-8">-->
+                            <div class="btn-group pull-right">
+                                <!--<button type="button" class="btn btn-default btn-xs" ng-click="updateTemplate(template)">Save</button>-->
+                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu" style="width:20px">
+                                    <div class="col-sm-2">
+                                        <input  type="text" ng-model="template.templateName" style="width:125px;"><br>
                                         <button class="btn btn-success btn-xs" ng-click="saveTemplate(template);">SaveAs</button>
                                     </div>
+                                    <!--<li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>-->
                                 </div>
-                                <!--<li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li>-->
                             </div>
-                        </div>
+                        <!--</div>-->
                     </div>
                 </div>
                 <h2 class="font-bold m-b-xs">

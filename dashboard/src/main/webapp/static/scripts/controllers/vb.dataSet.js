@@ -1733,6 +1733,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
         {
+            console.log($scope.facebookPerformance);
+            console.log($scope.dataSet.reportName);
+            
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;

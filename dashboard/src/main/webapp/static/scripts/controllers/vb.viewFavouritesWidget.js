@@ -162,4 +162,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.setTickerFn = function (tickerFn) {
         $scope.directiveTickerFn = tickerFn;
     };
+    $scope.setFunnelFn = function (funnelFn) {
+        $scope.directiveFunnelFn = funnelFn;
+    };
 });

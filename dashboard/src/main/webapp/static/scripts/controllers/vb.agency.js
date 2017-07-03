@@ -103,7 +103,7 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             $scope.agencyById = data;
-            console.log(response)
+            console.log(response);
             getAgency();
             if (response.status == true) {
                 $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
@@ -125,7 +125,7 @@ app.controller('AgencyController', function ($scope, $http) {
     };
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
-        getAgencyLicence(agency)
+        getAgencyLicence(agency);
         $scope.agencyById = agency;
 
         var data = {

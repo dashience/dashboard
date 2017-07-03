@@ -119,9 +119,9 @@ public class TagDao extends BaseDao {
     }
 
     public List<TabWidget> findAllWidgetsByTag(VbUser user, Tag tag) {
-        String queryStr = "select w.widgetId from WidgetTag w where w.userId = :user and w.tagId = :tag";
+        String queryStr = "select w.widgetId from WidgetTag w where w.userId = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("tag", tag);
+//        query.setParameter("tag", tag);
         query.setParameter("user", user);
         return query.list();
     }   

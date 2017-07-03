@@ -7,22 +7,23 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 //    $scope.templateId = $stateParams.templateId;
 //    $scope.tabId = $stateParams.tabId;
 
+    $scope.selectTemplate = {};
     //get Templates
     function getAllTemplate() {
         $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
             $scope.templates = response;
+            var template = $filter('filter')(response, {id: $stateParams.templateId})[0];
+            $scope.selectTemplate.selected = template;
+            console.log($scope.selectTemplate.selected);
         });
     }
     ;
 
     getAllTemplate();
 
-    $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
-//        $scope.templates = response;
-    });
-
     $scope.getTemplateById = function (template) {
         console.log(template);
+        console.log($stateParams.templateId);
 //        $stateParams.accountId = template.accountId.id;
 //        $stateParams.accountName = template.accountId.accountName;
         $stateParams.productId = template.agencyProductId.id;
@@ -40,6 +41,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
     $scope.getCurrentPage = function () {
         var url = window.location.href;
+        console.log(url);
         if (url.indexOf("dashboardTemplate") > 0) {
             return "dashboardTemplate";
         }
@@ -48,6 +50,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         }
     };
     var tabUrl;
+    console.log($stateParams.templateId);
     if ($stateParams.templateId > 0) {
         console.log("templateId");
         tabUrl = 'admin/ui/dbTabs/' + $stateParams.templateId;
@@ -131,7 +134,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         });
     }
 
-    $scope.toDate = function (strDate) {
+    $scope.toDate = function (strDatebulbultara
+            ) {
         if (!strDate) {
             return new Date();
         }
@@ -317,7 +321,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.editedItem = null;
     };
     $scope.templateId = null;
-    
+
     //save Template
     $scope.saveTemplate = function (tab) {
         console.log(tab);

@@ -767,9 +767,8 @@ public class UiDao extends BaseDao {
     }
 
     public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
-        String queryStr = "SELECT d from DashboardTemplate d where d.agencyProductId = :agencyProduct and d.agencyId = :agency";
+        String queryStr = "SELECT d from DashboardTemplate d where d.agencyId = :agency";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyProduct", agencyProduct);
         query.setParameter("agency", agency);
         return query.list();
     }
