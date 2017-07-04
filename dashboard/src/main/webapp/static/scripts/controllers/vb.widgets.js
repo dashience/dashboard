@@ -456,7 +456,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.afterLoadWidgetColumns = true;
             console.log(response);
             if ((chartTypeName ? chartTypeName : widgetObj.chartType) !== 'table') {
-                widget.columns = response.columnDefs;
+              //  widget.columns = response.columnDefs;
                 $scope.collectionFields = response.columnDefs;
             } else {
                 $scope.collectionFields = response.columnDefs;
@@ -546,6 +546,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.selectChart = function (chartType) {
+        $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showFilter = false;
@@ -555,6 +556,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.showListOfColumns = function () {
+        $scope.showSortBy = false;
         $scope.loadingColumnsGif = true;
         $scope.showFilter = false;
         $scope.showColumnDefs = true;
@@ -563,20 +565,32 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.showFilterList = function () {
+        $scope.showFilter = true;
         $scope.loadingColumnsGif = true;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
-        $scope.showFilter = true;
         $scope.showDateRange = false;
+        $scope.showSortBy = false;
     };
 
     $scope.showEditor = function () {
+        $scope.showSortBy = false;
         $scope.showPreviewChart = true;
         $scope.showDateRange = false;
     };
 
     $scope.showDateDurations = function () {
+        $scope.showSortBy = false;
         $scope.showDateRange = true;
+        $scope.loadingColumnsGif = false;
+        $scope.showFilter = false;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+    };
+    
+    $scope.showSortingColumn = function(){
+        $scope.showSortBy = true;
+        $scope.showDateRange = false;
         $scope.loadingColumnsGif = false;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
@@ -589,6 +603,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
+        $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showDateRange = false;
         $scope.chartTypeName = null;
@@ -2589,17 +2604,17 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-                }
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
 
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
                             "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -2891,12 +2906,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.id;
-                }
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.id;
+//                }
 
                 var url = "admin/proxy/getData?";
                 if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
@@ -2911,7 +2926,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (barChartDataSource.userId ? barChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
@@ -3203,16 +3218,16 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
                 var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-                }
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
 
                 scope.refreshPieChart = function () {
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (pieChartDataSource.userId ? pieChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
@@ -3502,17 +3517,17 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-                }
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
 
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (areaChartDataSource.userId ? areaChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
@@ -3946,7 +3961,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             funnelSource: '@',
             funnelId: '@',
             funnelColumns: '@',
-            funnelTitleName: '@'
+            funnelTitleName: '@',
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
             scope.loadingFunnel = true;
@@ -3997,11 +4013,12 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             } else {
                 dataSourcePassword = '';
             }
+            var getWidgetObj = JSON.parse(scope.widgetObj);
             scope.refreshFunnel = function () {
                 console.log("funnel --- > " + scope.funnelId);
                 $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + funnelDataSource.id +
-                        "&accountId=" + $stateParams.accountId +
+                        "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                         "&driver=" + funnelDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + funnelDataSource.reportName +
                         "&location=" + $stateParams.locationId +

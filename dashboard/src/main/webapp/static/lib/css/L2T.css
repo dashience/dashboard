@@ -1729,7 +1729,7 @@ body {
     clear: both;
     text-decoration: underline;
     position: relative;
-/*    min-height: 45px;*/
+    /*    min-height: 45px;*/
     border: 1px solid transparent;
 }
 .hpanel .hbuilt.panel-heading {
@@ -2543,7 +2543,7 @@ h6 {
     font-size: 20px;
     font-weight: 600;
     padding: 2px;
-border-bottom: 1px solid #686868;
+    border-bottom: 1px solid #686868;
     color:#686868;
 }
 
@@ -3771,7 +3771,7 @@ button.close {
 
 .text-capitalize {
     padding: 2px;
-border-bottom: 1px solid #686868;
+    border-bottom: 1px solid #686868;
 }
 
 .hpanel > .panel-heading {
@@ -4128,7 +4128,7 @@ label {
 }
 
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-padding: 3.5px 5px;
+    padding: 3.5px 5px;
 }
 .table > thead > tr > td {
     font-size:12px !important;
