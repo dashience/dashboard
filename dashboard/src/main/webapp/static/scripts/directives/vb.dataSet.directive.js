@@ -9,27 +9,27 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     // tableFooter:'@'
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
-                '<div ng-if="ajaxLoadingCompleted">' +
-                '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
-                '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
-                '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
-                '<div id="dataSet" class="modal" role="dialog">' +
-                '<div class="modal-dialog modal-lg">' +
-                '<div class="modal-content">' +
-                '<div class="modal-header">' +
-                '<button type="button" class="close" ng-click="dataSetFieldsClose(dataSetColumn)" data-dismiss="modal">&times;</button>' +
-                '<h4 class="modal-title">Derived Column</h4>' +
-                '</div>' +
-                '<div class="modal-body" style="overflow: visible;">' +
-                '<form name="dataSetForm" class="form-horizontal">' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Field Name</label>' +
-                '<div class="col-md-3">' +
-                '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
-                '</div>' +
-                '<div class="col-md-3">' +
-                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
-                '</div>' +
+        '<div ng-if="ajaxLoadingCompleted">' +
+        '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
+        '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
+        '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
+        '<div id="dataSet" class="modal" role="dialog">' +
+        '<div class="modal-dialog modal-lg">' +
+        '<div class="modal-content">' +
+        '<div class="modal-header">' +
+        '<button type="button" class="close" ng-click="dataSetFieldsClose(dataSetColumn)" data-dismiss="modal">&times;</button>' +
+        '<h4 class="modal-title">Derived Column</h4>' +
+        '</div>' +
+        '<div class="modal-body" style="overflow: visible;">' +
+        '<form name="dataSetForm" class="form-horizontal">' +
+        '<div class="form-group">' +
+        '<label class="col-md-3">Field Name</label>' +
+        '<div class="col-md-3">' +
+        '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
+        '</div>' +
+        '<div class="col-md-3">' +
+        '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+        '</div>' +
 //                '<label class="col-md-2">Base Field</label>' +
 //                '<div class="col-md-4">' +
 //                '<select class="form-control" ng-model="dataSetColumn.baseField">' +
@@ -282,55 +282,55 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
 //                '</div>' +
 //                '</div>' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Expression</label>' +
-                '<div class="col-md-8">' +
-                '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
-                'class="form-control code expression" ng-model="dataSetColumn.expression" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
-                '</div>' +
-                '<div class="col-md-1">' +
-                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(dataSetColumn)"></i>' +
-                '</div>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label class="col-md-3">Field Type</label>' +
-                '<div class="col-md-3">' +
-                '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
-                '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
-                '{{fieldType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '<label class="col-md-2">Format</label>' +
-                '<div class="col-md-4">' +
-                '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
-                '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
-                '{{formatType.name}}' +
-                '</option>' +
-                '</select>' +
-                '</div>' +
-                '</div>' +
-                '</form>' +
-                '</div>' +
-                '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError || !((dataSetColumn.expression || (dataSetColumn.functionName && dataSetColumn.columnName)) && dataSetColumn.fieldName && dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
-                '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)">Close</button>' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '</div>' +
-                '<button ng-if="col.functionName != null|| col.expression != null" type="button" ng-click=deleteDerivedDataset(col) class="btn btn-default btn-xs"><i class="fa fa-trash"></i></button>' +
-                '</div>' +
-                '</th>' +
-                '</tr></thead>' +
-                '<tbody ng-repeat="tableRow in tableRows">' +
-                '<tr class="text-capitalize">' +
-                '<td ng-repeat="col in dataSetColumns">' +
-                '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
-                '</td>' +
-                '</tbody>' +
-                '</table>' +
-                '</div>',
+        '<div class="form-group">' +
+        '<label class="col-md-3">Expression</label>' +
+        '<div class="col-md-8">' +
+        '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
+        'class="form-control code expression" ng-model="dataSetColumn.expression" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
+        '</div>' +
+        '<div class="col-md-1">' +
+        '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearExpression(dataSetColumn)"></i>' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<label class="col-md-3">Field Type</label>' +
+        '<div class="col-md-3">' +
+        '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
+        '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
+        '{{fieldType.name}}' +
+        '</option>' +
+        '</select>' +
+        '</div>' +
+        '<label class="col-md-2">Format</label>' +
+        '<div class="col-md-4">' +
+        '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
+        '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
+        '{{formatType.name}}' +
+        '</option>' +
+        '</select>' +
+        '</div>' +
+        '</div>' +
+        '</form>' +
+        '</div>' +
+        '<div class="modal-footer">' +
+        '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError || !((dataSetColumn.expression || (dataSetColumn.functionName && dataSetColumn.columnName)) && dataSetColumn.fieldName && dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
+        '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)">Close</button>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '</div>' +
+        '<button ng-if="col.functionName != null|| col.expression != null" type="button" ng-click=deleteDerivedDataset(col) class="btn btn-default btn-xs"><i class="fa fa-trash"></i></button>' +
+        '</div>' +
+        '</th>' +
+        '</tr></thead>' +
+        '<tbody ng-repeat="tableRow in tableRows">' +
+        '<tr class="text-capitalize">' +
+        '<td ng-repeat="col in dataSetColumns">' +
+        '<div>{{format(col, tableRow[col.fieldName])}}</div>' +
+        '</td>' +
+        '</tbody>' +
+        '</table>' +
+        '</div>',
         link: function (scope, element, attr) {
             scope.startDate = $stateParams.startDate;
             scope.endDate = $stateParams.endDate;
@@ -415,33 +415,33 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 driver = dataSourcePath.dataSourceId.sqlDriver;
                 dataSourceType = dataSourcePath.dataSourceId.dataSourceType;
                 userName = dataSourcePath.dataSourceId.userName;
-            }
-            scope.dataSetItems = function () {
-                $http.get(url + 'connectionUrl=' + connectionUrl +
-                        "&dataSourceId=" + dataSourceId +
-                        "&dataSetId=" + dataSourcePath.id +
-                        "&joinDataSetId=" + dataSourcePath.joinDataSetId +
-                        "&accountId=" + $stateParams.accountId +
-                        "&dataSetReportName=" + dataSourcePath.reportName +
-                        "&timeSegment=" + setTimeSegment +
-                        "&filter=" + dataSourcePath.networkType +
-                        "&productSegment=" + setProductSegment +
-                        "&driver=" + driver +
-                        "&dataSourceType=" + dataSourceType +
-                        "&location=" + $stateParams.locationId +
-                        "&startDate=" + $stateParams.startDate +
-                        "&endDate=" + $stateParams.endDate +
-                        '&username=' + userName +
-                        '&password=' + dataSourcePassword +
-                        '&url=' + dataSourcePath.url +
-                        '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
-                    scope.dataSetColumns = [];
-                    if (dataSourcePath.id == null) {
-                        scope.ajaxLoadingCompleted = true;
-                        scope.loadingTable = false;
-                        scope.dataSetColumns = response.columnDefs;
-                    }
-                    scope.tableColumns = response.columnDefs;
+        }
+        scope.dataSetItems = function () {
+        $http.get(url + 'connectionUrl=' + connectionUrl +
+                "&dataSourceId=" + dataSourceId +
+                "&dataSetId=" + dataSourcePath.id +
+                "&joinDataSetId=" + dataSourcePath.joinDataSetId +
+                "&accountId=" + $stateParams.accountId +
+                "&dataSetReportName=" + dataSourcePath.reportName +
+                "&timeSegment=" + setTimeSegment +
+                "&filter=" + dataSourcePath.networkType +
+                "&productSegment=" + setProductSegment +
+                "&driver=" + driver +
+                "&dataSourceType=" + dataSourceType +
+                "&location=" + $stateParams.locationId +
+                "&startDate=" + $stateParams.startDate +
+                "&endDate=" + $stateParams.endDate +
+                '&username=' + userName +
+                '&password=' + dataSourcePassword +
+                '&url=' + dataSourcePath.url +
+                '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
+        scope.dataSetColumns = [];
+                if (dataSourcePath.id == null) {
+        scope.ajaxLoadingCompleted = true;
+                scope.loadingTable = false;
+                scope.dataSetColumns = response.columnDefs;
+        }
+        scope.tableColumns = response.columnDefs;
 //                    scope.tableRows = response.data;
 
 //                    if (setTimeSegment == "dayOfWeek") {

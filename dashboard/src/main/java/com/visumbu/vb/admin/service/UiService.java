@@ -193,7 +193,10 @@ public class UiService {
 
     public TabWidget saveTabWidget(Integer tabId, TabWidgetBean tabWidgetBean) {
         VbUser createByUserId = tabWidgetBean.getCreatedBy();
-        Integer createByUserIdInt = createByUserId.getId();
+        Integer createByUserIdInt = null;
+        if(createByUserId!= null){
+         createByUserIdInt = createByUserId.getId();
+        }
         Integer currentUserId = tabWidgetBean.getTemplateUserId();
         System.out.println("createdBy---->" + createByUserIdInt);
         System.out.println("currentUserId---->" + currentUserId);

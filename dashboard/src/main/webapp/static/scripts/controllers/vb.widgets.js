@@ -10,7 +10,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
     $scope.permission = localStorageService.get("permission");
-    console.log($scope.permission);
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
@@ -18,7 +17,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
     $scope.userId = $cookies.getObject("userId");
-    console.log($scope.userId);
+    $scope.templateId = $stateParams.templateId;
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
@@ -253,13 +252,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
     $scope.setWidgetItems = function (widget) {
-//        console.log(widget.accountId.id)
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
         $scope.tickerItem = [];
         $scope.groupingFields = [];
+        $scope.funnelItem = [];
         $scope.widgetObj = widget;
         $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
@@ -283,6 +282,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
             if (exists == false) {
                 $scope.tickerItem.push({displayName: value.displayName, fieldName: value.fieldName})
+            }
+
+            if (widget.chartType == 'funnel') {
+                $scope.funnelItem.push(value)
             }
         });
 
@@ -455,7 +458,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.afterLoadWidgetColumns = true;
             console.log(response);
             if ((chartTypeName ? chartTypeName : widgetObj.chartType) !== 'table') {
-                widget.columns = response.columnDefs;
+                //  widget.columns = response.columnDefs;
                 $scope.collectionFields = response.columnDefs;
             } else {
                 $scope.collectionFields = response.columnDefs;
@@ -545,6 +548,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.selectChart = function (chartType) {
+        $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showFilter = false;
@@ -554,6 +558,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.showListOfColumns = function () {
+        $scope.showSortBy = false;
         $scope.loadingColumnsGif = true;
         $scope.showFilter = false;
         $scope.showColumnDefs = true;
@@ -562,20 +567,32 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.showFilterList = function () {
+        $scope.showFilter = true;
         $scope.loadingColumnsGif = true;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
-        $scope.showFilter = true;
         $scope.showDateRange = false;
+        $scope.showSortBy = false;
     };
 
     $scope.showEditor = function () {
+        $scope.showSortBy = false;
         $scope.showPreviewChart = true;
         $scope.showDateRange = false;
     };
 
     $scope.showDateDurations = function () {
+        $scope.showSortBy = false;
         $scope.showDateRange = true;
+        $scope.loadingColumnsGif = false;
+        $scope.showFilter = false;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+    };
+
+    $scope.showSortingColumn = function () {
+        $scope.showSortBy = true;
+        $scope.showDateRange = false;
         $scope.loadingColumnsGif = false;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
@@ -588,6 +605,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
+        $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showDateRange = false;
         $scope.chartTypeName = null;
@@ -608,7 +626,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectColumnItem = function (obj, widget) {
         $scope.dispHideBuilder = true;
-        // obj.displayName = obj.fieldName;
         obj.columnsButtons = true;
         var checkColumnDef = obj.selectColumnDef;
         if (checkColumnDef === 1) {
@@ -1109,40 +1126,38 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 // Funnel Format
     $scope.funnel = function (widget, column) {
         $scope.dispHideBuilder = true;
-        $scope.editChartType = null;
-        var newColumns = [];
+        var exists = false;
         if (column.length == 0) {
             widget.columns = "";
         } else {
             angular.forEach(column, function (value, key) {
-                console.log($scope.collectionFields)
-                angular.forEach($scope.collectionFields, function (val, header) {
-                    console.log(val.fieldName);
-                    if (val.fieldName === value.fieldName) {
-                        val.displayFormat = value.displayFormat;
-                        newColumns.unshift(val);
+                var checkObj = $.grep(widget.columns, function (val) {
+                    if (value.fieldName === val.fieldName) {
+                        exists = true;
+                    } else {
+                        exists = false;
                     }
+                    return exists;
                 });
-                widget.columns = newColumns;
-                console.log(newColumns)
+                if (checkObj == false) {
+                    widget.columns.push(value)
+                }
             });
         }
         $timeout(function () {
             $scope.queryBuilderList = widget;
             resetQueryBuilder();
         }, 50);
-//        var chartType = widget;
-//        $timeout(function () {
-//            $scope.previewChart(chartType, widget);
-//        }, 50);
     };
 
-    $scope.removedByFunnel = function (widget, column, funnelItem) {
-        $scope.editChartType = null;
-        $scope.funnel(widget, funnelItem);
-        var chartType = widget;
+    $scope.removedByFunnel = function (widget, removeItem, funnelItem) {
+        $scope.dispHideBuilder = true;
+        var getIndex = widget.columns.indexOf(removeItem)
+        widget.columns.splice(getIndex, 1)
+        //$scope.funnel(widget, funnelItem);   
         $timeout(function () {
-            $scope.editChartType = "funnel";
+            $scope.queryBuilderList = widget;
+            resetQueryBuilder();
         }, 50);
     };
 
@@ -1481,7 +1496,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        });
 //    };
     $scope.save = function (widget) {
-        console.log(widget);
         if (widget.chartType != 'text') {
             if ($('.query-builder').queryBuilder('getRules')) {
                 $scope.jsonData = JSON.stringify($('.query-builder').queryBuilder('getRules'));
@@ -1499,11 +1513,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.customStartDate = "";
             $scope.customEndDate = "";
         }
-        console.log($scope.customStartDate);
-        console.log($scope.customEndDate);
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
-        console.log(widget.columns);
         angular.forEach(widget.columns, function (value, key) {
             var hideColumn = value.columnHide;
             if (value.groupPriority > 0) {
@@ -1550,9 +1561,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSetTypeId = 0;
         }
         if (widget.allAccount === 1) {
-            widget.accountId = null;
-        } else {
             widget.accountId = parseInt($stateParams.accountId);
+        } else {
+            widget.accountId = null;// parseInt($stateParams.accountId);
         }
         var data = {
             id: widget.id,
@@ -1584,9 +1595,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             createdBy: widget.createdBy
         };
         widget.chartType = "";
-        console.log(data);
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            console.log(response)
             if (!response) {
                 var dialog = bootbox.dialog({
                     title: 'Alert',
@@ -1601,6 +1610,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 return;
             }
             widget.chartType = data.chartType;
+            widget.widgetTitle = data.widgetTitle;
             $scope.chartTypeName = "";
             widget = data;
             widget.dataSetId = data.dataSetId;
@@ -1608,7 +1618,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.tableFooter = data.tableFooter;
             widget.columns = data.widgetColumns;
             $scope.derivedColumns = [];
-            console.log($scope.collectionFields);
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
@@ -1637,12 +1646,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             var colData = {
                 tableColumns: $scope.derivedColumns
             };
-            console.log(colData);
             if (!response.id) {
                 return;
             }
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
-                console.log(response);
             });
             $('.showEditWidget').modal('hide');
             if (!data.id) {
@@ -2588,17 +2595,17 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-                }
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
 
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
                             "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -2890,12 +2897,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.id;
-                }
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.id;
+//                }
 
                 var url = "admin/proxy/getData?";
                 if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
@@ -2910,7 +2917,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (barChartDataSource.userId ? barChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
@@ -3202,16 +3209,16 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
                 var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-                }
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
 
                 scope.refreshPieChart = function () {
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (pieChartDataSource.userId ? pieChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
@@ -3501,17 +3508,17 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-                }
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
 
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (areaChartDataSource.userId ? areaChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
@@ -3945,7 +3952,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             funnelSource: '@',
             funnelId: '@',
             funnelColumns: '@',
-            funnelTitleName: '@'
+            funnelTitleName: '@',
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
             scope.loadingFunnel = true;
@@ -3996,11 +4004,12 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             } else {
                 dataSourcePassword = '';
             }
+            var getWidgetObj = JSON.parse(scope.widgetObj);
             scope.refreshFunnel = function () {
                 console.log("funnel --- > " + scope.funnelId);
                 $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + funnelDataSource.id +
-                        "&accountId=" + $stateParams.accountId +
+                        "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                         "&driver=" + funnelDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + funnelDataSource.reportName +
                         "&location=" + $stateParams.locationId +

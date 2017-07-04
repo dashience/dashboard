@@ -7,26 +7,58 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
+
     $scope.setParamsProduct = function (product) {
-        console.log(product);
         var setTabId = 0;
-        if ($stateParams.productId != product.id || product.templateId == null) {
-            $stateParams.productId = product.id;
-            $stateParams.templateId = product.templateId ? product.templateId.id : null;
-            $state.go("index.dashboard.widget", {
-                accountId: $stateParams.accountId,
-                accountName: $stateParams.accountName,
-                productId: $stateParams.productId,
-                templateId: $stateParams.templateId,
-                tabId: setTabId,
-                startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+        var productId = product.id;
+        var lastTemplateId;
+        var setTemplateId = product.templateId ? product.templateId.id : 0;
+        if ($stateParams.productId != product.id) {
+            $http.get("admin/template/getProduct/" + productId).success(function (response) {
+                var responseObj = response;
+                if (!responseObj) {
+                    return;
+                }
+                responseObj.forEach(function (val, key) {
+                    lastTemplateId = val.templateId.id;
+                });
+                $stateParams.productId = product.id;
+                $stateParams.templateId = lastTemplateId ? lastTemplateId : setTemplateId;//product.templateId ? product.templateId.id : 0;
+                $state.go("index.dashboard.widget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    productId: $stateParams.productId,
+                    templateId: $stateParams.templateId,
+                    tabId: setTabId,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
             });
         } else {
-            return;//$stateParams.productId = product.id;
+            return;
         }
-
     };
+
+//    $scope.setParamsProduct = function (product) {
+//        console.log(product);
+//        var setTabId = 0;
+//        if ($stateParams.productId != product.id) {
+//            $stateParams.productId = product.id;
+//            $stateParams.templateId = product.templateId ? product.templateId.id : 0;
+//            $state.go("index.dashboard.widget", {
+//                accountId: $stateParams.accountId,
+//                accountName: $stateParams.accountName,
+//                productId: $stateParams.productId,
+//                templateId: $stateParams.templateId,
+//                tabId: setTabId,
+//                startDate: $stateParams.startDate,
+//                endDate: $stateParams.endDate
+//            });
+//        } else {
+//            return;//$stateParams.productId = product.id;
+//        }
+//
+//    };
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
@@ -64,7 +96,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $scope.getAccountId = function (account) {
         if ($stateParams.accountId != account.accountId.id) {
-            $stateParams.tabId = "";
+            $stateParams.tabId = 0;
+            $stateParams.templateId = 0;
         }
         if (account.accountId.logo) {
             $scope.accountLogo = account.accountId.logo;

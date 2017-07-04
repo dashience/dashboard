@@ -12,7 +12,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     function getAllTemplate() {
         $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
             $scope.templates = response;
-            var template = $filter('filter')(response, {id: $stateParams.templateId})[0];
+            var template = "";
+            ///alert($stateParams.templateId)
+            if ($stateParams.templateId != 0) {
+                template = $filter('filter')(response, {id: $stateParams.templateId})[0];
+            }
             $scope.selectTemplate.selected = template;
             console.log($scope.selectTemplate.selected);
         });
@@ -22,8 +26,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     getAllTemplate();
 
     $scope.getTemplateById = function (template) {
-        console.log(template);
-        console.log($stateParams.templateId);
 //        $stateParams.accountId = template.accountId.id;
 //        $stateParams.accountName = template.accountId.accountName;
         $stateParams.productId = template.agencyProductId.id;
@@ -32,7 +34,28 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.accountName = $stateParams.accountName;
         $scope.productId = $stateParams.productId;
         $scope.tempObj = template;
+
+        var data = {
+            accountId: parseInt($stateParams.accountId),
+            productId: $stateParams.productId,
+            templateId: template.id
+        };
+
+        $http({method: 'POST', url: 'admin/template/productAccountUserTemplate', data: data})
     };
+
+//    $scope.getTemplateById = function (template) {
+//        console.log(template);
+//        console.log($stateParams.templateId);
+////        $stateParams.accountId = template.accountId.id;
+////        $stateParams.accountName = template.accountId.accountName;
+//        $stateParams.productId = template.agencyProductId.id;
+//        $scope.templateId = template.id;
+//        $scope.accountId = $stateParams.accountId;
+//        $scope.accountName = $stateParams.accountName;
+//        $scope.productId = $stateParams.productId;
+//        $scope.tempObj = template;
+//    };
 
     //product tabs
     $scope.tabs = [];
