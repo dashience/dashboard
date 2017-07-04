@@ -488,7 +488,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         $http.get("admin/ui/getDataSetColumnsByDataSetId/" + dataSourcePath.id).success(function (resp) {
                             scope.ajaxLoadingCompleted = true;
                             scope.loadingTable = false;
-                            console.log(resp)
+                            console.log(resp);
                             scope.dataSetColumns = [];
                             if (resp == "" || resp == null) {
                                 scope.dataSetColumns = scope.tableColumns;

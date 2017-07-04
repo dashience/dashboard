@@ -3,25 +3,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $stateProvider
             .state("index", {
                 url: "/index",
-                templateUrl: "static/views/vb.index.html",
-                //controller: "IndexController"
+                templateUrl: "static/views/vb.index.html"
+                        //controller: "IndexController"
             })
             .state("index.dashboard", {
                 url: "/dashboard/:accountId/:accountName/:productId/:templateId",
                 templateUrl: "static/views/dashboard/dashboard.html",
-                controller: "UiController"
+                controller: "UiController",
             })
-            .state("index.dashboardTemplate", {
-                url: "/dashboardTemplate/:accountId/:accountName/:productId/:templateId",
-                templateUrl: "static/views/dashboardTemplate/dashboardTemplate.html",
-                controller: "UiController"
-            })
+
             .state("index.dashboard.widget", {
-                url: "/widget/:tabId?:startDate/:endDate",
-                templateUrl: "static/views/dashboard/widgets.html",
-                controller: 'WidgetController'
-            })
-            .state("index.dashboardTemplate.widget", {
                 url: "/widget/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
@@ -76,7 +67,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //            })
             .state("index.schedulerIndex", {
                 url: "/schedulerIndex/:accountId/:accountName",
-                templateUrl: "static/views/scheduler/schedulerIndex.html",
+                templateUrl: "static/views/scheduler/schedulerIndex.html"
 //                controller: 'SchedulerController'
             })
             .state("index.schedulerIndex.scheduler", {
@@ -149,8 +140,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('index.dashboard');
     });
-
-
 //    $routeProvider.when('/viewPdf', {
 //        url: '/viewPdf/:accountId/:accountName/:tabId',
 //        templateUrl: 'static/views/pdf/vb.pdf.html'});
@@ -158,13 +147,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 });
 app.run(['$window', '$rootScope', '$stateParams', '$state',
     function ($window, $rootScope, $stateParams, $state) {
-        console.log($stateParams)
         //$rootScope.accountNameByPdf = $stateParams.accountName; 
 
         $rootScope.goBack = function () {
             $window.history.back();
         };
-
         $rootScope.setParamByTemplateId = function (template) {
             if ($stateParams.templateId != template.id) {
                 $state.go("index.dashboard.widget", {
@@ -174,15 +161,14 @@ app.run(['$window', '$rootScope', '$stateParams', '$state',
                     templateId: template.id,
                     tabId: 0,
                     startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate})
+                    endDate: $stateParams.endDate
+                });
             }
-            $rootScope.setTmpIdByTab(template)
+            $rootScope.setTmpIdByTab(template);
             $stateParams.templateId = template.id;
         };
-
         $rootScope.setTmpIdByTab = function (template) {
             $stateParams.templateId = template.id;
-            this.rootTemplateId = template.id;//$stateParams.templateId;
+            this.rootTemplateId = template.id; //$stateParams.templateId;
         };
-
     }]);

@@ -981,11 +981,6 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
         widget.lastNmonths = "";
         widget.lastNyears = "";
     };
-
-
-
-
-
 });
 app.filter('xAxis', [function () {
         return function (chartXAxis) {

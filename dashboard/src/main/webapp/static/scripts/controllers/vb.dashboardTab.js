@@ -5,19 +5,26 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
 //    $scope.templateId = $stateParams.templateId;
-    //$scope.tabId = $stateParams.tabId;
+//    $scope.tabId = $stateParams.tabId;
+
     //get Templates
-    $http.get('admin/ui/getDefaultTemplate').success(function (response) {
-        $scope.templates = response;
-    })
+    $scope.selectTemplate={};
     function getAllTemplate() {
-        $http.get('admin/ui/getDefaultTemplate').success(function (response) {
+        $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
+            console.log(response);
             $scope.templates = response;
+            var template = $filter('filter')(response, {id: $stateParams.templateId})[0];
+            console.log(template);
+            $scope.selectTemplate.selected = template;
         });
     }
-//    $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
+    ;
+
+    getAllTemplate();
+
+    $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
 //        $scope.templates = response;
-//    })
+    });
 
     $scope.getTemplateById = function (template) {
         console.log(template);
@@ -29,7 +36,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.accountName = $stateParams.accountName;
         $scope.productId = $stateParams.productId;
         $scope.tempObj = template;
+//        $scope.selectTemplate.selected=template.templateName;
     };
+
     //product tabs
     $scope.tabs = [];
     $scope.userLogout = function () {
@@ -45,17 +54,18 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         }
     };
     var tabUrl;
-    if ($stateParams.templateId > 0) {alert("templateId")
+    if ($stateParams.templateId > 0) {
+        console.log("templateId");
         tabUrl = 'admin/ui/dbTabs/' + $stateParams.templateId;
     } else {
+        console.log("productId and accountId");
         tabUrl = "admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId;
     }
     if ($stateParams.productId) {
         $http.get(tabUrl).success(function (response) {
             var getCurrentUrl;
             $scope.loadTab = false;
-            console.log($scope.tabs)
-            console.log($scope.tabs)
+            console.log($scope.tabs);
             if (!response[0].templateId) {
                 $scope.tabs = response;
                 angular.forEach($scope.tabs, function (value, key) {
@@ -200,25 +210,14 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             $stateParams.tabId = "";
             $scope.tabs.push({id: response.id, tabName: tab.tabName, tabClose: true});
             $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
-            if ($scope.getCurrentPage() === "dashboardTemplate") {
-                $state.go("index.dashboardTemplate.widget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    productId: $stateParams.productId,
-                    templateId: $stateParams.templateId,
-                    tabId: $stateParams.tabId,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            } else {
-                $state.go("index.dashboard.widget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    tabId: $stateParams.tabId,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            }
+            $state.go("index.dashboard.widget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                templateId: $stateParams.templateId,
+                tabId: $stateParams.tabId,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
         });
         $scope.tab = "";
     };
@@ -229,25 +228,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 $scope.loadTab = false;
                 $scope.tabs = response;
                 $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
-                if ($scope.getCurrentPage() === "dashboardTemplate") {
-                    $state.go("index.dashboardTemplate.widget", {
-                        accountId: $stateParams.accountId,
-                        accountName: $stateParams.accountName,
-                        productId: $stateParams.productId,
-                        templateId: $stateParams.templateId,
-                        tabId: $stateParams.tabId,
-                        startDate: $stateParams.startDate,
-                        endDate: $stateParams.endDate
-                    });
-                } else {
-                    $state.go("index.dashboard.widget", {
-                        accountId: $stateParams.accountId,
-                        accountName: $stateParams.accountName,
-                        tabId: $stateParams.tabId,
-                        startDate: $stateParams.startDate,
-                        endDate: $stateParams.endDate
-                    });
-                }
+
+                $state.go("index.dashboard.widget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    templateId: $stateParams.templateId,
+                    tabId: $stateParams.tabId,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
             });
         });
     };
@@ -312,7 +301,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
     $scope.templateId = null;
     //save Template
-    $scope.saveTemplate = function (tab) {
+    $scope.saveTemplate = function (template) {
         console.log(tab);
         console.log($scope.tabs);
         var tabIds = $scope.tabs.map(function (value, key) {
@@ -321,13 +310,13 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             }
         }).join(',');
         var data = {
-            id: tab.templateId ? tab.templateId : null,
-            templateName: tab.templateName,
+            id: template.templateId ? template.templateId : null,
+            templateName: template.templateName,
             tabIds: tabIds
         }
         console.log(data);
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
-            $scope.tab = "";
+            $scope.template = "";
             $scope.templateId = "";
             getAllTemplate();
         });

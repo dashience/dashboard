@@ -113,6 +113,19 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
         return null;
     }
+    
+    public List<TabWidget> getWidgetsByTab(Integer tabId) {
+        String queryStr = "select d from TabWidget d where d.tabId.id = :tabId and(status is null or status != 'Deleted') order by widgetOrder";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("tabId", tabId);
+        List<TabWidget> tabWidgets = query.list();
+        for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
+            TabWidget widget = iterator.next();
+            widget.setColumns(getColumns(widget));
+        }
+
+        return tabWidgets;
+    }
 
     public List<TabWidget> getTabWidget(Integer tabId, Integer accountId) {
         String queryStr = "select d from TabWidget d where d.tabId.id = :tabId and (d.accountId.id=:accountId or d.accountId IS NULL) and (status is null or status != 'Deleted') order by widgetOrder";
@@ -530,11 +543,9 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<UserAccount> findUserAccountById(UserAccount accountId) {
-        String queryStr = "select d from UserAccount d where d.id = :accountId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("accountId", accountId);
-        return query.list();
+    public UserAccount findUserAccountById(UserAccount accountId) {
+        UserAccount userAccount = (UserAccount) sessionFactory.getCurrentSession().get(UserAccount.class, accountId.getId());
+        return userAccount;
     }
 
     public UserAccount deleteUserAccount(Integer userAccountId) {
@@ -588,6 +599,14 @@ public class UiDao extends BaseDao {
         query.setParameter("agencyId", user.getAgencyId());
         return query.list();
     }
+    
+    public List<DataSet> getPublishDataSetByUser(VbUser user) {
+        String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId and d.publish = 'Active' ";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", user.getId());
+        query.setParameter("agencyId", user.getAgencyId());
+        return query.list();
+    }
 
     public List<DataSource> getDataSourceByUser(VbUser user) {
         String queryStr = "select d from DataSource d where d.userId.id = :userId and d.agencyId = :agencyId";
@@ -597,12 +616,6 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-//    public List<Report> getAgencyReport(VbUser user) {
-//        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
-//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-//        query.setParameter("agencyId", user.getAgencyId().getId());
-//        return query.list();
-//    }    
     public List<WidgetTag> getTagWidgetByWidgetId(Integer widgetId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("WidgetTag.findByWidgetId");
         query.setParameter("id", widgetId);
@@ -618,14 +631,12 @@ public class UiDao extends BaseDao {
     }
 
     public List<Currency> getCurrenciesTypes() {
-        // System.out.println("dao is calling....");
         String queryStr = "SELECT c FROM Currency c";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         return query.list();
     }
 
     public List<Timezone> getTimezoneTypes() {
-        // System.out.println("dao is calling....");
         String queryStr = "SELECT t FROM Timezone t";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         return query.list();
@@ -757,7 +768,7 @@ public class UiDao extends BaseDao {
     }
 
     public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
-        String queryStr = "SELECT d from DashboardTemplate where d.agencyProductId = :agencyProduct and d.agencyId = :agency";
+        String queryStr = "SELECT d from DashboardTemplate d where d.agencyProductId = :agencyProduct and d.agencyId = :agency";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyProduct", agencyProduct);
         query.setParameter("agency", agency);

@@ -2096,6 +2096,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.previewData = null;
         $scope.dataSetFlag = false;
     };
+    
+//    $scope.savePublishDataSet = function(dataSet){
+//        console.log(dataSet);
+//        var data = {
+//            id : dataSet.id,
+//            publish : dataSet.publish
+//        };
+//        console.log(data);
+//        $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet/enableOrDisable', data: data}).success(function (response) {
+//            getItems();
+//        });
+//    };
+    
     $scope.clearTable = function () {
         $scope.dataSet = "";
     };
@@ -2104,9 +2117,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         console.log(dataSet.networkType);
         console.log(dataSet);
         var joinDataSetId = null;
+        var publish = false;
         if (dataSet.joinDataSetId != null) {
             joinDataSetId = dataSet.joinDataSetId.id;
         }
+        if(dataSet.publish != null){
+            if(dataSet.publish == "Active"){
+                publish = true;
+            }
+        };
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -2119,7 +2138,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
             userId: dataSet.userId.id,
-            joinDataSetId: joinDataSetId
+            joinDataSetId: joinDataSetId,
+            publish: publish
         };
         console.log(data);
         $scope.dataSet = data;

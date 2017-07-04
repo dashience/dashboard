@@ -180,10 +180,6 @@ public class UiController extends BaseController {
     public @ResponseBody
     TabWidget createTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
         VbUser user = userService.findByUsername(getUser(request));
-//        UserAccount userAccount = uiService.findUserAccountById(tabWidget.getAccountId());
-//        System.out.println(userAccount);
-//        System.out.println("userAccount"+userAccount);
-//        tabWidget.setAccountId(userAccount);
         tabWidget.setCreatedBy(user);
         tabWidget.setTemplateUserId(user.getId());
         return uiService.saveTabWidget(tabId, tabWidget);
@@ -203,8 +199,8 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dbWidgetDuplicate/{widgetId}/{tabId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    TabWidget getWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @PathVariable Integer tabId) {
-        return uiService.getWidget(widgetId, tabId);
+    TabWidget duplicateWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @PathVariable Integer tabId) {
+        return uiService.duplicateWidget(widgetId, tabId);
     }
 
     @RequestMapping(value = "dbDuplicateTag/{widgetId}", method = RequestMethod.GET, produces = "application/json")
@@ -419,16 +415,18 @@ public class UiController extends BaseController {
     public @ResponseBody
     DataSet create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
         String joinDataSetId = request.getParameter("joinDataSetId");
-        Integer joinDataSetIdInt = null;
-        if (joinDataSetId != null) {
-            joinDataSetIdInt = Integer.parseInt(joinDataSetId);
-            dataSet.setJoinDataSetId(uiDao.getJoinDataSetById(joinDataSetIdInt));
-        }
         VbUser user = userService.findByUsername(getUser(request));
         dataSet.setUserId(user);
         dataSet.setAgencyId(user.getAgencyId());
-        return uiService.create(dataSet);
+        return uiService.create(dataSet, joinDataSetId);
     }
+    
+    
+//    @RequestMapping(value = "dataSet/enableOrDisable", method = RequestMethod.PUT, produces = "application/json")
+//    public @ResponseBody
+//    DataSet updateDataSetEnableDisable(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
+//        return uiService.updateDataSetEnableDisable(dataSet);
+//    }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
@@ -483,6 +481,17 @@ public class UiController extends BaseController {
         }
         return uiService.getDataSetByUser(user);
     }
+    
+    @RequestMapping(value = "dataSet/publishDataSet", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getPublishDataSet(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getPublishDataSetByUser(user);
+    }
+    
 //    @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -704,15 +713,12 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "dashboardTemplate/{productId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List<DashboardTemplate> getTemplateByAgencyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
-        //System.out.println("size of currencies"+currencies.size());
+    List<DashboardTemplate> getTemplates(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
         VbUser user = userService.findByUsername(getUser(request));
+        Agency agency = user.getAgencyId();
         AgencyProduct agencyProduct = uiDao.getAgencyProductById(productId);
-        Agency agency = agencyProduct.getAgencyId();
+//        Agency agency = agencyProduct.getAgencyId();
         return uiService.getTemplates(agency, agencyProduct);
-        
-//        Integer agencyId = agency.getId();
-//        return uiService.getTemplateByAgencyId(agencyId);
     }
 
     @RequestMapping(value = "getDefaultTemplate", method = RequestMethod.GET, produces = "application/json")

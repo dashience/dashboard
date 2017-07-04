@@ -142,7 +142,7 @@ public class DashboardTemplate implements Serializable {
     public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
         this.templateTabsCollection = templateTabsCollection;
     }
-
+    
     @XmlTransient
     @JsonIgnore
     public Collection<AgencyProduct> getAgencyProductCollection() {

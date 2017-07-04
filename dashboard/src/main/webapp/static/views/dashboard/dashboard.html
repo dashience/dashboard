@@ -50,7 +50,7 @@
                                                     </div>-->
                     <div class="col-sm-12" ng-if="isAdmin != 'admin'">
                         <div class="form-group select-template">
-                            <ui-select ng-model="selectTemplate.selected" on-select="getTemplateBYId(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize">
+                            <ui-select ng-model="selectTemplate.selected" on-select="getTemplateById(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize">
                                 <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
                                 <ui-select-choices repeat="template in templates | filter: $select.search">
                                     <span ng-bind-html="template.templateName | highlight: $select.search"></span>

@@ -26,20 +26,20 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
 //            }
         });
 
-        angular.forEach($scope.schedularHistoryDetails, function (value, key) {alert()
+        angular.forEach($scope.schedularHistoryDetails, function (value, key) {
             angular.forEach(value.schedulerId, function (val, key) {
                 recentDate = value.lastExecutionStatus;
                 console.log(recentDate)
-            })
-        })
+            });
+        });
     };
 
     $scope.saveSchedulerStatus = function (scheduler) {
-        console.log(scheduler)
+        console.log(scheduler);
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/schedulerStatus/enableOrDisable', data: scheduler}).success(function (response) {
-            console.log(response)
+            console.log(response);
         });
-    }
+    };
 
     $scope.tableRowExpanded = false;
     $scope.tableRowIndexExpandedCurr = "";
