@@ -125,7 +125,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 controller: 'SettingsController'
             })
             .state("viewPdf", {
-                url: "/viewPdf/:accountId/:accountName/:productId/:productName/:tabId?:startDate/:endDate",
+                url: "/viewPdf/:accountId/:accountName/:productId/:templateId/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.pdf.html",
                 controller: 'PdfController'
             })

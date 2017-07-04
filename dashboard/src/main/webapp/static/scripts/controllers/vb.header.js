@@ -10,9 +10,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.setParamsProduct = function (product) {
         console.log(product);
         var setTabId = 0;
-        if ($stateParams.productId != product.id || product.templateId == null) {
+        if ($stateParams.productId != product.id) {
             $stateParams.productId = product.id;
-            $stateParams.templateId = product.templateId ? product.templateId.id : null;
+            $stateParams.templateId = product.templateId ? product.templateId.id : 0;
             $state.go("index.dashboard.widget", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
@@ -65,6 +65,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.getAccountId = function (account) {
         if ($stateParams.accountId != account.accountId.id) {
             $stateParams.tabId = "";
+            $stateParams.templateId="";
         }
         if (account.accountId.logo) {
             $scope.accountLogo = account.accountId.logo;

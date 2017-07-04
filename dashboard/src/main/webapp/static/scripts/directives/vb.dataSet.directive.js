@@ -8,8 +8,8 @@ restrict: 'A',
                 //setTableFn: '&',
                 // tableFooter:'@'
         },
-        template: '<div ng-show="errorMssg">No Data Found...</div><div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
-        '<div ng-if="ajaxLoadingCompleted" ng-hide="errorMssg">' +
+        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
+        '<div ng-if="ajaxLoadingCompleted">' +
         '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
         '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
         '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
@@ -330,7 +330,6 @@ restrict: 'A',
         '</td>' +
         '</tbody>' +
         '</table>' +
-        '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>' +
         '</div>',
         link: function (scope, element, attr) {
         scope.startDate = $stateParams.startDate;
@@ -442,10 +441,6 @@ restrict: 'A',
                 scope.loadingTable = false;
                 scope.dataSetColumns = response.columnDefs;
         }
-        if(response.data.length==0){
-            scope.errorMssg=true;
-            return;
-        };
         scope.tableColumns = response.columnDefs;
 //                    scope.tableRows = response.data;
 

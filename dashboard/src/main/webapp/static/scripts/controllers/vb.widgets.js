@@ -18,6 +18,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
     $scope.userId = $cookies.getObject("userId");
+    $scope.templateId = $stateParams.templateId;
     console.log($scope.userId);
 
     if ($scope.permission.createReport === true) {
