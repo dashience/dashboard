@@ -77,18 +77,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.accounts = response;
         $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-        // $scope.name = $filter('filter')($scope.accounts, {id: response[0].id})[0];
         angular.forEach($scope.accounts, function (value, key) {
             if (value.accountId.id == $stateParams.accountId) {
                 $scope.name = value;
-//        $scope.accountLogo;
             }
         });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
             $scope.loadNewUrl()
-            //$state.go("index.dashboard")
             return;
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
