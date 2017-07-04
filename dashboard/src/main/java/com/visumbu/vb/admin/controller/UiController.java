@@ -80,9 +80,6 @@ public class UiController extends BaseController {
     private UiService uiService;
 
     @Autowired
-    private UiDao uiDao;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
@@ -118,14 +115,20 @@ public class UiController extends BaseController {
 //        dashboardTabs.setDashboardId(uiService.getDashboardById(dashboardId));
 //        return uiService.createDashboardTabs(dashboardTabs);
 //    }
-    @RequestMapping(value = "dbTabs/{agencyProductId}/{accountId}", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "dbTabs/{agencyProductId}/{accountId}/{templateId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyProductId, @PathVariable Integer accountId, @RequestBody DashboardTabs dashboardTabs) {
+    DashboardTabs createAgencyProductTab(HttpServletRequest request, HttpServletResponse response,
+            @PathVariable Integer agencyProductId,
+            @PathVariable Integer accountId,
+            @PathVariable Integer templateId,
+            @RequestBody DashboardTabs dashboardTabs) {
+
         dashboardTabs.setAgencyProductId(uiService.getAgencyProductById(agencyProductId));
         dashboardTabs.setAccountId(uiService.getAccountById(accountId));
         VbUser user = userService.findByUsername(getUser(request));
         dashboardTabs.setUserId(user);
-        return uiService.createDashboardTabs(dashboardTabs);
+        DashboardTabs dashboardTab = uiService.createDashboardTabs(dashboardTabs, templateId, user);
+        return dashboardTab;
     }
 
     @RequestMapping(value = "dbTabs/{agencyProductId}", method = RequestMethod.PUT, produces = "application/json")
@@ -420,14 +423,12 @@ public class UiController extends BaseController {
         dataSet.setAgencyId(user.getAgencyId());
         return uiService.create(dataSet, joinDataSetId);
     }
-    
-    
+
 //    @RequestMapping(value = "dataSet/enableOrDisable", method = RequestMethod.PUT, produces = "application/json")
 //    public @ResponseBody
 //    DataSet updateDataSetEnableDisable(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
 //        return uiService.updateDataSetEnableDisable(dataSet);
 //    }
-
     @RequestMapping(value = "dataSet", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     DataSet update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
@@ -481,7 +482,7 @@ public class UiController extends BaseController {
         }
         return uiService.getDataSetByUser(user);
     }
-    
+
     @RequestMapping(value = "dataSet/publishDataSet", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getPublishDataSet(HttpServletRequest request, HttpServletResponse response) {
@@ -491,13 +492,12 @@ public class UiController extends BaseController {
         }
         return uiService.getPublishDataSetByUser(user);
     }
-    
+
 //    @RequestMapping(value = "dataSet", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getDataSet(HttpServletRequest request, HttpServletResponse response) {
 //        return uiService.getDateSet();
 //    }
-
     @RequestMapping(value = "dataSet/{id}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
     void deleteDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
@@ -716,7 +716,7 @@ public class UiController extends BaseController {
     List<DashboardTemplate> getTemplates(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
         VbUser user = userService.findByUsername(getUser(request));
         Agency agency = user.getAgencyId();
-        AgencyProduct agencyProduct = uiDao.getAgencyProductById(productId);
+        AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
 //        Agency agency = agencyProduct.getAgencyId();
         return uiService.getTemplates(agency, agencyProduct);
     }

@@ -164,11 +164,15 @@ public class ProxyController {
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
+                DataSet dataSet = uiService.getDataSetById(dataSetIdInt);
+                if (dataSet.getJoinDataSetId() != null) {
+                    joinDataSetIdStr = dataSet.getJoinDataSetId().getId() + "";
+                }
             } catch (NumberFormatException e) {
 
             }
         }
-        System.out.println("dataSetId ---> " + dataSetId);
+
         if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
             try {
                 System.out.println("with joinDataSet");
@@ -181,6 +185,7 @@ public class ProxyController {
             System.out.println("without joinDataSet");
             returnMap = getData(valueMap, request, response);
         }
+        System.out.println("returnMappppp -----> " + returnMap);
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
@@ -192,6 +197,7 @@ public class ProxyController {
             returnMap.put("data", dataWithDerivedColumns);
         }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
+        System.out.println("returnMap ----> " + returnMap);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
             String queryFilter = null;
             widgetIdInt = Integer.parseInt(widgetIdStr);
@@ -203,6 +209,7 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
+        System.out.println("returnMap1 ----> " + returnMap);
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
         if (dataSetIdInt != null) {
@@ -1304,6 +1311,13 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
+        if (data == null) {
+            List<ColumnDef> columnDefs = new ArrayList<>();
+            Map returnMap = new HashMap();
+            returnMap.put("columnDefs", columnDefs);
+            returnMap.put("data", data);
+            return returnMap;
+        }
         if (dataSetReportName.equalsIgnoreCase("geoPerformance")) {
             for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -1558,7 +1572,18 @@ public class ProxyController {
                 }
             }
         }
-        Integer accountId = Integer.parseInt(accountIdStr);
+        Integer accountId = null;
+        try {
+            accountId = Integer.parseInt(accountIdStr);
+        } catch (NumberFormatException e) {
+            System.out.println("Number format exception");
+            List<ColumnDef> columnDefs = new ArrayList<>();
+            List<Map<String, Object>> data = new ArrayList<>();
+            Map returnMap = new HashMap();
+            returnMap.put("columnDefs", columnDefs);
+            returnMap.put("data", data);
+            return returnMap;
+        }
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String facebookAccountId = getAccountId(accountProperty, "facebookAccountId");

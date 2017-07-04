@@ -190,6 +190,7 @@ public class TimerService {
             Date schedulerExecutedDate = new Date();
             schedulerHistory.setExecutedDate(schedulerExecutedDate);
             schedulerService.createSchedulerHistory(schedulerHistory);
+            
 //            } else {
 //                System.out.println("Scheduler is InActive");
 //            }

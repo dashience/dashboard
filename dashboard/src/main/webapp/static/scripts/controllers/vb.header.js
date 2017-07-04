@@ -8,6 +8,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
     $scope.setParamsProduct = function (product) {
+        console.log(product);
         var setTabId = 0;
         if ($stateParams.productId != product.id) {
             $stateParams.productId = product.id;
@@ -64,6 +65,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.getAccountId = function (account) {
         if ($stateParams.accountId != account.accountId.id) {
             $stateParams.tabId = "";
+            $stateParams.templateId="";
         }
         if (account.accountId.logo) {
             $scope.accountLogo = account.accountId.logo;

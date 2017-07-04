@@ -7,11 +7,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 //    $scope.templateId = $stateParams.templateId;
 //    $scope.tabId = $stateParams.tabId;
 
+    $scope.selectTemplate = {};
     //get Templates
     $scope.selectTemplate={};
     function getAllTemplate() {
         $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
-            console.log(response);
             $scope.templates = response;
             var template = $filter('filter')(response, {id: $stateParams.templateId})[0];
             console.log(template);
@@ -22,12 +22,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     getAllTemplate();
 
-    $http.get('admin/ui/dbTabs/' + $stateParams.templateId).success(function (response) {
-//        $scope.templates = response;
-    });
-
     $scope.getTemplateById = function (template) {
         console.log(template);
+        console.log($stateParams.templateId);
 //        $stateParams.accountId = template.accountId.id;
 //        $stateParams.accountName = template.accountId.accountName;
         $stateParams.productId = template.agencyProductId.id;
@@ -46,6 +43,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
     $scope.getCurrentPage = function () {
         var url = window.location.href;
+        console.log(url);
         if (url.indexOf("dashboardTemplate") > 0) {
             return "dashboardTemplate";
         }
@@ -54,6 +52,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         }
     };
     var tabUrl;
+    console.log($stateParams.templateId);
     if ($stateParams.templateId > 0) {
         console.log("templateId");
         tabUrl = 'admin/ui/dbTabs/' + $stateParams.templateId;
@@ -135,7 +134,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         });
     }
 
-    $scope.toDate = function (strDate) {
+    $scope.toDate = function (strDatebulbultara
+            ) {
         if (!strDate) {
             return new Date();
         }
@@ -206,7 +206,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         var data = {
             tabName: tab.tabName
         };
-        $http({method: 'POST', url: 'admin/ui/dbTabs/' + $stateParams.productId + "/" + $stateParams.accountId, data: data}).success(function (response) {
+        $http({method: 'POST', url: 'admin/ui/dbTabs/' + $stateParams.productId + "/" + $stateParams.accountId + "/" + $stateParams.templateId, data: data}).success(function (response) {
             $stateParams.tabId = "";
             $scope.tabs.push({id: response.id, tabName: tab.tabName, tabClose: true});
             $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
@@ -300,6 +300,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.editedItem = null;
     };
     $scope.templateId = null;
+
     //save Template
     $scope.saveTemplate = function (template) {
         console.log(tab);
@@ -318,9 +319,10 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
             $scope.template = "";
             $scope.templateId = "";
-            getAllTemplate();
         });
-
+        getAllTemplate();
+        $scope.tab = "";
+        $scope.templateId = "";
     };
     $scope.updateTemplate = function (tab) {
         console.log(tab)
@@ -345,13 +347,13 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         var data = {
             id: $scope.templateId,
             templateName: $scope.templateName,
-        }
+        };
 //        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
 //            $scope.tab = "";
 //            $scope.templateId = "";
 //            getAllTemplate();
 //        });
-    }
+    };
 
 })
         .directive('ngBlur', function () {

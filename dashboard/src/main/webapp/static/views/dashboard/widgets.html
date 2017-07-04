@@ -248,7 +248,7 @@
         </div>
         <div class="btn-group" ng-if="permission.downloadReport === true;">
             <!--<a class="refresh" ng-click="downloadUiPdf()"><i class="fa fa-print"></i> Print</a>-->
-            <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{productName}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
+            <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{templateId}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
         </div>
         <!--                <div class="btn-group">
                             <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>
@@ -414,8 +414,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel-body" ng-if="widget.chartType === 'funnel'">
+                        <div>
+                            <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
+                                 funnel-Directive funnel-Source="{{widget.dataSetId}}" 
+                                 funnel-Title-Name="{{widget.widgetTitle}}" 
+                                 funnel-Id="{{widget.id}}" funnel-Columns="{{widget.columns}}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>  
+
             <div id="delete{{widget.id}}" class="modal">
                 <div class="modal-dialog">
                     <div class="modal-content">

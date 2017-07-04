@@ -313,6 +313,10 @@
         border-color: transparent;
     }
 
+    .builder {
+        background : #ccc6;
+    }
+
 </style>
 
 <!--<div>
@@ -992,8 +996,8 @@
 
                         </div>
                         <div class="form-group col-xs-12"><button class="btn btn-info" id="btn-save" 
-                                                                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
-                                                                                    ng-disabled="dataSetError">
+                                                                  ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
+                                                                  ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button><button class="btn btn-default" id="btn-cancel" 
                                              ng-click="cancelDerivedColumn(dataSetColumn)">
@@ -1005,7 +1009,7 @@
 
             </div>
             <div class="row">
-                <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker')" ng-show="showColumnDefs">
+                <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
                             <label>Select X-Axis</label>
@@ -1032,7 +1036,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
+                    <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) != 'stackedbar'">
                         <div class="col-md-12">
                             <label>Select Y1-Axis</label>
                             <ui-select multiple ng-model="y1Column" theme="bootstrap"  
@@ -1061,7 +1065,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-8" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker'" ng-show="showColumnDefs">
+                <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker'" ng-show="showColumnDefs" >
                     <div class="form-group">
                         <div class="col-md-12">
                             <label>Ticker Items</label>
@@ -1076,8 +1080,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel'" ng-show="showColumnDefs">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Funnel Items</label>
+                            <ui-select multiple ng-model="funnelItem"  theme="bootstrap" 
+                                       on-select="funnel(widgetObj, funnelItem)" 
+                                       on-remove="removedByFunnel(widgetObj,$item,funnelItem)">
+                                <ui-select-match placeholder="Data...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-choices repeat="funnelColumn in collectionFields  | filter:$select.search">
+                                    {{funnelColumn.displayName}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
             </div>            
-            <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
+            <div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">
                 <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
             </div>
         </div>
@@ -1242,7 +1261,16 @@
                              widget-Obj="{{displayPreviewChart}}">                         
                         </div>
                     </div>                            
-                </div>        
+                </div>
+                <div ng-if="chartTypeName === 'funnel'">
+                    <div>
+                        <div funnel-Directive funnel-Source=  "{{displayPreviewChart.dataSetId}}" 
+                             widget-Obj="{{displayPreviewChart}}" 
+                             funnel-Id="{{displayPreviewChart.id}}"
+                             funnel-Columns="{{displayPreviewChart.columns}}">
+                        </div>
+                    </div>
+                </div>
                 <div class="list" ng-if="chartTypeName === 'table'" adjust-height>
                     <div class="table-responsive project-list">
                         <div id="changes-height" class="project-list">
@@ -1255,7 +1283,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                
                 <div class="row" ng-if="chartTypeName === 'text'"> 
                     <div class="panel-body" style="overflow: auto;height:350px;">
                         <div>
