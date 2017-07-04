@@ -457,7 +457,7 @@
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
-                    <input type="checkbox" ng-model="widgetObj.allAccount" ng-true-value="1" ng-false-value="0">
+                    <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
                     <label>All Account</label>
                 </div>
             </div>
@@ -634,8 +634,8 @@
                                        on-select="funnel(widgetObj, funnelItem)" 
                                        on-remove="removedByFunnel(widgetObj,$item,funnelItem)">
                                 <ui-select-match placeholder="Data...">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="funnelColumn in collectionFields  | filter:$select.search">
-                                    {{funnelColumn.displayName}}
+                                <ui-select-choices repeat="collectionField in collectionFields  | filter:$select.search">
+                                    {{collectionField.displayName}}
                                 </ui-select-choices>
                             </ui-select>
                         </div>

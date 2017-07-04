@@ -1283,13 +1283,13 @@ public class ProxyController {
             String widgetTimeSegment = widget.getTimeSegment();
             String widgetNetworkType = widget.getNetworkType();
 
-            if (widgetNetworkType != null || !widgetNetworkType.isEmpty() || !widgetNetworkType.equalsIgnoreCase("none") || !widgetNetworkType.equalsIgnoreCase("undefined")) {
+            if (widgetNetworkType != null && !widgetNetworkType.isEmpty() && !widgetNetworkType.equalsIgnoreCase("none") && !widgetNetworkType.equalsIgnoreCase("undefined")) {
                 filter = widgetNetworkType;
             }
-            if (widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
+            if (widgetProductSegment != null && !widgetProductSegment.isEmpty() && !widgetProductSegment.equalsIgnoreCase("none") && !widgetProductSegment.equalsIgnoreCase("undefined")) {
                 productSegment = widgetProductSegment;
             }
-            if (widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
+            if (widgetTimeSegment != null && !widgetTimeSegment.isEmpty() && !widgetTimeSegment.equalsIgnoreCase("none") && !widgetTimeSegment.equalsIgnoreCase("undefined")) {
                 timeSegment = widgetTimeSegment;
             }
             //System.out.println("Widget title --->" + widget.getWidgetTitle());
