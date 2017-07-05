@@ -193,7 +193,10 @@ public class UiService {
 
     public TabWidget saveTabWidget(Integer tabId, TabWidgetBean tabWidgetBean) {
         VbUser createByUserId = tabWidgetBean.getCreatedBy();
-        Integer createByUserIdInt = createByUserId.getId();
+        Integer createByUserIdInt = null;
+        if(createByUserId!= null){
+         createByUserIdInt = createByUserId.getId();
+        }
         Integer currentUserId = tabWidgetBean.getTemplateUserId();
         System.out.println("createdBy---->" + createByUserIdInt);
         System.out.println("currentUserId---->" + currentUserId);
@@ -1145,12 +1148,12 @@ public class UiService {
         return uiDao.getTabByTemplateId(templateId);
     }
 
-    public List<TemplateTabs> getDefaultTemplate() {
-        return uiDao.getDefaultTemplate();
+    public List<DashboardTemplate> getDefaultTemplate(Integer agencyId) {
+        return uiDao.getDefaultTemplate(agencyId);
     }
 
-    public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
-        return uiDao.getTemplates(agency, agencyProduct);
+    public List<DashboardTemplate> getTemplates(VbUser user, Agency agency, AgencyProduct agencyProduct) {
+        return uiDao.getTemplates(user, agency, agencyProduct);
     }
 
 //    public DataSet updateDataSetEnableDisable(DataSet dataSet) {

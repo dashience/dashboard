@@ -6,8 +6,12 @@
 package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.TemplateDao;
+import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.ProductAccountUserTemplate;
+import com.visumbu.vb.model.VbUser;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +28,15 @@ public class TemplateService {
 
     @Autowired
     private TemplateDao templateDao;
+    @Autowired
+    private UiDao uiDao;
 
     public ProductAccountUserTemplate create(ProductAccountUserTemplate productAccountUserTemplate) {
         ProductAccountUserTemplate productAccountUserTemplateId = templateDao.findAccountById(productAccountUserTemplate.getAccountId());
-        if(productAccountUserTemplateId == null){
+        if (productAccountUserTemplateId == null) {
             return (ProductAccountUserTemplate) templateDao.create(productAccountUserTemplate);
         }
-        if (productAccountUserTemplateId.getAccountId().getId()==productAccountUserTemplate.getAccountId().getId()) {
+        if (productAccountUserTemplateId.getAccountId().getId() == productAccountUserTemplate.getAccountId().getId()) {
             productAccountUserTemplate.setId(productAccountUserTemplateId.getId());
             return (ProductAccountUserTemplate) templateDao.update(productAccountUserTemplate);
         } else {
@@ -51,8 +57,15 @@ public class TemplateService {
         return (ProductAccountUserTemplate) templateDao.delete(id);
     }
 
-    public List<ProductAccountUserTemplate> getProductAccountUserTemplateById(Integer productId) {
-       return templateDao.getProductAccountUserTemplateById(productId);
+    public DashboardTemplate getProductAccountUserTemplateById(VbUser vbUser, AgencyProduct product, Account account) {
+        DashboardTemplate template = null;
+        ProductAccountUserTemplate accountUserTemplate = templateDao.getProductAccountUserTemplateById(vbUser, product, account);
+        if (accountUserTemplate != null && accountUserTemplate.getTemplateId() != null) {
+            template = accountUserTemplate.getTemplateId();
+            return template;
+        }
+        return product.getTemplateId();        
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -718,13 +718,13 @@ public class UiController extends BaseController {
         Agency agency = user.getAgencyId();
         AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
 //        Agency agency = agencyProduct.getAgencyId();
-        return uiService.getTemplates(agency, agencyProduct);
+        return uiService.getTemplates(user, agency, agencyProduct);
     }
 
-    @RequestMapping(value = "getDefaultTemplate", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "getDefaultTemplate/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List<TemplateTabs> getDefaultTemplate(HttpServletRequest request, HttpServletResponse response) {
-        return uiService.getDefaultTemplate();
+    List<DashboardTemplate> getDefaultTemplate(HttpServletRequest request, HttpServletResponse response,@PathVariable Integer agencyId) {
+        return uiService.getDefaultTemplate(agencyId);
     }
 
     @RequestMapping(value = "getUserTemplate", method = RequestMethod.GET, produces = "application/json")

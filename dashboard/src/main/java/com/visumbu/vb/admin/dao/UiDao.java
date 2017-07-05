@@ -754,10 +754,10 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public List<TemplateTabs> getDefaultTemplate() {
-        String queryStr = "SELECT d FROM DashboardTemplate d";
+    public List<DashboardTemplate> getDefaultTemplate(Integer agencyId) {
+        String queryStr = "SELECT d FROM DashboardTemplate d where d.agencyId.id = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        //query.setParameter("agencyId", agencyId);
+        query.setParameter("agencyId", agencyId);
         return query.list();
     }
 
@@ -773,11 +773,12 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
-    public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
-        String queryStr = "SELECT d from DashboardTemplate d where d.agencyId = :agency and d.agencyProductId = :agencyProduct";
+    public List<DashboardTemplate> getTemplates(VbUser user, Agency agency, AgencyProduct agencyProduct) {
+        String queryStr = "SELECT d from DashboardTemplate d where d.agencyId = :agency and d.agencyProductId = :agencyProduct and ( d.userId is null or d.userId = :userId or d.shared = 'Active')";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyProduct",agencyProduct);
         query.setParameter("agency", agency);
+        query.setParameter("userId", user);
         return query.list();
     }
 

@@ -79,10 +79,12 @@ app.controller('AgencyController', function ($scope, $http) {
     };
     //Default Templates
 
-    $http.get('admin/ui/getDefaultTemplate').success(function (response) {
-        console.log(response);
-        $scope.templates = response;
-    });
+    function getTemplateByAgency(agency){        
+        $http.get('admin/ui/getDefaultTemplate/'+agency.id).success(function (response) {
+            console.log(response);
+            $scope.templates = response;
+        });
+    }
 
     $scope.selectDefaultTemplate = function (template) {
         console.log(template);
@@ -127,7 +129,7 @@ app.controller('AgencyController', function ($scope, $http) {
     $scope.editAgency = function (agency, index) {
         getAgencyLicence(agency);
         $scope.agencyById = agency;
-
+        getTemplateByAgency(agency);
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,

@@ -155,8 +155,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         });
     }
 
-    $scope.toDate = function (strDatebulbultara
-            ) {
+    $scope.toDate = function (strDate) {
         if (!strDate) {
             return new Date();
         }
@@ -224,6 +223,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.tabs = [];
     //Add Tab
     $scope.addTab = function (tab) {
+        console.log(tab);
         var data = {
             tabName: tab.tabName
         };
@@ -348,7 +348,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $http.get('admin/ui/getUserTemplate').success(function (response) {
             console.log(response);
             angular.forEach(response, function (value, key) {
-                if (value.shared === "active") {
+                if (value.shared === "Active") {
                     $scope.sharedUser = 1;
                 } else {
                     $scope.sharedUser = 0;
@@ -372,24 +372,14 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         console.log(agencyTemplate);
 //        console.log(sharedStatus);
         if (agencyTemplate.shared === 1) {
-            $scope.shared = "active";
+            $scope.shared = "Active";
         } else {
-            $scope.shared = "inActive";
+            $scope.shared = "InActive";
         }
         var sharedData = {
             shared: $scope.shared
         };
-        var data = {
-            id: agencyTemplate.id,
-            templateName: agencyTemplate.templateName,
-            agencyId: agencyTemplate.agencyId,
-            agencyProductId: agencyTemplate.agencyProductId,
-            userId: agencyTemplate.userId
-        }
-//        if (agencyTemplate.shared === 1) {
-//            $http({method: 'POST', url: 'admin/ui/shareUserTemplate', data: data}).success(function (response) {
-//            });
-//        }
+
         $http({method: 'POST', url: 'admin/ui/updateTemplateStatus/' + agencyTemplate.id, data: sharedData}).success(function (response) {
 
         });

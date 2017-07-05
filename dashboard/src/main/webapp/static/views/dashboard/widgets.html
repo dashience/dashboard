@@ -447,7 +447,7 @@
                 <div class="report-menuHeader">
                     <div class="col-md-10">
                         <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
-                        <h1 class="report-header-title">Add {{widget.widgetTitle}} To Report</h1>
+                        <h1 class="report-header-title">Add {{widget.widgetTitle | limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
                     </div>
                     <div class="report-header-tools pull-right">
                         <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
@@ -514,14 +514,9 @@
     <div id="editWidget" class="showEditWidget modal">
         <div class="editWidget-modal-top modal-dialog modal-lg">
             <div class="modal-content">
-
                 <div class="modal-body">
                     <div ng-include="'static/views/form/widgetCreateForm.html'"></div>
                 </div>
-                <!--                    <div class="modal-footer">
-                                        <button class="btn btn-info btn-xs" ng-click="save(widget, $index)" data-dismiss="modal"> Yes</button>
-                                        <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
-                                    </div>-->
             </div>
         </div>
     </div>
