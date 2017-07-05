@@ -1148,8 +1148,8 @@ public class UiService {
         return uiDao.getTabByTemplateId(templateId);
     }
 
-    public List<DashboardTemplate> getDefaultTemplate() {
-        return uiDao.getDefaultTemplate();
+    public List<DashboardTemplate> getDefaultTemplate(Integer agencyId) {
+        return uiDao.getDefaultTemplate(agencyId);
     }
 
     public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
