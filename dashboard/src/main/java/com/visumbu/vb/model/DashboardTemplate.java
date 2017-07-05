@@ -38,6 +38,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class DashboardTemplate implements Serializable {
 
     @OneToMany(mappedBy = "templateId")
+    private Collection<TemplateTabs> templateTabsCollection;
     private Collection<ProductAccountUserTemplate> accountTemplateCollection;
     @OneToMany(mappedBy = "templateId")
     private Collection<AgencyProduct> agencyProductCollection;
@@ -57,9 +58,6 @@ public class DashboardTemplate implements Serializable {
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    @ManyToOne
-    private Account accountId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
@@ -103,14 +101,6 @@ public class DashboardTemplate implements Serializable {
         this.agencyId = agencyId;
     }
 
-    public Account getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Account accountId) {
-        this.accountId = accountId;
-    }
-
     public VbUser getUserId() {
         return userId;
     }
@@ -146,6 +136,14 @@ public class DashboardTemplate implements Serializable {
 
     @XmlTransient
     @JsonIgnore
+    public Collection<TemplateTabs> getTemplateTabsCollection() {
+        return templateTabsCollection;
+    }
+
+    public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
+        this.templateTabsCollection = templateTabsCollection;
+    }
+    
     public Collection<ProductAccountUserTemplate> getAccountTemplateCollection() {
         return accountTemplateCollection;
     }

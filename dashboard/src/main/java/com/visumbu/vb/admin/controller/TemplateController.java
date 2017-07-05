@@ -6,7 +6,10 @@
 package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.TemplateService;
+import com.visumbu.vb.admin.service.UserService;
+import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.ProductAccountUserTemplate;
+import com.visumbu.vb.model.VbUser;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,13 +27,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("template")
-public class TemplateController {
+public class TemplateController extends BaseController{
     @Autowired
     private TemplateService templateService;
+    private UserService userService;
     
     @RequestMapping(value = "productAccountUserTemplate", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     ProductAccountUserTemplate create(HttpServletRequest request, HttpServletResponse response, @RequestBody ProductAccountUserTemplate accountTemplate) {
+        VbUser vbUser = userService.findByUsername(getUser(request));
+        accountTemplate.setUserId(vbUser);
         return templateService.create(accountTemplate);
     }
 

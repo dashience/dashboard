@@ -2,10 +2,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.permission = localStorageService.get("permission");
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
+    console.log($scope.isAdmin);
     $scope.agencyId = $cookies.getObject("agencyId");
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
+
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
         var productId = product.id;
@@ -36,6 +38,27 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             return;
         }
     };
+
+//    $scope.setParamsProduct = function (product) {
+//        console.log(product);
+//        var setTabId = 0;
+//        if ($stateParams.productId != product.id) {
+//            $stateParams.productId = product.id;
+//            $stateParams.templateId = product.templateId ? product.templateId.id : 0;
+//            $state.go("index.dashboard.widget", {
+//                accountId: $stateParams.accountId,
+//                accountName: $stateParams.accountName,
+//                productId: $stateParams.productId,
+//                templateId: $stateParams.templateId,
+//                tabId: setTabId,
+//                startDate: $stateParams.startDate,
+//                endDate: $stateParams.endDate
+//            });
+//        } else {
+//            return;//$stateParams.productId = product.id;
+//        }
+//
+//    };
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
@@ -54,18 +77,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.accounts = response;
         $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
         $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-        // $scope.name = $filter('filter')($scope.accounts, {id: response[0].id})[0];
         angular.forEach($scope.accounts, function (value, key) {
             if (value.accountId.id == $stateParams.accountId) {
                 $scope.name = value;
-//        $scope.accountLogo;
             }
         });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
             $scope.loadNewUrl()
-            //$state.go("index.dashboard")
             return;
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
@@ -73,7 +93,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $scope.getAccountId = function (account) {
         if ($stateParams.accountId != account.accountId.id) {
-            $stateParams.tabId = "";
+            $stateParams.tabId = 0;
+            $stateParams.templateId = 0;
         }
         if (account.accountId.logo) {
             $scope.accountLogo = account.accountId.logo;

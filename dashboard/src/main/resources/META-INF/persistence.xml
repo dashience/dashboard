@@ -50,6 +50,7 @@
     <class>com.visumbu.vb.model.JoinDataSetCondition</class>
     <class>com.visumbu.vb.model.DataSet</class>
     <class>com.visumbu.vb.model.DashboardTemplate</class>
+    <class>com.visumbu.vb.model.TemplateTabs</class>
     <class>com.visumbu.vb.model.ProductAccountUserTemplate</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>

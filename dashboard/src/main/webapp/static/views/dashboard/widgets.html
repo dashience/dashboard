@@ -248,7 +248,7 @@
         </div>
         <div class="btn-group" ng-if="permission.downloadReport === true;">
             <!--<a class="refresh" ng-click="downloadUiPdf()"><i class="fa fa-print"></i> Print</a>-->
-            <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{productName}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
+            <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{templateId}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
         </div>
         <!--                <div class="btn-group">
                             <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>
@@ -414,8 +414,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel-body" ng-if="widget.chartType === 'funnel'">
+                        <div>
+                            <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
+                                 funnel-Directive funnel-Source="{{widget.dataSetId}}" 
+                                 funnel-Title-Name="{{widget.widgetTitle}}" 
+                                 funnel-Id="{{widget.id}}" funnel-Columns="{{widget.columns}}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>  
+
             <div id="delete{{widget.id}}" class="modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -437,7 +447,7 @@
                 <div class="report-menuHeader">
                     <div class="col-md-10">
                         <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
-                        <h1 class="report-header-title">Add {{widget.widgetTitle}} To Report</h1>
+                        <h1 class="report-header-title">Add {{widget.widgetTitle | limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
                     </div>
                     <div class="report-header-tools pull-right">
                         <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
@@ -504,14 +514,9 @@
     <div id="editWidget" class="showEditWidget modal">
         <div class="editWidget-modal-top modal-dialog modal-lg">
             <div class="modal-content">
-
                 <div class="modal-body">
                     <div ng-include="'static/views/form/widgetCreateForm.html'"></div>
                 </div>
-                <!--                    <div class="modal-footer">
-                                        <button class="btn btn-info btn-xs" ng-click="save(widget, $index)" data-dismiss="modal"> Yes</button>
-                                        <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
-                                    </div>-->
             </div>
         </div>
     </div>

@@ -236,7 +236,7 @@ public class TabWidget implements Serializable {
     private DashboardTabs tabId;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
-    private UserAccount accountId;
+    private Account accountId;
 
     @Transient
     private List<WidgetColumn> columns;
@@ -643,11 +643,11 @@ public class TabWidget implements Serializable {
         this.isGridLine = isGridLine;
     }
 
-    public UserAccount getAccountId() {
+    public Account getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(UserAccount accountId) {
+    public void setAccountId(Account accountId) {
         this.accountId = accountId;
     }
 

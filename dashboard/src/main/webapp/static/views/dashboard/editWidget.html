@@ -173,9 +173,9 @@
 <div class="content" ng-repeat="widget in editWidgetData">
     <div class="row edit-widget">
         <!---->
-                <div class="pull-right" ng-if="loadColumnDef === false">
-                    <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                </div>
+        <div class="pull-right" ng-if="loadColumnDef === false">
+            <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
+        </div>
         <div class="row col-md-12">
             <div class="col-lg-4">
                 <div>
@@ -354,7 +354,7 @@
 
                                             <div class="col-md-6" ng-if="editChartType != 'ticker'">
                                                 <div class="form-group">
-                                                    <div class="col-md-12" ng-if="editChartType != 'pie'">
+                                                    <div class="col-md-12" ng-if="!(editChartType == 'pie' || editChartType == 'funnel')">
                                                         <label>Select X-Axis</label>
                                                         <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                                                 class="form-control" ng-model="xColumn" 
@@ -380,7 +380,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group" ng-if="editChartType != 'pie'">
+                                                <div class="form-group" ng-if="!(editChartType == 'pie' || editChartType == 'funnel')">
                                                     <div class="col-md-12">
                                                         <label>Select Y1-Axis</label>
                                                         <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByY1Column(widget,$item, y1Column)">
@@ -392,13 +392,26 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group" ng-if="!(editChartType == 'pie' || editChartType == 'stackedbar')">
+                                                <div class="form-group" ng-if="!(editChartType == 'pie' || editChartType == 'stackedbar' || editChartType == 'funnel')">
                                                     <div class="col-md-12">
                                                         <label>Select Y2-Axis</label>
                                                         <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
                                                             <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
                                                             <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
                                                                 {{y2axis.displayName}}
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group" ng-show="editChartType == 'funnel'">
+                                                    <div class="col-md-12">
+                                                        <label>Data</label>
+                                                        <ui-select multiple ng-model="funnelItem"  theme="bootstrap" on-select="funnel(widget, funnelItem)" 
+                                                                   on-remove="removedByFunnel(widget,$item,funnelItem)">
+                                                            <ui-select-match placeholder="Data...">{{$item.displayName}}</ui-select-match>
+                                                            <ui-select-choices repeat="funnelColumn in collectionFields  | filter:$select.search">
+                                                                {{funnelColumn.displayName}}
                                                             </ui-select-choices>
                                                         </ui-select>
                                                     </div>
@@ -543,6 +556,11 @@
                                                     <div>
                                                         <div stacked-Bar-Chart-Source='{{previewChartUrl}}' widget-Id="{{widget.id}}" widget-Columns="{{previewColumn.columns}}" stacked-Bar-Chart-Directive preview-Widget="{{previewColumn}}" widget-Obj="{{widget}}"></div>
                                                     </div>                            
+                                                </div>
+                                                <div ng-if="editChartType === 'funnel'">
+                                                    <div>
+                                                        <div funnel-Directive funnel-Source="{{previewChartUrl}}" funnel-Id="{{widget.id}}" funnel-Columns="{{previewColumn.columns}}"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div> 

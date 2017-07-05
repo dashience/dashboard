@@ -27,6 +27,9 @@ public class TemplateService {
 
     public ProductAccountUserTemplate create(ProductAccountUserTemplate productAccountUserTemplate) {
         ProductAccountUserTemplate productAccountUserTemplateId = templateDao.findAccountById(productAccountUserTemplate.getAccountId());
+        if(productAccountUserTemplateId == null){
+            return (ProductAccountUserTemplate) templateDao.create(productAccountUserTemplate);
+        }
         if (productAccountUserTemplateId.getAccountId().getId()==productAccountUserTemplate.getAccountId().getId()) {
             productAccountUserTemplate.setId(productAccountUserTemplateId.getId());
             return (ProductAccountUserTemplate) templateDao.update(productAccountUserTemplate);
