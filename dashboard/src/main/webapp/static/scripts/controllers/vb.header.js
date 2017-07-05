@@ -13,15 +13,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         var productId = product.id;
         var lastTemplateId;
         var setTemplateId = product.templateId ? product.templateId.id : 0;
+
         if ($stateParams.productId != product.id) {
             $http.get("admin/template/getProductTemplate/" + productId + "/" + $stateParams.accountId).success(function (response) {
                 var responseObj = response;
-                if (!responseObj) {
-                    return;
-                }
-                lastTemplateId = responseObj.id;
-                $stateParams.productId = product.id;
-                $stateParams.templateId = lastTemplateId ? lastTemplateId : setTemplateId;//product.templateId ? product.templateId.id : 0;
+               // if (responseObj) {
+                    lastTemplateId = responseObj?responseObj.id:null;
+                    $stateParams.productId = product.id;
+                    $stateParams.templateId = lastTemplateId ? lastTemplateId : setTemplateId;//product.templateId ? product.templateId.id : 0;
+               // }
                 $state.go("index.dashboard.widget", {
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
@@ -102,11 +102,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $stateParams.accountId = account.accountId.id;
         $scope.selectAccount.selected = {accountName: account.accountId.accountName};
-        $stateParams.accountName = account.accountId.accountName;   
+        $stateParams.accountName = account.accountId.accountName;
         $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
             $stateParams.templateId = response.id;
             $scope.loadNewUrl();
-           // console.log(response)
+            // console.log(response)
         });
     };
 
