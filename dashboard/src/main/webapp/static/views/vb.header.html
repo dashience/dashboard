@@ -208,7 +208,7 @@
                 <li class="dropdown">
                     <form role="search" class="navbar-form-custom" method="post" action="#">
                         <div class="form-group">
-                            <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
+                            <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected)" theme="selectize" ng-disabled="disabled" style="width:180px;">
                                 <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
                                 <ui-select-choices repeat="account in accounts | filter: $select.search">
                                     <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>

@@ -6,8 +6,13 @@
 package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.service.TemplateService;
+import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.controller.BaseController;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.DashboardTemplate;
+import com.visumbu.vb.model.Product;
 import com.visumbu.vb.model.ProductAccountUserTemplate;
 import com.visumbu.vb.model.VbUser;
 import java.util.List;
@@ -30,7 +35,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class TemplateController extends BaseController{
     @Autowired
     private TemplateService templateService;
+    @Autowired
     private UserService userService;
+    @Autowired
+    private UiService uiService;
     
     @RequestMapping(value = "productAccountUserTemplate", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
@@ -52,10 +60,13 @@ public class TemplateController extends BaseController{
         return templateService.read();
     }
     
-    @RequestMapping(value = "getProduct/{productId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "getProductTemplate/{productId}/{accountId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List getProductAccountUserTemplateById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId) {
-        return templateService.getProductAccountUserTemplateById(productId);
+    DashboardTemplate getProductAccountUserTemplateById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId, @PathVariable Integer accountId) {
+        Account account = uiService.getAccountById(accountId);
+        AgencyProduct product = uiService.getAgencyProductById(productId);
+        VbUser vbUser = userService.findByUsername(getUser(request));
+        return templateService.getProductAccountUserTemplateById(vbUser, product, account);
     }
 
     @RequestMapping(value = "productAccountUserTemplate/{id}", method = RequestMethod.DELETE, produces = "application/json")

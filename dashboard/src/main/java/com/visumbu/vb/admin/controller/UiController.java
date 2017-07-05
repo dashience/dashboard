@@ -718,7 +718,7 @@ public class UiController extends BaseController {
         Agency agency = user.getAgencyId();
         AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
 //        Agency agency = agencyProduct.getAgencyId();
-        return uiService.getTemplates(agency, agencyProduct);
+        return uiService.getTemplates(user, agency, agencyProduct);
     }
 
     @RequestMapping(value = "getDefaultTemplate/{agencyId}", method = RequestMethod.GET, produces = "application/json")
