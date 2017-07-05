@@ -1152,11 +1152,15 @@ public class UiService {
         return uiDao.getDefaultTemplate(agencyId);
     }
 
-    public List<DashboardTemplate> getTemplates(Agency agency, AgencyProduct agencyProduct) {
-        return uiDao.getTemplates(agency, agencyProduct);
+    public List<DashboardTemplate> getTemplates(VbUser user, Agency agency, AgencyProduct agencyProduct) {
+        return uiDao.getTemplates(user, agency, agencyProduct);
     }
 
 //    public DataSet updateDataSetEnableDisable(DataSet dataSet) {
 //        return uiDao.updateDataSetEnableDisable(dataSet);
 //    }
+
+    public List<DashboardTemplate> getTemplates(VbUser user, AgencyProduct agencyProduct, Account account) {
+        return null;
+    }
 }
