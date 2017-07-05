@@ -2,7 +2,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.permission = localStorageService.get("permission");
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
-    console.log($scope.isAdmin);
     $scope.agencyId = $cookies.getObject("agencyId");
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
@@ -57,6 +56,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //        }
 //
 //    };
+
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
@@ -301,21 +301,22 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         yesterday.setDate(today.getDate() - 1);
         return yesterday;
     };
+     console.log($stateParams.startDate);
+    console.log($stateParams.endDate);
 
-    $scope.getBeforeDay = function () {
-        var today = new Date();
-        var yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-        return yesterday;
-    };
     $scope.firstDate = $stateParams.startDate ? $scope.toDate(decodeURIComponent($stateParams.startDate)) : $scope.getDay().toLocaleDateString("en-US");
     $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : $scope.getBeforeDay().toLocaleDateString("en-US");
     if (!$stateParams.startDate) {
         $stateParams.startDate = $scope.firstDate;
+        console.log($scope.firstDate);
+        console.log($scope.endDate);
     }
     if (!$stateParams.endDate) {
         $stateParams.endDate = $scope.lastDate;
     }
+    
+    console.log($stateParams.startDate);
+    console.log($stateParams.endDate);
 
     $scope.setProductByFav = function () {
         $scope.accountId = $stateParams.accountId;
@@ -338,7 +339,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
         console.log($stateParams.startDate);
         console.log($stateParams.endDate);
-        console.log($stateParams.tabId)
+        console.log($stateParams.tabId);
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
                 accountId: $stateParams.accountId,
