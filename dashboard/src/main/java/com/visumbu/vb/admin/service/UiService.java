@@ -1078,7 +1078,7 @@ public class UiService {
 
         String[] tabs = template.getTabIds().split(",");
 
-        uiDao.deleteTemplateTabs(dashboardTemplate);
+        uiDao.deleteTemplateTabs(dashboardTemplate.getId());
         for (int i = 0; i < tabs.length; i++) {
             String tabIdStr = tabs[i];
             Integer tabId = Integer.parseInt(tabIdStr);
@@ -1156,4 +1156,46 @@ public class UiService {
 //    public DataSet updateDataSetEnableDisable(DataSet dataSet) {
 //        return uiDao.updateDataSetEnableDisable(dataSet);
 //    }
+    public List<DashboardTemplate> getUserTemplate(VbUser user) {
+        return uiDao.getUserTemplate(user);
+    }
+
+//    public DashboardTemplate shareDashboardTemplate(DashboardTemplate dashboardTemplateBean) {
+//        List<VbUser> userList = uiDao.getUsersByAgency(dashboardTemplateBean.getAgencyId());
+//        for (Iterator<VbUser> iterator = userList.iterator(); iterator.hasNext();) {
+//            VbUser userId = iterator.next();
+//            if (!(userId.equals(dashboardTemplateBean.getUserId()))) {
+//                DashboardTemplate dashboardTemplate = new DashboardTemplate();
+//                dashboardTemplate.setTemplateName(dashboardTemplateBean.getTemplateName());
+//                dashboardTemplate.setAgencyId(dashboardTemplateBean.getAgencyId());
+//                dashboardTemplate.setUserId(userId);
+//                dashboardTemplate.setAgencyProductId(dashboardTemplateBean.getAgencyProductId());
+//                List<TemplateTabs> templateTabsList = uiDao.getTabByTemplateId(dashboardTemplateBean.getId());
+//                uiDao.saveOrUpdate(dashboardTemplate);
+//                for (Iterator<TemplateTabs> iterator1 = templateTabsList.iterator(); iterator1.hasNext();) {
+//                    TemplateTabs templateTabs = iterator1.next();
+//                    Integer tabId = templateTabs.getTabId().getId();
+//                    // DashboardTabs dashboardTab = uiDao.getTabById(tabId);
+//                    DashboardTabs duplicateTab = duplicateTab(tabId, userId);
+//                    TemplateTabs templateTab = new TemplateTabs();
+//                    templateTab.setTemplateId(dashboardTemplate);
+//                    templateTab.setUserId(userId);
+//                    templateTab.setTabId(duplicateTab);
+//                    uiDao.saveOrUpdate(templateTab);
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
+    public DashboardTemplate deleteUserTemplate(Integer templateId) {
+        return uiDao.deleteUserTemplate(templateId);
+    }
+
+    public DashboardTemplate updateSharedTemplateStatus(DashboardTemplate dashboardTemplate, Integer templateId) {
+        DashboardTemplate template = getTemplateById(templateId);
+        template.setShared(dashboardTemplate.getShared());
+        uiDao.saveOrUpdate(template);
+        return template;
+    }
 }

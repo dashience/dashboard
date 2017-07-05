@@ -94,9 +94,8 @@
                             <div class="dropdown-menu" style="width:20px;padding:5px 5px ! important">
                                 <!--<div class="col-sm-2">-->
                                 <input  type="text" ng-model="template.templateName"  class="form-control" style="padding: 2px 12px !important;">
-                                <div>
-                                    <button class="btn btn-success btn-xs saveButton" ng-click="saveTemplate(template);">SaveAs</button>
-                                </div>
+                                <button class="btn btn-success btn-xs saveButton" ng-click="saveTemplate(template);">SaveAs</button>
+                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getAgencyTemplate()">Manage</button>
                                 <!--</div>-->
                                 <!--<li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li>
                                 <li><a href="#">Something else here</a></li>
@@ -104,14 +103,52 @@
                                 <li><a href="#">Separated link</a></li>-->
                             </div>
                         </div>
+
                         <!--</div>-->
                     </div>
+
                 </div>
                 <h2 class="font-bold m-b-xs">
                     {{dashboardName}}
                 </h2> 
 
             </div>
+        </div>
+    </div>
+    <div id="myModal" class="modal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Templates</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <table class="table table-bordered table-responsive table-scheduler">
+                            <thead>
+                                <tr>
+                                    <th>Template Name</th>
+                                    <th>Share Template</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="agencyTemplate in agencyTemplates">
+                                    <td >{{agencyTemplate.templateName}}</td>
+                                    <td><input type="checkbox" ng-model="agencyTemplate.shared" ng-true-value="1" ng-false-value="0" ng-change="shareUser(agencyTemplate)"></td>
+                                    <td><button class="btn btn-default btn-xs" ng-click="deleteUserTemplate(agencyTemplate,$index)"><i class="fa fa-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
         </div>
     </div>
     <section class="content">

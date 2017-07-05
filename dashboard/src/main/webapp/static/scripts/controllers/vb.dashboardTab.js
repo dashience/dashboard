@@ -4,13 +4,13 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.isAdmin = $cookies.getObject("isAdmin");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
+    $scope.userId = $cookies.getObject("userId");
 //    $scope.templateId = $stateParams.templateId;
 //    $scope.tabId = $stateParams.tabId;
 
-    $scope.selectTemplate = {};
     //get Templates
-    $scope.selectTemplate={};
-    function getAllTemplate() {
+    $scope.selectTemplate = {};
+    $scope.getAllTemplate = function () {
         $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
             $scope.templates = response;
             var template = "";
@@ -23,7 +23,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     }
     ;
 
-    getAllTemplate();
+    $scope.getAllTemplate();
 
     $scope.getTemplateById = function (template) {
 //        $stateParams.accountId = template.accountId.id;
@@ -324,7 +324,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     //save Template
     $scope.saveTemplate = function (template) {
-        console.log(tab);
         console.log($scope.tabs);
         var tabIds = $scope.tabs.map(function (value, key) {
             if (value) {
@@ -338,44 +337,69 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         }
         console.log(data);
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
-            $scope.template = "";
-            $scope.templateId = "";
+            $scope.getAllTemplate();
         });
-        getAllTemplate();
-        $scope.tab = "";
+        $scope.getAllTemplate();
+        $scope.template = "";
         $scope.templateId = "";
     };
-    $scope.updateTemplate = function (tab) {
-        console.log(tab)
-//        $http.get('admin/ui/getTemplateId/' + $stateParams.accountId + '/' + $stateParams.productId).success(function (response) {
-//            console.log(response);
-//            if (response.length === 0) {
-//                var dialog = bootbox.dialog({
-//                    title: 'Alert',
-//                    message: "You Should Save First"
-//                });
-//                dialog.init(function () {
-//                    setTimeout(function () {
-//                        dialog.modal('hide');
-//                    }, 2000);
-//                });
-//                return;
-//            } else {
-//                $scope.templateId = response[0].id;
-//                $scope.templateName = response[0].templateName;
-//            }
-//        })
-        var data = {
-            id: $scope.templateId,
-            templateName: $scope.templateName,
-        };
-//        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.accountId + '/' + $stateParams.productId, data: data}).success(function (response) {
-//            $scope.tab = "";
-//            $scope.templateId = "";
-//            getAllTemplate();
-//        });
-    };
+    $scope.agencyTemplates = [];
+    $scope.getAgencyTemplate = function () {
+        $http.get('admin/ui/getUserTemplate').success(function (response) {
+            console.log(response);
+            angular.forEach(response, function (value, key) {
+                if (value.shared === "active") {
+                    $scope.sharedUser = 1;
+                } else {
+                    $scope.sharedUser = 0;
+                }
+                var data = {
+                    id: value.id,
+                    templateName: value.templateName,
+                    agencyId: value.agencyId,
+                    agencyProductId: value.agencyProductId,
+                    userId: value.userId,
+                    shared: $scope.sharedUser
 
+                }
+                $scope.agencyTemplates.push(data);
+            });
+            console.log($scope.agencyTemplates)
+
+        });
+    }
+    $scope.shareUser = function (agencyTemplate) {
+        console.log(agencyTemplate);
+//        console.log(sharedStatus);
+        if (agencyTemplate.shared === 1) {
+            $scope.shared = "active";
+        } else {
+            $scope.shared = "inActive";
+        }
+        var sharedData = {
+            shared: $scope.shared
+        };
+        var data = {
+            id: agencyTemplate.id,
+            templateName: agencyTemplate.templateName,
+            agencyId: agencyTemplate.agencyId,
+            agencyProductId: agencyTemplate.agencyProductId,
+            userId: agencyTemplate.userId
+        }
+//        if (agencyTemplate.shared === 1) {
+//            $http({method: 'POST', url: 'admin/ui/shareUserTemplate', data: data}).success(function (response) {
+//            });
+//        }
+        $http({method: 'POST', url: 'admin/ui/updateTemplateStatus/' + agencyTemplate.id, data: sharedData}).success(function (response) {
+
+        });
+    }
+    $scope.deleteUserTemplate = function (agencyTemplate, index) {
+        $http({method: 'DELETE', url: 'admin/ui/deleteUserTemplate/' + agencyTemplate.id}).success(function (response) {
+            $scope.agencyTemplates.splice(index, 1);
+            $scope.getAllTemplate();
+        });
+    }
 })
         .directive('ngBlur', function () {
             return function (scope, elem, attrs) {

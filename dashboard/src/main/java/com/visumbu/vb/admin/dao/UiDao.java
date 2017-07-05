@@ -583,7 +583,13 @@ public class UiDao extends BaseDao {
         query.setParameter("agencyId", user.getAgencyId().getId());
         return query.list();
     }
-
+     public List<VbUser> getUsersByAgency(Agency agency) {
+        String queryStr = "select d from VbUser d where (d.agencyId.status is null or d.agencyId.status != 'Deleted') and (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", agency.getId());
+        return query.list();
+    }
+    
     public VbUser deleteUser(Integer id) {
         String queryString = "update VbUser d set status = 'Deleted' where d.id = :userId";
         Query querySess = sessionFactory.getCurrentSession().createQuery(queryString);
@@ -760,10 +766,10 @@ public class UiDao extends BaseDao {
         return dashboardTemplate;
     }
 
-    public void deleteTemplateTabs(DashboardTemplate dashboardTemplate) {
-        String queryStr = "delete FROM TemplateTabs d where d.templateId = :templateId";
+    public void deleteTemplateTabs(Integer templateId) {
+        String queryStr = "delete FROM TemplateTabs d where d.templateId.id = :templateId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("templateId", dashboardTemplate);
+        query.setParameter("templateId", templateId);
         query.executeUpdate();
     }
 
@@ -780,5 +786,21 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", id);
         query.executeUpdate();
+    }
+
+    public List<DashboardTemplate> getUserTemplate(VbUser user) {
+        String queryStr = "SELECT d from DashboardTemplate d where d.userId = :userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", user);
+        return query.list();
+    }
+
+    public DashboardTemplate deleteUserTemplate(Integer templateId) {
+        deleteTemplateTabs(templateId);
+        String queryStr = "DELETE from DashboardTemplate t where t.id = :templateId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("templateId", templateId);
+        query.executeUpdate();
+        return null;
     }
 }
