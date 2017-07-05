@@ -294,6 +294,7 @@
             <div id="delete{{widget.id}}" class="modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
+                        
                         <div class="modal-header">
                             <strong>Delete</strong>
                             <strong><button class="close" data-dismiss="modal">&times;</button></strong>
@@ -316,7 +317,7 @@
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget">
                     <div class="panel-heading">
                         <div class="panel-tools">
-                            <div> 
+                            <div> {{widget.id}}Test
                                 <a title="Favourites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
                                 <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
@@ -381,7 +382,8 @@
                                  area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
                                  widget-Id="{{widget.id}}"
                                  widget-Columns="{{widget.columns}}" 
-                                 widget-Obj="{{widget}}">                                     
+                                 widget-Obj="{{widget}}"
+                                 chart_Colors="{{widget.chartColors}}">                                     
                             </div>
                         </div>
                     </div>
@@ -508,10 +510,10 @@
                 <div class="modal-body">
                     <div ng-include="'static/views/form/widgetCreateForm.html'"></div>
                 </div>
-                <!--                    <div class="modal-footer">
+                                   <div class="modal-footer">
                                         <button class="btn btn-info btn-xs" ng-click="save(widget, $index)" data-dismiss="modal"> Yes</button>
                                         <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
-                                    </div>-->
+                                    </div>
             </div>
         </div>
     </div>

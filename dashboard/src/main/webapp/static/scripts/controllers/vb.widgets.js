@@ -18,7 +18,32 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
     $scope.userId = $cookies.getObject("userId");
-    console.log($scope.userId);
+    //added by subhadra to store list of optionvalues
+    $scope.targetColors = [];
+
+    //added by subhadra 
+    $scope.editColorOption = function (targetColorss) {
+        var data = targetColorss;
+        if ($scope.widgetId) {
+            $http({method: 'PUT', url: 'admin/ui/userPreferences/updatecolor/' + $scope.widgetId, data: data}).success(function (response) {
+
+            });
+        }
+    };
+
+    //added by subhadra 
+    $scope.deleteColorOption = function (targetColor, index) {
+        console.log($scope.targetColors)
+        console.log(targetColor)
+        var data = targetColor;
+        $http({method: 'PUT', url: 'admin/ui/userPreferences/deletecolor/' + $scope.widgetId, data: data}).success(function (response) {
+            // $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
+            console.log(response);
+            $scope.targetColors = response;
+            //});
+        });
+
+    };
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
@@ -45,6 +70,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
     });
+    //added by subhadra
+    var userPreferencesmap = {};
+
 
     $scope.networkTypes = [
         {
@@ -228,7 +256,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId + '/' + $stateParams.accountId).success(function (response) {
             var widgetItems = [];
             widgetItems = response;
-            console.log(response);
             if (response) {
                 $scope.productName = response[0].tabId.agencyProductId.productName;
             }
@@ -244,21 +271,39 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 });
             });
-            $scope.widgets = widgetItems;
+            $http.get("admin/ui/userPreferences/map").success(function (response) {
+                $scope.userChartColors = response;
+                widgetItems.forEach(function (value, key) {
+                    value.chartColors = response;
+                });
+                $scope.widgets = widgetItems;
+                console.log($scope.widgets)
+            });
         });
     }
     getWidgetItem();
 
+
+
     $scope.widgetObj = {};
     $scope.loadingColumnsGif = false;
     $scope.setWidgetItems = function (widget) {
-//        console.log(widget.accountId.id)
+        widget.targetColors = [];
         $scope.showDerived = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
         $scope.tickerItem = [];
         $scope.groupingFields = [];
+        var widgetColors = widget.chartColorOption.split(',')
+
+        for (var i = 0; i <= widgetColors.length; i++)
+            if (widgetColors[i] && widgetColors[i] !== "") {
+                console.log(widgetColors[i])
+                widget.targetColors.push({color: widgetColors[i]})
+            }
         $scope.widgetObj = widget;
+        console.log($scope.widgetObj)
+        $scope.widgetId = widget.id;
         $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
@@ -368,9 +413,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
-            console.log(response.columnDefs);
             var getWidgetColumns = widget.columns;
-            console.log(widget.columns)
 
             $scope.collectionFields.forEach(function (value, k) {
                 var machField = $.grep(getWidgetColumns, function (b) {
@@ -382,6 +425,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.selectColumnDef = 0;
                 }
             });
+            $scope.afterLoadWidgetColumns = true;
+            resetQueryBuilder();
 
 //            $http.get("admin/ui/getDataSetColumnsByDataSetId/" + widget.dataSetId.id).success(function (response) {
 //                console.log(response)
@@ -407,8 +452,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //                console.log($scope.collectionFields)
 //            });
 
-            $scope.afterLoadWidgetColumns = true;
-            resetQueryBuilder();
         });
     }
 
@@ -455,11 +498,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if ((chartTypeName ? chartTypeName : widgetObj.chartType) !== 'table') {
                 widget.columns = response.columnDefs;
                 $scope.collectionFields = response.columnDefs;
+                resetQueryBuilder();
             } else {
                 $scope.collectionFields = response.columnDefs;
+                //resetQueryBuilder();
             }
             console.log($scope.collectionFields);
-            resetQueryBuilder();
         });
     };
 
@@ -559,6 +603,38 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
     };
+    $scope.targetColors;
+    $scope.color = function () {
+        $scope.loadingColumnsGif = true;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+        $scope.showColor = true;
+        $scope.showDateRange = false;
+        //added by subhadra to get chatcoloroption in map
+        $http.get("admin/ui/userPreferences/optionvalues/map/" + $scope.widgetId).success(function (response) {
+            if (response != null) {
+
+                console.log(JSON.stringify(response) + "..............map");
+            }
+        });
+
+
+        ////added by subhadra to get chatcoloroption in list
+        $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
+            if (response != null) {
+                $scope.targetColors = response;
+                console.log($scope.targetColors + "..............");
+            } else {
+                //
+            }
+
+        });
+    };
+    //add by subhadra
+    $scope.addColors = function (widget) {
+        var widgetLength = widget.targetColors.length;
+        widget.targetColors.push({color: "#00" + widgetLength})
+    };
 
     $scope.showFilterList = function () {
         $scope.loadingColumnsGif = true;
@@ -581,35 +657,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = false;
     };
 
-    $scope.showListOfColumns = function () {
-        $scope.loadingColumnsGif = true;
-        $scope.showFilter = false;
-        $scope.showColumnDefs = true;
-        $scope.showPreviewChart = false;
-    };
-
-    $scope.showFilterList = function () {
-        $scope.loadingColumnsGif = true;
-        $scope.showColumnDefs = false;
-        $scope.showPreviewChart = false;
-        $scope.showFilter = true;
-    };
-
-    $scope.showEditor = function () {
-        $scope.showPreviewChart = true;
-    };
-
-    $scope.showPreview = function (widgetObj) {
+    $scope.showPreview = function (widgetObj, colors) {
+        console.log(widgetObj)
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
         $scope.showDateRange = false;
         $scope.chartTypeName = null;
+        widgetObj.chartColors = colors;
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
         $scope.displayPreviewChart = widgetObj;
+        console.log(widgetObj)
+        console.log($scope.displayPreviewChart)
     };
 
     $scope.sortableOptions = {
@@ -672,7 +734,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }, 40);
     };
 
-    $scope.deleteWidget = function (widget, index) {                            //Delete Widget
+    $scope.deleteWidget = function (widget, index) {
+        //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
@@ -896,6 +959,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectX1Axis = function (widgetObj, column) {
+        $scope.dispHideBuilder = true;
         var exists = false;
         angular.forEach(widgetObj.columns, function (value, key) {
             if (column.fieldName === value.fieldName) {
@@ -909,10 +973,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             column.xAxis = 1;
             widgetObj.columns.push(column);
         }
+        $timeout(function () {
+            $scope.queryBuilderList = widgetObj;
+            resetQueryBuilder();
+        }, 50);
     };
 
 
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
+        $scope.dispHideBuilder = true;
         var groupVar = [];
 //        if (chartTypeName == 'stackedbar') {
         angular.forEach(y1data, function (value, key) {
@@ -941,6 +1010,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     widget.columns.push(value);
                 }
             }
+            $timeout(function () {
+                $scope.queryBuilderList = widget;
+                resetQueryBuilder();
+            }, 50);
         });
 //        }
 //        angular.forEach(y1data, function (value, key) {
@@ -1035,6 +1108,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //    };
 
     $scope.selectY2Axis = function (widget, y2data) {
+        $scope.dispHideBuilder = true;
         angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
@@ -1057,6 +1131,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }
         });
+        $timeout(function () {
+            $scope.queryBuilderList = widget;
+            resetQueryBuilder();
+        }, 50);
     };
 
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
@@ -1427,17 +1505,26 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //
 //        });
 //    };
+
     $scope.save = function (widget) {
+
+
+        var widgetColor = widget.targetColors.map(function (value, key) {
+            if (value) {
+                return value.color;
+            }
+        }).join(',');
+
+
+
+        console.log(widgetColor)
         if (widget.chartType != 'text') {
             if ($('.query-builder').queryBuilder('getRules')) {
                 $scope.jsonData = JSON.stringify($('.query-builder').queryBuilder('getRules'));
                 $scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
             }
         }
-        widget.dateRangeName = $("#dateRangeName").text().trim();
-        if (widget.dateRangeName == "Date Duration") {
-            widget.dateRangeName = "";
-        }
+
         try {
             $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -1497,6 +1584,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widget.accountId = parseInt($stateParams.accountId);
         }
+        $scope.widgetId = widget.id;
+        console.log(JSON.stringify(widget.targetColors) + "................................");
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
@@ -1523,7 +1612,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             accountId: widget.accountId,
             timeSegment: widget.timeSegment ? widget.timeSegment.type : null,
             productSegment: widget.productSegment ? widget.productSegment.type : null,
-            networkType: widget.networkType ? widget.networkType.type : null
+            networkType: widget.networkType ? widget.networkType.type : null,
+
+            chartColorOption: widgetColor     //added by subhadra to bind chatcoloroption using map
         };
         widget.chartType = "";
         console.log(data);
@@ -1591,6 +1682,33 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $('.showEditWidget').modal('hide');
+    };
+});
+
+app.directive('uiColorpicker', function () {
+    return {
+        restrict: 'E',
+        require: 'ngModel',
+        scope: false,
+        replace: true,
+        template: "<span><input class='input-small' /></span>",
+        link: function (scope, element, attrs, ngModel) {
+            var input = element.find('input');
+            var options = angular.extend({
+                color: ngModel.$viewValue,
+                change: function (color) {
+                    scope.$apply(function () {
+                        ngModel.$setViewValue(color.toHexString());
+                    });
+                }
+            }, scope.$eval(attrs.options));
+
+            ngModel.$render = function () {
+                input.spectrum('set', ngModel.$viewValue || '');
+            };
+
+            input.spectrum(options);
+        }
     };
 });
 
@@ -2511,17 +2629,27 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
+                var defaultColors = ['#62cb31', '#555555'];
+                
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
+
+                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;
+
+                //var chartColors = getWidgetObj.chartColors.Chart_Color_Options;
 
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
                             "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
@@ -2615,7 +2743,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: chartColors ? chartColors : defaultColors
 
                                 },
                                 tooltip: {show: false},
@@ -2662,6 +2790,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
+            //alert(scope.chartColor);
             var labels = {format: {}};
             scope.loadingBar = true;
             var yAxis = [];
@@ -2813,12 +2942,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
-                }
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
 
                 var url = "admin/proxy/getData?";
                 if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
@@ -2830,10 +2959,18 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     dataSourcePassword = '';
                 }
+                var defaultColors = ['#62cb31', '#555555'];
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+
+                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;
+
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (barChartDataSource.userId ? barChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
@@ -2923,7 +3060,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: chartColors ? chartColors : defaultColors
 
                                 },
                                 tooltip: {show: false},
@@ -3124,17 +3261,24 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
+                var defaultColors = ['#62cb31', '#555555'];
+                 var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
+                var chartColors =  widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+
 
                 scope.refreshPieChart = function () {
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (pieChartDataSource.userId ? pieChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + pieChartDataSource.reportName +
                             "&driver=" + pieChartDataSource.dataSourceId.sqlDriver +
@@ -3220,8 +3364,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0', '#DC143C']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3281,6 +3424,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
+            console.log(scope.widgetObj)
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -3422,19 +3566,27 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     dataSourcePassword = '';
                 }
-
+                console.log(JSON.parse(scope.widgetObj))
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
+                var defaultColors = ['#62cb31', '#555555'];
+                console.log(getWidgetObj)
+                 var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
+                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+
 
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (areaChartDataSource.userId ? areaChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
@@ -3517,8 +3669,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3727,16 +3878,25 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var setWidgetAccountId;
-                if (!getWidgetObj.accountId) {
-                    setWidgetAccountId = $stateParams.accountId;
-                } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                var setWidgetAccountId;
+//                if (!getWidgetObj.accountId) {
+//                    setWidgetAccountId = $stateParams.accountId;
+//                } else {
+//                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+//                }
+                var defaultColors = ['#62cb31', '#555555'];
+                
+                 var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
+                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+
+
                 scope.refreshStackedBarChart = function () {
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + stackedBarChartDataSource.id +
-                            "&accountId=" + setWidgetAccountId +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (stackedBarChartDataSource.userId ? stackedBarChartDataSource.userId.id : null) +
                             "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
@@ -3825,8 +3985,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {

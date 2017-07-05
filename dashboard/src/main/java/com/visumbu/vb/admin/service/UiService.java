@@ -44,7 +44,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
@@ -249,6 +251,30 @@ public class UiService {
         }
         System.out.println("dateRange start Date-----> " + startDate);
         System.out.println("dateRange End Date-----> " + endDate);
+        //modified by subhadra for chat coloroption
+        
+//         Map<String,String> chatcoloroptionmap= tabWidgetBean.getChartColorOption();
+//      System.out.println("chat color size map size"+chatcoloroptionmap.size()+".........."+chatcoloroptionmap);
+//        Set<String> keyset=chatcoloroptionmap.keySet();
+//        ArrayList<String> list=new ArrayList<String>();
+//        for(String s: keyset) {
+//            String value=chatcoloroptionmap.get(s);
+//            list.add(value);
+//        }
+//        
+//         StringBuffer optionvalues=new StringBuffer();
+//        int size=list.size();
+//        for(String s:list) {
+//            if(size>1) {
+//            optionvalues.append(s+",");
+//            size--;
+//            }
+//            else {
+//                optionvalues.append(s);
+//            }
+//          
+//        }
+//        System.out.println(optionvalues.toString()+"innnnn service................");
         tabWidget.setTabId(uiDao.getTabById(tabId));
         tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setChartType(tabWidgetBean.getChartType());
@@ -283,6 +309,7 @@ public class UiService {
         tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
+        tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -586,7 +613,7 @@ public class UiService {
     }
 
     public void deleteDataSet(Integer id) {
-         uiDao.deleteDataSet(id);
+        uiDao.deleteDataSet(id);
     }
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
@@ -687,7 +714,7 @@ public class UiService {
     }
 
     public UserAccount findUserAccountById(UserAccount accountId) {
-        List <UserAccount> userAccount = uiDao.findUserAccountById(accountId);
+        List<UserAccount> userAccount = uiDao.findUserAccountById(accountId);
         if (!userAccount.isEmpty()) {
             return userAccount.get(0);
         }
@@ -833,7 +860,7 @@ public class UiService {
     }
 
     public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
-        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();        
+        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         List<DataSetColumns> dataSetColumn = new ArrayList<>();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
             DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
@@ -841,15 +868,15 @@ public class UiService {
             System.out.println("-----------------------------------------------------------------------");
             System.out.println(allDataSetColumn.getDataSetId());
             System.out.println("-----------------------------------------------------------------------");
-        if (allDataSetColumn.getDataSetId() != null) {
-            System.out.println("*******************************************************");
-            System.out.println(allDataSetColumn.getDataSetId());
-            System.out.println("*******************************************************");
-            dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
-        } else {
-            dataSet = new DataSet();
-        }
-            
+            if (allDataSetColumn.getDataSetId() != null) {
+                System.out.println("*******************************************************");
+                System.out.println(allDataSetColumn.getDataSetId());
+                System.out.println("*******************************************************");
+                dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
+            } else {
+                dataSet = new DataSet();
+            }
+
             System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
             if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
@@ -878,7 +905,7 @@ public class UiService {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
                     dataSetFields.setUserId(allDataSetColumn.getUserId());
-                } 
+                }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
 
@@ -904,11 +931,11 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
-                  if (allDataSetColumn.getUserId() != null) {
+                if (allDataSetColumn.getUserId() != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
                     dataSetFields.setUserId(allDataSetColumn.getUserId());
-                } 
+                }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
             }
@@ -1058,9 +1085,39 @@ public class UiService {
     public List<DashboardTemplate> getDefaultTemplateById() {
         return uiDao.getDefaultTemplateById();
     }
-    
+
     //added by Paramvir for theme settings
     public UserPreferences updateThemeSettings(UserPreferences userPreferences) {
         return (UserPreferences) uiDao.update(userPreferences);
+    }
+
+    //added by subhadra for theme settings
+    public UserPreferences createThemeSettings(UserPreferences userPreferences) {
+        return (UserPreferences) uiDao.create(userPreferences);
+    }
+    // adeed by subhadra for chart color
+
+    public UserPreferences getUserPreferenceById(VbUser vbUser) {
+        return uiDao.getUserPreferencesById(vbUser);
+    }
+
+    public Map<String, String[]> getUserPreferencesMap(VbUser userId) {
+        return uiDao.getUserPreferencesMap(userId);
+    }
+
+    public List<String> getcharColor(Integer tabId) {
+        return uiDao.getChartColor(tabId);
+    }
+
+    public int updateOptionValue(String chartcoloroption, Integer widgetId) {
+        return uiDao.updateOptionValue(chartcoloroption, widgetId);
+    }
+
+    public UserPreferences getUserPreferenceByUserId(VbUser userId) {
+        return uiDao.getUserPreferenceById(userId);
+    }
+
+    public DashboardTabs getDashBoardTabsById(Integer tabId) {
+        return uiDao.getDashBoardTabsById(tabId);
     }
 }

@@ -37,7 +37,7 @@
         height: auto! important; 
     }
     .themeSettings{
-        min-width: 200px;
+        min-width: 227px;
     }
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
@@ -345,10 +345,13 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Chart Color </label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control "/>
+
+
+                        <div class="form-group has-feedback">
+                            <label class="col-sm-3 control-label">Chart Color</label>
+                            <div class="input-group col-md-9">
+                                <input  class="form-control" type="text" ng-model="userPreferences.optionValue">
+                                <span  class="input-group-addon" ng-click="changeChartColor(userPreferences)"><i class="fa fa-save"></i></span>
                             </div>
                         </div>
                     </div>
@@ -371,9 +374,9 @@
     </nav>
 </div>
 <script>
-$(document).ready(function(e){
-    $(".inside").click(function(e){
-        e.stopPropagation();
+    $(document).ready(function (e) {
+        $(".inside").click(function (e) {
+            e.stopPropagation();
+        });
     });
-});
 </script>

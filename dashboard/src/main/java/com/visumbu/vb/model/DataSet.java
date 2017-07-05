@@ -45,6 +45,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSet.findBySheetName", query = "SELECT d FROM DataSet d WHERE d.sheetName = :sheetName")})
 public class DataSet implements Serializable {
 
+    @OneToMany(mappedBy = "dataSetId")
+    private Collection<TabWidget> tabWidgetCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -258,6 +261,16 @@ public class DataSet implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.DataSet[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<TabWidget> getTabWidgetCollection() {
+        return tabWidgetCollection;
+    }
+
+    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
+        this.tabWidgetCollection = tabWidgetCollection;
     }
     
 }

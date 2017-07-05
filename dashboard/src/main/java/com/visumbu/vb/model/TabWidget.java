@@ -6,7 +6,6 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,20 +20,17 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  *
- * @author duc-dev-04
+ * @author dashience
  */
 @Entity
 @Table(name = "tab_widget")
@@ -42,52 +38,50 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "TabWidget.findAll", query = "SELECT t FROM TabWidget t")
     , @NamedQuery(name = "TabWidget.findById", query = "SELECT t FROM TabWidget t WHERE t.id = :id")
-    , @NamedQuery(name = "TabWidget.findByTabId", query = "SELECT count(t.id) FROM TabWidget t WHERE t.tabId.id = :tabId")
     , @NamedQuery(name = "TabWidget.findByChartType", query = "SELECT t FROM TabWidget t WHERE t.chartType = :chartType")
     , @NamedQuery(name = "TabWidget.findByClosable", query = "SELECT t FROM TabWidget t WHERE t.closable = :closable")
     , @NamedQuery(name = "TabWidget.findByCol", query = "SELECT t FROM TabWidget t WHERE t.col = :col")
     , @NamedQuery(name = "TabWidget.findByCreatedTime", query = "SELECT t FROM TabWidget t WHERE t.createdTime = :createdTime")
-    , @NamedQuery(name = "TabWidget.findByDimension", query = "SELECT t FROM TabWidget t WHERE t.dimension = :dimension")
-    , @NamedQuery(name = "TabWidget.findByEditable", query = "SELECT t FROM TabWidget t WHERE t.editable = :editable")
-    , @NamedQuery(name = "TabWidget.findByFilters", query = "SELECT t FROM TabWidget t WHERE t.filters = :filters")
-    , @NamedQuery(name = "TabWidget.findByIcon", query = "SELECT t FROM TabWidget t WHERE t.icon = :icon")
-    , @NamedQuery(name = "TabWidget.findByMinHeight", query = "SELECT t FROM TabWidget t WHERE t.minHeight = :minHeight")
-    , @NamedQuery(name = "TabWidget.findByMinimizable", query = "SELECT t FROM TabWidget t WHERE t.minimizable = :minimizable")
-    , @NamedQuery(name = "TabWidget.findByPaginationCount", query = "SELECT t FROM TabWidget t WHERE t.paginationCount = :paginationCount")
-    , @NamedQuery(name = "TabWidget.findByRefreshable", query = "SELECT t FROM TabWidget t WHERE t.refreshable = :refreshable")
-    , @NamedQuery(name = "TabWidget.findByRow", query = "SELECT t FROM TabWidget t WHERE t.row = :row")
-    , @NamedQuery(name = "TabWidget.findBySort", query = "SELECT t FROM TabWidget t WHERE t.sort = :sort")
-    , @NamedQuery(name = "TabWidget.findByStatus", query = "SELECT t FROM TabWidget t WHERE t.status = :status")
-    , @NamedQuery(name = "TabWidget.findByWidgetTitle", query = "SELECT t FROM TabWidget t WHERE t.widgetTitle = :widgetTitle")
-    , @NamedQuery(name = "TabWidget.findByWidth", query = "SELECT t FROM TabWidget t WHERE t.width = :width")
-    , @NamedQuery(name = "TabWidget.findByWidthClass", query = "SELECT t FROM TabWidget t WHERE t.widthClass = :widthClass")
-    , @NamedQuery(name = "TabWidget.findByWidgetOrder", query = "SELECT t FROM TabWidget t WHERE t.widgetOrder = :widgetOrder")
-    , @NamedQuery(name = "TabWidget.findByDirectUrl", query = "SELECT t FROM TabWidget t WHERE t.directUrl = :directUrl")
-    , @NamedQuery(name = "TabWidget.findByProductDisplayName", query = "SELECT t FROM TabWidget t WHERE t.productDisplayName = :productDisplayName")
-    , @NamedQuery(name = "TabWidget.findByProductName", query = "SELECT t FROM TabWidget t WHERE t.productName = :productName")
-    , @NamedQuery(name = "TabWidget.findByTableFooter", query = "SELECT t FROM TabWidget t WHERE t.tableFooter = :tableFooter")
-    , @NamedQuery(name = "TabWidget.findByDateDuration", query = "SELECT t FROM TabWidget t WHERE t.dateDuration = :dateDuration")
-    , @NamedQuery(name = "TabWidget.findByZeroSuppression", query = "SELECT t FROM TabWidget t WHERE t.zeroSuppression = :zeroSuppression")
-    , @NamedQuery(name = "TabWidget.findByMaxRecord", query = "SELECT t FROM TabWidget t WHERE t.maxRecord = :maxRecord")
+    , @NamedQuery(name = "TabWidget.findByCustomEndDate", query = "SELECT t FROM TabWidget t WHERE t.customEndDate = :customEndDate")
     , @NamedQuery(name = "TabWidget.findByCustomRange", query = "SELECT t FROM TabWidget t WHERE t.customRange = :customRange")
-    , @NamedQuery(name = "TabWidget.findByFrequencyDuration", query = "SELECT t FROM TabWidget t WHERE t.frequencyDuration = :frequencyDuration")
+    , @NamedQuery(name = "TabWidget.findByCustomStartDate", query = "SELECT t FROM TabWidget t WHERE t.customStartDate = :customStartDate")
     , @NamedQuery(name = "TabWidget.findByDataset", query = "SELECT t FROM TabWidget t WHERE t.dataset = :dataset")
     , @NamedQuery(name = "TabWidget.findByDatasource", query = "SELECT t FROM TabWidget t WHERE t.datasource = :datasource")
+    , @NamedQuery(name = "TabWidget.findByDateDuration", query = "SELECT t FROM TabWidget t WHERE t.dateDuration = :dateDuration")
     , @NamedQuery(name = "TabWidget.findByDateRangeName", query = "SELECT t FROM TabWidget t WHERE t.dateRangeName = :dateRangeName")
-    , @NamedQuery(name = "TabWidget.findByCustomStartDate", query = "SELECT t FROM TabWidget t WHERE t.customStartDate = :customStartDate")
-    , @NamedQuery(name = "TabWidget.findByCustomEndDate", query = "SELECT t FROM TabWidget t WHERE t.customEndDate = :customEndDate")
+    , @NamedQuery(name = "TabWidget.findByDimension", query = "SELECT t FROM TabWidget t WHERE t.dimension = :dimension")
+    , @NamedQuery(name = "TabWidget.findByDirectUrl", query = "SELECT t FROM TabWidget t WHERE t.directUrl = :directUrl")
+    , @NamedQuery(name = "TabWidget.findByEditable", query = "SELECT t FROM TabWidget t WHERE t.editable = :editable")
+    , @NamedQuery(name = "TabWidget.findByFilters", query = "SELECT t FROM TabWidget t WHERE t.filters = :filters")
+    , @NamedQuery(name = "TabWidget.findByFrequencyDuration", query = "SELECT t FROM TabWidget t WHERE t.frequencyDuration = :frequencyDuration")
+    , @NamedQuery(name = "TabWidget.findByIcon", query = "SELECT t FROM TabWidget t WHERE t.icon = :icon")
     , @NamedQuery(name = "TabWidget.findByLastNdays", query = "SELECT t FROM TabWidget t WHERE t.lastNdays = :lastNdays")
     , @NamedQuery(name = "TabWidget.findByLastNmonths", query = "SELECT t FROM TabWidget t WHERE t.lastNmonths = :lastNmonths")
     , @NamedQuery(name = "TabWidget.findByLastNweeks", query = "SELECT t FROM TabWidget t WHERE t.lastNweeks = :lastNweeks")
     , @NamedQuery(name = "TabWidget.findByLastNyears", query = "SELECT t FROM TabWidget t WHERE t.lastNyears = :lastNyears")
-    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")
-    , @NamedQuery(name = "TabWidget.findByTimeSegment", query = "SELECT t FROM TabWidget t WHERE t.timeSegment = :timeSegment")
+    , @NamedQuery(name = "TabWidget.findByMaxRecord", query = "SELECT t FROM TabWidget t WHERE t.maxRecord = :maxRecord")
+    , @NamedQuery(name = "TabWidget.findByMinHeight", query = "SELECT t FROM TabWidget t WHERE t.minHeight = :minHeight")
+    , @NamedQuery(name = "TabWidget.findByMinimizable", query = "SELECT t FROM TabWidget t WHERE t.minimizable = :minimizable")
+    , @NamedQuery(name = "TabWidget.findByPaginationCount", query = "SELECT t FROM TabWidget t WHERE t.paginationCount = :paginationCount")
+    , @NamedQuery(name = "TabWidget.findByProductDisplayName", query = "SELECT t FROM TabWidget t WHERE t.productDisplayName = :productDisplayName")
+    , @NamedQuery(name = "TabWidget.findByProductName", query = "SELECT t FROM TabWidget t WHERE t.productName = :productName")
+    , @NamedQuery(name = "TabWidget.findByRefreshable", query = "SELECT t FROM TabWidget t WHERE t.refreshable = :refreshable")
+    , @NamedQuery(name = "TabWidget.findByRow", query = "SELECT t FROM TabWidget t WHERE t.row = :row")
+    , @NamedQuery(name = "TabWidget.findBySort", query = "SELECT t FROM TabWidget t WHERE t.sort = :sort")
+    , @NamedQuery(name = "TabWidget.findByStatus", query = "SELECT t FROM TabWidget t WHERE t.status = :status")
+    , @NamedQuery(name = "TabWidget.findByTableFooter", query = "SELECT t FROM TabWidget t WHERE t.tableFooter = :tableFooter")
+    , @NamedQuery(name = "TabWidget.findByWidgetOrder", query = "SELECT t FROM TabWidget t WHERE t.widgetOrder = :widgetOrder")
+    , @NamedQuery(name = "TabWidget.findByWidgetTitle", query = "SELECT t FROM TabWidget t WHERE t.widgetTitle = :widgetTitle")
+    , @NamedQuery(name = "TabWidget.findByWidth", query = "SELECT t FROM TabWidget t WHERE t.width = :width")
+    , @NamedQuery(name = "TabWidget.findByWidthClass", query = "SELECT t FROM TabWidget t WHERE t.widthClass = :widthClass")
+    , @NamedQuery(name = "TabWidget.findByZeroSuppression", query = "SELECT t FROM TabWidget t WHERE t.zeroSuppression = :zeroSuppression")
+    , @NamedQuery(name = "TabWidget.findByIsGridLine", query = "SELECT t FROM TabWidget t WHERE t.isGridLine = :isGridLine")
+    , @NamedQuery(name = "TabWidget.findByNetworkType", query = "SELECT t FROM TabWidget t WHERE t.networkType = :networkType")
     , @NamedQuery(name = "TabWidget.findByProductSegment", query = "SELECT t FROM TabWidget t WHERE t.productSegment = :productSegment")
-    , @NamedQuery(name = "TabWidget.findByNetworkType", query = "SELECT t FROM TabWidget t WHERE t.networkType = :networkType")})
+    , @NamedQuery(name = "TabWidget.findByTimeSegment", query = "SELECT t FROM TabWidget t WHERE t.timeSegment = :timeSegment")
+    , @NamedQuery(name = "TabWidget.findBychartColorOption", query = "SELECT t FROM TabWidget t WHERE t.chartColorOption = :chartColorOption")
+, @NamedQuery(name = "TabWidget.findByTabId", query = "SELECT t FROM TabWidget t WHERE t.tabId = :tabId")})
 public class TabWidget implements Serializable {
-
-    @OneToMany(mappedBy = "widgetId")
-    private Collection<ReportWidget> reportWidgetCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -102,12 +96,40 @@ public class TabWidget implements Serializable {
     private Short closable;
     @Column(name = "col")
     private Integer col;
+    @Lob
+    @Size(max = 2147483647)
+    @Column(name = "content")
+    private String content;
     @Column(name = "created_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdTime;
     @Size(max = 255)
+    @Column(name = "custom_end_date")
+    private String customEndDate;
+    @Size(max = 255)
+    @Column(name = "custom_range")
+    private String customRange;
+    @Size(max = 255)
+    @Column(name = "custom_start_date")
+    private String customStartDate;
+    @Size(max = 255)
+    @Column(name = "dataset")
+    private String dataset;
+    @Size(max = 255)
+    @Column(name = "datasource")
+    private String datasource;
+    @Size(max = 255)
+    @Column(name = "date_duration")
+    private String dateDuration;
+    @Size(max = 255)
+    @Column(name = "date_range_name")
+    private String dateRangeName;
+    @Size(max = 255)
     @Column(name = "dimension")
     private String dimension;
+    @Size(max = 255)
+    @Column(name = "direct_url")
+    private String directUrl;
     @Lob
     @Size(max = 2147483647)
     @Column(name = "display_columns")
@@ -118,14 +140,33 @@ public class TabWidget implements Serializable {
     @Column(name = "filters")
     private String filters;
     @Size(max = 255)
+    @Column(name = "frequency_duration")
+    private String frequencyDuration;
+    @Size(max = 255)
     @Column(name = "icon")
     private String icon;
+    @Column(name = "last_ndays")
+    private Integer lastNdays;
+    @Column(name = "last_nmonths")
+    private Integer lastNmonths;
+    @Column(name = "last_nweeks")
+    private Integer lastNweeks;
+    @Column(name = "last_nyears")
+    private Integer lastNyears;
+    @Column(name = "max_record")
+    private Integer maxRecord;
     @Column(name = "min_height")
     private Integer minHeight;
     @Column(name = "minimizable")
     private Short minimizable;
     @Column(name = "pagination_count")
     private Integer paginationCount;
+    @Size(max = 255)
+    @Column(name = "product_display_name")
+    private String productDisplayName;
+    @Size(max = 255)
+    @Column(name = "productName")
+    private String productName;
     @Column(name = "refreshable")
     private Short refreshable;
     @Column(name = "row")
@@ -136,6 +177,10 @@ public class TabWidget implements Serializable {
     @Size(max = 255)
     @Column(name = "status")
     private String status;
+    @Column(name = "table_footer")
+    private Boolean tableFooter;
+    @Column(name = "widget_order")
+    private Integer widgetOrder;
     @Size(max = 255)
     @Column(name = "widget_title")
     private String widgetTitle;
@@ -144,90 +189,34 @@ public class TabWidget implements Serializable {
     @Size(max = 255)
     @Column(name = "width_class")
     private String widthClass;
-    @Column(name = "widget_order")
-    private Integer widgetOrder;
-    @Size(max = 4095)
-    @Column(name = "direct_url")
-    private String directUrl;
-    @Size(max = 255)
-    @Column(name = "product_display_name")
-    private String productDisplayName;
-    @Size(max = 255)
-    @Column(name = "productName")
-    private String productName;
-    @Size(max = 45)
-    @Column(name = "table_footer")
-    private Boolean tableFooter;
-    @Size(max = 255)
-    @Column(name = "date_duration")
-    private String dateDuration;
     @Column(name = "zero_suppression")
     private Boolean zeroSuppression;
-    @Column(name = "max_record")
-    private Integer maxRecord;
-
     @Size(max = 255)
-    @Column(name = "frequency_duration")
-    private String frequencyDuration;
-    @Size(max = 255)
-    @Column(name = "custom_range")
-    private String customRange;
-
-    @Size(max = 255)
-    @Column(name = "date_range_name")
-    private String dateRangeName;
-    @Size(max = 45)
-    @Column(name = "custom_start_date")
-    private String customStartDate;
-    @Size(max = 45)
-    @Column(name = "custom_end_date")
-    private String customEndDate;
-    @Column(name = "last_ndays")
-    private Integer lastNdays;
-    @Column(name = "last_nmonths")
-    private Integer lastNmonths;
-    @Column(name = "last_nweeks")
-    private Integer lastNweeks;
-    @Column(name = "last_nyears")
-    private Integer lastNyears;
-    @Size(max = 45)
     @Column(name = "is_grid_line")
     private String isGridLine;
-
     @Lob
-    @Size(max = 65535)
-    @Column(name = "content")
-    private String content;
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "json_data")
-    private String jsonData;
-    @Lob
-    @Size(max = 65535)
+    @Size(max = 2147483647)
     @Column(name = "query_filter")
     private String queryFilter;
-
+    @Lob
+    @Size(max = 2147483647)
+    @Column(name = "json_data")
+    private String jsonData;
     @Size(max = 255)
-    @Column(name = "dataset")
-    private String dataset;
-    @Size(max = 255)
-    @Column(name = "datasource")
-    private String datasource;
-    @Size(max = 255)
-    @Column(name = "time_segment")
-    private String timeSegment;
+    @Column(name = "network_type")
+    private String networkType;
     @Size(max = 255)
     @Column(name = "product_segment")
     private String productSegment;
     @Size(max = 255)
-    @Column(name = "network_type")
-    private String networkType;
-    @JoinColumn(name = "data_set_id", referencedColumnName = "id")
-    @ManyToOne
-    private DataSet dataSetId;
+    @Column(name = "time_segment")
+    private String timeSegment;
     @JoinColumn(name = "created_by", referencedColumnName = "id")
     @ManyToOne
     private VbUser createdBy;
+    @JoinColumn(name = "data_set_id", referencedColumnName = "id")
+    @ManyToOne
+    private DataSet dataSetId;
     @JoinColumn(name = "data_source_id", referencedColumnName = "id")
     @ManyToOne
     private DataSource dataSourceId;
@@ -236,7 +225,9 @@ public class TabWidget implements Serializable {
     private DashboardTabs tabId;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
-    private UserAccount accountId;
+    private Account accountId;
+    @Column(name = "chart_color_option")
+    private String chartColorOption;
 
     @Transient
     private List<WidgetColumn> columns;
@@ -283,6 +274,14 @@ public class TabWidget implements Serializable {
         this.col = col;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Date getCreatedTime() {
         return createdTime;
     }
@@ -291,196 +290,12 @@ public class TabWidget implements Serializable {
         this.createdTime = createdTime;
     }
 
-    public String getDimension() {
-        return dimension;
+    public String getCustomEndDate() {
+        return customEndDate;
     }
 
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
-
-    public String getDisplayColumns() {
-        return displayColumns;
-    }
-
-    public void setDisplayColumns(String displayColumns) {
-        this.displayColumns = displayColumns;
-    }
-
-    public List<Map<String, Object>> getData() {
-        return data;
-    }
-
-    public void setData(List<Map<String, Object>> data) {
-        this.data = data;
-    }
-
-    public Short getEditable() {
-        return editable;
-    }
-
-    public void setEditable(Short editable) {
-        this.editable = editable;
-    }
-
-    public String getFilters() {
-        return filters;
-    }
-
-    public void setFilters(String filters) {
-        this.filters = filters;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Integer getMinHeight() {
-        return minHeight;
-    }
-
-    public void setMinHeight(Integer minHeight) {
-        this.minHeight = minHeight;
-    }
-
-    public Short getMinimizable() {
-        return minimizable;
-    }
-
-    public void setMinimizable(Short minimizable) {
-        this.minimizable = minimizable;
-    }
-
-    public Integer getPaginationCount() {
-        return paginationCount;
-    }
-
-    public void setPaginationCount(Integer paginationCount) {
-        this.paginationCount = paginationCount;
-    }
-
-    public Short getRefreshable() {
-        return refreshable;
-    }
-
-    public void setRefreshable(Short refreshable) {
-        this.refreshable = refreshable;
-    }
-
-    public Integer getRow() {
-        return row;
-    }
-
-    public void setRow(Integer row) {
-        this.row = row;
-    }
-
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getWidgetTitle() {
-        return widgetTitle;
-    }
-
-    public void setWidgetTitle(String widgetTitle) {
-        this.widgetTitle = widgetTitle;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public String getWidthClass() {
-        return widthClass;
-    }
-
-    public void setWidthClass(String widthClass) {
-        this.widthClass = widthClass;
-    }
-
-    public Integer getWidgetOrder() {
-        return widgetOrder;
-    }
-
-    public void setWidgetOrder(Integer widgetOrder) {
-        this.widgetOrder = widgetOrder;
-    }
-
-    public String getDirectUrl() {
-        return directUrl;
-    }
-
-    public void setDirectUrl(String directUrl) {
-        this.directUrl = directUrl;
-    }
-
-    public String getProductDisplayName() {
-        return productDisplayName;
-    }
-
-    public void setProductDisplayName(String productDisplayName) {
-        this.productDisplayName = productDisplayName;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public Boolean getTableFooter() {
-        return tableFooter;
-    }
-
-    public void setTableFooter(Boolean tableFooter) {
-        this.tableFooter = tableFooter;
-    }
-
-    public String getDateDuration() {
-        return dateDuration;
-    }
-
-    public void setDateDuration(String dateDuration) {
-        this.dateDuration = dateDuration;
-    }
-
-    public Boolean getZeroSuppression() {
-        return zeroSuppression;
-    }
-
-    public void setZeroSuppression(Boolean zeroSuppression) {
-        this.zeroSuppression = zeroSuppression;
-    }
-
-    public Integer getMaxRecord() {
-        return maxRecord;
-    }
-
-    public void setMaxRecord(Integer maxRecord) {
-        this.maxRecord = maxRecord;
+    public void setCustomEndDate(String customEndDate) {
+        this.customEndDate = customEndDate;
     }
 
     public String getCustomRange() {
@@ -491,12 +306,12 @@ public class TabWidget implements Serializable {
         this.customRange = customRange;
     }
 
-    public String getFrequencyDuration() {
-        return frequencyDuration;
+    public String getCustomStartDate() {
+        return customStartDate;
     }
 
-    public void setFrequencyDuration(String frequencyDuration) {
-        this.frequencyDuration = frequencyDuration;
+    public void setCustomStartDate(String customStartDate) {
+        this.customStartDate = customStartDate;
     }
 
     public String getDataset() {
@@ -515,52 +330,12 @@ public class TabWidget implements Serializable {
         this.datasource = datasource;
     }
 
-    public VbUser getCreatedBy() {
-        return createdBy;
+    public String getDateDuration() {
+        return dateDuration;
     }
 
-    public void setCreatedBy(VbUser createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public DataSet getDataSetId() {
-        return dataSetId;
-    }
-
-    public void setDataSetId(DataSet dataSetId) {
-        this.dataSetId = dataSetId;
-    }
-
-    public DataSource getDataSourceId() {
-        return dataSourceId;
-    }
-
-    public void setDataSourceId(DataSource dataSourceId) {
-        this.dataSourceId = dataSourceId;
-    }
-
-    public DashboardTabs getTabId() {
-        return tabId;
-    }
-
-    public void setTabId(DashboardTabs tabId) {
-        this.tabId = tabId;
-    }
-    
-    public List<WidgetColumn> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<WidgetColumn> columns) {
-        this.columns = columns;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public void setDateDuration(String dateDuration) {
+        this.dateDuration = dateDuration;
     }
 
     public String getDateRangeName() {
@@ -571,20 +346,60 @@ public class TabWidget implements Serializable {
         this.dateRangeName = dateRangeName;
     }
 
-    public String getCustomStartDate() {
-        return customStartDate;
+    public String getDimension() {
+        return dimension;
     }
 
-    public void setCustomStartDate(String customStartDate) {
-        this.customStartDate = customStartDate;
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
     }
 
-    public String getCustomEndDate() {
-        return customEndDate;
+    public String getDirectUrl() {
+        return directUrl;
     }
 
-    public void setCustomEndDate(String customEndDate) {
-        this.customEndDate = customEndDate;
+    public void setDirectUrl(String directUrl) {
+        this.directUrl = directUrl;
+    }
+
+    public String getDisplayColumns() {
+        return displayColumns;
+    }
+
+    public void setDisplayColumns(String displayColumns) {
+        this.displayColumns = displayColumns;
+    }
+
+    public Short getEditable() {
+        return editable;
+    }
+
+    public void setEditable(Short editable) {
+        this.editable = editable;
+    }
+
+    public String getFilters() {
+        return filters;
+    }
+
+    public void setFilters(String filters) {
+        this.filters = filters;
+    }
+
+    public String getFrequencyDuration() {
+        return frequencyDuration;
+    }
+
+    public void setFrequencyDuration(String frequencyDuration) {
+        this.frequencyDuration = frequencyDuration;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public Integer getLastNdays() {
@@ -619,20 +434,132 @@ public class TabWidget implements Serializable {
         this.lastNyears = lastNyears;
     }
 
-    public String getJsonData() {
-        return jsonData;
+    public Integer getMaxRecord() {
+        return maxRecord;
     }
 
-    public void setJsonData(String jsonData) {
-        this.jsonData = jsonData;
+    public void setMaxRecord(Integer maxRecord) {
+        this.maxRecord = maxRecord;
     }
 
-    public String getQueryFilter() {
-        return queryFilter;
+    public Integer getMinHeight() {
+        return minHeight;
     }
 
-    public void setQueryFilter(String queryFilter) {
-        this.queryFilter = queryFilter;
+    public void setMinHeight(Integer minHeight) {
+        this.minHeight = minHeight;
+    }
+
+    public Short getMinimizable() {
+        return minimizable;
+    }
+
+    public void setMinimizable(Short minimizable) {
+        this.minimizable = minimizable;
+    }
+
+    public Integer getPaginationCount() {
+        return paginationCount;
+    }
+
+    public void setPaginationCount(Integer paginationCount) {
+        this.paginationCount = paginationCount;
+    }
+
+    public String getProductDisplayName() {
+        return productDisplayName;
+    }
+
+    public void setProductDisplayName(String productDisplayName) {
+        this.productDisplayName = productDisplayName;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public Short getRefreshable() {
+        return refreshable;
+    }
+
+    public void setRefreshable(Short refreshable) {
+        this.refreshable = refreshable;
+    }
+
+    public Integer getRow() {
+        return row;
+    }
+
+    public void setRow(Integer row) {
+        this.row = row;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Boolean getTableFooter() {
+        return tableFooter;
+    }
+
+    public void setTableFooter(Boolean tableFooter) {
+        this.tableFooter = tableFooter;
+    }
+
+    public Integer getWidgetOrder() {
+        return widgetOrder;
+    }
+
+    public void setWidgetOrder(Integer widgetOrder) {
+        this.widgetOrder = widgetOrder;
+    }
+
+    public String getWidgetTitle() {
+        return widgetTitle;
+    }
+
+    public void setWidgetTitle(String widgetTitle) {
+        this.widgetTitle = widgetTitle;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public String getWidthClass() {
+        return widthClass;
+    }
+
+    public void setWidthClass(String widthClass) {
+        this.widthClass = widthClass;
+    }
+
+    public Boolean getZeroSuppression() {
+        return zeroSuppression;
+    }
+
+    public void setZeroSuppression(Boolean zeroSuppression) {
+        this.zeroSuppression = zeroSuppression;
     }
 
     public String getIsGridLine() {
@@ -643,20 +570,28 @@ public class TabWidget implements Serializable {
         this.isGridLine = isGridLine;
     }
 
-    public UserAccount getAccountId() {
-        return accountId;
+    public String getQueryFilter() {
+        return queryFilter;
     }
 
-    public void setAccountId(UserAccount accountId) {
-        this.accountId = accountId;
+    public void setQueryFilter(String queryFilter) {
+        this.queryFilter = queryFilter;
     }
 
-    public String getTimeSegment() {
-        return timeSegment;
+    public String getJsonData() {
+        return jsonData;
     }
 
-    public void setTimeSegment(String timeSegment) {
-        this.timeSegment = timeSegment;
+    public void setJsonData(String jsonData) {
+        this.jsonData = jsonData;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
     }
 
     public String getProductSegment() {
@@ -667,15 +602,70 @@ public class TabWidget implements Serializable {
         this.productSegment = productSegment;
     }
 
-    public String getNetworkType() {
-        return networkType;
+    public String getTimeSegment() {
+        return timeSegment;
     }
 
-    public void setNetworkType(String networkType) {
-        this.networkType = networkType;
-    }    
-    
+    public void setTimeSegment(String timeSegment) {
+        this.timeSegment = timeSegment;
+    }
 
+    public VbUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(VbUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public DataSet getDataSetId() {
+        return dataSetId;
+    }
+
+    public void setDataSetId(DataSet dataSetId) {
+        this.dataSetId = dataSetId;
+    }
+
+    public DataSource getDataSourceId() {
+        return dataSourceId;
+    }
+
+    public void setDataSourceId(DataSource dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
+
+    public DashboardTabs getTabId() {
+        return tabId;
+    }
+
+    public void setTabId(DashboardTabs tabId) {
+        this.tabId = tabId;
+    }
+
+    public Account getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Account accountId) {
+        this.accountId = accountId;
+    }
+
+    public List<WidgetColumn> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<WidgetColumn> columns) {
+        this.columns = columns;
+    }
+
+    public List<Map<String, Object>> getData() {
+        return data;
+    }
+
+    public void setData(List<Map<String, Object>> data) {
+        this.data = data;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -695,19 +685,19 @@ public class TabWidget implements Serializable {
         }
         return true;
     }
+//@JsonProperty("someSingleValuedField")
+    public String getChartColorOption() {
+        return chartColorOption;
+    }
+
+    public void setChartColorOption(String chartColorOption) {
+        this.chartColorOption = chartColorOption;
+    }
+    
 
     @Override
     public String toString() {
         return "com.visumbu.vb.model.TabWidget[ id=" + id + " ]";
     }
 
-//    @XmlTransient
-//    @JsonIgnore
-//    public Collection<ReportWidget> getReportWidgetCollection() {
-//        return reportWidgetCollection;
-//    }
-//
-//    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
-//        this.reportWidgetCollection = reportWidgetCollection;
-//    }
 }

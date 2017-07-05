@@ -176,7 +176,7 @@ public class ProxyController {
 
             }
         }
-        System.out.println("dataSetId ---> " +dataSetId);
+        System.out.println("dataSetId ---> " + dataSetId);
         if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
             try {
                 System.out.println("with joinDataSet");
@@ -236,7 +236,7 @@ public class ProxyController {
             column.setWidgetId(dataSetColumn.getWidgetId());
             columnDef.add(column);
         }
-        System.out.println("columnDef ---> "+columnDef);
+        System.out.println("columnDef ---> " + columnDef);
         return columnDef;
     }
 
@@ -858,7 +858,7 @@ public class ProxyController {
         return null;
     }
 
-     Map getPinterestData(MultiValueMap<String, String> request, HttpServletResponse response) {
+    Map getPinterestData(MultiValueMap<String, String> request, HttpServletResponse response) {
 
         String reportName = getFromMultiValueMap(request, "dataSetReportName");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
@@ -1192,14 +1192,14 @@ public class ProxyController {
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
-            
+
             String widgetProductSegment = widget.getProductSegment();
             String widgetTimeSegment = widget.getTimeSegment();
             String widgetNetworkType = widget.getNetworkType();
-            if(widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
+            if (widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
                 productSegment = widgetProductSegment;
             }
-            if(widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
+            if (widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
                 timeSegment = widgetTimeSegment;
             }
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
@@ -1274,18 +1274,24 @@ public class ProxyController {
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
-            
+
             String widgetProductSegment = widget.getProductSegment();
             String widgetTimeSegment = widget.getTimeSegment();
             String widgetNetworkType = widget.getNetworkType();
-            
-            if(widgetNetworkType != null || !widgetNetworkType.isEmpty() || !widgetNetworkType.equalsIgnoreCase("none") || !widgetNetworkType.equalsIgnoreCase("undefined")) {
+
+            if (widgetNetworkType == null || widgetNetworkType.isEmpty() || widgetNetworkType.equalsIgnoreCase("none") || widgetNetworkType.equalsIgnoreCase("undefined")) {
+                filter = null;
+            } else if (widgetNetworkType != null || !widgetNetworkType.isEmpty() || !widgetNetworkType.equalsIgnoreCase("none") || !widgetNetworkType.equalsIgnoreCase("undefined")) {
                 filter = widgetNetworkType;
             }
-            if(widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
+            if (widgetProductSegment == null || widgetProductSegment.isEmpty() || widgetProductSegment.equalsIgnoreCase("none") || widgetProductSegment.equalsIgnoreCase("undefined")) {
+                productSegment = null;
+            } else if (widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
                 productSegment = widgetProductSegment;
             }
-            if(widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
+            if (widgetTimeSegment == null || widgetTimeSegment.isEmpty() || widgetTimeSegment.equalsIgnoreCase("none") || widgetTimeSegment.equalsIgnoreCase("undefined")) {
+                timeSegment = null;
+            } else if (widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
                 timeSegment = widgetTimeSegment;
             }
             //System.out.println("Widget title --->" + widget.getWidgetTitle());
@@ -1592,8 +1598,8 @@ public class ProxyController {
         returnMap.put("data", data);
         return returnMap;
     }
-    
-     List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
+
+    List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");

@@ -31,12 +31,15 @@ import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.transaction.Transactional;
 import org.hibernate.Query;
@@ -112,7 +115,7 @@ public class UiDao extends BaseDao {
         return null;
     }
 
-    public List<TabWidget> getTabWidget(Integer tabId,Integer accountId) {
+    public List<TabWidget> getTabWidget(Integer tabId, Integer accountId) {
         String queryStr = "select d from TabWidget d where d.tabId.id = :tabId and (d.accountId.id=:accountId or d.accountId IS NULL) and (status is null or status != 'Deleted') order by widgetOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("tabId", tabId);
@@ -152,9 +155,11 @@ public class UiDao extends BaseDao {
         if (widgetId == null) {
             return null;
         }
+        System.out.println(widgetId + "...................1");
         TabWidget tabWidget = (TabWidget) sessionFactory.getCurrentSession().get(TabWidget.class, widgetId);
         System.out.println(tabWidget);
         tabWidget.setColumns(getColumns(tabWidget));
+        // System.out.println(tabWidget.getId()+"...................2");
         return tabWidget;
     }
 
@@ -527,14 +532,13 @@ public class UiDao extends BaseDao {
         query.setParameter("userId", userId);
         return query.list();
     }
-    
+
     public List<UserAccount> findUserAccountById(UserAccount accountId) {
         String queryStr = "select d from UserAccount d where d.id = :accountId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("accountId", accountId);
         return query.list();
     }
-
 
     public UserAccount deleteUserAccount(Integer userAccountId) {
         String queryString = "delete UserAccount d where d.id = :userAccountId";
@@ -731,12 +735,12 @@ public class UiDao extends BaseDao {
         return (DataSetColumns) create(dataSetColumn);
     }
 
-    public List <DashboardTabs> getTabByTemplateId(Integer templateId) {
+    public List<DashboardTabs> getTabByTemplateId(Integer templateId) {
         String queryStr = "SELECT d FROM DashboardTabs d where d.templateId.id = :templateId and (d.status is null or d.status != 'Deleted'))";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("templateId", templateId);
         return query.list();
-    }    
+    }
 
     public List<DashboardTemplate> getDefaultTemplateById() {
         String queryStr = "SELECT d FROM DashboardTemplate d";
@@ -744,4 +748,85 @@ public class UiDao extends BaseDao {
         //query.setParameter("agencyId", agencyId);
         return query.list();
     }
+
+    public UserPreferences getUserPreferencesById(VbUser userId) {
+        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+//        List list = query.list();
+//        if (list.size() > 0) {
+//            return (UserPreferences) list.get(0);
+//        } else {
+//            return null;
+//        }
+        return (UserPreferences) query.uniqueResult();
+    }
+
+    public Map<String, String[]> getUserPreferencesMap(VbUser userId) {
+        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+
+        UserPreferences userPreferences = (UserPreferences) query.uniqueResult();
+        Map<String, String[]> map = new HashMap<String, String[]>();
+        if (userPreferences != null) {
+            String[] optionValues = userPreferences.getOptionValue().split(",");
+            map.put(userPreferences.getOptionName(), optionValues);
+            System.out.println(optionValues + "===========" + userPreferences.getOptionName());
+            return map;
+        } else {
+            System.out.println("if==========false");
+            return map;
+        }
+    }
+
+    public List<String> getChartColor(Integer id) {
+        String queryStr = "SELECT t FROM TabWidget t WHERE t.id = :id";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", id);
+
+        TabWidget tabWidget = (TabWidget) query.uniqueResult();
+        List<String> list = new ArrayList<String>();
+
+        if (tabWidget != null) {
+            String[] optionValues = tabWidget.getChartColorOption().split(",");
+            for (String optionValue : optionValues) {
+                list.add(optionValue);
+            }
+            return list;
+        } else {
+            System.out.println("if==========false");
+            list.add("#ff5733");
+            return list;
+        }
+    }
+    //subhadra update color option
+
+    public int updateOptionValue(String chartcolor, Integer widgetId) {
+        System.out.println(chartcolor + "..........widgetId:" + widgetId);
+        String queryStr = "update TabWidget t set t.chartColorOption=:chartColorOption WHERE t.id = :widgetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("chartColorOption", chartcolor).setInteger("widgetId", widgetId);
+        // query.setParameter("userId", userId);
+        int i = query.executeUpdate();
+        return i;
+
+    }
+
+    public UserPreferences getUserPreferenceById(VbUser userId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("UserPreferences.findByUserId");
+        query.setParameter("userId", userId);
+
+        return (UserPreferences) query.uniqueResult();
+
+    }
+
+    public DashboardTabs getDashBoardTabsById(Integer tabId) {
+        Query query = sessionFactory.getCurrentSession().getNamedQuery("DashboardTabs.findById");
+        query.setParameter("id", tabId);
+
+        return (DashboardTabs) query.uniqueResult();
+
+    }
+
 }

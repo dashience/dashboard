@@ -2195,10 +2195,7 @@ public class CustomReportDesigner {
                     cell.setPaddingTop(5);
                     cell.setPaddingLeft(10);
                     table.addCell(cell);
-                    System.out.println("Bar Writer: " + writer);
-                    System.out.println("Bar Tab Widget DataSet: " + tabWidget.getDataset());
-                    System.out.println("Bar Tab Widget DataSource: " + tabWidget.getDatasource());
-
+                   
                     Image barChart = multiAxisBarChart(writer, tabWidget);
                     if (barChart != null) {
                         PdfPCell chartCell = new PdfPCell(barChart);
@@ -2271,10 +2268,7 @@ public class CustomReportDesigner {
                     cell.setPaddingTop(5);
                     cell.setPaddingLeft(10);
                     table.addCell(cell);
-                    System.out.println("StackedBar Writer: " + writer);
-                    System.out.println("StackedBar Tab Widget DataSet: " + tabWidget.getDataset());
-                    System.out.println("StackedBar Tab Widget DataSource: " + tabWidget.getDatasource());
-
+                    
                     Image stackedBarChart = multiAxisStackedBarChart(writer, tabWidget);
                     if (stackedBarChart != null) {
                         PdfPCell chartCell = new PdfPCell(stackedBarChart);
@@ -2316,10 +2310,7 @@ public class CustomReportDesigner {
                     cell.setPaddingTop(5);
                     cell.setPaddingLeft(10);
                     table.addCell(cell);
-                    System.out.println("line Writer: " + writer);
-                    System.out.println("line Tab Widget DataSet: " + tabWidget.getDataset());
-                    System.out.println("line Tab Widget DataSource: " + tabWidget.getDatasource());
-                    Image lineChart = multiAxisLineChart(writer, tabWidget);
+                                      Image lineChart = multiAxisLineChart(writer, tabWidget);
                     if (lineChart != null) {
                         PdfPCell chartCell = new PdfPCell(lineChart);
                         chartCell.setBorderColor(widgetBorderColor);
@@ -2362,10 +2353,7 @@ public class CustomReportDesigner {
                     cell.setPaddingTop(5);
                     cell.setPaddingLeft(10);
                     table.addCell(cell);
-                    System.out.println("Area Writer: " + writer);
-                    System.out.println("Area Tab Widget DataSet: " + tabWidget.getDataset());
-                    System.out.println("Area Tab Widget DataSource: " + tabWidget.getDatasource());
-
+                  
                     Image areaChart = multiAxisAreaChart(writer, tabWidget);
                     if (areaChart != null) {
                         PdfPCell chartCell = new PdfPCell(areaChart);

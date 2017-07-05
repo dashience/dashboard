@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "UserPreferences.findAll", query = "SELECT u FROM UserPreferences u")
     , @NamedQuery(name = "UserPreferences.findById", query = "SELECT u FROM UserPreferences u WHERE u.id = :id")
+    , @NamedQuery(name = "UserPreferences.findByUserId", query = "SELECT u FROM UserPreferences u WHERE u.userId = :userId")
     , @NamedQuery(name = "UserPreferences.findByOptionName", query = "SELECT u FROM UserPreferences u WHERE u.optionName = :optionName")
     , @NamedQuery(name = "UserPreferences.findByOptionValue", query = "SELECT u FROM UserPreferences u WHERE u.optionValue = :optionValue")})
 public class UserPreferences implements Serializable {

@@ -39,6 +39,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class JoinDataSet implements Serializable {
 
     @OneToMany(mappedBy = "joinDataSetId")
+    private Collection<DataSet> dataSetCollection;
+
+    @OneToMany(mappedBy = "joinDataSetId")
     private Collection<JoinDataSetCondition> joinDataSetConditionCollection;
 
     private static final long serialVersionUID = 1L;
@@ -140,6 +143,16 @@ public class JoinDataSet implements Serializable {
 
     public void setJoinDataSetConditionCollection(Collection<JoinDataSetCondition> joinDataSetConditionCollection) {
         this.joinDataSetConditionCollection = joinDataSetConditionCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DataSet> getDataSetCollection() {
+        return dataSetCollection;
+    }
+
+    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
+        this.dataSetCollection = dataSetCollection;
     }
     
 }

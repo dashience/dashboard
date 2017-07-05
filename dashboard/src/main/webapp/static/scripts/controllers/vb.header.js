@@ -26,6 +26,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
 
     };
+    
+    //subhadra
+    $http.get("admin/ui/userPreferences").success(function (response) {
+        $scope.userPreferences = response;
+    });
+    
     $scope.themes = [{name: "Green", value: "green"},
         {name: "Blue", value: "blue"},
         {name: "Cyan", value: "cyan"},
@@ -273,6 +279,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         yesterday.setDate(today.getDate() - 1);
         return yesterday;
     };
+    
 
     $scope.getBeforeDay = function () {
         var today = new Date();
@@ -541,6 +548,25 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             console.log("Error data");
 
         })
+    };
+    
+   //subhadra
+     $scope.changeChartColor = function (userPreferences) {
+          var data = {
+           id:userPreferences.id,
+           optionName:'Chart_Color_Options',
+           optionValue:userPreferences.optionValue,
+           userId:$scope.name.userId
+        };
+      $http({method: userPreferences.id ? 'PUT' : 'POST', url: 'admin/ui/userPrefrences', data: data}).success(function (response) {
+            console.log("success data");
+            $http.get("admin/ui/userPreferences").success(function (response) {
+        $scope.userPreferences = response;
+        });
+            
+        }).error(function (response) {
+            console.log("Error data");
+        });
     };
 
     $(function () {
