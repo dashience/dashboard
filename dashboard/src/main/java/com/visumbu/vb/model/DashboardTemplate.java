@@ -39,6 +39,7 @@ public class DashboardTemplate implements Serializable {
 
     @OneToMany(mappedBy = "templateId")
     private Collection<TemplateTabs> templateTabsCollection;
+    private Collection<ProductAccountUserTemplate> accountTemplateCollection;
     @OneToMany(mappedBy = "templateId")
     private Collection<AgencyProduct> agencyProductCollection;
 
@@ -154,6 +155,14 @@ public class DashboardTemplate implements Serializable {
         this.templateTabsCollection = templateTabsCollection;
     }
     
+    public Collection<ProductAccountUserTemplate> getAccountTemplateCollection() {
+        return accountTemplateCollection;
+    }
+
+    public void setAccountTemplateCollection(Collection<ProductAccountUserTemplate> accountTemplateCollection) {
+        this.accountTemplateCollection = accountTemplateCollection;
+    }
+
     @XmlTransient
     @JsonIgnore
     public Collection<AgencyProduct> getAgencyProductCollection() {

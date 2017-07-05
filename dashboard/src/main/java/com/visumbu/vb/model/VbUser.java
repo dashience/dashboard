@@ -78,6 +78,7 @@ public class VbUser implements Serializable {
     private Collection<TemplateTabs> templateTabsCollection;
     @OneToMany(mappedBy = "userId")
     private Collection<DashboardTabs> dashboardTabsCollection;
+    private Collection<ProductAccountUserTemplate> accountTemplateCollection;
 
     @OneToMany(mappedBy = "userId")
     private Collection<DashboardTemplate> dashboardTemplateCollection;
@@ -384,5 +385,11 @@ public class VbUser implements Serializable {
     public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
         this.dashboardTabsCollection = dashboardTabsCollection;
     }
+    public Collection<ProductAccountUserTemplate> getAccountTemplateCollection() {
+        return accountTemplateCollection;
+    }
 
+    public void setAccountTemplateCollection(Collection<ProductAccountUserTemplate> accountTemplateCollection) {
+        this.accountTemplateCollection = accountTemplateCollection;
+    }
 }
