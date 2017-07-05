@@ -727,6 +727,33 @@ public class UiController extends BaseController {
         return uiService.getDefaultTemplate(agencyId);
     }
 
+    @RequestMapping(value = "getUserTemplate", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getUserTemplate(HttpServletRequest request, HttpServletResponse response) {
+        VbUser vbUser = userService.findByUsername(getUser(request));
+        return uiService.getUserTemplate(vbUser);
+    }
+
+//    @RequestMapping(value = "shareUserTemplate", method = RequestMethod.POST, produces = "application/json")
+//    public @ResponseBody
+//    DashboardTemplate shareDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate) {
+//        return uiService.shareDashboardTemplate(dashboardTemplate);
+//    }
+    
+     @RequestMapping(value = "updateTemplateStatus/{templateId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DashboardTemplate updateSharedTemplateStatus(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate,@PathVariable Integer templateId) {
+        return uiService.updateSharedTemplateStatus(dashboardTemplate,templateId);
+    }
+
+    @RequestMapping(value = "deleteUserTemplate/{templateId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DashboardTemplate deleteUserTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
+        return uiService.deleteUserTemplate(templateId);
+    }
+
+    
+    
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {

@@ -60,6 +60,9 @@ public class DashboardTemplate implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
+    @Size(max = 255)
+    @Column(name = "shared")
+    private String shared;
 
     public DashboardTemplate() {
     }
@@ -106,6 +109,14 @@ public class DashboardTemplate implements Serializable {
 
     public void setUserId(VbUser userId) {
         this.userId = userId;
+    }
+
+    public String getShared() {
+        return shared;
+    }
+
+    public void setShared(String shared) {
+        this.shared = shared;
     }
 
     @Override

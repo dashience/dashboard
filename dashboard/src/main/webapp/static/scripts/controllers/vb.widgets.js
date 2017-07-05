@@ -489,7 +489,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
         var getDataSourceType = widget.dataSourceId.dataSourceType;
-        if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls') {
+        if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls'||getDataSourceType==="") {
             return;
         }
         var getReportName = widget.dataSetId.reportName;
@@ -1178,6 +1178,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (exists == false) {
             column.xAxis = 1;
             widget.columns.push(column);
+            $timeout(function () {
+                $scope.queryBuilderList = widget;
+                resetQueryBuilder();
+            }, 50);
         }
         $timeout(function () {
             $scope.queryBuilderList = widget;
@@ -1198,7 +1202,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         if (exists == false) {
             column.yAxis = 1;
+
             widget.columns.push(column);
+            $timeout(function () {
+                $scope.queryBuilderList = widget;
+                resetQueryBuilder();
+            }, 50);
         }
         $timeout(function () {
             $scope.queryBuilderList = widget;
@@ -1789,6 +1798,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         link: function (scope, element, attr) {
             var widgetData = JSON.parse(scope.widgetObj);
+            console.log(widgetData);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
@@ -3815,7 +3825,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (!getWidgetObj.accountId) {
                     setWidgetAccountId = $stateParams.accountId;
                 } else {
-                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
+                    setWidgetAccountId = getWidgetObj.accountId.id;
                 }
                 scope.refreshStackedBarChart = function () {
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +

@@ -4,24 +4,15 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
             .state("index", {
                 url: "/index",
                 templateUrl: "static/views/vb.index.html"
-                //controller: "IndexController"
+                        //controller: "IndexController"
             })
             .state("index.dashboard", {
                 url: "/dashboard/:accountId/:accountName/:productId/:templateId",
                 templateUrl: "static/views/dashboard/dashboard.html",
-                controller: "UiController"
+                controller: "UiController",
             })
-            .state("index.dashboardTemplate", {
-                url: "/dashboardTemplate/:accountId/:accountName/:productId/:templateId",
-                templateUrl: "static/views/dashboardTemplate/dashboardTemplate.html",
-                controller: "UiController"
-            })
+
             .state("index.dashboard.widget", {
-                url: "/widget/:tabId?:startDate/:endDate",
-                templateUrl: "static/views/dashboard/widgets.html",
-                controller: 'WidgetController'
-            })
-            .state("index.dashboardTemplate.widget", {
                 url: "/widget/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
@@ -149,8 +140,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('index.dashboard');
     });
-
-
 //    $routeProvider.when('/viewPdf', {
 //        url: '/viewPdf/:accountId/:accountName/:tabId',
 //        templateUrl: 'static/views/pdf/vb.pdf.html'});
@@ -163,7 +152,6 @@ app.run(['$window', '$rootScope', '$stateParams', '$state',
         $rootScope.goBack = function () {
             $window.history.back();
         };
-
         $rootScope.setParamByTemplateId = function (template) {
             if ($stateParams.templateId != template.id) {
                 $state.go("index.dashboard.widget", {
@@ -179,10 +167,8 @@ app.run(['$window', '$rootScope', '$stateParams', '$state',
             $rootScope.setTmpIdByTab(template);
             $stateParams.templateId = template.id;
         };
-
         $rootScope.setTmpIdByTab = function (template) {
             $stateParams.templateId = template.id;
-            this.rootTemplateId = template.id;//$stateParams.templateId;
+            this.rootTemplateId = template.id; //$stateParams.templateId;
         };
-
     }]);
