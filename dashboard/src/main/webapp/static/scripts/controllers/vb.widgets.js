@@ -30,8 +30,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if ($stateParams.templateId != 0) {
             template = $filter('filter')(response, {id: $stateParams.templateId})[0];
         }
-
-        $scope.templateUserId = template.userId.id;
+        if (!template.userId) {
+            return;
+        } else {
+            $scope.templateUserId = template.userId.id;
+        }
     });
 
     $http.get("admin/report/reportWidget").success(function (response) {

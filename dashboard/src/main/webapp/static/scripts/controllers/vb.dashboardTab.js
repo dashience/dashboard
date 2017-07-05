@@ -19,7 +19,11 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 template = $filter('filter')(response, {id: $stateParams.templateId})[0];
             }
             $scope.selectTemplate.selected = template;
-            $scope.templateUserId = template.userId.id;            
+            if (!template.userId) {
+                return
+            } else {
+                $scope.templateUserId = template.userId.id;
+            }
         });
     };
 
@@ -343,7 +347,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.template = "";
         $scope.templateId = "";
     };
-    
+
     $scope.getAgencyTemplate = function () {
         $scope.agencyTemplates = [];
         $http.get('admin/ui/getUserTemplate').success(function (response) {
