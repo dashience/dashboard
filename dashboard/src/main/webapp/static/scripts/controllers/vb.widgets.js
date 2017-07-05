@@ -33,8 +33,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     //added by subhadra 
     $scope.deleteColorOption = function (targetColor, index) {
+        console.log($scope.widgetObj);
         console.log($scope.targetColors)
-        console.log(targetColor)
+        console.log(targetColor);
+//        $scope.targetColors.splice(index,1);
+//        
+        console.log($scope.widgetObj);
+        $scope.widgetObj.targetColors.splice(index, 1);
+//        console.log(index);
+//        console.log($scope.targetColors);
+        console.log($scope.widgetObj);
         var data = targetColor;
         $http({method: 'PUT', url: 'admin/ui/userPreferences/deletecolor/' + $scope.widgetId, data: data}).success(function (response) {
             // $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
@@ -1507,16 +1515,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //    };
 
     $scope.save = function (widget) {
-
-
         var widgetColor = widget.targetColors.map(function (value, key) {
             if (value) {
                 return value.color;
             }
         }).join(',');
-
-
-
         console.log(widgetColor)
         if (widget.chartType != 'text') {
             if ($('.query-builder').queryBuilder('getRules')) {
@@ -1619,6 +1622,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widget.chartType = "";
         console.log(data);
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+            widget.chartColorOption = data.chartColorOption;
             widget.chartType = data.chartType;
             $scope.chartTypeName = "";
             widget = data;
@@ -2636,7 +2640,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 //                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
 //                }
                 var defaultColors = ['#62cb31', '#555555'];
-                
+
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -3268,11 +3272,11 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
 //                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
 //                }
                 var defaultColors = ['#62cb31', '#555555'];
-                 var widgetChartColors;
+                var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
-                var chartColors =  widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
 
 
                 scope.refreshPieChart = function () {
@@ -3576,7 +3580,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 //                }
                 var defaultColors = ['#62cb31', '#555555'];
                 console.log(getWidgetObj)
-                 var widgetChartColors;
+                var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
@@ -3885,8 +3889,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
 //                    setWidgetAccountId = getWidgetObj.accountId.accountId.id;
 //                }
                 var defaultColors = ['#62cb31', '#555555'];
-                
-                 var widgetChartColors;
+
+                var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }

@@ -1309,15 +1309,11 @@
                     Color: <ui-colorpicker ng-model="widgetColor.color"  style="width:40%;padding: 10px;height"></ui-colorpicker>
                     Code: <input ng-model="widgetColor.color" ng-change="selectColorInPicker(widgetColor)"/>
                     <!--<button class="btn btn-primary btn-xs" ng-click="editColorOption(targetColors)"><i class="fa fa-edit"></i></button>-->
-                    <button class="btn btn-danger btn-xs" ng-click="deleteColorOption(targetColor, $index)"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-danger btn-xs" ng-click="deleteColorOption(widgetColor.color, $index)"><i class="fa fa-minus"></i></button>
                     <br/>
                 </div>
                 <br>
             </div>
         </div>
-
-
-
-
     </div>
 </div>

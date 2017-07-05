@@ -317,7 +317,7 @@
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget">
                     <div class="panel-heading">
                         <div class="panel-tools">
-                            <div> {{widget.id}}Test
+                            <div>
                                 <a title="Favourites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
                                 <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
