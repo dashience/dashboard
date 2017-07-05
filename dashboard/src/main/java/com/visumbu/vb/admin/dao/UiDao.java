@@ -511,10 +511,31 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
+    public List<JoinDataSet> getJoinDataSetByDataSetId(Integer id) {
+        String queryStr = "select d from JoinDataSet d where where d.dataSetIdFirst.id = :dataSetId or d.dataSetIdSecond.id = :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("joinDataSetId", id);
+        return query.list();
+    }
+    
+    
     public void removeJoinDataSet(Integer id) {
+        List<JoinDataSet> joinDataSetList = getJoinDataSetByDataSetId(id);
+        for (Iterator<JoinDataSet> iterator = joinDataSetList.iterator(); iterator.hasNext();) {
+            JoinDataSet joinDataSet = iterator.next();
+            removeJoinDataSetCondition(joinDataSet.getId());
+        }
+        
         String queryStr = "delete JoinDataSet d where d.dataSetIdFirst.id = :dataSetId or d.dataSetIdSecond.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
+        query.executeUpdate();
+    }
+    
+        public void removeJoinDataSetCondition(Integer joinDataSetId) {
+        String queryStr = "delete JoinDataSetCondition d where d.joinDataSetId.id = :joinDataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", joinDataSetId);
         query.executeUpdate();
     }
 
@@ -684,10 +705,12 @@ public class UiDao extends BaseDao {
     }
 
     public JoinDataSet getJoinDataSetById(Integer id) {
-        String queryStr = "select d from JoinDataSet d where d.id = :joinDataSetId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("joinDataSetId", id);
-        return (JoinDataSet) query.uniqueResult();
+        JoinDataSet joinDataSet = (JoinDataSet) sessionFactory.getCurrentSession().get(JoinDataSet.class, id);
+        return joinDataSet;
+//        String queryStr = "select d from JoinDataSet d where d.id = :joinDataSetId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("joinDataSetId", id);
+//        return (JoinDataSet) query.uniqueResult();
     }
 
     public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
