@@ -80,11 +80,10 @@ app.controller('AgencyController', function ($scope, $http) {
     //Default Templates
 
     function getTemplateByAgency(agency){        
-        
-//        $http.get('admin/ui/getDefaultTemplate/'+agency.id).success(function (response) {
-//            console.log(response);
-//            $scope.templates = response;
-//        });
+        $http.get('admin/ui/getDefaultTemplate/'+agency.id).success(function (response) {
+            console.log(response);
+            $scope.templates = response;
+        });
     }
 
     $scope.selectDefaultTemplate = function (template) {

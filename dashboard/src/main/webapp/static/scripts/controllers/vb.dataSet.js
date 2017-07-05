@@ -2091,13 +2091,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSet.dataSourceId = null;
         }
         $scope.nwStatusFlag = true;
-        $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
-            getItems();
-        });
-        $scope.dataSet = "";
-        $scope.showPreviewChart = false;
-        $scope.previewData = null;
-        $scope.dataSetFlag = false;
+        console.log(dataSet);
+//        $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
+//            getItems();
+//        });
+//        $scope.dataSet = "";
+//        $scope.showPreviewChart = false;
+//        $scope.previewData = null;
+//        $scope.dataSetFlag = false;
     };
     
 //    $scope.savePublishDataSet = function(dataSet){

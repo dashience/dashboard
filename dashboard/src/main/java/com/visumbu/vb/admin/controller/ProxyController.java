@@ -1153,11 +1153,13 @@ public class ProxyController {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
-        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null"))) {
+            System.out.println("In ifffff timeSegment...");
             timeSegment = null;
         }
         String productSegment = getFromMultiValueMap(request, "productSegment");
-        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null"))) {
+            System.out.println("In ifffff productSegment...");
             productSegment = null;
         }
         Integer dataSetIdInt = null;
@@ -1173,13 +1175,16 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
+                System.out.println("productSegment ---> " + productSegment);
+                System.out.println("productSegment dataset---> " + dataSet.getProductSegment());
+
                 dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
             }
         }
         System.out.println("timeSegment ---> " + timeSegment);
-        System.out.println("productSegment ---> " + productSegment);
+        System.out.println("productSegment2 ---> " + productSegment);
 
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
