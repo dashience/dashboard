@@ -153,6 +153,9 @@ app.run(['$window', '$rootScope', '$stateParams', '$state',
             $window.history.back();
         };
         $rootScope.setParamByTemplateId = function (template) {
+            var getUserObj = template.userId;
+            
+            console.log(template)
             if ($stateParams.templateId != template.id) {
                 $state.go("index.dashboard.widget", {
                     accountId: $stateParams.accountId,

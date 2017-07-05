@@ -19,9 +19,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 template = $filter('filter')(response, {id: $stateParams.templateId})[0];
             }
             $scope.selectTemplate.selected = template;
+            $scope.templateUserId = template.userId.id;            
         });
-    }
-    ;
+    };
 
     $scope.getAllTemplate();
 
@@ -75,7 +75,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     var tabUrl;
     console.log($stateParams.templateId);
     if ($stateParams.templateId > 0) {
-        console.log("templateId");
         tabUrl = 'admin/ui/dbTabs/' + $stateParams.templateId;
     } else {
         console.log("productId and accountId");
@@ -109,6 +108,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 }
             } else {
                 angular.forEach(response, function (value, key) {
+                    console.log(value.userId)
                     $scope.tabs.push(value.tabId);
                     $scope.dashboardName = value.templateId.agencyProductId.productName;
                 });
@@ -343,8 +343,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.template = "";
         $scope.templateId = "";
     };
-    $scope.agencyTemplates = [];
+    
     $scope.getAgencyTemplate = function () {
+        $scope.agencyTemplates = [];
         $http.get('admin/ui/getUserTemplate').success(function (response) {
             console.log(response);
             angular.forEach(response, function (value, key) {

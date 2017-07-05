@@ -24,6 +24,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     } else {
         $scope.showCreateReport = false;
     }
+    $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
+        var template = "";
+        ///alert($stateParams.templateId)
+        if ($stateParams.templateId != 0) {
+            template = $filter('filter')(response, {id: $stateParams.templateId})[0];
+        }
+
+        $scope.templateUserId = template.userId.id;
+    });
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -489,7 +498,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
         var getDataSourceType = widget.dataSourceId.dataSourceType;
-        if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls'||getDataSourceType==="") {
+        if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls' || getDataSourceType === "") {
             return;
         }
         var getReportName = widget.dataSetId.reportName;

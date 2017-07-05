@@ -253,7 +253,7 @@
         <!--                <div class="btn-group">
                             <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>
                         </div>-->
-        <div class="btn-group dropdown" ng-if="permission.addWidget === true;">
+        <div class="btn-group dropdown" ng-if="(permission.addWidget === true)&&(templateUserId === userId)">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
                 <button type="button" class="btn btn-block btn-info" 
                         data-toggle="modal" data-target="#editWidget" 
@@ -274,7 +274,7 @@
                     <div class="panel-tools">
                         <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
                         <a ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-                        <a ng-if="permission.addWidget === true;" 
+                        <a ng-if="(permission.addWidget === true)&&(templateUserId === userId)" 
                            ng-click='setWidgetItems(widget)' 
                            class="edit" title="Edit" 
                            data-toggle="modal" 
@@ -283,7 +283,7 @@
                            data-keyboard="false"><i class="fa fa-pencil"></i>
                         </a>
                         <!--<a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>-->
-                        <a ng-if="permission.deleteWidget === true;" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                        <a ng-if="(permission.deleteWidget === true)&&(templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
 
                         <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="widget.width != 12" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
@@ -326,15 +326,14 @@
                                 <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
-                                <a ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+                                <a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
 
-                                <a ng-if="permission.addWidget === true;" ng-click='setWidgetItems(widget)' class="edit" title="Edit" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
-
+                                <a ng-if="(permission.addWidget === true)&& (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="Edit" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
 
 
 
                                 <!--<a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>-->
-                                <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
+                                <a ng-if="(permission.deleteWidget === true)&& (templateUserId === userId);" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
 
                                 <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                                 <a ng-if="widget.width != 12" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
