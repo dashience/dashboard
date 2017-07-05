@@ -51,10 +51,11 @@ public class TagDao extends BaseDao {
         return widgetTag;
     }
     
-    public List getWidgetTagByName(String tagName) {
-        String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName";
+    public List getWidgetTagByName(String tagName, VbUser vbUser) {
+        String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName and t.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("tagName", tagName);
+        query.setParameter("userId", vbUser.getId());
         
         List<WidgetTag> widgetTag = query.list();
         for (Iterator<WidgetTag> iterator = widgetTag.iterator(); iterator.hasNext();) {
@@ -119,10 +120,10 @@ public class TagDao extends BaseDao {
     }
 
     public List<TabWidget> findAllWidgetsByTag(VbUser user, Tag tag) {
-        String queryStr = "select w.widgetId from WidgetTag w where w.userId = :user";
+        String queryStr = "select w.widgetId from WidgetTag w where w.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
 //        query.setParameter("tag", tag);
-        query.setParameter("user", user);
+        query.setParameter("userId", user.getId());
         return query.list();
     }   
 
