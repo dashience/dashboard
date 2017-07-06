@@ -184,7 +184,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     "&endDate=" + $stateParams.endDate).success(function (response) {
                 $scope.loadingResult = false;
                 $scope.loadingResultCompleted = true;
-
                 $scope.joinColumns = response.columnDefs;
                 $scope.joinRows = response.data;
                 if (response.columnDefs == "" || response.data == "") {

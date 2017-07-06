@@ -34,7 +34,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @NamedQueries({
     @NamedQuery(name = "DashboardTemplate.findAll", query = "SELECT d FROM DashboardTemplate d")
     , @NamedQuery(name = "DashboardTemplate.findById", query = "SELECT d FROM DashboardTemplate d WHERE d.id = :id")
-    , @NamedQuery(name = "DashboardTemplate.findByTemplateName", query = "SELECT d FROM DashboardTemplate d WHERE d.templateName = :templateName")})
+    , @NamedQuery(name = "DashboardTemplate.findByTemplateName", query = "SELECT d FROM DashboardTemplate d WHERE d.templateName = :templateName")
+    , @NamedQuery(name = "DashboardTemplate.findByShared", query = "SELECT d FROM DashboardTemplate d WHERE d.shared = :shared")
+    , @NamedQuery(name = "DashboardTemplate.findByStatus", query = "SELECT d FROM DashboardTemplate d WHERE d.status = :status")})
 public class DashboardTemplate implements Serializable {
 
     @OneToMany(mappedBy = "templateId")
@@ -63,6 +65,9 @@ public class DashboardTemplate implements Serializable {
     @Size(max = 255)
     @Column(name = "shared")
     private String shared;
+    @Size(max = 255)
+    @Column(name = "status")
+    private String status;
 
     public DashboardTemplate() {
     }
@@ -119,6 +124,14 @@ public class DashboardTemplate implements Serializable {
         this.shared = shared;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -153,7 +166,7 @@ public class DashboardTemplate implements Serializable {
     public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
         this.templateTabsCollection = templateTabsCollection;
     }
-    
+
     @XmlTransient
     @JsonIgnore
     public Collection<AgencyProduct> getAgencyProductCollection() {

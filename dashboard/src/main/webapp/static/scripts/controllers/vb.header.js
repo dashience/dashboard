@@ -36,32 +36,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
     };
 
-//    $scope.setParamsProduct = function (product) {
-//        console.log(product);
-//        var setTabId = 0;
-//        if ($stateParams.productId != product.id) {
-//            $stateParams.productId = product.id;
-//            $stateParams.templateId = product.templateId ? product.templateId.id : 0;
-//            $state.go("index.dashboard.widget", {
-//                accountId: $stateParams.accountId,
-//                accountName: $stateParams.accountName,
-//                productId: $stateParams.productId,
-//                templateId: $stateParams.templateId,
-//                tabId: setTabId,
-//                startDate: $stateParams.startDate,
-//                endDate: $stateParams.endDate
-//            });
-//        } else {
-//            return;//$stateParams.productId = product.id;
-//        }
-//
-//    };
-
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
-//        $scope.productId = $stateParams.productId;
-//        $stateParams.tabId = 0;
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
     };
@@ -90,7 +67,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     });
 
     $scope.getAccountId = function (account) {
-        console.log(account)
         if ($stateParams.accountId != account.accountId.id) {
             $stateParams.tabId = 0;
             $stateParams.templateId = 0;
@@ -106,7 +82,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
             $stateParams.templateId = response.id;
             $scope.loadNewUrl();
-            // console.log(response)
         });
     };
 
@@ -128,7 +103,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
 
             $stateParams.templateId = templateId ? templateId : getTemplateId;
-            console.log($stateParams.templateId);
             try {
                 var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -334,10 +308,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $stateParams.startDate = startDate;
         $stateParams.endDate = endDate;
-
-        console.log($stateParams.startDate);
-        console.log($stateParams.endDate);
-        console.log($stateParams.tabId);
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
                 accountId: $stateParams.accountId,

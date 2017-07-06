@@ -227,10 +227,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.firstSortableOptions = {
         start: function (event, ui) {
-            console.log('start1');
         },
         stop: function (event, ui) {
-            console.log('stop1');
         }
     };
 
@@ -241,7 +239,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId + '/' + $stateParams.accountId).success(function (response) {
             var widgetItems = [];
             widgetItems = response;
-            console.log(response);
             if (response) {
                 // $scope.productName = response[0].tabId.agencyProductId.productName;
             }
@@ -310,7 +307,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = [];
 
         angular.forEach(widget.columns, function (val, key) {
-            console.log(val)
             if (val.xAxis == 1) {
                 $scope.xColumn = val;
                 $scope.selectPieChartXAxis = val;
@@ -358,7 +354,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     ;
 
     function columnHeaderDef(widget) {
-        console.log(widget)
         $scope.afterLoadWidgetColumns = false;
         var dataSourcePassword;
         if (!widget.dataSetId) {
@@ -389,9 +384,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
-            console.log(response.columnDefs);
             var getWidgetColumns = widget.columns;
-            console.log(widget.columns)
 
             $scope.collectionFields.forEach(function (value, k) {
                 var machField = $.grep(getWidgetColumns, function (b) {
@@ -403,31 +396,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.selectColumnDef = 0;
                 }
             });
-
-//            $http.get("admin/ui/getDataSetColumnsByDataSetId/" + widget.dataSetId.id).success(function (response) {
-//                console.log(response)
-//                $scope.collectionFields = $scope.columnHead;
-//                console.log($scope.columnHead)
-//                $scope.collectionFields.forEach(function (value, k) {
-//                    console.log(value.id)
-//                    var compareList = $.grep(response, function (list) {
-////                        console.log("list : "+list.fieldName+" ("+widget.id +" "+ list.widgetId.id+") ("+obj.fieldName +" "+ list.fieldName+") ("+obj.expression +" "+ list.expression+")")
-//                        if (value.userId === list.userId.id && value.expression === list.expression) {
-////                        if (value.expression === list.expression && value.fieldName === list.fieldName) {
-//                            value.derivedId = value.id;
-//                        } else {
-//                            value.derivedId = null;
-//                            value.userId = null;
-//                            value.widgetId = null;
-//                        }
-//                        return value.expression === list.expression;
-//                    });
-//                    //$scope.collectionFields = compareList;
-//                    console.log(compareList)
-//                });
-//                console.log($scope.collectionFields)
-//            });
-
             $scope.afterLoadWidgetColumns = true;
             resetQueryBuilder();
         });
@@ -628,8 +596,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.showPreview = function (widgetObj) {
-        console.log($scope.chartTypeName);
-        console.log(widgetObj.chartType);
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
@@ -645,10 +611,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.sortableOptions = {
         start: function (event, ui) {
-            console.log('start1');
         },
         stop: function (event, ui) {
-            console.log('stop1');
         }
     };
 
@@ -657,7 +621,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         obj.columnsButtons = true;
         var checkColumnDef = obj.selectColumnDef;
         if (checkColumnDef === 1) {
-            console.log(obj)
             var data = {
                 derivedId: obj.id,
                 agregationFunction: obj.agregationFunction,
@@ -681,7 +644,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             var getIndexOfcolumns = widget.columns.indexOf(obj);
             widget.columns.splice(getIndexOfcolumns, 1);
         }
-        console.log(widget)
         $timeout(function () {
             $scope.queryBuilderList = widget;
             resetQueryBuilder();
@@ -690,7 +652,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removeSelectedValue = function (widget, obj, index) {
         $scope.dispHideBuilder = true;
-        console.log(widget)
         widget.columns.splice(index, 1);
         $scope.collectionFields.forEach(function (val, key) {
             if (val.displayName === obj.displayName) {
@@ -710,11 +671,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.widgetDuplicate = function (widgetData) {
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
-            console.log(response);
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
                 response["tags"] = dataTag[0];
                 $scope.widgets.push(response);
-                console.log($scope.widgets);
             });
         });
     };
@@ -1222,7 +1181,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     //Edit Derived
     $scope.editDerivedColumn = function (collectionField, widgetObj) {
         $scope.dataSetColumn = {};
-        console.log(collectionField)
         if (collectionField.userId != null) {
             $scope.showDerived = true;
             var data = {
@@ -1243,12 +1201,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             };
             $scope.dataSetColumn = data;
         }
-        console.log($scope.dataSetColumn)
 //        });
     };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget) {
-        console.log(dataSetColumn);
         $scope.collectionField = {};
         var dataSetColumnData = {
             functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
@@ -1272,7 +1228,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            lastNmonths: dataSetColumn.lastNmonths,
 //            lastNyears: dataSetColumn.lastNyears
         };
-        console.log(dataSetColumnData)
         var oldFieldName = "";
         if (!dataSetColumn.id) {
             $scope.collectionFields.push(dataSetColumnData);
@@ -1310,7 +1265,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 val.sortPriority = dataSetColumnData.sortPriority;
             }
         });
-        console.log(widget.columns);
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
     };
@@ -1366,12 +1320,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 //    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
 //        $scope.tableColumns = [];
-//        console.log(dataSetColumn);
-//        console.log(widget);
-//        console.log($scope.tableColumns)
-//        console.log($scope.collectionFields);
 //        $http.get("admin/ui/getDataSetColumnsByDataSetId/" + widget.dataSetId.id).success(function (resp) {
-//            console.log(resp);
 //            if (resp == "" || resp == null) {
 //                angular.forEach($scope.collectionFields, function (val, key) {
 //                    var data = {
@@ -1438,7 +1387,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //                });
 //            }
 //            ;
-//            console.log($scope.tableColumns);
 //
 //            var dataSetColumnData = {
 //                functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
@@ -1463,15 +1411,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 ////            lastNmonths: dataSetColumn.lastNmonths,
 ////            lastNyears: dataSetColumn.lastNyears
 //            };
-//            console.log(dataSetColumnData);
 //
 //
 ////            $http({method: 'POST', url: 'admin/ui/createWidgetColumn', data: dataSetColumnData}).success(function (response) {
-////                console.log(response);
 ////                var count = 0;
 ////                angular.forEach($scope.collectionFields, function (value, key) {
 ////                    if (value.id === response.id) {
-////                        console.log($scope.collectionFields.indexOf(dataSetColumnData.fieldName))
 //////                        columnHeaderDef
 ////                        count = 1;
 ////                        if (value.id == dataSetColumnData.id) {
@@ -1485,7 +1430,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 ////                    $scope.collectionFields.push(response);
 ////                }
 ////                $scope.tableColumns.push(response);
-//                console.log($scope.collectionFields);
 //                $scope.showDerived = false;
 //                $scope.dataSetColumn = "";
 //            });
@@ -1799,7 +1743,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         link: function (scope, element, attr) {
             var widgetData = JSON.parse(scope.widgetObj);
-            console.log(widgetData);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
@@ -1860,9 +1803,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 var element = ev.srcElement ? ev.srcElement : ev.target;
             };
 
-            //scope.currentPage = 1;
-            //scope.pageSize = 10;
-            // console.log
             scope.columns = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 scope.columns.push(value);
@@ -1904,12 +1844,10 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
 
             scope.getStars = function (rating) {
-//                console.log(rating);
                 // Get the value
                 var val = parseFloat(rating);
                 // Turn value into number/100
                 var size = val / 5 * 100;
-//                console.log(size);
                 return size + '%';
             }
 
@@ -1994,7 +1932,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
 //                        '&dataSetReportName=' + tableDataSource.reportName +
 //                        '&widgetId=' + scope.widgetId +
 //                        '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query);
-                console.log(tableDataSource)
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
                         "&accountId=" + (widgetData.accountId ? (widgetData.accountId.id ? widgetData.accountId.id : widgetData.accountId) : $stateParams.accountId) +
@@ -2111,7 +2048,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
 
 //Dir-Paginations
             scope.pageChangeHandler = function (num) {
-                console.log('reports page changed to ' + num);
             };
 
             scope.sum = function (list, fieldname) {
@@ -2610,7 +2546,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                console.log(getWidgetObj);
 
 //                var setWidgetAccountId;
 //                if (!getWidgetObj.accountId) {
@@ -3090,7 +3025,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
             var startDate = "";
             var endDate = "";
             var sortFields = [];
-            console.log(scope.widgetColumns)
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -4038,7 +3972,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             }
             var getWidgetObj = JSON.parse(scope.widgetObj);
             scope.refreshFunnel = function () {
-                console.log("funnel --- > " + scope.funnelId);
                 $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + funnelDataSource.id +
                         "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
@@ -4088,15 +4021,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                     /*Filter*/
 
                     var data = scope.funnels;
-                    console.log(scope.funnels);
                     scope.funnelCharts = [];
-//                    console.log(scope.funnelChart)
-
-
                     scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
-
-                    console.log("filtered value below");
-                    console.log(scope.funnelFiltered);
                     scope.fName = [];
                     scope.fValue = [];
                     angular.forEach(scope.funnels, function (value, key) {
@@ -4104,7 +4030,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         var funnelValue = value.totalValue;
                         scope.fName.push(funnelFieldName);
                         scope.fValue.push(funnelValue);
-                        console.log(scope.fValue);
                     });
 
                     var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
@@ -4143,8 +4068,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
 
                     // width = $(element[0]).width();
-
-                    // console.log(columns);
                     var options = {
                         // width : width - 30,
                         // width: 1300,
@@ -4360,7 +4283,7 @@ app.service('stats', function ($filter) {
                 aggregation.value = 20000;
                 //aggregation.rendered = 30000;
             }
-        },
+        }
     };
     return service;
 });
