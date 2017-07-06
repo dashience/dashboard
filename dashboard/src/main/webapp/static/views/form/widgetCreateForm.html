@@ -588,7 +588,7 @@
                     <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
                         <div class="col-md-12">
                             <label>Select Y1-Axis</label>
-                            <ui-select multiple ng-model="y1Column" theme="bootstrap"  
+                            <ui-select multiple ng-model="y1Column" theme="bootstrap"
                                        on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
                                        on-remove="removedByY1Column(widgetObj, $item, y1Column)">
                                 <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>

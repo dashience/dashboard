@@ -1929,7 +1929,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         }
                     }
                 });
-            }
+            };
             scope.setTableChartFn({tableFn: scope.refreshTable});
             scope.refreshTable();
             scope.initData = function (col) {
@@ -3939,7 +3939,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
                 funnelName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
-
             var format = function (column, value) {
                 if (!value) {
                     var temp = 0;
@@ -3957,7 +3956,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
 
                 return value;
-
             };
             var setData = [];
             var data = [];
@@ -3982,7 +3980,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             var setProductSegment;
             var setTimeSegment;
             var setNetworkType;
-
             if (getWidgetObj.productSegment && getWidgetObj.productSegment.type) {
                 setProductSegment = getWidgetObj.productSegment.type;
             } else {
@@ -4039,7 +4036,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                                 total += parseFloat(setData[i]);
                             }
                             scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total)});
-
                         });
                     }
                     var data = scope.funnels;
@@ -4053,10 +4049,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         scope.fName.push(funnelFieldName);
                         scope.fValue.push(funnelValue);
                     });
-
                     var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
                     scope.funnelCharts = funnelData;
-
                     function filterFunnelByValue(name, value) {
                         var len = name.length;
                         var temp, temp1 = 0;
@@ -4066,7 +4060,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                                     temp = value[i];
                                     value[i] = value[j];
                                     value[j] = temp;
-
                                     temp1 = name[i];
                                     name[i] = name[j];
                                     name[j] = temp1;
@@ -4090,35 +4083,45 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
 
                     // width = $(element[0]).width();
-                    var options = {
-                        // width : width - 30,
-                        // width: 1300,
-                        width: 500,
-                        // height: 400,
-                        height: 300,
-                        //bottomWidth : 1/3,
-                        bottomPinch: 1, // How many sections to pinch
-                        //isCurved : false,     // Whether the funnel is curved
-                        //curveHeight : 20,     // The curvature amount
-                        //fillType : "solid",   // Either "solid" or "gradient"
-                        //isInverted : true,   // Whether the funnel is inverted
-                        hoverEffects: true  // Whether the funnel has effects on hover
-                    };
-                    var funnel = new D3Funnel(scope.funnelCharts, options);
-                    funnel.draw(element[0]);
-
-                    $(window).on("resize", function () {
+                    function drawChart() {
                         var width = $(element[0]).width();
-                        //$( "#funnelContainer" ).css( "width", width);
-                        options.width = width;
+                        var height = 315;
+                        var options = {
+                            width: width,
+                            height: height,
+                            bottomPinch: 1, // How many sections to pinch
+                            hoverEffects: true  // Whether the funnel has effects on hover
+                        };
                         var funnel = new D3Funnel(scope.funnelCharts, options);
                         funnel.draw(element[0]);
+                    }
+                    drawChart();
+//                    var options = {
+//                        // width : width - 30,
+//                        // width: 1300,
+//                        width: 500,
+//                        // height: 400,
+//                        height: 300,
+//                        //bottomWidth : 1/3,
+//                        bottomPinch: 1, // How many sections to pinch
+//                        //isCurved : false,     // Whether the funnel is curved
+//                        //curveHeight : 20,     // The curvature amount
+//                        //fillType : "solid",   // Either "solid" or "gradient"
+//                        //isInverted : true,   // Whether the funnel is inverted
+//                        hoverEffects: true  // Whether the funnel has effects on hover
+//                    };
+//                    var funnel = new D3Funnel(scope.funnelCharts, options);
+//                    funnel.draw(element[0]);
+                    $(window).on("resize", function () {
+                        drawChart();
+//        var width = $(element[0]).width();
+//                //$( "#funnelContainer" ).css( "width", width);
+//                options.width = width;
+//                var funnel = new D3Funnel(scope.funnelCharts, options);
+//                funnel.draw(element[0]);
                     });
-
-
-
                 });
-            }
+            };
             scope.setFunnelFn({funnelFn: scope.refreshFunnel});
             scope.refreshFunnel();
         }
