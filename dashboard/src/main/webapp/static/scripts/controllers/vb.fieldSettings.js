@@ -50,17 +50,12 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
             $scope.fieldSettings = response;
         });
     };
-
-    $scope.selectDisplayFormat = function (displayFormat) {
-        $scope.field = {
-            dataFormat: displayFormat
-        };
+    $scope.selectDisplayFormat = function (field) {
+        field.dataFormat = field.displayFormat;
     };
 
-    $scope.selectDataFormat = function (dataFormat) {
-        $scope.field = {
-            displayFormat: dataFormat
-        };
+    $scope.selectDataFormat = function (field) {
+        field.displayFormat = field.dataFormat;
     };
 
     $scope.addFieldSettings = function () {
@@ -70,8 +65,8 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         var data = {
             id: fields.id,
             fieldName: fields.fieldName,
-            displayFormat: fields.displayFormat,
-            dataFormat: fields.dataFormat,
+            displayFormat: fields.displayFormat ? fields.displayFormat.value : null,
+            dataFormat: fields.dataFormat ? fields.dataFormat.value : null,
             dataType: fields.dataType,
             displayName: fields.displayName,
             agregationFunction: fields.agregationFunction
@@ -79,7 +74,7 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         $http({method: fields.id ? "PUT" : "POST", url: 'admin/fieldSettings', data: data}).success(function (response) {
             $scope.getFields();
         });
-        $scope.field = ""
+        $scope.field = "";
     };
     $scope.deleteField = function (fields) {
         $http({method: "DELETE", url: 'admin/fieldSettings/' + fields.id}).success(function (response) {
@@ -87,16 +82,21 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         });
     };
     $scope.updateField = function (fields) {
-        var data = {
-            id: fields.id,
-            fieldName: fields.fieldName,
-            displayFormat: fields.displayFormat,
-            dataFormat: fields.dataFormat,
-            dataType: fields.dataType,
-            displayName: fields.displayName,
-            agregationFunction: fields.agregationFunction
-        };
-        $scope.field = data;
+        
+//        var getDisplayFormat = fields.displayFormat;
+        
+        
+        
+//        var data = {
+//            id: fields.id,
+//            fieldName: fields.fieldName,
+//            displayFormat: fields.displayFormat,
+//            dataFormat: fields.dataFormat,
+//            dataType: fields.dataType,
+//            displayName: fields.displayName,
+//            agregationFunction: fields.agregationFunction
+//        };
+//        $scope.field = data;
     };
     $scope.deleteFieldSettings = function (index) {
         $scope.fieldSettings.splice(index, 1);
