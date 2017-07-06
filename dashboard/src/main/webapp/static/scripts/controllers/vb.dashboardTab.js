@@ -5,29 +5,34 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.userId = $cookies.getObject("userId");
-//    $scope.templateId = $stateParams.templateId;
-//    $scope.tabId = $stateParams.tabId;
 
     //get Templates
     $scope.selectTemplate = {};
     $scope.getAllTemplate = function () {
+        if ($stateParams.templateId == 0) {
+            $scope.templateUserId = $scope.userId;
+        }
         $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
             $scope.templates = response;
             var template = "";
-            ///alert($stateParams.templateId)
             if ($stateParams.templateId != 0) {
                 template = $filter('filter')(response, {id: $stateParams.templateId})[0];
             }
             $scope.selectTemplate.selected = template;
+            if (!template.userId) {
+                return;
+            } else {
+                if ($stateParams.templateId != 0) {
+                    $scope.templateUserId = template.userId.id;
+                }
+            }
         });
-    }
-    ;
+    };
+
 
     $scope.getAllTemplate();
 
     $scope.getTemplateById = function (template) {
-//        $stateParams.accountId = template.accountId.id;
-//        $stateParams.accountName = template.accountId.accountName;
         $stateParams.productId = template.agencyProductId.id;
         $scope.templateId = template.id;
         $scope.accountId = $stateParams.accountId;
@@ -44,19 +49,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $http({method: 'POST', url: 'admin/template/productAccountUserTemplate', data: data})
     };
 
-//    $scope.getTemplateById = function (template) {
-//        console.log(template);
-//        console.log($stateParams.templateId);
-////        $stateParams.accountId = template.accountId.id;
-////        $stateParams.accountName = template.accountId.accountName;
-//        $stateParams.productId = template.agencyProductId.id;
-//        $scope.templateId = template.id;
-//        $scope.accountId = $stateParams.accountId;
-//        $scope.accountName = $stateParams.accountName;
-//        $scope.productId = $stateParams.productId;
-//        $scope.tempObj = template;
-//    };
-
     //product tabs
     $scope.tabs = [];
     $scope.userLogout = function () {
@@ -64,7 +56,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
     $scope.getCurrentPage = function () {
         var url = window.location.href;
-        console.log(url);
         if (url.indexOf("dashboardTemplate") > 0) {
             return "dashboardTemplate";
         }
@@ -73,19 +64,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         }
     };
     var tabUrl;
-    console.log($stateParams.templateId);
     if ($stateParams.templateId > 0) {
-        console.log("templateId");
         tabUrl = 'admin/ui/dbTabs/' + $stateParams.templateId;
     } else {
-        console.log("productId and accountId");
         tabUrl = "admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId;
     }
     if ($stateParams.productId) {
         $http.get(tabUrl).success(function (response) {
             var getCurrentUrl;
             $scope.loadTab = false;
-            console.log($scope.tabs);
             if (!response[0].templateId) {
                 $scope.tabs = response;
                 angular.forEach($scope.tabs, function (value, key) {
@@ -129,19 +116,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                     }
                 }
             }
-//            if (getCurrentUrl === "dashboardTemplate") {
-//                alert("Template")
-//                $state.go("index.dashboardTemplate.widget", {
-//                    accountId: $stateParams.accountId,
-//                    accountName: $stateParams.accountName,
-//                    productId: $stateParams.productId,
-//                    templateId: $stateParams.templateId,
-//                    tabId: setTabId,
-//                    startDate: $stateParams.startDate,
-//                    endDate: $stateParams.endDate
-//                });
-//            } else {alert("Empty Template")
-//                alert("dashboard")
             $state.go("index.dashboard.widget", {
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
@@ -334,7 +308,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             id: template.templateId ? template.templateId : null,
             templateName: template.templateName,
             tabIds: tabIds
-        }
+        };
         console.log(data);
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
             $scope.getAllTemplate();
@@ -343,8 +317,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.template = "";
         $scope.templateId = "";
     };
-    $scope.agencyTemplates = [];
+    
     $scope.getAgencyTemplate = function () {
+        $scope.agencyTemplates = [];
         $http.get('admin/ui/getUserTemplate').success(function (response) {
             console.log(response);
             angular.forEach(response, function (value, key) {
@@ -360,8 +335,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                     agencyProductId: value.agencyProductId,
                     userId: value.userId,
                     shared: $scope.sharedUser
-
-                }
+                };
                 $scope.agencyTemplates.push(data);
             });
             console.log($scope.agencyTemplates)
@@ -383,13 +357,13 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $http({method: 'POST', url: 'admin/ui/updateTemplateStatus/' + agencyTemplate.id, data: sharedData}).success(function (response) {
 
         });
-    }
+    };
     $scope.deleteUserTemplate = function (agencyTemplate, index) {
         $http({method: 'DELETE', url: 'admin/ui/deleteUserTemplate/' + agencyTemplate.id}).success(function (response) {
             $scope.agencyTemplates.splice(index, 1);
             $scope.getAllTemplate();
         });
-    }
+    };
 })
         .directive('ngBlur', function () {
             return function (scope, elem, attrs) {

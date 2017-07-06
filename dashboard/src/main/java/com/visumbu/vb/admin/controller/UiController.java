@@ -188,6 +188,13 @@ public class UiController extends BaseController {
         return uiService.saveTabWidget(tabId, tabWidget);
     }
 
+    @RequestMapping(value = "editWidgetSize/{widgetId}", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    TabWidget editWidgetSize(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
+        Integer width = Integer.parseInt(request.getParameter("width"));
+        return uiService.editWidgetSize(widgetId, width);
+    }
+    
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {

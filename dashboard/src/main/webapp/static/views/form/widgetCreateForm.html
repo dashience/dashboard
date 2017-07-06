@@ -595,7 +595,7 @@
                             </ui-select>
                         </div>
                     </div>
-                    <div class="form-group button-ok" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
+                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
                         <div class="col-md-12">
                             <label>Select Y2-Axis</label>
                             <ui-select multiple ng-model="y2Column" theme="bootstrap" 

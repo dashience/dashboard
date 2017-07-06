@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.dao;
 
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyProduct;
 import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.ProductAccountUserTemplate;
@@ -28,6 +29,17 @@ public class TemplateDao extends BaseDao{
         Integer accountIdInt = accountId.getId();
         Query query = sessionFactory.getCurrentSession().createQuery("select t from ProductAccountUserTemplate t where t.accountId.id = :id");
         query.setParameter("id", accountIdInt);
+        List<ProductAccountUserTemplate> productList = (List<ProductAccountUserTemplate>) query.list();
+        if (productList != null && !productList.isEmpty()) {
+            return productList.get(0);
+        }
+        return null;
+    }
+    
+    public ProductAccountUserTemplate findProductById(AgencyProduct productId) {
+        Integer productIdInt = productId.getId();
+        Query query = sessionFactory.getCurrentSession().createQuery("select t from ProductAccountUserTemplate t where t.productId.id = :id");
+        query.setParameter("id", productIdInt);
         List<ProductAccountUserTemplate> productList = (List<ProductAccountUserTemplate>) query.list();
         if (productList != null && !productList.isEmpty()) {
             return productList.get(0);

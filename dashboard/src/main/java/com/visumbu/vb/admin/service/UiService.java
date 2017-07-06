@@ -1201,4 +1201,11 @@ public class UiService {
         uiDao.saveOrUpdate(template);
         return template;
     }
+
+    public TabWidget editWidgetSize(Integer widgetId, Integer width) {
+        TabWidget widget = getWidgetById(widgetId);
+        widget.setWidth(width);
+        uiDao.saveOrUpdate(widget);
+        return widget;
+    }
 }

@@ -13,7 +13,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter) 
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
             $scope.templates = response;
             var template = $filter('filter')(response, {id: $stateParams.templateId})[0];
-            $scope.templateName = template.templateName;
+            $scope.templateName = template?template.templateName:null;
         });    
     
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId + "/" + $stateParams.accountId).success(function (response) {

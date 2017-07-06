@@ -1234,6 +1234,7 @@ public class ProxyController {
         Map returnMap = new HashMap<>();
         returnMap.put("columnDefs", columnDefs);
         returnMap.put("data", data);
+        System.out.println("Return Map data ----> "+ returnMap.get("data"));
         return returnMap;
     }
 
