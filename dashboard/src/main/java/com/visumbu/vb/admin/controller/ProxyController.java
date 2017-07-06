@@ -1245,6 +1245,7 @@ public class ProxyController {
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
 
+        System.out.println("Adwords Data0 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
@@ -1260,17 +1261,22 @@ public class ProxyController {
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
                 filter = (filter == null || filter.isEmpty()) ? dataSet.getNetworkType() : filter;
+        System.out.println("Adwords Data1 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
             }
         }
+        System.out.println("Adwords Data2 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
             timeSegment = null;
         }
+        System.out.println("Adwords Data3 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
+        System.out.println("Adwords Data4 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
             filter = null;
         }
+        System.out.println("Adwords Data5 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
@@ -1304,12 +1310,14 @@ public class ProxyController {
                 }
             }
         }
+        System.out.println("Adwords Data5 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
+        System.out.println("Adwords Data ===> " + data);
         if (data == null) {
             List<ColumnDef> columnDefs = new ArrayList<>();
             Map returnMap = new HashMap();

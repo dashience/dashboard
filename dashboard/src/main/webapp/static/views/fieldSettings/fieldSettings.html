@@ -47,34 +47,34 @@
                         <td>
                             <div ng-hide="field.isEdit">{{field.displayFormat}}</div>
                             <div ng-show="field.isEdit">
-                                <!--                                <select class="form-control" ng-model="field.displayFormat" ng-change="selectDisplayFormat(field.displayFormat)">
-                                                                    <option  ng-repeat="displayFormat in formats" value="{{displayFormat}}">
-                                                                        {{displayFormat.name}}
-                                                                    </option>
-                                                                </select>-->
-                                <input type="text" ng-model="field.displayFormat" class="form-control">
+                                <select class="form-control" ng-model="field.displayFormat" ng-change="selectDisplayFormat(field.displayFormat)">
+                                    <option  ng-repeat="displayFormat in formats" value="{{displayFormat}}">
+                                        {{displayFormat.name}}
+                                    </option>
+                                </select>
+                                <!--<input type="text" ng-model="field.displayFormat" class="form-control">-->
                             </div>
                         </td>
                         <td>
                             <div ng-hide="field.isEdit">{{field.dataFormat}}</div> 
                             <div ng-show="field.isEdit">
-                                <!--                                <select class="form-control" ng-model="field.dataFormat" ng-change="selectDataFormat(field.dataFormat)">
-                                                                    <option  ng-repeat="dataFormat in formats" value="{{dataFormat}}">
-                                                                        {{dataFormat.name}}
-                                                                    </option>
-                                                                </select>-->
-                                <input type="text" ng-model="field.dataFormat" class="form-control">
+                                <select class="form-control" ng-model="field.dataFormat" ng-change="selectDataFormat(field.dataFormat)">
+                                    <option  ng-repeat="dataFormat in formats" value="{{dataFormat}}">
+                                        {{dataFormat.name}}
+                                    </option>
+                                </select>
+                                <!--<input type="text" ng-model="field.dataFormat" class="form-control">-->
                             </div>
                         </td>
                         <td>
                             <div ng-hide="field.isEdit">{{field.dataType}}</div> 
                             <div ng-show="field.isEdit">
-                                <!--                                <select class="form-control" ng-model="field.dataType">
-                                                                    <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
-                                                                        {{fieldType.name}}
-                                                                    </option>
-                                                                </select>-->
-                                <input type="text" ng-model="field.dataType" class="form-control">
+                                <select class="form-control" ng-model="field.dataType">
+                                    <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
+                                        {{fieldType.name}}
+                                    </option>
+                                </select>
+                                <!--<input type="text" ng-model="field.dataType" class="form-control">-->
                             </div>
                         </td>
                         <td>
@@ -86,12 +86,12 @@
                         <td>
                             <div ng-hide="field.isEdit">{{field.agregationFunction}}</div> 
                             <div ng-show="field.isEdit">
-                                <!--                                <select class="form-control" ng-model="field.agregationFunction">
-                                                                    <option ng-repeat="selectAggregation in selectAggregations" value="{{selectAggregation.value}}">
-                                                                        {{selectAggregation.name}}
-                                                                    </option>
-                                                                </select>-->
-                                <input type="text" ng-model="field.agregationFunction" class="form-control">
+                                <select class="form-control" ng-model="field.agregationFunction">
+                                    <option ng-repeat="selectAggregation in selectAggregations" value="{{selectAggregation.value}}">
+                                        {{selectAggregation.name}}
+                                    </option>
+                                </select>
+                                <!--<input type="text" ng-model="field.agregationFunction" class="form-control">-->
                             </div>
                         </td>
                         <td>

@@ -51,6 +51,18 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         });
     };
 
+    $scope.selectDisplayFormat = function (displayFormat) {
+        $scope.field = {
+            dataFormat: displayFormat
+        };
+    };
+
+    $scope.selectDataFormat = function (dataFormat) {
+        $scope.field = {
+            displayFormat: dataFormat
+        };
+    };
+
     $scope.addFieldSettings = function () {
         $scope.fieldSettings.push({isEdit: true});
     };
@@ -63,17 +75,17 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
             dataType: fields.dataType,
             displayName: fields.displayName,
             agregationFunction: fields.agregationFunction
-        }
+        };
         $http({method: fields.id ? "PUT" : "POST", url: 'admin/fieldSettings', data: data}).success(function (response) {
             $scope.getFields();
         });
         $scope.field = ""
-    }
+    };
     $scope.deleteField = function (fields) {
         $http({method: "DELETE", url: 'admin/fieldSettings/' + fields.id}).success(function (response) {
             $scope.getFields();
         });
-    }
+    };
     $scope.updateField = function (fields) {
         var data = {
             id: fields.id,
@@ -85,9 +97,9 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
             agregationFunction: fields.agregationFunction
         };
         $scope.field = data;
-    }
+    };
     $scope.deleteFieldSettings = function (index) {
         $scope.fieldSettings.splice(index, 1);
-    }
+    };
 });
 
