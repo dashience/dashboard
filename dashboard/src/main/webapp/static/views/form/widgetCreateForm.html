@@ -357,7 +357,7 @@
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label>Data Source</label>
                                     <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
-                                            ng-change="selectDataSource(widgetObj.dataSourceId)"
+                                            ng-change="selectWidgetDataSource(widgetObj.dataSourceId)"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                     </select>
                                 </div>
@@ -586,12 +586,12 @@
                         </div>
                     </div>
                     <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
-                        <div class="col-md-12">
-                            <label>Select Y1-Axis</label>
-                            <ui-select multiple ng-model="y1Column" theme="bootstrap"
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
+                            <label>Select Y1-Axis</label>                            
+                            <ui-select multiple ng-model="y1Column" theme="bootstrap" 
                                        on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
                                        on-remove="removedByY1Column(widgetObj, $item, y1Column)">
-                                <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y1axis in collectionFields | filter:$select.search">
                                     {{y1axis.displayName}}
                                 </ui-select-choices>
@@ -599,12 +599,12 @@
                         </div>
                     </div>
                     <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
-                        <div class="col-md-12">
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label>Select Y2-Axis</label>
                             <ui-select multiple ng-model="y2Column" theme="bootstrap" 
                                        on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
                                        on-remove="removedByY2Column(widgetObj, $item, y2Column)">
-                                <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
                                     {{y2axis.displayName}}
                                 </ui-select-choices>
@@ -616,7 +616,7 @@
             <div class="row">
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker'" ng-show="showColumnDefs" >
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label>Ticker Items</label>
                             <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" 
                                        on-select="ticker(widgetObj, tickerItem)" 
@@ -631,7 +631,7 @@
                 </div>
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel'" ng-show="showColumnDefs">
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label>Funnel Items</label>
                             <ui-select multiple ng-model="funnelItem"  theme="bootstrap" 
                                        on-select="funnel(widgetObj, funnelItem)" 
