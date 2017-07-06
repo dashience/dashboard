@@ -270,7 +270,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
     $scope.setWidgetItems = function (widget) {
-        console.log(widget)
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
         $scope.widgetObj = widget;
@@ -300,9 +299,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (val.xAxis == 1) {
                 $scope.xColumn = val;
                 $scope.selectPieChartXAxis = val;
-                console.log(val)
                 $scope.selectX1Axis(widget, val);
-            }
+            };
             if (val.yAxis == 1) {
                 if (val.fieldName) {
                     if (widget.chartType == "pie") {
@@ -323,13 +321,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            var exists = false;
 //            angular.forEach($scope.formats, function (value, header) {
 //                if (value.displayFormat === value.value) {
-//                    alert(1)
 //                    exists = true;
 //                    $scope.tickerItem.push({displayName: val.displayName, fieldName: val.fieldName, displayFormat: {name: value.name, value: value.value}})
 //                }
 //            });
 //            if (exists == false) {
-//                alert(2)
             if (widget.chartType === 'ticker') {
                 $scope.tickerItem.push(val);
             }
@@ -564,7 +560,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
 
-    $scope.selectChart = function (chartType) {
+    $scope.selectChart = function (chartType, widget) {
+        $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
@@ -579,6 +576,24 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+
+        if ($scope.chartTypeName) {
+            widget.columns = [];
+            $scope.collectionFields.forEach(function (value, k) {
+                var machField = $.grep(widget.columns, function (b) {
+                    return b.fieldName === value.fieldName;
+                });
+                if (machField.length > 0) {
+                    value.selectColumnDef = 1;
+                } else {
+                    value.selectColumnDef = 0;
+                }
+            });
+        }
+
+        $timeout(function () {
+            $scope.hideSelectedColumn = false;
+        }, 50);
     };
 
     $scope.showListOfColumns = function () {
@@ -1178,7 +1193,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             $scope.collectionFields.forEach(function (val, key) {
                 if (val.id === dataSetColumn.id) {
-                    ////alert(1)
                     oldFieldName = val.fieldName;
                     val.fieldName = dataSetColumnData.fieldName;
                     val.displayName = dataSetColumnData.displayName;
@@ -3314,7 +3328,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
-                            // ////alert(format);
                             if (format.indexOf("%") > -1) {
                                 return d3.format(format)(value / 100);
                             }

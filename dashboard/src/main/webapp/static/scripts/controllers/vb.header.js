@@ -102,7 +102,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //            });
 //
 //            $stateParams.templateId = templateId ? templateId : getTemplateId;
-            console.log($stateParams.templateId);
             try {
                 var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 

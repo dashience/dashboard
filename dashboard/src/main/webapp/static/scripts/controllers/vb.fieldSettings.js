@@ -56,7 +56,6 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         $scope.fieldSettings.push({isEdit: true});
     };
     $scope.saveField = function (fields) {
-        console.log(fields);
         var data = {
             id: fields.id,
             fieldName: fields.fieldName,
@@ -76,9 +75,16 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
             $scope.getFields();
         });
     };
-    $scope.updateField = function (fields) {   
-       
-//        var getDisplayFormat = fields.displayFormat;
+    $scope.updateField = function (field) {
+        var getDisplayFormat = field.displayFormat;
+
+        var getDisplayObj = $.grep($scope.formats, function (val) {
+            return getDisplayFormat === val.value;
+        });
+        angular.forEach(getDisplayObj, function(val, key){
+            field.dataFormat = val;
+            field.displayFormat = val;
+        });
 //        var data = {
 //            id: fields.id,
 //            fieldName: fields.fieldName,
