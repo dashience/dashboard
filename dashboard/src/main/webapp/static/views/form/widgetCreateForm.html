@@ -490,7 +490,7 @@
                     </ul>
                 </div>
                 <div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="col-sm-6" ng-show="showColumnDefs">
-                    <div ng-show="afterLoadWidgetColumns">
+                    <div ng-if="afterLoadWidgetColumns == true;">
                         <ul class="list-group" ng-model="widgetObj.columns" ui-sortable="sortableOptions">
                             <li class="list-group-item justify-content-between" ng-repeat="columns in widgetObj.columns">
                                 <div>

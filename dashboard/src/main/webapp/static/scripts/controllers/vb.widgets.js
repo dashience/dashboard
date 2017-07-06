@@ -564,7 +564,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
 
-    $scope.selectChart = function (chartType) {
+    $scope.selectChart = function (chartType, widget) {
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
@@ -580,6 +580,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+
+        if ($scope.chartTypeName) {
+            widget.columns = [];
+            $scope.collectionFields.forEach(function (value, k) {
+                var machField = $.grep(widget.columns, function (b) {
+                    return b.fieldName === value.fieldName;
+                });
+                if (machField.length > 0) {
+                    value.selectColumnDef = 1;
+                } else {
+                    value.selectColumnDef = 0;
+                }
+            });
+        }
+
         $timeout(function () {
             $scope.hideSelectedColumn = false;
         }, 50);
