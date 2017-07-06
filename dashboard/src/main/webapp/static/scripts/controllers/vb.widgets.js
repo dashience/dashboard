@@ -565,6 +565,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.selectChart = function (chartType) {
+        $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
@@ -579,6 +580,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+        $timeout(function () {
+            $scope.hideSelectedColumn = false;
+        }, 50);
     };
 
     $scope.showListOfColumns = function () {
