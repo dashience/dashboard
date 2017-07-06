@@ -577,6 +577,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
         $scope.showDateRange = false;
+        $scope.xColumn= "";
+        $scope.y1Column = "";
+        $scope.selectPieChartYAxis = "";
+        $scope.y2Column = "";
+        $scope.tickerItem = "";
+        $scope.funnelItem = "";
     };
 
     $scope.showListOfColumns = function () {
