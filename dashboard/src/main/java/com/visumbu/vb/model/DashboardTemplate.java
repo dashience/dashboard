@@ -39,6 +39,7 @@ public class DashboardTemplate implements Serializable {
 
     @OneToMany(mappedBy = "templateId")
     private Collection<TemplateTabs> templateTabsCollection;
+    @OneToMany(mappedBy = "templateId")
     private Collection<ProductAccountUserTemplate> accountTemplateCollection;
     @OneToMany(mappedBy = "templateId")
     private Collection<AgencyProduct> agencyProductCollection;

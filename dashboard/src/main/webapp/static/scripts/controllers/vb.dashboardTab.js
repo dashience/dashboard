@@ -12,6 +12,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.selectTemplate = {};
     $scope.getAllTemplate = function () {
         $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
+            console.log(response)
             $scope.templates = response;
             var template = "";
             ///alert($stateParams.templateId)
