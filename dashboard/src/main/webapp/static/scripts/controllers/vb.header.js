@@ -121,13 +121,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             }
             var getTemplateId = response[0].templateId ? response[0].templateId.id : 0
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
-            var templateId;
-            // $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
-            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
-                templateId = response.id;
-            });
-
-            $stateParams.templateId = templateId ? templateId : getTemplateId;
+            var templateId=$stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+//            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
+//                templateId = response.id;
+//            });
+//
+//            $stateParams.templateId = templateId ? templateId : getTemplateId;
             console.log($stateParams.templateId);
             try {
                 var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);

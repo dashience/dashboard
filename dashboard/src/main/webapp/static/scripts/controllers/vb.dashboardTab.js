@@ -19,7 +19,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 template = $filter('filter')(response, {id: $stateParams.templateId})[0];
             }
             $scope.selectTemplate.selected = template;
-            if (!template.userId) {
+            var templateUserId = template?template.userId:"";
+            if (!templateUserId) {
                 return;
             } else {
                 if ($stateParams.templateId != 0) {
