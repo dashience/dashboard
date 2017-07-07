@@ -800,33 +800,26 @@ public class UiDao extends BaseDao {
             return list;
         }
     }
+    
     //subhadra update color option
-
-    public int updateOptionValue(String chartcolor, Integer widgetId) {
+    public void updateOptionValue(String chartcolor, Integer widgetId) {
         System.out.println(chartcolor + "..........widgetId:" + widgetId);
         String queryStr = "update TabWidget t set t.chartColorOption=:chartColorOption WHERE t.id = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("chartColorOption", chartcolor).setInteger("widgetId", widgetId);
         // query.setParameter("userId", userId);
-        int i = query.executeUpdate();
-        return i;
-
+        query.executeUpdate();
     }
 
     public UserPreferences getUserPreferenceById(VbUser userId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("UserPreferences.findByUserId");
         query.setParameter("userId", userId);
-
         return (UserPreferences) query.uniqueResult();
-
     }
 
     public DashboardTabs getDashBoardTabsById(Integer tabId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("DashboardTabs.findById");
         query.setParameter("id", tabId);
-
         return (DashboardTabs) query.uniqueResult();
-
     }
-
 }

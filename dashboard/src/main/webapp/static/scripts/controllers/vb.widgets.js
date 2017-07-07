@@ -10,7 +10,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
     $scope.permission = localStorageService.get("permission");
-    console.log($scope.permission)
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
@@ -22,27 +21,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.targetColors = [];
 
     //added by subhadra 
-    $scope.editColorOption = function (targetColorss) {
-        var data = targetColorss;
+    $scope.editColorOption = function (targetColors) {
+        var data = targetColors;
         if ($scope.widgetId) {
             $http({method: 'PUT', url: 'admin/ui/userPreferences/updatecolor/' + $scope.widgetId, data: data}).success(function (response) {
-
             });
         }
     };
 
     //added by subhadra 
     $scope.deleteColorOption = function (targetColor, index) {
-        console.log($scope.widgetObj);
-        console.log($scope.targetColors)
-        console.log(targetColor);
-//        $scope.targetColors.splice(index,1);
-//        
-        console.log($scope.widgetObj);
         $scope.widgetObj.targetColors.splice(index, 1);
-//        console.log(index);
-//        console.log($scope.targetColors);
-        console.log($scope.widgetObj);
         var data = targetColor;
         $http({method: 'PUT', url: 'admin/ui/userPreferences/deletecolor/' + $scope.widgetId, data: data}).success(function (response) {
             // $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
@@ -1616,7 +1605,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             timeSegment: widget.timeSegment ? widget.timeSegment.type : null,
             productSegment: widget.productSegment ? widget.productSegment.type : null,
             networkType: widget.networkType ? widget.networkType.type : null,
-
             chartColorOption: widgetColor     //added by subhadra to bind chatcoloroption using map
         };
         widget.chartType = "";

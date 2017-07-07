@@ -755,7 +755,7 @@ public class UiController extends BaseController {
     //addedby subhadra
     @RequestMapping(value = "userPreferences/updatecolor/{widgetId}", method = RequestMethod.PUT)
     public @ResponseBody
-    Integer updateColorOPtion(HttpServletRequest request, HttpServletResponse response, @RequestBody List<String> optionValues, @PathVariable Integer widgetId) {
+    void updateColorOPtion(HttpServletRequest request, HttpServletResponse response, @RequestBody List<String> optionValues, @PathVariable Integer widgetId) {
 
         StringBuffer stringBuffer = new StringBuffer();
         int size = optionValues.size();
@@ -766,17 +766,16 @@ public class UiController extends BaseController {
             } else {
                 stringBuffer.append(s);
             }
-
         }
         System.out.println(stringBuffer + "...................");
         // DashboardTabs dashBoardTabs=uiService.getDashBoardTabsById(tabId);
-        return uiService.updateOptionValue(new String(stringBuffer), widgetId);
+        uiService.updateOptionValue(new String(stringBuffer), widgetId);
     }
 
     //addedby subhadra
     @RequestMapping(value = "userPreferences/deletecolor/{tabId}", method = RequestMethod.PUT)
     public @ResponseBody
-    int deleteColorOption(HttpServletRequest request, HttpServletResponse response, @RequestBody String optionValues, @PathVariable Integer tabId) {
+    void deleteColorOption(HttpServletRequest request, HttpServletResponse response, @RequestBody String optionValues, @PathVariable Integer tabId) {
 
         TabWidget tabWidget = uiService.getWidgetById(tabId);
         String optionValue = tabWidget.getChartColorOption();
@@ -803,7 +802,7 @@ public class UiController extends BaseController {
         System.out.println("delete color.........." + stringBuffer.toString());
         tabWidget.setChartColorOption(stringBuffer.toString());
         tabWidget.setId(tabWidget.getId());
-        return uiService.updateOptionValue(stringBuffer.toString(), tabId);
+        uiService.updateOptionValue(stringBuffer.toString(), tabId);
     }
 
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")

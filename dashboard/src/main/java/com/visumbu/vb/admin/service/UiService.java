@@ -252,7 +252,7 @@ public class UiService {
         System.out.println("dateRange start Date-----> " + startDate);
         System.out.println("dateRange End Date-----> " + endDate);
         //modified by subhadra for chat coloroption
-        
+
 //         Map<String,String> chatcoloroptionmap= tabWidgetBean.getChartColorOption();
 //      System.out.println("chat color size map size"+chatcoloroptionmap.size()+".........."+chatcoloroptionmap);
 //        Set<String> keyset=chatcoloroptionmap.keySet();
@@ -1070,6 +1070,7 @@ public class UiService {
 //        dataSetColumn.setFieldType(widgetColumn.getFieldType());
 //        return dataSetColumn;
 //    }
+    
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
         DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId, widgetId);
         if (column == null) {
@@ -1095,8 +1096,8 @@ public class UiService {
     public UserPreferences createThemeSettings(UserPreferences userPreferences) {
         return (UserPreferences) uiDao.create(userPreferences);
     }
-    // adeed by subhadra for chart color
 
+    // adeed by subhadra for chart color
     public UserPreferences getUserPreferenceById(VbUser vbUser) {
         return uiDao.getUserPreferencesById(vbUser);
     }
@@ -1109,8 +1110,8 @@ public class UiService {
         return uiDao.getChartColor(tabId);
     }
 
-    public int updateOptionValue(String chartcoloroption, Integer widgetId) {
-        return uiDao.updateOptionValue(chartcoloroption, widgetId);
+    public void updateOptionValue(String chartcoloroption, Integer widgetId) {
+        uiDao.updateOptionValue(chartcoloroption, widgetId);
     }
 
     public UserPreferences getUserPreferenceByUserId(VbUser userId) {
