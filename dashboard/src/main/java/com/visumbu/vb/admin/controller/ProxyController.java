@@ -5,8 +5,6 @@
  */
 package com.visumbu.vb.admin.controller;
 
-import com.visumbu.vb.admin.dao.SettingsDao;
-import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
@@ -126,12 +124,6 @@ public class ProxyController {
     @Autowired
     private TwitterService twitterService;
 
-    @Autowired
-    private SettingsDao settingsDao;
-
-    @Autowired
-    private UiDao uiDao;
-
     PropertyReader propReader = new PropertyReader();
 
     private final String urlDownload = "url.download";
@@ -153,8 +145,6 @@ public class ProxyController {
             String[] value = entrySet.getValue();
             valueMap.put(key, Arrays.asList(value));
         }
-        System.out.println("dataSourceId    " + dataSourceId);
-        System.out.println("dataSourceType  " + dataSourceType);
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String dataSetId = request.getParameter("dataSetId");
@@ -174,6 +164,10 @@ public class ProxyController {
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
+                DataSet dataSet = uiService.getDataSetById(dataSetIdInt);
+                if (dataSet.getJoinDataSetId() != null) {
+                    joinDataSetIdStr = dataSet.getJoinDataSetId().getId() + "";
+                }
             } catch (NumberFormatException e) {
 
             }
@@ -191,38 +185,23 @@ public class ProxyController {
             System.out.println("without joinDataSet");
             returnMap = getData(valueMap, request, response);
         }
+        System.out.println("returnMappppp -----> " + returnMap);
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
-        List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
-//        if (widgetIdStr != null) {
-//            try {
-//                widgetIdInt = Integer.parseInt(widgetIdStr);
-//                List<WidgetColumn> widgetColumnList = uiDao.getDerivedWidgetColumnsByWidgetId(widgetIdInt);
-//                for (Iterator<WidgetColumn> iterator = widgetColumnList.iterator(); iterator.hasNext();) {
-//                    WidgetColumn widgetColumn = iterator.next();
-//                    dataSetColumnList.add(uiService.addWidgetColumnToDataSetColumnList(widgetColumn));
-//                }
-//            } catch (NumberFormatException e) {
-//
-//            }
-//        }
-        System.out.println("data ---> " + data);
+        List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
 
         if (dataSetColumnList.size() > 0) {
-            System.out.println("inside dataSetColumnList");
-            System.out.println("dataSetColumnList ---> " + dataSetColumnList);
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
-            System.out.println("dataWithDerivedFunctions ---> " + dataWithDerivedFunctions);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
-        System.out.println("returnMap ---> " + returnMap);
-
-        if (widgetIdStr != null && !widgetIdStr.isEmpty()) {
+        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
+        System.out.println("returnMap ----> " + returnMap);
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
             String queryFilter = null;
-            Integer widgetId = Integer.parseInt(widgetIdStr);
-            TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetId, dataSetIdInt);
+            widgetIdInt = Integer.parseInt(widgetIdStr);
+            TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetIdInt, dataSetIdInt);
             if (tabWidget != null) {
                 queryFilter = tabWidget.getQueryFilter();
             }
@@ -230,11 +209,11 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
-        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
+        System.out.println("returnMap1 ----> " + returnMap);
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
         if (dataSetIdInt != null) {
-            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt));
+            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
         }
         if (fieldsOnly != null) {
             return dataMap;
@@ -244,16 +223,19 @@ public class ProxyController {
         return dataMap;
     }
 
-    private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId) {
+    private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
-            DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId);
+            DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
             column.setId(dataSetColumn.getId());
             column.setExpression(dataSetColumn.getExpression());
             column.setDisplayFormat(dataSetColumn.getDisplayFormat());
+            column.setUserId(dataSetColumn.getUserId());
+            column.setWidgetId(dataSetColumn.getWidgetId());
             columnDef.add(column);
         }
+        System.out.println("columnDef ---> " + columnDef);
         return columnDef;
     }
 
@@ -321,7 +303,7 @@ public class ProxyController {
             }
         }
 
-        List<JoinDataSetCondition> joinDatasetConditionList = uiDao.getJoinDataSetConditionById(joinDataSetIdInt);
+        List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetIdInt);
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
             JoinDataSetCondition joinDataSetCondition = iterator.next();
             JoinDataSet joinDataSet = joinDataSetCondition.getJoinDataSetId();
@@ -347,7 +329,7 @@ public class ProxyController {
         String dataSetIdOneStr = getFromMultiValueMap(joinValueMapOne, "dataSetId");
         if (dataSetIdOneStr != null && !dataSetIdOneStr.isEmpty()) {
             Integer dataSetIdInt = Integer.parseInt(dataSetIdOneStr);
-            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+            List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetOneList, joinValueMapOne, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -376,7 +358,7 @@ public class ProxyController {
 
             Integer dataSetIdInt = Integer.parseInt(dataSetIdTwoStr);
 
-            List<DataSetColumns> dataSetColumnList = uiDao.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+            List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
             if (dataSetColumnList.size() > 0) {
                 List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataSetTwoList, joinValueMapTwo, request, response);
                 List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
@@ -875,7 +857,7 @@ public class ProxyController {
         return null;
     }
 
-     Map getPinterestData(MultiValueMap<String, String> request, HttpServletResponse response) {
+    Map getPinterestData(MultiValueMap<String, String> request, HttpServletResponse response) {
 
         String reportName = getFromMultiValueMap(request, "dataSetReportName");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
@@ -890,7 +872,7 @@ public class ProxyController {
 //        
 
         //get the acces token from settings
-        List<Settings> pinterestAccessToken = settingsDao.getProperty("pinterestAccessToken");
+        List<Settings> pinterestAccessToken = settingsService.getProperty("pinterestAccessToken");
         System.out.println("***************************");
         System.out.println(pinterestAccessToken);
         String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");
@@ -1171,11 +1153,13 @@ public class ProxyController {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
-        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
+        if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null"))) {
+            System.out.println("In ifffff timeSegment...");
             timeSegment = null;
         }
         String productSegment = getFromMultiValueMap(request, "productSegment");
-        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
+        if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null"))) {
+            System.out.println("In ifffff productSegment...");
             productSegment = null;
         }
         Integer dataSetIdInt = null;
@@ -1191,13 +1175,16 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
+                System.out.println("productSegment ---> " + productSegment);
+                System.out.println("productSegment dataset---> " + dataSet.getProductSegment());
+
                 dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
             }
         }
         System.out.println("timeSegment ---> " + timeSegment);
-        System.out.println("productSegment ---> " + productSegment);
+        System.out.println("productSegment2 ---> " + productSegment);
 
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
@@ -1209,6 +1196,20 @@ public class ProxyController {
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
+
+            String widgetProductSegment = widget.getProductSegment();
+            String widgetTimeSegment = widget.getTimeSegment();
+            String widgetNetworkType = widget.getNetworkType();
+            if (widgetProductSegment == null || widgetProductSegment.isEmpty() || widgetProductSegment.equalsIgnoreCase("null") || widgetProductSegment.equalsIgnoreCase("none")) {
+                productSegment = null;
+            } else if (widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("null") || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
+                productSegment = widgetProductSegment;
+            }
+            if (widgetTimeSegment == null || widgetTimeSegment.isEmpty() || widgetTimeSegment.equalsIgnoreCase("null") || widgetTimeSegment.equalsIgnoreCase("none")) {
+                timeSegment = null;
+            } else if (widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("null") || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
+                timeSegment = widgetTimeSegment;
+            }
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
                 if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
@@ -1244,6 +1245,7 @@ public class ProxyController {
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
 
+        System.out.println("Adwords Data0 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
@@ -1259,30 +1261,44 @@ public class ProxyController {
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
                 filter = (filter == null || filter.isEmpty()) ? dataSet.getNetworkType() : filter;
+        System.out.println("Adwords Data1 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
             }
         }
+        System.out.println("Adwords Data2 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
             timeSegment = null;
         }
+        System.out.println("Adwords Data3 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
+        System.out.println("Adwords Data4 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
             filter = null;
         }
+        System.out.println("Adwords Data5 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-        // //System.out.println("startDate 1 ----> " + startDate);
-
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-        // //System.out.println("endDate 1 ----> " + endDate);
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
-            //System.out.println("Widget title --->" + widget.getWidgetTitle());
-            //System.out.println("Date Range Name ---> " + widget.getDateRangeName());
+
+            String widgetProductSegment = widget.getProductSegment();
+            String widgetTimeSegment = widget.getTimeSegment();
+            String widgetNetworkType = widget.getNetworkType();
+
+            if (widgetNetworkType != null && !widgetNetworkType.isEmpty() && !widgetNetworkType.equalsIgnoreCase("none") && !widgetNetworkType.equalsIgnoreCase("undefined")) {
+                filter = widgetNetworkType;
+            }
+            if (widgetProductSegment != null && !widgetProductSegment.isEmpty() && !widgetProductSegment.equalsIgnoreCase("none") && !widgetProductSegment.equalsIgnoreCase("undefined")) {
+                productSegment = widgetProductSegment;
+            }
+            if (widgetTimeSegment != null && !widgetTimeSegment.isEmpty() && !widgetTimeSegment.equalsIgnoreCase("none") && !widgetTimeSegment.equalsIgnoreCase("undefined")) {
+                timeSegment = widgetTimeSegment;
+            }
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
                 if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
@@ -1294,12 +1310,21 @@ public class ProxyController {
                 }
             }
         }
+        System.out.println("Adwords Data5 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
+        System.out.println("Adwords Data ===> " + data);
+        if (data == null) {
+            List<ColumnDef> columnDefs = new ArrayList<>();
+            Map returnMap = new HashMap();
+            returnMap.put("columnDefs", columnDefs);
+            returnMap.put("data", data);
+            return returnMap;
+        }
         if (dataSetReportName.equalsIgnoreCase("geoPerformance")) {
             for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -1308,7 +1333,6 @@ public class ProxyController {
                 Object countryCriteria = dataMap.get("countryTerritory");
                 try {
                     if (cityCriteria != null) {
-                        // //System.out.println("CITY CRITERIA CLASS  " + cityCriteria.getClass());
                         Integer criteriaId = Integer.parseInt(cityCriteria + "");
                         AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
                         if (criteria != null) {
@@ -1354,7 +1378,6 @@ public class ProxyController {
                 }
             }
         }
-        // //System.out.println(data);
         Map returnMap = new HashMap();
         if (data == null) {
             return null;
@@ -1384,29 +1407,18 @@ public class ProxyController {
     @RequestMapping(value = "testAdwords", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object testAdwords(HttpServletRequest request, HttpServletResponse response) {
-        // //System.out.println("Report Name" + request.getParameter("reportName"));
-        // //System.out.println("Time Segment" + request.getParameter("timeSegment"));
-        // //System.out.println("Product Segment" + request.getParameter("productSegment"));
-        // //System.out.println("filter " + request.getParameter("filter"));
-
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(request.getParameter("reportName"), DateUtils.get30DaysBack(), new Date(), "827-719-8225", request.getParameter("timeSegment"), request.getParameter("productSegment"), request.getParameter("filter"));
-        // //System.out.println(data);
         Map returnMap = new HashMap();
         String fieldsOnly = request.getParameter("fieldsOnly");
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
         returnMap.put("data", data);
-        // //System.out.println(returnMap);
         return returnMap;
     }
 
     @RequestMapping(value = "testGa", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object testGa(HttpServletRequest request, HttpServletResponse response) {
-        // //System.out.println("Report Name" + request.getParameter("reportName"));
-        // //System.out.println("Time Segment" + request.getParameter("timeSegment"));
-        // //System.out.println("Product Segment" + request.getParameter("productSegment"));
-        // //System.out.println("filter " + request.getParameter("filter"));
         return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null);
     }
 
@@ -1438,19 +1450,13 @@ public class ProxyController {
             }
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
-        System.out.println("Linkedin Account ID-->" + accountIdStr);
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
-
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
 
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
-            System.out.println("Widget title --->" + widget.getWidgetTitle());
-            System.out.println("Date Range Name ---> " + widget.getDateRangeName());
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
                 if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
@@ -1474,8 +1480,6 @@ public class ProxyController {
             List<Map<String, Object>> data = linkedinService.get(linkedInaccountId, dataSetReportName,
                     startDate, endDate, timeSegment, productSegment);
             log.debug(data);
-            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-            System.out.println(data);
             Map returnMap = new HashMap();
             List<ColumnDef> columnDefs = getColumnDefObject(data);
             returnMap.put("columnDefs", columnDefs);
@@ -1494,7 +1498,6 @@ public class ProxyController {
     }
 
     Object getFbData(final MultiValueMap<String, String> request, HttpServletResponse response) {
-        // System.out.println("Calling of getFbData function in ProxyController class");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
@@ -1517,32 +1520,19 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
-                System.out.println("dataset is not null");
-                System.out.println("timeSegment ---> " + timeSegment);
-                System.out.println("productSegment ---> " + productSegment);
                 dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
-//                timeSegment=dataSet.getTimeSegment();
-//                productSegment=dataSet.getProductSegment();
-                System.out.println("************** DataSet ****************************");
-                System.out.println(productSegment);
-                System.out.println(timeSegment);
             }
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-        // System.out.println("startDate 1 ----> " + startDate);
-
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-        // System.out.println("endDate 1 ----> " + endDate);
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
             Integer widgetId = Integer.parseInt(widgetIdStr);
             TabWidget widget = uiService.getWidgetById(widgetId);
-            System.out.println("Widget title --->" + widget.getWidgetTitle());
-            System.out.println("Date Range Name ---> " + widget.getDateRangeName());
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
                 if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
                     startDate = DateUtils.getStartDate(widget.getCustomStartDate());
@@ -1554,7 +1544,17 @@ public class ProxyController {
                 }
             }
         }
-        Integer accountId = Integer.parseInt(accountIdStr);
+        Integer accountId = null;
+        try {
+            accountId = Integer.parseInt(accountIdStr);
+        } catch (NumberFormatException e) {
+            List<ColumnDef> columnDefs = new ArrayList<>();
+            List<Map<String, Object>> data = new ArrayList<>();
+            Map returnMap = new HashMap();
+            returnMap.put("columnDefs", columnDefs);
+            returnMap.put("data", data);
+            return returnMap;
+        }
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String facebookAccountId = getAccountId(accountProperty, "facebookAccountId");
@@ -1575,7 +1575,6 @@ public class ProxyController {
         log.debug("Start Date ---- " + startDate);
         List<Map<String, Object>> data = facebookService.get(dataSetReportName, facebookAccountIdInt,
                 facebookOrganicAccountIdInt, startDate, endDate, timeSegment, productSegment);
-        // System.out.println("FbData list ----> " + data);
 //        Date startDate = DateUtils.getSixMonthsBack(new Date()); // 1348734005171064L
 //        Date endDate = new Date();
 //        List<Map<String, String>> data = facebookService.get(accessToken, "accountPerformance", 1348731135171351L, startDate, endDate, "daily");
@@ -1585,8 +1584,8 @@ public class ProxyController {
         returnMap.put("data", data);
         return returnMap;
     }
-    
-     List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
+
+    List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
@@ -1613,10 +1612,8 @@ public class ProxyController {
         }
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-        System.out.println("startDate 1 ----> " + startDate);
 
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-        System.out.println("endDate 1 ----> " + endDate);
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
 
         Integer accountId = Integer.parseInt(accountIdStr);
@@ -1629,12 +1626,6 @@ public class ProxyController {
         String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
         String twitterOauthConsumerKey = getAccountId(accountProperty, "twitterConsumerKey");
 
-        //Testing
-        System.out.println("Twitter AccountId-->" + twitterAccountId);
-        System.out.println("Twitter twitterOauthNonce-->" + twitterOauthNonce);
-        System.out.println("Twitter twitterOauthSignature-->" + twitterOauthSignature);
-        System.out.println("Twitter twitterScreenName-->" + twitterScreenName);
-        System.out.println("Twitter twitterOauthToken-->" + twitterOauthToken);
         try {
             Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
             List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, twitterAccountId, twitterScreenName,
@@ -1700,7 +1691,6 @@ public class ProxyController {
             valueMap.put("productSegment", Arrays.asList(productSegment));
             valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
 
-//            //System.out.println("My dataSetReportName -->"+dataSetReportName);
             String url = "../dbApi/admin/bing/getData";
             Integer port = 80;
             if (request != null) {
@@ -1716,9 +1706,7 @@ public class ProxyController {
                 url = url.replaceAll("\\.\\./", localUrl);
             }
             log.debug("url: " + url);
-            //System.out.println("url: " + url);
             log.debug("valuemap: " + valueMap);
-            //System.out.println("valuemap: " + valueMap);
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(data);
@@ -1867,8 +1855,8 @@ public class ProxyController {
                 String[] value = entrySet.getValue();
                 valueMap.put(key, Arrays.asList(value));
             }
-
-            List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
+            Integer accountId = Integer.parseInt(dealerId);
+            List<TabWidget> tabWidgets = uiService.getTabWidget(tabId, accountId);
             for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
                 TabWidget tabWidget = iterator.next();
                 try {
@@ -1943,8 +1931,6 @@ public class ProxyController {
         Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
         Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
 
-        //System.out.println("startDate 1 -->" + startDate1);
-        //System.out.println("endDate 1 -->" + endDate1);
         String start_date = month_date.format(startDate1);
         String end_date = month_date.format(endDate1);
         String selectDate;
@@ -2078,15 +2064,12 @@ public class ProxyController {
     @RequestMapping(value = "download/{tabId}", method = RequestMethod.GET)
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
-        // //System.out.println("Start Function of download");
         String dealerId = request.getParameter("dealerId");
         String exportType = request.getParameter("exportType");
         SimpleDateFormat month_date = new SimpleDateFormat("MMMM yyyy", Locale.ENGLISH);
 
         Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate"));
-        // //System.out.println("startDate 1 ----> " + startDate1);
         Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate"));
-        // //System.out.println("endDate 1 ----> " + endDate1);
 
         String start_date = month_date.format(startDate1);
         String end_date = month_date.format(endDate1);
@@ -2107,18 +2090,16 @@ public class ProxyController {
         for (Map.Entry<String, String> entrySet : dealerAccountDetails.entrySet()) {
             String key = entrySet.getKey();
             String value = entrySet.getValue();
-            // //System.out.println("key ---> " + key + " value ---> " + value);
             valueMap.put(key, Arrays.asList(value));
         }
         Map<String, String[]> parameterMap = request.getParameterMap();
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
             String[] value = entrySet.getValue();
-            // //System.out.println("key ---> " + key + " value ---> " + value);
             valueMap.put(key, Arrays.asList(value));
         }
-
-        List<TabWidget> tabWidgets = uiService.getTabWidget(tabId);
+        Integer accountId = Integer.parseInt(dealerId);
+        List<TabWidget> tabWidgets = uiService.getTabWidget(tabId, accountId);
         String account = null;
         String product = "Analytics";
         for (Iterator<TabWidget> iterator = tabWidgets.iterator(); iterator.hasNext();) {
@@ -2128,9 +2109,7 @@ public class ProxyController {
                     continue;
                 }
                 Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-                // //System.out.println("startDate  ----> " + startDate);
                 Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
-                // //System.out.println("endDate  ----> " + endDate);
                 String url = propReader.readUrl(urlDownload) + "";
 
                 log.debug("TYPE => " + tabWidget.getDataSourceId().getDataSourceType());
@@ -2144,7 +2123,6 @@ public class ProxyController {
                 }
 
                 valueMap.put("widgetId", Arrays.asList("" + tabWidget.getId()));
-                // //System.out.println("tabWidget Id---> " + tabWidget.getId());
                 valueMap.put("dataSetId", Arrays.asList("" + tabWidget.getDataSetId().getId()));
                 valueMap.put("accountId", Arrays.asList(URLEncoder.encode(request.getParameter("accountId"), "UTF-8")));
 
@@ -2161,7 +2139,6 @@ public class ProxyController {
 
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
-                // //System.out.println("valueMap ---> " + valueMap);
                 Integer port = request.getServerPort();
 
                 int account_id = Integer.parseInt(request.getParameter("accountId"));

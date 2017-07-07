@@ -135,18 +135,18 @@
     </div>
 </div>
 
-    <div class="row">    
-        <div class="col-sm-12 ">
-            <div class="btn-group pull-right pdf-fav"> 
-                <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{accountId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
-            </div>
+<div class="row">    
+    <div class="col-sm-12 ">
+        <div class="btn-group pull-right pdf-fav"> 
+            <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{accountId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
         </div>
     </div>
+</div>
 
 <div class="row content">
     <div ng-repeat="favouritesWidget in favouritesWidgets">
         <div class="col-md-{{favouritesWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
-            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
+            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="favouritesWidget.widgetId">
                 <div class="panel-heading">
                     <div class="panel-tools">
                         <a title="Favourites" ng-click="toggleFavourite(favouritesWidget, $index)">
@@ -199,7 +199,23 @@
                 </div> 
                 <div class="box-body"  ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'">
                     <div>
-                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
+                             stacked-Bar-Chart-Directive
+                             stacked-Bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                             widget-Id="{{favouritesWidget.widgetId.id}}" 
+                             widget-Columns="{{favouritesWidget.widgetId.columns}}" 
+                             widget-Obj="{{favouritesWidget.widgetId}}">                                 
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'funnel'">
+                    <div>
+                        <div funnel-Directive
+                             funnel-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                             widget-Obj="{{favouritesWidget.widgetId}}" 
+                             funnel-Id="{{favouritesWidget.widgetId.id}}"
+                             funnel-Columns="{{favouritesWidget.widgetId.columns}}">
+                        </div>
                     </div>
                 </div>
                 <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>

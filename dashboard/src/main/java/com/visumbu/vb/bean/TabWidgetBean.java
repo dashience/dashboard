@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.bean;
 
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
 import java.util.Date;
@@ -69,11 +70,12 @@ public class TabWidgetBean {
     private String queryFilter;
     private String isGridLine;
     private List<WidgetColumnBean> widgetColumns;
-    private UserAccount accountId; 
+    private Account accountId; 
     private VbUser createdBy;
     private String timeSegment;
     private String productSegment;
     private String networkType;
+    private Integer templateUserId;
 
     public Integer getId() {
         return id;
@@ -437,11 +439,11 @@ public class TabWidgetBean {
         this.isGridLine = isGridLine;
     }
 
-    public UserAccount getAccountId() {
+    public Account getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(UserAccount accountId) {
+    public void setAccountId(Account accountId) {
         this.accountId = accountId;
     }
 
@@ -475,6 +477,14 @@ public class TabWidgetBean {
 
     public void setNetworkType(String networkType) {
         this.networkType = networkType;
+    }
+
+    public Integer getTemplateUserId() {
+        return templateUserId;
+    }
+
+    public void setTemplateUserId(Integer templateUserId) {
+        this.templateUserId = templateUserId;
     }
 
     @Override

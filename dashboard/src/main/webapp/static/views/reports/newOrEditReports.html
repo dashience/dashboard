@@ -107,11 +107,11 @@
         word-wrap: break-word;
     }
     .pull-right-container {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-    padding-right: 15px !important;
-    padding-left: 15px !important;
-}
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
 </style>
 
 <div class="pull-right-container pull-right">
@@ -215,7 +215,23 @@
                 </div> 
                 <div class="box-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
                     <div>
-                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
+                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" 
+                             stacked-Bar-Chart-Directive 
+                             stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                             widget-Id="{{reportWidget.widgetId.id}}" 
+                             widget-Columns="{{reportWidget.widgetId.columns}}" 
+                             widget-Obj="{{reportWidget.widgetId}}">                                 
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'funnel'">
+                    <div>
+                        <div funnel-Directive
+                             funnel-Source="{{reportWidget.widgetId.dataSetId}}" 
+                             widget-Obj="{{reportWidget.widgetId}}" 
+                             funnel-Id="{{reportWidget.widgetId.id}}"
+                             funnel-Columns="{{reportWidget.widgetId.columns}}">
+                        </div>
                     </div>
                 </div>
                 <div class="box-body list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>

@@ -77,6 +77,20 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agency.logo = e.target.result;
         });
     };
+    //Default Templates
+
+    function getTemplateByAgency(agency){        
+        $http.get('admin/ui/getDefaultTemplate/'+agency.id).success(function (response) {
+            console.log(response);
+            $scope.templates = response;
+        });
+    }
+
+    $scope.selectDefaultTemplate = function (template) {
+        console.log(template);
+        $scope.templateId = template.id;
+    };
+
     $scope.saveAgency = function (agency) {
         if ($scope.agency.logo === "static/img/logos/deeta-logo.png") {
             $scope.agency.logo = "";
@@ -91,7 +105,7 @@ app.controller('AgencyController', function ($scope, $http) {
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             $scope.agencyById = data;
-            console.log(response)
+            console.log(response);
             getAgency();
             if (response.status == true) {
                 $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
@@ -113,9 +127,9 @@ app.controller('AgencyController', function ($scope, $http) {
     };
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
-        getAgencyLicence(agency)
+        getAgencyLicence(agency);
         $scope.agencyById = agency;
-
+        getTemplateByAgency(agency);
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
@@ -156,6 +170,7 @@ app.controller('AgencyController', function ($scope, $http) {
 
         $http.get('admin/user/agencyProduct/' + agency.id).success(function (response) {
             $scope.agencyProducts = response;
+            console.log(response)
         });
 
         $http.get('admin/user/agencySetting/' + agency.id).success(function (response) {
@@ -293,8 +308,9 @@ app.controller('AgencyController', function ($scope, $http) {
             productName: agencyProduct.productName,
             icon: $scope.agencyProduct.icon,
             agencyId: $scope.agencyById.id,
-            showProduct: agencyProduct.showProduct
-        }
+            showProduct: agencyProduct.showProduct,
+            templateId: $scope.templateId
+        };
         $scope.agencyProduct = data;
         $scope.selectedRows = index;
         $scope.showAgencyProductForm = true;
@@ -316,6 +332,7 @@ app.controller('AgencyController', function ($scope, $http) {
         });
     };
     $scope.saveAgencyProduct = function (agencyProduct) {
+        console.log(agencyProduct.template)
         var agencyProductId = $scope.agencyById;
         if ($scope.agencyProduct.icon === "static/img/logos/deeta-logo.png") {
             $scope.agencyProduct.icon = "";
@@ -340,7 +357,8 @@ app.controller('AgencyController', function ($scope, $http) {
                     productName: agencyProduct.productName,
                     icon: $scope.agencyProduct.icon,
                     agencyId: $scope.agencyById.id,
-                    showProduct: agencyProduct.showProduct
+                    showProduct: agencyProduct.showProduct,
+                    templateId: agencyProduct.templateId
                 };
                 $http({method: agencyProduct.id ? 'PUT' : 'POST', url: 'admin/user/agencyProduct', data: data}).success(function (response) {
                     getAgencyLicence(agencyProductId);
@@ -371,7 +389,8 @@ app.controller('AgencyController', function ($scope, $http) {
             productName: agencyProduct.productName,
             icon: agencyProduct.icon,
             agencyId: $scope.agencyById.id,
-            showProduct: agencyProduct.showProduct
+            showProduct: agencyProduct.showProduct,
+            templateId: agencyProduct.templateId
         };
         $scope.agencyProduct = data;
         $scope.showAgencyProductForm = true;

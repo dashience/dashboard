@@ -86,14 +86,14 @@
     <div class="nav-tabs-custom">
         <div class="col-sm-12">
             <ul class="nav nav-tabs">
-                <li ng-if="permission.createDataSet===true" ng-class="{ active: isSet(1) }" >
+                <li ng-if="permission.createDataSet === true" ng-class="{ active: isSet(1) }" >
                     <a href ng-click="setTab(1)"> DataSet
                     </a>
                 </li>
-<!--                <li ng-if="permission.createJoinDataSet===true" ng-class="{ active: isSet(2) }">
+                <li ng-if="permission.createJoinDataSet === true" ng-class="{ active: isSet(2) }">
                     <a ng-click="setTab(2)"> Join DataSet
                     </a>
-                </li>-->
+                </li>
             </ul>
         </div>
     </div>
@@ -122,7 +122,8 @@
                                 <thead>
                                     <tr>
                                         <th class="col-xs-5">Data Source</th>
-                                        <th class="col-xs-6">Name</th>
+                                        <th class="col-xs-4">Name</th>
+                                        <th class="col-xs-2">Publish</th>
                                         <th class="col-xs-1"></th>
                                     </tr>
                                 </thead>
@@ -131,8 +132,13 @@
                                         <td class="col-xs-5" ng-click="editDataSet(dataSet)">
                                             {{dataSet.dataSourceId.name}}
                                         </td>
-                                        <td class="col-xs-6" ng-click="editDataSet(dataSet)">
+                                        <td class="col-xs-4" ng-click="editDataSet(dataSet)">
                                             {{dataSet.name?dataSet.name:'-'}}
+                                        </td>
+                                        <td class="col-xs-2" ng-if="dataSet.publish === 'Active'" ng-click="editDataSet(dataSet)">
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </td>
+                                        <td class="col-xs-2" ng-if="dataSet.publish !== 'Active'" ng-click="editDataSet(dataSet)">
                                         </td>
                                         <td class="col-md-1">
                                             <!--<button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = true"><i class="fa fa-pencil"></i></button>-->
@@ -190,7 +196,7 @@
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id"
                                             placeholder="Data Source"
                                             ng-value="dataSource.connectionString"
-                                            ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId);showPreviewChart = false;">
+                                            ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId); showPreviewChart = false;">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     </select>
 
@@ -232,9 +238,12 @@
                                                                         </select>-->
 
                                         <label ng-show="nwStatusFlag">Network Type</label>
-                                        <select ng-show="nwStatusFlag" class="form-control"ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType">
-                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                            <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>
+                                        <select ng-show="nwStatusFlag" class="form-control"
+                                                ng-change="refreshDataSet(dataSet)" 
+                                                ng-model="dataSet.networkType"
+                                                ng-options="network.name for network in networkTypes track by network.type">
+<!--                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                            <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>-->
                                         </select>
                                         <!--                                <ui-select ng-show="nwStatusFlag"  ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType" on-removed="removed($item)" theme="select2" ng-disabled="disabled" class="form-control">
                                                                             <ui-select-match placeholder="Select Network...">{{$item.name}}</ui-select-match>
@@ -262,6 +271,18 @@
                                     <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'xls'">
                                         <label>XLS</label>
                                         <select class="form-control" ng-model="dataSet.reportName" ng-options="xlsSheetName for xlsSheetName in xlsSheetNames" ng-change="refreshDataSet(dataSet)"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Publish</label>
+                                    <div class="checkbox checkbox-slider--b">
+                                        <label class="" for="field{{$index + 1}}">
+                                            <input id="field{{$index + 1}}" type="checkbox"                                 
+                                                   ng-checked="dataSet.publish == 'Active'"
+                                                   ng-model="dataSet.publish"/>
+                                            <span></span>
+                                        </label>
                                     </div>
                                 </div>
 
@@ -438,9 +459,9 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td ng-if="operationType==='union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
+                                        <td ng-if="operationType === 'union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
                                         <td>
-                                            <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index,joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
+                                            <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index, joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
                                         </td>
                                     </tr>
                                 </tbody>
@@ -463,7 +484,7 @@
                 <div class="col-md-12">
                     <div  ng-show="loadingResult" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
                     <div class="hpanel" ng-if="loadingResultCompleted">
-                        
+
                         <div class="panel-heading">{{joinDataSetNewName}}</div>
                         <div class="panel-body">
                             <div class="table-responsive">

@@ -185,7 +185,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     "&endDate=" + $stateParams.endDate).success(function (response) {
                 $scope.loadingResult = false;
                 $scope.loadingResultCompleted = true;
-
                 $scope.joinColumns = response.columnDefs;
                 $scope.joinRows = response.data;
                 if (response.columnDefs == "" || response.data == "") {
@@ -1734,6 +1733,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
         {
+            console.log($scope.facebookPerformance);
+            console.log($scope.dataSet.reportName);
+            
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
@@ -2022,8 +2024,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     };
 
-
-
     function getProductSegment(productList, productSegmentName) {
         productList.forEach(function (val, key) {
             if (productSegmentName == val.type) {
@@ -2039,8 +2039,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
         });
     }
-
-
 
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -2093,6 +2091,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSet.dataSourceId = null;
         }
         $scope.nwStatusFlag = true;
+        console.log(dataSet);
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             getItems();
         });
@@ -2101,6 +2100,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.previewData = null;
         $scope.dataSetFlag = false;
     };
+    
+//    $scope.savePublishDataSet = function(dataSet){
+//        console.log(dataSet);
+//        var data = {
+//            id : dataSet.id,
+//            publish : dataSet.publish
+//        };
+//        console.log(data);
+//        $http({method: data.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet/enableOrDisable', data: data}).success(function (response) {
+//            getItems();
+//        });
+//    };
+    
     $scope.clearTable = function () {
         $scope.dataSet = "";
     };
@@ -2109,9 +2121,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         console.log(dataSet.networkType);
         console.log(dataSet);
         var joinDataSetId = null;
+        var publish = false;
         if (dataSet.joinDataSetId != null) {
             joinDataSetId = dataSet.joinDataSetId.id;
         }
+        if(dataSet.publish != null){
+            if(dataSet.publish == "Active"){
+                publish = true;
+            }
+        };
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -2124,7 +2142,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSourceId: dataSet.dataSourceId,
             agencyId: dataSet.agencyId.id,
             userId: dataSet.userId.id,
-            joinDataSetId: joinDataSetId
+            joinDataSetId: joinDataSetId,
+            publish: publish
         };
         console.log(data);
         $scope.dataSet = data;

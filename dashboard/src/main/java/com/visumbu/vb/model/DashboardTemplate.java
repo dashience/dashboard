@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -30,8 +34,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DashboardTemplate.findAll", query = "SELECT d FROM DashboardTemplate d")
     , @NamedQuery(name = "DashboardTemplate.findById", query = "SELECT d FROM DashboardTemplate d WHERE d.id = :id")
-    , @NamedQuery(name = "DashboardTemplate.findByTemplateName", query = "SELECT d FROM DashboardTemplate d WHERE d.templateName = :templateName")})
+    , @NamedQuery(name = "DashboardTemplate.findByTemplateName", query = "SELECT d FROM DashboardTemplate d WHERE d.templateName = :templateName")
+    , @NamedQuery(name = "DashboardTemplate.findByShared", query = "SELECT d FROM DashboardTemplate d WHERE d.shared = :shared")
+    , @NamedQuery(name = "DashboardTemplate.findByStatus", query = "SELECT d FROM DashboardTemplate d WHERE d.status = :status")})
 public class DashboardTemplate implements Serializable {
+
+    @OneToMany(mappedBy = "templateId")
+    private Collection<TemplateTabs> templateTabsCollection;
+    @OneToMany(mappedBy = "templateId")
+    private Collection<AgencyProduct> agencyProductCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -48,12 +59,15 @@ public class DashboardTemplate implements Serializable {
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    @ManyToOne
-    private Account accountId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId;
+    @Size(max = 255)
+    @Column(name = "shared")
+    private String shared;
+    @Size(max = 255)
+    @Column(name = "status")
+    private String status;
 
     public DashboardTemplate() {
     }
@@ -94,20 +108,28 @@ public class DashboardTemplate implements Serializable {
         this.agencyId = agencyId;
     }
 
-    public Account getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Account accountId) {
-        this.accountId = accountId;
-    }
-
     public VbUser getUserId() {
         return userId;
     }
 
     public void setUserId(VbUser userId) {
         this.userId = userId;
+    }
+
+    public String getShared() {
+        return shared;
+    }
+
+    public void setShared(String shared) {
+        this.shared = shared;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
@@ -134,5 +156,25 @@ public class DashboardTemplate implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.DashboardTemplate[ id=" + id + " ]";
     }
-    
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<TemplateTabs> getTemplateTabsCollection() {
+        return templateTabsCollection;
+    }
+
+    public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
+        this.templateTabsCollection = templateTabsCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyProduct> getAgencyProductCollection() {
+        return agencyProductCollection;
+    }
+
+    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
+        this.agencyProductCollection = agencyProductCollection;
+    }
+
 }

@@ -1,46 +1,153 @@
 
 <style>
-    .popover {
-        width: 304px;
-        max-width: 100%;
+    .select-template {
+        float: left;
+        height: 52px;
+        padding: 0;
+        margin-top: 0px;
+        width: 180px;
     }
+
+    .selectize-control > .selectize-dropdown {
+        width: 100%;
+        overflow: hidden;
+        clear: both;
+        position: relative;
+        top: 0px !important;
+        z-index: 9999;
+    }
+
+    .selectize-dropdown [data-selectable], .selectize-dropdown .optgroup-header {
+        padding: 1px 0px;
+        position: relative;
+        z-index: 9999;
+    }
+    .saveTemplate{
+        min-width: 30px !important;
+    }
+    input.templateInput{
+        margin-top: 5px !important;
+        padding: 0px 2px!important;
+    }
+    /*    .select2-container {
+            width: 172px !important;
+            cursor: pointer;
+            z-index: 99999;
+        }*/
+
+    .select-template .selectize-dropdown {
+        height: 60px;
+        overflow-y: scroll;
+        z-index: 9999;
+        position: relative;
+    }
+
+
 </style>
-<div ng-controller="UiController">
+<div>
     <div class="normalheader transition animated fadeIn">
         <div class="hpanel">
             <div class="panel-body header-title">
-<!--                <div id="hbreadcrumb" class="pull-right">
-                    <div class="col-sm-11">
-                        <div class="col-sm-5">
-                            <button class="btn btn-default btn-xs" ns-popover=""
-                                    ns-popover-template="popover"
-                                    ns-popover-trigger="click"
-                                    ns-popover-placement="bottom"
-                                    ns-popover-theme="ns-popover-tooltip-theme" 
-                                    ns-popover-timeout="1000" 
-                                    ns-popover-hide-on-inside-click="false" 
-                                    ns-popover-hide-on-outside-click="true" 
-                                    ns-popover-hide-on-button-click="true" ng-click="getTemplateId()">
-                                SaveAsTemplate
-                            </button>
+                <div id="hbreadcrumb" class="pull-right">
+                    <!--                        <div class="col-sm-5">
+                                                        <button class="btn btn-default btn-xs" ns-popover=""
+                                                                ns-popover-template="popover"
+                                                                ns-popover-trigger="click"
+                                                                ns-popover-placement="bottom"
+                                                                ns-popover-theme="ns-popover-tooltip-theme" 
+                                                                ns-popover-timeout="1000" 
+                                                                ns-popover-hide-on-inside-click="false" 
+                                                                ns-popover-hide-on-outside-click="true" 
+                                                                ns-popover-hide-on-button-click="true" ng-click="getTemplateId();">
+                                                            SaveAsTemplate
+                                                        </button>
+                                                    </div>-->
+                    <div class="col-sm-12" ng-if="isAdmin != 'admin'">
+
+                        <div class="form-group select-template">
+                            <ui-select ng-model="selectTemplate.selected" on-select="getTemplateById(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize">
+                                <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
+                                <ui-select-choices repeat="template in templates | filter: $select.search">
+                                    <span ng-bind-html="template.templateName | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <ui-select ng-model="selectAccount.selected" on-select="getTemplateId(selectTemplate.selected); loadNewUrl()" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                                    <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
-                                    <ui-select-choices repeat="template in templates | filter: $select.search">
-                                        <span ng-bind-html="template.templateId.templateName | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
+
+                        <!--                                                <div class="col-sm-4">
+                                                                            <div class="form-group select-template">
+                                                                                <select  ui-select2  ng-model="selectTemplate.selected"  
+                                                                                         ng-options ="template as template.templateName for template in templates" 
+                                                                                         ng-change="getTemplateById(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" 
+                                                                                         theme="selectize" placeholder="Select Template">
+                                                                                    <option></option>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>-->
+
+                        <!--<div class="col-sm-8">-->
+                        <div class="btn-group pull-right">
+                            <!--<button type="button" class="btn btn-default btn-xs" ng-click="updateTemplate(template)">Save</button>-->
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu" style="width:20px;padding:5px 5px ! important">
+                                <!--<div class="col-sm-2">-->
+                                <input  type="text" ng-model="template.templateName"  class="form-control" style="padding: 2px 12px !important;">
+                                <button class="btn btn-success btn-xs saveButton" ng-click="saveTemplate(template);">SaveAs</button>
+                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getUserTemplate()">Manage</button>
+                                <!--</div>-->
+                                <!--<li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Separated link</a></li>-->
                             </div>
                         </div>
+
+                        <!--</div>-->
                     </div>
-                </div>-->
+
+                </div>
                 <h2 class="font-bold m-b-xs">
                     {{dashboardName}}
                 </h2> 
 
             </div>
+        </div>
+    </div>
+    <div id="myModal" class="modal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Manage Templates</h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <table class="table table-bordered table-responsive table-scheduler">
+                            <thead>
+                                <tr>
+                                    <th>Template Name</th>
+                                    <th>Share Template</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="agencyTemplate in agencyTemplates">
+                                    <td >{{agencyTemplate.templateName}}</td>
+                                    <td><input type="checkbox" ng-model="agencyTemplate.shared" ng-true-value="1" ng-false-value="0" ng-change="shareUser(agencyTemplate)"></td>
+                                    <td><button class="btn btn-default btn-xs" ng-click="deleteUserTemplate(agencyTemplate, $index)"><i class="fa fa-trash"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
         </div>
     </div>
     <section class="content">
@@ -50,12 +157,13 @@
                     <ul class="nav nav-tabs">
                         <li ng-repeat="tab in tabs" ui-sref-active="active" ng-dblclick="startEditing(tab);" ng-drop="true" ng-drop-success="onDropTabComplete($index, $data,$event)">
                             <a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">
+                                <!--<a class="active" ng-drag="true" ng-drag-data="tab" ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, tabId: tab.id})">-->
                                 <span ng-hide="tab.editing">{{tab.tabName}}</span>
                                 <form ng-submit="doneEditing(tab)" ng-show="tab.editing">
                                     <input class="form-control" ng-model="tab.tabName" ng-blur="doneEditing(tab)" ng-focus="tab == editedItem">
                                 </form>
                             </a>
-                            <button ng-if="permission.deleteTab === true;" class="close closeTab" data-toggle="modal" data-target="#deleteTabModal{{tab.id}}" type="button">×</button>
+                            <button ng-if="(permission.deleteTab === true) && (templateUserId === userId)" class="close closeTab" data-toggle="modal" data-target="#deleteTabModal{{tab.id}}" type="button">×</button>
 
                             <div class="modal hmodal-success" id="deleteTabModal{{tab.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog">
@@ -77,7 +185,7 @@
                                     </div>
                                 </div>
                             </div>
-                        <li ng-if="permission.addTab === true;" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> Add Tab</li> 
+                        <li ng-if="(permission.addTab === true) && (templateUserId === userId)" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> Add Tab</li> 
                         <div class="modal fade hmodal-success" id="tabModal" tabindex="-1" role="dialog"  aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -129,14 +237,12 @@
 <!--<script type="text/ng-template" id="popover">
     <div class="triangle"> </div>
     <div class="ns-popover-tooltip">
-  <form class="form-inline">
-  <ul>
-  <li class="input-group">
-      <input type="text" ng-model="tab.templateName" placeholder="Enter template name" class="form-control"/>
-      <button ng-if="!templateId" class="btn btn-success btn-sm" ng-click="saveTemplate(tab)">Save</button>
-      <button  ng-if="templateId" class="btn btn-success btn-sm" ng-click="saveTemplate(tab)">Update</button>
-  </li>
-  </ul>
-     </form>
-         </div>
+    <ul
+    <li>
+    <input type="text" ng-model="tab.templateName" placeholder="Enter template name" class="form-control"/>
+    <button ng-if="!templateId" class="btn btn-success btn-sm" ng-click="saveTemplate(tab);hidePopover();">Save</button>
+    <button  ng-if="templateId" class="btn btn-success btn-sm" ng-click="saveTemplate(tab);hidePopover();">Update</button>
+    </li>
+    </ul>
+    </div>
 </script>-->

@@ -36,4 +36,8 @@ public class SettingsService {
         return (Settings) settingsDao.update(settings);
     }
     
+    public List<Settings> getProperty(String property) {
+        return settingsDao.getProperty(property);
+    }
+    
 }

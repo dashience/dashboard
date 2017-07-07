@@ -24,6 +24,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -43,6 +45,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     ,@NamedQuery(name = "DashboardTabs.findByStatus", query = "SELECT d FROM DashboardTabs d WHERE d.status = :status")
     ,@NamedQuery(name = "DashboardTabs.findByTabOrder", query = "SELECT d FROM DashboardTabs d WHERE d.tabOrder = :tabOrder")})
 public class DashboardTabs implements Serializable {
+
+    @OneToMany(mappedBy = "tabId")
+    private Collection<TemplateTabs> templateTabsCollection;
 
     @OneToMany(mappedBy = "tabId")
     private Collection<TabWidget> tabWidgetCollection;
@@ -83,10 +88,7 @@ public class DashboardTabs implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
     private VbUser userId; 
-    @JoinColumn(name = "template_id", referencedColumnName = "id")
-    @ManyToOne
-    private DashboardTemplate templateId; 
-
+    
     public DashboardTabs() {
     }
 
@@ -190,14 +192,6 @@ public class DashboardTabs implements Serializable {
     public void setUserId(VbUser userId) {
         this.userId = userId;
     }
-
-    public DashboardTemplate getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(DashboardTemplate templateId) {
-        this.templateId = templateId;
-    }
     
     @Override
     public int hashCode() {
@@ -233,4 +227,14 @@ public class DashboardTabs implements Serializable {
 //    public void setTabWidgetCollection(Collection<TabWidget> tabWidgetCollection) {
 //        this.tabWidgetCollection = tabWidgetCollection;
 //    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<TemplateTabs> getTemplateTabsCollection() {
+        return templateTabsCollection;
+    }
+
+    public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
+        this.templateTabsCollection = templateTabsCollection;
+    }
 }

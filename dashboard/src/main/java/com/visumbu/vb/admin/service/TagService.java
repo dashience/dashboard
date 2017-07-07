@@ -97,8 +97,8 @@ public class TagService {
         return tagDao.getWidgetTagById(tagId);
     }
 
-    public List getWidgetTagByName(String tagName) {
-        return tagDao.getWidgetTagByName(tagName);
+    public List getWidgetTagByName(String tagName, VbUser vbUser) {
+        return tagDao.getWidgetTagByName(tagName, vbUser);
     }
 
     public WidgetTag deleteWidgetTag(Integer widgetTagId) {
