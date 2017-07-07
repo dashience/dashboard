@@ -1477,8 +1477,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             queryData: '@',
         },
         link: function (scope, element, attr) {
-            console.log(scope.queryData);
-            console.log(typeof (scope.queryData));
             scope.columns = scope.queryData;
             var jsonFilter = null;
             var columnList = null;

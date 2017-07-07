@@ -376,9 +376,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
 
-        var setProductSegment = widget.productSegment
-        var setTimeSegment = widget.timeSegment
-        var setNetworkType = widget.networkType
+
+        var setProductSegment;
+        var setTimeSegment;
+        var setNetworkType;
+
+        if (widget.productSegment && widget.productSegment.type) {
+            setProductSegment = widget.productSegment.type;
+        } else {
+            setProductSegment = widget.productSegment;
+        }
+
+        if (widget.timeSegment && widget.timeSegment.type) {
+            setTimeSegment = widget.timeSegment.type;
+        } else {
+            setTimeSegment = widget.timeSegment;
+        }
+
+        if (widget.networkType && widget.networkType.type) {
+            setNetworkType = widget.networkType.type;
+        } else {
+            setNetworkType = widget.networkType;
+        }
 
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
@@ -1134,12 +1153,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.addDerived = function () {
         $scope.dataSetColumn = "";
         $scope.showDerived = true;
-        $scope.text="";
+        $scope.text = "";
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
-        $scope.text="";
+        $scope.text = "";
     };
     //Edit Derived
     $scope.editDerivedColumn = function (collectionField, widgetObj) {
@@ -1165,14 +1184,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widgetId: widgetObj.id
             };
             $scope.dataSetColumn = data;
-            $scope.text=collectionField.expression;
+            $scope.text = collectionField.expression;
         }
     };
     //Save DerivedColumn
-    $scope.saveDerivedColumn = function (dataSetColumn, widget,text) {
+    $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
         console.log(dataSetColumn);
         console.log(widget);
-        $scope.text=text;
+        $scope.text = text;
         $scope.collectionField = {};
         var dataSetColumnData = {
             functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
@@ -1234,7 +1253,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
-        $scope.text="";
+        $scope.text = "";
     };
 
     //check FieldName
@@ -1252,7 +1271,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
-    $scope.text="";
+    $scope.text = "";
     //Auto Complete
     $scope.config = {
         autocomplete: [
