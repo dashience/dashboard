@@ -70,6 +70,9 @@ public class DataSetColumns implements Serializable {
     @Column(name = "status")
     private String status;
     @Size(max = 255)
+    @Column(name = "delete_status")
+    private String deleteStatus;
+    @Size(max = 255)
     @Column(name = "display_format")
     private String displayFormat;
     @Size(max = 255)
