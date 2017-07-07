@@ -1036,7 +1036,7 @@ textarea.sa-realArea {
                                        on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
                                        on-remove="removedByY1Column(widgetObj, $item, y1Column)">
                                 <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="y1axis in collectionFields | filter:$select.search">
+                                <ui-select-choices repeat="y1axis in columnY1Axis | filter:$select.search">
                                     {{y1axis.displayName}}
                                 </ui-select-choices>
                             </ui-select>
@@ -1049,7 +1049,7 @@ textarea.sa-realArea {
                                        on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
                                        on-remove="removedByY2Column(widgetObj, $item, y2Column)">
                                 <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
+                                <ui-select-choices repeat="y2axis in columnY2Axis  | filter:$select.search">
                                     {{y2axis.displayName}}
                                 </ui-select-choices>
                             </ui-select>
