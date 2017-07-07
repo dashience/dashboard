@@ -95,7 +95,7 @@
                                 <!--<div class="col-sm-2">-->
                                 <input  type="text" ng-model="template.templateName"  class="form-control" style="padding: 2px 12px !important;">
                                 <button class="btn btn-success btn-xs saveButton" ng-click="saveTemplate(template);">SaveAs</button>
-                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getAgencyTemplate()">Manage</button>
+                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getUserTemplate()">Manage</button>
                                 <!--</div>-->
                                 <!--<li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li>
                                 <li><a href="#">Something else here</a></li>
@@ -121,8 +121,7 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Templates</h4>
+                    <h4 class="modal-title">Manage Templates</h4>
                 </div>
                 <div class="modal-body">
                     <div>
