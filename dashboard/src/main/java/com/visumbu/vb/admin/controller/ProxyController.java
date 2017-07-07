@@ -173,18 +173,18 @@ public class ProxyController {
             }
         }
 
-//        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
-//            try {
-//                System.out.println("with joinDataSet");
-//                Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
-//                returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
-//            } catch (NumberFormatException e) {
-//
-//            }
-//        } else {
-//            System.out.println("without joinDataSet");
-        returnMap = getData(valueMap, request, response);
-//        }
+        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
+            try {
+                System.out.println("with joinDataSet");
+                Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
+                returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
+            } catch (NumberFormatException e) {
+
+            }
+        } else {
+            System.out.println("without joinDataSet");
+            returnMap = getData(valueMap, request, response);
+        }
         System.out.println("returnMappppp -----> " + returnMap);
 
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
