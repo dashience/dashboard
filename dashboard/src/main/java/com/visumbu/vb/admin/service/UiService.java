@@ -434,7 +434,7 @@ public class UiService {
         System.out.println("widgetTags ---> " + widgetTags);
         DataSet dataSet = tabWidgetBean.getDataSetId();
         System.out.println("datasetId --> " + dataSet.getId());
-        List<DataSetColumns> dataSetColumns = uiDao.getDataSetColumnsByWidgetId(dataSet.getId(), widgetId);
+        List<DataSetColumns> dataSetColumns = uiDao.getDataSetColumn(dataSet.getId(), widgetId);
         System.out.println("dataSetColumns --> " + dataSetColumns);
         for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
             WidgetColumn widgetColumnBean = iterate.next();
@@ -1088,12 +1088,10 @@ public class UiService {
         uiDao.saveOrUpdate(dashboardTemplate);
 
         String[] tabs = template.getTabIds().split(",");
-        System.out.println("DashboardTemplate Id ---> " + dashboardTemplate.getId());
         uiDao.deleteTemplateTabs(dashboardTemplate.getId());
         for (int i = 0; i < tabs.length; i++) {
             String tabIdStr = tabs[i];
             Integer tabId = Integer.parseInt(tabIdStr);
-            System.out.println("tabId ---> " + tabId);
             // DashboardTabs dashboardTab = uiDao.getTabById(tabId);
             DashboardTabs duplicateTab = duplicateTab(tabId, userId);
             TemplateTabs templateTab = new TemplateTabs();

@@ -668,14 +668,6 @@ public class UiDao extends BaseDao {
         query.setParameter("userId", userId);
         return query.list();
     }
-    
-    public List<DataSetColumns> getDataSetColumnsByWidgetId(Integer dataSetId, Integer widgetId) {
-        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :dataSetId and d.widgetId.id = :widgetId)";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("dataSetId", dataSetId);
-        query.setParameter("widgetId", widgetId);
-        return query.list();
-    }
 
     public List<Currency> getCurrenciesTypes() {
         String queryStr = "SELECT c FROM Currency c";
