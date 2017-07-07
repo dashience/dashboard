@@ -138,14 +138,13 @@
         width: 76px;
         font-size: 14px;
         white-space: normal;
-        letter-spacing: 0.5px;
-        font-family: 'enigmaticregular';
-        font-weight: normal !important;
+        font-family: "proxima_nova_rgregular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        font-weight: 600 !important;
     }
     .previewChart {
         border-radius: 5px;
         border: none;
-        font-size: 30px;
+        font-size: 15px;
         padding: 20px;
         color: #99a5aa;
         line-height: 1px;
@@ -154,6 +153,9 @@
     .fa.typeChart {
         border: 1px solid gainsboro;
         padding: 1vw;
+        width: 40px;
+        height: 40px;
+
     }
     .chart{
         display: block;
@@ -340,6 +342,10 @@
                                         </span>
                                     </a>
                                 </div>
+                                <div>
+                                    <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
+                                    <label>All Account</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -409,21 +415,21 @@
                     <div class="input-group"> <span class="input-group-addon btnAddon3">Metrics</span>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
-                                <button class="btn btn-success" 
+                                <button class="btn btn-success btn-color" 
                                         ng-click="showListOfColumns()">
                                     Choose Columns
                                 </button>
-                                <button class="btn btn-default" 
+                                <button class="btn btn-default btn-color" 
                                         ng-click="showFilterList()">
                                     Filter
                                 </button>
-                                <button class="btn btn-success" 
+                                <button class="btn btn-success btn-color" 
                                         ng-click="showSortingColumn()">
                                     Sort
                                 </button>
                             </div>
                             <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
-                                <button class="btn btn-success" 
+                                <button class="btn btn-success btn-color" 
                                         ng-click="showEditor()">
                                     Show Editor
                                 </button>
@@ -439,7 +445,7 @@
                     <div class="input-group"> <span class="input-group-addon btnAddon4">Date Range</span>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12"> 
-                                <button class="btn btn-success" ng-click="showDateDurations()">Date Range</button>
+                                <button class="btn btn-success btn-color" ng-click="showDateDurations()">Date Range</button>
                             </div>
                         </div>
                     </div>
@@ -447,21 +453,20 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8">
-                <div class="form-group">
-                    <button class="btn btn-info" id="btn-save" 
+            <div class="col-md-11">
+                <div class="form-group pull-right">
+                    <button class="btn btn-info btn-color" id="btn-save" 
                             ng-click="save(widgetObj)">
                         <i class="fa fa-save"></i> Save
                     </button>
-                    <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default" 
+                    <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default btn-color" 
                             ng-click="showPreview(widgetObj)">Preview
                     </button>
-                    <button class="btn btn-default" id="btn-cancel" 
+                    <button class="btn btn-default btn-color" id="btn-cancel" 
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
-                    <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
-                    <label>All Account</label>
+
                 </div>
             </div>
         </div>
@@ -525,7 +530,7 @@
                             <label>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
-                                      ng-model="dataSetColumn.expression" 
+                                      ng-model="text" 
                                       ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
                         </div>
@@ -545,7 +550,7 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
+                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj,text)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>

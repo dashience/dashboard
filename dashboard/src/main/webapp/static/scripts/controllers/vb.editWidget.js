@@ -1,4 +1,4 @@
-app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state,$rootScope) {
+app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state, $rootScope) {
 //    $scope.editWidgetData = []
 //    $scope.permission = localStorageService.get("permission");
 //    $scope.accountId = $stateParams.accountId;
@@ -1343,7 +1343,7 @@ app.directive('widgetPreviewTable', function ($http, $stateParams, $state, order
                     width: widget.width,
                     jsonData: scope.jsonRules ? scope.jsonRules : null,
                     queryFilter: scope.queryFilter ? scope.queryFilter : null,
-                    accountId: widget.accountId?widget.accountId.id:null
+                    accountId: widget.accountId ? widget.accountId.id : null
                 };
 //                console.log(data)
                 $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -1477,9 +1477,17 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             queryData: '@',
         },
         link: function (scope, element, attr) {
+            console.log(scope.queryData);
+            console.log(typeof (scope.queryData));
             scope.columns = scope.queryData;
-            var jsonFilter = JSON.parse(scope.queryData);
-            var columnList = JSON.parse(scope.queryData);
+            var jsonFilter = null;
+            var columnList = null;
+            if (scope.queryData) {
+                jsonFilter = JSON.parse(scope.queryData);
+                columnList = JSON.parse(scope.queryData);
+            } else {
+                return;
+            }
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
                 var typeOfValue = value.type ? value.type : value.fieldType;
@@ -1496,6 +1504,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 }
                 filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
             });
+
             scope.buildQuery = filterList;
             if (jsonFilter.jsonData != null) {
                 scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
