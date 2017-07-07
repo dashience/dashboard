@@ -577,7 +577,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
         $scope.showDateRange = false;
-        $scope.xColumn= "";
+        $scope.xColumn = "";
         $scope.y1Column = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
@@ -1364,136 +1364,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         ]
     };
 
-//    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
-//        $scope.tableColumns = [];
-//        console.log(dataSetColumn);
-//        console.log(widget);
-//        console.log($scope.tableColumns)
-//        console.log($scope.collectionFields);
-//        $http.get("admin/ui/getDataSetColumnsByDataSetId/" + widget.dataSetId.id).success(function (resp) {
-//            console.log(resp);
-//            if (resp == "" || resp == null) {
-//                angular.forEach($scope.collectionFields, function (val, key) {
-//                    var data = {
-//                        agregationFunction: val.agregationFunction,
-//                        functionName: val.functionName,
-//                        groupPriority: val.groupPriority,
-//                        id: null,
-//                        sortOrder: val.sortOrder,
-//                        sortPriority: val.sortPriority,
-//                        status: val.status,
-//                        expression: val.expression,
-//                        fieldType: val.type,
-//                        fieldName: val.fieldName,
-//                        displayName: val.displayName,
-//                        userId: val.userId,
-//                        widgetId:val.widgetId,
-////            baseField: dataSetColumn.baseField,
-//                        displayFormat: val.displayFormat
-////            columnName: dataSetColumn.columnName,
-////            dateRangeName: dataSetColumn.dateRangeName,
-////            customStartDate: scope.customStartDate,
-////            customEndDate: scope.customEndDate,
-////            lastNdays: dataSetColumn.lastNdays,
-////            lastNweeks: dataSetColumn.lastNweeks,
-////            lastNmonths: dataSetColumn.lastNmonths,
-////            lastNyears: dataSetColumn.lastNyears
-//                    };
-//                    $scope.tableColumns.push(data);
-//
-//                });
-//            } else {
-//                angular.forEach(resp, function (value, key) {
-//                    angular.forEach($scope.collectionFields, function (val, key) {
-//                        if (value.fieldName === val.fieldName) {
-//                            var data = {
-//                                agregationFunction: value.agregationFunction,
-//                                functionName: value.functionName,
-//                                groupPriority: value.groupPriority,
-//                                id: value.id,
-//                                sortOrder: value.sortOrder,
-//                                sortPriority: value.sortPriority,
-//                                status: value.status,
-//                                expression: value.expression,
-//                                fieldType: value.fieldType,
-//                                fieldName: value.fieldName,
-//                                displayName: value.displayName,
-//                                userId: value.userId,
-//                                widgetId: value.widgetId,
-////            baseField: dataSetColumn.baseField,
-//                                displayFormat: value.displayFormat
-////            columnName: dataSetColumn.columnName,
-////            dateRangeName: dataSetColumn.dateRangeName,
-////            customStartDate: scope.customStartDate,
-////            customEndDate: scope.customEndDate,
-////            lastNdays: dataSetColumn.lastNdays,
-////            lastNweeks: dataSetColumn.lastNweeks,
-////            lastNmonths: dataSetColumn.lastNmonths,
-////            lastNyears: dataSetColumn.lastNyears
-//                            };
-//                            $scope.tableColumns.push(data);
-//                        }
-//                    });
-//
-//                });
-//            }
-//            ;
-//            console.log($scope.tableColumns);
-//
-//            var dataSetColumnData = {
-//                functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
-//                id: dataSetColumn.id ? dataSetColumn.id : null,
-//                sortPriority: dataSetColumn.sortPriority ? dataSetColumn.sortPriority : null,
-//                status: dataSetColumn.status ? dataSetColumn.status : null,
-//                expression: dataSetColumn.expression,
-//                fieldName: dataSetColumn.fieldName,
-//                displayName: dataSetColumn.fieldName,
-//                fieldType: dataSetColumn.fieldType,
-//                tableColumns: $scope.tableColumns,
-//                dataSetId: widget.dataSetId.id,
-//                widgetId: widget.id,
-////            baseField: dataSetColumn.baseField,
-//                displayFormat: dataSetColumn.displayFormat
-////            columnName: dataSetColumn.columnName,
-////            dateRangeName: dataSetColumn.dateRangeName,
-////            customStartDate: scope.customStartDate,
-////            customEndDate: scope.customEndDate,
-////            lastNdays: dataSetColumn.lastNdays,
-////            lastNweeks: dataSetColumn.lastNweeks,
-////            lastNmonths: dataSetColumn.lastNmonths,
-////            lastNyears: dataSetColumn.lastNyears
-//            };
-//            console.log(dataSetColumnData);
-//
-//
-////            $http({method: 'POST', url: 'admin/ui/createWidgetColumn', data: dataSetColumnData}).success(function (response) {
-////                console.log(response);
-////                var count = 0;
-////                angular.forEach($scope.collectionFields, function (value, key) {
-////                    if (value.id === response.id) {
-////                        console.log($scope.collectionFields.indexOf(dataSetColumnData.fieldName))
-//////                        columnHeaderDef
-////                        count = 1;
-////                        if (value.id == dataSetColumnData.id) {
-////                            value.fieldName = dataSetColumn.fieldName;
-//////                           value.displayName = dataSetColumn.displayName;
-////                        }
-////                    }
-////                });
-////                $scope.collectionFields;
-////                if (count == 0) {
-////                    $scope.collectionFields.push(response);
-////                }
-////                $scope.tableColumns.push(response);
-//                console.log($scope.collectionFields);
-//                $scope.showDerived = false;
-//                $scope.dataSetColumn = "";
-//            });
-//            $scope.dataSetColumn = "";
-//            // $scope.collectionField.fieldName = dataSetColumnData.fieldName;
-//
-//        });
-//    };
     $scope.save = function (widget) {
         if (widget.chartType != 'text') {
             if ($('.query-builder').queryBuilder('getRules')) {
