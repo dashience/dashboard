@@ -1145,6 +1145,11 @@ public class UiService {
 //        dataSetColumn.setFieldType(widgetColumn.getFieldType());
 //        return dataSetColumn;
 //    }
+    
+    public List<DataSetColumns> getDataSetColumns(Integer datasetId, Integer widgetId) {
+        return uiDao.getDataSetColumn(datasetId, widgetId);
+    }
+    
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
         DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId, widgetId);
         if (column == null) {

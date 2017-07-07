@@ -173,19 +173,23 @@ public class ProxyController {
             }
         }
 
-        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
-            try {
-                System.out.println("with joinDataSet");
-                Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
-                returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
-            } catch (NumberFormatException e) {
-
-            }
-        } else {
-            System.out.println("without joinDataSet");
-            returnMap = getData(valueMap, request, response);
-        }
+//        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
+//            try {
+//                System.out.println("with joinDataSet");
+//                Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
+//                returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
+//            } catch (NumberFormatException e) {
+//
+//            }
+//        } else {
+//            System.out.println("without joinDataSet");
+        returnMap = getData(valueMap, request, response);
+//        }
         System.out.println("returnMappppp -----> " + returnMap);
+
+        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
+
+        updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt);
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
@@ -197,7 +201,7 @@ public class ProxyController {
             returnMap.put("data", dataWithDerivedColumns);
         }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
-        System.out.println("returnMap ----> " + returnMap);
+        System.out.println("returnMap 1234 ----> " + returnMap);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
             String queryFilter = null;
             widgetIdInt = Integer.parseInt(widgetIdStr);
@@ -216,10 +220,11 @@ public class ProxyController {
             dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
         }
         if (fieldsOnly != null) {
-            return dataMap;
+            // return dataMap;
         }
         System.out.println("FieldsOnly ---> " + fieldsOnly);
         dataMap.put("data", returnMap.get("data"));
+        dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
         return dataMap;
     }
 
@@ -235,6 +240,24 @@ public class ProxyController {
             column.setWidgetId(dataSetColumn.getWidgetId());
             columnDef.add(column);
         }
+        List<DataSetColumns> dataSetColumns = uiService.getDataSetColumns(dataSetId, widgetId);
+        for (Iterator<DataSetColumns> iterator = dataSetColumns.iterator(); iterator.hasNext();) {
+            DataSetColumns dataSetColumn = iterator.next();
+            if (checkIsDerivedExpr(dataSetColumn) || checkIsDerivedFunction(dataSetColumn)) {
+                continue;
+            }
+            boolean exist = false;
+            for (Iterator<ColumnDef> iterator1 = columnDefObject.iterator(); iterator1.hasNext();) {
+                ColumnDef column = iterator1.next();
+                if (column.getFieldName().equalsIgnoreCase(dataSetColumn.getFieldName())) {
+                    exist = true;
+                }
+            }
+            if (!exist) {
+                uiService.deleteDataSetColumns(dataSetColumn.getId());
+            }
+        }
+
         System.out.println("columnDef ---> " + columnDef);
         return columnDef;
     }
@@ -716,7 +739,7 @@ public class ProxyController {
         System.out.println("dataaaaa ------------> " + data);
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
-            Map<String, Object> returnDataMap = new HashMap<>();
+            Map<String, Object> returnDataMap = dataMap;
             for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
                 DataSetColumns dataSetColumn = iterator1.next();
                 boolean isDerivedColumn = checkIsDerivedFunction(dataSetColumn);
@@ -777,10 +800,9 @@ public class ProxyController {
 
     public static Map<String, Object> addDerivedColumnsExpr(List<DataSetColumns> dataSetColumns, Map<String, Object> data) {
         System.out.println("Daaaaaaaaaaaaaaata ----> " + data);
-        Map<String, Object> returnMap = new HashMap<>();
+        Map<String, Object> returnMap = data;
         for (Iterator<DataSetColumns> iterator = dataSetColumns.iterator(); iterator.hasNext();) {
             DataSetColumns dataSetColumn = iterator.next();
-//            System.out.println("dataSetColumn --> " + dataSetColumn);
             boolean isDerivedColumn = checkIsDerivedExpr(dataSetColumn);
             if (isDerivedColumn) {
                 if (dataSetColumn.getExpression() != null) {
@@ -1203,12 +1225,12 @@ public class ProxyController {
             if (widgetProductSegment == null || widgetProductSegment.isEmpty() || widgetProductSegment.equalsIgnoreCase("null") || widgetProductSegment.equalsIgnoreCase("none")) {
                 productSegment = null;
             } else if (widgetProductSegment != null || !widgetProductSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("null") || !widgetProductSegment.equalsIgnoreCase("none") || !widgetProductSegment.equalsIgnoreCase("undefined")) {
-                productSegment = widgetProductSegment;
+                productSegment = productSegment == null ? widgetProductSegment : productSegment;
             }
             if (widgetTimeSegment == null || widgetTimeSegment.isEmpty() || widgetTimeSegment.equalsIgnoreCase("null") || widgetTimeSegment.equalsIgnoreCase("none")) {
                 timeSegment = null;
             } else if (widgetTimeSegment != null || !widgetTimeSegment.isEmpty() || !widgetProductSegment.equalsIgnoreCase("null") || !widgetTimeSegment.equalsIgnoreCase("none") || !widgetTimeSegment.equalsIgnoreCase("undefined")) {
-                timeSegment = widgetTimeSegment;
+                timeSegment = timeSegment == null ? widgetTimeSegment : timeSegment;
             }
             if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
                 if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
@@ -1245,7 +1267,7 @@ public class ProxyController {
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
 
-        System.out.println("Adwords Data0 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
+        System.out.println("Adwords Data0 ===> " + timeSegment + " --- " + productSegment + " --- " + filter);
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
@@ -1261,22 +1283,22 @@ public class ProxyController {
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
                 filter = (filter == null || filter.isEmpty()) ? dataSet.getNetworkType() : filter;
-        System.out.println("Adwords Data1 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
+                System.out.println("Adwords Data1 ===> " + timeSegment + " --- " + productSegment + " --- " + filter);
             }
         }
-        System.out.println("Adwords Data2 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
+        System.out.println("Adwords Data2 ===> " + timeSegment + " --- " + productSegment + " --- " + filter);
         if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null") || timeSegment.equalsIgnoreCase("none"))) {
             timeSegment = null;
         }
-        System.out.println("Adwords Data3 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
+        System.out.println("Adwords Data3 ===> " + timeSegment + " --- " + productSegment + " --- " + filter);
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null") || productSegment.equalsIgnoreCase("none"))) {
             productSegment = null;
         }
-        System.out.println("Adwords Data4 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
+        System.out.println("Adwords Data4 ===> " + timeSegment + " --- " + productSegment + " --- " + filter);
         if (filter != null && (filter.isEmpty() || filter.equalsIgnoreCase("undefined") || filter.equalsIgnoreCase("null") || filter.equalsIgnoreCase("none"))) {
             filter = null;
         }
-        System.out.println("Adwords Data5 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
+        System.out.println("Adwords Data5 ===> " + timeSegment + " --- " + productSegment + " --- " + filter);
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
@@ -1310,7 +1332,7 @@ public class ProxyController {
                 }
             }
         }
-        System.out.println("Adwords Data5 ===> " +  timeSegment + " --- " + productSegment + " --- " + filter);
+        System.out.println("Adwords Data5 ===> " + timeSegment + " --- " + productSegment + " --- " + filter);
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
