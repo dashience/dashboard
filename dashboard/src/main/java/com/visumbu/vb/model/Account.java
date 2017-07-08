@@ -58,6 +58,19 @@ public class Account implements Serializable {
     @Size(max = 255)
     @Column(name = "geo_location")
     private String geoLocation;
+    
+    @Size(max = 255)
+    @Column(name = "group_name")
+    private String groupName;
+    
+    @Size(max = 255)
+    @Column(name = "latitude")
+    private Integer Latitude;
+    
+    @Size(max = 255)
+    @Column(name = "longitude")
+    private Integer Longitude;
+    
     @Size(max = 255)
     @Column(name = "email_id")
     private String emailId;
@@ -134,7 +147,30 @@ public class Account implements Serializable {
     public void setLogo(String logo) {
         this.logo = logo;
     }   
-    
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Integer getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(Integer Latitude) {
+        this.Latitude = Latitude;
+    }
+
+    public Integer getLongitude() {
+        return Longitude;
+    }
+
+    public void setLongitude(Integer Longitude) {
+        this.Longitude = Longitude;
+    }
 
     @Override
     public int hashCode() {

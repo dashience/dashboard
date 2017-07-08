@@ -44,46 +44,72 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
     $scope.product = [];
     $scope.selectAccount = {};
-
+    $scope.selectedAccounts = [];
+    $scope.accounts = [];
     $http.get('admin/ui/userAccountByUser').success(function (response) {
         if (!response[0]) {
             return;
         }
         $scope.accounts = response;
-        $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
-        $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-        angular.forEach($scope.accounts, function (value, key) {
-            if (value.accountId.id == $stateParams.accountId) {
-                $scope.name = value;
-            }
-        });
-        $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        $scope.accountLogo = $scope.name.accountId.logo;
-        if (!$scope.name.userId.agencyId) {
-            $scope.loadNewUrl()
-            return;
+        var getAllAccounts = response;
+        if (response) {
+            $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
+            $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
+            var accountName = $stateParams.accountName;//$stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
+            getAgencyProduct(response[0].userId.agencyId.id);
+            $scope.selectedAccounts.push(response[0]);
+            $scope.selectedAccountCount = $scope.selectedAccounts.length;
+//            var getGroupNames = []
+            $scope.accounts.forEach(function (val, key) {
+                if (val.accountId.accountName === accountName) {
+                    val.select = true;
+                }
+//                $scope.accounts.push({groupName: val.accountId.groupName, 
+//                    groupAccount: [{id: val.id, select: val.select, userId: val.userId, accountId: val.accountId}], 
+//                    status: val.status});
+                //console.log($scope.accounts)  
+            });
         }
-        getAgencyProduct($scope.name.userId.agencyId.id);
     });
 
-    $scope.getAccountId = function (account) {
-        if ($stateParams.accountId != account.accountId.id) {
-            $stateParams.tabId = 0;
-            $stateParams.templateId = 0;
-        }
-        if (account.accountId.logo) {
-            $scope.accountLogo = account.accountId.logo;
+    $scope.getSelectedAccounts = function (account) {
+        if (account.select == true) {
+            $scope.selectedAccounts.push(account)
         } else {
-            $scope.accountLogo = "";
+            var getSelectedAccountIndex = $scope.selectedAccounts.indexOf(account);
+            $scope.selectedAccounts.splice(getSelectedAccountIndex, 1);
         }
-        $stateParams.accountId = account.accountId.id;
-        $scope.selectAccount.selected = {accountName: account.accountId.accountName};
-        $stateParams.accountName = account.accountId.accountName;
-        $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
-            $stateParams.templateId = response.id;
-            $scope.loadNewUrl();
-        });
+        $scope.selectedAccountCount = $scope.selectedAccounts.length;
     };
+
+    $scope.goToSearchByAccountId = function () {
+        var getSelectedAccount = $scope.selectedAccounts.map(function (val, key) {
+            if (val) {
+                return val.accountId.id;
+            }
+        }).join(',');
+        $stateParams.accountId = getSelectedAccount;
+        $scope.loadNewUrl();
+    };
+
+//    $scope.getAccountId = function (account) {
+//        if ($stateParams.accountId != account.accountId.id) {
+//            $stateParams.tabId = 0;
+//            $stateParams.templateId = 0;
+//        }
+//        if (account.accountId.logo) {
+//            $scope.accountLogo = account.accountId.logo;
+//        } else {
+//            $scope.accountLogo = "";
+//        }
+//        $stateParams.accountId = account.accountId.id;
+//        $scope.selectAccount.selected = {accountName: account.accountId.accountName};
+//        $stateParams.accountName = account.accountId.accountName;
+//        $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
+//            $stateParams.templateId = response.id;
+//            $scope.loadNewUrl();
+//        });
+//    };
 
     function getAgencyProduct(agencyId) {
         $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
@@ -96,7 +122,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             }
             var getTemplateId = response[0].templateId ? response[0].templateId.id : 0
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
-            var templateId=$stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+            var templateId = $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
 //            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
 //                templateId = response.id;
 //            });
@@ -623,4 +649,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
         });
     });
+});
+app.filter('highlight', function () {
+    return function (text, phrase) {
+        return phrase
+                ? text.replace(new RegExp('(' + phrase + ')', 'gi'), '<kbd>$1</kbd>')
+                : text;
+    };
 });

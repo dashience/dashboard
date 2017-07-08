@@ -14,6 +14,18 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+    $scope.groups = [];
+    $scope.getGroup = function (search) {
+        var newGroups = $scope.groups.slice();
+//        for(var i = 0; i <= $scope.groups.length; i++){
+//            newGroups.push($scope.groups[i]);
+//        }
+        if (search && newGroups.indexOf(search) === -1) {
+            newGroups.unshift(search);
+           // $scope.groups;
+        }
+        return newGroups;
+    };
 
     $scope.account = {logo: "static/img/logos/deeta-logo.png"}; //Logo Upload
     $scope.imageUpload = function (event) {
@@ -53,7 +65,14 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     function getAccount() {
         $http.get('admin/user/account').success(function (response) {
             $scope.accounts = response;
-//            $scope.editAccount($scope.accounts[0], 0);
+            var keys = [];
+            $scope.accounts.forEach(function (val, key) {
+                var key = val.groupName;
+                if (keys.indexOf(key) === -1) {
+                    keys.push(key);
+                    $scope.groups.push(val.groupName);
+                }
+            });
         });
     }
     getAccount();
@@ -98,6 +117,9 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
             accountName: account.accountName,
             geoLocation: account.geoLocation,
             description: account.description,
+            latitude: account.latitude,
+            longitude: account.longitude,
+            groupName: account.groupName,
             agencyId: account.agencyId,
             logo: account.logo ? account.logo : "static/img/logos/deeta-logo.png"
         };
