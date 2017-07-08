@@ -13,6 +13,7 @@ import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
+import com.visumbu.vb.bean.UserAccountGroupBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
@@ -43,10 +44,12 @@ import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -194,8 +197,8 @@ public class UiService {
     public TabWidget saveTabWidget(Integer tabId, TabWidgetBean tabWidgetBean) {
         VbUser createByUserId = tabWidgetBean.getCreatedBy();
         Integer createByUserIdInt = null;
-        if(createByUserId!= null){
-         createByUserIdInt = createByUserId.getId();
+        if (createByUserId != null) {
+            createByUserIdInt = createByUserId.getId();
         }
         Integer currentUserId = tabWidgetBean.getTemplateUserId();
         System.out.println("createdBy---->" + createByUserIdInt);
@@ -778,6 +781,28 @@ public class UiService {
         return uiDao.getUserAccountByUser(user);
     }
 
+    public Collection<UserAccountGroupBean> getUserAccountByGroupForUser(VbUser user) {
+        List<UserAccount> userAccountList = uiDao.getUserAccountByUser(user);
+        Map<String, UserAccountGroupBean> userMap = new HashMap<>();
+        for (Iterator<UserAccount> iterator = userAccountList.iterator(); iterator.hasNext();) {
+            UserAccount userAccount = iterator.next();
+            Account account = userAccount.getAccountId();
+            UserAccountGroupBean accountGroupBean = userMap.get(account.getGroupName());
+            if (accountGroupBean == null) {
+                accountGroupBean = new UserAccountGroupBean();
+            }
+            List<Account> accounts = accountGroupBean.getAccounts();
+            if(accounts == null) {
+                accounts = new ArrayList<>();
+            }
+            accounts.add(account);
+            accountGroupBean.setGroupName(account.getGroupName());
+            accountGroupBean.setAccounts(accounts);
+            userMap.put(account.getGroupName(), accountGroupBean);
+        }
+        return userMap.values();
+    }
+
     public List<UserAccount> getUserAccountById(Integer userId) {
         return uiDao.getUserAccountById(userId);
     }
@@ -1190,9 +1215,8 @@ public class UiService {
 //        }
 //        return null;
 //    }
-
     public void deleteUserTemplate(Integer templateId) {
-         uiDao.deleteUserTemplate(templateId);
+        uiDao.deleteUserTemplate(templateId);
     }
 
     public DashboardTemplate updateSharedTemplateStatus(DashboardTemplate dashboardTemplate, Integer templateId) {

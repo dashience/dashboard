@@ -40,6 +40,7 @@ import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
+import com.visumbu.vb.bean.UserAccountGroupBean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyProduct;
@@ -60,6 +61,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -588,6 +590,15 @@ public class UiController extends BaseController {
             return null;
         }
         return uiService.getUserAccountByUser(user);
+    }
+    @RequestMapping(value = "getUserAccountByGroupForUser", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Collection<UserAccountGroupBean> getUserAccountByGroupForUser(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return uiService.getUserAccountByGroupForUser(user);
     }
 
     @RequestMapping(value = "userAccount/{userId}", method = RequestMethod.GET, produces = "application/json")
