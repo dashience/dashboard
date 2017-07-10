@@ -1455,6 +1455,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.productSegment = "";
         $scope.widgetObj.networkType = "";
 //        $scope.widgetObj.columns = "";
+        $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
@@ -1664,10 +1665,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
         });
+        $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
+        $scope.selectedChartType = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
