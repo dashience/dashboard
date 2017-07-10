@@ -4160,3 +4160,14 @@ label {
 /*.dropup, .dropdown {
     overflow: hidden;
 }*/
+
+
+span.add-title {
+    padding: 0px 18px;
+    margin: 5px 0px;
+    display: block;
+    font-size: 24px;
+    color: #333;
+    text-decoration: underline;
+    line-height: 32px;
+}
