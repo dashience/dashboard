@@ -387,9 +387,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
 
-        var setProductSegment = widget.productSegment
-        var setTimeSegment = widget.timeSegment
-        var setNetworkType = widget.networkType
+
+        var setProductSegment;
+        var setTimeSegment;
+        var setNetworkType;
+
+        if (widget.productSegment && widget.productSegment.type) {
+            setProductSegment = widget.productSegment.type;
+        } else {
+            setProductSegment = widget.productSegment;
+        }
+
+        if (widget.timeSegment && widget.timeSegment.type) {
+            setTimeSegment = widget.timeSegment.type;
+        } else {
+            setTimeSegment = widget.timeSegment;
+        }
+
+        if (widget.networkType && widget.networkType.type) {
+            setNetworkType = widget.networkType.type;
+        } else {
+            setNetworkType = widget.networkType;
+        }
 
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
@@ -411,6 +430,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
             var getWidgetColumns = widget.columns;
+
             $scope.collectionFields.forEach(function (value, k) {
                 var machField = $.grep(getWidgetColumns, function (b) {
                     return b.fieldName === value.fieldName;
@@ -1156,10 +1176,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.addDerived = function () {
         $scope.dataSetColumn = "";
         $scope.showDerived = true;
+        $scope.text = "";
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
+        $scope.text = "";
     };
     //Edit Derived
     $scope.editDerivedColumn = function (collectionField, widgetObj) {
@@ -1183,17 +1205,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widgetId: widgetObj.id
             };
             $scope.dataSetColumn = data;
+            $scope.text = collectionField.expression;
         }
     };
     //Save DerivedColumn
-    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
+    $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
+        $scope.text = text;
         $scope.collectionField = {};
         var dataSetColumnData = {
             functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
             id: dataSetColumn.id ? dataSetColumn.id : null,
             sortPriority: dataSetColumn.sortPriority ? dataSetColumn.sortPriority : null,
             status: dataSetColumn.status ? dataSetColumn.status : null,
-            expression: dataSetColumn.expression,
+            expression: $scope.text,
             fieldName: dataSetColumn.fieldName,
             displayName: dataSetColumn.fieldName,
             fieldType: dataSetColumn.fieldType,
@@ -1248,6 +1272,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
+        $scope.text = "";
     };
 
     //check FieldName
@@ -4040,16 +4065,12 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             var setData = [];
             var data = [];
             var funnelDataSource = JSON.parse(scope.funnelSource);
+            if (funnelDataSource) {
             var url = "admin/proxy/getData?";
             if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (funnelDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (funnelDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
+
             var dataSourcePassword;
             if (funnelDataSource.dataSourceId.password) {
                 dataSourcePassword = funnelDataSource.dataSourceId.password;
@@ -4057,9 +4078,11 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 dataSourcePassword = '';
             }
             var getWidgetObj = JSON.parse(scope.widgetObj);
+
             var setProductSegment;
             var setTimeSegment;
             var setNetworkType;
+
             if (getWidgetObj.productSegment && getWidgetObj.productSegment.type) {
                 setProductSegment = getWidgetObj.productSegment.type;
             } else {
@@ -4077,10 +4100,13 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             } else {
                 setNetworkType = getWidgetObj.networkType;
             }
+                console.log("funnel DataSource");
+                console.log(funnelDataSource);
             scope.refreshFunnel = function () {
                 $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + funnelDataSource.id +
                         "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
+                            "&userId=" + (funnelDataSource.userId ? funnelDataSource.userId.id : null) +
                         "&driver=" + funnelDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + funnelDataSource.reportName +
                         "&startDate=" + $stateParams.startDate +
@@ -4151,9 +4177,10 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                     function funnelArrayObjects(name, value) {
                         var funnelObject = [];
+                            var funnelColor=['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169'];
                         var len = name.length;
                         for (var i = 0; i < len; i++) {
-                            funnelObject.push([name[i], value[i]]);
+                                funnelObject.push([name[i], value[i],funnelColor[i]]);
                         }
                         return funnelObject;
                     }
@@ -4201,9 +4228,11 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 //                funnel.draw(element[0]);
                     });
                 });
-            };
+                }
+                ;
             scope.setFunnelFn({funnelFn: scope.refreshFunnel});
             scope.refreshFunnel();
+        }
         }
     };
 });

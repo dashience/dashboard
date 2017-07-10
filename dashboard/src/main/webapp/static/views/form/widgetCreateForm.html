@@ -476,7 +476,7 @@
                 <div ng-show="loadingColumnsGif" class="text-center">
                     <img ng-hide="afterLoadWidgetColumns" src="static/img/logos/loader.gif" width="40">
                 </div>
-                <div class="col-sm-6 form-left-side-menu-border">
+                <div class="col-sm-6 form-left-side-menu-border" ng-if="afterLoadWidgetColumns == true;">
                     <ul ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="list-group">
                         <li class="list-group-item justify-content-between" ng-repeat="collectionField in collectionFields">
                             <div class="checkbox">
@@ -525,7 +525,7 @@
                             <label>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
-                                      ng-model="dataSetColumn.expression" 
+                                          ng-model="text" 
                                       ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
                         </div>
@@ -545,7 +545,7 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
+                                        ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>
