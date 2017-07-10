@@ -194,7 +194,7 @@ public class UiController extends BaseController {
         Integer width = Integer.parseInt(request.getParameter("width"));
         return uiService.editWidgetSize(widgetId, width);
     }
-    
+
     @RequestMapping(value = "dbWidget/{tabId}", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     TabWidget updateTabWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId, @RequestBody TabWidgetBean tabWidget) {
@@ -730,7 +730,7 @@ public class UiController extends BaseController {
 
     @RequestMapping(value = "getDefaultTemplate/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    List<DashboardTemplate> getDefaultTemplate(HttpServletRequest request, HttpServletResponse response,@PathVariable Integer agencyId) {
+    List<DashboardTemplate> getDefaultTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
         return uiService.getDefaultTemplate(agencyId);
     }
 
@@ -746,21 +746,18 @@ public class UiController extends BaseController {
 //    DashboardTemplate shareDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate) {
 //        return uiService.shareDashboardTemplate(dashboardTemplate);
 //    }
-    
-     @RequestMapping(value = "updateTemplateStatus/{templateId}", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "updateTemplateStatus/{templateId}", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
-    DashboardTemplate updateSharedTemplateStatus(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate,@PathVariable Integer templateId) {
-        return uiService.updateSharedTemplateStatus(dashboardTemplate,templateId);
+    DashboardTemplate updateSharedTemplateStatus(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplate dashboardTemplate, @PathVariable Integer templateId) {
+        return uiService.updateSharedTemplateStatus(dashboardTemplate, templateId);
     }
 
     @RequestMapping(value = "deleteUserTemplate/{templateId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
-    DashboardTemplate deleteUserTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
-        return uiService.deleteUserTemplate(templateId);
+    void deleteUserTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
+        uiService.deleteUserTemplate(templateId);
     }
 
-    
-    
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {

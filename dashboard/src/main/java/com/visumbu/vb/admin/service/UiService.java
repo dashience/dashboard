@@ -1191,8 +1191,8 @@ public class UiService {
 //        return null;
 //    }
 
-    public DashboardTemplate deleteUserTemplate(Integer templateId) {
-        return uiDao.deleteUserTemplate(templateId);
+    public void deleteUserTemplate(Integer templateId) {
+         uiDao.deleteUserTemplate(templateId);
     }
 
     public DashboardTemplate updateSharedTemplateStatus(DashboardTemplate dashboardTemplate, Integer templateId) {

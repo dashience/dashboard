@@ -226,18 +226,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widgetObj.lastNyears = "";
     };
 
-    $scope.clearAllData = function () {
-        $scope.widgetObj.widgetTitle = "";
-        $scope.widgetObj.chartType = "";
-        $scope.selectedChartType = "";
+    $scope.widgetObj = {};
+
+    $scope.clearChartType = function () {
+        clearEditAllWidgetData();
     };
 
     $scope.firstSortableOptions = {
         start: function (event, ui) {
-            console.log('start1');
         },
         stop: function (event, ui) {
-            console.log('stop1');
         }
     };
 
@@ -268,29 +266,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
     getWidgetItem();
 
-    $scope.widgetObj = {};
+
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
+    var setDefaultWidgetObj = [];
     $scope.setWidgetItems = function (widget) {
+        tableDef(widget);
+        setDefaultWidgetObj = [];
+        setDefaultWidgetObj.push({chartType: widget.chartType,
+            columns: widget.columns,
+            widgetTitle: widget.widgetTitle,
+            dataSourceId: widget.dataSourceId,
+            dataSetId: widget.dataSetId,
+            timeSegment: widget.timeSegment,
+            productSegment: widget.productSegment,
+            networkType: widget.networkType
+        });
+
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
         $scope.widgetObj = widget;
+        $scope.widgetObj.previewTitle = widget.widgetTitle;
         $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
         });
         if (widget.accountId === null) {
-            widget.allAccount = 1;
+            widget.allAccount = true;
         } else {
 
-            widget.allAccount = 0;
+            widget.allAccount = false;
         }
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         var getDataSourceId = widget.dataSourceId;
-        $scope.selectDataSource(getDataSourceId);
+        $scope.selectWidgetDataSource(getDataSourceId);
         getSegments(widget);
         getNetworkTypebyObj(widget);
-        tableDef(widget);
         $scope.y1Column = [];
         $scope.y2Column = [];
         $scope.tickerItem = [];
@@ -302,6 +313,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.selectPieChartXAxis = val;
                 $scope.selectX1Axis(widget, val);
             }
+            ;
             if (val.yAxis == 1) {
                 if (val.fieldName) {
                     if (widget.chartType == "pie") {
@@ -322,13 +334,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            var exists = false;
 //            angular.forEach($scope.formats, function (value, header) {
 //                if (value.displayFormat === value.value) {
-//                    alert(1)
 //                    exists = true;
 //                    $scope.tickerItem.push({displayName: val.displayName, fieldName: val.fieldName, displayFormat: {name: value.name, value: value.value}})
 //                }
 //            });
 //            if (exists == false) {
-//                alert(2)
             if (widget.chartType === 'ticker') {
                 $scope.tickerItem.push(val);
             }
@@ -360,10 +370,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     }
-    ;
 
     function columnHeaderDef(widget) {
-        console.log(widget)
         $scope.afterLoadWidgetColumns = false;
         var dataSourcePassword;
         if (!widget.dataSetId) {
@@ -379,9 +387,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
 
-        var setProductSegment = widget.productSegment
-        var setTimeSegment = widget.timeSegment
-        var setNetworkType = widget.networkType
+
+        var setProductSegment;
+        var setTimeSegment;
+        var setNetworkType;
+
+        if (widget.productSegment && widget.productSegment.type) {
+            setProductSegment = widget.productSegment.type;
+        } else {
+            setProductSegment = widget.productSegment;
+        }
+
+        if (widget.timeSegment && widget.timeSegment.type) {
+            setTimeSegment = widget.timeSegment.type;
+        } else {
+            setTimeSegment = widget.timeSegment;
+        }
+
+        if (widget.networkType && widget.networkType.type) {
+            setNetworkType = widget.networkType.type;
+        } else {
+            setNetworkType = widget.networkType;
+        }
 
         $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
@@ -402,9 +429,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
-            console.log(response.columnDefs);
             var getWidgetColumns = widget.columns;
-            console.log(widget.columns)
 
             $scope.collectionFields.forEach(function (value, k) {
                 var machField = $.grep(getWidgetColumns, function (b) {
@@ -416,47 +441,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.selectColumnDef = 0;
                 }
             });
-
-//            $http.get("admin/ui/getDataSetColumnsByDataSetId/" + widget.dataSetId.id).success(function (response) {
-//                console.log(response)
-//                $scope.collectionFields = $scope.columnHead;
-//                console.log($scope.columnHead)
-//                $scope.collectionFields.forEach(function (value, k) {
-//                    console.log(value.id)
-//                    var compareList = $.grep(response, function (list) {
-////                        console.log("list : "+list.fieldName+" ("+widget.id +" "+ list.widgetId.id+") ("+obj.fieldName +" "+ list.fieldName+") ("+obj.expression +" "+ list.expression+")")
-//                        if (value.userId === list.userId.id && value.expression === list.expression) {
-////                        if (value.expression === list.expression && value.fieldName === list.fieldName) {
-//                            value.derivedId = value.id;
-//                        } else {
-//                            value.derivedId = null;
-//                            value.userId = null;
-//                            value.widgetId = null;
-//                        }
-//                        return value.expression === list.expression;
-//                    });
-//                    //$scope.collectionFields = compareList;
-//                    console.log(compareList)
-//                });
-//                console.log($scope.collectionFields)
-//            });
-
             $scope.afterLoadWidgetColumns = true;
             resetQueryBuilder();
+            console.log($scope.collectionFields)
         });
     }
 
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
+        $scope.hideSelectedColumn = true;
         $scope.dispHideBuilder = true;
         widget.columns = [];
         $scope.collectionFields = [];
         $scope.afterLoadWidgetColumns = false;
-        var widgetObj = widget;
-        var getDataSet = widgetObj.dataSetId;
+        var widgetList = widget;
+        var getDataSet = widgetList.dataSetId;
         if (!getDataSet) {
             return;
         }
         $scope.y1Column = "";
+        $scope.xColumn = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
@@ -498,7 +501,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 '&port=3306&schema=vb&query=' + encodeURI(getDataSet.query) +
                 "&fieldsOnly=true").success(function (response) {
             $scope.afterLoadWidgetColumns = true;
-            if ((chartTypeName ? chartTypeName : widgetObj.chartType) !== 'table') {
+            $scope.hideSelectedColumn = false;
+            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
                 $scope.collectionFields = response.columnDefs;
             } else {
                 $scope.collectionFields = response.columnDefs;
@@ -507,7 +511,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
 
-    $scope.selectDataSource = function (dataSourceName) {
+    $scope.selectWidgetDataSource = function (dataSourceName) {
         if (!dataSourceName) {
             return;
         }
@@ -591,7 +595,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
 
-    $scope.selectChart = function (chartType) {
+    $scope.selectChart = function (chartType, widget) {
+        $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
@@ -601,10 +606,29 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.xColumn = "";
         $scope.y1Column = "";
+        $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+
+        if ($scope.chartTypeName) {
+            widget.columns = [];
+            $scope.collectionFields.forEach(function (value, k) {
+                var machField = $.grep(widget.columns, function (b) {
+                    return b.fieldName === value.fieldName;
+                });
+                if (machField.length > 0) {
+                    value.selectColumnDef = 1;
+                } else {
+                    value.selectColumnDef = 0;
+                }
+            });
+        }
+
+        $timeout(function () {
+            $scope.hideSelectedColumn = false;
+        }, 50);
     };
 
     $scope.showListOfColumns = function () {
@@ -614,6 +638,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = true;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
+        $scope.hideSelectedColumn = false;
     };
 
     $scope.showFilterList = function () {
@@ -665,10 +690,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.sortableOptions = {
         start: function (event, ui) {
-            console.log('start1');
         },
         stop: function (event, ui) {
-            console.log('stop1');
         }
     };
 
@@ -677,7 +700,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         obj.columnsButtons = true;
         var checkColumnDef = obj.selectColumnDef;
         if (checkColumnDef === 1) {
-            console.log(obj)
             var data = {
                 derivedId: obj.id,
                 agregationFunction: obj.agregationFunction,
@@ -698,10 +720,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             };
             widget.columns.push(data);
         } else {
-            var getIndexOfcolumns = widget.columns.indexOf(obj);
-            widget.columns.splice(getIndexOfcolumns, 1);
+            var index = -1;
+            var filteredObj = widget.columns.find(function (item, i) {
+                if (item.fieldName === obj.fieldName) {
+                    index = i;
+                    return i;
+                }
+            });
+            widget.columns.splice(index, 1);
         }
-        console.log(widget)
         $timeout(function () {
             $scope.queryBuilderList = widget;
             resetQueryBuilder();
@@ -710,7 +737,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removeSelectedValue = function (widget, obj, index) {
         $scope.dispHideBuilder = true;
-        console.log(widget)
         widget.columns.splice(index, 1);
         $scope.collectionFields.forEach(function (val, key) {
             if (val.displayName === obj.displayName) {
@@ -730,11 +756,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.widgetDuplicate = function (widgetData) {
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
-            console.log(response);
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
                 response["tags"] = dataTag[0];
                 $scope.widgets.push(response);
-                console.log($scope.widgets);
             });
         });
     };
@@ -1050,7 +1074,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         $scope.ticker(widgetObj, tickerItem);
     };
-
+// Funnel Format
     $scope.funnel = function (widget, column) {
         $scope.dispHideBuilder = true;
         var exists = false;
@@ -1148,13 +1172,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     ;
     //Derived Column
     $scope.showDerived = false;
+    $scope.dataSetColumn = {}
     $scope.addDerived = function () {
         $scope.dataSetColumn = "";
         $scope.showDerived = true;
+        $scope.text = "";
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
+        $scope.text = "";
     };
     //Edit Derived
     $scope.editDerivedColumn = function (collectionField, widgetObj) {
@@ -1178,17 +1205,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widgetId: widgetObj.id
             };
             $scope.dataSetColumn = data;
+            $scope.text = collectionField.expression;
         }
     };
     //Save DerivedColumn
-    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
+    $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
+        $scope.text = text;
         $scope.collectionField = {};
         var dataSetColumnData = {
             functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
             id: dataSetColumn.id ? dataSetColumn.id : null,
             sortPriority: dataSetColumn.sortPriority ? dataSetColumn.sortPriority : null,
             status: dataSetColumn.status ? dataSetColumn.status : null,
-            expression: dataSetColumn.expression,
+            expression: $scope.text,
             fieldName: dataSetColumn.fieldName,
             displayName: dataSetColumn.fieldName,
             fieldType: dataSetColumn.fieldType,
@@ -1211,7 +1240,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             $scope.collectionFields.forEach(function (val, key) {
                 if (val.id === dataSetColumn.id) {
-                    ////alert(1)
                     oldFieldName = val.fieldName;
                     val.fieldName = dataSetColumnData.fieldName;
                     val.displayName = dataSetColumnData.displayName;
@@ -1244,6 +1272,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
+        $scope.text = "";
     };
 
     //check FieldName
@@ -1297,12 +1326,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 //    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
 //        $scope.tableColumns = [];
-//        console.log(dataSetColumn);
-//        console.log(widget);
-//        console.log($scope.tableColumns)
-//        console.log($scope.collectionFields);
 //        $http.get("admin/ui/getDataSetColumnsByDataSetId/" + widget.dataSetId.id).success(function (resp) {
-//            console.log(resp);
 //            if (resp == "" || resp == null) {
 //                angular.forEach($scope.collectionFields, function (val, key) {
 //                    var data = {
@@ -1369,7 +1393,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //                });
 //            }
 //            ;
-//            console.log($scope.tableColumns);
 //
 //            var dataSetColumnData = {
 //                functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
@@ -1394,15 +1417,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 ////            lastNmonths: dataSetColumn.lastNmonths,
 ////            lastNyears: dataSetColumn.lastNyears
 //            };
-//            console.log(dataSetColumnData);
 //
 //
 ////            $http({method: 'POST', url: 'admin/ui/createWidgetColumn', data: dataSetColumnData}).success(function (response) {
-////                console.log(response);
 ////                var count = 0;
 ////                angular.forEach($scope.collectionFields, function (value, key) {
 ////                    if (value.id === response.id) {
-////                        console.log($scope.collectionFields.indexOf(dataSetColumnData.fieldName))
 //////                        columnHeaderDef
 ////                        count = 1;
 ////                        if (value.id == dataSetColumnData.id) {
@@ -1416,7 +1436,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 ////                    $scope.collectionFields.push(response);
 ////                }
 ////                $scope.tableColumns.push(response);
-//                console.log($scope.collectionFields);
 //                $scope.showDerived = false;
 //                $scope.dataSetColumn = "";
 //            });
@@ -1425,6 +1444,43 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //
 //        });
 //    };
+
+    function clearEditAllWidgetData() {
+        $scope.widgetObj.previewTitle = "";
+        $scope.widgetObj.chartType = "";
+        $scope.selectedChartType = "";
+        $scope.widgetObj.dataSourceId = "";
+        $scope.widgetObj.dataSetId = "";
+        $scope.widgetObj.timeSegment = "";
+        $scope.widgetObj.productSegment = "";
+        $scope.widgetObj.networkType = "";
+//        $scope.widgetObj.columns = "";
+        $scope.chartTypeName = "";
+        $scope.dataSetColumn.fieldName = "";
+        $scope.dataSetColumn.expression = "";
+        $scope.dataSetColumn.fieldType = "";
+        $scope.dataSetColumn.displayFormat = "";
+        $scope.text = "";
+//        $scope.xColumn = "";
+//        $scope.selectPieChartXAxis = "";
+//        $scope.selectPieChartYAxis = "";
+//        $scope.y1Column = "";
+//        $scope.y2Column = "";
+//        $scope.tickerItem = "";
+//        $scope.funnelItem = "";
+        $scope.widgetObj.lastNdays = "";
+        $scope.widgetObj.lastNweeks = "";
+        $scope.widgetObj.lastNmonths = "";
+        $scope.widgetObj.lastNyears = "";
+        $scope.widgetObj.customStartDate = "";
+        $scope.widgetObj.customStartDate = "";
+        $scope.showPreviewChart = false;
+        $scope.showColumnDefs = false;
+        $scope.showFilter = false;
+        $scope.loadingColumnsGif = false;
+        $scope.showDateRange = false;
+    }
+
     $scope.save = function (widget) {
         if (widget.chartType != 'text') {
             try {
@@ -1486,18 +1542,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         var dataSourceTypeId;
         var dataSetTypeId;
+        var dataSourceObj;
+        var dataSetObj;
         if (widget.chartType != 'text') {
+
             dataSourceTypeId = widget.dataSourceId.id;
+            dataSourceObj = widget.dataSourceId;
             dataSetTypeId = widget.dataSetId.id;
+            dataSetObj = widget.dataSetId;
         } else {
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
-        if (widget.allAccount === 1) {
-            widget.accountId = parseInt($stateParams.accountId);
+        if (widget.allAccount === true) {
+            widget.accountId = null;
         } else {
-            widget.accountId = null;// parseInt($stateParams.accountId);
+            widget.accountId = parseInt($stateParams.accountId);
         }
+
+
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
@@ -1517,8 +1580,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             isGridLine: widget.isGridLine,
-            customStartDate: $scope.customStartDate, //widget.customStartDate,
-            customEndDate: $scope.customEndDate, //widget.customEndDate
+            customStartDate: $scope.customStartDate,
+            customEndDate: $scope.customEndDate,
             jsonData: $scope.jsonData ? $scope.jsonData : null,
             queryFilter: $scope.queryFilter ? $scope.queryFilter : null,
             accountId: widget.accountId,
@@ -1527,37 +1590,26 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             networkType: widget.networkType ? widget.networkType.type : null,
             createdBy: widget.createdBy
         };
-        widget.chartType = "";
-        
-        $scope.widgetObj = {};
-        
-        $scope.showFilter = false;
-        $scope.showPreviewChart = false;
-        $scope.showColumnDefs = false;
-        $scope.showDateRange = false;
-        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-//            if (!response) {
-//                var dialog = bootbox.dialog({
-//                    title: 'Alert',
-//                    message: "Access Denied"
-//                });
-//                dialog.init(function () {
-//                    setTimeout(function () {
-//                        dialog.modal('hide');
-//                    }, 2000);
-//                });
-//                widget.chartType = setDefaultChartType;
-//                return;
-//            }           
 
+        clearEditAllWidgetData();
+        widget.chartType = "";
+        $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             widget.chartType = data.chartType;
             widget.widgetTitle = data.widgetTitle;
             $scope.chartTypeName = "";
+            widget.dataSetId = dataSetObj;//data.dataSetId;
+            widget.dataSourceId = dataSourceObj;//data.dataSetId;
+            widget.timeSegment = data.timeSegment;//data.dataSetId;
+            widget.productSegment = data.productSegment;//data.dataSetId;
+            widget.networkType = data.networkType;//data.dataSetId;
+            widget.columns = data.widgetColumns;//data.dataSetId;
+            data.dataSourceId = dataSourceObj;
+            data.dataSetId = dataSetObj;
             widget = data;
-            widget.dataSetId = data.dataSetId;
+            console.log(data)
+            console.log(widget)
+
             widget.id = data.id;
-            widget.tableFooter = data.tableFooter;
-            widget.columns = data.widgetColumns;
             $scope.derivedColumns = [];
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
@@ -1601,21 +1653,30 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.cancel = function (widgetObj) {
-        widgetObj = "";
-        $scope.widgetObj = "";
+        $('.showEditWidget').modal('hide');
+        angular.forEach(setDefaultWidgetObj, function (val, key) {
+            $scope.widgetObj.previewTitle = val.widgetTitle;
+            $scope.widgetObj.chartType = val.chartType;
+//            $scope.selectedChartType = val.chartType;
+            $scope.widgetObj.dataSourceId = val.dataSourceId;
+            $scope.widgetObj.dataSetId = val.dataSetId;
+            $scope.widgetObj.timeSegment = val.timeSegment;
+            $scope.widgetObj.productSegment = val.productSegment;
+            $scope.widgetObj.networkType = val.networkType;
+            $scope.widgetObj.columns = val.columns;
+        });
         $scope.chartTypeName = "";
+        $scope.dataSetColumn.fieldName = "";
+        $scope.dataSetColumn.expression = "";
+        $scope.dataSetColumn.fieldType = "";
+        $scope.dataSetColumn.displayFormat = "";
         $scope.selectedChartType = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
-        $scope.y1Column = "";
-        $scope.selectPieChartYAxis = "";
-        $scope.y2Column = "";
-        $scope.tickerItem = "";
-        $scope.funnelItem = "";
-        $('.showEditWidget').modal('hide');
+
     };
 });
 
@@ -1975,7 +2036,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         }
                     }
                 });
-            }
+            };
             scope.setTableChartFn({tableFn: scope.refreshTable});
             scope.refreshTable();
             scope.initData = function (col) {
@@ -2031,7 +2092,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
 
             scope.pageChangeHandler = function (num) {
-                console.log('reports page changed to ' + num);
             };
 
             scope.sum = function (list, fieldname) {
@@ -3363,7 +3423,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
-                            // ////alert(format);
                             if (format.indexOf("%") > -1) {
                                 return d3.format(format)(value / 100);
                             }
@@ -3482,6 +3541,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             }
             var areaChartDataSource = JSON.parse(scope.areaChartSource);
             if (scope.areaChartSource) {
+                console.log(areaChartDataSource)
                 var url = "admin/proxy/getData?";
                 if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
                     url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
@@ -3495,6 +3555,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+                console.log(getWidgetObj)
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -3986,7 +4047,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
                 funnelName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
-
             var format = function (column, value) {
                 if (!value) {
                     var temp = 0;
@@ -4004,21 +4064,16 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
 
                 return value;
-
             };
             var setData = [];
             var data = [];
             var funnelDataSource = JSON.parse(scope.funnelSource);
+            if (funnelDataSource) {
             var url = "admin/proxy/getData?";
             if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
                 url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
             }
-            if (funnelDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (funnelDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
+
             var dataSourcePassword;
             if (funnelDataSource.dataSourceId.password) {
                 dataSourcePassword = funnelDataSource.dataSourceId.password;
@@ -4026,6 +4081,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 dataSourcePassword = '';
             }
             var getWidgetObj = JSON.parse(scope.widgetObj);
+
             var setProductSegment;
             var setTimeSegment;
             var setNetworkType;
@@ -4047,10 +4103,13 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             } else {
                 setNetworkType = getWidgetObj.networkType;
             }
+                console.log("funnel DataSource");
+                console.log(funnelDataSource);
             scope.refreshFunnel = function () {
                 $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + funnelDataSource.id +
                         "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
+                            "&userId=" + (funnelDataSource.userId ? funnelDataSource.userId.id : null) +
                         "&driver=" + funnelDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + funnelDataSource.reportName +
                         "&startDate=" + $stateParams.startDate +
@@ -4086,7 +4145,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                                 total += parseFloat(setData[i]);
                             }
                             scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total)});
-
                         });
                     }
                     var data = scope.funnels;
@@ -4100,10 +4158,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         scope.fName.push(funnelFieldName);
                         scope.fValue.push(funnelValue);
                     });
-
                     var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
                     scope.funnelCharts = funnelData;
-
                     function filterFunnelByValue(name, value) {
                         var len = name.length;
                         var temp, temp1 = 0;
@@ -4113,7 +4169,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                                     temp = value[i];
                                     value[i] = value[j];
                                     value[j] = temp;
-
                                     temp1 = name[i];
                                     name[i] = name[j];
                                     name[j] = temp1;
@@ -4125,9 +4180,10 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                     function funnelArrayObjects(name, value) {
                         var funnelObject = [];
+                            var funnelColor=['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169'];
                         var len = name.length;
                         for (var i = 0; i < len; i++) {
-                            funnelObject.push([name[i], value[i]]);
+                                funnelObject.push([name[i], value[i],funnelColor[i]]);
                         }
                         return funnelObject;
                     }
@@ -4137,39 +4193,49 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
 
                     // width = $(element[0]).width();
-
-                    // console.log(columns);
-                    var options = {
-                        // width : width - 30,
-                        // width: 1300,
-                        width: 500,
-                        // height: 400,
-                        height: 300,
-                        //bottomWidth : 1/3,
-                        bottomPinch: 1, // How many sections to pinch
-                        //isCurved : false,     // Whether the funnel is curved
-                        //curveHeight : 20,     // The curvature amount
-                        //fillType : "solid",   // Either "solid" or "gradient"
-                        //isInverted : true,   // Whether the funnel is inverted
-                        hoverEffects: true  // Whether the funnel has effects on hover
-                    };
-                    var funnel = new D3Funnel(scope.funnelCharts, options);
-                    funnel.draw(element[0]);
-
-                    $(window).on("resize", function () {
+                    function drawChart() {
                         var width = $(element[0]).width();
-                        //$( "#funnelContainer" ).css( "width", width);
-                        options.width = width;
+                        var height = 315;
+                        var options = {
+                            width: width,
+                            height: height,
+                            bottomPinch: 1, // How many sections to pinch
+                            hoverEffects: true  // Whether the funnel has effects on hover
+                        };
                         var funnel = new D3Funnel(scope.funnelCharts, options);
                         funnel.draw(element[0]);
+                    }
+                    drawChart();
+//                    var options = {
+//                        // width : width - 30,
+//                        // width: 1300,
+//                        width: 500,
+//                        // height: 400,
+//                        height: 300,
+//                        //bottomWidth : 1/3,
+//                        bottomPinch: 1, // How many sections to pinch
+//                        //isCurved : false,     // Whether the funnel is curved
+//                        //curveHeight : 20,     // The curvature amount
+//                        //fillType : "solid",   // Either "solid" or "gradient"
+//                        //isInverted : true,   // Whether the funnel is inverted
+//                        hoverEffects: true  // Whether the funnel has effects on hover
+//                    };
+//                    var funnel = new D3Funnel(scope.funnelCharts, options);
+//                    funnel.draw(element[0]);
+                    $(window).on("resize", function () {
+                        drawChart();
+//        var width = $(element[0]).width();
+//                //$( "#funnelContainer" ).css( "width", width);
+//                options.width = width;
+//                var funnel = new D3Funnel(scope.funnelCharts, options);
+//                funnel.draw(element[0]);
                     });
-
-
-
                 });
-            }
+                }
+                ;
             scope.setFunnelFn({funnelFn: scope.refreshFunnel});
             scope.refreshFunnel();
+        }
         }
     };
 });
@@ -4354,7 +4420,193 @@ app.service('stats', function ($filter) {
                 aggregation.value = 20000;
                 //aggregation.rendered = 30000;
             }
-        },
+        }
     };
     return service;
+});
+app.filter('xAxis', [function () {
+        return function (chartXAxis) {
+            var xAxis = ['', 'x-1'];
+            return xAxis[chartXAxis];
+        };
+    }]);
+app.filter('yAxis', [function () {
+        return function (chartYAxis) {
+            var yAxis = ['', 'y-1', 'y-2'];
+            return yAxis[chartYAxis];
+        };
+    }]);
+app.filter('hideColumn', [function () {
+        return function (chartYAxis) {
+            var hideColumn = ['No', 'Yes'];
+            return hideColumn[chartYAxis];
+        };
+    }]);
+app.directive('ckEditor', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, elm, attr, ngModel) {
+            var ck = CKEDITOR.replace(elm[0], {
+                removeButtons: 'About'
+            });
+            if (!ngModel)
+                return;
+            ck.on('pasteState', function () {
+                scope.$apply(function () {
+                    ngModel.$setViewValue(ck.getData());
+                });
+            });
+            ngModel.$render = function (value) {
+                ck.setData(ngModel.$viewValue);
+            };
+        }
+    };
+});
+app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
+    return{
+        restrict: 'A',
+        scope: {
+            widgetTableDateRange: '@',
+        },
+        link: function (scope, element, attr) {
+//            $(document).ready(function (e) {
+            $(".scheduler-list-style").click(function (e) {
+                e.stopPropagation();
+            });
+            var widget = JSON.parse(scope.widgetTableDateRange);
+            var widgetStartDate = widget.customStartDate ? widget.customStartDate : $stateParams.startDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
+            var widgetEndDate = widget.customEndDate ? widget.customEndDate : $stateParams.endDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
+            //Date range as a button
+            $(element[0]).daterangepicker(
+                    {
+                        ranges: {
+                            'Today': [moment(), moment()],
+                            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                            'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                            'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                            'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
+                            'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+//                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                            'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
+//                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
+                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                            'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                            'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+//                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+//                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                        },
+                        startDate: widgetStartDate ? widgetStartDate : moment().subtract(30, 'days'),
+                        endDate: widgetEndDate ? widgetEndDate : moment().subtract(1, 'days'),
+                        maxDate: new Date(),
+                        drops: "down" //down
+                    },
+                    function (startDate, endDate) {
+                        $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                    }
+            );
+            $(".ranges ul").find("li").addClass("custom-pickers");
+            $(".custom-pickers").click(function (e) {
+                $(".scheduler-list-style").hide();
+                scope.$apply();
+            });
+            $(".editWidgetDropDown").click(function (e) {
+                $(".scheduler-list-style").removeAttr("style");
+                $(".scheduler-list-style").css("display", "block");
+                $(".daterangepicker").css("display", "none");
+//                        e.bind();
+            });
+            $(".date-range-none").click(function (e) {
+                $(".scheduler-list-style").css("display", "none");
+            });
+            $(document).on("click", function (e) {
+                var selectedElement = e.target.className;
+                if (selectedElement == "custom-pickers" ||
+                        selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
+                        selectedElement == "month" ||
+                        selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
+                        selectedElement == "next available" ||
+                        selectedElement == "input-mini form-control active" ||
+                        selectedElement == "calendar-table" || selectedElement == "table-condensed" ||
+                        selectedElement == "daterangepicker_input")
+                {
+                    $(".scheduler-list-style").css("display", "block");
+                } else {
+                    $(".scheduler-list-style").css("display", "none");
+                }
+            });
+            $(".applyBtn").click(function (e) {
+                try {
+                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                } catch (e) {
+                }
+
+                $(".scheduler-list-style").hide(); //                    
+            });
+//            });
+        }
+    };
+});
+app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
+    return{
+        restrict: 'A',
+        scope: {
+            queryData: '@',
+        },
+        link: function (scope, element, attr) {
+            scope.columns = scope.queryData;
+            var jsonFilter = JSON.parse(scope.queryData);
+            var columnList = JSON.parse(scope.queryData);
+            var filterList = [];
+            columnList.columns.forEach(function (value, key) {
+                var typeOfValue = value.type ? value.type : value.fieldType;
+                if (typeOfValue == 'number') {
+                    scope.fieldsType = "integer";
+                } else if (typeOfValue == 'string') {
+                    scope.fieldsType = "string";
+                } else if (typeOfValue == 'Date') {
+                    scope.fieldsType = "date";
+                } else if (typeOfValue == 'day') {
+                    scope.fieldsType = "string";
+                } else {
+                    scope.fieldsType = value.fieldType;
+                }
+                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
+            });
+            scope.buildQuery = filterList;
+            if (jsonFilter.jsonData != null) {
+                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+            }
+
+//            scope.buildQuery = filterList;
+//            if (jsonFilter.jsonData != null) {
+//                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+//            }
+
+            $(document).ready(function ()
+            {
+                $(element[0]).queryBuilder(
+                        {
+                            plugins: ['bt-tooltip-errors'],
+                            filters: filterList,
+                            rules: scope.jsonBuild ? scope.jsonBuild : null
+                        });
+                $('#btn-clear').on('click', function () {
+                    $(element[0]).queryBuilder('reset');
+                });
+                $('#btn-reset').on('click', function () {
+                    $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                });
+                $('#btn-set').on('click', function () {
+                    $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                });
+            });
+        }
+
+    };
 });

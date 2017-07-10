@@ -357,7 +357,7 @@
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label>Data Source</label>
                                     <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
-                                            ng-change="selectDataSource(widgetObj.dataSourceId)"
+                                            ng-change="selectWidgetDataSource(widgetObj.dataSourceId)"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                     </select>
                                 </div>
@@ -476,7 +476,7 @@
                 <div ng-show="loadingColumnsGif" class="text-center">
                     <img ng-hide="afterLoadWidgetColumns" src="static/img/logos/loader.gif" width="40">
                 </div>
-                <div class="col-sm-6 form-left-side-menu-border">
+                <div class="col-sm-6 form-left-side-menu-border" ng-if="afterLoadWidgetColumns == true;">
                     <ul ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="list-group">
                         <li class="list-group-item justify-content-between" ng-repeat="collectionField in collectionFields">
                             <div class="checkbox">
@@ -490,7 +490,7 @@
                     </ul>
                 </div>
                 <div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="col-sm-6" ng-show="showColumnDefs">
-                    <div ng-show="afterLoadWidgetColumns">
+                    <div ng-if="afterLoadWidgetColumns == true;">
                         <ul class="list-group" ng-model="widgetObj.columns" ui-sortable="sortableOptions">
                             <li class="list-group-item justify-content-between" ng-repeat="columns in widgetObj.columns">
                                 <div>
@@ -525,7 +525,7 @@
                             <label>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
-                                      ng-model="dataSetColumn.expression" 
+                                          ng-model="text" 
                                       ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
                         </div>
@@ -545,7 +545,7 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
+                                        ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>
@@ -561,24 +561,24 @@
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
-                            <label>Select X-Axis</label>
-                            <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                            <label ng-if="hideSelectedColumn === false;">Select X-Axis</label>
+                            <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="xColumn" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="selectX1Axis(widgetObj, xColumn)">
                             </select>
                         </div>
                         <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
-                            <label>Select X Axis</label>
-                            <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                            <label ng-if="hideSelectedColumn === false;">Select X Axis</label>
+                            <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartXAxis" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="selectPieChartX(widgetObj, selectPieChartXAxis)">
                             </select>
                         </div>
                         <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
-                            <label>Select Y Axis</label>
-                            <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                            <label ng-if="hideSelectedColumn === false">Select Y Axis</label>
+                            <select ng-if="hideSelectedColumn === false" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartYAxis" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="selectPieChartY(widgetObj, selectPieChartYAxis)">
@@ -586,12 +586,12 @@
                         </div>
                     </div>
                     <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
-                        <div class="col-md-12">
-                            <label>Select Y1-Axis</label>
-                            <ui-select multiple ng-model="y1Column" theme="bootstrap"  
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
+                            <label ng-if="hideSelectedColumn === false;">Select Y1-Axis</label>                            
+                            <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y1Column" theme="bootstrap" 
                                        on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
                                        on-remove="removedByY1Column(widgetObj, $item, y1Column)">
-                                <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y1axis in collectionFields | filter:$select.search">
                                     {{y1axis.displayName}}
                                 </ui-select-choices>
@@ -599,12 +599,12 @@
                         </div>
                     </div>
                     <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
-                        <div class="col-md-12">
-                            <label>Select Y2-Axis</label>
-                            <ui-select multiple ng-model="y2Column" theme="bootstrap" 
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
+                            <label ng-if="hideSelectedColumn === false;">Select Y2-Axis</label>
+                            <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
                                        on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
                                        on-remove="removedByY2Column(widgetObj, $item, y2Column)">
-                                <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
                                     {{y2axis.displayName}}
                                 </ui-select-choices>
@@ -616,7 +616,7 @@
             <div class="row">
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker'" ng-show="showColumnDefs" >
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
                             <label>Ticker Items</label>
                             <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" 
                                        on-select="ticker(widgetObj, tickerItem)" 
@@ -631,7 +631,7 @@
                 </div>
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel'" ng-show="showColumnDefs">
                     <div class="form-group">
-                        <div class="col-md-12">
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label>Funnel Items</label>
                             <ui-select multiple ng-model="funnelItem"  theme="bootstrap" 
                                        on-select="funnel(widgetObj, funnelItem)" 

@@ -19,7 +19,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 template = $filter('filter')(response, {id: $stateParams.templateId})[0];
             }
             $scope.selectTemplate.selected = template;
-            var templateUserId = template?template.userId:"";
+            var templateUserId = template ? template.userId : "";
             if (!templateUserId) {
                 return;
             } else {
@@ -29,7 +29,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             }
         });
     };
-
 
     $scope.getAllTemplate();
 
@@ -55,6 +54,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userLogout = function () {
         window.location.href = "login.html"
     };
+    
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         if (url.indexOf("dashboardTemplate") > 0) {
@@ -198,7 +198,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.tabs = [];
     //Add Tab
     $scope.addTab = function (tab) {
-        console.log(tab);
         var data = {
             tabName: tab.tabName
         };
@@ -258,7 +257,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         if (tab !== "" && tab !== null) {
             var otherObj = $scope.tabs[index];
             var otherIndex = $scope.tabs.indexOf(tab);
-
             $scope.tabs = $scope.moveItem($scope.tabs, otherIndex, index);
             var tabOrder = $scope.tabs.map(function (value, key) {
                 if (value) {
@@ -299,7 +297,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
 
     //save Template
     $scope.saveTemplate = function (template) {
-        console.log($scope.tabs);
         var tabIds = $scope.tabs.map(function (value, key) {
             if (value) {
                 return value.id;
@@ -310,7 +307,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             templateName: template.templateName,
             tabIds: tabIds
         };
-        console.log(data);
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
             $scope.getAllTemplate();
         });
@@ -318,11 +314,10 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         $scope.template = "";
         $scope.templateId = "";
     };
-    
-    $scope.getAgencyTemplate = function () {
+
+    $scope.getUserTemplate = function () {
         $scope.agencyTemplates = [];
         $http.get('admin/ui/getUserTemplate').success(function (response) {
-            console.log(response);
             angular.forEach(response, function (value, key) {
                 if (value.shared === "Active") {
                     $scope.sharedUser = 1;
@@ -339,13 +334,10 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 };
                 $scope.agencyTemplates.push(data);
             });
-            console.log($scope.agencyTemplates)
-
         });
-    }
+    };
+
     $scope.shareUser = function (agencyTemplate) {
-        console.log(agencyTemplate);
-//        console.log(sharedStatus);
         if (agencyTemplate.shared === 1) {
             $scope.shared = "Active";
         } else {
@@ -354,14 +346,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         var sharedData = {
             shared: $scope.shared
         };
-
         $http({method: 'POST', url: 'admin/ui/updateTemplateStatus/' + agencyTemplate.id, data: sharedData}).success(function (response) {
 
         });
     };
     $scope.deleteUserTemplate = function (agencyTemplate, index) {
         $http({method: 'DELETE', url: 'admin/ui/deleteUserTemplate/' + agencyTemplate.id}).success(function (response) {
-            $scope.agencyTemplates.splice(index, 1);
+            if (agencyTemplate.shared != 1) {
+                $scope.agencyTemplates.splice(index, 1);
+            }
             $scope.getAllTemplate();
         });
     };
