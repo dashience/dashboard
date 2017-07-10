@@ -1294,6 +1294,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.text="";
     //Auto Complete
+    $scope.text = "";
     $scope.config = {
         autocomplete: [
             {
@@ -1459,6 +1460,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.productSegment = "";
         $scope.widgetObj.networkType = "";
 //        $scope.widgetObj.columns = "";
+        $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
@@ -1609,8 +1611,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
             widget = data;
-            console.log(data)
-            console.log(widget)
 
             widget.id = data.id;
             $scope.derivedColumns = [];
@@ -1635,7 +1635,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     fieldType: value.fieldType,
                     sortPriority: value.sortPriority,
                     userId: value.userId, //value.userId,
-                    dataSetId: data.dataSetId
+                    dataSetId: data.dataSetId.id
                 };
                 $scope.derivedColumns.push(columnData);
             });
@@ -1646,6 +1646,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $('.showEditWidget').modal('hide');
                 return;
             }
+            console.log(colData)
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
             });
             $('.showEditWidget').modal('hide');
@@ -1668,10 +1669,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
         });
+        $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
+        $scope.selectedChartType = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
