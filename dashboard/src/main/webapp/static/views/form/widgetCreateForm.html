@@ -476,7 +476,7 @@
                 <div ng-show="loadingColumnsGif" class="text-center">
                     <img ng-hide="afterLoadWidgetColumns" src="static/img/logos/loader.gif" width="40">
                 </div>
-                <div class="col-sm-6 form-left-side-menu-border">
+                <div class="col-sm-6 form-left-side-menu-border" ng-if="afterLoadWidgetColumns == true;">
                     <ul ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="list-group">
                         <li class="list-group-item justify-content-between" ng-repeat="collectionField in collectionFields">
                             <div class="checkbox">
@@ -577,8 +577,8 @@
                             </select>
                         </div>
                         <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
-                            <label ng-if="hideSelectedColumn === false">Select Y Axis</label>
-                            <select ng-if="hideSelectedColumn === false" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                            <label ng-if="hideSelectedColumn === false;">Select Y Axis</label>
+                            <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartYAxis" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="selectPieChartY(widgetObj, selectPieChartYAxis)">
