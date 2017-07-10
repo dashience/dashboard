@@ -1291,6 +1291,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     };
     //Auto Complete
+    $scope.text = "";
     $scope.config = {
         autocomplete: [
             {
