@@ -19,7 +19,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 template = $filter('filter')(response, {id: $stateParams.templateId})[0];
             }
             $scope.selectTemplate.selected = template;
-            var templateUserId = template?template.userId:"";
+            var templateUserId = template ? template.userId : "";
             if (!templateUserId) {
                 return;
             } else {
@@ -54,7 +54,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userLogout = function () {
         window.location.href = "login.html"
     };
-    
+
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         if (url.indexOf("dashboardTemplate") > 0) {
