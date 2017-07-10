@@ -343,7 +343,8 @@
                                         </a>
                                     </div>
                                     <div>
-                                        <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
+                                        <!--<input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">-->
+                                        <input type="checkbox"  ng-init="checked = true" ng-model="widgetObj.allAccount">
                                         <label>All Account</label>
                                     </div>
                                 </div>
