@@ -1678,6 +1678,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
         });
+        if ($scope.widgetObj.accountId === null) {
+            $scope.widgetObj.allAccount = true;
+        } else {
+            $scope.widgetObj.allAccount = false;
+        }
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
