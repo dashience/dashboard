@@ -30,7 +30,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         });
     };
 
-
     $scope.getAllTemplate();
 
     $scope.getTemplateById = function (template) {
@@ -55,6 +54,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userLogout = function () {
         window.location.href = "login.html"
     };
+    
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         if (url.indexOf("dashboardTemplate") > 0) {

@@ -1,6 +1,5 @@
 app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout) {
     $scope.fieldSettings = [];
-
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},
@@ -22,7 +21,6 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         {name: 'CPP', value: "cpp"},
         {name: 'CPR', value: "cpr"}
     ];
-
     $scope.fieldTypes = [
         {name: 'None', value: ''},
         {name: 'String', value: 'string'},
@@ -30,7 +28,6 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         {name: 'Date', value: 'date'},
         {name: 'Day', value: 'day'}
     ];
-
     $scope.formats = [
         {name: "None", value: ''},
         {name: "Currency", value: '$,.2f'},
@@ -41,7 +38,6 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         {name: "Time", value: 'H:M:S'},
         {name: "Star Rating", value: 'starRating'}
     ];
-
     $http.get('admin/fieldSettings').success(function (response) {
         $scope.fieldSettings = response;
     });
@@ -53,11 +49,9 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
     $scope.selectDisplayFormat = function (field) {
         field.dataFormat = field.displayFormat;
     };
-
     $scope.selectDataFormat = function (field) {
         field.displayFormat = field.dataFormat;
     };
-
     $scope.addFieldSettings = function () {
         $scope.fieldSettings.push({isEdit: true});
     };
@@ -82,18 +76,15 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         });
     };
     $scope.updateField = function (field) {
-
         var getDisplayFormat = field.displayFormat;
 
         var getDisplayObj = $.grep($scope.formats, function (val) {
             return getDisplayFormat === val.value;
-        })
-        angular.forEach(getDisplayObj, function(val, k){
+        });
+        angular.forEach(getDisplayObj, function(val, key){
             field.dataFormat = val;
             field.displayFormat = val;
         });
-
-
 //        var data = {
 //            id: fields.id,
 //            fieldName: fields.fieldName,

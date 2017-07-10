@@ -4392,3 +4392,189 @@ app.service('stats', function ($filter) {
     };
     return service;
 });
+app.filter('xAxis', [function () {
+        return function (chartXAxis) {
+            var xAxis = ['', 'x-1'];
+            return xAxis[chartXAxis];
+        };
+    }]);
+app.filter('yAxis', [function () {
+        return function (chartYAxis) {
+            var yAxis = ['', 'y-1', 'y-2'];
+            return yAxis[chartYAxis];
+        };
+    }]);
+app.filter('hideColumn', [function () {
+        return function (chartYAxis) {
+            var hideColumn = ['No', 'Yes'];
+            return hideColumn[chartYAxis];
+        };
+    }]);
+app.directive('ckEditor', function () {
+    return {
+        require: '?ngModel',
+        link: function (scope, elm, attr, ngModel) {
+            var ck = CKEDITOR.replace(elm[0], {
+                removeButtons: 'About'
+            });
+            if (!ngModel)
+                return;
+            ck.on('pasteState', function () {
+                scope.$apply(function () {
+                    ngModel.$setViewValue(ck.getData());
+                });
+            });
+            ngModel.$render = function (value) {
+                ck.setData(ngModel.$viewValue);
+            };
+        }
+    };
+});
+app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
+    return{
+        restrict: 'A',
+        scope: {
+            widgetTableDateRange: '@',
+        },
+        link: function (scope, element, attr) {
+//            $(document).ready(function (e) {
+            $(".scheduler-list-style").click(function (e) {
+                e.stopPropagation();
+            });
+            var widget = JSON.parse(scope.widgetTableDateRange);
+            var widgetStartDate = widget.customStartDate ? widget.customStartDate : $stateParams.startDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
+            var widgetEndDate = widget.customEndDate ? widget.customEndDate : $stateParams.endDate; //JSON.parse(scope.widgetTableDateRange).customEndDate;
+            //Date range as a button
+            $(element[0]).daterangepicker(
+                    {
+                        ranges: {
+                            'Today': [moment(), moment()],
+                            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                            'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                            'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                            'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
+                            'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+//                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                            'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
+//                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
+                            'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+//                        'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                            'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                            'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+//                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+//                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
+                        },
+                        startDate: widgetStartDate ? widgetStartDate : moment().subtract(30, 'days'),
+                        endDate: widgetEndDate ? widgetEndDate : moment().subtract(1, 'days'),
+                        maxDate: new Date(),
+                        drops: "down" //down
+                    },
+                    function (startDate, endDate) {
+                        $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                    }
+            );
+            $(".ranges ul").find("li").addClass("custom-pickers");
+            $(".custom-pickers").click(function (e) {
+                $(".scheduler-list-style").hide();
+                scope.$apply();
+            });
+            $(".editWidgetDropDown").click(function (e) {
+                $(".scheduler-list-style").removeAttr("style");
+                $(".scheduler-list-style").css("display", "block");
+                $(".daterangepicker").css("display", "none");
+//                        e.bind();
+            });
+            $(".date-range-none").click(function (e) {
+                $(".scheduler-list-style").css("display", "none");
+            });
+            $(document).on("click", function (e) {
+                var selectedElement = e.target.className;
+                if (selectedElement == "custom-pickers" ||
+                        selectedElement == "fa fa-chevron-left glyphicon glyphicon-chevron-left" ||
+                        selectedElement == "month" ||
+                        selectedElement == "fa fa-chevron-right glyphicon glyphicon-chevron-right" ||
+                        selectedElement == "next available" ||
+                        selectedElement == "input-mini form-control active" ||
+                        selectedElement == "calendar-table" || selectedElement == "table-condensed" ||
+                        selectedElement == "daterangepicker_input")
+                {
+                    $(".scheduler-list-style").css("display", "block");
+                } else {
+                    $(".scheduler-list-style").css("display", "none");
+                }
+            });
+            $(".applyBtn").click(function (e) {
+                try {
+                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                } catch (e) {
+                }
+
+                $(".scheduler-list-style").hide(); //                    
+            });
+//            });
+        }
+    };
+});
+app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
+    return{
+        restrict: 'A',
+        scope: {
+            queryData: '@',
+        },
+        link: function (scope, element, attr) {
+            scope.columns = scope.queryData;
+            var jsonFilter = JSON.parse(scope.queryData);
+            var columnList = JSON.parse(scope.queryData);
+            var filterList = [];
+            columnList.columns.forEach(function (value, key) {
+                var typeOfValue = value.type ? value.type : value.fieldType;
+                if (typeOfValue == 'number') {
+                    scope.fieldsType = "integer";
+                } else if (typeOfValue == 'string') {
+                    scope.fieldsType = "string";
+                } else if (typeOfValue == 'Date') {
+                    scope.fieldsType = "date";
+                } else if (typeOfValue == 'day') {
+                    scope.fieldsType = "string";
+                } else {
+                    scope.fieldsType = value.fieldType;
+                }
+                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
+            });
+            scope.buildQuery = filterList;
+            if (jsonFilter.jsonData != null) {
+                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+            }
+
+//            scope.buildQuery = filterList;
+//            if (jsonFilter.jsonData != null) {
+//                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
+//            }
+
+            $(document).ready(function ()
+            {
+                $(element[0]).queryBuilder(
+                        {
+                            plugins: ['bt-tooltip-errors'],
+                            filters: filterList,
+                            rules: scope.jsonBuild ? scope.jsonBuild : null
+                        });
+                $('#btn-clear').on('click', function () {
+                    $(element[0]).queryBuilder('reset');
+                });
+                $('#btn-reset').on('click', function () {
+                    $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                });
+                $('#btn-set').on('click', function () {
+                    $(element[0]).queryBuilder('setRules', scope.jsonBuild);
+                });
+            });
+        }
+
+    };
+});
