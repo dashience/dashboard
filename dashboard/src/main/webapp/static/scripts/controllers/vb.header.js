@@ -45,54 +45,141 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.product = [];
     $scope.selectAccount = {};
     $scope.selectedAccounts = [];
-    $scope.accounts = [];
-    $http.get('admin/ui/userAccountByUser').success(function (response) {
+    $scope.selectedAccount1 = [];
+    $scope.allAccounts = [];
+    $http.get('admin/ui/getUserAccountByGroupForUser').success(function (response) {
         if (!response[0]) {
             return;
         }
-        $scope.accounts = response;
-        var getAllAccounts = response;
+        $scope.allAccounts = response;
         if (response) {
-            $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
-            $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
+            $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accounts[0].id;
+            $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accounts[0].accountName;
             var accountName = $stateParams.accountName;//$stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-            getAgencyProduct(response[0].userId.agencyId.id);
-            $scope.selectedAccounts.push(response[0]);
+            getAgencyProduct(response[0].accounts[0].agencyId.id);
+            $scope.selectedAccounts.push(response[0].accounts[0]);
             $scope.selectedAccountCount = $scope.selectedAccounts.length;
-//            var getGroupNames = []
-            $scope.accounts.forEach(function (val, key) {
-                if (val.accountId.accountName === accountName) {
-                    val.select = true;
+            $scope.allAccounts.forEach(function (val, key) {
+                // angular.forEach(val.accounts, function (value, key) {
+                if (val.accounts[0].accountName === accountName) {
+                    val.accounts[0].select = true;
                 }
-//                $scope.accounts.push({groupName: val.accountId.groupName, 
-//                    groupAccount: [{id: val.id, select: val.select, userId: val.userId, accountId: val.accountId}], 
-//                    status: val.status});
-                //console.log($scope.accounts)  
+                // });
             });
+            console.log($scope.allAccounts)
         }
     });
+    //////////////////////////////// Start-of-First-DropDown///////////////////////////////////
+    $scope.allAccount = {};
+    $scope.getSelectedAccounts = function (allAccount) {
+        var getGroupName = allAccount.groupName;
+        if (getGroupName && allAccount.selectAllGroup == 1) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select = true;
+            });
 
-    $scope.getSelectedAccounts = function (account) {
-        if (account.select == true) {
-            $scope.selectedAccounts.push(account)
-        } else {
-            var getSelectedAccountIndex = $scope.selectedAccounts.indexOf(account);
-            $scope.selectedAccounts.splice(getSelectedAccountIndex, 1);
+            angular.forEach(allAccount.accounts, function (val, key) {
+                var getMachItem = $.grep($scope.selectedAccounts, function (value) {
+                    return val.accountName == value.accountName;
+                });
+                if (getMachItem.length == 0) {
+                    $scope.selectedAccounts.push(val);
+                }
+            });
+        }
+        if (getGroupName && allAccount.selectAllGroup == 0) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select = false;
+                $scope.selectedAccounts.splice(val, 1);
+            });
         }
         $scope.selectedAccountCount = $scope.selectedAccounts.length;
     };
 
-    $scope.goToSearchByAccountId = function () {
+    $scope.unSelectAccount = function (allAccount, account) {
+        if (account.select == true) {
+            $scope.selectedAccounts.push(account);
+        } else {
+            var getSelectedAccountIndex = $scope.selectedAccounts.indexOf(account);
+            $scope.selectedAccounts.splice(getSelectedAccountIndex, 1);
+        }
+        var getSelectMachGroupItem = $.grep($scope.selectedAccounts, function (val) {
+            return allAccount.groupName === val.groupName;
+        });
+        
+        if (allAccount.accounts.length === getSelectMachGroupItem.length) {
+            allAccount.selectAllGroup = true;
+        } else {
+            allAccount.selectAllGroup = false;
+        }
+    };
+    
+     $scope.goToSearchByAccountId = function () {
         var getSelectedAccount = $scope.selectedAccounts.map(function (val, key) {
             if (val) {
-                return val.accountId.id;
+                return val.id;
+            }
+        }).join(',');
+        console.log(getSelectedAccount)
+        console.log($scope.selectedAccounts)
+        $stateParams.accountId = getSelectedAccount;
+        $scope.loadNewUrl();
+    };
+    //////////////////////////////// End-of-First-DropDown//////////////////////////////////////
+    //////////////////////////////// Start-of-Second-DropDown///////////////////////////////////
+    $scope.getSelectedAccount1 = function (allAccount) {
+        var getGroupName = allAccount.groupName;
+        if (getGroupName && allAccount.selectAllGroup1 == 1) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select1 = true;
+            });
+
+            angular.forEach(allAccount.accounts, function (val, key) {
+                var getMachItem = $.grep($scope.selectedAccount1, function (value) {
+                    return val.accountName == value.accountName;
+                });
+                if (getMachItem.length == 0) {
+                    $scope.selectedAccount1.push(val);
+                }
+            });
+        }
+        if (getGroupName && allAccount.selectAllGroup1 == 0) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select1 = false;
+                $scope.selectedAccount1.splice(val, 1)
+            });
+        }
+        $scope.selectedAccountCount1 = $scope.selectedAccount1.length;
+    };
+
+    $scope.unSelectAccount1 = function (allAccount, account) {
+        if (account.select1 == true) {
+            $scope.selectedAccount1.push(account)
+        } else {
+            var getSelectedAccountIndex = $scope.selectedAccount1.indexOf(account);
+            $scope.selectedAccount1.splice(getSelectedAccountIndex, 1);
+        }
+        var getSelectMachGroupItem = $.grep($scope.selectedAccount1, function (val) {
+            return allAccount.groupName === val.groupName;
+        });
+        if (allAccount.accounts.length === getSelectMachGroupItem.length) {
+            allAccount.selectAllGroup1 = true;
+        } else {
+            allAccount.selectAllGroup1 = false;
+        }
+    };
+
+    $scope.goToSearchByAccountId1 = function () {
+        var getSelectedAccount = $scope.selectedAccount1.map(function (val, key) {
+            if (val) {
+                return val.id;
             }
         }).join(',');
         $stateParams.accountId = getSelectedAccount;
         $scope.loadNewUrl();
     };
-
-//    $scope.getAccountId = function (account) {
+//////////////////////////////// End-of-Second-DropDown////////////////////////////////////// 
+//    $scope.getAccountId = function (account) {01191
 //        if ($stateParams.accountId != account.accountId.id) {
 //            $stateParams.tabId = 0;
 //            $stateParams.templateId = 0;

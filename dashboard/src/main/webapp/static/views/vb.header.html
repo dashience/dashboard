@@ -85,8 +85,6 @@
                 </li>
                 <li class="dropdown go"><span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
                 <li class="dropdown">
-
-
                     <div class="dropdown dropdownDate">
                         <button class="btn btn-default dropdown-toggle dateDuration-Box" type="button" data-toggle="dropdown">
                             <span class="dateRange-Title">{{selectedAccountCount?selectedAccountCount+" ": 0+" "}}Account Selected</span>
@@ -99,27 +97,52 @@
                                     <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                 </div>
                             </div>
-                            <li ng-repeat="account in accounts| filter:search">
-                                <input type="checkbox" class="inputCheckbox" ng-model="account.select" ng-true-value="true" ng-click="getSelectedAccounts(account)">
-                                <span ng-bind-html="account.accountId.accountName | highlight:search.$"></span>
+                            <li ng-repeat="allAccount in allAccounts| filter:search">
+                                <input type="checkbox" class="inputCheckbox" ng-model="allAccount.selectAllGroup" ng-click="getSelectedAccounts(allAccount)">
+                                <span ng-bind-html="allAccount.groupName | highlight:search.$"></span>
+                                <ul>
+                                    <li ng-repeat="account in allAccount.accounts">
+                                        <input type="checkbox" class="inputCheckbox" ng-model="account.select" ng-true-value="true" ng-click="unSelectAccount(allAccount, account); getSelectedAccounts(account)">
+                                        <span ng-bind-html="account.accountName | highlight:search.$"></span>
+                                    </li>
+                                </ul>
                             </li>
                             <div class="pull-right">
                                 <button type="button" ng-click="goToSearchByAccountId()" class="btn btn-sm">Apply</button>
                             </div>
                         </ul>
                     </div>
-
-                    <!--                    <form role="search" class="navbar-form-custom" method="post" action="#">
-                                            <div class="form-group">
-                                                <ui-select multiple ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected)" theme="bootstrap" ng-disabled="disabled" style="width:180px;">
-                                                    <ui-select-match placeholder="Select Account...">{{$item.accountId.accountName}}</ui-select-match>
-                                                    <ui-select-choices repeat="account in accounts | filter: $select.search">
-                                                        <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
-                                                    </ui-select-choices>
-                                                </ui-select>
-                                            </div>
-                                        </form>-->
                 </li>
+                <li class="dropdown">
+                    <div class="dropdown dropdownDate">
+                        <button class="btn btn-default dropdown-toggle dateDuration-Box" type="button" data-toggle="dropdown">
+                            <span class="dateRange-Title">{{selectedAccountCount1?selectedAccountCount1+" ": 0+" "}}Account Selected</span>
+                            <span class="caret dateRange-Title-Icon"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdownAccountCheckbox">  
+                            <div class="form-group">
+                                <div class="form-group has-feedback">
+                                    <input type="text" class="form-control" ng-model="search1.$" placeholder="Search"/>
+                                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                </div>
+                            </div>
+                            <li ng-repeat="allAccount in allAccounts| filter:search1">
+                                <input type="checkbox" class="inputCheckbox" ng-model="allAccount.selectAllGroup1" ng-click="getSelectedAccount1(allAccount)">
+                                <span ng-bind-html="allAccount.groupName | highlight:search1.$"></span>
+                                <ul>
+                                    <li ng-repeat="account in allAccount.accounts">
+                                        <input type="checkbox" class="inputCheckbox" ng-model="account.select1" ng-true-value="true" ng-click="unSelectAccount1(allAccount, account); getSelectedAccount1(account)">
+                                        <span ng-bind-html="account.accountName | highlight:search1.$"></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <div class="pull-right">
+                                <button type="button" ng-click="goToSearchByAccountId1()" class="btn btn-sm">Apply</button>
+                            </div>
+                        </ul>
+                    </div>
+                </li>
+                
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         <i class="pe-7s-keypad"></i>

@@ -357,7 +357,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     }
-    ;
 
     function columnHeaderDef(widget) {
         $scope.afterLoadWidgetColumns = false;
