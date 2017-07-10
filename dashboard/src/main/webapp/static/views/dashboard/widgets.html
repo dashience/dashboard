@@ -255,7 +255,7 @@
                         </div>-->
         <div class="btn-group dropdown" ng-if="(permission.addWidget === true) && (templateUserId === userId)">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
-                <button type="button" class="btn btn-block btn-info" 
+                <button type="button" class="btn btn-block btn-info" ng-click="clearChartType()"
                         data-toggle="modal" data-target="#editWidget" 
                         data-backdrop="static" data-keyboard="false">
                     <i class="fa fa-plus-circle"></i> Add Widget
@@ -315,7 +315,7 @@
                         <div class="panel-tools">
                             <div> 
                                 <a title="Favourites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
-                                <a ng-if="templateUserId === userId" ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
+                                <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
