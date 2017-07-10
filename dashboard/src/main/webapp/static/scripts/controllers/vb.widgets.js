@@ -1607,6 +1607,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         clearEditAllWidgetData();
         widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+            console.log(response)
+            widget.id = data.id;
             widget.chartType = data.chartType;
             widget.widgetTitle = data.widgetTitle;
             $scope.chartTypeName = "";
