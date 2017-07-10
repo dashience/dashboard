@@ -4171,3 +4171,32 @@ span.add-title {
     text-decoration: underline;
     line-height: 32px;
 }
+
+
+.add-widget-title {
+    padding: 5px 0px 0px 20px;
+    font-size: 24px;
+    text-decoration: underline;
+    font-weight: 600;
+    color: #777;
+    font-family: "proxima_nova_rgregular";
+}
+
+.btn.btn-sm {
+    border: 1px solid #ddd;
+}
+
+
+.temp-manage .input-group {
+    width: 100%;
+    min-width: 175px;
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.21) !important;
+}
+
+.manage-button {
+    padding:5px 10px;
+}
+
+.text-field-manage {
+    min-width: 180px;
+}

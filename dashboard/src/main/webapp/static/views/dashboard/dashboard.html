@@ -91,17 +91,29 @@
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                            <div class="dropdown-menu" style="width:20px;padding:5px 5px ! important">
-                                <!--<div class="col-sm-2">-->
-                                <input  type="text" ng-model="template.templateName"  class="form-control" style="padding: 2px 12px !important;">
-                                <button class="btn btn-success btn-xs saveButton" ng-click="saveTemplate(template);">SaveAs</button>
-                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getUserTemplate()">Manage</button>
-                                <!--</div>-->
-                                <!--<li><button class="btn btn-success btn-xs" ng-click="saveTemplate(tab);">SaveAs</button></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#">Separated link</a></li>-->
-                            </div>
+
+
+                            <div class="dropdown-menu temp-manage">
+                                <div class="col-lg-6">
+                                    <div class="input-group">
+                                        <input type="text" ng-model="template.templateName"  class="form-control text-field-manage">
+
+                                        <span class="input-group-btn manage-button">
+
+                                            <a class="btn btn-default btn-xs" ng-click="saveTemplate(template);"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                            </a>
+                                            <a class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getUserTemplate()">
+                                                <i class="fa fa-share-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </span>
+
+                                    </div><!-- /input-group -->
+                                </div>
+
+                            </div>                 
+
+
+
                         </div>
 
                         <!--</div>-->
