@@ -2625,8 +2625,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
-
+                                    pattern: ['#333333', '#777777', '#f16c20', '#ef8b2c', '#ecaa38', '#ebc844', '#c02e1d', '#117899', '#0f5b78', '#0d3c55']
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -2947,7 +2946,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#333333', '#777777', '#f16c20', '#ef8b2c', '#ecaa38', '#ebc844', '#c02e1d', '#117899', '#0f5b78', '#0d3c55']
 
                                 },
                                 tooltip: {show: false},
@@ -3256,7 +3255,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0', '#DC143C']
+                                    pattern: ['#333333', '#777777', '#f16c20', '#ef8b2c', '#ecaa38', '#ebc844', '#c02e1d', '#117899', '#0f5b78', '#0d3c55']
 
                                 },
                                 tooltip: {show: false},
@@ -3568,7 +3567,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#444444', '#555555', '#ed7224', '#faa82d','#ffd74b', '#ffac3c', '#ff9a36', '#ff7629', '#ff3312', '#ff2d10']
 
                                 },
                                 tooltip: {show: false},
@@ -3894,7 +3893,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169']
+                                    pattern: ['#444444', '#555555', '#ed7224', '#faa82d','#ffd74b', '#ffac3c', '#ff9a36', '#ff7629', '#ff3312', '#ff2d10']
 
                                 },
                                 tooltip: {show: false},
@@ -3970,142 +3969,144 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             var setData = [];
             var data = [];
             var funnelDataSource = JSON.parse(scope.funnelSource);
-            var url = "admin/proxy/getData?";
-            if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
-            if (funnelDataSource.dataSourceId.dataSourceType == "csv") {
-                url = "admin/csv/getData?";
-            }
-            if (funnelDataSource.dataSourceId.dataSourceType == "facebook") {
-                url = "admin/proxy/getData?";
-            }
-            var dataSourcePassword;
-            if (funnelDataSource.dataSourceId.password) {
-                dataSourcePassword = funnelDataSource.dataSourceId.password;
-            } else {
-                dataSourcePassword = '';
-            }
-            var getWidgetObj = JSON.parse(scope.widgetObj);
-            var setProductSegment;
-            var setTimeSegment;
-            var setNetworkType;
-            if (getWidgetObj.productSegment && getWidgetObj.productSegment.type) {
-                setProductSegment = getWidgetObj.productSegment.type;
-            } else {
-                setProductSegment = getWidgetObj.productSegment;
-            }
+            if (funnelDataSource) {
+                var url = "admin/proxy/getData?";
+                if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
+                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+                }
 
-            if (getWidgetObj.timeSegment && getWidgetObj.timeSegment.type) {
-                setTimeSegment = getWidgetObj.timeSegment.type;
-            } else {
-                setTimeSegment = getWidgetObj.timeSegment;
-            }
+                var dataSourcePassword;
+                if (funnelDataSource.dataSourceId.password) {
+                    dataSourcePassword = funnelDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+                var getWidgetObj = JSON.parse(scope.widgetObj);
 
-            if (getWidgetObj.networkType && getWidgetObj.networkType.type) {
-                setNetworkType = getWidgetObj.networkType.type;
-            } else {
-                setNetworkType = getWidgetObj.networkType;
-            }
-            scope.refreshFunnel = function () {
-                $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
-                        "&dataSetId=" + funnelDataSource.id +
-                        "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
-                        "&driver=" + funnelDataSource.dataSourceId.sqlDriver +
-                        "&dataSetReportName=" + funnelDataSource.reportName +
-                        "&startDate=" + $stateParams.startDate +
-                        "&endDate=" + $stateParams.endDate +
-                        "&productSegment=" + setProductSegment +
-                        "&timeSegment=" + setTimeSegment +
-                        "&networkType=" + setNetworkType +
-                        '&username=' + funnelDataSource.dataSourceId.userName +
-                        '&password=' + dataSourcePassword +
-                        '&widgetId=' + scope.funnelId +
-                        '&url=' + funnelDataSource.url +
-                        '&port=3306&schema=vb&query=' + encodeURI(funnelDataSource.query)).success(function (response) {
-                    scope.funnels = [];
-                    scope.loadingFunnel = false;
-                    if (response.data.length === 0) {
-                        scope.funnelEmptyMessage = "No Data Found";
-                        scope.hideEmptyFunnel = true;
-                    } else {
-                        if (!response) {
-                            return;
-                        }
-                        angular.forEach(funnelName, function (value, key) {
-                            var funnelData = response.data;
-                            var loopCount = 0;
-                            data = [value.fieldName];
-                            setData = funnelData.map(function (a) {
-                                data.push(loopCount);
-                                loopCount++;
-                                return a[value.fieldName];
-                            });
-                            var total = 0;
-                            for (var i = 0; i < setData.length; i++) {
-                                total += parseFloat(setData[i]);
+                var setProductSegment;
+                var setTimeSegment;
+                var setNetworkType;
+
+                if (getWidgetObj.productSegment && getWidgetObj.productSegment.type) {
+                    setProductSegment = getWidgetObj.productSegment.type;
+                } else {
+                    setProductSegment = getWidgetObj.productSegment;
+                }
+
+                if (getWidgetObj.timeSegment && getWidgetObj.timeSegment.type) {
+                    setTimeSegment = getWidgetObj.timeSegment.type;
+                } else {
+                    setTimeSegment = getWidgetObj.timeSegment;
+                }
+
+                if (getWidgetObj.networkType && getWidgetObj.networkType.type) {
+                    setNetworkType = getWidgetObj.networkType.type;
+                } else {
+                    setNetworkType = getWidgetObj.networkType;
+                }
+                console.log("funnel DataSource");
+                console.log(funnelDataSource);
+                scope.refreshFunnel = function () {
+                    $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
+                            "&dataSetId=" + funnelDataSource.id +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
+                            "&userId=" + (funnelDataSource.userId ? funnelDataSource.userId.id : null) +
+                            "&driver=" + funnelDataSource.dataSourceId.sqlDriver +
+                            "&dataSetReportName=" + funnelDataSource.reportName +
+                            "&startDate=" + $stateParams.startDate +
+                            "&endDate=" + $stateParams.endDate +
+                            "&productSegment=" + setProductSegment +
+                            "&timeSegment=" + setTimeSegment +
+                            "&networkType=" + setNetworkType +
+                            '&username=' + funnelDataSource.dataSourceId.userName +
+                            '&password=' + dataSourcePassword +
+                            '&widgetId=' + scope.funnelId +
+                            '&url=' + funnelDataSource.url +
+                            '&port=3306&schema=vb&query=' + encodeURI(funnelDataSource.query)).success(function (response) {
+                        scope.funnels = [];
+                        scope.loadingFunnel = false;
+                        if (response.data.length === 0) {
+                            scope.funnelEmptyMessage = "No Data Found";
+                            scope.hideEmptyFunnel = true;
+                        } else {
+                            if (!response) {
+                                return;
                             }
-                            scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total)});
+                            angular.forEach(funnelName, function (value, key) {
+                                var funnelData = response.data;
+                                var loopCount = 0;
+                                data = [value.fieldName];
+                                setData = funnelData.map(function (a) {
+                                    data.push(loopCount);
+                                    loopCount++;
+                                    return a[value.fieldName];
+                                });
+                                var total = 0;
+                                for (var i = 0; i < setData.length; i++) {
+                                    total += parseFloat(setData[i]);
+                                }
+                                scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total)});
+                            });
+                        }
+                        var data = scope.funnels;
+                        scope.funnelCharts = [];
+                        scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
+                        scope.fName = [];
+                        scope.fValue = [];
+                        angular.forEach(scope.funnels, function (value, key) {
+                            var funnelFieldName = value.funnelTitle;
+                            var funnelValue = value.totalValue;
+                            scope.fName.push(funnelFieldName);
+                            scope.fValue.push(funnelValue);
                         });
-                    }
-                    var data = scope.funnels;
-                    scope.funnelCharts = [];
-                    scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
-                    scope.fName = [];
-                    scope.fValue = [];
-                    angular.forEach(scope.funnels, function (value, key) {
-                        var funnelFieldName = value.funnelTitle;
-                        var funnelValue = value.totalValue;
-                        scope.fName.push(funnelFieldName);
-                        scope.fValue.push(funnelValue);
-                    });
-                    var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
-                    scope.funnelCharts = funnelData;
-                    function filterFunnelByValue(name, value) {
-                        var len = name.length;
-                        var temp, temp1 = 0;
-                        for (var i = 0; i < len; i++) {
-                            for (var j = i + 1; j < len; j++) {
-                                if (value[i] < value[j]) {
-                                    temp = value[i];
-                                    value[i] = value[j];
-                                    value[j] = temp;
-                                    temp1 = name[i];
-                                    name[i] = name[j];
-                                    name[j] = temp1;
+                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
+                        scope.funnelCharts = funnelData;
+                        function filterFunnelByValue(name, value) {
+                            var len = name.length;
+                            var temp, temp1 = 0;
+                            for (var i = 0; i < len; i++) {
+                                for (var j = i + 1; j < len; j++) {
+                                    if (value[i] < value[j]) {
+                                        temp = value[i];
+                                        value[i] = value[j];
+                                        value[j] = temp;
+                                        temp1 = name[i];
+                                        name[i] = name[j];
+                                        name[j] = temp1;
+                                    }
                                 }
                             }
+                            return funnelArrayObjects(name, value);
                         }
-                        return funnelArrayObjects(name, value);
-                    }
 
-                    function funnelArrayObjects(name, value) {
-                        var funnelObject = [];
-                        var len = name.length;
-                        for (var i = 0; i < len; i++) {
-                            funnelObject.push([name[i], value[i]]);
+                        function funnelArrayObjects(name, value) {
+                            var funnelObject = [];
+                            var funnelColor=['#111111', '#222222', '#333333', '#444444', '#555555', '#ed7224', '#faa82d','#ffd74b', '#ffac3c', '#ff9a36', '#ff7629', '#ff3312', '#ff2d10'];
+                            var len = name.length;
+                            for (var i = 0; i < len; i++) {
+                                funnelObject.push([name[i], value[i],funnelColor[i]]);
+                            }
+                            return funnelObject;
                         }
-                        return funnelObject;
-                    }
 
-                    /*Filter*/
+                        /*Filter*/
 
 
 
-                    // width = $(element[0]).width();
-                    function drawChart() {
-                        var width = $(element[0]).width();
-                        var height = 315;
-                        var options = {
-                            width: width,
-                            height: height,
-                            bottomPinch: 1, // How many sections to pinch
-                            hoverEffects: true  // Whether the funnel has effects on hover
-                        };
-                        var funnel = new D3Funnel(scope.funnelCharts, options);
-                        funnel.draw(element[0]);
-                    }
-                    drawChart();
+                        // width = $(element[0]).width();
+                        function drawChart() {
+                            var width = $(element[0]).width();
+                            var height = 315;
+                            var options = {
+                                width: width,
+                                height: height,
+                                bottomPinch: 1, // How many sections to pinch
+                                hoverEffects: true  // Whether the funnel has effects on hover
+                            };
+                            var funnel = new D3Funnel(scope.funnelCharts, options);
+                            funnel.draw(element[0]);
+                        }
+                        drawChart();
 //                    var options = {
 //                        // width : width - 30,
 //                        // width: 1300,
@@ -4122,18 +4123,20 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 //                    };
 //                    var funnel = new D3Funnel(scope.funnelCharts, options);
 //                    funnel.draw(element[0]);
-                    $(window).on("resize", function () {
-                        drawChart();
+                        $(window).on("resize", function () {
+                            drawChart();
 //        var width = $(element[0]).width();
 //                //$( "#funnelContainer" ).css( "width", width);
 //                options.width = width;
 //                var funnel = new D3Funnel(scope.funnelCharts, options);
 //                funnel.draw(element[0]);
+                        });
                     });
-                });
-            };
-            scope.setFunnelFn({funnelFn: scope.refreshFunnel});
-            scope.refreshFunnel();
+                }
+                ;
+                scope.setFunnelFn({funnelFn: scope.refreshFunnel});
+                scope.refreshFunnel();
+            }
         }
     };
 });

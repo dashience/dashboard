@@ -145,7 +145,7 @@
     .previewChart {
         border-radius: 5px;
         border: none;
-        font-size: 30px;
+        font-size: 20px;
         padding: 20px;
         color: #99a5aa;
         line-height: 1px;
@@ -154,6 +154,7 @@
     .fa.typeChart {
         border: 1px solid gainsboro;
         padding: 1vw;
+        width: 50px;
     }
     .chart{
         display: block;
@@ -194,9 +195,11 @@
         padding: 10px 0px;
         min-width: 400px;
     }
-    .input-group {
-        width: 490px;
-    }
+
+.widget-button-right {
+    margin-right: 20px;
+    margin-top: 10px;
+}
 
 
     .modal-body {
@@ -245,7 +248,7 @@
         padding:10px;
     }
     .btnAddon5{
-        background-color: #5ba689 !important;
+        background-color: #999 !important;
         color: #fff !important;
     }
 
@@ -317,13 +320,23 @@
         background : #ccc6;
     }
 
+    .add-widget-title {
+        padding: 5px 0px 0px 20px;
+        font-size: 24px;
+        text-decoration: underline;
+        font-weight: 600;
+        color: #777;
+        font-family: "proxima_nova_rgregular";
+    }
+
+
 </style>
 <div class="container">
     <div class="row main col-md-6">
         <div class="row">
             <div class="form-group">
                 <div class="col-sm-6">
-                    <div class="input-group"> <span class="input-group-addon btnAddon1">Widget</span>
+                    <div class="input-group"> <div class="add-widget-title">Widget</div>
                         <div class="box-pop">
                             <div class="form-group widget-title">
                                 <label>Widget Title</label>
@@ -341,6 +354,10 @@
                                     </a>
                                 </div>
                             </div>
+                            <div class="form-group widget-title">
+                                <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
+                                <label>All Account</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -350,7 +367,7 @@
             <div class="form-group">
                 <div class="col-sm-6">
 
-                    <div class="input-group"> <span class="input-group-addon btnAddon2">Data</span>
+                    <div class="input-group">  <div class="add-widget-title">Data</div>
                         <div class="box-pop">
 
                             <div class="data-1">
@@ -406,10 +423,10 @@
         <div class="row">
             <div class="form-group" >
                 <div class="col-sm-6">
-                    <div class="input-group"> <span class="input-group-addon btnAddon3">Metrics</span>
+                    <div class="input-group">  <div class="add-widget-title">Metrics</div>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
-                                <button class="btn btn-success" 
+                                <button class="btn btn-default" 
                                         ng-click="showListOfColumns()">
                                     Choose Columns
                                 </button>
@@ -417,13 +434,13 @@
                                         ng-click="showFilterList()">
                                     Filter
                                 </button>
-                                <button class="btn btn-success" 
+                                <button class="btn btn-default" 
                                         ng-click="showSortingColumn()">
                                     Sort
                                 </button>
                             </div>
                             <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
-                                <button class="btn btn-success" 
+                                <button class="btn btn-default" 
                                         ng-click="showEditor()">
                                     Show Editor
                                 </button>
@@ -436,10 +453,10 @@
         <div class="row" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
             <div class="form-group">
                 <div class="col-sm-6">
-                    <div class="input-group"> <span class="input-group-addon btnAddon4">Date Range</span>
+                    <div class="input-group"> <div class="add-widget-title">Date Range</div>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12"> 
-                                <button class="btn btn-success" ng-click="showDateDurations()">Date Range</button>
+                                <button class="btn btn-default" ng-click="showDateDurations()">Date Range</button>
                             </div>
                         </div>
                     </div>
@@ -447,9 +464,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8  pull-right widget-button-right">
                 <div class="form-group">
-                    <button class="btn btn-info" id="btn-save" 
+                    <button class="btn btn-default" id="btn-save" 
                             ng-click="save(widgetObj)">
                         <i class="fa fa-save"></i> Save
                     </button>
@@ -460,8 +477,7 @@
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
-                    <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
-                    <label>All Account</label>
+
                 </div>
             </div>
         </div>
@@ -860,7 +876,7 @@
                     <div class="footer-filter">
                         <div class="pull-right">
                             <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
-                            <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
+                            <button class="btn btn-default set-json" id="btn-reset" data-target="basic">Reset</button>
                         </div>
                     </div>
                 </div>

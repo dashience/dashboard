@@ -1107,8 +1107,8 @@ fieldset[disabled] .btn-success.active {
     border-color: #56b22b;
 }
 .btn-info {
-    background-color: #3498db;
-    border-color: #3498db;
+    background-color: #5a503f;
+    border-color: #5a503f;
     color: #FFFFFF ;
 }
 .btn-info:hover,
@@ -1753,7 +1753,7 @@ body {
     border-radius: 2px;
 }
 .hpanel .panel-body {
-    background: #fff;
+    background: #fefefe;
     /*    border-bottom: 1px solid #e4e5e7;*/
     border-radius: 2px;
     padding: 10px;
@@ -1789,7 +1789,7 @@ body {
 }
 .panel-tools a {
     margin-left: 5px;
-    color: #555;
+    color: #999;
     cursor: pointer;
     font-size:12px;
 }
@@ -1948,7 +1948,7 @@ body.fullscreen-panel-mode {
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
     background-color: transparent;
-    border-bottom: 3px solid #83a958;
+    border-bottom: 3px solid #ff9a36;
     border-top: none;
     border-left: none;
     border-right: none;
@@ -3733,7 +3733,7 @@ tfoot {
 }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-    color: #555;
+    color: #5a503f;
     cursor: default;
     font-weight: bold;
 }
@@ -3761,8 +3761,8 @@ button.close {
 }
 
 .btn-info {
-    background-color: #83a958;
-    border-color: #83a958;
+    background-color: #999;
+    border-color: #999;
     color: #fff;
     /*    background-color: rgb(132, 140, 99);
         border-color: rgb(132, 140, 99);
@@ -3771,15 +3771,15 @@ button.close {
 
 .text-capitalize {
     padding: 2px;
-    border-bottom: 1px solid #686868;
+    border-bottom: 1px solid #5f5f5f;
 }
 
 .hpanel > .panel-heading {
     /*    color: rgb(157, 171, 109);*/
     /*    color: rgb(132, 140, 99);*/
     padding-left:10px;
-    color: #686868;
-    background:#fff;
+    color: #5f5f5f;
+    background: #fefefe;
     text-decoration: none;
     /*background: #a3c185;*/
     /*    background: #e4e5e7;*/
@@ -3823,8 +3823,9 @@ button.close {
 }
 
 .selected {
-    color: rgb(98, 203, 49) !important;
+    color: #ff9a36 !important;
 }
+
 
 .panel-tools {
     /*    margin-top: -8px;*/
@@ -3923,7 +3924,7 @@ thead {
 
 
 .header-title {
-    background: #555 !important;
+    background: #999 !important;
     color: #fff;
     padding: 5px 10px;
     border-radius: 2px;
@@ -4160,3 +4161,33 @@ label {
 /*.dropup, .dropdown {
     overflow: hidden;
 }*/
+
+.add-widget-title {
+    padding: 5px 0px 0px 20px;
+    font-size: 24px;
+    text-decoration: underline;
+    font-weight: 600;
+    color: #777;
+    font-family: "proxima_nova_rgregular";
+}
+
+.btn.btn-sm {
+    border: 1px solid #ddd;
+}
+
+
+.temp-manage .input-group {
+    width: 100%;
+    min-width: 175px;
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.21) !important;
+}
+
+.manage-button {
+    padding:5px 10px;
+}
+
+.text-field-manage {
+    min-width: 180px;
+}
+
+

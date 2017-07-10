@@ -41,14 +41,40 @@
         overflow-y: auto;
         padding: 2px 5px;
     }
-    .inputCheckbox{
-        margin: 4px 3px 0px 4px !important;
-        vertical-align: middle;
 
-    }
+input[type="checkbox"], .inputCheckbox {
+    margin: 4px 3px 0px 4px !important;
+    vertical-align: top;
+}
+.dropdownAccountCheckbox li ul {
+    list-style: none;
+    margin: 0;
+    padding: 3px 20px;
+}
     .dropdownDate{
         margin-top: 10px;
     }
+       
+    .footer-bottom {
+    border-top: 1px solid #ddd;
+    width: 100%;
+    padding: 5px;
+}
+
+.secondary-checkbox {
+    color:#777;
+}
+
+.dropdownAccountCheckbox li span {
+    font-weight: 600;
+}
+
+
+.secondary-checkbox li span {
+    font-weight: normal;
+}
+
+
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
     <div id="logo">
@@ -100,14 +126,14 @@
                             <li ng-repeat="allAccount in allAccounts| filter:search">
                                 <input type="checkbox" class="inputCheckbox" ng-model="allAccount.selectAllGroup" ng-click="getSelectedAccounts(allAccount)">
                                 <span ng-bind-html="allAccount.groupName | highlight:search.$"></span>
-                                <ul>
+                                <ul class="secondary-checkbox">
                                     <li ng-repeat="account in allAccount.accounts">
                                         <input type="checkbox" class="inputCheckbox" ng-model="account.select" ng-true-value="true" ng-click="unSelectAccount(allAccount, account); getSelectedAccounts(account)">
                                         <span ng-bind-html="account.accountName | highlight:search.$"></span>
                                     </li>
                                 </ul>
                             </li>
-                            <div class="pull-right">
+                            <div class="footer-bottom">
                                 <button type="button" ng-click="goToSearchByAccountId()" class="btn btn-sm">Apply</button>
                             </div>
                         </ul>
@@ -129,14 +155,14 @@
                             <li ng-repeat="allAccount in allAccounts| filter:search1">
                                 <input type="checkbox" class="inputCheckbox" ng-model="allAccount.selectAllGroup1" ng-click="getSelectedAccount1(allAccount)">
                                 <span ng-bind-html="allAccount.groupName | highlight:search1.$"></span>
-                                <ul>
+                                <ul class="secondary-checkbox">
                                     <li ng-repeat="account in allAccount.accounts">
                                         <input type="checkbox" class="inputCheckbox" ng-model="account.select1" ng-true-value="true" ng-click="unSelectAccount1(allAccount, account); getSelectedAccount1(account)">
                                         <span ng-bind-html="account.accountName | highlight:search1.$"></span>
                                     </li>
                                 </ul>
                             </li>
-                            <div class="pull-right">
+                            <div class="footer-bottom">
                                 <button type="button" ng-click="goToSearchByAccountId1()" class="btn btn-sm">Apply</button>
                             </div>
                         </ul>
