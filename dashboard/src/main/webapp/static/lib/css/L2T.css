@@ -1723,7 +1723,7 @@ body {
 .hpanel > .panel-heading {
     color: inherit;
     font-weight: 600;
-    font-size: 20px;
+    font-size: 22px;
     padding: 5px 4px;
     transition: all .3s;
     clear: both;
@@ -3876,10 +3876,9 @@ body.modal-open {
 
 .normalheader h2 {
     margin-left:5px;
-    letter-spacing: 0.5px;
     font-size: 24px;
-    font-family:'enigmaticregular';
-    font-weight:normal !important;
+    font-family: "proxima_nova_rgregular", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight:600 !important;
     color: #fff !important;
 }
 

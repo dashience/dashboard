@@ -54,7 +54,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userLogout = function () {
         window.location.href = "login.html"
     };
-    
+
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         if (url.indexOf("dashboardTemplate") > 0) {
@@ -72,6 +72,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     }
     if ($stateParams.productId) {
         $http.get(tabUrl).success(function (response) {
+            console.log(response);
             var getCurrentUrl;
             $scope.loadTab = false;
             if (!response[0].templateId) {
@@ -293,22 +294,24 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         tab.editing = false;
         $scope.editedItem = null;
     };
-    $scope.templateId = null;
+
 
     //save Template
     $scope.saveTemplate = function (template) {
+        console.log($scope.templateId);
         var tabIds = $scope.tabs.map(function (value, key) {
             if (value) {
                 return value.id;
             }
         }).join(',');
         var data = {
-            id: template.templateId ? template.templateId : null,
+            id: $scope.templateId ? $scope.templateId : null,
             templateName: template.templateName,
             tabIds: tabIds
         };
         $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
             $scope.getAllTemplate();
+            $scope.template = "";
         });
         $scope.getAllTemplate();
         $scope.template = "";

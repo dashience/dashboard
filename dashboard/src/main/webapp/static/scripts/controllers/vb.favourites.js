@@ -7,5 +7,5 @@ app.controller('FavouritesController', function($http,$scope, $stateParams){
     $scope.favourites=[];
      $http.get("admin/tag").success(function (response) {
      $scope.favourites=response;
-     })    
-})
+     });    
+});
