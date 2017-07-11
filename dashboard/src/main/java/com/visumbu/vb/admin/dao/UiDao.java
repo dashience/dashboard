@@ -463,6 +463,13 @@ public class UiDao extends BaseDao {
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
+    public TabWidget getWidgetById(Integer widgetId) {
+        if(widgetId == null) {
+            return null;
+        }
+        TabWidget tabWidget = (TabWidget) sessionFactory.getCurrentSession().get(TabWidget.class, widgetId);
+        return tabWidget;
+    }
 
     public void removeDsFromDataSet(Integer id) {
         String queryStr = "delete DataSet d where d.dataSourceId.id = :dataSourceId";
@@ -662,7 +669,7 @@ public class UiDao extends BaseDao {
     }
 
     public List<DataSetColumns> getDataSetColumnsByDataSetId(Integer dataSetId, Integer userId) {
-        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id and (d.userId IS NULL or d.userId.id = :userId)";
+        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id and (d.userId IS NULL or d.userId.id = :userId) and d.widgetId is null)";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("id", dataSetId);
         query.setParameter("userId", userId);
@@ -789,13 +796,24 @@ public class UiDao extends BaseDao {
         return list;
     }
 
-    public DataSetColumns createDataSetColumn(ColumnDef columnDef, Integer dataSetId) {
+    public DataSetColumns createDataSetColumn(ColumnDef columnDef, Integer dataSetId, Integer userId, Integer widgetId) {
         DataSetColumns dataSetColumn = new DataSetColumns();
         dataSetColumn.setFieldName(columnDef.getFieldName());
         dataSetColumn.setFieldType(columnDef.getFieldType());
+        dataSetColumn.setDataSetId(getDataSetById(dataSetId));
+        dataSetColumn.setWidgetId(getWidgetById(widgetId));
+        dataSetColumn.setUserId(findUserById(userId));
         dataSetColumn.setDisplayName(columnDef.getDisplayName());
         dataSetColumn.setDisplayFormat(columnDef.getDisplayFormat());
         return (DataSetColumns) create(dataSetColumn);
+    }
+    
+    public VbUser findUserById(Integer userId) {
+        if(userId == null) {
+            return null; 
+       }
+        VbUser user = (VbUser) sessionFactory.getCurrentSession().get(VbUser.class, userId);
+        return user;
     }
 
     public List<TemplateTabs> getTabByTemplateId(Integer templateId) {

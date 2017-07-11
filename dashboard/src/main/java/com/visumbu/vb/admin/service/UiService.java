@@ -1153,7 +1153,7 @@ public class UiService {
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
         DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId, widgetId);
         if (column == null) {
-            column = uiDao.createDataSetColumn(columnDef, dataSetId);
+            column = uiDao.createDataSetColumn(columnDef, dataSetId, userId, widgetId);
         }
         return column;
     }
