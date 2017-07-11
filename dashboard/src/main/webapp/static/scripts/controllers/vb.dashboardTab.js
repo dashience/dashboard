@@ -72,6 +72,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     }
     if ($stateParams.productId) {
         $http.get(tabUrl).success(function (response) {
+            console.log(response);
             var getCurrentUrl;
             $scope.loadTab = false;
             if (!response[0].templateId) {

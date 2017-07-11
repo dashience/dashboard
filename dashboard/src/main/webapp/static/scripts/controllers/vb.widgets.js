@@ -1,6 +1,33 @@
 function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+function formatBySecond(second) {
+    var minutes = "0" + Math.floor(second / 60);
+    var seconds = "0" + (second - minutes * 60);
+    var hours = "0" + Math.floor(minutes / 60);
+    return hours.substr(-2) + " : " + minutes.substr(-2) + " : " + seconds.substr(-2);
+}
+
+function dashboardFormat(column, value) {
+    if(column.fieldType === "date") {
+        var toformat = column.displayFormat == null? "MM/DD/YY" : column.displayFormat;
+        return dateConvert(column.dataFormat, toformat, value);
+    }
+    if (column.displayFormat.indexOf("%") > -1) {
+        d3.format(column.displayFormat)(value / 100);
+    } else if (column.displayFormat == 'H:M:S') {
+        return formatBySecond(parseInt(value))
+    } else {
+        return d3.format(column.displayFormat)(value);
+    }
+}
+
+function dateConvert(fromFormat, toFormat, value) {
+    return moment(value, fromFormat).format(toFormat);
+    // return value;
+}
+
 app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $state, $window, $interval) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
@@ -1235,6 +1262,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     //Edit Derived
     $scope.editDerivedColumn = function (collectionField, widgetObj) {
+        $scope.showDerived = false;
+        console.log(collectionField);
         $scope.dataSetColumn = {};
         if (collectionField.userId != null) {
             $scope.showDerived = true;
@@ -1340,6 +1369,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
+    $scope.text = "";
     //Auto Complete
     $scope.text = "";
     $scope.config = {
@@ -1374,6 +1404,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         ]
     };
+
 
 //    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
 //        $scope.tableColumns = [];
@@ -1749,7 +1780,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
-
     };
 });
 
@@ -1951,13 +1981,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     if (isNaN(value)) {
                         return "-";
                     }
-                    if (column.displayFormat.indexOf("%") > -1) {
-                        return d3.format(column.displayFormat)(value / 100);
-                    } else if (column.displayFormat == 'H:M:S') {
-                        return formatBySecond(parseInt(value))
-                    } else {
-                        return d3.format(column.displayFormat)(value);
-                    }
+                    return dashboardFormat(column, value);
                 }
                 return value;
             };
@@ -1983,12 +2007,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 return returnSortDay;
             }
 
-            function formatBySecond(second) {
-                var minutes = "0" + Math.floor(second / 60);
-                var seconds = "0" + (second - minutes * 60);
-                var hours = "0" + Math.floor(minutes / 60);
-                return hours.substr(-2) + " : " + minutes.substr(-2) + " : " + seconds.substr(-2);
-            }
+
 
             var groupByFields = []; // ['device', 'campaignName'];
             var aggreagtionList = [];
@@ -2528,12 +2547,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
-            function formatBySecond(second) {
-                var minutes = "0" + Math.floor(second / 60);
-                var seconds = "0" + (second - minutes * 60);
-                var hours = "0" + Math.floor(minutes / 60);
-                return hours.substr(-2) + " : " + minutes.substr(-2) + " : " + seconds.substr(-2);
-            }
 
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {

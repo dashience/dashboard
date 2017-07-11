@@ -1,4 +1,4 @@
-app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state,$rootScope) {
+app.controller('EditWidgetController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state, $rootScope) {
 //    $scope.editWidgetData = []
 //    $scope.permission = localStorageService.get("permission");
 //    $scope.accountId = $stateParams.accountId;
