@@ -138,13 +138,14 @@
         width: 76px;
         font-size: 14px;
         white-space: normal;
-        font-family: "proxima_nova_rgregular", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-weight: 600 !important;
+        letter-spacing: 0.5px;
+        font-family: 'enigmaticregular';
+        font-weight: normal !important;
     }
     .previewChart {
         border-radius: 5px;
         border: none;
-        font-size: 15px;
+        font-size: 30px;
         padding: 20px;
         color: #99a5aa;
         line-height: 1px;
@@ -153,8 +154,8 @@
     .fa.typeChart {
         border: 1px solid gainsboro;
         padding: 1vw;
-        width: 40px;
-        height: 40px;
+/*        width: 40px;
+        height: 40px;*/
 
     }
     .chart{
@@ -342,41 +343,84 @@
                                             </span>
                                         </a>
                                     </div>
-                                    <div>
-                                        <!--<input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">-->
+<!--                                    <div>
+                                        <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
                                         <input type="checkbox"  ng-init="widgetObj.allAccount = true" ng-model="widgetObj.allAccount">
-                                        <label>All Account</label>
+                                        <label>All Account</label>-->
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            <!--</div>-->
             <div class="row" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
                 <div class="form-group">
-                    <div class="col-sm-6">
+                <div class="col-sm-6">
 
-                        <div class="input-group"> <span class="input-group-addon btnAddon2">Data</span>
-                            <div class="box-pop">
+                    <div class="input-group"> <span class="input-group-addon btnAddon2">Data</span>
+                        <div class="box-pop">
 
-                                <div class="data-1">
-                                    <div class="form-group widget-title col-sm-6"> 
-                                        <label>Data Source</label>
-                                        <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
-                                                ng-change="selectWidgetDataSource(widgetObj.dataSourceId)"
-                                                ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
-                                        </select>
-                                    </div>
-                                    <div class="form-group widget-title col-sm-6"> 
-                                        <label>Data Set</label>
-                                        <select class="form-control" 
-                                                ng-model="widgetObj.dataSetId" 
-                                                ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" 
-                                                ng-change="getNewDataSetObj(widgetObj, chartTypeName)">
-                                        </select>
-                                    </div>
-                                </div>
+                            <div class="data-1">
+                                <div class="form-group widget-title col-sm-6"> 
+                                    <label>Data Source</label>
+                                    <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
+                                            ng-change="selectWidgetDataSource(widgetObj.dataSourceId)"
+                                            ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
+                                    </select>
+                </div>
+                                <div class="form-group widget-title col-sm-6"> 
+                                    <label>Data Set</label>
+                                    <select class="form-control" 
+                                            ng-model="widgetObj.dataSetId" 
+                                            ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" 
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)">
+                                    </select>
+            </div>
+        </div>
+<!--    </div>
+    <div class="col-md-6">        
+        <div class="panel panel-default" ng-show="showColumnDefs">
+            <div class="panel-heading btnAddon5">
+                <h3 class="panel-title">
+                    Metrics</h3>
+            </div>
+            <div class="row">
+                <div ng-show="loadingColumnsGif" class="text-center">
+                    <img ng-hide="afterLoadWidgetColumns" src="static/img/logos/loader.gif" width="40">
+                </div>
+                <div class="col-sm-6 form-left-side-menu-border" ng-if="afterLoadWidgetColumns == true;">
+                    <ul ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="list-group">
+                        <li class="list-group-item justify-content-between" ng-repeat="collectionField in collectionFields">
+                            <div class="checkbox">
+                                <input type="checkbox" ng-model="collectionField.selectColumnDef" 
+                                       ng-true-value="1" ng-false-value="0" ng-click="selectColumnItem(collectionField, widgetObj)">
+                                <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
+                                    <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.fieldName}}</a>
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="col-sm-6" ng-show="showColumnDefs">
+                    <div ng-if="afterLoadWidgetColumns == true;">
+                        <ul class="list-group" ng-model="widgetObj.columns" ui-sortable="sortableOptions">
+                            <li class="list-group-item justify-content-between" ng-repeat="columns in widgetObj.columns">
+                                <div>
+                                    <span ng-click="startEditing(columns);">
+                                        <a class="wrap-text">
+                                            <span ng-hide="columns.editing">{{columns.displayName}}</span>
+                                            <form ng-submit="doneEditing(columns)" ng-show="columns.editing">
+                                                <input class="form-control" ng-model="columns.dispName" ng-blur="doneEditing(columns)" ng-focus="columns == editedItem">
+                                            </form>
+                                        </a>
+                                    </span>
+                                    <span class="pull-right" ng-show="columns.columnsButtons">
+                                        <a class="btn btn-default btn-xs" ng-click="removeSelectedValue(widgetObj, columns, $index)">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </span>
+                                </div>-->
                                 <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
                                     <div class="form-group widget-title col-sm-6"> 
                                         <label>Time Segment</label>
@@ -395,21 +439,91 @@
                                     </div>
                                 </div>
 
-                                <div class="data-3" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
-                                    <div class="form-group widget-title col-sm-12"> 
-                                        <label>Network Type</label>
-                                        <select class="form-control"
-                                                ng-model="widgetObj.networkType" 
-                                                ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
-                                                ng-options="networkType.name for networkType in networkTypes track by networkType.type">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="data-3" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
+                                <div class="form-group widget-title col-sm-12"> 
+                                    <label>Network Type</label>
+                                    <select class="form-control"
+                                            ng-model="widgetObj.networkType" 
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
+                                            ng-options="networkType.name for networkType in networkTypes track by networkType.type">
+                            </select>
+<!--                            <label>Format</label>
+                            <select class="form-control" ng-model="dataSetColumn.displayFormat">
+                                <option  ng-repeat="formatType in formats" value="{{formatType.value}}">
+                                    {{formatType.name}}
+                                </option>
+                            </select>-->
+                        </div>
+<!--                        <div class="form-group col-xs-12">
+                            <button class="btn btn-info" id="btn-save" 
+                                        ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
+                                    ng-disabled="dataSetError">
+                                <i class="fa fa-save"></i> Save
+                            </button>
+                            <button class="btn btn-default" id="btn-cancel" 
+                                    ng-click="cancelDerivedColumn(dataSetColumn)">
+                                <i class="fa fa-close"></i> Cancel
+                            </button>-->
+                        </div>
+<!--                    </form>-->
+                </div>
+            </div>
+<!--            <div class="row">
+                <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
+                    <div class="form-group">
+                        <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
+                            <label ng-if="hideSelectedColumn === false;">Select X-Axis</label>
+                            <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                    class="form-control" ng-model="xColumn" 
+                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                    ng-change="selectX1Axis(widgetObj, xColumn)">
+                            </select>-->
+                        </div>
+<!--                        <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
+                            <label ng-if="hideSelectedColumn === false;">Select X Axis</label>
+                            <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                    class="form-control" ng-model="selectPieChartXAxis" 
+                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                    ng-change="selectPieChartX(widgetObj, selectPieChartXAxis)">
+                            </select>-->
+                        </div>
+<!--                        <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
+                            <label ng-if="hideSelectedColumn === false">Select Y Axis</label>
+                            <select ng-if="hideSelectedColumn === false" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                    class="form-control" ng-model="selectPieChartYAxis" 
+                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                    ng-change="selectPieChartY(widgetObj, selectPieChartYAxis)">
+                            </select>-->
+                        </div>
+<!--                    </div>
+                    <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
+                            <label ng-if="hideSelectedColumn === false;">Select Y1-Axis</label>                            
+                            <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y1Column" theme="bootstrap" 
+                                       on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
+                                       on-remove="removedByY1Column(widgetObj, $item, y1Column)">
+                                <ui-select-match allow-clear="true" placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-choices repeat="y1axis in collectionFields | filter:$select.search">
+                                    {{y1axis.displayName}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
+                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
+                            <label ng-if="hideSelectedColumn === false;">Select Y2-Axis</label>
+                            <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
+                                       on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
+                                       on-remove="removedByY2Column(widgetObj, $item, y2Column)">
+                                <ui-select-match allow-clear="true" placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
+                                    {{y2axis.displayName}}
+                                </ui-select-choices>
+                            </ui-select>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <div class="row">
                 <div class="form-group" >
                     <div class="col-sm-6">
@@ -467,7 +581,8 @@
                                 ng-click="cancel(widgetObj)">
                             <i class="fa fa-close"></i> Cancel
                         </button>
-
+                    <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
+                    <label>All Account</label>
                     </div>
                 </div>
             </div>
@@ -482,7 +597,7 @@
                     <div ng-show="loadingColumnsGif" class="text-center">
                         <img ng-hide="afterLoadWidgetColumns" src="static/img/logos/loader.gif" width="40">
                     </div>
-                    <div class="col-sm-6 form-left-side-menu-border">
+                <div class="col-sm-6 form-left-side-menu-border" ng-if="afterLoadWidgetColumns == true;">
                         <ul ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="list-group">
                             <li class="list-group-item justify-content-between" ng-repeat="collectionField in collectionFields">
                                 <div class="checkbox">

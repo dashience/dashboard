@@ -309,9 +309,10 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             templateName: template.templateName,
             tabIds: tabIds
         };
-//        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
-//            $scope.getAllTemplate();
-//        });
+        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
+            $scope.getAllTemplate();
+            $scope.template = "";
+        });
         $scope.getAllTemplate();
         $scope.template = "";
         $scope.templateId = "";
