@@ -1752,7 +1752,11 @@ public class ProxyController {
                 String key = entrySet.getKey();
                 DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
                 if (fieldProperties != null) {
-                    columnDefs.add(new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat()));
+                    ColumnDef columnDef = new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat());
+                    if(fieldProperties.getDataType() != null && fieldProperties.getDataType().equalsIgnoreCase("date")) {
+                        columnDef.setDataFormat(fieldProperties.getDataFormat());
+                    }
+                    columnDefs.add(columnDef);
                 } else {
                     Object value = entrySet.getValue();
                     String valueString = value + "";

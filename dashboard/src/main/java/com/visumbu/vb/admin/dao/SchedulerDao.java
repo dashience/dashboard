@@ -157,7 +157,7 @@ public class SchedulerDao extends BaseDao {
     }
 
     public List<SchedulerHistory> getSchedulerHistoryById(Integer schedulerId) {
-        String queryStr = "select d from SchedulerHistory d where d.schedulerId.id = :schedulerId";
+        String queryStr = "select d from SchedulerHistory d where d.schedulerId.id = :schedulerId order by d.executedDate desc, d.executionStartTime desc";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerId", schedulerId);
         //query.executeUpdate();
