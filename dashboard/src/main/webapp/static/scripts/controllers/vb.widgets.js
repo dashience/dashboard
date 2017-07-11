@@ -508,6 +508,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             } else {
                 $scope.collectionFields = response.columnDefs;
             }
+            $scope.columnY1Axis = [];
+            $scope.columnY2Axis = [];
+            angular.forEach($scope.collectionFields, function (value, key) {
+                $scope.columnY1Axis.push(value);
+                $scope.columnY2Axis.push(value);
+            });
+            console.log($scope.columnY1Axis);
+            console.log($scope.columnY2Axis);
             resetQueryBuilder();
         });
     };
@@ -964,6 +972,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
         $scope.dispHideBuilder = true;
+
+        // added code starts
+        angular.forEach($scope.columnY2Axis, function (val, key) {
+            angular.forEach(y1data, function (value, key) {
+                console.log(value.fieldName);
+                if (val.fieldName === value.fieldName) {
+                    var index = $scope.columnY2Axis.indexOf(val);
+                    $scope.columnY2Axis.splice(index, 1);
+                }
+            });
+        });
+        console.log($scope.columnY2Axis);
+        console.log($scope.collectionFields);
+        // added code ends
+
         angular.forEach(y1data, function (value, key) {
             if (!value) {
                 return;
@@ -997,6 +1020,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectY2Axis = function (widget, y2data) {
         $scope.dispHideBuilder = true;
+
+        // added code starts
+        angular.forEach($scope.columnY1Axis, function (val, key) {
+            angular.forEach(y2data, function (value, key) {
+                console.log(value.fieldName);
+                if (val.fieldName === value.fieldName) {
+                    var index = $scope.columnY1Axis.indexOf(val);
+                    $scope.columnY1Axis.splice(index, 1);
+                }
+            });
+        });
+        console.log($scope.columnY1Axis);
+        // added code ends
+
         angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
@@ -1028,6 +1065,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
         console.log(column)
 //        if (yAxisItems.length > 0) {
+        $scope.columnY2Axis.push(column);
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY1Axis(widgetObj, yAxisItems);
 //        } else {
@@ -1042,6 +1080,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.removedByY2Column = function (widgetObj, column, yAxisItems) {
 //        if (yAxisItems.length > 0) {
+        $scope.columnY1Axis.push(column);
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY2Axis(widgetObj, yAxisItems);
 //        } else {

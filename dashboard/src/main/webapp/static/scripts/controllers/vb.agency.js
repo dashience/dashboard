@@ -79,8 +79,8 @@ app.controller('AgencyController', function ($scope, $http) {
     };
     //Default Templates
 
-    function getTemplateByAgency(agency){        
-        $http.get('admin/ui/getDefaultTemplate/'+agency.id).success(function (response) {
+    function getTemplateByAgency(agency) {
+        $http.get('admin/ui/getDefaultTemplate/' + agency.id).success(function (response) {
             console.log(response);
             $scope.templates = response;
         });
@@ -145,6 +145,11 @@ app.controller('AgencyController', function ($scope, $http) {
     };
     $scope.clearAgency = function () {
         $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+        $scope.agencyProducts = "";
+        $scope.agencyLicences = "";
+        $scope.agencysettings = "";
+        $scope.agencyUsers = "";
+        $scope.selectedRow = -1;
     };
     $scope.deleteAgency = function (agency, index) {
         $http({method: 'DELETE', url: 'admin/user/agency/' + agency.id}).success(function (response) {
