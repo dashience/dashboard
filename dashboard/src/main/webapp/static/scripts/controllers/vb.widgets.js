@@ -10,8 +10,8 @@ function formatBySecond(second) {
 }
 
 function dashboardFormat(column, value) {
-    if(column.fieldType === "date") {
-        var toformat = column.displayFormat == null? "MM/DD/YY" : column.displayFormat;
+    if (column.fieldType === "date") {
+        var toformat = column.displayFormat == null ? "MM/DD/YY" : column.displayFormat;
         return dateConvert(column.dataFormat, toformat, value);
     }
     if (column.displayFormat.indexOf("%") > -1) {
@@ -256,7 +256,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetObj = {};
 
     $scope.clearChartType = function () {
-        $scope.widgetObj = []
+        $scope.widgetObj = {}
 //        $scope.widgetObj.id = "";
 //        $scope.widgetObj.previewTitle = "";
 //        $scope.widgetObj.chartType = "";
@@ -604,11 +604,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function getSegments(widget) {
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
-        var getDataSourceType = widget.dataSourceId.dataSourceType;
+        var getDataSourceType = widget.dataSourceId?widget.dataSourceId.dataSourceType:null;
         if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls' || getDataSourceType === "") {
             return;
         }
-        var getReportName = widget.dataSetId.reportName;
+        var getReportName = widget.dataSetId?widget.dataSetId.reportName:null;
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
             var getDataSetObjs = response;
             var getDataSetPerformance = getDataSetObjs[getDataSourceType]
@@ -718,7 +718,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showSortBy = false;
     };
 
-    $scope.showEditor = function () {
+    $scope.showEditor = function (chartType, widget) {
+        $scope.chartTypeName = chartType?chartType:widget.chartType;
         $scope.showSortBy = false;
         $scope.showPreviewChart = true;
         $scope.showDateRange = false;
@@ -1031,7 +1032,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
         $scope.dispHideBuilder = true;
-        angular.forEach(y1data, function (value, key) {
+            angular.forEach(y1data, function (value, key) {
             if (!value) {
                 return;
             }
@@ -1064,7 +1065,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectY2Axis = function (widget, y2data) {
         $scope.dispHideBuilder = true;
-        angular.forEach(y2data, function (value, key) {
+            angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
             }
@@ -1147,8 +1148,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         $scope.ticker(widgetObj, tickerItem);
-        var getIndex = widgetObj.columns.indexOf(column)
-        widgetObj.columns.splice(getIndex, 1)
+        console.log(column)
+        console.log(widgetObj.columns)
+        //var getIndex = widgetObj.columns.indexOf(column)
+       // console.log(getIndex)
+        //widgetObj.columns.splice(getIndex, 1)
     };
 // Funnel Format
     $scope.funnel = function (widget, column) {
@@ -1630,9 +1634,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var dataSetObj;
         if (widget.chartType != 'text') {
 
-            dataSourceTypeId = widget.dataSourceId.id;
+            dataSourceTypeId = widget.dataSourceId ? widget.dataSourceId.id : null;
             dataSourceObj = widget.dataSourceId;
-            dataSetTypeId = widget.dataSetId.id;
+            dataSetTypeId = widget.dataSetId ? widget.dataSetId.id : null;
             dataSetObj = widget.dataSetId;
         } else {
             dataSourceTypeId = 0;
@@ -1744,7 +1748,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.cancel = function (widgetObj) {
         console.log(widgetObj);
-        
+
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
@@ -1769,6 +1773,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.allAccount = false;
         }
         $scope.chartTypeName = "";
+        $scope.xColumn = ""
+        $scope.tickerItem = ""
+        $scope.funnelItem = ""
+        $scope.y1Column = ""
+        $scope.y2Column = ""
+        $scope.selectPieChartYAxis = ""
+        $scope.selectPieChartXAxis = ""
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";

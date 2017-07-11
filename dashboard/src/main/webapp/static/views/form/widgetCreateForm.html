@@ -432,7 +432,7 @@
                             </div>
                             <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
                                 <button class="btn btn-success btn-color" 
-                                        ng-click="showEditor()">
+                                        ng-click="showEditor(chartTypeName, widgetObj)">
                                     Show Editor
                                 </button>
                             </div>
@@ -845,7 +845,7 @@
                         </div>
                     </div>
                 </div>                
-                <div class="row" ng-if="chartTypeName === 'text'"> 
+                <div class="row" ng-if="chartTypeName === 'text'">
                     <div class="panel-body" style="overflow: auto;height:350px;">
                         <div>
                             <textarea ck-Editor ng-model="widgetObj.content" rows="10" cols="99"></textarea>

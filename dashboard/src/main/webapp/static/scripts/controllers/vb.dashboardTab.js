@@ -52,7 +52,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     //product tabs
     $scope.tabs = [];
     $scope.userLogout = function () {
-        window.location.href = "login.html"
+        window.location.href = "login.html";
     };
     
     $scope.getCurrentPage = function () {
@@ -72,7 +72,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     }
     if ($stateParams.productId) {
         $http.get(tabUrl).success(function (response) {
-            console.log(response);
             var getCurrentUrl;
             $scope.loadTab = false;
             if (!response[0].templateId) {

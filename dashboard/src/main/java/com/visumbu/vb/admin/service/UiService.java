@@ -289,10 +289,12 @@ public class UiService {
         tabWidget.setCustomRange(tabWidgetBean.getCustomRange());
         tabWidget.setFrequencyDuration(tabWidgetBean.getFrequencyDuration());
         tabWidget.setMaxRecord(tabWidgetBean.getMaxRecord());
-        tabWidget.setDatasource(tabWidgetBean.getDatasource());
-        tabWidget.setDataset(tabWidgetBean.getDataset());
-        tabWidget.setDataSetId(dataSet);
-        tabWidget.setDataSourceId(dataSource);
+        if (!tabWidgetBean.getChartType().equalsIgnoreCase("text")) {
+            tabWidget.setDatasource(tabWidgetBean.getDatasource());
+            tabWidget.setDataset(tabWidgetBean.getDataset());
+            tabWidget.setDataSetId(dataSet);
+            tabWidget.setDataSourceId(dataSource);
+        }
         tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setContent(tabWidgetBean.getContent());
         tabWidget.setDateRangeName(tabWidgetBean.getDateRangeName());
@@ -434,7 +436,7 @@ public class UiService {
         System.out.println("widgetTags ---> " + widgetTags);
         DataSet dataSet = tabWidgetBean.getDataSetId();
         System.out.println("datasetId --> " + dataSet.getId());
-        List<DataSetColumns> dataSetColumns = uiDao.getDataSetColumnsByWidgetId(dataSet.getId(), widgetId);
+        List<DataSetColumns> dataSetColumns = uiDao.getDataSetColumn(dataSet.getId(), widgetId);
         System.out.println("dataSetColumns --> " + dataSetColumns);
         for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
             WidgetColumn widgetColumnBean = iterate.next();
@@ -1088,12 +1090,10 @@ public class UiService {
         uiDao.saveOrUpdate(dashboardTemplate);
 
         String[] tabs = template.getTabIds().split(",");
-        System.out.println("DashboardTemplate Id ---> " + dashboardTemplate.getId());
         uiDao.deleteTemplateTabs(dashboardTemplate.getId());
         for (int i = 0; i < tabs.length; i++) {
             String tabIdStr = tabs[i];
             Integer tabId = Integer.parseInt(tabIdStr);
-            System.out.println("tabId ---> " + tabId);
             // DashboardTabs dashboardTab = uiDao.getTabById(tabId);
             DashboardTabs duplicateTab = duplicateTab(tabId, userId);
             TemplateTabs templateTab = new TemplateTabs();
@@ -1145,11 +1145,10 @@ public class UiService {
 //        dataSetColumn.setFieldType(widgetColumn.getFieldType());
 //        return dataSetColumn;
 //    }
-    
     public List<DataSetColumns> getDataSetColumns(Integer datasetId, Integer widgetId) {
         return uiDao.getDataSetColumn(datasetId, widgetId);
     }
-    
+
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
         DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId, widgetId);
         if (column == null) {
