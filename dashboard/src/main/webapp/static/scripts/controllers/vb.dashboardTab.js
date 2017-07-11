@@ -294,23 +294,24 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         tab.editing = false;
         $scope.editedItem = null;
     };
-    $scope.templateId = null;
+
 
     //save Template
     $scope.saveTemplate = function (template) {
+        console.log($scope.templateId);
         var tabIds = $scope.tabs.map(function (value, key) {
             if (value) {
                 return value.id;
             }
         }).join(',');
         var data = {
-            id: template.templateId ? template.templateId : null,
+            id: $scope.templateId ? $scope.templateId : null,
             templateName: template.templateName,
             tabIds: tabIds
         };
-        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
-            $scope.getAllTemplate();
-        });
+//        $http({method: 'POST', url: 'admin/ui/saveTemplate/' + $stateParams.productId, data: data}).success(function (response) {
+//            $scope.getAllTemplate();
+//        });
         $scope.getAllTemplate();
         $scope.template = "";
         $scope.templateId = "";
