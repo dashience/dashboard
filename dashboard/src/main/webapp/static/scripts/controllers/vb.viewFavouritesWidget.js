@@ -73,24 +73,26 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     function saveWidgetSize(widget, expandchart) {
         $timeout(function () {
             widget.chartType = expandchart;
-            var data = {
-                id: widget.id,
-                chartType: widget.chartType,
-                widgetTitle: widget.widgetTitle,
-                widgetColumns: widget.columns,
-                dataSourceId: widget.dataSourceId.id,
-                dataSetId: widget.dataSetId.id,
-                tableFooter: widget.tableFooter,
-                zeroSuppression: widget.zeroSuppression,
-                maxRecord: widget.maxRecord,
-                dateDuration: widget.dateDuration,
-                content: widget.content,
-                width: widget.width,
-                jsonData: widget.jsonData,
-                queryFilter: widget.queryFilter
-            };
-            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
             });
+//            var data = {
+//                id: widget.id,
+//                chartType: widget.chartType,
+//                widgetTitle: widget.widgetTitle,
+//                widgetColumns: widget.columns,
+//                dataSourceId: widget.dataSourceId.id,
+//                dataSetId: widget.dataSetId.id,
+//                tableFooter: widget.tableFooter,
+//                zeroSuppression: widget.zeroSuppression,
+//                maxRecord: widget.maxRecord,
+//                dateDuration: widget.dateDuration,
+//                content: widget.content,
+//                width: widget.width,
+//                jsonData: widget.jsonData,
+//                queryFilter: widget.queryFilter
+//            };
+//            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+//            });
         }, 50);
     }
     
@@ -165,4 +167,24 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.setFunnelFn = function (funnelFn) {
         $scope.directiveFunnelFn = funnelFn;
     };
+    
+    $scope.onDropComplete = function(index, favWidget, evt){
+        if (favWidget !== "" && favWidget !== null) {
+            var otherObj = $scope.favouritesWidgets[index];
+            var otherIndex = $scope.favouritesWidgets.indexOf(favWidget);
+//            $scope.reportWidgets = $scope.moveWidget($scope.reportWidgets, otherIndex, index);
+            $scope.favouritesWidgets[index] = favWidget;
+            $scope.favouritesWidgets[otherIndex] = otherObj;
+            var favWidgetOrder = $scope.favouritesWidgets.map(function (value, key) {
+                if (!value) {
+                    return;
+                }
+                return value.id;
+            }).join(',');
+            if (favWidgetOrder) {
+                console.log(favWidgetOrder)
+               $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
+            }
+        }
+    }
 });

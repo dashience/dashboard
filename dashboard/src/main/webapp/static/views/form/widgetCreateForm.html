@@ -316,7 +316,9 @@
     .builder {
         background : #ccc6;
     }
-
+    .metric-Border{
+        padding-bottom: 5px !important;
+    }
 </style>
 <div class="container">
     <div class="row main col-md-6">
@@ -557,7 +559,7 @@
                     </form>
                 </div>
             </div>
-            <div class="row">
+            <div class="row metric-Border">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">

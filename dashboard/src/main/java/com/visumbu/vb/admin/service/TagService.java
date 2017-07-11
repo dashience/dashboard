@@ -174,4 +174,8 @@ public class TagService {
         Tag tag = tagDao.findTagName("Favourite");
         return tagDao.findAllWidgetsByTag(user, tag);
     }
+
+    public String updateFavWidgetOrder(Integer favId, String widgetOrder) {
+        return tagDao.updateFavWidgetOrder(favId, widgetOrder);
+    }
 }

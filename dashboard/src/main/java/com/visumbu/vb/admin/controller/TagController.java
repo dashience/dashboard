@@ -130,6 +130,14 @@ public class TagController extends BaseController {
         VbUser user = userService.findByUsername(username);
         return tagService.getAllFav(user);
     }
+    
+    @RequestMapping(value = "favWidgetUpdateOrder/{favId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object updateFavWidgetOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer favId) {
+        String widgetOrder = request.getParameter("widgetOrder");
+        tagService.updateFavWidgetOrder(favId, widgetOrder);
+        return null;
+    }
 
 //    @RequestMapping(value = "widgetTag/{widgetTagId}", method = RequestMethod.DELETE, produces = "application/json")
 //    public @ResponseBody

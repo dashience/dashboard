@@ -146,7 +146,7 @@
 <div class="row content">
     <div ng-repeat="favouritesWidget in favouritesWidgets">
         <div class="col-md-{{favouritesWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
-            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="favouritesWidget.widgetId">
+            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="favouritesWidget">
                 <div class="panel-heading">
                     <div class="panel-tools">
                         <a title="Favourites" ng-click="toggleFavourite(favouritesWidget, $index)">
@@ -233,7 +233,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         <div class="report-bottomMenu pull-right" ng-show="showReportList[favouritesWidget.widgetId.id]">
             <div class="report-menuHeader">
                 <div class="col-md-10">
@@ -299,6 +298,7 @@
                     <button class="btn btn-success" ng-click="addWidgetToReport(favouritesWidget); showReportList[favouritesWidget.widgetId.id] = false;" style="float: right">Add</button>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </div>

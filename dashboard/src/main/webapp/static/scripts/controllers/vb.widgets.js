@@ -229,7 +229,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetObj = {};
 
     $scope.clearChartType = function () {
-        clearEditAllWidgetData();
+        $scope.widgetObj = []
+//        $scope.widgetObj.id = "";
+//        $scope.widgetObj.previewTitle = "";
+//        $scope.widgetObj.chartType = "";
+        $scope.selectedChartType = "";
+//        $scope.widgetObj.dataSourceId = "";
+//        $scope.widgetObj.dataSetId = "";
+//        $scope.widgetObj.timeSegment = "";
+//        $scope.widgetObj.productSegment = "";
+//        $scope.widgetObj.networkType = "";
+//        $scope.widgetObj.columns = "";
+        $scope.chartTypeName = "";
+        $scope.dataSetColumn.fieldName = "";
+        $scope.dataSetColumn.expression = "";
+        $scope.dataSetColumn.fieldType = "";
+        $scope.dataSetColumn.displayFormat = "";
+        $scope.text = "";
+        $scope.xColumn = "";
+        $scope.selectPieChartXAxis = "";
+        $scope.selectPieChartYAxis = "";
+        $scope.y1Column = "";
+        $scope.y2Column = "";
+        $scope.tickerItem = "";
+        $scope.funnelItem = "";
+//        $scope.widgetObj.lastNdays = "";
+//        $scope.widgetObj.lastNweeks = "";
+//        $scope.widgetObj.lastNmonths = "";
+//        $scope.widgetObj.lastNyears = "";
+//        $scope.widgetObj.customStartDate = "";
+//        $scope.widgetObj.customStartDate = "";
+        $scope.showPreviewChart = false;
+        $scope.showColumnDefs = false;
+        $scope.showFilter = false;
+        $scope.loadingColumnsGif = false;
+        $scope.showDateRange = false;
+        $scope.showSortBy = false;
     };
 
     $scope.firstSortableOptions = {
@@ -281,7 +316,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSetId: widget.dataSetId,
             timeSegment: widget.timeSegment,
             productSegment: widget.productSegment,
-            networkType: widget.networkType
+            networkType: widget.networkType,
+            dateRangeName: widget.dateRangeName,
+            lastNdays: widget.lastNdays,
+            lastNweeks: widget.lastNweeks,
+            lastNmonths: widget.lastNmonths,
+            lastNyears: widget.lastNyears,
         });
 
         setDefaultChartType = widget.chartType;
@@ -1608,16 +1648,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             console.log(response)
+            $scope.chartTypeName = "";
             widget.id = data.id;
             widget.chartType = data.chartType;
             widget.widgetTitle = data.widgetTitle;
-            $scope.chartTypeName = "";
             widget.dataSetId = dataSetObj;//data.dataSetId;
             widget.dataSourceId = dataSourceObj;//data.dataSetId;
             widget.timeSegment = data.timeSegment;//data.dataSetId;
             widget.productSegment = data.productSegment;//data.dataSetId;
             widget.networkType = data.networkType;//data.dataSetId;
             widget.columns = data.widgetColumns;//data.dataSetId;
+            widget.dateRangeName = data.dateRangeName;
+            widget.lastNdays = data.lastNdays;
+            widget.lastNweeks = data.lastNweeks;
+            widget.lastNmonths = data.lastNmonths;
+            widget.lastNyears = data.lastNyears;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
             widget = data;
@@ -1667,9 +1712,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.cancel = function (widgetObj) {
+        console.log(widgetObj);
+        
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
-            $scope.widgetObj.id = val.id
+            $scope.widgetObj.id = val.id;
             $scope.widgetObj.previewTitle = val.widgetTitle;
             $scope.widgetObj.chartType = val.chartType;
 //            $scope.selectedChartType = val.chartType;
@@ -1679,6 +1726,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.productSegment = val.productSegment;
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
+            $scope.widgetObj.dateRangeName = val.dateRangeName;
+            $scope.widgetObj.lastNdays = val.lastNdays;
+            $scope.widgetObj.lastNweeks = val.lastNweeks;
+            $scope.widgetObj.lastNmonths = val.lastNmonths;
+            $scope.widgetObj.lastNyears = val.lastNyears;
         });
         if ($scope.widgetObj.accountId === null) {
             $scope.widgetObj.allAccount = true;
