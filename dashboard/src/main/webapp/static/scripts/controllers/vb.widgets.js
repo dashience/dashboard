@@ -604,11 +604,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function getSegments(widget) {
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
-        var getDataSourceType = widget.dataSourceId?widget.dataSourceId.dataSourceType:null;
+        var getDataSourceType = widget.dataSourceId ? widget.dataSourceId.dataSourceType : null;
         if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls' || getDataSourceType === "") {
             return;
         }
-        var getReportName = widget.dataSetId?widget.dataSetId.reportName:null;
+        var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
             var getDataSetObjs = response;
             var getDataSetPerformance = getDataSetObjs[getDataSourceType]
@@ -719,7 +719,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.showEditor = function (chartType, widget) {
-        $scope.chartTypeName = chartType?chartType:widget.chartType;
+        $scope.chartTypeName = chartType ? chartType : widget.chartType;
         $scope.showSortBy = false;
         $scope.showPreviewChart = true;
         $scope.showDateRange = false;
@@ -910,12 +910,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.showReportWidgetName = false;
+    $scope.reportEmptyLogo = "static/img/logos/deeta-logo.png"
     $scope.selectReport = function (reportWidget) {
+    $scope.hideReportsTable = true;
+//        $scope.loadReportsTable = false;
         $scope.showReportWidgetName = false;
         $scope.reportWidgetTitle = []
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
         $http.get("admin/report/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
+            $scope.hideReportsTable = false;
             if (response.length > 0) {
                 $scope.showReportWidgetName = true;
                 $scope.reportWidgetTitle = response;
@@ -1032,7 +1036,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
         $scope.dispHideBuilder = true;
-            angular.forEach(y1data, function (value, key) {
+        angular.forEach(y1data, function (value, key) {
             if (!value) {
                 return;
             }
@@ -1065,7 +1069,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectY2Axis = function (widget, y2data) {
         $scope.dispHideBuilder = true;
-            angular.forEach(y2data, function (value, key) {
+        angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
             }
@@ -1151,7 +1155,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(column)
         console.log(widgetObj.columns)
         //var getIndex = widgetObj.columns.indexOf(column)
-       // console.log(getIndex)
+        // console.log(getIndex)
         //widgetObj.columns.splice(getIndex, 1)
     };
 // Funnel Format

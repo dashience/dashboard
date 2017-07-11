@@ -374,6 +374,9 @@ public class UiService {
             System.out.println(widget.getId());
             System.out.println(newDashboardTab.getId());
             TabWidget tabWidget = duplicateWidget(widget.getId(), newDashboardTab.getId());
+            if(tabWidget == null) {
+                continue;
+            }
             System.out.println(tabWidget);
             tabWidget.setTabId(newDashboardTab);
             uiDao.saveOrUpdate(tabWidget);
@@ -383,12 +386,12 @@ public class UiService {
 
     public TabWidget duplicateWidget(Integer widgetId, Integer tabId) {
 
-        List<TabWidget> widgetDuplicate = uiDao.getWidget(widgetId);
         int id = 0;
-        Iterator<TabWidget> iterator = widgetDuplicate.iterator();
-        iterator.hasNext();
+        TabWidget tabWidgetBean = uiDao.getWidgetById(widgetId);
+        if(tabWidgetBean.getDataSetId() == null){
+            return null;
+        }
         TabWidget tabWidget = new TabWidget();
-        TabWidget tabWidgetBean = iterator.next();
         tabWidget.setId(null);
         tabWidget.setTabId(tabWidgetBean.getTabId());
         Integer count = uiDao.getWidgetCount(tabId);
