@@ -335,9 +335,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setWidgetItems = function (widget) {
         tableDef(widget);
         setDefaultWidgetObj = [];
+        var columnData = [];
+        angular.forEach(widget.columns, function(value, key){
+         columnData.push({
+                id: value.id,
+                fieldName: value.fieldName,
+                displayName: value.displayName,
+                agregationFunction: value.agregationFunction,
+                expression: value.expression,
+                groupPriority: isNaN(value.groupPriority) ? null : value.groupPriority,
+                xAxis: isNaN(value.xAxis) ? null : value.xAxis,
+                yAxis: isNaN(value.yAxis) ? null : value.yAxis,
+                sortOrder: value.sortOrder,
+                displayFormat: value.displayFormat,
+                alignment: value.alignment,
+                baseFieldName: value.baseFieldName,
+                fieldGenerationFields: value.fieldGenerationFields,
+                fieldGenerationFunction: value.fieldGenerationFunction,
+                fieldType: value.type ? value.type : value.fieldType,
+                functionParameters: value.functionParameters,
+                remarks: value.remarks,
+                sortPriority: isNaN(value.sortPriority) ? null : value.sortPriority,
+                width: isNaN(value.width) ? null : value.width,
+                wrapText: value.wrapText,
+                xAxisLabel: value.xAxisLabel,
+                yAxisLabel: value.yAxisLabel,
+                columnHide: value.columnHide,
+                search: value.search,
+                groupField: value.groupField,
+                combinationType: value.combinationType,
+                derivedId: value.derivedId
+            });
+        });
+        
         setDefaultWidgetObj.push({chartType: widget.chartType,
             id: widget.id,
-            columns: widget.columns,
+            columns: columnData,
             widgetTitle: widget.widgetTitle,
             dataSourceId: widget.dataSourceId,
             dataSetId: widget.dataSetId,
