@@ -163,8 +163,6 @@
         padding: 6px 2px !important;
     }
 
-
-
     .btnAddon1{
         background-color: #b7d5ab;
         color: #333;
@@ -197,7 +195,6 @@
     .input-group {
         width: 490px;
     }
-
 
     .modal-body {
         padding: 10px 15px;
@@ -317,6 +314,12 @@
         background : #ccc6;
     }
 
+    .sp-replacer {
+        width:10% !important;
+    }
+    .sp-preview {
+        width: 89px !important;
+    }
 </style>
 <div class="container">
     <div class="row main col-md-6">
@@ -421,6 +424,10 @@
                                         ng-click="showSortingColumn()">
                                     Sort
                                 </button>
+                                <button class="btn btn-success" 
+                                        ng-click="color()">
+                                    Color
+                                </button>
                             </div>
                             <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
                                 <button class="btn btn-success" 
@@ -454,7 +461,7 @@
                         <i class="fa fa-save"></i> Save
                     </button>
                     <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default" 
-                            ng-click="showPreview(widgetObj)">Preview
+                            ng-click="showPreview(widgetObj, userChartColors)">Preview
                     </button>
                     <button class="btn btn-default" id="btn-cancel" 
                             ng-click="cancel(widgetObj)">
@@ -525,7 +532,7 @@
                             <label>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
-                                          ng-model="text" 
+                                      ng-model="text" 
                                       ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
                         </div>
@@ -545,7 +552,7 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                        ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
+                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>
@@ -875,6 +882,22 @@
                         <input type="text" ng-model="widgetObj.maxRecord" class="form-control">
                     </div>                    
                 </div>
+            </div>
+        </div>
+        <div class="col-sm-12" ng-show="showColor">
+            <div class="panel panel-default">
+                <div class="panel-heading btnAddon5">
+                    <h3 class="panel-title">
+                        Color <button class="btn btn-success  pull-right" ng-click="addColors(widgetObj)"><i class="fa fa-plus"></i></button></h3>
+                </div>
+                <div class="container" ng-repeat="widgetColor in widgetObj.targetColors">
+                    Color: <ui-colorpicker ng-model="widgetColor.color"  style="width:40%;padding: 10px;height"></ui-colorpicker>
+                    Code: <input ng-model="widgetColor.color" ng-change="selectColorInPicker(widgetColor)"/>
+                    <!--<button class="btn btn-primary btn-xs" ng-click="editColorOption(targetColors)"><i class="fa fa-edit"></i></button>-->
+                    <button class="btn btn-danger btn-xs" ng-click="deleteColorOption(widgetColor.color, $index)"><i class="fa fa-minus"></i></button>
+                    <br/>
+                </div>
+                <br>
             </div>
         </div>
     </div>
