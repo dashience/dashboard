@@ -961,7 +961,14 @@ public class UiService {
             } else {
                 dataSet = new DataSet();
             }
-
+            if (widgetId != null) {
+                TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
+                dataSet =  tabWidget.getDataSetId();
+                DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(),dataSet);
+                if(checkDbForColumn != null) {
+                    continue;
+                }
+            }
             System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
             if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
@@ -986,9 +993,10 @@ public class UiService {
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
 //                DataSet dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
                 dataSetFields.setDataSetId(dataSet);
-                if (allDataSetColumn.getUserId() != null) {
+                if (widgetId != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
+                    dataSetFields.setDataSetId(tabWidget.getDataSetId());
                     dataSetFields.setUserId(allDataSetColumn.getUserId());
                 }
                 uiDao.saveOrUpdate(dataSetFields);
@@ -1153,7 +1161,7 @@ public class UiService {
 
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
         DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId, widgetId);
-        if (column == null && dataSetId != null) {
+        if (column == null && dataSetId != null && widgetId != null) {
             column = uiDao.createDataSetColumn(columnDef, dataSetId, userId, widgetId);
         }
         return column;
@@ -1228,7 +1236,7 @@ public class UiService {
         for (Iterator<DataSetColumnBean> iterator = dataSetColumnBeans.iterator(); iterator.hasNext();) {
             DataSetColumnBean columnBean = iterator.next();
             DataSetColumns dataSetColumnFromDb = uiDao.getDataSetColumn(columnBean.getFieldName(), dataSet);
-            if(dataSetColumnFromDb == null) {
+            if (dataSetColumnFromDb == null) {
                 continue;
             }
             DataSetColumns dataSetColumn = new DataSetColumns();
@@ -1238,7 +1246,7 @@ public class UiService {
             dataSetColumn.setDisplayFormat(columnBean.getDisplayFormat());
             dataSetColumn.setDisplayName(columnBean.getDisplayName());
             dataSetColumn.setDataFormat(columnBean.getDataFormat());
-            if(tabWidget != null) {
+            if (tabWidget != null) {
                 dataSetColumn.setWidgetId(tabWidget);
             }
             uiDao.saveOrUpdate(dataSetColumn);

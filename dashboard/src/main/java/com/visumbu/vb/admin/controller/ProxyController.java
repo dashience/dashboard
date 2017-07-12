@@ -156,6 +156,9 @@ public class ProxyController {
         Integer dataSetIdInt = null;
         Integer widgetIdInt = null;
         Integer userIdInt = null;
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
+            widgetIdInt = Integer.parseInt(widgetIdStr);
+        }
         if (userIdStr != null) {
             try {
                 userIdInt = Integer.parseInt(userIdStr);
@@ -177,31 +180,32 @@ public class ProxyController {
 
         if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
             try {
-                System.out.println("with joinDataSet");
                 Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
                 returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
-                System.out.println("JOIN DATA SET OUTPUT ===> ");
-                System.out.println(returnMap);
             } catch (NumberFormatException e) {
 
             }
         } else {
-            System.out.println("without joinDataSet");
             returnMap = getData(valueMap, request, response);
         }
-        System.out.println("returnMappppp -----> " + returnMap);
-
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
 
         updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt);
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
-        List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
-
+        List<DataSetColumns> dataSetColumnList = null;
+        if (widgetIdInt == null) {
+            dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+        } else {
+            dataSetColumnList = uiService.getDataSetColumns(dataSetIdInt, widgetIdInt); // DataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+        }
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
+            System.out.println(dataSetColumnList);
+            System.out.println("DATA INSIDE DERIVED COLUMN");
+            System.out.println(dataWithDerivedColumns);
             returnMap.put("data", dataWithDerivedColumns);
         }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
@@ -217,18 +221,16 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
-        System.out.println("returnMap1 ----> " + returnMap);
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
-        if (dataSetIdInt != null) {
-            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
-        }
+//        if (dataSetIdInt != null) {
+//            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
+//        }
         if (fieldsOnly != null) {
             // return dataMap;
         }
-        System.out.println("FieldsOnly ---> " + fieldsOnly);
         dataMap.put("data", returnMap.get("data"));
-        dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
+        // dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
         return dataMap;
     }
 
@@ -260,7 +262,9 @@ public class ProxyController {
                 }
             }
             if (!exist) {
-                uiService.deleteDataSetColumns(dataSetColumn.getId());
+                if (dataSetColumn.getExpression() == null && dataSetColumn.getFunctionName() == null) {
+                    uiService.deleteDataSetColumns(dataSetColumn.getId());
+                }
             }
         }
 
@@ -394,7 +398,7 @@ public class ProxyController {
                 joinDataSetTwoMap.put("data", dataWithDerivedColumns);
             }
         }
-        Integer secondDataSetAppender = new Long(new Date().getTime()/100000).intValue();
+        Integer secondDataSetAppender = new Long(new Date().getTime() / 100000).intValue();
         if (!operationType.equalsIgnoreCase("union")) {
             for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -815,20 +819,15 @@ public class ProxyController {
                     returnDataMap.put(dataSetColumn.getFieldName(), dataMap.get(dataSetColumn.getFieldName()));
                 }
             }
-            System.out.println("returnDataaaaaaaaaaaMap ---> " + returnDataMap);
             returnData.add(returnDataMap);
         }
-        System.out.println("returnDAtaaaaaaaaa ---> " + returnData);
-
         return returnData;
     }
 
     public Object getDataForDerivedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DataSetColumns dataSetColumn) {
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
-            System.out.println("MapData ---->" + mapData);
             if ((mapData.get(dataSetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
-                System.out.println("Matching MapData ---->" + mapData);
                 return mapData.get(dataSetColumn.getColumnName());
             }
         }
@@ -845,7 +844,6 @@ public class ProxyController {
     }
 
     public static Map<String, Object> addDerivedColumnsExpr(List<DataSetColumns> dataSetColumns, Map<String, Object> data) {
-        System.out.println("Daaaaaaaaaaaaaaata ----> " + data);
         Map<String, Object> returnMap = data;
         for (Iterator<DataSetColumns> iterator = dataSetColumns.iterator(); iterator.hasNext();) {
             DataSetColumns dataSetColumn = iterator.next();
@@ -867,7 +865,6 @@ public class ProxyController {
             }
 
         }
-        System.out.println("returnMap ----> " + returnMap);
         return returnMap;
     }
 

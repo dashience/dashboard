@@ -329,7 +329,7 @@ public class DataSetColumns implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.DataSetColumns[ id=" + id + " ]";
+        return "DataSetColumns{" + "id=" + id + ", displayName=" + displayName + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", expression=" + expression + ", status=" + status + ", deleteStatus=" + deleteStatus + ", displayFormat=" + displayFormat + ", dataFormat=" + dataFormat + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNweeks=" + lastNweeks + ", lastNmonths=" + lastNmonths + ", sortPriority=" + sortPriority + ", lastNyears=" + lastNyears + ", dataSetId=" + dataSetId + ", userId=" + userId + ", widgetId=" + widgetId + '}';
     }
 
 }
