@@ -1723,7 +1723,7 @@ body {
 .hpanel > .panel-heading {
     color: inherit;
     font-weight: 600;
-    font-size: 22px;
+    font-size: 20px;
     padding: 5px 4px;
     transition: all .3s;
     clear: both;
@@ -3876,9 +3876,10 @@ body.modal-open {
 
 .normalheader h2 {
     margin-left:5px;
+    letter-spacing: 0.5px;
     font-size: 24px;
-    font-family: "proxima_nova_rgregular", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight:600 !important;
+    font-family:'enigmaticregular';
+    font-weight:normal !important;
     color: #fff !important;
 }
 
@@ -4159,3 +4160,43 @@ label {
 /*.dropup, .dropdown {
     overflow: hidden;
 }*/
+
+
+span.add-title {
+    padding: 0px 18px;
+    margin: 5px 0px;
+    display: block;
+    font-size: 24px;
+    color: #333;
+    text-decoration: underline;
+    line-height: 32px;
+}
+
+
+.add-widget-title {
+    padding: 5px 0px 0px 20px;
+    font-size: 24px;
+    text-decoration: underline;
+    font-weight: 600;
+    color: #777;
+    font-family: "proxima_nova_rgregular";
+}
+
+.btn.btn-sm {
+    border: 1px solid #ddd;
+}
+
+
+.temp-manage .input-group {
+    width: 100%;
+    min-width: 175px;
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.21) !important;
+}
+
+.manage-button {
+    padding:5px 10px;
+}
+
+.text-field-manage {
+    min-width: 180px;
+}

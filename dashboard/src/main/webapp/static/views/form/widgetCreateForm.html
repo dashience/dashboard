@@ -196,6 +196,11 @@
         padding: 10px 0px;
         min-width: 400px;
     }
+
+    .widget-button-right {
+    margin-right: 20px;
+    margin-top: 10px;
+}
     .input-group {
         width: 490px;
     }
@@ -318,6 +323,14 @@
     .builder {
         background : #ccc6;
     }
+    .add-widget-title {
+        padding: 5px 0px 0px 20px;
+        font-size: 24px;
+        text-decoration: underline;
+        font-weight: 600;
+        color: #777;
+        font-family: "proxima_nova_rgregular";
+    }
     .metric-Border{
         padding-bottom: 5px !important;
     }
@@ -327,7 +340,7 @@
         <div class="row">
             <div class="form-group">
                 <div class="col-sm-6">
-                    <div class="input-group"> <span class="input-group-addon btnAddon1">Widget</span>
+                    <div class="input-group"> <div class="add-widget-title">Widget</div>
                         <div class="box-pop">
                             <div class="form-group widget-title">
                                 <label>Widget Title</label>
@@ -344,7 +357,8 @@
                                         </span>
                                     </a>
                                 </div>
-                                <div>
+                            </div>
+                            <div class="form-group widget-title">
                                     <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
                                     <label>All Account</label>
                                 </div>
@@ -353,12 +367,11 @@
                     </div>
                 </div>
             </div>
-        </div>
         <div class="row" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
             <div class="form-group">
                 <div class="col-sm-6">
 
-                    <div class="input-group"> <span class="input-group-addon btnAddon2">Data</span>
+                    <div class="input-group"> <div class="add-widget-title">Data</div>
                         <div class="box-pop">
 
                             <div class="data-1">
@@ -414,24 +427,24 @@
         <div class="row">
             <div class="form-group" >
                 <div class="col-sm-6">
-                    <div class="input-group"> <span class="input-group-addon btnAddon3">Metrics</span>
+                    <div class="input-group"> <div class="add-widget-title">Metrics</div>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
-                                <button class="btn btn-success btn-color" 
+                                <button class="btn btn-default" 
                                         ng-click="showListOfColumns()">
                                     Choose Columns
                                 </button>
-                                <button class="btn btn-default btn-color" 
+                                <button class="btn btn-default" 
                                         ng-click="showFilterList()">
                                     Filter
                                 </button>
-                                <button class="btn btn-success btn-color" 
+                                <button class="btn btn-default" 
                                         ng-click="showSortingColumn()">
                                     Sort
                                 </button>
                             </div>
                             <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
-                                <button class="btn btn-success btn-color" 
+                                <button class="btn btn-default" 
                                         ng-click="showEditor(chartTypeName, widgetObj)">
                                     Show Editor
                                 </button>
@@ -444,10 +457,10 @@
         <div class="row" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
             <div class="form-group">
                 <div class="col-sm-6">
-                    <div class="input-group"> <span class="input-group-addon btnAddon4">Date Range</span>
+                    <div class="input-group"> <div class="add-widget-title">Date Range</div>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12"> 
-                                <button class="btn btn-success btn-color" ng-click="showDateDurations()">Date Range</button>
+                                <button class="btn btn-default" ng-click="showDateDurations()">Date Range</button>
                             </div>
                         </div>
                     </div>
@@ -455,16 +468,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-11">
-                <div class="form-group pull-right">
-                    <button class="btn btn-info btn-color" id="btn-save" 
+            <div class="col-md-8 pull-right widget-button-right">
+                <div class="form-group">
+                    <button class="btn btn-default" id="btn-save" 
                             ng-click="save(widgetObj)">
                         <i class="fa fa-save"></i> Save
                     </button>
-                    <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default btn-color" 
+                    <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default" 
                             ng-click="showPreview(widgetObj)">Preview
                     </button>
-                    <button class="btn btn-default btn-color" id="btn-cancel" 
+                    <button class="btn btn-default" id="btn-cancel" 
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
@@ -564,7 +577,7 @@
                     </form>
                 </div>
             </div>
-            <div class="row metric-Border">
+            <div class="row">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
@@ -599,7 +612,7 @@
                                        on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
                                        on-remove="removedByY1Column(widgetObj, $item, y1Column)">
                                 <ui-select-match allow-clear="true" placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="y1axis in collectionFields | filter:$select.search">
+                                <ui-select-choices repeat="y1axis in columnY1Axis | filter:$select.search">
                                     {{y1axis.displayName}}
                                 </ui-select-choices>
                             </ui-select>
@@ -612,7 +625,7 @@
                                        on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
                                        on-remove="removedByY2Column(widgetObj, $item, y2Column)">
                                 <ui-select-match allow-clear="true" placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
+                                <ui-select-choices repeat="y2axis in columnY2Axis  | filter:$select.search">
                                     {{y2axis.displayName}}
                                 </ui-select-choices>
                             </ui-select>
