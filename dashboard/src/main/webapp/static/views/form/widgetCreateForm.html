@@ -198,9 +198,9 @@
     }
 
     .widget-button-right {
-    margin-right: 20px;
-    margin-top: 10px;
-}
+        margin-right: 20px;
+        margin-top: 10px;
+    }
     .input-group {
         width: 490px;
     }
@@ -331,8 +331,8 @@
         color: #777;
         font-family: "proxima_nova_rgregular";
     }
-    .metric-Border{
-        padding-bottom: 5px !important;
+    .metrics-bottom {
+        margin-bottom: 20px;
     }
 </style>
 <div class="container">
@@ -359,14 +359,14 @@
                                 </div>
                             </div>
                             <div class="form-group widget-title">
-                                    <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
-                                    <label>All Account</label>
-                                </div>
+                                <input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">
+                                <label>All Account</label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         <div class="row" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
             <div class="form-group">
                 <div class="col-sm-6">
@@ -468,7 +468,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 pull-right widget-button-right">
+            <div class="col-md-6 pull-right widget-button-right">
                 <div class="form-group">
                     <button class="btn btn-default" id="btn-save" 
                             ng-click="save(widgetObj)">
@@ -565,8 +565,8 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                        ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
-                                        ng-disabled="dataSetError">
+                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
+                                    ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>
                             <button class="btn btn-default" id="btn-cancel" 
@@ -577,7 +577,7 @@
                     </form>
                 </div>
             </div>
-            <div class="row">
+            <div class="row metrics-bottom">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">

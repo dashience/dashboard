@@ -2900,7 +2900,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3222,7 +3222,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3531,7 +3531,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0', '#DC143C']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3845,7 +3845,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -4171,7 +4171,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -4359,10 +4359,10 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                         function funnelArrayObjects(name, value) {
                             var funnelObject = [];
-                            var funnelColor = ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169'];
+                            var funnelColor=['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                             var len = name.length;
                             for (var i = 0; i < len; i++) {
-                                funnelObject.push([name[i], value[i], funnelColor[i]]);
+                                funnelObject.push([name[i], value[i],funnelColor[i]]);
                             }
                             return funnelObject;
                         }
