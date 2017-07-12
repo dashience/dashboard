@@ -431,6 +431,21 @@ public class UiController extends BaseController {
         return uiService.create(dataSet, joinDataSetId);
     }
 
+    @RequestMapping(value = "saveDataSetColumnsForDataSet/{dataSetId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    List<DataSetColumns> saveDataSetColumnsForDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody List<DataSetColumnBean> dataSetColumnBeans, @PathVariable Integer dataSetId) {
+        DataSet dataSet = uiService.getDataSetById(dataSetId);
+        return uiService.saveDataSetColumns(dataSet, null, dataSetColumnBeans);
+    }
+    @RequestMapping(value = "saveDataSetColumnsForWidget/{widgetId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    List<DataSetColumns> saveDataSetColumnsForWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody List<DataSetColumnBean> dataSetColumnBeans, @PathVariable Integer widgetId) {
+        TabWidget tabWidget = uiService.getWidgetById(widgetId);
+        DataSet dataSet = tabWidget.getDataSetId();
+        return uiService.saveDataSetColumns(dataSet, tabWidget, dataSetColumnBeans);
+    }
+    
+    
 //    @RequestMapping(value = "dataSet/enableOrDisable", method = RequestMethod.PUT, produces = "application/json")
 //    public @ResponseBody
 //    DataSet updateDataSetEnableDisable(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
