@@ -1721,7 +1721,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
-        alert(widget.allAccount)
+        
         if (widget.allAccount === 1) {
             widget.accountId = null;
         } else {
