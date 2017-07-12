@@ -11,11 +11,10 @@ function formatBySecond(second) {
 
 function dashboardFormat(column, value) {
     if(column.fieldType === "date") {
-        var toformat = column.displayFormat == null? "MM/DD/YY" : column.displayFormat;
-        return dateConvert(column.dataFormat, toformat, value);
+        return value;
     }
     if (column.displayFormat.indexOf("%") > -1) {
-        d3.format(column.displayFormat)(value / 100);
+        return d3.format(column.displayFormat)(value / 100);
     } else if (column.displayFormat == 'H:M:S') {
         return formatBySecond(parseInt(value))
     } else {

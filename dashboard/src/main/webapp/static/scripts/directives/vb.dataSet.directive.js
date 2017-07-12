@@ -372,6 +372,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             }
             scope.format = function (column, value) {
+                if(column.fieldType === "date") {
+                    return value;
+                }
                 if (!value) {
                     return "-";
                 }
