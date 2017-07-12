@@ -94,9 +94,20 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             if (!response[0]) {
                 return;
             }
-            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0
+            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0;
             $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
-            var templateId = $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+            var getProductTemplateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+//            var templateId = $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+
+
+            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
+                var getLastTemplateId = response;
+                var templateId = getLastTemplateId ? getLastTemplateId.id : getProductTemplateId;
+                $stateParams.templateId = templateId;
+                $scope.loadNewUrl();
+            });
+            return;
+
 //            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
 //                templateId = response.id;
 //            });

@@ -1706,7 +1706,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var dataSourceObj;
         var dataSetObj;
         if (widget.chartType != 'text') {
-
             dataSourceTypeId = widget.dataSourceId ? widget.dataSourceId.id : null;
             dataSourceObj = widget.dataSourceId;
             dataSetTypeId = widget.dataSetId ? widget.dataSetId.id : null;
@@ -1809,7 +1808,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $('.showEditWidget').modal('hide');
                 return;
             }
-            console.log(colData)
+
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
             });
             $('.showEditWidget').modal('hide');

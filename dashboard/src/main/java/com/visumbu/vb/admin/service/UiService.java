@@ -374,7 +374,7 @@ public class UiService {
             System.out.println(widget.getId());
             System.out.println(newDashboardTab.getId());
             TabWidget tabWidget = duplicateWidget(widget.getId(), newDashboardTab.getId());
-            if(tabWidget == null) {
+            if (tabWidget == null) {
                 continue;
             }
             System.out.println(tabWidget);
@@ -388,9 +388,6 @@ public class UiService {
 
         int id = 0;
         TabWidget tabWidgetBean = uiDao.getWidgetById(widgetId);
-        if(tabWidgetBean.getDataSetId() == null){
-            return null;
-        }
         TabWidget tabWidget = new TabWidget();
         tabWidget.setId(null);
         tabWidget.setTabId(tabWidgetBean.getTabId());
@@ -437,41 +434,6 @@ public class UiService {
         System.out.println("widgetColumns ---> " + widgetColumns);
         List<WidgetTag> widgetTags = uiDao.getWidgetTagsByWidgetId(widgetId);
         System.out.println("widgetTags ---> " + widgetTags);
-        DataSet dataSet = tabWidgetBean.getDataSetId();
-        System.out.println("datasetId --> " + dataSet.getId());
-        List<DataSetColumns> dataSetColumns = uiDao.getDataSetColumn(dataSet.getId(), widgetId);
-        System.out.println("dataSetColumns --> " + dataSetColumns);
-        for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
-            WidgetColumn widgetColumnBean = iterate.next();
-            WidgetColumn widgetColumn = new WidgetColumn();
-            widgetColumn.setFieldName(widgetColumnBean.getFieldName());
-            widgetColumn.setDisplayFormat(widgetColumnBean.getDisplayFormat());
-            widgetColumn.setDisplayName(widgetColumnBean.getDisplayName());
-            widgetColumn.setSortOrder(widgetColumnBean.getSortOrder());
-            widgetColumn.setGroupPriority(widgetColumnBean.getGroupPriority());
-            widgetColumn.setExpression(widgetColumnBean.getExpression());
-            widgetColumn.setAgregationFunction(widgetColumnBean.getAgregationFunction());
-            widgetColumn.setxAxis(widgetColumnBean.getxAxis());
-            widgetColumn.setyAxis(widgetColumnBean.getyAxis());
-            widgetColumn.setWidth(widgetColumnBean.getWidth());
-            widgetColumn.setSearch(widgetColumnBean.getSearch());
-            widgetColumn.setWrapText(widgetColumnBean.getWrapText());
-            widgetColumn.setAlignment(widgetColumnBean.getAlignment());
-            widgetColumn.setFieldType(widgetColumnBean.getFieldType());
-            widgetColumn.setGroupField(widgetColumnBean.getGroupField());
-            widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
-            Integer columnHide = null;
-            if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
-                columnHide = 1;
-            }
-            if (widgetColumnBean.getColumnHide() != null) {
-                columnHide = widgetColumnBean.getColumnHide();
-            }
-            widgetColumn.setColumnHide(columnHide);
-            widgetColumn.setWidgetId(savedTabWidget);
-            uiDao.saveOrUpdate(widgetColumn);
-        }
-
         for (Iterator<WidgetTag> iterate = widgetTags.iterator(); iterate.hasNext();) {
             WidgetTag tagWidgetBean = iterate.next();
             WidgetTag widgetTag = new WidgetTag();
@@ -481,34 +443,70 @@ public class UiService {
             widgetTag.setStatus(tagWidgetBean.getStatus());
             uiDao.saveOrUpdate(widgetTag);
         }
+        DataSet dataSet = tabWidgetBean.getDataSetId();
+        if (dataSet != null) {
+            System.out.println("datasetId --> " + dataSet.getId());
+            List<DataSetColumns> dataSetColumns = uiDao.getDataSetColumn(dataSet.getId(), widgetId);
+            System.out.println("dataSetColumns --> " + dataSetColumns);
+            for (Iterator<WidgetColumn> iterate = widgetColumns.iterator(); iterate.hasNext();) {
+                WidgetColumn widgetColumnBean = iterate.next();
+                WidgetColumn widgetColumn = new WidgetColumn();
+                widgetColumn.setFieldName(widgetColumnBean.getFieldName());
+                widgetColumn.setDisplayFormat(widgetColumnBean.getDisplayFormat());
+                widgetColumn.setDisplayName(widgetColumnBean.getDisplayName());
+                widgetColumn.setSortOrder(widgetColumnBean.getSortOrder());
+                widgetColumn.setGroupPriority(widgetColumnBean.getGroupPriority());
+                widgetColumn.setExpression(widgetColumnBean.getExpression());
+                widgetColumn.setAgregationFunction(widgetColumnBean.getAgregationFunction());
+                widgetColumn.setxAxis(widgetColumnBean.getxAxis());
+                widgetColumn.setyAxis(widgetColumnBean.getyAxis());
+                widgetColumn.setWidth(widgetColumnBean.getWidth());
+                widgetColumn.setSearch(widgetColumnBean.getSearch());
+                widgetColumn.setWrapText(widgetColumnBean.getWrapText());
+                widgetColumn.setAlignment(widgetColumnBean.getAlignment());
+                widgetColumn.setFieldType(widgetColumnBean.getFieldType());
+                widgetColumn.setGroupField(widgetColumnBean.getGroupField());
+                widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
+                Integer columnHide = null;
+                if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
+                    columnHide = 1;
+                }
+                if (widgetColumnBean.getColumnHide() != null) {
+                    columnHide = widgetColumnBean.getColumnHide();
+                }
+                widgetColumn.setColumnHide(columnHide);
+                widgetColumn.setWidgetId(savedTabWidget);
+                uiDao.saveOrUpdate(widgetColumn);
+            }
 
-        // Duplicate Data Set Columns for a widget
-        for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
-            DataSetColumns dataSetColumn = iterator1.next();
-            DataSetColumns newDataSetColumn = new DataSetColumns();
-            newDataSetColumn.setId(null);
-            newDataSetColumn.setFieldName(dataSetColumn.getFieldName());
-            newDataSetColumn.setFieldType(dataSetColumn.getFieldType());
-            newDataSetColumn.setDataSetId(dataSetColumn.getDataSetId());
-            newDataSetColumn.setDisplayFormat(dataSetColumn.getDisplayFormat());
-            newDataSetColumn.setDisplayName(dataSetColumn.getDisplayName());
-            newDataSetColumn.setExpression(dataSetColumn.getExpression());
-            newDataSetColumn.setFunctionName(dataSetColumn.getFunctionName());
-            newDataSetColumn.setBaseField(dataSetColumn.getBaseField());
-            newDataSetColumn.setColumnName(dataSetColumn.getColumnName());
-            newDataSetColumn.setCustomStartDate(dataSetColumn.getCustomStartDate());
-            newDataSetColumn.setCustomEndDate(dataSetColumn.getCustomEndDate());
-            newDataSetColumn.setDateRangeName(dataSetColumn.getDateRangeName());
-            newDataSetColumn.setLastNdays(dataSetColumn.getLastNdays());
-            newDataSetColumn.setLastNdays(dataSetColumn.getLastNdays());
-            newDataSetColumn.setLastNmonths(dataSetColumn.getLastNmonths());
-            newDataSetColumn.setLastNweeks(dataSetColumn.getLastNweeks());
-            newDataSetColumn.setLastNyears(dataSetColumn.getLastNyears());
+            // Duplicate Data Set Columns for a widget
+            for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
+                DataSetColumns dataSetColumn = iterator1.next();
+                DataSetColumns newDataSetColumn = new DataSetColumns();
+                newDataSetColumn.setId(null);
+                newDataSetColumn.setFieldName(dataSetColumn.getFieldName());
+                newDataSetColumn.setFieldType(dataSetColumn.getFieldType());
+                newDataSetColumn.setDataSetId(dataSetColumn.getDataSetId());
+                newDataSetColumn.setDisplayFormat(dataSetColumn.getDisplayFormat());
+                newDataSetColumn.setDisplayName(dataSetColumn.getDisplayName());
+                newDataSetColumn.setExpression(dataSetColumn.getExpression());
+                newDataSetColumn.setFunctionName(dataSetColumn.getFunctionName());
+                newDataSetColumn.setBaseField(dataSetColumn.getBaseField());
+                newDataSetColumn.setColumnName(dataSetColumn.getColumnName());
+                newDataSetColumn.setCustomStartDate(dataSetColumn.getCustomStartDate());
+                newDataSetColumn.setCustomEndDate(dataSetColumn.getCustomEndDate());
+                newDataSetColumn.setDateRangeName(dataSetColumn.getDateRangeName());
+                newDataSetColumn.setLastNdays(dataSetColumn.getLastNdays());
+                newDataSetColumn.setLastNdays(dataSetColumn.getLastNdays());
+                newDataSetColumn.setLastNmonths(dataSetColumn.getLastNmonths());
+                newDataSetColumn.setLastNweeks(dataSetColumn.getLastNweeks());
+                newDataSetColumn.setLastNyears(dataSetColumn.getLastNyears());
 //            if (dataSetColumn.getUserId() != null) {
-            newDataSetColumn.setUserId(dataSetColumn.getUserId());
-            newDataSetColumn.setWidgetId(savedTabWidget);
+                newDataSetColumn.setUserId(dataSetColumn.getUserId());
+                newDataSetColumn.setWidgetId(savedTabWidget);
 //            }
-            uiDao.saveOrUpdate(newDataSetColumn);
+                uiDao.saveOrUpdate(newDataSetColumn);
+            }
         }
         return uiDao.getTabWidgetById(id);
     }
