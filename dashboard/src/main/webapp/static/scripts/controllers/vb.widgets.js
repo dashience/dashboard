@@ -256,17 +256,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetObj = {};
 
     $scope.clearChartType = function () {
-        $scope.widgetObj = {}
-//        $scope.widgetObj.id = "";
-//        $scope.widgetObj.previewTitle = "";
-//        $scope.widgetObj.chartType = "";
+        $scope.widgetObj = {};
         $scope.selectedChartType = "";
-//        $scope.widgetObj.dataSourceId = "";
-//        $scope.widgetObj.dataSetId = "";
-//        $scope.widgetObj.timeSegment = "";
-//        $scope.widgetObj.productSegment = "";
-//        $scope.widgetObj.networkType = "";
-//        $scope.widgetObj.columns = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
@@ -280,12 +271,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-//        $scope.widgetObj.lastNdays = "";
-//        $scope.widgetObj.lastNweeks = "";
-//        $scope.widgetObj.lastNmonths = "";
-//        $scope.widgetObj.lastNyears = "";
-//        $scope.widgetObj.customStartDate = "";
-//        $scope.widgetObj.customStartDate = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -328,7 +313,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
     getWidgetItem();
 
-function loadInitialWidgetColumnData(columns) {
+    function loadInitialWidgetColumnData(columns) {
         var data = [];
         columns.forEach(function (value, key) {
             data.push({
@@ -463,8 +448,7 @@ function loadInitialWidgetColumnData(columns) {
         }
     }
 
-    function columnHeaderDef(widget, y1Column, y2Column)
-    {
+    function columnHeaderDef(widget, y1Column, y2Column){
         $scope.afterLoadWidgetColumns = false;
         var dataSourcePassword;
         if (!widget.dataSetId) {
@@ -549,7 +533,7 @@ function loadInitialWidgetColumnData(columns) {
                 var index = $scope.columnY1Axis.indexOf(data);
                 $scope.columnY1Axis.splice(index, 1);
             });
-            
+
             angular.forEach(y2Column, function (value, key) {
                 var data = $scope.columnY2Axis.find(function (item, i) {
                     if (item.fieldName === value.fieldName) {
@@ -559,8 +543,8 @@ function loadInitialWidgetColumnData(columns) {
                 var index = $scope.columnY2Axis.indexOf(data);
                 $scope.columnY2Axis.splice(index, 1);
             });
-            
-             angular.forEach(y2Column, function (value, key) {
+
+            angular.forEach(y2Column, function (value, key) {
                 var data = $scope.columnY1Axis.find(function (item, i) {
                     if (item.fieldName === value.fieldName) {
                         return i;
@@ -569,8 +553,8 @@ function loadInitialWidgetColumnData(columns) {
                 var index = $scope.columnY1Axis.indexOf(data);
                 $scope.columnY1Axis.splice(index, 1);
             });
-            
-             angular.forEach(y1Column, function (value, key) {
+
+            angular.forEach(y1Column, function (value, key) {
                 var data = $scope.columnY2Axis.find(function (item, i) {
                     if (item.fieldName === value.fieldName) {
                         return i;
@@ -579,7 +563,7 @@ function loadInitialWidgetColumnData(columns) {
                 var index = $scope.columnY2Axis.indexOf(data);
                 $scope.columnY2Axis.splice(index, 1);
             });
-            
+
             resetQueryBuilder();
         });
     }
@@ -648,8 +632,6 @@ function loadInitialWidgetColumnData(columns) {
                 $scope.columnY1Axis.push(value);
                 $scope.columnY2Axis.push(value);
             });
-            console.log($scope.columnY1Axis);
-            console.log($scope.columnY2Axis);
             resetQueryBuilder();
         });
     };
@@ -687,6 +669,9 @@ function loadInitialWidgetColumnData(columns) {
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
             var getDataSetObjs = response;
             var getDataSetPerformance = getDataSetObjs[getDataSourceType]
+            if (!getDataSetPerformance) {
+                return;
+            }
             getDataSetPerformance.forEach(function (val, key) {
                 var getPerformanceType = val.type;
                 if (getReportName === getPerformanceType) {
@@ -738,6 +723,12 @@ function loadInitialWidgetColumnData(columns) {
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+        
+        $scope.widgetObj.dataSourceId = "";
+        $scope.widgetObj.dataSetId = "";
+        $scope.widgetObj.timeSegment = "";
+        $scope.widgetObj.productSegment = "";
+        $scope.widgetObj.networkType = "";
         if ($scope.chartTypeName) {
             widget.columns = [];
             $scope.collectionFields.forEach(function (value, k) {
@@ -969,7 +960,7 @@ function loadInitialWidgetColumnData(columns) {
     $scope.showReportWidgetName = false;
     $scope.reportEmptyLogo = "static/img/logos/deeta-logo.png"
     $scope.selectReport = function (reportWidget) {
-    $scope.hideReportsTable = true;
+        $scope.hideReportsTable = true;
 //        $scope.loadReportsTable = false;
         $scope.showReportWidgetName = false;
         $scope.reportWidgetTitle = []
@@ -1807,7 +1798,7 @@ function loadInitialWidgetColumnData(columns) {
                     fieldType: value.fieldType,
                     sortPriority: value.sortPriority,
                     userId: value.userId, //value.userId,
-                    dataSetId: data.dataSetId.id
+                    dataSetId: data.dataSetId ? data.dataSetId.id : null
                 };
                 $scope.derivedColumns.push(columnData);
             });
@@ -2891,6 +2882,12 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
 
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -3212,6 +3209,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 gridLine = false;
                             }
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -3522,6 +3525,12 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             })
 
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     json: [data],
@@ -3835,6 +3844,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 gridLine = false;
                             }
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -4160,6 +4175,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 gridLine = false;
                             }
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -4359,10 +4380,10 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                         function funnelArrayObjects(name, value) {
                             var funnelObject = [];
-                            var funnelColor=['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                            var funnelColor = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                             var len = name.length;
                             for (var i = 0; i < len; i++) {
-                                funnelObject.push([name[i], value[i],funnelColor[i]]);
+                                funnelObject.push([name[i], value[i], funnelColor[i]]);
                             }
                             return funnelObject;
                         }
