@@ -233,11 +233,13 @@ public class ProxyController {
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
             DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
-            column.setId(dataSetColumn.getId());
-            column.setExpression(dataSetColumn.getExpression());
-            column.setDisplayFormat(dataSetColumn.getDisplayFormat());
-            column.setUserId(dataSetColumn.getUserId());
-            column.setWidgetId(dataSetColumn.getWidgetId());
+            if (dataSetColumn != null) {
+                column.setId(dataSetColumn.getId());
+                column.setExpression(dataSetColumn.getExpression());
+                column.setDisplayFormat(dataSetColumn.getDisplayFormat());
+                column.setUserId(dataSetColumn.getUserId());
+                column.setWidgetId(dataSetColumn.getWidgetId());
+            }
             columnDef.add(column);
         }
         List<DataSetColumns> dataSetColumns = uiService.getDataSetColumns(dataSetId, widgetId);
@@ -484,7 +486,46 @@ public class ProxyController {
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         }
+        List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
+        List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
+        System.out.println("Column Def For Data Format");
+        System.out.println(returnMap);
+        returnMap.put("data", formatData(dataList, columnDefs));
         return returnMap;
+    }
+
+    public static List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
+        boolean formatRequired = false;
+        for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
+            ColumnDef column = iterator1.next();
+            if (column.getDataFormat() != null) {
+                formatRequired = true;
+            }
+        }
+        if (formatRequired == false) {
+            return dataSet;
+        }
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        for (Iterator<Map<String, Object>> iterator = dataSet.iterator(); iterator.hasNext();) {
+            Map<String, Object> data = iterator.next();
+            for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
+                ColumnDef column = iterator1.next();
+                if (column.getDataFormat() != null) {
+                    if (column.getDataFormat().equalsIgnoreCase("%")) {
+                        String value = data.get(column.getFieldName()) + "";
+                        data.put(column.getFieldName(), value.replaceAll("%", ""));
+                    }
+                    if (column.getFieldType() != null && column.getFieldType().equalsIgnoreCase("date") && column.getDataFormat() != null && !column.getDataFormat().isEmpty()) {
+                        String value = data.get(column.getFieldName()) + "";
+                        Date toDate = DateUtils.toDate(value, column.getDataFormat());
+                        data.put(column.getFieldName(), DateUtils.dateToString(toDate, "MM/dd/yyyy"));
+                        System.out.println("VALUE =============> " + value);
+                    }
+                }
+                dataList.add(data);
+            }
+        }
+        return dataList;
     }
 
     public static List<Map<String, Object>> leftJoin(final List<Map<String, Object>> dataSet1, final List<Map<String, Object>> dataSet2, final List<String> mappings) {
@@ -1753,9 +1794,13 @@ public class ProxyController {
                 DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
                 if (fieldProperties != null) {
                     ColumnDef columnDef = new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat());
-                    if(fieldProperties.getDataType() != null && fieldProperties.getDataType().equalsIgnoreCase("date")) {
+                    if (fieldProperties.getDataType() != null && fieldProperties.getDataType().equalsIgnoreCase("date")) {
                         columnDef.setDataFormat(fieldProperties.getDataFormat());
                     }
+                    if (fieldProperties.getDataFormat() != null) {
+                        columnDef.setDataFormat(fieldProperties.getDataFormat());
+                    }
+                    System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
                     columnDefs.add(columnDef);
                 } else {
                     Object value = entrySet.getValue();
@@ -1765,6 +1810,10 @@ public class ProxyController {
                         columnDefs.add(new ColumnDef(key, "number", key));
                     } else if (DateUtils.convertToDate(valueString) != null) {
                         columnDefs.add(new ColumnDef(key, "date", key));
+                    } else if (valueString.indexOf("%") > 0) {
+                        ColumnDef columnDef = new ColumnDef(key, "number", key);
+                        columnDef.setDataFormat("%");
+                        columnDefs.add(columnDef);
                     } else {
                         columnDefs.add(new ColumnDef(key, "string", key));
                     }

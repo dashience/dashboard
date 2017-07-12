@@ -11,11 +11,10 @@ function formatBySecond(second) {
 
 function dashboardFormat(column, value) {
     if (column.fieldType === "date") {
-        var toformat = column.displayFormat == null ? "MM/DD/YY" : column.displayFormat;
-        return dateConvert(column.dataFormat, toformat, value);
+        return value;
     }
     if (column.displayFormat.indexOf("%") > -1) {
-        d3.format(column.displayFormat)(value / 100);
+        return d3.format(column.displayFormat)(value / 100);
     } else if (column.displayFormat == 'H:M:S') {
         return formatBySecond(parseInt(value))
     } else {
@@ -253,10 +252,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widgetObj.lastNyears = "";
     };
 
-    $scope.widgetObj = {};
+    $scope.widgetObj = {allAccount : 1};
 
     $scope.clearChartType = function () {
-        $scope.widgetObj = {};
+        $scope.widgetObj = {allAccount : 1};
         $scope.selectedChartType = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
@@ -352,7 +351,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultChartType;
     var setDefaultWidgetObj = [];
     $scope.setWidgetItems = function (widget) {
-        setDefaultWidgetObj = [];
+        setDefaultWidgetObj = [];alert(1)
+       // $scope.widgetObj.allAccount = widget.accountId ? 0 : 1;
         var data = loadInitialWidgetColumnData(widget.columns);
         setDefaultWidgetObj.push({
             chartType: widget.chartType,
@@ -369,6 +369,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
+            accountId: widget.accountId
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
@@ -448,7 +449,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     }
 
-    function columnHeaderDef(widget, y1Column, y2Column){
+    function columnHeaderDef(widget, y1Column, y2Column) {
         $scope.afterLoadWidgetColumns = false;
         var dataSourcePassword;
         if (!widget.dataSetId) {
@@ -723,7 +724,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-        
+
         $scope.widgetObj.dataSourceId = "";
         $scope.widgetObj.dataSetId = "";
         $scope.widgetObj.timeSegment = "";
@@ -1714,13 +1715,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
-        if (widget.allAccount === true) {
+        alert(widget.allAccount)
+        if (widget.allAccount === 1) {
             widget.accountId = null;
         } else {
             widget.accountId = parseInt($stateParams.accountId);
         }
-
-
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,

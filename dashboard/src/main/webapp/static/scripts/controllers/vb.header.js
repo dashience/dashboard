@@ -85,190 +85,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         });
     };
 
-    function getAgencyProduct(agencyId) {
-        $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
-            $scope.products = response;
-            if (!response) {
-                return;
-            }
-            if (!response[0]) {
-                return;
-            }
-            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0;
-            $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
-            var getProductTemplateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
-//            var templateId = $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
-
-
-            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
-                var getLastTemplateId = response;
-                var templateId = getLastTemplateId ? getLastTemplateId.id : getProductTemplateId;
-                $stateParams.templateId = templateId;
-                $scope.loadNewUrl();
-            });
-            return;
-
-//            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
-//                templateId = response.id;
-//            });
-//
-//            $stateParams.templateId = templateId ? templateId : getTemplateId;
-            try {
-                var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-                var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
-            } catch (e) {
-            }
-            if ($scope.getCurrentPage() === "dashboard") {
-                $state.go("index.dashboard." + $scope.getCurrentTab(), {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    productId: $stateParams.productId,
-                    templateId: $stateParams.templateId,
-                    tabId: $stateParams.tabId,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "editWidget") {
-                $state.go("index.editWidget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    tabId: $stateParams.tabId,
-                    widgetId: $stateParams.widgetId,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "reports") {
-                $state.go("index.report.reports", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    productId: $stateParams.productId,
-                    tabId: $stateParams.tabId,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "newOrEdit") {
-                $state.go("index.report.newOrEdit", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    reportId: $stateParams.reportId,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "updateReportWidget") {
-                $state.go("index.widgetEditByReport", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    reportId: $stateParams.reportId,
-                    reportWidgetId: $stateParams.reportWidgetId,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            }
-//            else if ($scope.getCurrentPage() === "franchiseMarketing") {
-//                $state.go("index.franchiseMarketing", {
-//                    accountId: $stateParams.accountId,
-//                    accountName: $stateParams.accountName,
-//                    productId: $stateParams.productId,
-//                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-//                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-//                });
-//            } 
-            else if ($scope.getCurrentPage() === "dataSource") {
-                $state.go("index.dataSource", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "dataSet") {
-                $state.go("index.dataSet", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "scheduler") {
-                $state.go("index.schedulerIndex.scheduler", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
-                $state.go("index.schedulerIndex.editOrNewScheduler", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    schedulerId: $stateParams.schedulerId,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "user") {
-                $state.go("index.user", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "account") {
-                $state.go("index.account", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "agency") {
-                $state.go("index.agency", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            } else if ($scope.getCurrentPage() === "fieldSettings") {
-                $state.go("index.fieldSettings", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-                });
-            }
-//            else if ($scope.getCurrentPage() === "tag") {
-//                $state.go("index.tag", {
-//                    accountId: $stateParams.accountId,
-//                    accountName: $stateParams.accountName,
-//                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-//                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
-//                });
-//            }
-
-            else if ($scope.getCurrentPage() === "favourites") {
-                $state.go("index.favourites", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
-                $state.go("index.viewFavouritesWidget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-//                    favouriteId: $stateParams.favouriteId,
-                    productId: $stateParams.productId,
-                    favouriteName: $stateParams.favouriteName,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            } else if ($scope.getCurrentPage() === "settings") {
-                $state.go("index.settings", {
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            } else {
-                $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
-            }
-        });
-    }
-
     $scope.toDate = function (strDate) {
         if (!strDate) {
             return new Date();
@@ -291,7 +107,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         yesterday.setDate(today.getDate() - 1);
         return yesterday;
     };
-
+//alert($stateParams.endDate)
+//return
     $scope.firstDate = $stateParams.startDate ? $scope.toDate(decodeURIComponent($stateParams.startDate)) : $scope.getDay().toLocaleDateString("en-US");
     $scope.lastDate = $stateParams.endDate ? $scope.toDate(decodeURIComponent($stateParams.endDate)) : $scope.getBeforeDay().toLocaleDateString("en-US");
     if (!$stateParams.startDate) {
@@ -300,6 +117,177 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     if (!$stateParams.endDate) {
         $stateParams.endDate = $scope.lastDate;
     }
+
+    function getAgencyProduct(agencyId) {
+        $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
+            $scope.products = response;
+            if (!response) {
+                return;
+            }
+            if (!response[0]) {
+                return;
+            }
+            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0;
+            $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
+            var getProductTemplateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+//            var templateId = $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+
+
+            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
+                var getLastTemplateId = response;
+                var templateId = getLastTemplateId ? getLastTemplateId.id : getProductTemplateId;
+                $stateParams.templateId = templateId;
+                try {
+                    var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+                    var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
+                } catch (e) {
+                }
+               // $stateParams.startDate = startDate;
+               //$stateParams.endDate = endDate;
+               // alert(startDate)
+                //alert(endDate)
+                defaultCalls()
+            });
+        });
+    }
+
+
+
+
+    function defaultCalls() {
+        if ($scope.getCurrentPage() === "dashboard") {
+            $state.go("index.dashboard." + $scope.getCurrentTab(), {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                templateId: $stateParams.templateId,
+                tabId: $stateParams.tabId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "editWidget") {
+            $state.go("index.editWidget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                tabId: $stateParams.tabId,
+                widgetId: $stateParams.widgetId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "reports") {
+            $state.go("index.report.reports", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                tabId: $stateParams.tabId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "newOrEdit") {
+            $state.go("index.report.newOrEdit", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                reportId: $stateParams.reportId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "updateReportWidget") {
+            $state.go("index.widgetEditByReport", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                reportId: $stateParams.reportId,
+                reportWidgetId: $stateParams.reportWidgetId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "dataSource") {
+            $state.go("index.dataSource", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "dataSet") {
+            $state.go("index.dataSet", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "scheduler") {
+            $state.go("index.schedulerIndex.scheduler", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+            $state.go("index.schedulerIndex.editOrNewScheduler", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                schedulerId: $stateParams.schedulerId,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "user") {
+            $state.go("index.user", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "account") {
+            $state.go("index.account", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "agency") {
+            $state.go("index.agency", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "fieldSettings") {
+            $state.go("index.fieldSettings", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+            });
+        } else if ($scope.getCurrentPage() === "favourites") {
+            $state.go("index.favourites", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+            $state.go("index.viewFavouritesWidget", {
+                accountId: $stateParams.accountId,
+                accountName: $stateParams.accountName,
+                productId: $stateParams.productId,
+                favouriteName: $stateParams.favouriteName,
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else if ($scope.getCurrentPage() === "settings") {
+            $state.go("index.settings", {
+                startDate: $stateParams.startDate,
+                endDate: $stateParams.endDate
+            });
+        } else {
+            $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
+        }
+    }
+
+
+
+
+
 
     $scope.setProductByFav = function () {
         $scope.accountId = $stateParams.accountId;
