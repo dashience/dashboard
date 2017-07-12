@@ -1172,6 +1172,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(column)
 //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
+         var index = $scope.columnY1Axis.indexOf(column);
+        console.log("Index --> " + index);
+        if (index == -1) {
+            $scope.columnY1Axis.push(column);
+        }
+        console.log($scope.columnY1Axis);
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY1Axis(widgetObj, yAxisItems);
 //        } else {
@@ -1187,6 +1193,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByY2Column = function (widgetObj, column, yAxisItems) {
 //        if (yAxisItems.length > 0) {
         $scope.columnY1Axis.push(column);
+        var index = $scope.columnY2Axis.indexOf(column);
+        console.log("Index --> " + index);
+        if (index == -1) {
+            $scope.columnY2Axis.push(column);
+        }
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY2Axis(widgetObj, yAxisItems);
 //        } else {
