@@ -51,6 +51,7 @@ import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.WidgetTag;
 
 import com.visumbu.vb.utils.Rest;
@@ -158,7 +159,7 @@ public class UiController extends BaseController {
         return uiService.getAgencyProductTab(agencyProductId, accountId, userId);
     }
 
-    @RequestMapping(value = "dbTabs/{templateId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "templateTabs/{templateId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getTabByTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
         return uiService.getTabByTemplateId(templateId);
@@ -707,6 +708,113 @@ public class UiController extends BaseController {
     DashboardTemplate createDashboardTemplate(HttpServletRequest request, HttpServletResponse response, @RequestBody DashboardTemplateBean dashboardTemplate, @PathVariable Integer productId) {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.createDashboardTemplate(dashboardTemplate, user, productId);
+    }
+    
+     //added by subhadra
+    @RequestMapping(value = "userPrefrences", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    UserPreferences addUserPreferences(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
+        System.out.println("POST USERPRFERENCE....");
+        // return uiService.updateThemeSettings(userPreferences);
+        return uiService.createThemeSettings(userPreferences);
+    }
+
+    //addedby subhadra
+    @RequestMapping(value = "userPrefrences", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    UserPreferences updateUserPreferences(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
+        return uiService.updateThemeSettings(userPreferences);
+    }
+
+    //added by subhadra
+    @RequestMapping(value = "userPreferences", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    UserPreferences getUserPreferenceById(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getUserPreferenceById(user);
+    }
+    //added by subhadra for get userprefrences map contains option name and option values 
+
+    @RequestMapping(value = "userPreferences/map", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map<String, String[]> getUserPreferenceMap(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getUserPreferencesMap(user);
+    }
+
+    //added by subhadra to return all the option values of particuler user
+    @RequestMapping(value = "userPreferences/optionvalues/{tabId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<String> getUserPreferenceOptionValues(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
+
+        return uiService.getcharColor(tabId);
+    }
+
+    @RequestMapping(value = "userPreferences/optionvalues/map/{tabId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map<String, String> getUserPreferenceOptionMap(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tabId) {
+
+        List<String> list = uiService.getcharColor(tabId);
+
+        Map<String, String> colormap = new HashMap<String, String>();
+
+        for (int i = 0; i < list.size(); i++) {
+            colormap.put(new Integer(i).toString(), list.get(i));
+        }
+        return colormap;
+    }
+
+    //addedby subhadra
+    @RequestMapping(value = "userPreferences/updatecolor/{widgetId}", method = RequestMethod.PUT)
+    public @ResponseBody
+    void updateColorOPtion(HttpServletRequest request, HttpServletResponse response, @RequestBody List<String> optionValues, @PathVariable Integer widgetId) {
+
+        StringBuffer stringBuffer = new StringBuffer();
+        int size = optionValues.size();
+        for (String s : optionValues) {
+            if (size > 1) {
+                stringBuffer.append(s + ",");
+                size--;
+            } else {
+                stringBuffer.append(s);
+            }
+        }
+        System.out.println(stringBuffer + "...................");
+        // DashboardTabs dashBoardTabs=uiService.getDashBoardTabsById(tabId);
+        uiService.updateOptionValue(new String(stringBuffer), widgetId);
+    }
+
+    //addedby subhadra
+    @RequestMapping(value = "userPreferences/deletecolor/{tabId}", method = RequestMethod.PUT)
+    public @ResponseBody
+    void deleteColorOption(HttpServletRequest request, HttpServletResponse response, @RequestBody String optionValues, @PathVariable Integer tabId) {
+
+        TabWidget tabWidget = uiService.getWidgetById(tabId);
+        String optionValue = tabWidget.getChartColorOption();
+        System.out.println("this color i want to delete.." + optionValue);
+        String[] s = optionValue.split(",");
+
+        StringBuffer stringBuffer = new StringBuffer();
+        int size = s.length;
+
+        for (String str : s) {
+            if (str.equals(optionValues)) {
+                size--;
+            } else {
+                if (size > 1) {
+                    stringBuffer.append(str + ",");
+                    size--;
+                } else {
+                    stringBuffer.append(str);
+                }
+            }
+        }
+
+        // System.out.println(optionValues+"..................."+userPreference.getOptionValue()+"....."+stringBuffer.toString());
+        System.out.println("delete color.........." + stringBuffer.toString());
+        tabWidget.setChartColorOption(stringBuffer.toString());
+        tabWidget.setId(tabWidget.getId());
+        uiService.updateOptionValue(stringBuffer.toString(), tabId);
     }
 
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")

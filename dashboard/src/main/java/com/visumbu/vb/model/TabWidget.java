@@ -83,6 +83,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")
     , @NamedQuery(name = "TabWidget.findByTimeSegment", query = "SELECT t FROM TabWidget t WHERE t.timeSegment = :timeSegment")
     , @NamedQuery(name = "TabWidget.findByProductSegment", query = "SELECT t FROM TabWidget t WHERE t.productSegment = :productSegment")
+    , @NamedQuery(name = "TabWidget.findBychartColorOption", query = "SELECT t FROM TabWidget t WHERE t.chartColorOption = :chartColorOption")
     , @NamedQuery(name = "TabWidget.findByNetworkType", query = "SELECT t FROM TabWidget t WHERE t.networkType = :networkType")})
 public class TabWidget implements Serializable {
 
@@ -222,6 +223,9 @@ public class TabWidget implements Serializable {
     @Size(max = 255)
     @Column(name = "network_type")
     private String networkType;
+    @Size(max = 255)
+    @Column(name = "chart_color_option")
+    private String chartColorOption;
     @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet dataSetId;
@@ -546,7 +550,7 @@ public class TabWidget implements Serializable {
     public void setTabId(DashboardTabs tabId) {
         this.tabId = tabId;
     }
-    
+
     public List<WidgetColumn> getColumns() {
         return columns;
     }
@@ -673,8 +677,7 @@ public class TabWidget implements Serializable {
 
     public void setNetworkType(String networkType) {
         this.networkType = networkType;
-    }    
-    
+    }
 
     @Override
     public int hashCode() {
@@ -694,6 +697,15 @@ public class TabWidget implements Serializable {
             return false;
         }
         return true;
+    }
+//@JsonProperty("someSingleValuedField")
+
+    public String getChartColorOption() {
+        return chartColorOption;
+    }
+
+    public void setChartColorOption(String chartColorOption) {
+        this.chartColorOption = chartColorOption;
     }
 
     @Override

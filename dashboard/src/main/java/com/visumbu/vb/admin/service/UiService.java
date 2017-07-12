@@ -38,6 +38,7 @@ import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
@@ -47,7 +48,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
@@ -310,6 +314,7 @@ public class UiService {
         tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
+        tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -1143,11 +1148,10 @@ public class UiService {
 //        dataSetColumn.setFieldType(widgetColumn.getFieldType());
 //        return dataSetColumn;
 //    }
-    
     public List<DataSetColumns> getDataSetColumns(Integer datasetId, Integer widgetId) {
         return uiDao.getDataSetColumn(datasetId, widgetId);
     }
-    
+
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
         DataSetColumns column = uiDao.getDataSetColumn(fieldName, userId, dataSetId, widgetId);
         if (column == null) {
@@ -1162,6 +1166,37 @@ public class UiService {
 
     public List<DashboardTemplate> getDefaultTemplate(Integer agencyId) {
         return uiDao.getDefaultTemplate(agencyId);
+    }
+
+    //added by Paramvir for theme settings
+    public UserPreferences updateThemeSettings(UserPreferences userPreferences) {
+        return (UserPreferences) uiDao.update(userPreferences);
+    }
+
+    //added by subhadra for theme settings
+    public UserPreferences createThemeSettings(UserPreferences userPreferences) {
+        return (UserPreferences) uiDao.create(userPreferences);
+    }
+
+    // adeed by subhadra for chart color
+    public UserPreferences getUserPreferenceById(VbUser vbUser) {
+        return uiDao.getUserPreferencesById(vbUser);
+    }
+
+    public Map<String, String[]> getUserPreferencesMap(VbUser userId) {
+        return uiDao.getUserPreferencesMap(userId);
+    }
+
+    public List<String> getcharColor(Integer tabId) {
+        return uiDao.getChartColor(tabId);
+    }
+
+    public void updateOptionValue(String chartcoloroption, Integer widgetId) {
+        uiDao.updateOptionValue(chartcoloroption, widgetId);
+    }
+
+    public UserPreferences getUserPreferenceByUserId(VbUser userId) {
+        return uiDao.getUserPreferenceById(userId);
     }
 
     public List<DashboardTemplate> getTemplates(VbUser user, Agency agency, AgencyProduct agencyProduct) {
