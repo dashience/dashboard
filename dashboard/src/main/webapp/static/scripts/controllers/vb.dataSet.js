@@ -111,7 +111,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.hideCondition = false;
     $scope.selectJoinType = function (joinDataSetColumn) {
         $scope.operationType = joinDataSetColumn.joinType;
-        console.log($scope.operationType);
         if (joinDataSetColumn.joinType != null) {
             $scope.hideCondition = true;
         }
@@ -121,15 +120,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetColumnList.push({});
     };
     $scope.removeJoinDataSetColumn = function (index, conditionId) {
-        console.log(conditionId)
         $scope.dataSetColumnList.splice(index, 1);
-
         $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId + "/" + joinDataSetId}).success(function (response) {
-            console.log(response);
             $scope.joinDataSetList = response;
         });
-        console.log($scope.joinDataSetList);
-        console.log($scope.dataSetColumnList);
     }
     var joinDataSetId = null;
 
@@ -144,13 +138,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSetIdFirst = JSON.parse(joinDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(joinDataSetColumn.secondDataSet).id;
         if (joinDataSetId != null) {
-            console.log($scope.joinDataSetList);
             for (i = 0; i < $scope.dataSetColumnList.length; i++) {
                 var conditionId = null;
                 if (typeof ($scope.joinDataSetList[i]) !== "undefined") {
                     conditionId = $scope.joinDataSetList[i].id;
                 }
-                console.log(conditionId)
                 var conditionData = {
                     conditionFieldFirst: $scope.dataSetColumnList[i].conditionFieldFirst,
                     conditionFieldSecond: $scope.dataSetColumnList[i].conditionFieldSecond,
@@ -158,10 +150,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     conditionId: conditionId
                 };
                 $scope.dataSetLists.push(conditionData);
-                console.log($scope.dataSetLists)
             }
             $scope.dataSetColumnList = $scope.dataSetLists;
-            console.log($scope.dataSetColumnList)
         }
         var data = {
             id: joinDataSetId,
@@ -171,9 +161,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             operationType: joinDataSetColumn.joinType,
             conditionFields: $scope.dataSetColumnList
         };
-        console.log(data);
         $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
-            console.log(response);
             $scope.joinDataSetList = response;
             joinDataSetId = response[0].joinDataSetId.id;
             $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
@@ -190,8 +178,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     $scope.errorHide = true;
                     $scope.errorMessage = "No Data Found";
                 }
-                console.log(response.columnDefs);
-                console.log(response.data);
             });
         });
     };
@@ -215,7 +201,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             userId: dataSet.userId
         };
         $http({method: 'POST', url: 'admin/ui/joinDataSource', data: joinDataSource}).success(function (response) {
-            console.log(response)
             dataSourceId = response.id;
 
             var joinDataSetList = {
@@ -226,9 +211,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 dataSourceId: dataSourceId
             };
             var data = joinDataSetList;
-            console.log(data);
             $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
-                console.log(response);
                 $scope.cancelJoinDataSet();
                 getItems();
                 $scope.setTab(1);
@@ -284,7 +267,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
         } else if (dataSource === "facebook")
         {
-            $scope.report = $scope.facebookPerformance; 
+            $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
@@ -1734,7 +1717,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             console.log($scope.facebookPerformance);
             console.log($scope.dataSet.reportName);
-            
+
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
@@ -2099,7 +2082,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.previewData = null;
         $scope.dataSetFlag = false;
     };
-    
+
 //    $scope.savePublishDataSet = function(dataSet){
 //        console.log(dataSet);
 //        var data = {
@@ -2111,7 +2094,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //            getItems();
 //        });
 //    };
-    
+
     $scope.clearTable = function () {
         $scope.dataSet = "";
     };
@@ -2124,11 +2107,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         if (dataSet.joinDataSetId != null) {
             joinDataSetId = dataSet.joinDataSetId.id;
         }
-        if(dataSet.publish != null){
-            if(dataSet.publish == "Active"){
+        if (dataSet.publish != null) {
+            if (dataSet.publish == "Active") {
                 publish = true;
             }
-        };
+        }
+        ;
         var data = {
             id: dataSet.id,
             name: dataSet.name,
