@@ -808,21 +808,15 @@ public class UiDao extends BaseDao {
         return query.list();
     }
 
-    public UserPreferences getUserPreferencesById(VbUser userId) {
-        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId";
+    public UserPreferences getChartColorById(VbUser userId) {
+        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId and u.optionName = 'Chart_Color_Options'";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", userId);
-//        List list = query.list();
-//        if (list.size() > 0) {
-//            return (UserPreferences) list.get(0);
-//        } else {
-//            return null;
-//        }
         return (UserPreferences) query.uniqueResult();
     }
 
-    public Map<String, String[]> getUserPreferencesMap(VbUser userId) {
-        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId";
+    public Map<String, String[]> getChartColorByUser(VbUser userId) {
+        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId and u.optionName = 'Chart_Color_Options'";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", userId);
 
@@ -839,36 +833,36 @@ public class UiDao extends BaseDao {
         }
     }
 
-    public List<String> getChartColor(Integer id) {
-        String queryStr = "SELECT t FROM TabWidget t WHERE t.id = :id";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("id", id);
-
-        TabWidget tabWidget = (TabWidget) query.uniqueResult();
-        List<String> list = new ArrayList<String>();
-
-        if (tabWidget != null) {
-            String[] optionValues = tabWidget.getChartColorOption().split(",");
-            for (String optionValue : optionValues) {
-                list.add(optionValue);
-            }
-            return list;
-        } else {
-            System.out.println("if==========false");
-            list.add("#ff5733");
-            return list;
-        }
-    }
+//    public List<String> getChartColor(Integer widgetId) {
+//        String queryStr = "SELECT t FROM TabWidget t WHERE t.id = :id";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("id", widgetId);
+//
+//        TabWidget tabWidget = (TabWidget) query.uniqueResult();
+//        List<String> list = new ArrayList<String>();
+//
+//        if (tabWidget != null) {
+//            String[] optionValues = tabWidget.getChartColorOption().split(",");
+//            for (String optionValue : optionValues) {
+//                list.add(optionValue);
+//            }
+//            return list;
+//        } else {
+//            System.out.println("if==========false");
+//            list.add("#ff5733");
+//            return list;
+//        }
+//    }
 
     //subhadra update color option
-    public void updateOptionValue(String chartcolor, Integer widgetId) {
-        System.out.println(chartcolor + "..........widgetId:" + widgetId);
-        String queryStr = "update TabWidget t set t.chartColorOption=:chartColorOption WHERE t.id = :widgetId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("chartColorOption", chartcolor).setInteger("widgetId", widgetId);
-        // query.setParameter("userId", userId);
-        query.executeUpdate();
-    }
+//    public void updateOptionValue(String chartcolor, Integer widgetId) {
+//        System.out.println(chartcolor + "..........widgetId:" + widgetId);
+//        String queryStr = "update TabWidget t set t.chartColorOption=:chartColorOption WHERE t.id = :widgetId";
+//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+//        query.setParameter("chartColorOption", chartcolor).setInteger("widgetId", widgetId);
+//        // query.setParameter("userId", userId);
+//        query.executeUpdate();
+//    }
 
     public UserPreferences getUserPreferenceById(VbUser userId) {
         Query query = sessionFactory.getCurrentSession().getNamedQuery("UserPreferences.findByUserId");
@@ -928,4 +922,15 @@ public class UiDao extends BaseDao {
             query.executeUpdate();
         }
     }
+
+    public UserPreferences getThemeByUserId(VbUser user) {
+        String queryStr = "SELECT d FROM UserPreferences d where d.userId = :user";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("user", user);
+
+        //query.setParameter("agencyId", agencyId);
+        return (UserPreferences) query.uniqueResult();
+
+    }
+
 }

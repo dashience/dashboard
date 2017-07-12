@@ -1168,32 +1168,50 @@ public class UiService {
         return uiDao.getDefaultTemplate(agencyId);
     }
 
+    //added by subhadra for theme settings
+    public UserPreferences updateChartColor(UserPreferences userPreferences) {
+        uiDao.saveOrUpdate(userPreferences);
+        return userPreferences;
+    }
+
     //added by Paramvir for theme settings
     public UserPreferences updateThemeSettings(UserPreferences userPreferences) {
-        return (UserPreferences) uiDao.update(userPreferences);
+        VbUser user = userPreferences.getUserId();
+        Integer userId = user.getId();
+        UserPreferences userPreferencesList = uiDao.getThemeByUserId(user);
+        if (userPreferencesList != null) {
+            userPreferences.setId(userPreferencesList.getId());
+        }
+        uiDao.saveOrUpdate(userPreferences);
+        return userPreferences;
+    }
+
+    public UserPreferences getThemeByUserId(VbUser userId) {
+        return uiDao.getThemeByUserId(userId);
     }
 
     //added by subhadra for theme settings
-    public UserPreferences createThemeSettings(UserPreferences userPreferences) {
-        return (UserPreferences) uiDao.create(userPreferences);
-    }
+    public UserPreferences addChartColor(UserPreferences userPreferences) {
+        uiDao.saveOrUpdate(userPreferences);
+        return userPreferences;
+    };
 
     // adeed by subhadra for chart color
-    public UserPreferences getUserPreferenceById(VbUser vbUser) {
-        return uiDao.getUserPreferencesById(vbUser);
+    public UserPreferences getChartColorById(VbUser vbUser) {
+        return uiDao.getChartColorById(vbUser);
     }
 
-    public Map<String, String[]> getUserPreferencesMap(VbUser userId) {
-        return uiDao.getUserPreferencesMap(userId);
+    public Map<String, String[]> getChartColorByUser(VbUser userId) {
+        return uiDao.getChartColorByUser(userId);
     }
 
-    public List<String> getcharColor(Integer tabId) {
-        return uiDao.getChartColor(tabId);
-    }
+//    public List<String> getCharColor(Integer widgetId) {
+//        return uiDao.getChartColor(widgetId);
+//    }
 
-    public void updateOptionValue(String chartcoloroption, Integer widgetId) {
-        uiDao.updateOptionValue(chartcoloroption, widgetId);
-    }
+//    public void updateOptionValue(String chartcoloroption, Integer widgetId) {
+//        uiDao.updateOptionValue(chartcoloroption, widgetId);
+//    }
 
     public UserPreferences getUserPreferenceByUserId(VbUser userId) {
         return uiDao.getUserPreferenceById(userId);

@@ -312,21 +312,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
     //edit widget code
     $scope.setWidgetItems = function (widget) {
-        setDefaultWidgetObj = [];
-        var data = loadInitialWidgetColumnData(widget.columns);
-        setDefaultWidgetObj.push({
-            chartType: widget.chartType,
-            id: widget.id,
-            columns: data,
-            widgetTitle: widget.widgetTitle,
-            dataSourceId: widget.dataSourceId,
-            dataSetId: widget.dataSetId,
-            timeSegment: widget.timeSegment,
-            productSegment: widget.productSegment,
-            networkType: widget.networkType
-        });
-        setDefaultChartType = widget.chartType;
-        $scope.showDerived = false;
+        console.log("set widget items");
+        console.log(widget);
 
         //added by subhadra
         widget.targetColors = [];
@@ -342,7 +329,24 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }
         }
-        
+        console.log(widget.targetColors);
+        setDefaultWidgetObj = [];
+        var data = loadInitialWidgetColumnData(widget.columns);
+        setDefaultWidgetObj.push({
+            chartType: widget.chartType,
+            id: widget.id,
+            columns: data,
+            widgetTitle: widget.widgetTitle,
+            dataSourceId: widget.dataSourceId,
+            dataSetId: widget.dataSetId,
+            timeSegment: widget.timeSegment,
+            productSegment: widget.productSegment,
+            networkType: widget.networkType,
+            targetColors: widget.targetColors
+        });
+        setDefaultChartType = widget.chartType;
+        $scope.showDerived = false;
+
         $scope.widgetObj = widget;
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         $scope.queryBuilderList = widget;
@@ -724,6 +728,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = true;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
+        $scope.showColor = false;
         $scope.hideSelectedColumn = false;
     };
 
@@ -733,12 +738,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
+        $scope.showColor = false;
         $scope.showSortBy = false;
     };
 
     $scope.showEditor = function () {
         $scope.showSortBy = false;
         $scope.showPreviewChart = true;
+        $scope.showColor = false;
         $scope.showDateRange = false;
     };
 
@@ -748,6 +755,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
+        $scope.showColor = false;
         $scope.showPreviewChart = false;
     };
 
@@ -757,20 +765,34 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
+        $scope.showColor = false;
         $scope.showPreviewChart = false;
     };
 
     $scope.showPreview = function (widgetObj) {
         var chartType = $scope.chartTypeName;
+        console.log("Chart Type....");
+        console.log(chartType);
+        console.log(widgetObj.chartType);
+        console.log(widgetObj);
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showDateRange = false;
+        $scope.showColor = false;
         $scope.chartTypeName = null;
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
+
+        var chartColorOption;
+        widgetObj.targetColors.forEach(function (val, key) {
+            chartColorOption += val.color + ",";
+        });
+        console.log(chartColorOption.replace(/,\s*$/, ""));
+
+        widgetObj.chartColorOption = chartColorOption;
         $scope.displayPreviewChart = widgetObj;
     };
 
@@ -841,28 +863,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.targetColors = [];
 
     //added by subhadra 
-    $scope.editColorOption = function (targetColors) {
-        var data = targetColors;
-        if ($scope.widgetId) {
-            $http({method: 'PUT', url: 'admin/ui/userPreferences/updatecolor/' + $scope.widgetId, data: data}).success(function (response) {
-            });
-        }
-    };
+//    $scope.editColorOption = function (targetColors) {
+//        var data = targetColors;
+//        if ($scope.widgetId) {
+//            $http({method: 'PUT', url: 'admin/ui/userPreferences/updateColor/' + $scope.widgetId, data: data}).success(function (response) {
+//            });
+//        }
+//    };
 
     //added by subhadra 
     $scope.deleteColorOption = function (targetColor, index) {
         $scope.widgetObj.targetColors.splice(index, 1);
-        var data = targetColor;
-        $http({method: 'PUT', url: 'admin/ui/userPreferences/deletecolor/' + $scope.widgetId, data: data}).success(function (response) {
-            // $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
-            console.log(response);
-            $scope.targetColors = response;
-            //});
-        });
+//        var data = targetColor;
+//        $http({method: 'PUT', url: 'admin/ui/userPreferences/deleteColor/' + $scope.widgetId, data: data}).success(function (response) {
+//            // $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
+//            console.log(response);
+//            $scope.targetColors = response;
+//            //});
+//        });
     };
 
     //added by subhadra 
-    $scope.targetColors;
+//    $scope.targetColors;
     $scope.color = function () {
         $scope.loadingColumnsGif = true;
         $scope.showColumnDefs = false;
@@ -871,27 +893,36 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
 
         //added by subhadra to get chatcoloroption in map
-        $http.get("admin/ui/userPreferences/optionvalues/map/" + $scope.widgetId).success(function (response) {
-            if (response != null) {
-                console.log(JSON.stringify(response) + "..............map");
-            }
-        });
+//        $http.get("admin/ui/userPreferences/optionvalues/map/" + $scope.widgetId).success(function (response) {
+//            if (response != null) {
+//                console.log(JSON.stringify(response) + "..............map");
+//            }
+//        });
 
-        //added by subhadra to get chatcoloroption in list
-        $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
-            if (response != null) {
-                $scope.targetColors = response;
-            } else {
-            }
-        });
+//        added by subhadra to get chatcoloroption in list
+//        $http.get("admin/ui/userPreferences/optionvalues/" + $scope.widgetId).success(function (response) {
+//            if (response) {
+//                $scope.targetColors = response;
+//            } 
+//        });
     };
 
     //add by subhadra
+//    $scope.widget = {}
+//    $scope.widget.targetColors = {}
+    var widget = {};
+    var temp = [];
     $scope.addColors = function (widget) {
-        console.log(widget);
-        var widgetLength = widget.targetColors.length;
-
-        widget.targetColors.push({color: "#00" + widgetLength});
+        if (widget.targetColors) {
+            widget.targetColors.push({color: "#62cb31"});
+        } else {
+            var targetColors =
+                    {
+                        color: "#62cb31"
+                    };
+            temp.push(targetColors);
+            widget["targetColors"] = temp;
+        }
     };
 
     $scope.deleteWidget = function (widget, index) {
@@ -1674,12 +1705,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.customStartDate = "";
+        $scope.widgetObj.targetColors = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $scope.showSortBy = false;
+        $scope.showColor = false;
     }
 
     $scope.save = function (widget) {
@@ -1768,8 +1801,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widget.accountId = parseInt($stateParams.accountId);
         }
-
-
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
@@ -1871,6 +1902,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        $scope.funnelItem = [];
         $('.showEditWidget').modal('hide');
         $scope.hideSelectedColumn = true;
+        console.log("setDefaultWidget");
+        console.log(setDefaultWidgetObj);
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
             $scope.widgetObj.previewTitle = val.widgetTitle;
@@ -1882,6 +1915,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.productSegment = val.productSegment;
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
+            $scope.widgetObj.targetColors = val.targetColors;
             console.log(val.columns);
 //            angular.forEach(val.columns, function (val, key) {
 //                if (val.xAxis == 1) {

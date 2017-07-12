@@ -37,9 +37,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     //added by subhadra
-    $http.get("admin/ui/userPreferences").success(function (response) {
-        $scope.userPreferences = response;
-    });
+    function getChartColor() {
+        $http.get("admin/ui/getChartColorById").success(function (response) {
+            $scope.chartColor = response;
+        });
+    }
+    ;
+
+    getChartColor();
 
     //added by subhadra
     $scope.themes = [{name: "Green", value: "green"},
@@ -73,7 +78,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
-            $scope.loadNewUrl()
+            $scope.loadNewUrl();
             return;
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
@@ -540,18 +545,56 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     //added by subhadra
-    $scope.dropdownChange = function (data) {
+//    $scope.dropdownChange = function (data) {
+//        $http({
+//            url: 'admin/ui/userPrefrences',
+//            method: 'POST',
+//            data: JSON.stringify(data)
+//        }).success(function (response) {
+//            console.log("success data");
+//        }).error(function (response) {
+//            console.log("Error data");
+//        });
+//    };
+
+    //added paramvir code
+    $scope.themeDropDownChange = function (data) {
+        var colorCode = {
+            optionName: data.name,
+            optionValue: data.value
+        };
+
         $http({
-            url: 'admin/ui/userPrefrences',
+            url: 'admin/ui/updateThemeSettings',
             method: 'POST',
-            data: JSON.stringify(data)
+            data: JSON.stringify(colorCode)
         }).success(function (response) {
-            console.log("success data");
+            console.log(response);
         }).error(function (response) {
             console.log("Error data");
-
-        })
+        });
     };
+
+    $http.get("admin/ui/getThemeByUserId").success(function (response) {
+        console.log(response);
+        $scope.theme = {value: response.optionValue};
+        $(document).ready(function (e) {
+            console.log($scope.theme.value);
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.theme.value + '/style.css" type="text/css" />');
+        });
+    });
+
+    $(document).ready(function (e) {
+        $(".inside").click(function (e) {
+            console.log("inside");
+            e.stopPropagation();
+            console.log($scope.theme.value);
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.theme.value + '/style.css" type="text/css" />');
+            console.log("static/lib/css/" + $scope.theme.value);
+        });
+    });
+
+    //ends paramvir code
 
     //added by subhadra
     $scope.changeChartColor = function (userPreferences) {
@@ -561,12 +604,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             optionValue: userPreferences.optionValue,
             userId: $scope.name.userId
         };
-        $http({method: userPreferences.id ? 'PUT' : 'POST', url: 'admin/ui/userPrefrences', data: data}).success(function (response) {
+        console.log("change color opiton");
+        console.log(data);
+        $http({method: userPreferences.id ? 'PUT' : 'POST', url: 'admin/ui/updateChartColor', data: data}).success(function (response) {
             console.log("success data");
-            $http.get("admin/ui/userPreferences").success(function (response) {
-                $scope.userPreferences = response;
-            });
-
+            getChartColor();
         }).error(function (response) {
             console.log("Error data");
         });
@@ -654,7 +696,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             var selectedMonth = $(this).text();
             var splitMY = selectedMonth.split(" ");
             var monthvalue = $.inArray(splitMY[0], months);
-            var FirstDay = new Date(splitMY[1], monthvalue, 1);
+            varstDay = new Date(splitMY[1], monthvalue, 1);
             var LastDay = new Date(splitMY[1], monthvalue + 1, 0);
 
             $("input[name='daterangepicker_start']").daterangepicker({
