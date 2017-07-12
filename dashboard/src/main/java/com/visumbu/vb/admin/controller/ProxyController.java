@@ -47,9 +47,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -390,6 +392,9 @@ public class ProxyController {
                 joinDataSetTwoMap.put("data", dataWithDerivedColumns);
             }
         }
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        System.out.println(dateFormat.format(cal.getTime()));        
         if (!operationType.equalsIgnoreCase("union")) {
             for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -400,7 +405,7 @@ public class ProxyController {
                         for (String columnStr : columnSet) {
                             if (key.equalsIgnoreCase(columnStr)) {
                                 dataMap.remove(key);
-                                dataMap.put(key + "2", value);
+                                dataMap.put(key + dateFormat.format(cal.getTime()), value);
                                 System.out.println("dataMap ---> " + dataMap);
                                 break;
                             }

@@ -44,6 +44,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetEndDate = $stateParams.endDate;
     $scope.userId = $cookies.getObject("userId");
     $scope.templateId = $stateParams.templateId;
+    $scope.widgetDataSetColumnsDefs = [];
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
@@ -252,10 +253,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widgetObj.lastNyears = "";
     };
 
-    $scope.widgetObj = {allAccount : 1};
+    $scope.widgetObj = {allAccount: 1};
 
     $scope.clearChartType = function () {
-        $scope.widgetObj = {allAccount : 1};
+        $scope.widgetObj = {allAccount: 1};
         $scope.selectedChartType = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
@@ -351,8 +352,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultChartType;
     var setDefaultWidgetObj = [];
     $scope.setWidgetItems = function (widget) {
-        setDefaultWidgetObj = [];alert(1)
-       // $scope.widgetObj.allAccount = widget.accountId ? 0 : 1;
+        setDefaultWidgetObj = [];
+        // $scope.widgetObj.allAccount = widget.accountId ? 0 : 1;
         var data = loadInitialWidgetColumnData(widget.columns);
         setDefaultWidgetObj.push({
             chartType: widget.chartType,
@@ -505,6 +506,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
+            $scope.widgetDataSetColumnsDefs = response.columnDefs;
             var getWidgetColumns = widget.columns;
 
             $scope.collectionFields.forEach(function (value, k) {
@@ -622,11 +624,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.afterLoadWidgetColumns = true;
             $scope.hideSelectedColumn = false;
-            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
-                $scope.collectionFields = response.columnDefs;
-            } else {
-                $scope.collectionFields = response.columnDefs;
-            }
+//            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
+//                $scope.collectionFields = response.columnDefs;
+//            } else {
+            $scope.collectionFields = response.columnDefs;
+            $scope.widgetDataSetColumnsDefs = response.columnDefs;
+//            }
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
             angular.forEach($scope.collectionFields, function (value, key) {
@@ -1615,20 +1618,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.timeSegment = "";
         $scope.widgetObj.productSegment = "";
         $scope.widgetObj.networkType = "";
-//        $scope.widgetObj.columns = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
         $scope.text = "";
-//        $scope.xColumn = "";
-//        $scope.selectPieChartXAxis = "";
-//        $scope.selectPieChartYAxis = "";
-//        $scope.y1Column = "";
-//        $scope.y2Column = "";
-//        $scope.tickerItem = "";
-//        $scope.funnelItem = "";
         $scope.widgetObj.lastNdays = "";
         $scope.widgetObj.lastNweeks = "";
         $scope.widgetObj.lastNmonths = "";
@@ -1754,27 +1749,30 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         clearEditAllWidgetData();
         widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            console.log(response)
-            $scope.chartTypeName = "";
-            widget.id = data.id;
-            widget.chartType = data.chartType;
-            widget.widgetTitle = data.widgetTitle;
-            widget.dataSetId = dataSetObj;//data.dataSetId;
-            widget.dataSourceId = dataSourceObj;//data.dataSetId;
-            widget.timeSegment = data.timeSegment;//data.dataSetId;
-            widget.productSegment = data.productSegment;//data.dataSetId;
-            widget.networkType = data.networkType;//data.dataSetId;
-            widget.columns = data.widgetColumns;//data.dataSetId;
-            widget.dateRangeName = data.dateRangeName;
-            widget.lastNdays = data.lastNdays;
-            widget.lastNweeks = data.lastNweeks;
-            widget.lastNmonths = data.lastNmonths;
-            widget.lastNyears = data.lastNyears;
-            data.dataSourceId = dataSourceObj;
-            data.dataSetId = dataSetObj;
-            widget = data;
 
-            widget.id = data.id;
+            $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForWidget/' + response.id, data: $scope.widgetDataSetColumnsDefs}).success(function (data) {
+                $scope.chartTypeName = "";
+                widget.id = data.id;
+                widget.chartType = data.chartType;
+                widget.widgetTitle = data.widgetTitle;
+                widget.dataSetId = dataSetObj;//data.dataSetId;
+                widget.dataSourceId = dataSourceObj;//data.dataSetId;
+                widget.timeSegment = data.timeSegment;//data.dataSetId;
+                widget.productSegment = data.productSegment;//data.dataSetId;
+                widget.networkType = data.networkType;//data.dataSetId;
+                widget.columns = data.widgetColumns;//data.dataSetId;
+                widget.dateRangeName = data.dateRangeName;
+                widget.lastNdays = data.lastNdays;
+                widget.lastNweeks = data.lastNweeks;
+                widget.lastNmonths = data.lastNmonths;
+                widget.lastNyears = data.lastNyears;
+                data.dataSourceId = dataSourceObj;
+                data.dataSetId = dataSetObj;
+                widget = data;
+
+                widget.id = data.id;
+            })
+            console.log(response)
             $scope.derivedColumns = [];
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {

@@ -2,7 +2,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
     return{
         restrict: 'A',
         scope: {
-            path: '@'
+            path: '@',
+            getDataSetColumns: '&'
 //            dataSetId: '@'
                     // widgetColumns: '@',
                     //setTableFn: '&',
@@ -357,6 +358,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: 'Custom', value: 'custom'}
             ];
             scope.loadingTable = true;
+
             var dataSourcePath = JSON.parse(scope.path)
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
@@ -372,7 +374,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             }
             scope.format = function (column, value) {
-                if(column.fieldType === "date") {
+                if (column.fieldType === "date") {
                     return value;
                 }
                 if (!value) {
@@ -436,6 +438,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.dataSetColumns = response.columnDefs;
+                        scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
                     scope.tableRows = response.data.slice(0, 5);
