@@ -180,6 +180,8 @@ public class ProxyController {
                 System.out.println("with joinDataSet");
                 Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
                 returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
+                System.out.println("JOIN DATA SET OUTPUT ===> ");
+                System.out.println(returnMap);
             } catch (NumberFormatException e) {
 
             }
@@ -392,9 +394,7 @@ public class ProxyController {
                 joinDataSetTwoMap.put("data", dataWithDerivedColumns);
             }
         }
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Calendar cal = Calendar.getInstance();
-        System.out.println(dateFormat.format(cal.getTime()));        
+        Integer secondDataSetAppender = new Long(new Date().getTime()/100000).intValue();
         if (!operationType.equalsIgnoreCase("union")) {
             for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -405,7 +405,7 @@ public class ProxyController {
                         for (String columnStr : columnSet) {
                             if (key.equalsIgnoreCase(columnStr)) {
                                 dataMap.remove(key);
-                                dataMap.put(key + dateFormat.format(cal.getTime()), value);
+                                dataMap.put(key + secondDataSetAppender, value);
                                 System.out.println("dataMap ---> " + dataMap);
                                 break;
                             }
@@ -422,7 +422,7 @@ public class ProxyController {
             if (dataSetTwoMap.get(joinDataSetCondition.getConditionFieldSecond()) != null) {
                 concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond();
             } else {
-                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + "2";
+                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + secondDataSetAppender;
             }
             if (joinDataSetCondition.getColumnName() != null) {
                 concatCondition += "," + joinDataSetCondition.getColumnName();
