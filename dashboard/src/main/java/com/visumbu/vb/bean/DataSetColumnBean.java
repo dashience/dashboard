@@ -25,6 +25,7 @@ public class DataSetColumnBean {
     private String functionName;
     private String columnName;
     private String baseField;
+    private String dataFormat;
     private String displayFormat;
     private String customEndDate;
     private String customStartDate;
@@ -106,6 +107,14 @@ public class DataSetColumnBean {
         this.baseField = baseField;
     }
 
+    public String getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(String dataFormat) {
+        this.dataFormat = dataFormat;
+    }
+    
     public String getDisplayFormat() {
         return displayFormat;
     }

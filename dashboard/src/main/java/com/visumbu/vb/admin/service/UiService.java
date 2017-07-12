@@ -679,7 +679,8 @@ public class UiService {
         } else {
             dataSet.setPublish("InActive");
         }
-        return (DataSet) uiDao.create(dataSet);
+        uiDao.create(dataSet);
+        return dataSet;
     }
 
     public DataSet update(DataSet dataSet) {
@@ -1220,5 +1221,25 @@ public class UiService {
         widget.setWidth(width);
         uiDao.saveOrUpdate(widget);
         return widget;
+    }
+
+    public List<DataSetColumns> saveDataSetColumns(DataSet dataSet, TabWidget tabWidget, List<DataSetColumnBean> dataSetColumnBeans) {
+        List<DataSetColumns> dataSetColumns = new ArrayList<>();
+        for (Iterator<DataSetColumnBean> iterator = dataSetColumnBeans.iterator(); iterator.hasNext();) {
+            DataSetColumnBean columnBean = iterator.next();
+            DataSetColumns dataSetColumn = new DataSetColumns();
+            dataSetColumn.setFieldName(columnBean.getFieldName());
+            dataSetColumn.setFieldType(columnBean.getFieldType());
+            dataSetColumn.setDataSetId(dataSet);
+            dataSetColumn.setDisplayFormat(columnBean.getDisplayFormat());
+            dataSetColumn.setDisplayName(columnBean.getDisplayName());
+            dataSetColumn.setDataFormat(columnBean.getDataFormat());
+            if(tabWidget != null) {
+                dataSetColumn.setWidgetId(tabWidget);
+            }
+            uiDao.saveOrUpdate(dataSetColumn);
+            dataSetColumns.add(dataSetColumn);
+        }
+        return dataSetColumns;
     }
 }
