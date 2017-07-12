@@ -1227,6 +1227,10 @@ public class UiService {
         List<DataSetColumns> dataSetColumns = new ArrayList<>();
         for (Iterator<DataSetColumnBean> iterator = dataSetColumnBeans.iterator(); iterator.hasNext();) {
             DataSetColumnBean columnBean = iterator.next();
+            DataSetColumns dataSetColumnFromDb = uiDao.getDataSetColumn(columnBean.getFieldName(), dataSet);
+            if(dataSetColumnFromDb == null) {
+                continue;
+            }
             DataSetColumns dataSetColumn = new DataSetColumns();
             dataSetColumn.setFieldName(columnBean.getFieldName());
             dataSetColumn.setFieldType(columnBean.getFieldType());
