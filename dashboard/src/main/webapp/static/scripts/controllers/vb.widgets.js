@@ -4277,7 +4277,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                     return temp;
                 }
                 if (column.displayFormat) {
-                    if (Number.isNaN(value)) {
+                    if (isNaN(value)) {
                         var temp = 0;
                         return temp;
                     }
