@@ -520,7 +520,14 @@ public class ProxyController {
             for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
                 ColumnDef column = iterator1.next();
                 if (column.getDataFormat() != null) {
-                    if (column.getDataFormat().equalsIgnoreCase("%")) {
+                    if (column.getDataFormat().equalsIgnoreCase(",")) {
+                        String value = data.get(column.getFieldName()) + "";
+                        data.put(column.getFieldName(), value.replaceAll(",", ""));
+                    } 
+                    if (column.getDataFormat().equalsIgnoreCase("$")) {
+                        String value = data.get(column.getFieldName()) + "";
+                        data.put(column.getFieldName(), value.replaceAll(",", ""));
+                    } else if (column.getDataFormat().equalsIgnoreCase("%")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll("%", ""));
                     } else if (column.getFieldType() != null && column.getFieldType().equalsIgnoreCase("date") && column.getDataFormat() != null && !column.getDataFormat().isEmpty()) {
