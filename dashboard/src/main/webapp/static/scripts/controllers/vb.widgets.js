@@ -378,7 +378,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
-        if(!widget.allAccount){
+        if(!widget.accountId){
             widget.allAccount = 1;
         }
         $scope.widgetObj = widget;
@@ -1343,42 +1343,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showDerived = false;
     $scope.dataSetColumn = {}
     $scope.addDerived = function () {
-        $scope.dataSetColumn = "";
+        $scope.dataSetColumn = {};
         $scope.showDerived = true;
         $scope.text = "";
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
+        $scope.text = "";
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
-        $scope.text = "";
     };
     //Edit Derived
-    $scope.editDerivedColumn = function (collectionField, widgetObj) {
-        $scope.showDerived = false;
-        console.log(collectionField);
-        $scope.dataSetColumn = {};
-        if (collectionField.userId != null) {
-            $scope.showDerived = true;
-            var data = {
-                agregationFunction: collectionField.agregationFunction,
-                functionName: collectionField.functionName,
-                groupPriority: collectionField.groupPriority,
-                id: collectionField.id,
-                sortOrder: collectionField.sortOrder,
-                sortPriority: collectionField.sortPriority,
-                status: collectionField.status,
-                expression: collectionField.expression,
-                fieldType: collectionField.type,
-                fieldName: collectionField.fieldName,
-                displayName: collectionField.displayName,
-                userId: collectionField.userId,
-                displayFormat: collectionField.displayFormat,
-                widgetId: widgetObj.id
-            };
-            $scope.dataSetColumn = data;
-            $scope.text = collectionField.expression;
-        }
-    };
+//    $scope.editDerivedColumn = function (collectionField, widgetObj) {
+//        $scope.showDerived = false;
+//        console.log(collectionField);
+//        $scope.dataSetColumn = {};
+//        if (collectionField.userId != null) {
+//            $scope.showDerived = true;
+//            var data = {
+//                agregationFunction: collectionField.agregationFunction,
+//                functionName: collectionField.functionName,
+//                groupPriority: collectionField.groupPriority,
+//                id: collectionField.id,
+//                sortOrder: collectionField.sortOrder,
+//                sortPriority: collectionField.sortPriority,
+//                status: collectionField.status,
+//                expression: collectionField.expression,
+//                fieldType: collectionField.type,
+//                fieldName: collectionField.fieldName,
+//                displayName: collectionField.displayName,
+//                userId: collectionField.userId,
+//                displayFormat: collectionField.displayFormat,
+//                widgetId: widgetObj.id
+//            };
+//            $scope.dataSetColumn = data;
+//            $scope.text = collectionField.expression;
+//        }
+//    };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
         $scope.text = text;
@@ -1461,7 +1461,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
-    $scope.text = "";
     //Auto Complete
     $scope.text = "";
     $scope.config = {
@@ -1641,7 +1640,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.customStartDate = "";
-        $scope.widgetObj.allAccount = 1;
+        $scope.widgetObj.allAccount = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -1801,6 +1800,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.lastNweeks = data.lastNweeks;
             widget.lastNmonths = data.lastNmonths;
             widget.lastNyears = data.lastNyears;
+            widget.allAccount = data.accountId;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
             widget = data;
@@ -1867,13 +1867,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.lastNweeks = val.lastNweeks;
             $scope.widgetObj.lastNmonths = val.lastNmonths;
             $scope.widgetObj.lastNyears = val.lastNyears;
-            $scope.widgetObj.allAccount = val.accountId ? val.accountId.id : 1;
+            $scope.widgetObj.allAccount = val.accountId;
         });
-        if ($scope.widgetObj.accountId === null) {
-            $scope.widgetObj.allAccount = true;
-        } else {
-            $scope.widgetObj.allAccount = false;
-        }
         $scope.chartTypeName = "";
         $scope.xColumn = ""
         $scope.tickerItem = ""
