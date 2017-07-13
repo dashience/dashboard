@@ -924,13 +924,9 @@ public class UiDao extends BaseDao {
     }
 
     public UserPreferences getThemeByUserId(VbUser user) {
-        String queryStr = "SELECT d FROM UserPreferences d where d.userId = :user";
+        String queryStr = "SELECT u FROM UserPreferences u where u.userId = :user and u.optionName != 'Chart_Color_Options'";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("user", user);
-
-        //query.setParameter("agencyId", agencyId);
         return (UserPreferences) query.uniqueResult();
-
     }
-
 }

@@ -569,28 +569,32 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             method: 'POST',
             data: JSON.stringify(colorCode)
         }).success(function (response) {
-            console.log(response);
+            getThemeColor();
         }).error(function (response) {
             console.log("Error data");
         });
     };
 
-    $http.get("admin/ui/getThemeByUserId").success(function (response) {
-        console.log(response);
-        $scope.theme = {value: response.optionValue};
-        $(document).ready(function (e) {
-            console.log($scope.theme.value);
-            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.theme.value + '/style.css" type="text/css" />');
+    function getThemeColor() {
+        $http.get("admin/ui/getThemeByUserId").success(function (response) {
+            console.log(response);
+            $scope.theme = response.optionName,
+            $scope.themeColor = {value: response.optionValue};
+
+            $(document).ready(function (e) {
+                $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.themeColor.value + '/style.css" type="text/css" />');
+            });
         });
-    });
+    }
+    ;
+
+    getThemeColor();
 
     $(document).ready(function (e) {
         $(".inside").click(function (e) {
             console.log("inside");
             e.stopPropagation();
-            console.log($scope.theme.value);
-            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.theme.value + '/style.css" type="text/css" />');
-            console.log("static/lib/css/" + $scope.theme.value);
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.themeColor.value + '/style.css" type="text/css" />');
         });
     });
 
