@@ -1483,7 +1483,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 && element.fieldName.length > match[1].length;
                     }).map(function (element) {
                         return {
-                            display: element.displayName, // This gets displayed in the dropdown
+                            display: element.fieldName, // This gets displayed in the dropdown
                             item: element // This will get passed to onSelect
                         };
                     });

@@ -817,7 +817,7 @@ public class UiDao extends BaseDao {
     }
 
     public List<TemplateTabs> getTabByTemplateId(Integer templateId) {
-        String queryStr = "SELECT d FROM TemplateTabs d where d.templateId.id = :templateId";
+        String queryStr = "SELECT d FROM TemplateTabs d where d.templateId.id = :templateId order by d.tabId.tabOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("templateId", templateId);
         return query.list();
