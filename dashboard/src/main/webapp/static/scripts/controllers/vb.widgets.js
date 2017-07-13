@@ -103,6 +103,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         {
             type: 'YOUTUBE_WATCH',
             name: 'Youtube Watch'
+        },
+        {
+            type: 'ALL',
+            name: 'All'
         }
     ];
     $scope.selectAggregations = [
@@ -351,9 +355,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
     var setDefaultWidgetObj = [];
-    $scope.setWidgetItems = function (widget) {
+    
+    $scope.setWidgetItems = function (widget) {        
         setDefaultWidgetObj = [];
-        // $scope.widgetObj.allAccount = widget.accountId ? 0 : 1;
         var data = loadInitialWidgetColumnData(widget.columns);
         setDefaultWidgetObj.push({
             chartType: widget.chartType,
@@ -370,22 +374,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            accountId: widget.accountId
+            accountId: widget.accountId?widget.accountId.id:null
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
+        if(!widget.allAccount){
+            widget.allAccount = 1;
+        }
         $scope.widgetObj = widget;
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
-        });
-        if (widget.accountId === null) {
-            widget.allAccount = true;
-        } else {
-
-            widget.allAccount = false;
-        }
+        });        
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         var getDataSourceId = widget.dataSourceId;
         $scope.selectWidgetDataSource(getDataSourceId);
@@ -427,7 +428,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
         tableDef(widget, $scope.y1Column, $scope.y2Column);
-
     };
     function getNetworkTypebyObj(widget) {
         var getNetworkType = widget.networkType;
@@ -1172,7 +1172,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(column)
 //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
-         var index = $scope.columnY1Axis.indexOf(column);
+        var index = $scope.columnY1Axis.indexOf(column);
         console.log("Index --> " + index);
         if (index == -1) {
             $scope.columnY1Axis.push(column);
@@ -1641,6 +1641,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.customStartDate = "";
+        $scope.widgetObj.allAccount = 1;
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -1721,7 +1722,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
-        
+
         if (widget.allAccount === 1) {
             widget.accountId = null;
         } else {
@@ -1760,31 +1761,53 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         clearEditAllWidgetData();
         widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-
-            $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForWidget/' + response.id, data: $scope.widgetDataSetColumnsDefs}).success(function (data) {
-                $scope.chartTypeName = "";
-                widget.id = data.id;
-                widget.chartType = data.chartType;
-                widget.widgetTitle = data.widgetTitle;
-                widget.dataSetId = dataSetObj;//data.dataSetId;
-                widget.dataSourceId = dataSourceObj;//data.dataSetId;
-                widget.timeSegment = data.timeSegment;//data.dataSetId;
-                widget.productSegment = data.productSegment;//data.dataSetId;
-                widget.networkType = data.networkType;//data.dataSetId;
-                widget.columns = data.widgetColumns;//data.dataSetId;
-                widget.dateRangeName = data.dateRangeName;
-                widget.lastNdays = data.lastNdays;
-                widget.lastNweeks = data.lastNweeks;
-                widget.lastNmonths = data.lastNmonths;
-                widget.lastNyears = data.lastNyears;
-                data.dataSourceId = dataSourceObj;
-                data.dataSetId = dataSetObj;
-                widget = data;
-
-                widget.id = data.id;
-            })
-            console.log(response)
+            if (!data.id) {
+                $scope.columnHeaderColuction = [];
+                $scope.widgetDataSetColumnsDefs.forEach(function (val, key) {
+                    var collectionFieldDefs = {
+                        id: val.id,
+                        functionName: val.functionName,
+                        dataFormat: val.dataFormat,
+                        displayFormat: val.displayFormat,
+                        sortPriority: val.sortPriority,
+                        sortOrder: val.sortOrder,
+                        agregationFunction: val.agregationFunction,
+                        groupPriority: val.groupPriority,
+                        widgetId: val.widgetId,
+                        expression: val.expression,
+                        userId: val.userId,
+                        fieldName: val.fieldName,
+                        status: val.status,
+                        fieldType: val.fieldType,
+                        displayName: val.displayName
+                    };
+                    $scope.columnHeaderColuction.push(collectionFieldDefs);
+                });
+                $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForWidget/' + response.id, data: $scope.columnHeaderColuction}).success(function (data) {
+                });
+            }
+            $scope.chartTypeName = "";
+            widget.id = data.id;
+            widget.chartType = data.chartType;
+            widget.widgetTitle = data.widgetTitle;
+            widget.dataSetId = dataSetObj;
+            widget.dataSourceId = dataSourceObj;
+            widget.timeSegment = data.timeSegment;
+            widget.productSegment = data.productSegment;
+            widget.networkType = data.networkType;
+            widget.columns = data.widgetColumns;
+            widget.dateRangeName = data.dateRangeName;
+            widget.lastNdays = data.lastNdays;
+            widget.lastNweeks = data.lastNweeks;
+            widget.lastNmonths = data.lastNmonths;
+            widget.lastNyears = data.lastNyears;
+            data.dataSourceId = dataSourceObj;
+            data.dataSetId = dataSetObj;
+            widget = data;
             $scope.derivedColumns = [];
+            if (!data.id) {
+                $scope.widgets.push(response)
+            }
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
@@ -1821,9 +1844,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
             });
             $('.showEditWidget').modal('hide');
-            if (!data.id) {
-                getWidgetItem();
-            }
         });
     };
 
@@ -1847,6 +1867,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.lastNweeks = val.lastNweeks;
             $scope.widgetObj.lastNmonths = val.lastNmonths;
             $scope.widgetObj.lastNyears = val.lastNyears;
+            $scope.widgetObj.allAccount = val.accountId ? val.accountId.id : 1;
         });
         if ($scope.widgetObj.accountId === null) {
             $scope.widgetObj.allAccount = true;
