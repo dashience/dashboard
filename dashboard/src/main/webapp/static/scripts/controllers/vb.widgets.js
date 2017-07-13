@@ -11,11 +11,10 @@ function formatBySecond(second) {
 
 function dashboardFormat(column, value) {
     if (column.fieldType === "date") {
-        var toformat = column.displayFormat == null ? "MM/DD/YY" : column.displayFormat;
-        return dateConvert(column.dataFormat, toformat, value);
+        return value;
     }
     if (column.displayFormat.indexOf("%") > -1) {
-        d3.format(column.displayFormat)(value / 100);
+        return d3.format(column.displayFormat)(value / 100);
     } else if (column.displayFormat == 'H:M:S') {
         return formatBySecond(parseInt(value))
     } else {
@@ -45,6 +44,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetEndDate = $stateParams.endDate;
     $scope.userId = $cookies.getObject("userId");
     $scope.templateId = $stateParams.templateId;
+    $scope.widgetDataSetColumnsDefs = [];
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
@@ -103,6 +103,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         {
             type: 'YOUTUBE_WATCH',
             name: 'Youtube Watch'
+        },
+        {
+            type: 'ALL',
+            name: 'All'
         }
     ];
     $scope.selectAggregations = [
@@ -253,20 +257,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widgetObj.lastNyears = "";
     };
 
-    $scope.widgetObj = {};
+    $scope.widgetObj = {allAccount: 1};
 
     $scope.clearChartType = function () {
-        $scope.widgetObj = {}
-//        $scope.widgetObj.id = "";
-//        $scope.widgetObj.previewTitle = "";
-//        $scope.widgetObj.chartType = "";
+        $scope.widgetObj = {allAccount: 1};
         $scope.selectedChartType = "";
-//        $scope.widgetObj.dataSourceId = "";
-//        $scope.widgetObj.dataSetId = "";
-//        $scope.widgetObj.timeSegment = "";
-//        $scope.widgetObj.productSegment = "";
-//        $scope.widgetObj.networkType = "";
-//        $scope.widgetObj.columns = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
@@ -280,12 +275,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-//        $scope.widgetObj.lastNdays = "";
-//        $scope.widgetObj.lastNweeks = "";
-//        $scope.widgetObj.lastNmonths = "";
-//        $scope.widgetObj.lastNyears = "";
-//        $scope.widgetObj.customStartDate = "";
-//        $scope.widgetObj.customStartDate = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -328,16 +317,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
     getWidgetItem();
 
-
-    $scope.loadingColumnsGif = false;
-    var setDefaultChartType;
-    var setDefaultWidgetObj = [];
-    $scope.setWidgetItems = function (widget) {
-        tableDef(widget);
-        setDefaultWidgetObj = [];
-        var columnData = [];
-        angular.forEach(widget.columns, function(value, key){
-         columnData.push({
+    function loadInitialWidgetColumnData(columns) {
+        var data = [];
+        columns.forEach(function (value, key) {
+            data.push({
                 id: value.id,
                 fieldName: value.fieldName,
                 displayName: value.displayName,
@@ -367,10 +350,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 derivedId: value.derivedId
             });
         });
-        
-        setDefaultWidgetObj.push({chartType: widget.chartType,
+        return data;
+    }
+    $scope.loadingColumnsGif = false;
+    var setDefaultChartType;
+    var setDefaultWidgetObj = [];
+    
+    $scope.setWidgetItems = function (widget) {        
+        setDefaultWidgetObj = [];
+        var data = loadInitialWidgetColumnData(widget.columns);
+        setDefaultWidgetObj.push({
+            chartType: widget.chartType,
             id: widget.id,
-            columns: columnData,
+            columns: data,
             widgetTitle: widget.widgetTitle,
             dataSourceId: widget.dataSourceId,
             dataSetId: widget.dataSetId,
@@ -382,22 +374,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
+            accountId: widget.accountId?widget.accountId.id:null
         });
-
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
+        if(!widget.allAccount){
+            widget.allAccount = 1;
+        }
         $scope.widgetObj = widget;
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
-        });
-        if (widget.accountId === null) {
-            widget.allAccount = true;
-        } else {
-
-            widget.allAccount = false;
-        }
+        });        
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         var getDataSourceId = widget.dataSourceId;
         $scope.selectWidgetDataSource(getDataSourceId);
@@ -431,26 +420,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (val.groupField) {
                 $scope.groupingFields.push(val)
             }
-
-//            var exists = false;
-//            angular.forEach($scope.formats, function (value, header) {
-//                if (value.displayFormat === value.value) {
-//                    exists = true;
-//                    $scope.tickerItem.push({displayName: val.displayName, fieldName: val.fieldName, displayFormat: {name: value.name, value: value.value}})
-//                }
-//            });
-//            if (exists == false) {
             if (widget.chartType === 'ticker') {
                 $scope.tickerItem.push(val);
             }
-//            }
-
             if (widget.chartType === 'funnel') {
                 $scope.funnelItem.push(val);
             }
         });
+        tableDef(widget, $scope.y1Column, $scope.y2Column);
     };
-
     function getNetworkTypebyObj(widget) {
         var getNetworkType = widget.networkType;
         $scope.networkTypes.forEach(function (val, key) {
@@ -460,19 +438,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
 
-    function tableDef(widget) {
+    function tableDef(widget, y1Column, y2Column) {
         if (widget.columns) {
             if (widget.dataSetId) {
-                columnHeaderDef(widget);
+                columnHeaderDef(widget, y1Column, y2Column);
             }
         } else {
             if (widget.dataSetId) {
-                columnHeaderDef(widget);
+                columnHeaderDef(widget, y1Column, y2Column);
             }
         }
     }
 
-    function columnHeaderDef(widget) {
+    function columnHeaderDef(widget, y1Column, y2Column) {
         $scope.afterLoadWidgetColumns = false;
         var dataSourcePassword;
         if (!widget.dataSetId) {
@@ -488,11 +466,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
         }
 
-
         var setProductSegment;
         var setTimeSegment;
         var setNetworkType;
-
         if (widget.productSegment && widget.productSegment.type) {
             setProductSegment = widget.productSegment.type;
         } else {
@@ -530,6 +506,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
+            $scope.widgetDataSetColumnsDefs = response.columnDefs;
             var getWidgetColumns = widget.columns;
 
             $scope.collectionFields.forEach(function (value, k) {
@@ -543,8 +520,54 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
             $scope.afterLoadWidgetColumns = true;
+            $scope.columnY1Axis = [];
+            $scope.columnY2Axis = [];
+
+            angular.forEach($scope.collectionFields, function (value, key) {
+                $scope.columnY1Axis.push(value);
+                $scope.columnY2Axis.push(value);
+            });
+            angular.forEach(y1Column, function (value, key) {
+                var data = $scope.columnY1Axis.find(function (item, i) {
+                    if (item.fieldName === value.fieldName) {
+                        return i;
+                    }
+                });
+                var index = $scope.columnY1Axis.indexOf(data);
+                $scope.columnY1Axis.splice(index, 1);
+            });
+
+            angular.forEach(y2Column, function (value, key) {
+                var data = $scope.columnY2Axis.find(function (item, i) {
+                    if (item.fieldName === value.fieldName) {
+                        return i;
+                    }
+                });
+                var index = $scope.columnY2Axis.indexOf(data);
+                $scope.columnY2Axis.splice(index, 1);
+            });
+
+            angular.forEach(y2Column, function (value, key) {
+                var data = $scope.columnY1Axis.find(function (item, i) {
+                    if (item.fieldName === value.fieldName) {
+                        return i;
+                    }
+                });
+                var index = $scope.columnY1Axis.indexOf(data);
+                $scope.columnY1Axis.splice(index, 1);
+            });
+
+            angular.forEach(y1Column, function (value, key) {
+                var data = $scope.columnY2Axis.find(function (item, i) {
+                    if (item.fieldName === value.fieldName) {
+                        return i;
+                    }
+                });
+                var index = $scope.columnY2Axis.indexOf(data);
+                $scope.columnY2Axis.splice(index, 1);
+            });
+
             resetQueryBuilder();
-            console.log($scope.collectionFields)
         });
     }
 
@@ -582,8 +605,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var setTimeSegment = widget.timeSegment ? widget.timeSegment.type : null;
         var setProductSegment = widget.productSegment ? widget.productSegment.type : null;
         var setNetworkType = widget.networkType ? widget.networkType.type : null;
-
-
         $http.get(url + 'connectionUrl=' + getDataSet.dataSourceId.connectionString +
                 "&dataSetId=" + getDataSet.id +
                 "&accountId=" + $stateParams.accountId +
@@ -603,11 +624,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.afterLoadWidgetColumns = true;
             $scope.hideSelectedColumn = false;
-            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
-                $scope.collectionFields = response.columnDefs;
-            } else {
-                $scope.collectionFields = response.columnDefs;
-            }
+//            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
+//                $scope.collectionFields = response.columnDefs;
+//            } else {
+            $scope.collectionFields = response.columnDefs;
+            $scope.widgetDataSetColumnsDefs = response.columnDefs;
+//            }
+            $scope.columnY1Axis = [];
+            $scope.columnY2Axis = [];
+            angular.forEach($scope.collectionFields, function (value, key) {
+                $scope.columnY1Axis.push(value);
+                $scope.columnY2Axis.push(value);
+            });
             resetQueryBuilder();
         });
     };
@@ -645,6 +673,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
             var getDataSetObjs = response;
             var getDataSetPerformance = getDataSetObjs[getDataSourceType]
+            if (!getDataSetPerformance) {
+                return;
+            }
             getDataSetPerformance.forEach(function (val, key) {
                 var getPerformanceType = val.type;
                 if (getReportName === getPerformanceType) {
@@ -669,22 +700,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
         });
-
-
-//        $http.get("static/datas/dataSets/" + getDataSourceType + "/" + getReportName + ".json").success(function (response) {
-//            $scope.timeSegments = response.timeSegments;
-//            $scope.productSegments = response.productSegments;
-//            $scope.timeSegments.forEach(function (val, key) {
-//                if (val.type === timeSegmentType) {
-//                    $scope.widgetObj.timeSegment = val;
-//                }
-//            });
-//            $scope.productSegments.forEach(function (val, key) {
-//                if (val.type === productSegmentType) {
-//                    $scope.widgetObj.productSegment = val;
-//                }
-//            });
-//        });
     }
 
     function getNetworkTypebyObj(widget) {
@@ -713,6 +728,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tickerItem = "";
         $scope.funnelItem = "";
 
+        $scope.widgetObj.dataSourceId = "";
+        $scope.widgetObj.dataSetId = "";
+        $scope.widgetObj.timeSegment = "";
+        $scope.widgetObj.productSegment = "";
+        $scope.widgetObj.networkType = "";
         if ($scope.chartTypeName) {
             widget.columns = [];
             $scope.collectionFields.forEach(function (value, k) {
@@ -731,7 +751,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.hideSelectedColumn = false;
         }, 50);
     };
-
     $scope.showListOfColumns = function () {
         $scope.showSortBy = false;
         $scope.loadingColumnsGif = true;
@@ -945,7 +964,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showReportWidgetName = false;
     $scope.reportEmptyLogo = "static/img/logos/deeta-logo.png"
     $scope.selectReport = function (reportWidget) {
-    $scope.hideReportsTable = true;
+        $scope.hideReportsTable = true;
 //        $scope.loadReportsTable = false;
         $scope.showReportWidgetName = false;
         $scope.reportWidgetTitle = []
@@ -1065,10 +1084,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             resetQueryBuilder();
         }, 50);
     };
-
-
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
         $scope.dispHideBuilder = true;
+        angular.forEach($scope.columnY2Axis, function (val, key) {
+            angular.forEach(y1data, function (value, key) {
+                console.log(value.fieldName);
+                if (val.fieldName === value.fieldName) {
+                    var index = $scope.columnY2Axis.indexOf(val);
+                    $scope.columnY2Axis.splice(index, 1);
+                }
+            });
+        });
+        console.log($scope.columnY2Axis);
+        console.log($scope.collectionFields);
         angular.forEach(y1data, function (value, key) {
             if (!value) {
                 return;
@@ -1102,6 +1130,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectY2Axis = function (widget, y2data) {
         $scope.dispHideBuilder = true;
+        angular.forEach($scope.columnY1Axis, function (val, key) {
+            angular.forEach(y2data, function (value, key) {
+                console.log(value.fieldName);
+                if (val.fieldName === value.fieldName) {
+                    var index = $scope.columnY1Axis.indexOf(val);
+                    $scope.columnY1Axis.splice(index, 1);
+                }
+            });
+        });
+        console.log($scope.columnY1Axis);
         angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
@@ -1133,6 +1171,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
         console.log(column)
 //        if (yAxisItems.length > 0) {
+        $scope.columnY2Axis.push(column);
+        var index = $scope.columnY1Axis.indexOf(column);
+        console.log("Index --> " + index);
+        if (index == -1) {
+            $scope.columnY1Axis.push(column);
+        }
+        console.log($scope.columnY1Axis);
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY1Axis(widgetObj, yAxisItems);
 //        } else {
@@ -1147,6 +1192,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.removedByY2Column = function (widgetObj, column, yAxisItems) {
 //        if (yAxisItems.length > 0) {
+        $scope.columnY1Axis.push(column);
+        var index = $scope.columnY2Axis.indexOf(column);
+        console.log("Index --> " + index);
+        if (index == -1) {
+            $scope.columnY2Axis.push(column);
+        }
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY2Axis(widgetObj, yAxisItems);
 //        } else {
@@ -1428,8 +1479,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     // [0] the full match, [1] the first capture group => username
                     // Prepare the fake data
                     var listData = $scope.collectionFields.filter(function (element) {
-                        return element.displayName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
-                                && element.displayName.length > match[1].length;
+                        return element.fieldName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
+                                && element.fieldName.length > match[1].length;
                     }).map(function (element) {
                         return {
                             display: element.displayName, // This gets displayed in the dropdown
@@ -1578,26 +1629,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.timeSegment = "";
         $scope.widgetObj.productSegment = "";
         $scope.widgetObj.networkType = "";
-//        $scope.widgetObj.columns = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
         $scope.text = "";
-//        $scope.xColumn = "";
-//        $scope.selectPieChartXAxis = "";
-//        $scope.selectPieChartYAxis = "";
-//        $scope.y1Column = "";
-//        $scope.y2Column = "";
-//        $scope.tickerItem = "";
-//        $scope.funnelItem = "";
         $scope.widgetObj.lastNdays = "";
         $scope.widgetObj.lastNweeks = "";
         $scope.widgetObj.lastNmonths = "";
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.customStartDate = "";
+        $scope.widgetObj.allAccount = 1;
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -1670,7 +1714,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var dataSourceObj;
         var dataSetObj;
         if (widget.chartType != 'text') {
-
             dataSourceTypeId = widget.dataSourceId ? widget.dataSourceId.id : null;
             dataSourceObj = widget.dataSourceId;
             dataSetTypeId = widget.dataSetId ? widget.dataSetId.id : null;
@@ -1679,13 +1722,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
-        if (widget.allAccount === true) {
+
+        if (widget.allAccount === 1) {
             widget.accountId = null;
         } else {
             widget.accountId = parseInt($stateParams.accountId);
         }
-
-
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
@@ -1719,17 +1761,41 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         clearEditAllWidgetData();
         widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
-            console.log(response)
+            if (!data.id) {
+                $scope.columnHeaderColuction = [];
+                $scope.widgetDataSetColumnsDefs.forEach(function (val, key) {
+                    var collectionFieldDefs = {
+                        id: val.id,
+                        functionName: val.functionName,
+                        dataFormat: val.dataFormat,
+                        displayFormat: val.displayFormat,
+                        sortPriority: val.sortPriority,
+                        sortOrder: val.sortOrder,
+                        agregationFunction: val.agregationFunction,
+                        groupPriority: val.groupPriority,
+                        widgetId: val.widgetId,
+                        expression: val.expression,
+                        userId: val.userId,
+                        fieldName: val.fieldName,
+                        status: val.status,
+                        fieldType: val.fieldType,
+                        displayName: val.displayName
+                    };
+                    $scope.columnHeaderColuction.push(collectionFieldDefs);
+                });
+                $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForWidget/' + response.id, data: $scope.columnHeaderColuction}).success(function (data) {
+                });
+            }
             $scope.chartTypeName = "";
             widget.id = data.id;
             widget.chartType = data.chartType;
             widget.widgetTitle = data.widgetTitle;
-            widget.dataSetId = dataSetObj;//data.dataSetId;
-            widget.dataSourceId = dataSourceObj;//data.dataSetId;
-            widget.timeSegment = data.timeSegment;//data.dataSetId;
-            widget.productSegment = data.productSegment;//data.dataSetId;
-            widget.networkType = data.networkType;//data.dataSetId;
-            widget.columns = data.widgetColumns;//data.dataSetId;
+            widget.dataSetId = dataSetObj;
+            widget.dataSourceId = dataSourceObj;
+            widget.timeSegment = data.timeSegment;
+            widget.productSegment = data.productSegment;
+            widget.networkType = data.networkType;
+            widget.columns = data.widgetColumns;
             widget.dateRangeName = data.dateRangeName;
             widget.lastNdays = data.lastNdays;
             widget.lastNweeks = data.lastNweeks;
@@ -1738,9 +1804,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
             widget = data;
-
-            widget.id = data.id;
             $scope.derivedColumns = [];
+            if (!data.id) {
+                $scope.widgets.push(response)
+            }
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
@@ -1762,7 +1829,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     fieldType: value.fieldType,
                     sortPriority: value.sortPriority,
                     userId: value.userId, //value.userId,
-                    dataSetId: data.dataSetId.id
+                    dataSetId: data.dataSetId ? data.dataSetId.id : null
                 };
                 $scope.derivedColumns.push(columnData);
             });
@@ -1773,13 +1840,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $('.showEditWidget').modal('hide');
                 return;
             }
-            console.log(colData)
+
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
             });
             $('.showEditWidget').modal('hide');
-            if (!data.id) {
-                getWidgetItem();
-            }
         });
     };
 
@@ -1803,6 +1867,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.lastNweeks = val.lastNweeks;
             $scope.widgetObj.lastNmonths = val.lastNmonths;
             $scope.widgetObj.lastNyears = val.lastNyears;
+            $scope.widgetObj.allAccount = val.accountId ? val.accountId.id : 1;
         });
         if ($scope.widgetObj.accountId === null) {
             $scope.widgetObj.allAccount = true;
@@ -2846,6 +2911,12 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
 
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -2855,7 +2926,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3167,6 +3238,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 gridLine = false;
                             }
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -3177,7 +3254,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3477,6 +3554,12 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             })
 
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     json: [data],
@@ -3486,7 +3569,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#666666', '#a5d169', '#75ccd0', '#DC143C']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3790,6 +3873,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 gridLine = false;
                             }
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -3800,7 +3889,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#62cb31', '#555555']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -4115,6 +4204,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 gridLine = false;
                             }
                             var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
@@ -4126,7 +4221,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169']
+                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -4314,7 +4409,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                         function funnelArrayObjects(name, value) {
                             var funnelObject = [];
-                            var funnelColor = ['#555555', '#62cb31', '#75ccd0', '#666666', '#a5d169'];
+                            var funnelColor = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                             var len = name.length;
                             for (var i = 0; i < len; i++) {
                                 funnelObject.push([name[i], value[i], funnelColor[i]]);

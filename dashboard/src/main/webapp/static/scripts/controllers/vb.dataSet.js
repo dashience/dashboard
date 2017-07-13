@@ -2051,9 +2051,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             });
         }
     };
+
+    $scope.columnsHeaderDefs = [];
+    $scope.getDataSetColDefs = function (dataSetColumn) {
+        $scope.columnsHeaderDefs = dataSetColumn;
+    };
+    
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
-        console.log(dataSetList);
         if (dataSetList.timeSegment != null) {
             dataSetList.timeSegment = dataSetList.timeSegment.type;
         } else {
@@ -2064,7 +2069,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSetList.productSegment = null;
         }
-        console.log(dataSetList.timeSegment);
 
         var dataSet = dataSetList;
         if (dataSet.dataSourceId != null) {
@@ -2073,9 +2077,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSet.dataSourceId = null;
         }
         $scope.nwStatusFlag = true;
-        console.log(dataSet);
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
-            getItems();
+            var getDataSetId = response.id;
+            var data = $scope.columnsHeaderDefs;
+            $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
+                getItems();
+            });
         });
         $scope.dataSet = "";
         $scope.showPreviewChart = false;

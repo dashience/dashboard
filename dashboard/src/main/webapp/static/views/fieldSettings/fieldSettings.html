@@ -19,13 +19,13 @@
                             Field Name
                         </th>
                         <th>
+                            Data Type
+                        </th>
+                        <th>
                             Display Format
                         </th>
                         <th>
                             Data Format
-                        </th>
-                        <th>
-                            Data Type
                         </th>
                         <th>
                             Display Name
@@ -45,6 +45,17 @@
                             </div>
                         </td>
                         <td>
+                            <div ng-hide="field.isEdit">{{field.dataType}}</div> 
+                            <div ng-show="field.isEdit">
+                                <select class="form-control" ng-model="field.dataType">
+                                    <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
+                                        {{fieldType.name}}
+                                    </option>
+                                </select>
+                                <!--<input type="text" ng-model="field.dataType" class="form-control">-->
+                            </div>
+                        </td>
+                        <td>
                             <div ng-hide="field.isEdit">{{field.displayFormat}}</div>
                             <div ng-show="field.isEdit">
                                 <select class="form-control" ng-model="field.displayFormat" 
@@ -57,23 +68,13 @@
                         <td>
                             <div ng-hide="field.isEdit">{{field.dataFormat}}</div> 
                             <div ng-show="field.isEdit">
-                                <select class="form-control" ng-model="field.dataFormat" 
+                                <input type="text" ng-model="field.dataFormat" class="form-control">
+<!--                                <select class="form-control" ng-model="field.dataFormat" 
                                         ng-options="dataFormat.name for dataFormat in formats track by dataFormat.value"
                                         ng-change="selectDataFormat(field)">
-                                </select>
+                                </select>-->
                             </div>
-                        </td>
-                        <td>
-                            <div ng-hide="field.isEdit">{{field.dataType}}</div> 
-                            <div ng-show="field.isEdit">
-                                <select class="form-control" ng-model="field.dataType">
-                                    <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
-                                        {{fieldType.name}}
-                                    </option>
-                                </select>
-                                <!--<input type="text" ng-model="field.dataType" class="form-control">-->
-                            </div>
-                        </td>
+                        </td>                        
                         <td>
                             <div ng-hide="field.isEdit">{{field.displayName}}</div>
                             <div ng-show="field.isEdit">

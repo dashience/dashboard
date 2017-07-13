@@ -2,7 +2,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
     return{
         restrict: 'A',
         scope: {
-            path: '@'
+            path: '@',
+            getDataSetColumns: '&'
 //            dataSetId: '@'
                     // widgetColumns: '@',
                     //setTableFn: '&',
@@ -357,6 +358,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: 'Custom', value: 'custom'}
             ];
             scope.loadingTable = true;
+
             var dataSourcePath = JSON.parse(scope.path)
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
@@ -372,6 +374,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             }
             scope.format = function (column, value) {
+                if (column.fieldType === "date") {
+                    return value;
+                }
                 if (!value) {
                     return "-";
                 }
@@ -433,6 +438,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.dataSetColumns = response.columnDefs;
+                        scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
                     scope.tableRows = response.data.slice(0, 5);
@@ -773,8 +779,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                             // [0] the full match, [1] the first capture group => username
                             // Prepare the fake data
                             var listData = scope.tableColumns.filter(function (element) {
-                                return element.displayName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
-                                        && element.displayName.length > match[1].length;
+                                return element.fieldName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
+                                        && element.fieldName.length > match[1].length;
                             }).map(function (element) {
                                 return {
                                     display: element.displayName, // This gets displayed in the dropdown

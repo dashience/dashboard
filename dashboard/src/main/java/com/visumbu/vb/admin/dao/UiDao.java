@@ -882,4 +882,16 @@ public class UiDao extends BaseDao {
             query.executeUpdate();
         }
     }
+
+    public DataSetColumns getDataSetColumn(String fieldName, DataSet dataSet) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.fieldName = :fieldName and d.dataSetId = :dataSet";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("fieldName", fieldName);
+        query.setParameter("dataSet", dataSet);
+        List<DataSetColumns> list = query.list();
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
+    }
 }

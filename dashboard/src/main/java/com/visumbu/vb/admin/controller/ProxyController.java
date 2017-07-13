@@ -47,9 +47,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -154,6 +156,9 @@ public class ProxyController {
         Integer dataSetIdInt = null;
         Integer widgetIdInt = null;
         Integer userIdInt = null;
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
+            widgetIdInt = Integer.parseInt(widgetIdStr);
+        }
         if (userIdStr != null) {
             try {
                 userIdInt = Integer.parseInt(userIdStr);
@@ -175,29 +180,32 @@ public class ProxyController {
 
         if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
             try {
-                System.out.println("with joinDataSet");
                 Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
                 returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
             } catch (NumberFormatException e) {
 
             }
         } else {
-            System.out.println("without joinDataSet");
             returnMap = getData(valueMap, request, response);
         }
-        System.out.println("returnMappppp -----> " + returnMap);
-
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
 
         updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt);
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
 
-        List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
-
+        List<DataSetColumns> dataSetColumnList = null;
+        if (widgetIdInt == null) {
+            dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+        } else {
+            dataSetColumnList = uiService.getDataSetColumns(dataSetIdInt, widgetIdInt); // DataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+        }
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
+            System.out.println(dataSetColumnList);
+            System.out.println("DATA INSIDE DERIVED COLUMN");
+            System.out.println(dataWithDerivedColumns);
             returnMap.put("data", dataWithDerivedColumns);
         }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
@@ -213,18 +221,16 @@ public class ProxyController {
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
         }
-        System.out.println("returnMap1 ----> " + returnMap);
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
-        if (dataSetIdInt != null) {
-            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
-        }
+//        if (dataSetIdInt != null) {
+//            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
+//        }
         if (fieldsOnly != null) {
             // return dataMap;
         }
-        System.out.println("FieldsOnly ---> " + fieldsOnly);
         dataMap.put("data", returnMap.get("data"));
-        dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
+        // dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
         return dataMap;
     }
 
@@ -233,11 +239,13 @@ public class ProxyController {
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
             DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
-            column.setId(dataSetColumn.getId());
-            column.setExpression(dataSetColumn.getExpression());
-            column.setDisplayFormat(dataSetColumn.getDisplayFormat());
-            column.setUserId(dataSetColumn.getUserId());
-            column.setWidgetId(dataSetColumn.getWidgetId());
+            if (dataSetColumn != null) {
+                column.setId(dataSetColumn.getId());
+                column.setExpression(dataSetColumn.getExpression());
+                column.setDisplayFormat(dataSetColumn.getDisplayFormat());
+                column.setUserId(dataSetColumn.getUserId());
+                column.setWidgetId(dataSetColumn.getWidgetId());
+            }
             columnDef.add(column);
         }
         List<DataSetColumns> dataSetColumns = uiService.getDataSetColumns(dataSetId, widgetId);
@@ -254,7 +262,9 @@ public class ProxyController {
                 }
             }
             if (!exist) {
-                uiService.deleteDataSetColumns(dataSetColumn.getId());
+                if (dataSetColumn.getExpression() == null && dataSetColumn.getFunctionName() == null) {
+                    uiService.deleteDataSetColumns(dataSetColumn.getId());
+                }
             }
         }
 
@@ -388,6 +398,7 @@ public class ProxyController {
                 joinDataSetTwoMap.put("data", dataWithDerivedColumns);
             }
         }
+        Integer secondDataSetAppender = new Long(new Date().getTime() / 100000).intValue();
         if (!operationType.equalsIgnoreCase("union")) {
             for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
@@ -398,7 +409,7 @@ public class ProxyController {
                         for (String columnStr : columnSet) {
                             if (key.equalsIgnoreCase(columnStr)) {
                                 dataMap.remove(key);
-                                dataMap.put(key + "2", value);
+                                dataMap.put(key + secondDataSetAppender, value);
                                 System.out.println("dataMap ---> " + dataMap);
                                 break;
                             }
@@ -415,7 +426,7 @@ public class ProxyController {
             if (dataSetTwoMap.get(joinDataSetCondition.getConditionFieldSecond()) != null) {
                 concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond();
             } else {
-                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + "2";
+                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + secondDataSetAppender;
             }
             if (joinDataSetCondition.getColumnName() != null) {
                 concatCondition += "," + joinDataSetCondition.getColumnName();
@@ -484,7 +495,52 @@ public class ProxyController {
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         }
+        List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
+        List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
+        System.out.println("Column Def For Data Format");
+        System.out.println(returnMap);
+        returnMap.put("data", formatData(dataList, columnDefs));
         return returnMap;
+    }
+
+    public static List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
+        boolean formatRequired = false;
+        for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
+            ColumnDef column = iterator1.next();
+            if (column.getDataFormat() != null) {
+                formatRequired = true;
+            }
+        }
+        if (formatRequired == false) {
+            return dataSet;
+        }
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        for (Iterator<Map<String, Object>> iterator = dataSet.iterator(); iterator.hasNext();) {
+            Map<String, Object> data = iterator.next();
+            for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
+                ColumnDef column = iterator1.next();
+                if (column.getDataFormat() != null) {
+                    if (column.getDataFormat().equalsIgnoreCase(",")) {
+                        String value = data.get(column.getFieldName()) + "";
+                        data.put(column.getFieldName(), value.replaceAll(",", ""));
+                    } 
+                    if (column.getDataFormat().equalsIgnoreCase("$")) {
+                        String value = data.get(column.getFieldName()) + "";
+                        data.put(column.getFieldName(), value.replaceAll(",", ""));
+                    } else if (column.getDataFormat().equalsIgnoreCase("%")) {
+                        String value = data.get(column.getFieldName()) + "";
+                        data.put(column.getFieldName(), value.replaceAll("%", ""));
+                    } else if (column.getFieldType() != null && column.getFieldType().equalsIgnoreCase("date") && column.getDataFormat() != null && !column.getDataFormat().isEmpty()) {
+                        String value = data.get(column.getFieldName()) + "";
+                        Date toDate = DateUtils.toDate(value, column.getDataFormat());
+                        data.put(column.getFieldName(), DateUtils.dateToString(toDate, "MM/dd/yyyy"));
+                        System.out.println("VALUE =============> " + value);
+                    }
+                }
+            }
+            dataList.add(data);
+        }
+        return dataList;
     }
 
     public static List<Map<String, Object>> leftJoin(final List<Map<String, Object>> dataSet1, final List<Map<String, Object>> dataSet2, final List<String> mappings) {
@@ -769,20 +825,15 @@ public class ProxyController {
                     returnDataMap.put(dataSetColumn.getFieldName(), dataMap.get(dataSetColumn.getFieldName()));
                 }
             }
-            System.out.println("returnDataaaaaaaaaaaMap ---> " + returnDataMap);
             returnData.add(returnDataMap);
         }
-        System.out.println("returnDAtaaaaaaaaa ---> " + returnData);
-
         return returnData;
     }
 
     public Object getDataForDerivedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DataSetColumns dataSetColumn) {
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> mapData = iterator.next();
-            System.out.println("MapData ---->" + mapData);
             if ((mapData.get(dataSetColumn.getBaseField()) + "").equalsIgnoreCase(baseFieldValue + "")) {
-                System.out.println("Matching MapData ---->" + mapData);
                 return mapData.get(dataSetColumn.getColumnName());
             }
         }
@@ -799,7 +850,6 @@ public class ProxyController {
     }
 
     public static Map<String, Object> addDerivedColumnsExpr(List<DataSetColumns> dataSetColumns, Map<String, Object> data) {
-        System.out.println("Daaaaaaaaaaaaaaata ----> " + data);
         Map<String, Object> returnMap = data;
         for (Iterator<DataSetColumns> iterator = dataSetColumns.iterator(); iterator.hasNext();) {
             DataSetColumns dataSetColumn = iterator.next();
@@ -821,7 +871,6 @@ public class ProxyController {
             }
 
         }
-        System.out.println("returnMap ----> " + returnMap);
         return returnMap;
     }
 
@@ -1753,9 +1802,13 @@ public class ProxyController {
                 DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
                 if (fieldProperties != null) {
                     ColumnDef columnDef = new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat());
-                    if(fieldProperties.getDataType() != null && fieldProperties.getDataType().equalsIgnoreCase("date")) {
+                    if (fieldProperties.getDataType() != null && fieldProperties.getDataType().equalsIgnoreCase("date")) {
                         columnDef.setDataFormat(fieldProperties.getDataFormat());
                     }
+                    if (fieldProperties.getDataFormat() != null) {
+                        columnDef.setDataFormat(fieldProperties.getDataFormat());
+                    }
+                    System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
                     columnDefs.add(columnDef);
                 } else {
                     Object value = entrySet.getValue();
@@ -1765,6 +1818,10 @@ public class ProxyController {
                         columnDefs.add(new ColumnDef(key, "number", key));
                     } else if (DateUtils.convertToDate(valueString) != null) {
                         columnDefs.add(new ColumnDef(key, "date", key));
+                    } else if (valueString.indexOf("%") > 0) {
+                        ColumnDef columnDef = new ColumnDef(key, "number", key);
+                        columnDef.setDataFormat("%");
+                        columnDefs.add(columnDef);
                     } else {
                         columnDefs.add(new ColumnDef(key, "string", key));
                     }

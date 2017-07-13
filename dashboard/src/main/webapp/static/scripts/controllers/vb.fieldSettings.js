@@ -36,7 +36,8 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         {name: "Decimal1", value: ',.1f'},
         {name: "Decimal2", value: ',.2f'},
         {name: "Time", value: 'H:M:S'},
-        {name: "Star Rating", value: 'starRating'}
+        {name: "Star Rating", value: 'starRating'},
+        {name: "Date", value: 'MM-dd-yyyy'}
     ];
     $http.get('admin/fieldSettings').success(function (response) {
         $scope.fieldSettings = response;
@@ -47,7 +48,7 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         });
     };
     $scope.selectDisplayFormat = function (field) {
-        field.dataFormat = field.displayFormat;
+        //field.dataFormat = field.displayFormat;
     };
     $scope.selectDataFormat = function (field) {
         field.displayFormat = field.dataFormat;
@@ -60,7 +61,7 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
             id: fields.id,
             fieldName: fields.fieldName,
             displayFormat: fields.displayFormat ? fields.displayFormat.value : null,
-            dataFormat: fields.dataFormat ? fields.dataFormat.value : null,
+            dataFormat: fields.dataFormat,
             dataType: fields.dataType,
             displayName: fields.displayName,
             agregationFunction: fields.agregationFunction
@@ -82,7 +83,7 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
             return getDisplayFormat === val.value;
         });
         angular.forEach(getDisplayObj, function(val, key){
-            field.dataFormat = val;
+           // field.dataFormat = val;
             field.displayFormat = val;
         });
 //        var data = {

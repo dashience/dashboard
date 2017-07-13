@@ -76,6 +76,9 @@ public class DataSetColumns implements Serializable {
     @Column(name = "display_format")
     private String displayFormat;
     @Size(max = 255)
+    @Column(name = "data_format")
+    private String dataFormat;
+    @Size(max = 255)
     @Column(name = "function_name")
     private String functionName;
     @Size(max = 255)
@@ -176,6 +179,22 @@ public class DataSetColumns implements Serializable {
         this.displayFormat = displayFormat;
     }
 
+    public String getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(String deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
+    public String getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(String dataFormat) {
+        this.dataFormat = dataFormat;
+    }
+    
     public String getFunctionName() {
         return functionName;
     }
@@ -310,7 +329,7 @@ public class DataSetColumns implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.DataSetColumns[ id=" + id + " ]";
+        return "DataSetColumns{" + "id=" + id + ", displayName=" + displayName + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", expression=" + expression + ", status=" + status + ", deleteStatus=" + deleteStatus + ", displayFormat=" + displayFormat + ", dataFormat=" + dataFormat + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNweeks=" + lastNweeks + ", lastNmonths=" + lastNmonths + ", sortPriority=" + sortPriority + ", lastNyears=" + lastNyears + ", dataSetId=" + dataSetId + ", userId=" + userId + ", widgetId=" + widgetId + '}';
     }
 
 }
