@@ -523,16 +523,15 @@ public class ProxyController {
                     if (column.getDataFormat().equalsIgnoreCase("%")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll("%", ""));
-                    }
-                    if (column.getFieldType() != null && column.getFieldType().equalsIgnoreCase("date") && column.getDataFormat() != null && !column.getDataFormat().isEmpty()) {
+                    } else if (column.getFieldType() != null && column.getFieldType().equalsIgnoreCase("date") && column.getDataFormat() != null && !column.getDataFormat().isEmpty()) {
                         String value = data.get(column.getFieldName()) + "";
                         Date toDate = DateUtils.toDate(value, column.getDataFormat());
                         data.put(column.getFieldName(), DateUtils.dateToString(toDate, "MM/dd/yyyy"));
                         System.out.println("VALUE =============> " + value);
                     }
                 }
-                dataList.add(data);
             }
+            dataList.add(data);
         }
         return dataList;
     }
