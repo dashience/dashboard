@@ -39,6 +39,9 @@
     .themeSettings{
         min-width: 227px;
     }
+    .chatColor::placeholder {
+        text-align: right;
+    }
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
     <div id="logo">
@@ -341,7 +344,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-3">Theme </label>
                             <div class="col-md-9 ">
-                                <select class="col-md-12  inside" ng-change="themeDropDownChange(theme)" ng-model="theme" ng-options="theme.name for theme in themes">
+                                <select class="col-md-12 inside" ng-change="themeDropDownChange(theme)" ng-model="theme" ng-options="theme.name for theme in themes track by theme.name">
                                 </select>
                             </div>
                         </div>
@@ -350,7 +353,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">Chart Color</label>
                             <div class="input-group col-md-9">
-                                <input  class="form-control" type="text" ng-model="chartColor.optionValue">
+                                <input class="form-control chatColor" type="text" ng-model="chartColor.optionValue" placeholder="color with , seperate">
                                 <a class="input-group-addon btn-default btn-sm" ng-click="changeChartColor(chartColor)"><i class="fa fa-save"></i></a>
                             </div>
                         </div>

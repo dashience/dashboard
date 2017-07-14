@@ -559,17 +559,23 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     //added paramvir code
     $scope.themeDropDownChange = function (data) {
+        console.log(data);
         var colorCode = {
             optionName: data.name,
             optionValue: data.value
         };
-
         $http({
             url: 'admin/ui/updateThemeSettings',
             method: 'POST',
             data: JSON.stringify(colorCode)
         }).success(function (response) {
-            getThemeColor();
+            $scope.theme = {
+                name: response.optionName,
+                value: response.optionValue
+            };
+            console.log($scope.theme);
+            var themeColor = {value: data.value};
+            setThemeColor(themeColor);
         }).error(function (response) {
             console.log("Error data");
         });
@@ -578,23 +584,28 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     function getThemeColor() {
         $http.get("admin/ui/getThemeByUserId").success(function (response) {
             console.log(response);
-            $scope.theme = response.optionName,
-            $scope.themeColor = {value: response.optionValue};
-
-            $(document).ready(function (e) {
-                $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.themeColor.value + '/style.css" type="text/css" />');
-            });
+            var data = {
+                name: response.optionName,
+                value: response.optionValue
+            };
+            $scope.theme = data;
+            var themeColor = {value: response.optionValue};
+            setThemeColor(themeColor);
         });
     }
     ;
-
     getThemeColor();
 
+    function setThemeColor(themeColor) {
+        $(document).ready(function (e) {
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + themeColor.value + '/style.css" type="text/css" />');
+        });
+    }
     $(document).ready(function (e) {
         $(".inside").click(function (e) {
             console.log("inside");
             e.stopPropagation();
-            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.themeColor.value + '/style.css" type="text/css" />');
+//            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.themeColor.value + '/style.css" type="text/css" />');
         });
     });
 

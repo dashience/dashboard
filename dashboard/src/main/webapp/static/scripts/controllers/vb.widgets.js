@@ -262,11 +262,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
             $http.get("admin/ui/userPreferences/map").success(function (response) {
                 $scope.userChartColors = response;
+                console.log($scope.userChartColors);
                 widgetItems.forEach(function (value, key) {
                     value.chartColors = response;
                 });
                 $scope.widgets = widgetItems;
-                console.log($scope.widgets)
+                console.log($scope.widgets);
             });
         });
     }
@@ -769,7 +770,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = false;
     };
 
-    $scope.showPreview = function (widgetObj) {
+    $scope.showPreview = function (widgetObj, userChartColors) {
         var chartType = $scope.chartTypeName;
         console.log("Chart Type....");
         console.log(chartType);
@@ -786,13 +787,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
 
-        var chartColorOption;
-        widgetObj.targetColors.forEach(function (val, key) {
-            chartColorOption += val.color + ",";
-        });
-        console.log(chartColorOption.replace(/,\s*$/, ""));
+        var chartColors = userChartColors.Chart_Color_Options;
+        console.log(chartColors);
+        var userChartColor = chartColors.map(function (value, key) {
+            return value;
+        }).join(',');
+        
+        console.log(userChartColor);
 
-        widgetObj.chartColorOption = chartColorOption;
+        $scope.chartColorOptionsVal = widgetObj.chartColorOption;
+        console.log("Previous color option-->" + $scope.chartColorOptionsVal);
+        if (widgetObj.targetColors) {
+            var widgetChartColor = widgetObj.targetColors.map(function (val, key) {
+                if (val) {
+                    return val.color;
+                }
+            }).join(',');
+            widgetObj.chartColorOption = widgetChartColor;
+        }
+        if (!widgetObj.chartColorOption) {
+            widgetObj.chartColorOption = userChartColor;
+        }
+        console.log(widgetObj.chartColorOption);
         $scope.displayPreviewChart = widgetObj;
     };
 
@@ -913,13 +929,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var widget = {};
     var temp = [];
     $scope.addColors = function (widget) {
+        console.log(temp);
         if (widget.targetColors) {
             widget.targetColors.push({color: "#62cb31"});
         } else {
             var targetColors =
-                    {
-                        color: "#62cb31"
-                    };
+            {
+                color: "#62cb31"
+            };
             temp.push(targetColors);
             widget["targetColors"] = temp;
         }
@@ -1705,6 +1722,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.customStartDate = "";
+        $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
@@ -1717,12 +1735,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.save = function (widget) {
         // added by subhadra
-        var widgetColor = widget.targetColors.map(function (value, key) {
-            if (value) {
-                return value.color;
-            }
-        }).join(',');
-        console.log(widgetColor);
+        var widgetColor = "";
+        if (widget.targetColors) {
+            widgetColor = widget.targetColors.map(function (value, key) {
+                if (value) {
+                    return value.color;
+                }
+            }).join(',');
+            console.log(widgetColor);
+        }
 
         if (widget.chartType != 'text') {
             try {
@@ -1838,6 +1859,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             console.log(response)
             widget.id = data.id;
             widget.chartType = data.chartType;
+            widget.chartColorOption = data.chartColorOption;
             widget.widgetTitle = data.widgetTitle;
             $scope.chartTypeName = "";
             widget.dataSetId = dataSetObj;//data.dataSetId;
@@ -1893,8 +1915,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
     };
-
+    var tempTargetColors = [];
     $scope.cancel = function (widgetObj) {
+        temp=[];
 //        $scope.y1Column = [];
 //        $scope.y2Column = [];
 //        $scope.tickerItem = [];
@@ -1915,8 +1938,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.productSegment = val.productSegment;
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
-            $scope.widgetObj.targetColors = val.targetColors;
             console.log(val.columns);
+            
 //            angular.forEach(val.columns, function (val, key) {
 //                if (val.xAxis == 1) {
 //                    $scope.xColumn = val;
@@ -1965,7 +1988,22 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
+        $scope.showColor = false;
         $scope.showDateRange = false;
+        $scope.widgetObj.chartColorOption = "";
+        $scope.widgetObj.targetColors = "";
+        if ($scope.chartColorOptionsVal) {
+            $scope.widgetObj.chartColorOption = $scope.chartColorOptionsVal;
+            var widgetTargetColors = $scope.chartColorOptionsVal.split(",");
+            for (var i = 0; i < widgetTargetColors.length; i++) {
+                var targetColors = {
+                    color: widgetTargetColors[i]
+                };
+                tempTargetColors.push(targetColors);
+            }
+            $scope.widgetObj["targetColors"] = tempTargetColors;
+            
+        }
     };
 });
 
@@ -2182,7 +2220,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     }
                 });
                 return zeroRow;
-            }
+            };
 
             scope.format = function (column, value) {
                 if (!value) {
@@ -2917,6 +2955,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+                console.log("Widget Chart Colors Line chart");
+                console.log(getWidgetObj);
+
 
                 //added by subhadra
                 var defaultColors = ['#62cb31', '#555555'];
@@ -2925,7 +2966,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
-                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors.Chart_Color_Options : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
 
                 var setProductSegment;
                 var setTimeSegment;
@@ -3258,7 +3300,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
 
-                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors.Chart_Color_Options : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+                console.log(getWidgetObj.chartColors);
+//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;
 
                 var setProductSegment;
                 var setTimeSegment;
@@ -3580,7 +3625,9 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
-                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors.Chart_Color_Options : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
 
                 var setWidgetAccountId;
                 var setProductSegment;
@@ -3903,7 +3950,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
-                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors.Chart_Color_Options : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
 
                 var setProductSegment;
                 var setTimeSegment;
@@ -4229,8 +4278,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
-                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
 
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors.Chart_Color_Options : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+
+//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -4443,7 +4495,9 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
-                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors.Chart_Color_Options : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
 
                 var setProductSegment;
                 var setTimeSegment;
