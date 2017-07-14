@@ -523,7 +523,7 @@ public class ProxyController {
                     if (column.getDataFormat().equalsIgnoreCase(",")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll(",", ""));
-                    } 
+                    }
                     if (column.getDataFormat().equalsIgnoreCase("$")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll(",", ""));

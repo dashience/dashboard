@@ -33,6 +33,7 @@ import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
@@ -463,8 +464,9 @@ public class UiDao extends BaseDao {
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
+
     public TabWidget getWidgetById(Integer widgetId) {
-        if(widgetId == null) {
+        if (widgetId == null) {
             return null;
         }
         TabWidget tabWidget = (TabWidget) sessionFactory.getCurrentSession().get(TabWidget.class, widgetId);
@@ -675,7 +677,7 @@ public class UiDao extends BaseDao {
         query.setParameter("userId", userId);
         return query.list();
     }
-    
+
     public List<DataSetColumns> getDataSetColumnsByWidgetId(Integer dataSetId, Integer widgetId) {
         String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :dataSetId and d.widgetId.id = :widgetId)";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -787,6 +789,7 @@ public class UiDao extends BaseDao {
         }
         return null;
     }
+
     public List<DataSetColumns> getDataSetColumn(Integer dataSetId, Integer widgetId) {
         String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id and d.widgetId.id = :widgetId ";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -807,11 +810,11 @@ public class UiDao extends BaseDao {
         dataSetColumn.setDisplayFormat(columnDef.getDisplayFormat());
         return (DataSetColumns) create(dataSetColumn);
     }
-    
+
     public VbUser findUserById(Integer userId) {
-        if(userId == null) {
-            return null; 
-       }
+        if (userId == null) {
+            return null;
+        }
         VbUser user = (VbUser) sessionFactory.getCurrentSession().get(VbUser.class, userId);
         return user;
     }
@@ -828,6 +831,13 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyId", agencyId);
         return query.list();
+    }
+
+    public UserPreferences getChartColorByUserId(VbUser userId) {
+        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId and u.optionName = 'Chart_Color_Options'";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+        return (UserPreferences) query.uniqueResult();
     }
 
     public DashboardTemplate getDashboardTemplateById(Integer templateId) {
@@ -874,7 +884,7 @@ public class UiDao extends BaseDao {
 
     public void deleteUserTemplate(Integer templateId) {
         DashboardTemplate dashboardTemplate = checkTemplateIsShared(templateId);
-        System.out.println("dashboardTemplate "+dashboardTemplate);
+        System.out.println("dashboardTemplate " + dashboardTemplate);
         if (dashboardTemplate == null) {
             String queryStr = "UPDATE DashboardTemplate t set status = 'Deleted' where t.id = :templateId";
             Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -893,5 +903,12 @@ public class UiDao extends BaseDao {
             return list.get(0);
         }
         return null;
+    }
+
+    public UserPreferences getThemeByUserId(VbUser user) {
+        String queryStr = "SELECT u FROM UserPreferences u where u.userId = :user and u.optionName != 'Chart_Color_Options'";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("user", user);
+        return (UserPreferences) query.uniqueResult();
     }
 }

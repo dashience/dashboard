@@ -76,6 +76,7 @@ public class TabWidgetBean {
     private String productSegment;
     private String networkType;
     private Integer templateUserId;
+    private String chartColorOption;  //added by subhadra
 
     public Integer getId() {
         return id;
@@ -333,7 +334,6 @@ public class TabWidgetBean {
         this.frequencyDuration = frequencyDuration;
     }
 
-
     public Integer getDataSetId() {
         return dataSetId;
     }
@@ -422,7 +422,6 @@ public class TabWidgetBean {
         this.jsonData = jsonData;
     }
     
-
     public String getQueryFilter() {
         return queryFilter;
     }
@@ -485,6 +484,14 @@ public class TabWidgetBean {
 
     public void setTemplateUserId(Integer templateUserId) {
         this.templateUserId = templateUserId;
+    }
+
+    public String getChartColorOption() {
+        return chartColorOption;
+    }
+
+    public void setChartColorOption(String chartColorOption) {
+        this.chartColorOption = chartColorOption;
     }
 
     @Override

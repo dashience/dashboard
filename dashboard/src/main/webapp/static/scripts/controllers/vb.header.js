@@ -36,6 +36,24 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
     };
 
+    //added by subhadra
+    function getChartColor() {
+        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.chartColor = response;
+        });
+    }
+    ;
+
+    getChartColor();
+
+    //added by subhadra
+    $scope.themes = [{name: "Green", value: "green"},
+        {name: "Blue", value: "blue"},
+        {name: "Cyan", value: "cyan"},
+        {name: "Pink", value: "pink"},
+        {name: "Gray", value: "gray"}
+    ];
+
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
@@ -60,7 +78,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
-            $scope.loadNewUrl()
+            $scope.loadNewUrl();
             return;
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
@@ -143,11 +161,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
                 } catch (e) {
                 }
-               // $stateParams.startDate = startDate;
-               //$stateParams.endDate = endDate;
-               // alert(startDate)
+                // $stateParams.startDate = startDate;
+                //$stateParams.endDate = endDate;
+                // alert(startDate)
                 //alert(endDate)
-                defaultCalls()
+                defaultCalls();
             });
         });
     }
@@ -454,8 +472,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
     };
     $scope.userLogout = function () {
-        window.location.href = "login.html"
-    }
+        window.location.href = "login.html";
+    };
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         if (url.indexOf("widget") > 0) {
@@ -523,6 +541,68 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             return "widget";
         }
         return "widget";
+    };
+
+    $scope.themeDropDownChange = function (data) {
+        var colorCode = {
+            optionName: data.name,
+            optionValue: data.value
+        };
+        $http({
+            url: 'admin/ui/updateThemeSettings',
+            method: 'POST',
+            data: JSON.stringify(colorCode)
+        }).success(function (response) {
+            $scope.theme = {
+                name: response.optionName,
+                value: response.optionValue
+            };
+            var themeColor = {value: data.value};
+            setThemeColor(themeColor);
+        });
+    };
+
+    function getThemeColor() {
+        $http.get("admin/ui/getThemeByUserId").success(function (response) {
+            console.log(response);
+            var data = {
+                name: response.optionName,
+                value: response.optionValue
+            };
+            $scope.theme = data;
+            var themeColor = {value: response.optionValue};
+            setThemeColor(themeColor);
+        });
+    }
+    ;
+    getThemeColor();
+
+    function setThemeColor(themeColor) {
+        $(document).ready(function (e) {
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + themeColor.value + '/style.css" type="text/css" />');
+        });
+    }
+    $(document).ready(function (e) {
+        $(".inside").click(function (e) {
+            console.log("inside");
+            e.stopPropagation();
+        });
+    });
+
+    $scope.changeChartColor = function (userPreferences) {
+        var data = {
+            id: userPreferences.id,
+            optionName: 'Chart_Color_Options',
+            optionValue: userPreferences.optionValue,
+            userId: userPreferences.userId
+        };
+        $http({method: userPreferences.id ? 'PUT' : 'POST', url: 'admin/ui/updateChartColor', data: data}).success(function (response) {
+            console.log(response);
+            if (response) {
+                $scope.loadNewUrl();
+                getChartColor();
+            }
+        });
     };
 
     $(function () {
