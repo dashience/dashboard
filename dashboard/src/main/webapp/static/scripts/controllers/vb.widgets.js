@@ -2580,9 +2580,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
-                        "&productSegment=" + (getWidgetObj.productSegment ? getWidgetObj.productSegment.type : null) +
-                        "&timeSegment=" + (getWidgetObj.timeSegment ? getWidgetObj.timeSegment.type : null) +
-                        "&networkType=" + (getWidgetObj.networkType ? getWidgetObj.networkType.type : null) +
+                        "&productSegment=" + setProductSegment +
+                        "&timeSegment=" + setTimeSegment +
+                        "&networkType=" + setNetworkType +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
@@ -2921,7 +2921,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                                    pattern: ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3249,7 +3249,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                                    pattern: ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3564,7 +3564,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                                    pattern: ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -3884,7 +3884,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                                    pattern: ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -4216,7 +4216,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                                    pattern: ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                                 },
                                 tooltip: {show: false},
@@ -4404,7 +4404,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                         function funnelArrayObjects(name, value) {
                             var funnelObject = [];
-                            var funnelColor = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                            var funnelColor = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                             var len = name.length;
                             for (var i = 0; i < len; i++) {
                                 funnelObject.push([name[i], value[i], funnelColor[i]]);
