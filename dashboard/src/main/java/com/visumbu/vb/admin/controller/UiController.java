@@ -724,8 +724,7 @@ public class UiController extends BaseController {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.createDashboardTemplate(dashboardTemplate, user, productId);
     }
-
-    //added by subhadra
+    
     @RequestMapping(value = "updateChartColor", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     UserPreferences addChartColor(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
@@ -734,14 +733,12 @@ public class UiController extends BaseController {
         return uiService.addChartColor(userPreferences);
     }
 
-    //addedby subhadra
     @RequestMapping(value = "updateChartColor", method = RequestMethod.PUT, produces = "application/json")
     public @ResponseBody
     UserPreferences updateChartColor(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
         return uiService.updateChartColor(userPreferences);
     }
 
-    //added by subhadra
     @RequestMapping(value = "getChartColorByUserId", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     UserPreferences getChartColorByUserId(HttpServletRequest request, HttpServletResponse response) {
@@ -798,8 +795,6 @@ public class UiController extends BaseController {
         uiService.deleteUserTemplate(templateId);
     }
 
-    //themeplate code
-    //added by Paramvir for Theme settings
     @RequestMapping(value = "updateThemeSettings", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     UserPreferences updateThemeSettings(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
@@ -808,7 +803,6 @@ public class UiController extends BaseController {
         return uiService.updateThemeSettings(userPreferences);
     }
 
-    //added by Paramvir
     @RequestMapping(value = "getThemeByUserId", method = RequestMethod.GET)
     public @ResponseBody
     UserPreferences getThemeByUserId(HttpServletRequest request, HttpServletResponse response) {

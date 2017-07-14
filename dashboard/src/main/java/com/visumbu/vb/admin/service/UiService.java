@@ -1178,7 +1178,6 @@ public class UiService {
         return uiDao.getDefaultTemplate(agencyId);
     }
 
-    //added by subhadra for theme settings
     public UserPreferences updateChartColor(UserPreferences userPreferences) {
         uiDao.saveOrUpdate(userPreferences);
         return userPreferences;
@@ -1200,7 +1199,6 @@ public class UiService {
         return uiDao.getThemeByUserId(userId);
     }
 
-    //added by subhadra for theme settings
     public UserPreferences addChartColor(UserPreferences userPreferences) {
         uiDao.saveOrUpdate(userPreferences);
         return userPreferences;

@@ -318,13 +318,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 if (response.optionValue) {
                     widgetColors = response.optionValue.split(',');
                 }
-                console.log($scope.userChartColors);
                 widgetItems.forEach(function (value, key) {
                     value.chartColors = widgetColors;
-
                 });
                 $scope.widgets = widgetItems;
-                console.log($scope.widgets);
             });
         });
     }
@@ -371,7 +368,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.setWidgetItems = function (widget) {
         firstPreviewAfterEdit = 1;
-        //added by subhadra
         widget.targetColors = [];
         console.log(widget);
         $scope.widgetId = widget.id;
@@ -933,10 +929,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }, 40);
     };
 
-    //added by subhadra to store list of optionvalues
     $scope.targetColors = [];
 
-    //added by subhadra 
     $scope.deleteColorOption = function (targetColor, index) {
         $scope.widgetObj.targetColors.splice(index, 1);
     };
@@ -1846,7 +1840,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             productSegment: widget.productSegment ? widget.productSegment.type : null,
             networkType: widget.networkType ? widget.networkType.type : null,
             createdBy: widget.createdBy,
-            chartColorOption: widgetColor     //added by subhadra to bind chatcoloroption using map
+            chartColorOption: widgetColor
         };
 
         clearEditAllWidgetData();
@@ -1899,7 +1893,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget = data;
             $scope.derivedColumns = [];
             if (!data.id) {
-                $scope.widgets.push(response)
+                $scope.widgets.push(response);
             }
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
@@ -1962,13 +1956,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.allAccount = val.accountId;
         });
         $scope.chartTypeName = "";
-        $scope.xColumn = ""
-        $scope.tickerItem = ""
-        $scope.funnelItem = ""
-        $scope.y1Column = ""
-        $scope.y2Column = ""
-        $scope.selectPieChartYAxis = ""
-        $scope.selectPieChartXAxis = ""
+        $scope.xColumn = "";
+        $scope.tickerItem = "";
+        $scope.funnelItem = "";
+        $scope.y1Column = "";
+        $scope.y2Column = "";
+        $scope.selectPieChartYAxis = "";
+        $scope.selectPieChartXAxis = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
@@ -2932,7 +2926,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                //added by subhadra
+                
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                 var widgetChartColors;
@@ -3066,7 +3060,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors //added by subhadra
+                                    pattern: chartColors ? chartColors : defaultColors 
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3271,7 +3265,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     dataSourcePassword = '';
                 }
 
-                //added by subhadra
+                
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -3280,8 +3274,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
 //                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;
-                console.log(chartColors);
-                console.log(defaultColors);
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -3404,7 +3396,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors //added by subhadra
+                                    pattern: chartColors ? chartColors : defaultColors 
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3729,7 +3721,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors //added by subhadra
+                                    pattern: chartColors ? chartColors : defaultColors 
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3932,7 +3924,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                //added by subhadra
+                
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4058,7 +4050,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors //added by subhadra
+                                    pattern: chartColors ? chartColors : defaultColors 
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -4266,7 +4258,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                //added by subhadra
+                
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4399,7 +4391,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors //added by subhadra
+                                    pattern: chartColors ? chartColors : defaultColors 
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -4488,7 +4480,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                //added by subhadra
+                
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4595,7 +4587,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                         function funnelArrayObjects(name, value) {
                             var funnelObject = [];
-                            var funnelColor = chartColors ? chartColors : defaultColors; //added by subhadra
+                            var funnelColor = chartColors ? chartColors : defaultColors; 
                             var len = name.length;
                             for (var i = 0; i < len; i++) {
                                 funnelObject.push([name[i], value[i], funnelColor[i]]);

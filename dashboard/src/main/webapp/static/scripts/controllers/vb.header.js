@@ -316,6 +316,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $scope.loadNewUrl = function () {
+        console.log("calling url function");
         try {
             var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -597,11 +598,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             userId: userPreferences.userId
         };
         $http({method: userPreferences.id ? 'PUT' : 'POST', url: 'admin/ui/updateChartColor', data: data}).success(function (response) {
-            console.log(response);
-            if (response) {
-                $scope.loadNewUrl();
-                getChartColor();
-            }
+            getChartColor();
+            $scope.loadNewUrl();
         });
     };
 
