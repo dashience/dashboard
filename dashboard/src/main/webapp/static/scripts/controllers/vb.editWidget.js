@@ -187,8 +187,9 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
     $scope.collectionField = {};
     $scope.dispName = function (currentColumn) {
         $scope.filterName = $filter('filter')($scope.collectionFields, {fieldName: currentColumn.fieldName})[0];
+        console.log($scope.collectionFields);
         currentColumn.displayName = $scope.filterName.displayName;
-    };
+    };console.log($scope.collectionFields);
     $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
@@ -657,6 +658,78 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
             $scope.editChartType = "ticker";
         }, 50);
     };
+    
+    
+    
+//    //Funnel Format
+//    $scope.funnel = function (widget, column) {
+//        $scope.editChartType = null;
+//        var newColumns = [];
+//        if (column.length == 0) {
+//            widget.columns = "";
+//        } else {
+//            angular.forEach(column, function (value, key) {
+//                angular.forEach($scope.collectionFields, function (val, header) {
+//                    if (val.fieldName === value.fieldName) {
+//                        val.xAxis = 1;
+//                        val.displayFormat = value.displayFormat;
+//                        newColumns.push(val);
+//                    }
+//                });
+//                widget.columns = newColumns;
+//            });
+//        }
+//        var chartType = widget;
+//        $timeout(function () {
+//            $scope.previewChart(chartType, widget)
+//        }, 50);
+//    };
+//    $scope.removedByFunnel = function (widget, column, y2Column) {
+//        $scope.editChartType = null;
+//        $scope.funnel(widget, y2Column);
+//        var chartType = widget;
+//        $timeout(function () {
+//            $scope.editChartType = "funnel";
+//        }, 50);
+//    };
+    
+    
+    //Funnel Format
+    $scope.funnel = function (widget, column) {
+        $scope.editChartType = null;
+        var newColumns = [];
+        if (column.length == 0) {
+            widget.columns = "";
+        } else {
+            angular.forEach(column, function (value, key) {
+                console.log($scope.collectionFields)
+                angular.forEach($scope.collectionFields, function (val, header) {
+                    console.log(val.fieldName);
+                    if (val.fieldName === value.fieldName) {
+                        val.displayFormat = value.displayFormat;
+                        newColumns.unshift(val);
+                    }
+                });
+                widget.columns = newColumns;
+                console.log(newColumns)
+            });
+        }
+        var chartType = widget;
+        $timeout(function () {
+            $scope.previewChart(chartType, widget)
+        }, 50);
+    };
+    $scope.removedByFunnel = function (widget, column, funnelItem) {
+        $scope.editChartType = null;
+        $scope.funnel(widget, funnelItem);
+        var chartType = widget;
+        $timeout(function () {
+            $scope.editChartType = "funnel";
+        }, 50);
+    };
+    
+    
+    
     $scope.setFormat = function (widget, column) {
         $scope.editChartType = null;
         angular.forEach(widget.columns, function (value, key) {

@@ -54,5 +54,12 @@
         "type": "stackedbar",
         "name": "Stacked Bar",
         "icon": "fa-braille"
+    },
+    {
+        "id": 11,
+        "url": "static/img/funnel.png",
+        "type": "funnel",
+        "name": "Funnel",
+        "icon": "fa-filter"
     }
 ]

@@ -108,7 +108,7 @@ public class UserPermission implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.UserPermission[ id=" + id + " ]";
+        return "UserPermission{" + "id=" + id + ", status=" + status + ", permissionId=" + permissionId + ", userId=" + userId + '}';
     }
     
 }

@@ -103,6 +103,7 @@ public class VbUtils {
         Permission permission = new Permission();
         for (Iterator<UserPermission> iterator = userPermissions.iterator(); iterator.hasNext();) {
             UserPermission userPermission = iterator.next();
+            System.out.println(userPermission);
             permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), userPermission.getStatus());
 //            permission.setPermission(CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, userPermission.getPermissionId().getPermissionName().toLowerCase().replaceAll(" ", "_")), Boolean.TRUE);
         }

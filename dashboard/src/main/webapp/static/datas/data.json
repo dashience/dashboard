@@ -1,0 +1,22 @@
+[
+  {
+    "sales_process": "Leads",
+    "value": 70
+  },
+  {
+    "sales_process": "Phone Calls",
+    "value": 61
+  },
+  {
+    "sales_process": "Pitches",
+    "value": 46
+  },
+  {
+    "sales_process": "Negotiations",
+    "value": 29
+  },
+  {
+    "sales_process": "Final Closure",
+    "value": 15
+  }
+]

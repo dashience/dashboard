@@ -58,6 +58,13 @@
     .agency-bt {
         margin-bottom:10px;
     }
+/*.pull-right{
+    padding:0px !important;
+}*/
+ .arrowdown{
+        float:right;
+        margin-top: 8px;
+    }
 </style>
 <section class="content">
     <div class="row">
@@ -173,9 +180,10 @@
                                 <div class="col-md-6">
                                     <label>Report</label>
                                     <div>
-                                        <ui-select ng-model="scheduler.reportId" theme="select2" ng-disabled="disabled" style="min-width:225px;">
+                                        <!--<ui-select ng-model="scheduler.reportId" theme="select2" ng-disabled="disabled" style="min-width:225px;">-->
+                                            <ui-select ng-model="scheduler.reportId" theme="bootstrap" ng-disabled="disabled">
                                             <ui-select-match placeholder="Select Report...">
-                                                <img ng-if="$select.selected.logo" style="width: 40px" ng-src="{{ $select.selected.logo}}" />
+                                                <img ng-if="$select.selected.logo" style="width: 40px;" ng-src="{{ $select.selected.logo}}" />
                                                 <img ng-if="!$select.selected.logo" style="width: 40px" ng-src="static/img/logos/emptyLogo.jpg" />
                                                 {{$select.selected.reportTitle}}
                                             </ui-select-match>
@@ -192,7 +200,8 @@
                                 <div class="col-md-6">
                                     <label>Account</label>
                                     <div>
-                                        <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">
+                                        <!--<ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">-->
+                                        <ui-select ng-model="scheduler.accountId" theme="bootstrap" ng-disabled="disabled">
                                             <ui-select-match placeholder="Select Year Account...">{{$select.selected.accountName}}</ui-select-match>
                                             <ui-select-choices repeat="account in accounts | filter: $select.search">
                                                 <span ng-bind-html="account.accountName | highlight: $select.search"></span>
@@ -215,10 +224,10 @@
                                     <label>Date Range</label>
                                     <div>
                                         <div>
-                                            <button class="drop btn btn-default" type="button">
+                                            <button class="drop btn btn-default" type="button" style="width:100%;text-align: left;">
                                                 {{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
-                                                <span class="caret"></span></button>
-                                            <ul class="dropdown-menu scheduler-list-style">
+                                                <span class="caret arrowdown"></span></button>
+                                                <ul class="dropdown-menu scheduler-list-style" style="left:14px;">
                                                 <li ng-click="selectDuration('Custom', scheduler)" >
 
                                                     <a>Custom</a>
