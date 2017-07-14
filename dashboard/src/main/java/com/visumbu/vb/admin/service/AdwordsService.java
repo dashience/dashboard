@@ -971,9 +971,9 @@ public class AdwordsService {
         if (timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")) {
             fieldList.remove("AllConversions");
         }
-         if (!filter.equalsIgnoreCase("ALL")) {
-            fieldList.remove("AdNetworkType2");
-        }
+//         if (!filter.equalsIgnoreCase("ALL")) {
+//            fieldList.remove("AdNetworkType2");
+//        }
         selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);
