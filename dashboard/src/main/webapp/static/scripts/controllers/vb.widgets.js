@@ -355,8 +355,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
     var setDefaultWidgetObj = [];
-    
-    $scope.setWidgetItems = function (widget) {        
+
+    $scope.setWidgetItems = function (widget) {
         setDefaultWidgetObj = [];
         var data = loadInitialWidgetColumnData(widget.columns);
         setDefaultWidgetObj.push({
@@ -374,11 +374,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            accountId: widget.accountId?widget.accountId.id:null
+            accountId: widget.accountId ? widget.accountId.id : null
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
-        if(!widget.allAccount){
+        if (!widget.allAccount) {
             widget.allAccount = 1;
         }
         $scope.widgetObj = widget;
@@ -386,7 +386,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
-        });        
+        });
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         var getDataSourceId = widget.dataSourceId;
         $scope.selectWidgetDataSource(getDataSourceId);
