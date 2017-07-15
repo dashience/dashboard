@@ -608,6 +608,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $scope.y1Column = "";
         $scope.xColumn = "";
+        $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
@@ -669,6 +670,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             return;
         }
         $scope.y1Column = "";
+        $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
@@ -955,7 +957,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.deleteWidget = function (widget, index) {
-        //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
@@ -1981,9 +1982,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
-        console.log(widgetObj);
-        console.log($scope.widgetObj.targetColors);
-        console.log($scope.widgetObj.targetColors);
         console.log($scope.chartColorOptionsVal);
         if ($scope.chartColorOptionsVal) {
             $scope.widgetObj.chartColorOption = $scope.chartColorOptionsVal;
