@@ -698,7 +698,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
             var getDataSetObjs = response;
-            var getDataSetPerformance = getDataSetObjs[getDataSourceType]
+            var getDataSetPerformance = getDataSetObjs[getDataSourceType];
             if (!getDataSetPerformance) {
                 return;
             }
@@ -1049,12 +1049,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.showReportWidgetName = false;
-    $scope.reportEmptyLogo = "static/img/logos/deeta-logo.png"
+    $scope.reportEmptyLogo = "static/img/logos/deeta-logo.png";
     $scope.selectReport = function (reportWidget) {
         $scope.hideReportsTable = true;
 //        $scope.loadReportsTable = false;
         $scope.showReportWidgetName = false;
-        $scope.reportWidgetTitle = []
+        $scope.reportWidgetTitle = [];
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
         $http.get("admin/report/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
@@ -1065,7 +1065,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.showReportEmptyMessage = false;
             } else {
                 $scope.showReportEmptyMessage = true;
-                $scope.reportEmptyMessage = "No Data Found"
+                $scope.reportEmptyMessage = "No Data Found";
             }
         });
     };
@@ -1251,7 +1251,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
-        console.log(column)
+        console.log(column);
 //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
         var index = $scope.columnY1Axis.indexOf(column);
@@ -1261,8 +1261,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY1Axis(widgetObj, yAxisItems);
 //        } else {
-        var getIndex = widgetObj.columns.indexOf(column)
-        widgetObj.columns.splice(getIndex, 1)
+        var getIndex = widgetObj.columns.indexOf(column);
+        widgetObj.columns.splice(getIndex, 1);
 //            angular.forEach(widgetObj.columns, function (val, key) {
 //                if (val.fieldName == column.fieldName) {
 //                    val.yAxis = null;
@@ -1280,8 +1280,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY2Axis(widgetObj, yAxisItems);
 //        } else {
-        var getIndex = widgetObj.columns.indexOf(column)
-        widgetObj.columns.splice(getIndex, 1)
+        var getIndex = widgetObj.columns.indexOf(column);
+        widgetObj.columns.splice(getIndex, 1);
 //            angular.forEach(widgetObj.columns, function (val, key) {
 //                if (val.fieldName == column.fieldName) {
 //                    val.yAxis = null;
@@ -1336,7 +1336,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     return exists;
                 });
                 if (checkObj == false) {
-                    widget.columns.push(value)
+                    widget.columns.push(value);
                 }
             });
         }
@@ -1349,8 +1349,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByFunnel = function (widget, removeItem, funnelItem) {
         $scope.dispHideBuilder = true;
-        var getIndex = widget.columns.indexOf(removeItem)
-        widget.columns.splice(getIndex, 1)
+        var getIndex = widget.columns.indexOf(removeItem);
+        widget.columns.splice(getIndex, 1);
         //$scope.funnel(widget, funnelItem);   
         $timeout(function () {
             $scope.queryBuilderList = widget;
