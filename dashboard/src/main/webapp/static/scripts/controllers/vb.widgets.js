@@ -27,7 +27,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $state, $window, $interval) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -290,7 +290,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     };
 
-    function getWidgetItem() {
+    $rootScope.getWidgetItem = function() {
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
@@ -324,8 +324,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.widgets = widgetItems;
             });
         });
-    }
-    getWidgetItem();
+    };
+    $rootScope.getWidgetItem();
 
     function loadInitialWidgetColumnData(columns) {
         var data = [];
@@ -972,7 +972,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.pageRefresh = function () {          //Page Refresh
-        getWidgetItem();
+        $rootScope.getWidgetItem();
     };
 
     $scope.moveWidget = function (list, from, to) {

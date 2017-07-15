@@ -36,17 +36,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
     };
 
-    //added by subhadra
-    function getChartColor() {
-        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
-            $scope.chartColor = response;
-        });
-    }
-    ;
-
-    getChartColor();
-
-    //added by subhadra
     $scope.themes = [{name: "Green", value: "green"},
         {name: "Blue", value: "blue"},
         {name: "Cyan", value: "cyan"},
@@ -544,12 +533,26 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         return "widget";
     };
 
+    function getChartColor() {
+        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.chartColor = response;
+            if (response.optionValue) {
+                var userChatColor = response.optionValue.split(",");
+                $scope.color = userChatColor[userChatColor.length - 1];
+            }else{
+                $scope.color = "#000000";
+            }
+        });
+    }
+    ;
+    getChartColor();
+
     $scope.selectChartColor = function (color) {
         console.log(color);
         if ($scope.chartColor.optionValue) {
             $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
         } else {
-             $scope.chartColor.optionValue = color;
+            $scope.chartColor.optionValue = color;
         }
         console.log($scope.chartColor.optionValue);
     };
@@ -600,7 +603,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         });
     });
 
-    $scope.changeChartColor = function (userPreferences) {
+    $scope.saveChartColor = function (userPreferences) {
         var data = {
             id: userPreferences.id,
             optionName: 'Chart_Color_Options',
@@ -609,7 +612,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         };
         $http({method: userPreferences.id ? 'PUT' : 'POST', url: 'admin/ui/updateChartColor', data: data}).success(function (response) {
             getChartColor();
-            $scope.loadNewUrl();
+            $rootScope.getWidgetItem();
+//            $scope.loadNewUrl();
         });
     };
 
