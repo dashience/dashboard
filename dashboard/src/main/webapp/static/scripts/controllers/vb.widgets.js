@@ -2711,9 +2711,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
-                        "&productSegment=" + (getWidgetObj.productSegment ? getWidgetObj.productSegment.type : null) +
-                        "&timeSegment=" + (getWidgetObj.timeSegment ? getWidgetObj.timeSegment.type : null) +
-                        "&networkType=" + (getWidgetObj.networkType ? getWidgetObj.networkType.type : null) +
+                        "&productSegment=" + setProductSegment +
+                        "&timeSegment=" + setTimeSegment +
+                        "&networkType=" + setNetworkType +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
@@ -2930,7 +2930,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
 
-                var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
 
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -3243,7 +3243,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     }
                 });
                 return $filter('orderBy')(list, fieldsOrder);
-            }
+            };
 
             function maximumRecord(maxValue, list) {
                 var maxData;
@@ -3269,14 +3269,14 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 }
 
 
-                var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;
+                
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -3597,15 +3597,13 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                // added by subhadra
-                var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                var defaultColors =  ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors//getWidgetObj.chartColors.Chart_Color_Options;
 
                 var setWidgetAccountId;
                 var setProductSegment;
@@ -3928,14 +3926,13 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
 
-                var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                var defaultColors =  ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
 
                 var setProductSegment;
                 var setTimeSegment;
@@ -4262,7 +4259,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
 
-                var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -4270,7 +4267,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
 
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
+                
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -4484,14 +4481,13 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
 
-                var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors =  ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-//                var chartColors = widgetChartColors ? widgetChartColors : getWidgetObj.chartColors.Chart_Color_Options;//getWidgetObj.chartColors.Chart_Color_Options;
 
                 var setProductSegment;
                 var setTimeSegment;
