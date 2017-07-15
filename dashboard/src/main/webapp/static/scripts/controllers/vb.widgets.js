@@ -45,6 +45,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.userId = $cookies.getObject("userId");
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
+    $scope.reloadAllDirective = true;
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
@@ -355,8 +356,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
     var setDefaultWidgetObj = [];
-    
-    $scope.setWidgetItems = function (widget) {        
+
+    $scope.setWidgetItems = function (widget) {
         setDefaultWidgetObj = [];
         var data = loadInitialWidgetColumnData(widget.columns);
         setDefaultWidgetObj.push({
@@ -374,11 +375,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            accountId: widget.accountId?widget.accountId.id:null
+            accountId: widget.accountId ? widget.accountId.id : null
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
-        if(!widget.accountId){
+        if (!widget.accountId) {
             widget.allAccount = 1;
         }
         $scope.widgetObj = widget;
@@ -386,7 +387,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
-        });        
+        });
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         var getDataSourceId = widget.dataSourceId;
         $scope.selectWidgetDataSource(getDataSourceId);
@@ -984,28 +985,76 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.setLineChartFn = function (lineFn) {
-        $scope.directiveLineFn = lineFn;
+        $scope.reloadDirLineFn = lineFn;
     };
     $scope.setAreaChartFn = function (areaFn) {
-        $scope.directiveAreaFn = areaFn;
+        $scope.reloadDirAreaFn = areaFn;
     };
     $scope.setBarChartFn = function (barFn) {
-        $scope.directiveBarFn = barFn;
+        $scope.reloadDirBarFn = barFn;
     };
     $scope.setPieChartFn = function (pieFn) {
-        $scope.directivePieFn = pieFn;
+        $scope.reloadDirPieFn = pieFn;
     };
     $scope.setStackedBarChartFn = function (stackedBarChartFn) {
-        $scope.directiveStackedBarChartFn = stackedBarChartFn;
+        $scope.reloadDirStackedBarChartFn = stackedBarChartFn;
     };
     $scope.setTableChartFn = function (tableFn) {
-        $scope.directiveTableFn = tableFn;
+        $scope.reloadDirTableFn = tableFn;
     };
     $scope.setTickerFn = function (tickerFn) {
-        $scope.directiveTickerFn = tickerFn;
+        $scope.reloadDirTickerFn = tickerFn;
     };
     $scope.setFunnelFn = function (funnelFn) {
-        $scope.directiveFunnelFn = funnelFn;
+        $scope.reloadDirFunnelFn = funnelFn;
+    };
+
+    $scope.filters = [];
+    $http.get("static/datas/filters/filters.json").success(function (response) {
+        $scope.filters = response.filter;
+    });
+    var selectedFilterList = [];
+
+    $scope.getSelectedFilters = function (option, status, filterName) {
+        $scope.reloadAllDirective = false;
+        //var chartSelectedFilter = filterBy;
+        if (status === true) {
+            var index = selectedFilterList.findIndex(x => x.filterName === filterName);
+            if (index === -1) {
+                selectedFilterList.push({filterName: filterName, option: [option]});
+            } else {
+                angular.forEach(selectedFilterList, function (value, key) {
+                    if (value.filterName === filterName) {
+                        value.option.push(option)
+                    }
+                });
+            }
+        } else {
+            angular.forEach(selectedFilterList, function (value, key) {
+                if (value.filterName === filterName) {
+                    var getIndex = value.option.indexOf(option);
+                    value.option.splice(getIndex, 1);
+                }
+            });
+        }
+
+        var urlFilterParameter = [];
+        angular.forEach(selectedFilterList, function (value, key) {
+            urlFilterParameter.push(value.filterName + ":" + [value.option]);
+        });
+        $scope.widgets.forEach(function (val, key) {
+            val.filterUrlParameter = urlFilterParameter;
+        });
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+        }, 50);
+    };
+
+    $scope.getChartFilterItems = function (filterBy) {
+        var getSelectedFilter = filterBy;
+        $scope.filters.forEach(function (val, k) {
+            val.option.indexOf(getSelectedFilter.name)
+        });
     };
 
     $scope.expandWidget = function (widget) {
@@ -2177,6 +2226,13 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 setNetworkType = widgetData.networkType;
             }
 
+//            var filters;
+//            if (widgetData.filterUrlParameter) {
+//                filters = widgetData.filterUrlParameter.join("")
+//            } else {
+//                filters = "";
+//            }
+
             scope.refreshTable = function () {
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
@@ -2186,6 +2242,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
+                        "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
@@ -2567,6 +2624,13 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 setNetworkType = getWidgetObj.networkType;
             }
 
+//            var filters;
+//            if (getWidgetObj.filterUrlParameter) {
+//                filters = getWidgetObj.filterUrlParameter.join("")
+//            } else {
+//                filters = "";
+//            }
+
             scope.refreshTicker = function () {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
@@ -2580,9 +2644,10 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
-                        "&productSegment=" + (getWidgetObj.productSegment ? getWidgetObj.productSegment.type : null) +
-                        "&timeSegment=" + (getWidgetObj.timeSegment ? getWidgetObj.timeSegment.type : null) +
-                        "&networkType=" + (getWidgetObj.networkType ? getWidgetObj.networkType.type : null) +
+                        "&productSegment=" + setProductSegment +
+                        "&timeSegment=" + setTimeSegment +
+                        "&networkType=" + setNetworkType +
+                        "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
@@ -2818,6 +2883,12 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
+//                var filters;
+//                if (getWidgetObj.filterUrlParameter) {
+//                    filters = getWidgetObj.filterUrlParameter.join("")
+//                } else {
+//                    filters = "";
+//                }
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
@@ -2829,6 +2900,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             "&dataSetReportName=" + lineChartDataSource.reportName +
@@ -3149,6 +3221,13 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     setNetworkType = getWidgetObj.networkType;
                 }
 
+//                var filters;
+//                if (getWidgetObj.filterUrlParameter) {
+//                    filters = getWidgetObj.filterUrlParameter.join("")
+//                } else {
+//                    filters = "";
+//                }
+
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
@@ -3162,6 +3241,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
                             '&username=' + barChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3470,6 +3550,13 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     setNetworkType = getWidgetObj.networkType;
                 }
 
+//                var filters;
+//                if (getWidgetObj.filterUrlParameter) {
+//                    filters = getWidgetObj.filterUrlParameter.join("")
+//                } else {
+//                    filters = "";
+//                }
+
                 scope.refreshPieChart = function () {
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
@@ -3481,7 +3568,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             "&endDate=" + $stateParams.endDate +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
-                            "&networkType=" + setNetworkType +
+                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                            "&product=" + getWidgetObj.product +
                             '&username=' + pieChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3602,6 +3690,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
         scope: {
             setAreaChartFn: '&',
+            getSelectedFilterItem: '&',
             widgetId: '@',
             areaChartSource: '@',
             widgetColumns: '@',
@@ -3789,7 +3878,13 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-
+//                var filters;
+//                console.log(getWidgetObj)
+//                if (getWidgetObj.filterUrlParameter) {
+//                    filters = getWidgetObj.filterUrlParameter;
+//                } else {
+//                    filters = "";
+//                }
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
@@ -3803,6 +3898,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboard_filter=" + getWidgetObj.filterUrlParameter +
                             '&username=' + areaChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3881,7 +3977,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     labels: labels,
                                     type: 'area',
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    onclick: function (obj, element) {
+//                                        console.log(obj)
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
@@ -4114,6 +4214,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
+//                var filters;
+//                if (getWidgetObj.filterUrlParameter) {
+//                    filters = getWidgetObj.filterUrlParameter.join("")
+//                } else {
+//                    filters = "";
+//                }
 
                 scope.refreshStackedBarChart = function () {
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
@@ -4128,6 +4234,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
                             '&username=' + stackedBarChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -4305,6 +4412,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+                console.log(getWidgetObj)
 
                 var setProductSegment;
                 var setTimeSegment;
@@ -4327,8 +4435,12 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-                console.log("funnel DataSource");
-                console.log(funnelDataSource);
+//                var filters;
+//                if (getWidgetObj.filterUrlParameter) {
+//                    filters = getWidgetObj.filterUrlParameter;
+//                } else {
+//                    filters = "";
+//                }
                 scope.refreshFunnel = function () {
                     $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + funnelDataSource.id +
@@ -4341,6 +4453,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
                             '&username=' + funnelDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.funnelId +
@@ -4413,10 +4526,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         }
 
                         /*Filter*/
-
-
-
-                        // width = $(element[0]).width();
                         function drawChart() {
                             var width = $(element[0]).width();
                             var height = 315;
@@ -4429,30 +4538,10 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             var funnel = new D3Funnel(scope.funnelCharts, options);
                             funnel.draw(element[0]);
                         }
+
                         drawChart();
-//                    var options = {
-//                        // width : width - 30,
-//                        // width: 1300,
-//                        width: 500,
-//                        // height: 400,
-//                        height: 300,
-//                        //bottomWidth : 1/3,
-//                        bottomPinch: 1, // How many sections to pinch
-//                        //isCurved : false,     // Whether the funnel is curved
-//                        //curveHeight : 20,     // The curvature amount
-//                        //fillType : "solid",   // Either "solid" or "gradient"
-//                        //isInverted : true,   // Whether the funnel is inverted
-//                        hoverEffects: true  // Whether the funnel has effects on hover
-//                    };
-//                    var funnel = new D3Funnel(scope.funnelCharts, options);
-//                    funnel.draw(element[0]);
                         $(window).on("resize", function () {
                             drawChart();
-//        var width = $(element[0]).width();
-//                //$( "#funnelContainer" ).css( "width", width);
-//                options.width = width;
-//                var funnel = new D3Funnel(scope.funnelCharts, options);
-//                funnel.draw(element[0]);
                         });
                     });
                 }

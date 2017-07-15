@@ -1,0 +1,17 @@
+{
+    "filter": [
+        {
+            "filterName": "Country",
+            "options": ["USA", "India", "UK", "UAE"]
+        }, 
+        {
+            "filterName": "Products",
+            "options": ["Adwords", "Analytics", "Pintrest"]
+        },
+        {
+            "filterName": "Adwords",
+            "options": ["cost", "costConv", "conversion"]
+        }
+    ]
+}
+       
