@@ -544,6 +544,16 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         return "widget";
     };
 
+    $scope.selectChartColor = function (color) {
+        console.log(color);
+        if ($scope.chartColor.optionValue) {
+            $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
+        } else {
+             $scope.chartColor.optionValue = color;
+        }
+        console.log($scope.chartColor.optionValue);
+    };
+
     $scope.themeDropDownChange = function (data) {
         var colorCode = {
             optionName: data.name,

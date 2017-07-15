@@ -742,6 +742,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showFilter = false;
+        $scope.showColor = false;
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
         $scope.showDateRange = false;
@@ -2000,7 +2001,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 app.directive('uiColorpicker', function () {
     return {
-        restrict: 'E',
+        restrict: 'AE',
         require: 'ngModel',
         scope: false,
         replace: true,
@@ -3276,7 +3277,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 }
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-                
+
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -3597,7 +3598,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                var defaultColors =  ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -3926,7 +3927,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
 
-                var defaultColors =  ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -4267,7 +4268,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
 
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-                
+
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -4481,7 +4482,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
 
-                var defaultColors =  ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
