@@ -736,6 +736,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.selectChart = function (chartType, widget) {
+        addColor = [];
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
@@ -756,6 +757,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.timeSegment = "";
         $scope.widgetObj.productSegment = "";
         $scope.widgetObj.networkType = "";
+        $scope.widgetObj.chartColorOption = "";
+        $scope.widgetObj.targetColors = "";
         if ($scope.chartTypeName) {
             widget.columns = [];
             $scope.collectionFields.forEach(function (value, k) {
@@ -935,9 +938,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.targetColors.splice(index, 1);
     };
 
-    var temp = [];
+    var addColor = [];
     $scope.addColors = function (widget) {
-        console.log(temp);
+        console.log(addColor);
         if (widget.targetColors) {
             widget.targetColors.push({color: "#62cb31"});
         } else {
@@ -945,8 +948,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     {
                         color: "#62cb31"
                     };
-            temp.push(targetColors);
-            widget["targetColors"] = temp;
+            addColor.push(targetColors);
+            widget["targetColors"] = addColor;
         }
     };
 
@@ -1725,7 +1728,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
-        // added by subhadra
+        addColor = [];
         var widgetColor = "";
         if (widget.targetColors) {
             widgetColor = widget.targetColors.map(function (value, key) {
@@ -1935,7 +1938,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     var tempTargetColors = [];
     $scope.cancel = function (widgetObj) {
-        temp = [];
+        addColor = [];
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
@@ -2926,7 +2929,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                
+
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
 
                 var widgetChartColors;
@@ -3060,7 +3063,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors 
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3265,7 +3268,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     dataSourcePassword = '';
                 }
 
-                
+
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -3396,7 +3399,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors 
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3721,7 +3724,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors 
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3924,7 +3927,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                
+
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4050,7 +4053,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors 
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -4258,7 +4261,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                
+
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4391,7 +4394,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: chartColors ? chartColors : defaultColors 
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -4480,7 +4483,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-                
+
                 var defaultColors = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4587,7 +4590,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                         function funnelArrayObjects(name, value) {
                             var funnelObject = [];
-                            var funnelColor = chartColors ? chartColors : defaultColors; 
+                            var funnelColor = chartColors ? chartColors : defaultColors;
                             var len = name.length;
                             for (var i = 0; i < len; i++) {
                                 funnelObject.push([name[i], value[i], funnelColor[i]]);
