@@ -539,7 +539,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             if (response.optionValue) {
                 var userChatColor = response.optionValue.split(",");
                 $scope.color = userChatColor[userChatColor.length - 1];
-            }else{
+            } else {
                 $scope.color = "#000000";
             }
         });
@@ -547,12 +547,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     ;
     getChartColor();
 
-    $scope.selectChartColor = function (color) {
+    $scope.selectChartColor = function (color,chartColor) {
+        console.log(chartColor);
         console.log(color);
+        console.log($scope.chartColor.optionValue);
         if ($scope.chartColor.optionValue) {
             $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
         } else {
-            $scope.chartColor.optionValue = color;
+            $scope.chartColor = {
+                id: chartColor?chartColor.id:null,
+                optionName: 'Chart_Color_Options',
+                optionValue: color,
+                userId:chartColor?chartColor.userId:null
+            };
         }
         console.log($scope.chartColor.optionValue);
     };
