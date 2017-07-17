@@ -121,18 +121,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetColumnList.push({});
     };
     $scope.removeJoinDataSetColumn = function (index, conditionId) {
-        console.log(conditionId)
+        console.log(conditionId);
         $scope.dataSetColumnList.splice(index, 1);
-
         $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId + "/" + joinDataSetId}).success(function (response) {
             console.log(response);
             $scope.joinDataSetList = response;
         });
-        console.log($scope.joinDataSetList);
-        console.log($scope.dataSetColumnList);
-    }
+    };
     var joinDataSetId = null;
-
 
     $scope.loadingResultCompleted = false;
     $scope.loadingResult = false;
@@ -144,13 +140,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSetIdFirst = JSON.parse(joinDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(joinDataSetColumn.secondDataSet).id;
         if (joinDataSetId != null) {
-            console.log($scope.joinDataSetList);
             for (i = 0; i < $scope.dataSetColumnList.length; i++) {
                 var conditionId = null;
                 if (typeof ($scope.joinDataSetList[i]) !== "undefined") {
                     conditionId = $scope.joinDataSetList[i].id;
                 }
-                console.log(conditionId)
                 var conditionData = {
                     conditionFieldFirst: $scope.dataSetColumnList[i].conditionFieldFirst,
                     conditionFieldSecond: $scope.dataSetColumnList[i].conditionFieldSecond,
@@ -158,10 +152,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     conditionId: conditionId
                 };
                 $scope.dataSetLists.push(conditionData);
-                console.log($scope.dataSetLists)
             }
             $scope.dataSetColumnList = $scope.dataSetLists;
-            console.log($scope.dataSetColumnList)
         }
         var data = {
             id: joinDataSetId,

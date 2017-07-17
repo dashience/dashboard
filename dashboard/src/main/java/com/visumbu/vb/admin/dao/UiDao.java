@@ -460,7 +460,6 @@ public class UiDao extends BaseDao {
     }
 
     public DataSet getDataSetById(Integer dataSetId) {
-        System.out.println("datasetID ---> " + dataSetId);
         DataSet dataSet = (DataSet) sessionFactory.getCurrentSession().get(DataSet.class, dataSetId);
         return dataSet;
     }
@@ -584,7 +583,7 @@ public class UiDao extends BaseDao {
     }
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
-        String queryStr = "delete DataSetColumns d where d.dataSetId.id = :dataSetId";
+        String queryStr = "delete DataSetColumns d where d.dataSetId.id = :dataSetId and d.widgetId IS NULL";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();
