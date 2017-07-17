@@ -111,7 +111,7 @@ public class AdwordsService {
             List<Settings> adwordsRefreshToken = settingsDao.getProperty("adwordsRefreshToken");
             String refreshToken = SettingsProperty.getSettingsProperty(adwordsRefreshToken, "adwordsRefreshToken");
             
-            System.out.println("Adword Refresh Token-->"+refreshToken);
+            System.out.println("Adword Refresh Token-->" + refreshToken);
 
             Credential credential = new OfflineCredentials.Builder()
                     .forApi(OfflineCredentials.Api.ADWORDS)
@@ -964,16 +964,16 @@ public class AdwordsService {
         System.out.println(adwordsData);
         String[] fields = adwordsData.getFields();
         ReportDefinitionReportType reportType = adwordsData.getReportType();
-        System.out.println("Adwords Account Id-->"+accountId);
+        System.out.println("Adwords Account Id-->" + accountId);
         AdWordsSession session = getSession(accountId);
         Selector selector = new Selector();
         ArrayList<String> fieldList = Lists.newArrayList(fields);
         if (timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")) {
             fieldList.remove("AllConversions");
         }
-//         if (!filter.equalsIgnoreCase("ALL")) {
-//            fieldList.remove("AdNetworkType2");
-//        }
+        if(filter == null || !filter.equalsIgnoreCase("ALL")) {
+            fieldList.remove("AdNetworkType2");
+        }
         selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);

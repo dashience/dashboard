@@ -6,11 +6,15 @@
         }, 
         {
             "filterName": "Products",
-            "options": ["Adwords", "Analytics", "Pintrest"]
+            "options": ["Adwords", "Analytics", "Pinterest"]
         },
         {
             "filterName": "Adwords",
             "options": ["cost", "costConv", "conversion"]
+        },
+        {
+            "filterName": "GA",
+            "options": ["visits", "bounceRate", "sessions","avgTimeOnPage"]
         }
     ]
 }

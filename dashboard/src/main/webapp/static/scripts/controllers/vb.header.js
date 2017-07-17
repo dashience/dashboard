@@ -36,6 +36,13 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
     };
 
+    $scope.themes = [{name: "Green", value: "green"},
+        {name: "Blue", value: "blue"},
+        {name: "Cyan", value: "cyan"},
+        {name: "Pink", value: "pink"},
+        {name: "Gray", value: "gray"}
+    ];
+
     $scope.setParams = function () {
         $scope.accountId = $stateParams.accountId;
         $scope.accountName = $stateParams.accountName;
@@ -60,7 +67,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
-            $scope.loadNewUrl()
+            $scope.loadNewUrl();
             return;
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
@@ -147,7 +154,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                //$stateParams.endDate = endDate;
                // alert(startDate)
                 //alert(endDate)
-                defaultCalls()
+                defaultCalls();
             });
         });
     }
@@ -298,6 +305,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $scope.loadNewUrl = function () {
+        console.log("calling url function");
         try {
             var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -454,8 +462,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
     };
     $scope.userLogout = function () {
-        window.location.href = "login.html"
-    }
+        window.location.href = "login.html";
+    };
     $scope.getCurrentPage = function () {
         var url = window.location.href;
         if (url.indexOf("widget") > 0) {
@@ -523,6 +531,97 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             return "widget";
         }
         return "widget";
+    };
+
+    function getChartColor() {
+        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.chartColor = response;
+            if (response.optionValue) {
+                var userChatColor = response.optionValue.split(",");
+                $scope.color = userChatColor[userChatColor.length - 1];
+            } else {
+                $scope.color = "#000000";
+            }
+        });
+    }
+    ;
+    getChartColor();
+
+    $scope.selectChartColor = function (color,chartColor) {
+        console.log(chartColor);
+        console.log(color);
+        console.log($scope.chartColor.optionValue);
+        if ($scope.chartColor.optionValue) {
+            $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
+        } else {
+            $scope.chartColor = {
+                id: chartColor?chartColor.id:null,
+                optionName: 'Chart_Color_Options',
+                optionValue: color,
+                userId:chartColor?chartColor.userId:null
+            };
+        }
+        console.log($scope.chartColor.optionValue);
+    };
+
+    $scope.themeDropDownChange = function (data) {
+        var colorCode = {
+            optionName: data.name,
+            optionValue: data.value
+        };
+        $http({
+            url: 'admin/ui/updateThemeSettings',
+            method: 'POST',
+            data: JSON.stringify(colorCode)
+        }).success(function (response) {
+            $scope.theme = {
+                name: response.optionName,
+                value: response.optionValue
+            };
+            var themeColor = {value: data.value};
+            setThemeColor(themeColor);
+        });
+    };
+
+    function getThemeColor() {
+        $http.get("admin/ui/getThemeByUserId").success(function (response) {
+            console.log(response);
+            var data = {
+                name: response.optionName,
+                value: response.optionValue
+            };
+            $scope.theme = data;
+            var themeColor = {value: response.optionValue};
+            setThemeColor(themeColor);
+        });
+    }
+    ;
+    getThemeColor();
+
+    function setThemeColor(themeColor) {
+        $(document).ready(function (e) {
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + themeColor.value + '/style.css" type="text/css" />');
+        });
+    }
+    $(document).ready(function (e) {
+        $(".inside").click(function (e) {
+            console.log("inside");
+            e.stopPropagation();
+        });
+    });
+
+    $scope.saveChartColor = function (userPreferences) {
+        var data = {
+            id: userPreferences.id,
+            optionName: 'Chart_Color_Options',
+            optionValue: userPreferences.optionValue,
+            userId: userPreferences.userId
+        };
+        $http({method: userPreferences.id ? 'PUT' : 'POST', url: 'admin/ui/updateChartColor', data: data}).success(function (response) {
+            getChartColor();
+            $rootScope.getWidgetItem();
+//            $scope.loadNewUrl();
+        });
     };
 
     $(function () {
