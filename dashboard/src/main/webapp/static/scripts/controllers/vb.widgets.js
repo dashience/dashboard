@@ -1159,7 +1159,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         });
         $scope.$apply($scope.filters)
-        console.log($scope.filters)
     };
 
     $scope.expandWidget = function (widget) {
