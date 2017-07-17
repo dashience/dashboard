@@ -2181,7 +2181,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
             }
             var fullAggreagtionList = aggreagtionList;
-            var tableDataSource = JSON.parse(scope.dynamicTableSource)
+            var tableDataSource = JSON.parse(scope.dynamicTableSource);
             var data = {
                 url: '../dbApi/admin/dataSet/getData',
                 connectionUrl: tableDataSource.dataSourceId.connectionString,
