@@ -49,8 +49,6 @@
         width: 260px;
     }
 
-
-
     .lay-wid {
         text-align:left;
     }
@@ -275,7 +273,8 @@
 </div>
 <div ng-show="loading" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div>
-    <div class="col-md-10" ui-if="reloadAllDirective === true">
+    <div class="col-md-10">
+        <div ui-if="reloadAllDirective === true">
         <div ng-repeat="widget in widgets">
             <div ng-if="widget.chartType == 'ticker'">
                 <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
@@ -524,6 +523,7 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
     <div class="col-sm-2">
         <div class="panel panel-default">
@@ -537,13 +537,13 @@
                     <li ng-repeat="filter in filters">
                         {{filter.filterName}}
                         <ul>
-                            <li ng-repeat="listOfOption in filter.options">
+                            <li ng-repeat="option in filter.listOfOptions">
                                 <input type="checkbox" 
-                                       id="group{{$index + 1}}{{listOfOption}}" 
-                                       ng-model="select[$index + 1]" 
+                                       id="group{{$index + 1}}{{option.name}}" 
+                                       ng-model="option.status" 
                                        ng-true-value="true" 
-                                       ng-click="getSelectedFilters(listOfOption, select[$index + 1], filter.filterName)">
-                                <label for="group{{$index + 1}}{{listOfOption}}">{{listOfOption}}</label>
+                                       ng-click="getSelectedFilters(option.name, option.status, filter.filterName)">
+                                <label for="group{{$index + 1}}{{option.name}}">{{option.name}}</label>
                             </li>
                         </ul>
                     </li>

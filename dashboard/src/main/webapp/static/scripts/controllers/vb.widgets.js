@@ -27,7 +27,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $state, $window, $interval) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -291,7 +291,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     };
 
-    function getWidgetItem() {
+    $rootScope.getWidgetItem = function () {
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
@@ -313,10 +313,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 });
             });
-            $scope.widgets = widgetItems;
+            $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+                $scope.userChartColors = response;
+                var widgetColors;
+                if (response.optionValue) {
+                    widgetColors = response.optionValue.split(',');
+                }
+                widgetItems.forEach(function (value, key) {
+                    value.chartColors = widgetColors;
+                });
+                $scope.widgets = widgetItems;
+            });
         });
-    }
-    getWidgetItem();
+    };
+    $rootScope.getWidgetItem();
 
     function loadInitialWidgetColumnData(columns) {
         var data = [];
@@ -358,6 +368,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+        firstPreviewAfterEdit = 1;
+        widget.targetColors = [];
+        console.log(widget);
+        $scope.widgetId = widget.id;
+        if (widget.chartColorOption) {
+            var widgetColors = widget.chartColorOption.split(',');
+            for (var i = 0; i <= widgetColors.length; i++) {
+                if (widgetColors[i] && widgetColors[i] !== "") {
+                    widget.targetColors.push({color: widgetColors[i]});
+                }
+            }
+        }
+        console.log(widget.targetColors);
         setDefaultWidgetObj = [];
         var data = loadInitialWidgetColumnData(widget.columns);
         setDefaultWidgetObj.push({
@@ -370,6 +393,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             timeSegment: widget.timeSegment,
             productSegment: widget.productSegment,
             networkType: widget.networkType,
+            targetColors: widget.targetColors,
             dateRangeName: widget.dateRangeName,
             lastNdays: widget.lastNdays,
             lastNweeks: widget.lastNweeks,
@@ -585,6 +609,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $scope.y1Column = "";
         $scope.xColumn = "";
+        $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
@@ -646,6 +671,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             return;
         }
         $scope.y1Column = "";
+        $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
@@ -673,7 +699,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
             var getDataSetObjs = response;
-            var getDataSetPerformance = getDataSetObjs[getDataSourceType]
+            var getDataSetPerformance = getDataSetObjs[getDataSourceType];
             if (!getDataSetPerformance) {
                 return;
             }
@@ -713,11 +739,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.selectChart = function (chartType, widget) {
+        addColor = [];
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showFilter = false;
+        $scope.showColor = false;
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
         $scope.showDateRange = false;
@@ -728,12 +756,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-
         $scope.widgetObj.dataSourceId = "";
         $scope.widgetObj.dataSetId = "";
         $scope.widgetObj.timeSegment = "";
         $scope.widgetObj.productSegment = "";
         $scope.widgetObj.networkType = "";
+        $scope.widgetObj.chartColorOption = "";
+        $scope.widgetObj.targetColors = "";
         if ($scope.chartTypeName) {
             widget.columns = [];
             $scope.collectionFields.forEach(function (value, k) {
@@ -759,6 +788,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = true;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
+        $scope.showColor = false;
         $scope.hideSelectedColumn = false;
     };
 
@@ -768,6 +798,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
+        $scope.showColor = false;
         $scope.showSortBy = false;
     };
 
@@ -775,6 +806,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.chartTypeName = chartType ? chartType : widget.chartType;
         $scope.showSortBy = false;
         $scope.showPreviewChart = true;
+        $scope.showColor = false;
         $scope.showDateRange = false;
     };
 
@@ -784,6 +816,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
+        $scope.showColor = false;
         $scope.showPreviewChart = false;
     };
 
@@ -793,20 +826,53 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showFilter = false;
         $scope.showColumnDefs = false;
+        $scope.showColor = false;
         $scope.showPreviewChart = false;
     };
 
-    $scope.showPreview = function (widgetObj) {
+    $scope.showColorList = function () {
+        $scope.showColor = true;
+        $scope.showFilter = false;
+        $scope.showSortBy = false;
+        $scope.loadingColumnsGif = false;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+        $scope.showDateRange = false;
+    };
+
+    var firstPreviewAfterEdit = 1;
+    $scope.showPreview = function (widgetObj, userChartColors) {
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
         $scope.showDateRange = false;
+        $scope.showColor = false;
         $scope.chartTypeName = null;
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
+
+        var chartColors = userChartColors.optionValue;
+        console.log(chartColors);
+        if (firstPreviewAfterEdit == 1) {
+            $scope.chartColorOptionsVal = widgetObj.chartColorOption;
+        }
+        firstPreviewAfterEdit = firstPreviewAfterEdit + 1;
+        console.log("Previous color option-->" + $scope.chartColorOptionsVal);
+        if (widgetObj.targetColors) {
+            var widgetChartColor = widgetObj.targetColors.map(function (val, key) {
+                if (val) {
+                    return val.color;
+                }
+            }).join(',');
+            widgetObj.chartColorOption = widgetChartColor;
+        }
+        if (!widgetObj.chartColorOption) {
+            widgetObj.chartColorOption = chartColors;
+        }
+        console.log(widgetObj.chartColorOption);
         $scope.displayPreviewChart = widgetObj;
     };
 
@@ -870,7 +936,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }, 40);
     };
 
-    $scope.deleteWidget = function (widget, index) {                            //Delete Widget
+    $scope.targetColors = [];
+
+    $scope.deleteColorOption = function (targetColor, index) {
+        $scope.widgetObj.targetColors.splice(index, 1);
+    };
+
+    var addColor = [];
+    $scope.addColors = function (widget) {
+        console.log(addColor);
+        if (widget.targetColors) {
+            widget.targetColors.push({color: "#62cb31"});
+        } else {
+            var targetColors =
+                    {
+                        color: "#62cb31"
+                    };
+            addColor.push(targetColors);
+            widget["targetColors"] = addColor;
+        }
+    };
+
+    $scope.deleteWidget = function (widget, index) {
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
@@ -886,7 +973,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.pageRefresh = function () {          //Page Refresh
-        getWidgetItem();
+        $rootScope.getWidgetItem();
     };
 
     $scope.moveWidget = function (list, from, to) {
@@ -963,12 +1050,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.showReportWidgetName = false;
-    $scope.reportEmptyLogo = "static/img/logos/deeta-logo.png"
+    $scope.reportEmptyLogo = "static/img/logos/deeta-logo.png";
     $scope.selectReport = function (reportWidget) {
         $scope.hideReportsTable = true;
 //        $scope.loadReportsTable = false;
         $scope.showReportWidgetName = false;
-        $scope.reportWidgetTitle = []
+        $scope.reportWidgetTitle = [];
         $scope.reportLogo = reportWidget.logo;
         $scope.reportDescription = reportWidget.description;
         $http.get("admin/report/reportWidget/" + reportWidget.id + "?locationId=" + $stateParams.accountId).success(function (response) {
@@ -979,7 +1066,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.showReportEmptyMessage = false;
             } else {
                 $scope.showReportEmptyMessage = true;
-                $scope.reportEmptyMessage = "No Data Found"
+                $scope.reportEmptyMessage = "No Data Found";
             }
         });
     };
@@ -1012,7 +1099,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.filters = [];
     $http.get("static/datas/filters/filters.json").success(function (response) {
         $scope.filters = response.filter;
+        $scope.filters.forEach(function (val, key) {
+            var listOfOptions = [];
+            for (var i = 0; i <= val.options.length; i++) {
+                if (val.options[i]) {
+                    listOfOptions.push({name: val.options[i], status: false})
+                }
+                val.listOfOptions = listOfOptions;
+            }
+        })
     });
+
     var selectedFilterList = [];
 
     $scope.getSelectedFilters = function (option, status, filterName) {
@@ -1040,7 +1137,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
         var urlFilterParameter = [];
         angular.forEach(selectedFilterList, function (value, key) {
-            urlFilterParameter.push(value.filterName + ":" + [value.option]);
+            urlFilterParameter.push(value);
         });
         $scope.widgets.forEach(function (val, key) {
             val.filterUrlParameter = urlFilterParameter;
@@ -1051,10 +1148,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.getChartFilterItems = function (filterBy) {
+        console.log(filterBy)
         var getSelectedFilter = filterBy;
         $scope.filters.forEach(function (val, k) {
-            val.option.indexOf(getSelectedFilter.name)
+            $.grep(val.listOfOptions, function (value) {
+                if (value.name === getSelectedFilter.name) {
+                    value.status = true;
+                }
+                ;
+            });
         });
+        $scope.$apply($scope.filters)
+        console.log($scope.filters)
     };
 
     $scope.expandWidget = function (widget) {
@@ -1137,15 +1242,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dispHideBuilder = true;
         angular.forEach($scope.columnY2Axis, function (val, key) {
             angular.forEach(y1data, function (value, key) {
-                console.log(value.fieldName);
                 if (val.fieldName === value.fieldName) {
                     var index = $scope.columnY2Axis.indexOf(val);
                     $scope.columnY2Axis.splice(index, 1);
                 }
             });
         });
-        console.log($scope.columnY2Axis);
-        console.log($scope.collectionFields);
         angular.forEach(y1data, function (value, key) {
             if (!value) {
                 return;
@@ -1181,14 +1283,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dispHideBuilder = true;
         angular.forEach($scope.columnY1Axis, function (val, key) {
             angular.forEach(y2data, function (value, key) {
-                console.log(value.fieldName);
                 if (val.fieldName === value.fieldName) {
                     var index = $scope.columnY1Axis.indexOf(val);
                     $scope.columnY1Axis.splice(index, 1);
                 }
             });
         });
-        console.log($scope.columnY1Axis);
         angular.forEach(y2data, function (value, key) {
             if (!value) {
                 return;
@@ -1218,20 +1318,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
-        console.log(column)
+        console.log(column);
 //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
         var index = $scope.columnY1Axis.indexOf(column);
-        console.log("Index --> " + index);
         if (index == -1) {
             $scope.columnY1Axis.push(column);
         }
-        console.log($scope.columnY1Axis);
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY1Axis(widgetObj, yAxisItems);
 //        } else {
-        var getIndex = widgetObj.columns.indexOf(column)
-        widgetObj.columns.splice(getIndex, 1)
+        var getIndex = widgetObj.columns.indexOf(column);
+        widgetObj.columns.splice(getIndex, 1);
 //            angular.forEach(widgetObj.columns, function (val, key) {
 //                if (val.fieldName == column.fieldName) {
 //                    val.yAxis = null;
@@ -1243,15 +1341,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        if (yAxisItems.length > 0) {
         $scope.columnY1Axis.push(column);
         var index = $scope.columnY2Axis.indexOf(column);
-        console.log("Index --> " + index);
         if (index == -1) {
             $scope.columnY2Axis.push(column);
         }
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY2Axis(widgetObj, yAxisItems);
 //        } else {
-        var getIndex = widgetObj.columns.indexOf(column)
-        widgetObj.columns.splice(getIndex, 1)
+        var getIndex = widgetObj.columns.indexOf(column);
+        widgetObj.columns.splice(getIndex, 1);
 //            angular.forEach(widgetObj.columns, function (val, key) {
 //                if (val.fieldName == column.fieldName) {
 //                    val.yAxis = null;
@@ -1285,8 +1382,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         $scope.ticker(widgetObj, tickerItem);
-        console.log(column)
-        console.log(widgetObj.columns)
         //var getIndex = widgetObj.columns.indexOf(column)
         // console.log(getIndex)
         //widgetObj.columns.splice(getIndex, 1)
@@ -1308,7 +1403,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     return exists;
                 });
                 if (checkObj == false) {
-                    widget.columns.push(value)
+                    widget.columns.push(value);
                 }
             });
         }
@@ -1321,8 +1416,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByFunnel = function (widget, removeItem, funnelItem) {
         $scope.dispHideBuilder = true;
-        var getIndex = widget.columns.indexOf(removeItem)
-        widget.columns.splice(getIndex, 1)
+        var getIndex = widget.columns.indexOf(removeItem);
+        widget.columns.splice(getIndex, 1);
         //$scope.funnel(widget, funnelItem);   
         $timeout(function () {
             $scope.queryBuilderList = widget;
@@ -1690,15 +1785,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.allAccount = "";
+        $scope.widgetObj.chartColorOption = "";
+        $scope.widgetObj.targetColors = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $scope.showSortBy = false;
+        $scope.showColor = false;
     }
 
     $scope.save = function (widget) {
+        addColor = [];
+        var widgetColor = "";
+        if (widget.targetColors) {
+            widgetColor = widget.targetColors.map(function (value, key) {
+                if (value) {
+                    return value.color;
+                }
+            }).join(',');
+        }
+
         if (widget.chartType != 'text') {
             try {
                 if ($('.query-builder').queryBuilder('getRules')) {
@@ -1803,7 +1911,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             timeSegment: widget.timeSegment ? widget.timeSegment.type : null,
             productSegment: widget.productSegment ? widget.productSegment.type : null,
             networkType: widget.networkType ? widget.networkType.type : null,
-            createdBy: widget.createdBy
+            createdBy: widget.createdBy,
+            chartColorOption: widgetColor
         };
 
         clearEditAllWidgetData();
@@ -1837,6 +1946,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.chartTypeName = "";
             widget.id = data.id;
             widget.chartType = data.chartType;
+            widget.chartColorOption = data.chartColorOption;
             widget.widgetTitle = data.widgetTitle;
             widget.dataSetId = dataSetObj;
             widget.dataSourceId = dataSourceObj;
@@ -1855,7 +1965,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget = data;
             $scope.derivedColumns = [];
             if (!data.id) {
-                $scope.widgets.push(response)
+                $scope.widgets.push(response);
             }
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
@@ -1895,10 +2005,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $('.showEditWidget').modal('hide');
         });
     };
-
+    var tempTargetColors = [];
     $scope.cancel = function (widgetObj) {
-        console.log(widgetObj);
-
+        addColor = [];
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
@@ -1919,13 +2028,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.allAccount = val.accountId;
         });
         $scope.chartTypeName = "";
-        $scope.xColumn = ""
-        $scope.tickerItem = ""
-        $scope.funnelItem = ""
-        $scope.y1Column = ""
-        $scope.y2Column = ""
-        $scope.selectPieChartYAxis = ""
-        $scope.selectPieChartXAxis = ""
+        $scope.xColumn = "";
+        $scope.tickerItem = "";
+        $scope.funnelItem = "";
+        $scope.y1Column = "";
+        $scope.y2Column = "";
+        $scope.selectPieChartYAxis = "";
+        $scope.selectPieChartXAxis = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.expression = "";
         $scope.dataSetColumn.fieldType = "";
@@ -1936,10 +2045,49 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
+        $scope.showColor = false;
         $scope.showDateRange = false;
+        $scope.widgetObj.chartColorOption = "";
+        $scope.widgetObj.targetColors = "";
+        console.log($scope.chartColorOptionsVal);
+        if ($scope.chartColorOptionsVal) {
+            $scope.widgetObj.chartColorOption = $scope.chartColorOptionsVal;
+            var widgetTargetColors = $scope.chartColorOptionsVal.split(",");
+            for (var i = 0; i < widgetTargetColors.length; i++) {
+                var targetColors = {
+                    color: widgetTargetColors[i]
+                };
+                tempTargetColors.push(targetColors);
+            }
+            $scope.widgetObj["targetColors"] = tempTargetColors;
+        }
     };
 });
 
+app.directive('uiColorpicker', function () {
+    return {
+        restrict: 'AE',
+        require: 'ngModel',
+        scope: false,
+        replace: true,
+        template: "<span><input class='input-small' /></span>",
+        link: function (scope, element, attrs, ngModel) {
+            var input = element.find('input');
+            var options = angular.extend({
+                color: ngModel.$viewValue,
+                change: function (color) {
+                    scope.$apply(function () {
+                        ngModel.$setViewValue(color.toHexString());
+                    });
+                }
+            }, scope.$eval(attrs.options));
+            ngModel.$render = function () {
+                input.spectrum('set', ngModel.$viewValue || '');
+            };
+            input.spectrum(options);
+        }
+    };
+});
 
 app.directive('dateRangePicker', function () {
     return{
@@ -2128,7 +2276,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     }
                 });
                 return zeroRow;
-            }
+            };
 
             scope.format = function (column, value) {
                 if (!value) {
@@ -2226,12 +2374,12 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 setNetworkType = widgetData.networkType;
             }
 
-//            var filters;
-//            if (widgetData.filterUrlParameter) {
-//                filters = widgetData.filterUrlParameter.join("")
-//            } else {
-//                filters = "";
-//            }
+            var dashboardFilter;
+            if (widgetData.filterUrlParameter) {
+                dashboardFilter = JSON.stringify(widgetData.filterUrlParameter)
+            } else {
+                dashboardFilter = ""
+            }
 
             scope.refreshTable = function () {
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
@@ -2242,7 +2390,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
-                        "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                        "&dashboard_filter=" + dashboardFilter +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
@@ -2624,12 +2772,12 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 setNetworkType = getWidgetObj.networkType;
             }
 
-//            var filters;
-//            if (getWidgetObj.filterUrlParameter) {
-//                filters = getWidgetObj.filterUrlParameter.join("")
-//            } else {
-//                filters = "";
-//            }
+            var dashboardFilter;
+            if (getWidgetObj.filterUrlParameter) {
+                dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+            } else {
+                dashboardFilter = "";
+            }
 
             scope.refreshTicker = function () {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
@@ -2647,7 +2795,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
-                        "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                        "&dashboard_filter=" + dashboardFilter +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
@@ -2862,6 +3010,17 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+
+
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -2883,12 +3042,13 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-//                var filters;
-//                if (getWidgetObj.filterUrlParameter) {
-//                    filters = getWidgetObj.filterUrlParameter.join("")
-//                } else {
-//                    filters = "";
-//                }
+
+                var dashboardFilter;
+                if (getWidgetObj.filterUrlParameter) {
+                    dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+                } else {
+                    dashboardFilter = ""
+                }
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
@@ -2900,10 +3060,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                            "&dashboard_filter=" + dashboardFilter +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
-                            "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&widgetId=' + scope.widgetId +
                             '&url=' + lineChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
@@ -2993,8 +3152,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3174,7 +3332,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     }
                 });
                 return $filter('orderBy')(list, fieldsOrder);
-            }
+            };
 
             function maximumRecord(maxValue, list) {
                 var maxData;
@@ -3198,6 +3356,13 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     dataSourcePassword = '';
                 }
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
 
                 var setProductSegment;
                 var setTimeSegment;
@@ -3221,12 +3386,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     setNetworkType = getWidgetObj.networkType;
                 }
 
-//                var filters;
-//                if (getWidgetObj.filterUrlParameter) {
-//                    filters = getWidgetObj.filterUrlParameter.join("")
-//                } else {
-//                    filters = "";
-//                }
+                var dashboardFilter;
+                if (getWidgetObj.filterUrlParameter) {
+                    dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+                } else {
+                    dashboardFilter = ""
+                }
 
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
@@ -3241,7 +3406,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                            "&dashboard_filter=" + dashboardFilter +
                             '&username=' + barChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3329,8 +3494,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3354,7 +3518,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             });
                         }
                     });
-                }
+                };
                 scope.setBarChartFn({barFn: scope.refreshBarChart});
                 scope.refreshBarChart();
             }
@@ -3527,6 +3691,15 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+
                 var setWidgetAccountId;
                 var setProductSegment;
                 var setTimeSegment;
@@ -3549,14 +3722,12 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-
-//                var filters;
-//                if (getWidgetObj.filterUrlParameter) {
-//                    filters = getWidgetObj.filterUrlParameter.join("")
-//                } else {
-//                    filters = "";
-//                }
-
+                var dashboardFilter;
+                if (getWidgetObj.filterUrlParameter) {
+                    dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+                } else {
+                    dashboardFilter = ""
+                }
                 scope.refreshPieChart = function () {
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
@@ -3568,8 +3739,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             "&endDate=" + $stateParams.endDate +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
-                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
-                            "&product=" + getWidgetObj.product +
+                            "&networkType=" + setNetworkType +
+                            "&dashboard_filter=" + dashboardFilter +
                             '&username=' + pieChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3641,7 +3812,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: 50,
+                                    left: 50
                                 },
                                 bindto: element[0],
                                 data: {
@@ -3652,8 +3823,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     type: 'pie'
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -3854,9 +4024,15 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     dataSourcePassword = '';
                 }
-
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                console.log(getWidgetObj)
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -3878,13 +4054,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-//                var filters;
-//                console.log(getWidgetObj)
-//                if (getWidgetObj.filterUrlParameter) {
-//                    filters = getWidgetObj.filterUrlParameter;
-//                } else {
-//                    filters = "";
-//                }
+
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
@@ -3898,7 +4068,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboard_filter=" + getWidgetObj.filterUrlParameter +
+                            "&dashboard_filter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
                             '&username=' + areaChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3984,8 +4154,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     }
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -4193,6 +4362,15 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -4214,12 +4392,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-//                var filters;
-//                if (getWidgetObj.filterUrlParameter) {
-//                    filters = getWidgetObj.filterUrlParameter.join("")
-//                } else {
-//                    filters = "";
-//                }
 
                 scope.refreshStackedBarChart = function () {
                     $http.get(url + 'connectionUrl=' + stackedBarChartDataSource.dataSourceId.connectionString +
@@ -4234,7 +4406,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                            "&dashboard_filter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
                             '&username=' + stackedBarChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -4323,8 +4495,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     types: chartCombinationtypes
                                 },
                                 color: {
-                                    pattern: ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16']
-
+                                    pattern: chartColors ? chartColors : defaultColors
                                 },
                                 tooltip: {show: false},
                                 axis: {
@@ -4412,7 +4583,15 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                console.log(getWidgetObj)
+
+
+                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
 
                 var setProductSegment;
                 var setTimeSegment;
@@ -4435,12 +4614,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-//                var filters;
-//                if (getWidgetObj.filterUrlParameter) {
-//                    filters = getWidgetObj.filterUrlParameter;
-//                } else {
-//                    filters = "";
-//                }
+
                 scope.refreshFunnel = function () {
                     $http.get(url + 'connectionUrl=' + funnelDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + funnelDataSource.id +
@@ -4453,7 +4627,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                            "&dashboard_filter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
                             '&username=' + funnelDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.funnelId +
@@ -4517,7 +4691,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
 
                         function funnelArrayObjects(name, value) {
                             var funnelObject = [];
-                            var funnelColor = ['#919191', '#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                            var funnelColor = chartColors ? chartColors : defaultColors;
                             var len = name.length;
                             for (var i = 0; i < len; i++) {
                                 funnelObject.push([name[i], value[i], funnelColor[i]]);
@@ -4538,7 +4712,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             var funnel = new D3Funnel(scope.funnelCharts, options);
                             funnel.draw(element[0]);
                         }
-
                         drawChart();
                         $(window).on("resize", function () {
                             drawChart();
