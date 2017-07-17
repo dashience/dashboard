@@ -1053,7 +1053,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.getChartFilterItems = function (filterBy) {
         var getSelectedFilter = filterBy;
         $scope.filters.forEach(function (val, k) {
-            val.option.indexOf(getSelectedFilter.name)
+            val.option.indexOf(getSelectedFilter.name);
         });
     };
 
@@ -1308,8 +1308,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     return exists;
                 });
                 if (checkObj == false) {
-                    widget.columns.push(value)
-                }
+                    widget.columns.push(value);
+                };
             });
         }
         $scope.funnelItem = widget.columns;
@@ -1321,8 +1321,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByFunnel = function (widget, removeItem, funnelItem) {
         $scope.dispHideBuilder = true;
-        var getIndex = widget.columns.indexOf(removeItem)
-        widget.columns.splice(getIndex, 1)
+        var getIndex = widget.columns.indexOf(removeItem);
+        widget.columns.splice(getIndex, 1);
         //$scope.funnel(widget, funnelItem);   
         $timeout(function () {
             $scope.queryBuilderList = widget;
@@ -1390,7 +1390,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     ;
     //Derived Column
     $scope.showDerived = false;
-    $scope.dataSetColumn = {}
+    $scope.dataSetColumn = {};
     $scope.addDerived = function () {
         $scope.dataSetColumn = {};
         $scope.showDerived = true;
@@ -2242,7 +2242,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
-                        "&dashboard_filter:" + getWidgetObj.filterUrlParameter +
+                        "&dashboard_filter:" + widgetData.filterUrlParameter +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
