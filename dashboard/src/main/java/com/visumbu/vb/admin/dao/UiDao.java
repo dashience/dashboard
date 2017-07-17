@@ -473,6 +473,14 @@ public class UiDao extends BaseDao {
         return tabWidget;
     }
 
+    public List<DataSet> getDataSetByDataSourceId(Integer id) {
+        String queryStr = "select d from DataSet d where d.dataSourceId.id = :dataSourceId";
+//        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceId", id);
+        return query.list();
+    }
+    
     public void removeDsFromDataSet(Integer id) {
         String queryStr = "delete DataSet d where d.dataSourceId.id = :dataSourceId";
 //        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
@@ -498,7 +506,13 @@ public class UiDao extends BaseDao {
 
     public DataSource deleteDataSource(Integer id) {
         removeDsFromWidget(id);
-        removeDsFromDataSet(id);
+        List<DataSet> dataSetList = getDataSetByDataSourceId(id);
+        for (Iterator<DataSet> iterator = dataSetList.iterator(); iterator.hasNext();) {
+            DataSet dataSet = iterator.next();
+            deleteDataSet(dataSet.getId());
+        }
+//        removeDsFromDataSet(id);
+
         String queryStr = "delete DataSource d where d.id = :dataSourceId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSourceId", id);

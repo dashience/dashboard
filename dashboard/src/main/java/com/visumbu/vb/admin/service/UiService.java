@@ -1202,9 +1202,8 @@ public class UiService {
     public UserPreferences addChartColor(UserPreferences userPreferences) {
         uiDao.saveOrUpdate(userPreferences);
         return userPreferences;
-    };
+    }
 
-    // adeed by subhadra for chart color
     public UserPreferences getChartColorByUserId(VbUser vbUser) {
         return uiDao.getChartColorByUserId(vbUser);
     }
