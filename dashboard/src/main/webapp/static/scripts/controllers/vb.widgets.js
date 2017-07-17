@@ -27,7 +27,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $state, $window, $interval) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $state, $window, $interval, widgetService) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -78,7 +78,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
-
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartTypes = response;
     });
@@ -378,7 +377,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
-        if (!widget.allAccount) {
+        if (!widget.accountId) {
             widget.allAccount = 1;
         }
         $scope.widgetObj = widget;
@@ -870,9 +869,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.deleteWidget = function (widget, index) {                            //Delete Widget
-        $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
+        var url = 'admin/ui/dbWidget/';
+        var widgetId = widget.id;
+        widgetService.delete(url, widgetId).then(function (response) {
+            console.log(response);
+            console.log(response.data)
             $scope.widgets.splice(index, 1);
         });
+//        $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
+//            $scope.widgets.splice(index, 1);
+//        });
     };
 
     $scope.widgetDuplicate = function (widgetData) {
@@ -1343,42 +1349,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showDerived = false;
     $scope.dataSetColumn = {}
     $scope.addDerived = function () {
-        $scope.dataSetColumn = "";
+        $scope.dataSetColumn = {};
         $scope.showDerived = true;
         $scope.text = "";
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
+        $scope.text = "";
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
-        $scope.text = "";
     };
     //Edit Derived
-    $scope.editDerivedColumn = function (collectionField, widgetObj) {
-        $scope.showDerived = false;
-        console.log(collectionField);
-        $scope.dataSetColumn = {};
-        if (collectionField.userId != null) {
-            $scope.showDerived = true;
-            var data = {
-                agregationFunction: collectionField.agregationFunction,
-                functionName: collectionField.functionName,
-                groupPriority: collectionField.groupPriority,
-                id: collectionField.id,
-                sortOrder: collectionField.sortOrder,
-                sortPriority: collectionField.sortPriority,
-                status: collectionField.status,
-                expression: collectionField.expression,
-                fieldType: collectionField.type,
-                fieldName: collectionField.fieldName,
-                displayName: collectionField.displayName,
-                userId: collectionField.userId,
-                displayFormat: collectionField.displayFormat,
-                widgetId: widgetObj.id
-            };
-            $scope.dataSetColumn = data;
-            $scope.text = collectionField.expression;
-        }
-    };
+//    $scope.editDerivedColumn = function (collectionField, widgetObj) {
+//        $scope.showDerived = false;
+//        console.log(collectionField);
+//        $scope.dataSetColumn = {};
+//        if (collectionField.userId != null) {
+//            $scope.showDerived = true;
+//            var data = {
+//                agregationFunction: collectionField.agregationFunction,
+//                functionName: collectionField.functionName,
+//                groupPriority: collectionField.groupPriority,
+//                id: collectionField.id,
+//                sortOrder: collectionField.sortOrder,
+//                sortPriority: collectionField.sortPriority,
+//                status: collectionField.status,
+//                expression: collectionField.expression,
+//                fieldType: collectionField.type,
+//                fieldName: collectionField.fieldName,
+//                displayName: collectionField.displayName,
+//                userId: collectionField.userId,
+//                displayFormat: collectionField.displayFormat,
+//                widgetId: widgetObj.id
+//            };
+//            $scope.dataSetColumn = data;
+//            $scope.text = collectionField.expression;
+//        }
+//    };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
         $scope.text = text;
@@ -1461,7 +1467,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         }
     };
-    $scope.text = "";
     //Auto Complete
     $scope.text = "";
     $scope.config = {
@@ -1483,7 +1488,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 && element.fieldName.length > match[1].length;
                     }).map(function (element) {
                         return {
-                            display: element.displayName, // This gets displayed in the dropdown
+                            display: element.fieldName, // This gets displayed in the dropdown
                             item: element // This will get passed to onSelect
                         };
                     });
@@ -1641,7 +1646,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
         $scope.widgetObj.customStartDate = "";
-        $scope.widgetObj.allAccount = 1;
+        $scope.widgetObj.allAccount = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -1801,12 +1806,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.lastNweeks = data.lastNweeks;
             widget.lastNmonths = data.lastNmonths;
             widget.lastNyears = data.lastNyears;
+            widget.allAccount = data.accountId;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
             widget = data;
             $scope.derivedColumns = [];
             if (!data.id) {
-                $scope.widgets.push(response)
+                $scope.widgets.push(response.data)
             }
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
@@ -1867,13 +1873,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.lastNweeks = val.lastNweeks;
             $scope.widgetObj.lastNmonths = val.lastNmonths;
             $scope.widgetObj.lastNyears = val.lastNyears;
-            $scope.widgetObj.allAccount = val.accountId ? val.accountId.id : 1;
+            $scope.widgetObj.allAccount = val.accountId;
         });
-        if ($scope.widgetObj.accountId === null) {
-            $scope.widgetObj.allAccount = true;
-        } else {
-            $scope.widgetObj.allAccount = false;
-        }
         $scope.chartTypeName = "";
         $scope.xColumn = ""
         $scope.tickerItem = ""
@@ -4282,7 +4283,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                     return temp;
                 }
                 if (column.displayFormat) {
-                    if (Number.isNaN(value)) {
+                    if (isNaN(value)) {
                         var temp = 0;
                         return temp;
                     }

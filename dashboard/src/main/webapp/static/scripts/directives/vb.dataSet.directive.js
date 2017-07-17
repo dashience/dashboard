@@ -385,23 +385,23 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         return "-";
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
-                        // return d3.format(column.displayFormat)(value / 100);
+                         return d3.format(column.displayFormat)(value / 100);
                     }
                     return d3.format(column.displayFormat)(value);
                 }
                 return value;
             };
-            var setTimeSegment, setProductSegment;
-            if (dataSourcePath.timeSegment) {
-                setTimeSegment = dataSourcePath.timeSegment.type;
-            } else {
-                setTimeSegment = 'none';
-            }
-            if (dataSourcePath.productSegment) {
-                setProductSegment = dataSourcePath.productSegment.type;
-            } else {
-                setProductSegment = 'none';
-            }
+//            var setTimeSegment, setProductSegment;
+//            if (dataSourcePath.timeSegment) {
+//                setTimeSegment = dataSourcePath.timeSegment.type;
+//            } else {
+//                setTimeSegment = 'none';
+//            }
+//            if (dataSourcePath.productSegment) {
+//                setProductSegment = dataSourcePath.productSegment.type;
+//            } else {
+//                setProductSegment = 'none';
+//            }
             var connectionUrl = null;
             var driver = null;
             var dataSourceType = null;
@@ -414,6 +414,26 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSourceType = dataSourcePath.dataSourceId.dataSourceType;
                 userName = dataSourcePath.dataSourceId.userName;
             }
+            var setProductSegment;
+            var setTimeSegment;
+            var setNetworkType;
+            if (dataSourcePath.productSegment && dataSourcePath.productSegment.type) {
+                setProductSegment = dataSourcePath.productSegment.type;
+            } else {
+                setProductSegment = dataSourcePath.productSegment;
+            }
+
+            if (dataSourcePath.timeSegment && dataSourcePath.timeSegment.type) {
+                setTimeSegment = dataSourcePath.timeSegment.type;
+            } else {
+                setTimeSegment = dataSourcePath.timeSegment;
+            }
+
+            if (dataSourcePath.networkType && dataSourcePath.networkType.type) {
+                setNetworkType = dataSourcePath.networkType.type;
+            } else {
+                setNetworkType = dataSourcePath.networkType;
+            }
             scope.dataSetItems = function () {
                 $http.get(url + 'connectionUrl=' + connectionUrl +
                         "&dataSourceId=" + dataSourceId +
@@ -422,7 +442,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         "&accountId=" + $stateParams.accountId +
                         "&dataSetReportName=" + dataSourcePath.reportName +
                         "&timeSegment=" + setTimeSegment +
-                        "&filter=" + dataSourcePath.networkType +
+                        "&filter=" + setNetworkType +
                         "&productSegment=" + setProductSegment +
                         "&driver=" + driver +
                         "&dataSourceType=" + dataSourceType +
@@ -783,7 +803,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                                         && element.fieldName.length > match[1].length;
                             }).map(function (element) {
                                 return {
-                                    display: element.displayName, // This gets displayed in the dropdown
+                                    display: element.fieldName, // This gets displayed in the dropdown
                                     item: element // This will get passed to onSelect
                                 };
                             });

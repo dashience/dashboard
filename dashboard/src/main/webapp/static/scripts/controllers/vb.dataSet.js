@@ -2056,7 +2056,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.getDataSetColDefs = function (dataSetColumn) {
         $scope.columnsHeaderDefs = dataSetColumn;
     };
-    
+
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
         if (dataSetList.timeSegment != null) {
@@ -2080,9 +2080,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             var getDataSetId = response.id;
             var data = $scope.columnsHeaderDefs;
-            $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
-                getItems();
-            });
+            var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
+            if (gatDataSourceType != "sql") {
+                $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
+                    getItems();
+                });
+            }
         });
         $scope.dataSet = "";
         $scope.showPreviewChart = false;

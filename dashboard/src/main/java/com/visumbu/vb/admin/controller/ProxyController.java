@@ -398,7 +398,7 @@ public class ProxyController {
                 joinDataSetTwoMap.put("data", dataWithDerivedColumns);
             }
         }
-        Integer secondDataSetAppender = new Long(new Date().getTime() / 100000).intValue();
+        Integer secondDataSetAppender = dataSetTwo.getId(); //new Long(new Date().getTime() / 100000).intValue();
         if (!operationType.equalsIgnoreCase("union")) {
             for (Iterator<Map<String, Object>> iterator = dataSetTwoList.iterator(); iterator.hasNext();) {
                 Map<String, Object> dataMap = iterator.next();
