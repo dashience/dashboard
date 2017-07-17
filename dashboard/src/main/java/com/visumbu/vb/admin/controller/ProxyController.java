@@ -494,6 +494,8 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getTwitterData(request, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
+        } else if (dataSourceType.equalsIgnoreCase("join")) {
+            returnMap = getJoinData(request, httpRequest, response, dataSetIdInt);
         }
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
         List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
