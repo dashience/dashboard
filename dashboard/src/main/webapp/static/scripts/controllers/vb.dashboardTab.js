@@ -48,7 +48,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             templateId: template.id
         };
 
-        $http({method: 'POST', url: 'admin/template/productAccountUserTemplate', data: data})
+        $http({method: 'POST', url: 'admin/template/productAccountUserTemplate', data: data});
     };
 
     //product tabs
