@@ -128,7 +128,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.joinDataSetList = response;
         });
     };
-    var joinDataSetId = null;
+    var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
     $scope.loadingResult = false;
@@ -189,6 +189,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.cancelJoinDataSet = function () {
         $scope.joinDataSetColumn = "";
+        joinDataSetId = "";
 //        $scope.dataSetColumn = "";
         $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
