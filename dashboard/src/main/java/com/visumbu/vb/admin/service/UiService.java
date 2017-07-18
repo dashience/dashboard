@@ -1254,4 +1254,8 @@ public class UiService {
         }
         return dataSetColumns;
     }
+
+    public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
+        return uiDao.getJoinDataSetById(joinDataSetId);
+    }
 }

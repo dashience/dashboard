@@ -169,25 +169,25 @@ public class ProxyController {
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
-                DataSet dataSet = uiService.getDataSetById(dataSetIdInt);
-                if (dataSet.getJoinDataSetId() != null) {
-                    joinDataSetIdStr = dataSet.getJoinDataSetId().getId() + "";
-                }
+//                DataSet dataSet = uiService.getDataSetById(dataSetIdInt);
+//                if (dataSet.getJoinDataSetId() != null) {
+//                    joinDataSetIdStr = dataSet.getJoinDataSetId().getId() + "";
+//                }
             } catch (NumberFormatException e) {
 
             }
         }
-
-        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
-            try {
-                Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
-                returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
-            } catch (NumberFormatException e) {
-
-            }
-        } else {
-            returnMap = getData(valueMap, request, response);
-        }
+//
+//        if (joinDataSetIdStr != null && !joinDataSetIdStr.isEmpty() && !joinDataSetIdStr.equalsIgnoreCase("null") && (dataSourceType == null || dataSourceType.isEmpty() || dataSourceType.equalsIgnoreCase("null"))) {
+//            try {
+//                Integer joinDataSetIdInt = Integer.parseInt(joinDataSetIdStr);
+//                returnMap = getJoinData(valueMap, request, response, joinDataSetIdInt);
+//            } catch (NumberFormatException e) {
+//
+//            }
+//        } else {
+        returnMap = getData(valueMap, request, response);
+//        }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
 
         updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt);
@@ -282,7 +282,9 @@ public class ProxyController {
 
     public MultiValueMap<String, String> getRequest(DataSet dataSet, MultiValueMap valueMap) {
         MultiValueMap<String, String> joinValueMap = new LinkedMultiValueMap<>();
-        joinValueMap.put("dataSetReportName", Arrays.asList(dataSet.getReportName()));
+        if (dataSet.getReportName() != null) {
+            joinValueMap.put("dataSetReportName", Arrays.asList(dataSet.getReportName()));
+        }
         joinValueMap.put("dataSetId", Arrays.asList(dataSet.getId() + ""));
         if (dataSet.getJoinDataSetId() != null) {
             joinValueMap.put("joinDataSetId", Arrays.asList(dataSet.getJoinDataSetId().getId() + ""));
@@ -317,6 +319,130 @@ public class ProxyController {
         return joinValueMap;
     }
 
+    public List<Map<String, Object>> joinData(List dataSet1, List dataSet2, String joinType, List<String> mappings) {
+        List<Map<String, Object>> joinData = new ArrayList<>();
+        if (joinType.equalsIgnoreCase("inner")) {
+            joinData = innerJoin(dataSet1, dataSet2, mappings);
+        } else if (joinType.equalsIgnoreCase("left")) {
+            joinData = leftJoin(dataSet1, dataSet2, mappings);
+        } else if (joinType.equalsIgnoreCase("right")) {
+            joinData = rightJoin(dataSet1, dataSet2, mappings);
+        } else if (joinType.equalsIgnoreCase("union")) {
+            joinData = union(dataSet1, dataSet2, mappings);
+        }
+        return joinData;
+    }
+
+    public Map getJoinDataSet(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, Integer dataSetId) {
+        DataSet dataSet = null;
+        DataSet dataSetIdFirst = null;
+        DataSet dataSetIdSecond = null;
+        JoinDataSet joinDataSet = null;
+        if (dataSetId == null) {
+            String joinDataSetId = getFromMultiValueMap(valueMap, "joinDataSetId");
+            System.out.println(joinDataSetId);
+            if (!isNullOrEmpty(joinDataSetId)) {
+                joinDataSet = uiService.getJoinDataSetById(Integer.parseInt(joinDataSetId));
+                System.out.println(joinDataSet);
+            }
+        } else {
+            dataSet = uiService.getDataSetById(dataSetId);
+            System.out.println(dataSet);
+            if (!dataSet.getDataSourceId().getDataSourceType().equalsIgnoreCase("join")) {
+                return getData(valueMap, request, response);
+            }
+            joinDataSet = dataSet.getJoinDataSetId();
+        }
+        if (joinDataSet != null) {
+            dataSetIdFirst = joinDataSet.getDataSetIdFirst();
+            dataSetIdSecond = joinDataSet.getDataSetIdSecond();
+            String operationType = joinDataSet.getOperationType();
+            return getJoinDataSet(joinDataSet.getId(), dataSetIdFirst, dataSetIdSecond, operationType, valueMap, request, response);
+        }
+        return null;
+    }
+
+    public Map getJoinDataSet(Integer joinDataSetId, DataSet dataSetIdFirst, DataSet dataSetIdSecond, String operationType, MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response) {
+        String userIdStr = getFromMultiValueMap(valueMap, "userId");
+
+        Integer userIdInt = null;
+        if (userIdStr != null) {
+            try {
+                userIdInt = Integer.parseInt(userIdStr);
+            } catch (NumberFormatException e) {
+
+            }
+        }
+        MultiValueMap<String, String> request1 = getRequest(dataSetIdFirst, valueMap);
+        MultiValueMap<String, String> request2 = getRequest(dataSetIdSecond, valueMap);
+        Map dataMap1 = getJoinDataSet(request1, request, response, dataSetIdFirst.getId());
+        Map dataMap2 = getJoinDataSet(request2, request, response, dataSetIdSecond.getId());
+        List<Map<String, Object>> dataList1 = (List<Map<String, Object>>) dataMap1.get("data");
+        dataList1 = addDerivedColumnsToDataSet(dataSetIdFirst.getId(), userIdInt, dataList1, request1, request, response);
+
+        List<Map<String, Object>> dataList2 = (List<Map<String, Object>>) dataMap2.get("data");
+        dataList2 = addDerivedColumnsToDataSet(dataSetIdSecond.getId(), userIdInt, dataList2, request2, request, response);
+
+        Integer secondDataSetAppender = dataSetIdSecond.getId();
+        if (!operationType.equalsIgnoreCase("union")) {
+            Set<String> columnSet = dataList1.get(0).keySet();
+            for (Iterator<Map<String, Object>> iterator = dataList2.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                try {
+                    dataMap.entrySet().forEach((entry) -> {
+                        String key = entry.getKey();
+                        Object value = entry.getValue();
+                        for (String columnStr : columnSet) {
+                            if (key.equalsIgnoreCase(columnStr)) {
+                                dataMap.remove(key);
+                                dataMap.put(key + secondDataSetAppender, value);
+                                System.out.println("dataMap ---> " + dataMap);
+                                break;
+                            }
+                        }
+                    });
+                } catch (ConcurrentModificationException e) {
+                }
+            }
+        }
+
+
+        List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetId);
+        List<String> mappings = new ArrayList<>();
+
+        Map<String, Object> dataSetTwoMap = dataList2.get(0);
+        for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
+            JoinDataSetCondition joinDataSetCondition = iterator.next();
+            String concatCondition = null;
+            if (dataSetTwoMap.get(joinDataSetCondition.getConditionFieldSecond()) != null) {
+                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond();
+            } else {
+                concatCondition = "" + joinDataSetCondition.getConditionFieldFirst() + "," + joinDataSetCondition.getConditionFieldSecond() + secondDataSetAppender;
+            }
+            if (joinDataSetCondition.getColumnName() != null) {
+                concatCondition += "," + joinDataSetCondition.getColumnName();
+            }
+            mappings.add(concatCondition);
+        }
+        System.out.println("MAPPINGS " + mappings);
+        List<Map<String, Object>> joinData = joinData(dataList1, dataList2, operationType, mappings);
+        Map returnMap = new HashMap();
+        returnMap.put("data", joinData);
+        System.out.println("JOINED DATA" + joinData);
+        returnMap.put("columnDefs", getColumnDefObject(joinData));
+        return returnMap;
+    }
+
+    public List<Map<String, Object>> addDerivedColumnsToDataSet(Integer dataSetId, Integer userId, List<Map<String, Object>> data, MultiValueMap request, HttpServletRequest httpRequest, HttpServletResponse response) {
+        List<DataSetColumns> dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetId, userId);
+        if (dataSetColumnList.size() > 0) {
+            List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, request, httpRequest, response);
+            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
+            return dataWithDerivedColumns;
+        }
+        return data;
+    }
+
     public Map getJoinData(MultiValueMap valueMap, HttpServletRequest request, HttpServletResponse response, Integer joinDataSetIdInt) {
         DataSet dataSetOne = null;
         DataSet dataSetTwo = null;
@@ -343,14 +469,20 @@ public class ProxyController {
             dataSetOne = joinDataSet.getDataSetIdFirst();
             dataSetTwo = joinDataSet.getDataSetIdSecond();
             operationType = joinDataSet.getOperationType();
+            System.out.println("Join data set");
+            System.out.println(joinDataSet);
         }
-
+        System.out.println("Data Set one ===> ");
+        System.out.println(dataSetOne);
         MultiValueMap joinValueMapOne = getRequest(dataSetOne, valueMap);
+
         String joinDataSetIdStr1 = getFromMultiValueMap(joinValueMapOne, "joinDataSetId");
         String dataSourceId1 = getFromMultiValueMap(joinValueMapOne, "dataSourceId");
+
         if (joinDataSetIdStr1 != null && !joinDataSetIdStr1.isEmpty() && !joinDataSetIdStr1.equalsIgnoreCase("null") && (dataSourceId1 == null || dataSourceId1.isEmpty() || dataSourceId1.equalsIgnoreCase("null"))) {
             try {
                 Integer joinDataSetIdNum = Integer.parseInt(joinDataSetIdStr1);
+                System.out.println("SECOND LEVEL JOIN: " + joinDataSetIdNum);
                 joinDataSetOneMap = getJoinData(joinValueMapOne, request, response, joinDataSetIdNum);
             } catch (NumberFormatException e) {
 
@@ -452,6 +584,10 @@ public class ProxyController {
         return returnMap;
     }
 
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.isEmpty() || value.equalsIgnoreCase("null") || value.equalsIgnoreCase("undefined");
+    }
+
     public Map getData(MultiValueMap request, HttpServletRequest httpRequest, HttpServletResponse response) {
         Map returnMap = new HashMap<>();
 
@@ -468,6 +604,10 @@ public class ProxyController {
                 DataSet dataSet = uiService.readDataSet(dataSetIdInt);
                 dataSourceType = (dataSourceType == null || dataSourceType.isEmpty()) ? dataSet.getDataSourceId().getDataSourceType() : dataSourceType;
             }
+        }
+
+        if (isNullOrEmpty(dataSourceType)) {
+            dataSourceType = "join";
         }
 
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
@@ -495,7 +635,8 @@ public class ProxyController {
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("join")) {
-            returnMap = getJoinData(request, httpRequest, response, dataSetIdInt);
+            System.out.println("Join Data Set");
+            returnMap = getJoinDataSet(request, httpRequest, response, dataSetIdInt);
         }
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
         List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
@@ -525,7 +666,7 @@ public class ProxyController {
                     if (column.getDataFormat().equalsIgnoreCase(",")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll(",", ""));
-                    } 
+                    }
                     if (column.getDataFormat().equalsIgnoreCase("$")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll(",", ""));
