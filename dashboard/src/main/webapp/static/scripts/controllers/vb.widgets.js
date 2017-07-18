@@ -87,7 +87,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
     });
-
+    $http.get("admin/settings/getSettings").success(function (response) {
+        angular.forEach(response, function (value, key) {
+            if (value.defaultChartColor) {
+                $scope.defaultChartColor = value.defaultChartColor.split(',');
+            }
+        })
+    })
     $scope.networkTypes = [
         {
             type: 'SEARCH',
@@ -2847,7 +2853,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             widgetId: '@',
             widgetColumns: '@',
             lineChartId: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3009,9 +3016,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                console.log(scope.defaultChartColor);
+                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                console.log(defaultColors);
+                //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
 
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -3194,7 +3202,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetId: '@',
             barChartId: '@',
             widgetColumns: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3355,7 +3364,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     dataSourcePassword = '';
                 }
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -3536,7 +3546,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
             widgetColumns: '@',
             pieChartId: '@',
             loadingPie: '&',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3690,8 +3701,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -3864,7 +3875,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             areaChartSource: '@',
             widgetColumns: '@',
             pieChartId: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -4024,7 +4036,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -4195,7 +4208,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             stackedBarChartSource: '@',
             widgetColumns: '@',
             pieChartId: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -4360,8 +4374,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -4537,7 +4551,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             funnelId: '@',
             funnelColumns: '@',
             funnelTitleName: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             scope.loadingFunnel = true;
@@ -4584,7 +4599,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
 
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
