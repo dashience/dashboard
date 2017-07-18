@@ -1126,12 +1126,14 @@ public class UiService {
             DataSource joinDataSource = joinDataSourceList.get(0);
             newDataSource.setId(joinDataSource.getId());
             newDataSource.setName(joinDataSource.getName());
+            newDataSource.setDataSourceType("join");
             newDataSource.setUserId(joinDataSource.getUserId());
             newDataSource.setAgencyId(joinDataSource.getAgencyId());
             uiDao.saveOrUpdate(newDataSource);
         } else {
             System.out.println("else create ---> ");
             newDataSource.setName(dataSource.getName());
+            newDataSource.setDataSourceType("join");
             newDataSource.setUserId(dataSource.getUserId());
             newDataSource.setAgencyId(dataSource.getAgencyId());
             uiDao.saveOrUpdate(newDataSource);

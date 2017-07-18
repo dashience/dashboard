@@ -128,6 +128,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.joinDataSetList = response;
         });
     };
+    
     var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
@@ -221,7 +222,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var data = joinDataSetList;
             console.log(data);
             $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
-                console.log(response);
                 $scope.cancelJoinDataSet();
                 getItems();
                 $scope.setTab(1);

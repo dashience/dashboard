@@ -489,8 +489,7 @@ public class UiDao extends BaseDao {
     }
 
     public List<DataSource> getJoinDataSource(String name) {
-        String queryStr = "select d from DataSource d where d.name = :name and d.dataSourceType IS NULL";
-//        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
+        String queryStr = "select d from DataSource d where d.name = :name and ( d.dataSourceType IS NULL or d.dataSourceType = 'join')";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("name", name);
         return query.list();
