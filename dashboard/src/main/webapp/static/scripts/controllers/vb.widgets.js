@@ -32,6 +32,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgets = [];
     $scope.tags = [];
     $scope.collectionFields = [];
+    $scope.dynamicFilterAllColumns = [];
+    $scope.draggedFilterColumns = [];
     $scope.dragEnabled = true;
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
@@ -601,6 +603,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dispHideBuilder = true;
         widget.columns = [];
         $scope.collectionFields = [];
+        $scope.dynamicFilterAllColumns = [];
+        $scope.draggedFilterColumns = [];
         $scope.afterLoadWidgetColumns = false;
         var widgetList = widget;
         var getDataSet = widgetList.dataSetId;
@@ -655,6 +659,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            } else {
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
+            console.log($scope.collectionFields);
+            // drag columns collection for dynamic filters
+            $scope.dynamicFilterAllColumns = $scope.collectionFields;
+            angular.forEach($scope.dynamicFilterAllColumns, function (value, key) {
+                value.nodes = [];
+            });
+            $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
+            $scope.dynamicFilterAllColumns.splice(0, 1);
 //            }
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
@@ -2061,6 +2073,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj["targetColors"] = tempTargetColors;
         }
     };
+
+    // column drag and drop
+    $scope.removeDraggedFilterColumn = function (draggedFilterColumn) {
+        console.log($scope.dynamicFilterAllColumns);
+        $scope.dynamicFilterAllColumns.push(draggedFilterColumn);
+        var index = $scope.draggedFilterColumns.indexOf(draggedFilterColumn);
+        $scope.draggedFilterColumns.splice(index, 1);
+    };
+
+    $scope.toggle = function (scope) {
+        scope.toggle();
+    };
+
+    $scope.newSubItem = function (scope) {
+        var nodeData = scope.$modelValue;
+        nodeData.nodes.push({
+            id: nodeData.id * 10 + nodeData.nodes.length,
+            title: nodeData.title + '.' + (nodeData.nodes.length + 1),
+            nodes: []
+        });
+    };
+
 });
 
 app.directive('uiColorpicker', function () {
