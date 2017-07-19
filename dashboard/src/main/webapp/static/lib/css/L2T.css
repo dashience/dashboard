@@ -2734,6 +2734,9 @@ h6 {
 .normalheader {
     min-width: 320px;
     padding: 8px 30px;
+    position: relative;
+    z-index: 999;
+
 }
 @media (max-width: 768px) {
     .normalheader {
@@ -4197,9 +4200,6 @@ span.add-title {
     padding:5px 10px;
 }
 
-.text-field-manage {
-    min-width: 180px;
-}
 .list-unstyled ul {
     list-style: none;
     margin: 0;
@@ -4226,4 +4226,8 @@ span.add-title {
     top: -12px;
     right: 14px;
     z-index: 9;
+}
+.page-toolbar {
+    display: inline-block;
+    float: right;
 }

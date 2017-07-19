@@ -109,6 +109,7 @@
 
 .selectize-control {
     position: relative;
+    z-index: 9999;
 }
 
 .selectize-dropdown,
