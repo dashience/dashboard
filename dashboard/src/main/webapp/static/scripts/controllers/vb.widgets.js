@@ -94,8 +94,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (value.defaultChartColor) {
                 $scope.defaultChartColor = value.defaultChartColor.split(',');
             }
-        })
-    })
+        });
+    });
     $scope.networkTypes = [
         {
             type: 'SEARCH',
@@ -378,7 +378,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setWidgetItems = function (widget) {
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
-        
+
         console.log(widget);
         $scope.widgetId = widget.id;
         if (widget.chartColorOption) {
@@ -422,7 +422,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             val.columnsButtons = true;
         });
         $scope.widgetObj.previewTitle = widget.widgetTitle;
-        console.log(typeof(widget.dynamicFilterJsonData));
+        console.log(typeof (widget.dynamicFilterJsonData));
         $scope.draggedFilterColumns = "";
         $scope.dynamicFilterAllColumns = "";
         $scope.draggedFilterColumns = JSON.parse(widget.dynamicFilterJsonData);
@@ -548,6 +548,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
+            console.log($scope.dynamicFilterAllColumns);
+            if ($scope.dynamicFilterAllColumns == null) {
+                $scope.dynamicFilterAllColumns = [];
+                $scope.draggedFilterColumns=[];
+                $scope.collectionFields.forEach(function (val, key) {
+                    $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []})
+                });
+                $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
+                $scope.dynamicFilterAllColumns.splice(0, 1);
+            }
             var getWidgetColumns = widget.columns;
 
             $scope.collectionFields.forEach(function (value, k) {
@@ -677,7 +687,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             // drag columns collection for dynamic filters
             $scope.collectionFields.forEach(function (val, key) {
                 $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []})
-            })
+            });
 //            $scope.dynamicFilterAllColumns = response.columnDefs;
 
             $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
@@ -1237,7 +1247,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log(filterList)
     };
 
-$scope.chartSelectedFields = [];
+    $scope.chartSelectedFields = [];
     $scope.getChartFilterItems = function (filterBy) {
         console.log(filterBy)
         $scope.chartSelectedFields.push({xAxisValues: filterBy.xAxisValue, fieldName: filterBy.name, value: filterBy.value})

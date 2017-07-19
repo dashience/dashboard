@@ -14,7 +14,6 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
     function getSettings() {
         $http.get("admin/settings/getSettings").success(function (response) {
             $scope.files = response;
-            console.log(response);
             $scope.productArray = [];
             angular.forEach($scope.files, function (value, key) {
                 var index = $scope.productArray.indexOf(value.groupName);
@@ -24,7 +23,6 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
                 }
                 if (value.groupName === null) {
                     $scope.chartColor = value;
-                    console.log($scope.chartColor);
                     if ($scope.chartColor.defaultChartColor) {
                         var userChatColor = $scope.chartColor.defaultChartColor.split(",");
                         $scope.color = userChatColor[userChatColor.length - 1];
@@ -36,18 +34,16 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
             });
         });
     }
-    getSettings()
+    getSettings();
     $scope.getGroupName = function (name, list) {
-        $scope.fileLists = []
-        console.log(name)
-        console.log(list)
+        $scope.fileLists = [];
         var groupList = list;
         groupList.forEach(function (value, key) {
             if (value.groupName === name) {
                 value.isEdit = false;
                 $scope.fileLists.push(value);
             }
-        })
+        });
     };
 
 //    $scope.addSettings = function () {
@@ -100,9 +96,9 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
         console.log(color);
         var chartColorOptions=$scope.chartColor ? $scope.chartColor.defaultChartColor : "";
         console.log(chartColorOptions);
-        if (chartColorOptions) {alert("if")
+        if (chartColorOptions) {
             $scope.chartColor.defaultChartColor = $scope.chartColor.defaultChartColor + "," + color;
-        } else {alert("else")
+        } else {
             $scope.chartColor = {
                 id: chartColor ? chartColor.id : null,
                 defaultChartColor: color
@@ -111,7 +107,6 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
     };
 
     $scope.saveChartColor = function (chartColor) {
-        console.log(chartColor)
         var data = {
             id: chartColor.id,
             defaultChartColor: chartColor.defaultChartColor
@@ -119,8 +114,6 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
         console.log(data)
         $http({method: chartColor.id ? 'PUT' : 'POST', url: 'admin/settings', data: data}).success(function (response) {
             getSettings();
-//                        $rootScope.getWidgetItem();
-//            $scope.loadNewUrl();
         });
     };
 });
