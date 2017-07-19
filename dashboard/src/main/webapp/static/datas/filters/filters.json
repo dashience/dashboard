@@ -1,20 +1,177 @@
 {
     "filter": [
         {
-            "filterName": "Country",
-            "options": ["USA", "India", "UK", "UAE"]
-        }, 
-        {
-            "filterName": "Products",
-            "options": ["Adwords", "Analytics", "Pinterest"]
+            "fieldName": "country",
+            "displayName": "Country Name",
+            "options": {
+                "USA": {
+                    "fieldName": "state",
+                    "displayName": "State",
+                    "options": {
+                        "Alabama": {
+                            "fieldName": "city",
+                            "displayName": "City",
+                            "options": {
+                                "Alexander City": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Andalusia": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Anniston": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Athens": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                }
+                            }
+                        },
+                        "California": {
+                            "fieldName": "city",
+                            "displayName": "City",
+                            "options": {
+                                "Alameda": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Alhambra": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Anaheim": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Antioch": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                }
+                            }
+                        },
+                        "New York": {
+                            "fieldName": "city",
+                            "displayName": "City",
+                            "options": {
+                                "Albany": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Amsterdam": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Auburn": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Garden City": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                }
+                            }
+                        }                        
+                    }
+                },
+                "India": {
+                    "fieldName": "state",
+                    "displayName": "State",
+                    "options": {
+                        "Tamil Nadu": {   
+                            "fieldName": "city",
+                            "displayName": "City",
+                            "options": {                                       
+                                "Chennai": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Coimbatore": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Madurai": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                }
+                            }
+                        },
+                        "Manipur": {
+                            "fieldName": "city",
+                            "displayName": "City",
+                            "options": {
+                                "Imphāl": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Kakching": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                },
+                                "Mayāng Imphāl": {
+                                    "fieldName": "store",
+                                    "displayName": "Store",
+                                    "options": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         {
-            "filterName": "Adwords",
-            "options": ["cost", "costConv", "conversion"]
+            "fieldName": "products",
+            "displayName": "Products",
+            "options": 
+                    {
+                        "Adwords": {
+                            "fieldName": "fields",
+                            "displayName": "Fields",
+                            "options": {
+                                "Cost": {},
+                                "CostConv": {},
+                                "Conversion": {}
+                            }
+                        },
+                        "Analytics": {
+                            "fieldName": "fields",
+                            "displayName": "Fields",
+                            "options": {
+                                "visits": {},
+                                "bounceRate": {},
+                                "sessions": {},
+                                "avgTimeOnPage": {}
+                            }
+                        }
+                    }
         },
         {
-            "filterName": "GA",
-            "options": ["visits", "bounceRate", "sessions","avgTimeOnPage"]
+            "fieldName": "Catetories",
+            "displayName": "Category",
+            "options": 
+                    {
+                        "Adwords": {},
+                        "Analytics": {}
+                    }
         }
     ]
 }

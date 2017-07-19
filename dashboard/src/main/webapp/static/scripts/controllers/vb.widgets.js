@@ -1099,56 +1099,121 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.filters = [];
     $http.get("static/datas/filters/filters.json").success(function (response) {
         $scope.filters = response.filter;
-        $scope.filters.forEach(function (val, key) {
-            var listOfOptions = [];
-            for (var i = 0; i <= val.options.length; i++) {
-                if (val.options[i]) {
-                    listOfOptions.push({name: val.options[i], status: false})
-                }
-                val.listOfOptions = listOfOptions;
-            }
-        })
+        $scope.collectionFirst = [];
+        angular.forEach($scope.filters, function (val, key) {
+            angular.forEach(val.options, function (value, k) {
+                $scope.collectionFirst.push({[val.fieldName]: k, status: false, data: value})
+            });
+        });
     });
 
-    var selectedFilterList = [];
-
-    $scope.getSelectedFilters = function (option, status, filterName) {
-        $scope.reloadAllDirective = false;
-        //var chartSelectedFilter = filterBy;
-        if (status === true) {
-            var index = selectedFilterList.findIndex(x => x.filterName === filterName);
-            if (index === -1) {
-                selectedFilterList.push({filterName: filterName, option: [option]});
+    $scope.collection2 = [];
+    $scope.collection3 = [];
+    $scope.getSelectedFirstLevel = function (filterObj, obj) {
+        var checkObjStatus = angular.equals({}, filterObj.data);
+        if (checkObjStatus === false) {
+            if (filterObj.status === true) {
+                var index = $scope.collection2.findIndex(x => x.fieldName === filterObj.data.fieldName);
+                var data = [];
+                if (index === -1) {
+                    angular.forEach(filterObj.data.options, function (val, key) {
+                        data.push({fieldName: key, status: false, data: val})
+                    });
+                    $scope.collection2.push({
+                        parentDisplayName: obj.displayName,
+                        parentFieldName: obj.fieldName,
+                        displayName: filterObj.data.displayName,
+                        fieldName: filterObj.data.fieldName,
+                        data: [{groupName: filterObj[obj.fieldName], options: data}]
+                    });
+                } else {
+                    angular.forEach(filterObj.data.options, function (val, key) {
+                        data.push({fieldName: key, status: false, data: val})
+                    });
+                    $scope.collection2.forEach(function (val, k) {
+                        if (val.parentFieldName === obj.fieldName) {
+                            val.data.push({groupName: filterObj[obj.fieldName], options: data})
+                        }
+                    });
+                }
             } else {
-                angular.forEach(selectedFilterList, function (value, key) {
-                    if (value.filterName === filterName) {
-                        value.option.push(option)
+                $scope.collection2.forEach(function (val, k) {
+                    var tmp = $.grep(val.data, function (value) {
+                        return value.groupName === filterObj[obj.fieldName]
+                    });
+                    if (tmp.length > 0) {
+                        angular.forEach(tmp, function (val, key) {
+                            angular.forEach(val.options, function (val, key) {
+                                angular.forEach($scope.collection3, function (value, key) {
+                                    var getIndexOfList = value.data.findIndex(x => x.groupName === val.fieldName)
+                                    if (getIndexOfList > -1) {
+                                        value.data.splice(getIndexOfList, 1);
+                                    }
+                                });
+                            });
+                        });
+                    }
+                    var getIndex = val.data.findIndex(x => x.groupName === filterObj[obj.fieldName])
+                    if (getIndex > -1) {
+                        val.data.splice(getIndex, 1);
                     }
                 });
             }
         } else {
-            angular.forEach(selectedFilterList, function (value, key) {
-                if (value.filterName === filterName) {
-                    var getIndex = value.option.indexOf(option);
-                    value.option.splice(getIndex, 1);
-                }
-            });
+            console.log(filterObj)
         }
-
-        var urlFilterParameter = [];
-        angular.forEach(selectedFilterList, function (value, key) {
-            urlFilterParameter.push(value);
-        });
-        $scope.widgets.forEach(function (val, key) {
-            val.filterUrlParameter = urlFilterParameter;
-        });
-        $timeout(function () {
-            $scope.reloadAllDirective = true;
-        }, 50);
+        // console.log($scope.collection2);
+//        $timeout(function () {
+//            $scope.reloadAllDirective = true;
+//        }, 50);
+//    };
     };
+
+
+    $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
+        var data = []
+        var checkObjStatus = angular.equals({}, filterObj.data);
+        if (checkObjStatus === false) {
+            if (filterObj.status === true) {
+                var index = $scope.collection3.findIndex(x => x.fieldName === filterObj.data.fieldName);
+                if (index === -1) {
+                    angular.forEach(filterObj.data.options, function (val, k) {
+                        data.push({fieldName: k, status: false});
+                    });
+                    $scope.collection3.push({displayName: filterObj.data.displayName,
+                        parentDisplayName: obj.displayName,
+                        parentFieldName: obj.fieldName,
+                        fieldName: filterObj.data.fieldName,
+                        data: [{groupName: filterObj.fieldName, options: data}]
+                    });
+                } else {
+                    angular.forEach(filterObj.data.options, function (val, k) {
+                        data.push({fieldName: k, status: false});
+                    });
+                    $scope.collection3.forEach(function (val, k) {
+                        val.data.push({groupName: filterObj.fieldName, options: data})
+                    });
+                }
+            } else {
+                $scope.collection3.forEach(function (val, k) {
+                    var getIndex = val.data.findIndex(x => x.groupName === filterObj.fieldName)
+                    val.data.splice(getIndex, 1);
+                });
+            }
+        } else {
+            console.log(filterObj);
+        }
+    };
+    
+    $scope.getSelectedThirdLevel = function(filterObj, filterList){
+        console.log(filterObj)
+        console.log(filterList)
+    };
+
 
     $scope.getChartFilterItems = function (filterBy) {
         console.log(filterBy)
+        return;
         var getSelectedFilter = filterBy;
         $scope.filters.forEach(function (val, k) {
             $.grep(val.listOfOptions, function (value) {
@@ -1159,7 +1224,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         });
         $scope.$apply($scope.filters)
-        console.log($scope.filters)
     };
 
     $scope.expandWidget = function (widget) {
@@ -2115,6 +2179,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
         restrict: 'A',
         scope: {
             setTableChartFn: '&',
+            getSelectedFilterItem: '&',
             dynamicTableSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -2702,6 +2767,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 '</div>',
         scope: {
             setTickerFn: '&',
+            getSelectedFilterItem: '&',
             tickerSource: '@',
             tickerId: '@',
             tickerColumns: '@',
@@ -2844,6 +2910,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 '<div ng-show="hideEmptyLine" class="text-center">{{lineEmptyMessage}}</div>',
         scope: {
             setLineChartFn: '&',
+            getSelectedFilterItem: '&',
             lineChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -3149,7 +3216,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     columns: columns,
                                     labels: labels,
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    onclick: function (obj, element) {
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -3191,6 +3261,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 '<div ng-show="hideEmptyBar" class="text-center">{{barEmptyMessage}}</div>',
         scope: {
             setBarChartFn: '&',
+            getSelectedFilterItem: '&',
             barChartSource: '@',
             widgetId: '@',
             barChartId: '@',
@@ -3491,7 +3562,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     labels: labels,
                                     type: 'bar',
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    onclick: function (obj, element) {
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -3532,6 +3606,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 '<div ng-show="hideEmptyPie" class="text-center">{{pieEmptyMessage}}</div>',
         scope: {
             setPieChartFn: '&',
+            getSelectedFilterItem: '&',
             pieChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -3820,7 +3895,10 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     keys: {
                                         value: xData,
                                     },
-                                    type: 'pie'
+                                    type: 'pie',
+                                    onclick: function (obj, element) {
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -4149,7 +4227,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     axes: axes,
                                     types: chartCombinationtypes,
                                     onclick: function (obj, element) {
-//                                        console.log(obj)
                                         scope.getSelectedFilterItem({filterBy: obj});
                                     }
                                 },
@@ -4192,6 +4269,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 '<div ng-show="hideEmptyStackedBar" class="text-center">{{stackedBarEmptyMessage}}</div>',
         scope: {
             setStackedBarChartFn: '&',
+            getSelectedFilterItem: '&',
             widgetId: '@',
             stackedBarChartSource: '@',
             widgetColumns: '@',
@@ -4492,7 +4570,10 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     type: 'bar',
                                     groups: [groupingNames],
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    onclick: function (obj, element) {
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -4534,6 +4615,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 '<div ng-show="hideEmptyFunnel" class="text-center">{{funnelEmptyMessage}}</div>',
         scope: {
             setFunnelFn: '&',
+            getSelectedFilterItem: '&',
             funnelSource: '@',
             funnelId: '@',
             funnelColumns: '@',
@@ -5094,5 +5176,12 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             });
         }
 
+    };
+});
+app.filter('highlight', function () {
+    return function (text, phrase) {
+        return phrase
+                ? text.replace(new RegExp('(' + phrase + ')', 'gi'), '<kbd>$1</kbd>')
+                : text;
     };
 });
