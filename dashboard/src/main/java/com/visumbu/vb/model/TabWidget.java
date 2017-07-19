@@ -226,6 +226,18 @@ public class TabWidget implements Serializable {
     @Size(max = 255)
     @Column(name = "chart_color_option")
     private String chartColorOption;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "dynamic_filter_json_data")
+    private String dynamicFilterJsonData;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "dynamic_filter_all_column")
+    private String dynamicFilterAllColumn;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "dynamic_filter")
+    private String dynamicFilter;
     @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet dataSetId;
@@ -550,7 +562,7 @@ public class TabWidget implements Serializable {
     public void setTabId(DashboardTabs tabId) {
         this.tabId = tabId;
     }
-    
+
     public List<WidgetColumn> getColumns() {
         return columns;
     }
@@ -639,6 +651,30 @@ public class TabWidget implements Serializable {
         this.queryFilter = queryFilter;
     }
 
+    public String getDynamicFilterJsonData() {
+        return dynamicFilterJsonData;
+    }
+
+    public void setDynamicFilterJsonData(String dynamicFilterJsonData) {
+        this.dynamicFilterJsonData = dynamicFilterJsonData;
+    }
+
+    public String getDynamicFilter() {
+        return dynamicFilter;
+    }
+
+    public void setDynamicFilter(String dynamicFilter) {
+        this.dynamicFilter = dynamicFilter;
+    }
+
+    public String getDynamicFilterAllColumn() {
+        return dynamicFilterAllColumn;
+    }
+
+    public void setDynamicFilterAllColumn(String dynamicFilterAllColumn) {
+        this.dynamicFilterAllColumn = dynamicFilterAllColumn;
+    }
+
     public String getIsGridLine() {
         return isGridLine;
     }
@@ -677,8 +713,7 @@ public class TabWidget implements Serializable {
 
     public void setNetworkType(String networkType) {
         this.networkType = networkType;
-    }    
-    
+    }
 
     @Override
     public int hashCode() {
