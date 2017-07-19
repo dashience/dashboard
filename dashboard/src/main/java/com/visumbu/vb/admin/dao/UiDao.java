@@ -479,7 +479,7 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSourceId", id);
         return query.list();
     }
-    
+
     public void removeDsFromDataSet(Integer id) {
         String queryStr = "delete DataSet d where d.dataSourceId.id = :dataSourceId";
 //        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
@@ -488,10 +488,11 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
-    public List<DataSource> getJoinDataSource(String name) {
-        String queryStr = "select d from DataSource d where d.name = :name and ( d.dataSourceType IS NULL or d.dataSourceType = 'join')";
+    public List<DataSource> getJoinDataSource(String name, VbUser user) {
+        String queryStr = "select d from DataSource d where d.name = :name and ( d.dataSourceType IS NULL or d.dataSourceType = 'join') and d.userId =:userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("name", name);
+        query.setParameter("userId", user);
         return query.list();
     }
 

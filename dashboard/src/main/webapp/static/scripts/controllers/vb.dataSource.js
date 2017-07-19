@@ -32,7 +32,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: 'analytics',
                 name: 'Google Analytics'
-            
+
             },
             {
                 type: 'pinterest',
@@ -46,9 +46,13 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
 //                type: 'twitter',
 //                name: 'Twitter'
 //            },
-             {
+            {
                 type: 'bing',
                 name: 'Bing'
+            },
+            {
+                type: 'join',
+                name: 'Join'
             }
         ];
         function getItems() {
