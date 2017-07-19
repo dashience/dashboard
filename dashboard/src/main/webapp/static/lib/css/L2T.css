@@ -4230,5 +4230,6 @@ span.add-title {
     height: auto;
 }
 
-
-
+.selectize-input span {
+    color: #606265;
+}

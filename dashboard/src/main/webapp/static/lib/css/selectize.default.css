@@ -415,11 +415,15 @@
 .selectize-control.single .selectize-input,
 .selectize-dropdown.single {
     border-color: #adb8bd;
-    font-size: 13px;
 /*    border: 1px solid #adb8bd;*/
-    padding: 0px 5px 0px 5px;
-    border-radius: 2px;
-    color: #adb8bd;
+/*    padding: 0px 5px 0px 5px;*/
+border-radius: 3px;
+font-size: 11px;
+line-height: 1.5;
+padding: 1px 7px;
+background-color: #fff;
+color: #6a6c6f;
+
 }
 
 .selectize-dropdown .optgroup-header {
