@@ -317,10 +317,10 @@
                                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                     </div>
                                 </div>
-                                <li ng-repeat="filterList in collSecond.data">
-                                    <span ng-bind-html="filterList.groupName"></span>
+                                <li ng-repeat="filterList in collSecond.data|filter:search">
+                                    <span ng-bind-html="filterList.groupName| highlight:search.$"></span>
                                     <ul class="list-unstyled">
-                                        <li ng-repeat="dataObj in filterList.options">                                            
+                                        <li ng-repeat="dataObj in filterList.options | filter:search">                                            
                                             <input type="checkbox" class="inputCheckbox" ng-model="dataObj.status" ng-click="getSelectedSecondLevel(dataObj, filterList, filter)">
                                             <span ng-bind-html="dataObj.fieldName| highlight:search.$"></span>
                                         </li>
@@ -344,10 +344,10 @@
                                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                     </div>
                                 </div>
-                                <li ng-repeat="filterList in collSecond.data">
-                                    <span ng-bind-html="filterList.groupName"></span>
+                                <li ng-repeat="filterList in collSecond.data|filter:search">
+                                    <span ng-bind-html="filterList.groupName | highlight:search.$"></span>
                                     <ul class="list-unstyled">
-                                        <li ng-repeat="dataObj in filterList.options">                                            
+                                        <li ng-repeat="dataObj in filterList.options |filter:search">                                            
                                             <input type="checkbox" class="inputCheckbox" ng-model="dataObj.status" ng-click="getSelectedThirdLevel(dataObj, filterList)">
                                             <span ng-bind-html="dataObj.fieldName| highlight:search.$"></span>
                                         </li>
