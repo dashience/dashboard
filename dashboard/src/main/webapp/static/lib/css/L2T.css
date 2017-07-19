@@ -2734,6 +2734,9 @@ h6 {
 .normalheader {
     min-width: 320px;
     padding: 8px 30px;
+    position: relative;
+    z-index: 999;
+
 }
 @media (max-width: 768px) {
     .normalheader {
@@ -4197,33 +4200,36 @@ span.add-title {
     padding:5px 10px;
 }
 
-.text-field-manage {
-    min-width: 180px;
-}
 .list-unstyled ul {
     list-style: none;
     margin: 0;
     padding: 0 10px;
 }
-
-.dropdown-menu:before {
-    content: "";
-    border-bottom: 10px solid #fff;
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-    position: absolute;
-    top: -10px;
-    right: 16px;
-    z-index: 10;
+.page-toolbar {
+    display: inline-block;
+    float: right;
 }
 
-.dropdown-menu:after {
-    content: "";
-    border-bottom: 12px solid #ccc;
-    border-right: 12px solid transparent;
-    border-left: 12px solid transparent;
-    position: absolute;
-    top: -12px;
-    right: 14px;
-    z-index: 9;
+.filters .form-group {
+    padding: 0px 3px 0px 3px;
+}
+
+.filters li {
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.filters input[type="checkbox"] {
+    margin: 4px !important;
+    vertical-align: middle;
+}
+
+.filters {
+    max-height: 190px;
+    overflow-y: auto;
+    height: auto;
+}
+
+.selectize-input span {
+    color: #606265;
 }
