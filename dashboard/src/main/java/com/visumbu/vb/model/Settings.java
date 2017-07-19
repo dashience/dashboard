@@ -56,7 +56,9 @@ public class Settings implements Serializable {
     @Size(max = 255)
     @Column(name = "remarks")
     private String remarks;
-
+    @Size(max = 255)
+    @Column(name = "default_chart_color")
+    private String defaultChartColor;
     public Settings() {
     }
 
@@ -110,6 +112,14 @@ public class Settings implements Serializable {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getDefaultChartColor() {
+        return defaultChartColor;
+    }
+
+    public void setDefaultChartColor(String defaultChartColor) {
+        this.defaultChartColor = defaultChartColor;
     }
 
     @Override

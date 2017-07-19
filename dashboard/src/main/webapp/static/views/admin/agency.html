@@ -382,24 +382,24 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-md-6">
-                                            <label>Show Product</label>
-                                            <div class="checkbox-slider--b">
-                                                <label class="col-sm-10" for="field{{agencyProduct.id}}">
-                                                    <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" value="1" />
-                                                    <!--                                                                            <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" ng-change="saveStatus(accountUser)" value="1" />-->
-                                                    <span class="bullet"></span>
-                                                </label>
-                                            </div>
+                                                <label>Show Product</label>
+                                                <div class="checkbox-slider--b">
+                                                    <label class="col-sm-10" for="field{{agencyProduct.id}}">
+                                                        <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" value="1" />
+                                                        <!--                                                                            <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" ng-change="saveStatus(accountUser)" value="1" />-->
+                                                        <span class="bullet"></span>
+                                                    </label>
+                                                </div>
                                             </div>
                                             <div class="col-md-6">
-                                            <label>Select Template</label>
-                                            <select class="form-control" 
-                                                    ng-model="agencyProduct.templateId" 
-                                                    ng-options="template.templateName for template in templates track by template.id">
-                                            </select>
-<!--                                            <select class="form-control" ng-model="agencyProduct.template">
-                                                <option ng-repeat="template in templates" value="{{template.id}}">{{template.templateName}}</option>
-                                            </select>-->
+                                                <label>Select Template</label>
+                                                <select class="form-control" 
+                                                        ng-model="agencyProduct.templateId" 
+                                                        ng-options="template.templateName for template in templates track by template.id">
+                                                </select>
+                                                <!--                                            <select class="form-control" ng-model="agencyProduct.template">
+                                                                                                <option ng-repeat="template in templates" value="{{template.id}}">{{template.templateName}}</option>
+                                                                                            </select>-->
                                             </div>
                                         </div>
                                         <div class="form-group pull-right">
@@ -425,6 +425,14 @@
                                         <select class="form-control" 
                                                 ng-model="agencySetting.timeZoneId" 
                                                 ng-options="(timezone.longName + ' - ' + timezone.shortDescription + '(' + timezone.description + ')' + ' - ' + timezone.relativeToGMT) for timezone in timezones track by timezone.id"></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Chart Color</label>
+                                        <div class="input-group colorText">
+                                            <input class="form-control" type="text" ng-model="chartColor.defaultChartColor" placeholder="color with , seperate">
+                                            <a class="colorpicker" title="Color Picker" ui-colorpicker ng-model="color" ng-change="selectChartColor(color, chartColor)"></a>
+                                            <!--<a class="input-group-addon btn-default btn-sm" title="Save Color" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>-->
+                                        </div>
                                     </div>
                                     <div class="form-group pull-right">
                                         <button class="btn btn-info" ng-click="saveAgencySettings(agencySetting)">Save</button>
