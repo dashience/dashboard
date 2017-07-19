@@ -677,7 +677,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []})
             })
 //            $scope.dynamicFilterAllColumns = response.columnDefs;
-            
+
             $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
             $scope.dynamicFilterAllColumns.splice(0, 1);
 //            }
@@ -1229,26 +1229,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             console.log(filterObj);
         }
     };
-    
-    $scope.getSelectedThirdLevel = function(filterObj, filterList){
+
+    $scope.getSelectedThirdLevel = function (filterObj, filterList) {
         console.log(filterObj)
         console.log(filterList)
     };
 
-
+$scope.chartSelectedFields = [];
     $scope.getChartFilterItems = function (filterBy) {
         console.log(filterBy)
-        return;
-        var getSelectedFilter = filterBy;
-        $scope.filters.forEach(function (val, k) {
-            $.grep(val.listOfOptions, function (value) {
-                if (value.name === getSelectedFilter.name) {
-                    value.status = true;
-                }
-                ;
-            });
-        });
-        $scope.$apply($scope.filters)
+        $scope.chartSelectedFields.push({xAxisValues: filterBy.xAxisValue, fieldName: filterBy.name, value: filterBy.value})
+        console.log($scope.chartSelectedFields)
+        $scope.$apply($scope.chartSelectedFields)
+//        return;
+//        var getSelectedFilter = filterBy;
+//        $scope.filters.forEach(function (val, k) {
+//            $.grep(val.listOfOptions, function (value) {
+//                if (value.name === getSelectedFilter.name) {
+//                    value.status = true;
+//                }
+//                ;
+//            });
+//        });
     };
 
     $scope.expandWidget = function (widget) {
@@ -3200,7 +3202,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
                 console.log(scope.defaultChartColor);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
                 console.log(defaultColors);
                 //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
 
@@ -3341,6 +3343,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     axes: axes,
                                     types: chartCombinationtypes,
                                     onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
                                         scope.getSelectedFilterItem({filterBy: obj});
                                     }
                                 },
@@ -3551,7 +3554,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     dataSourcePassword = '';
                 }
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -3689,6 +3692,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     axes: axes,
                                     types: chartCombinationtypes,
                                     onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
                                         scope.getSelectedFilterItem({filterBy: obj});
                                     }
                                 },
@@ -3892,7 +3896,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4023,6 +4027,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     },
                                     type: 'pie',
                                     onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
                                         scope.getSelectedFilterItem({filterBy: obj});
                                     }
                                 },
@@ -4230,7 +4235,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4354,7 +4359,15 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     type: 'area',
                                     axes: axes,
                                     types: chartCombinationtypes,
+//                                    selection: {
+//                                        enabled: true
+//                                    },
+//                                    onselected: function (d, element) {
+//                                        console.log(xData[d.index]);
+//                                        alert('selected x: ' + xData[d.index] + ' value: ' + chart.selected()[0].value + ' name: ' + chart.selected()[0].name);
+//                                    }
                                     onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
                                         scope.getSelectedFilterItem({filterBy: obj});
                                     }
                                 },
@@ -4568,7 +4581,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4701,6 +4714,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     axes: axes,
                                     types: chartCombinationtypes,
                                     onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
                                         scope.getSelectedFilterItem({filterBy: obj});
                                     }
                                 },
@@ -4797,7 +4811,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
                 //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
