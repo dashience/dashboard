@@ -25,6 +25,7 @@ import javax.validation.constraints.Size;
  * @author duc-dev-04
  */
 public class TabWidgetBean {
+
     private Integer id;
     private String chartType;
     private Short closable;
@@ -70,13 +71,16 @@ public class TabWidgetBean {
     private String queryFilter;
     private String isGridLine;
     private List<WidgetColumnBean> widgetColumns;
-    private Account accountId; 
+    private Account accountId;
     private VbUser createdBy;
     private String timeSegment;
     private String productSegment;
     private String networkType;
     private Integer templateUserId;
-    private String chartColorOption;  //added by subhadra
+    private String chartColorOption;
+    private String dynamicFilter;
+    private String dynamicFilterJsonData;
+    private String dynamicFilterAllColumn;
 
     public Integer getId() {
         return id;
@@ -293,7 +297,7 @@ public class TabWidgetBean {
     public void setZeroSuppression(Boolean zeroSuppression) {
         this.zeroSuppression = zeroSuppression;
     }
-       
+
     public String getDateDuration() {
         return dateDuration;
     }
@@ -317,7 +321,7 @@ public class TabWidgetBean {
     public void setMaxRecord(Integer maxRecord) {
         this.maxRecord = maxRecord;
     }
-    
+
     public String getCustomRange() {
         return customRange;
     }
@@ -348,7 +352,7 @@ public class TabWidgetBean {
 
     public void setDataSourceId(Integer dataSourceId) {
         this.dataSourceId = dataSourceId;
-    }    
+    }
 
     public String getContent() {
         return content;
@@ -421,15 +425,39 @@ public class TabWidgetBean {
     public void setJsonData(String jsonData) {
         this.jsonData = jsonData;
     }
-    
+
     public String getQueryFilter() {
         return queryFilter;
     }
 
     public void setQueryFilter(String queryFilter) {
         this.queryFilter = queryFilter;
-    }    
-//
+    }
+
+    public String getDynamicFilter() {
+        return dynamicFilter;
+    }
+
+    public void setDynamicFilter(String dynamicFilter) {
+        this.dynamicFilter = dynamicFilter;
+    }
+
+    public String getDynamicFilterJsonData() {
+        return dynamicFilterJsonData;
+    }
+
+    public void setDynamicFilterJsonData(String dynamicFilterJsonData) {
+        this.dynamicFilterJsonData = dynamicFilterJsonData;
+    }
+
+    public String getDynamicFilterAllColumn() {
+        return dynamicFilterAllColumn;
+    }
+
+    public void setDynamicFilterAllColumn(String dynamicFilterAllColumn) {
+        this.dynamicFilterAllColumn = dynamicFilterAllColumn;
+    }
+
     public String getIsGridLine() {
         return isGridLine;
     }
@@ -452,7 +480,7 @@ public class TabWidgetBean {
 
     public void setCreatedBy(VbUser createdBy) {
         this.createdBy = createdBy;
-    }   
+    }
 
     public String getTimeSegment() {
         return timeSegment;
@@ -497,6 +525,6 @@ public class TabWidgetBean {
     @Override
     public String toString() {
         return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", jsonData=" + jsonData + ", queryFilter=" + queryFilter + ", isGridLine=" + isGridLine + ", widgetColumns=" + widgetColumns + ", accountId=" + accountId + ", createdBy=" + createdBy + ", timeSegment=" + timeSegment + ", productSegment=" + productSegment + ", networkType=" + networkType + '}';
-    }   
+    }
 
 }

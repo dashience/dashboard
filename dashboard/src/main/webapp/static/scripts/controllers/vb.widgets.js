@@ -372,6 +372,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setWidgetItems = function (widget) {
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
+        $scope.draggedFilterColumns = [];
+        $scope.dynamicFilterAllColumns = [];
         console.log(widget);
         $scope.widgetId = widget.id;
         if (widget.chartColorOption) {
@@ -415,6 +417,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             val.columnsButtons = true;
         });
         $scope.widgetObj.previewTitle = widget.widgetTitle;
+        $scope.draggedFilterColumns = JSON.parse(widget.dynamicFilterJsonData);
+        $scope.dynamicFilterAllColumns = JSON.parse(widget.dynamicFilterAllColumn);
+//        $scope.dynamicFilterAllColumns = widge
+        console.log($scope.draggedFilterColumns);
         var getDataSourceId = widget.dataSourceId;
         $scope.selectWidgetDataSource(getDataSourceId);
         getSegments(widget);
@@ -661,10 +667,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
             console.log($scope.collectionFields);
             // drag columns collection for dynamic filters
-            $scope.dynamicFilterAllColumns = $scope.collectionFields;
-            angular.forEach($scope.dynamicFilterAllColumns, function (value, key) {
-                value.nodes = [];
-            });
+            $scope.collectionFields.forEach(function (val, key) {
+                $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []})
+            })
+//            $scope.dynamicFilterAllColumns = response.columnDefs;
+            
             $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
             $scope.dynamicFilterAllColumns.splice(0, 1);
 //            }
@@ -1798,6 +1805,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.allAccount = "";
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
+        $scope.draggedFilterColumns = [];
+        $scope.dynamicFilterAllColumns = [];
+        dynamicFilter = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -1805,6 +1815,24 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.showSortBy = false;
         $scope.showColor = false;
+    }
+
+    var dynamicFilter = "";
+
+    function findNode(nodes, dynamicFilter) {
+        var nodeLength;
+        angular.forEach(nodes, function (val, key) {
+            nodeLength = val.nodes.length;
+            if (nodeLength != 0) {
+                dynamicFilter = dynamicFilter + val.fieldName + ":";
+                dynamicFilter = findNode(val.nodes, dynamicFilter);
+                console.log(dynamicFilter);
+            } else {
+                dynamicFilter = dynamicFilter + val.fieldName + ",";
+                console.log(dynamicFilter);
+            }
+        });
+        return dynamicFilter;
     }
 
     $scope.save = function (widget) {
@@ -1828,6 +1856,39 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
             }
         }
+
+        if (widget.chartType != 'text') {
+            var count = 0;
+            angular.forEach($scope.draggedFilterColumns, function (value, key) {
+                console.log(value)
+                if (count == 0) {
+                    console.log("first obj");
+                    if (value.nodes.length != 0) {
+                        console.log(value.fieldName);
+                        dynamicFilter = dynamicFilter + value.fieldName + ":";
+                        dynamicFilter = findNode(value.nodes, dynamicFilter);
+                        console.log(dynamicFilter);
+                    } else {
+                        dynamicFilter = dynamicFilter + value.fieldName + ",";
+                    }
+                    count = count + 1;
+                } else if (count != 0) {
+                    console.log("not first obj");
+                    if (value.nodes.length != 0) {
+                        console.log(value.fieldName);
+                        dynamicFilter = dynamicFilter + value.fieldName + ":";
+                        dynamicFilter = findNode(value.nodes, dynamicFilter);
+                        console.log(dynamicFilter);
+                    } else {
+                        dynamicFilter = dynamicFilter + value.fieldName + ",";
+                        console.log(dynamicFilter);
+                    }
+                }
+            });
+        }
+        console.log(dynamicFilter);
+        dynamicFilter = dynamicFilter.replace(/,\s*$/, "");
+        console.log(dynamicFilter);
         try {
             $scope.customStartDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -1923,7 +1984,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             productSegment: widget.productSegment ? widget.productSegment.type : null,
             networkType: widget.networkType ? widget.networkType.type : null,
             createdBy: widget.createdBy,
-            chartColorOption: widgetColor
+            chartColorOption: widgetColor,
+            dynamicFilterJsonData: $scope.draggedFilterColumns ? JSON.stringify($scope.draggedFilterColumns) : null,
+            dynamicFilterAllColumn: $scope.dynamicFilterAllColumns ? JSON.stringify($scope.dynamicFilterAllColumns) : null,
+            dynamicFilter: dynamicFilter ? dynamicFilter : null
         };
 
         clearEditAllWidgetData();
@@ -2060,6 +2124,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
+        $scope.draggedFilterColumns = [];
+        $scope.dynamicFilterAllColumns = [];
         console.log($scope.chartColorOptionsVal);
         if ($scope.chartColorOptionsVal) {
             $scope.widgetObj.chartColorOption = $scope.chartColorOptionsVal;
@@ -2077,23 +2143,38 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     // column drag and drop
     $scope.removeDraggedFilterColumn = function (draggedFilterColumn) {
         console.log($scope.dynamicFilterAllColumns);
-        $scope.dynamicFilterAllColumns.push(draggedFilterColumn);
         var index = $scope.draggedFilterColumns.indexOf(draggedFilterColumn);
-        $scope.draggedFilterColumns.splice(index, 1);
+        if (index == -1) {
+            angular.forEach($scope.draggedFilterColumns, function (value, key) {
+                var parentIndex = $scope.draggedFilterColumns.indexOf(value);
+                if (value.nodes != null) {
+                    angular.forEach(value.nodes, function (val) {
+                        if (val === draggedFilterColumn) {
+                            var childIndex = value.nodes.indexOf(val);
+                            value.nodes.splice(childIndex, 1);
+                            $scope.dynamicFilterAllColumns.push(draggedFilterColumn);
+                        }
+                    });
+                }
+            });
+        } else {
+            $scope.dynamicFilterAllColumns.push(draggedFilterColumn);
+            $scope.draggedFilterColumns.splice(index, 1);
+        }
     };
 
     $scope.toggle = function (scope) {
         scope.toggle();
     };
 
-    $scope.newSubItem = function (scope) {
-        var nodeData = scope.$modelValue;
-        nodeData.nodes.push({
-            id: nodeData.id * 10 + nodeData.nodes.length,
-            title: nodeData.title + '.' + (nodeData.nodes.length + 1),
-            nodes: []
-        });
-    };
+//    $scope.newSubItem = function (scope) {
+//        var nodeData = scope.$modelValue;
+//        nodeData.nodes.push({
+//            id: nodeData.id * 10 + nodeData.nodes.length,
+//            title: nodeData.title + '.' + (nodeData.nodes.length + 1),
+//            nodes: []
+//        });
+//    };
 
 });
 

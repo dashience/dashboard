@@ -363,10 +363,10 @@
 </style>
 <script type="text/ng-template" id="allColumns.html">
     <div ui-tree-handle class="tree-node tree-node-content">
-    <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': !collapsed, 'glyphicon-chevron-down': collapsed}"></span></a>
+    <a class="btn btn-success btn-xs" ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': !collapsed, 'glyphicon-chevron-down': collapsed}"></span></a>
     {{dynamicFilterAllColumn.fieldName}}
-    <!--<a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>-->
-<!--    <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
+<!--    <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+    <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
     </div>
 <!--    <ol ui-tree-nodes="" ng-model="dynamicFilterAllColumn.nodes" ng-class="{hidden: collapsed}">
     <li ng-repeat="dynamicFilterAllColumn in dynamicFilterAllColumn.nodes" ui-tree-node ng-include="'allColumns.html'">
@@ -390,13 +390,15 @@
             {{draggedFilterColumn.fieldName}}
 
             <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeDraggedFilterColumn(draggedFilterColumn)"><span class="glyphicon glyphicon-remove"></span></a>
-<!--            <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
+            <!--<a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
         </div>
     </div>
-    <ol ui-tree-nodes="" ng-model="draggedFilterColumn.nodes" ng-class="{hidden: collapsed}">
-        <li ng-repeat="draggedFilterColumn in draggedFilterColumn.nodes" ui-tree-node ng-include="'draggedColumns.html'">
-        </li>
-    </ol>
+    <div ui-tree id="tree-root" data-max-depth="4">
+        <ol ui-tree-nodes="" ng-model="draggedFilterColumn.nodes" ng-class="{hidden: collapsed}" >
+            <li ng-repeat="draggedFilterColumn in draggedFilterColumn.nodes" ui-tree-node ng-include="'draggedColumns.html'">
+            </li>
+        </ol>
+    </div>
 </script>
 <div class="container">
     <div class="row main col-md-6">
@@ -970,7 +972,7 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div ui-tree id="tree1-root">
+                    <div ui-tree id="tree1-root" data-nodrop-enabled="true">
                         <ol ui-tree-nodes="" ng-model="dynamicFilterAllColumns">
                             <li ng-repeat="dynamicFilterAllColumn in dynamicFilterAllColumns" ui-tree-node ng-include="'allColumns.html'"></li>
                         </ol>
