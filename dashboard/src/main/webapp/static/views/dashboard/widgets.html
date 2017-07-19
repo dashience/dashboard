@@ -282,9 +282,13 @@
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-md-6" ng-repeat="chartSelectedField in chartSelectedFields">
-                        <span class="btn btn-default btn-sm">{{chartSelectedField.xAxisValues}} <i class="fa fa-close" ng-click=""></i></span>
-                    </div>
+                    <div class="" ng-repeat="chartSelectedField in chartSelectedFields">
+                        <ul class="field-wrap">
+                         <li>     
+                            <span class="btn btn-default btn-sm">{{chartSelectedField.xAxisValues}} <i class="fa fa-close" ng-click=""></i></span>
+                         </li>
+                        </ul>
+                        </div>
                 </div>
 
 

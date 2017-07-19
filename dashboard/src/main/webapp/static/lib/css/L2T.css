@@ -4233,3 +4233,22 @@ span.add-title {
 .selectize-input span {
     color: #606265;
 }
+
+.field-wrap {
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+}
+
+.field-wrap li {
+    color: #555555;
+    border-radius: 4px;
+    cursor: default;
+    float: left;
+    margin: 0px 0px 5px 0px;
+}
+
+.field-wrap li .btn {
+    margin-right: 2px;
+}
+
