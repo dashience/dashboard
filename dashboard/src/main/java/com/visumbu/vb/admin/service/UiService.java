@@ -1125,7 +1125,7 @@ public class UiService {
     }
 
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
-        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName());
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName(),dataSource.getUserId());
         System.out.println("dataSource" + dataSource.getName());
         DataSource newDataSource = new DataSource();
         if (joinDataSourceList.size() > 0) {
