@@ -393,7 +393,7 @@
             <!--<a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
         </div>
     </div>
-    <div ui-tree id="tree-root" data-max-depth="4">
+    <div ui-tree id="tree-root" data-max-depth="3">
         <ol ui-tree-nodes="" ng-model="draggedFilterColumn.nodes" ng-class="{hidden: collapsed}" >
             <li ng-repeat="draggedFilterColumn in draggedFilterColumn.nodes" ui-tree-node ng-include="'draggedColumns.html'">
             </li>
@@ -987,16 +987,6 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <pre class="code">{{ dynamicFilterAllColumns | json }}</pre>
-              </div>
-
-              <div class="col-sm-6">
-                <pre class="code">{{ draggedFilterColumns | json }}</pre>
-              </div>
-            </div>
-
         </div>
         <div class="col-sm-12" ng-show="showColor">
             <div class="panel panel-default">

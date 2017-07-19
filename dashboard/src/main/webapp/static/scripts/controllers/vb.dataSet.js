@@ -167,7 +167,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         };
         console.log(data);
         $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
-            console.log(response);
             $scope.joinDataSetList = response;
             joinDataSetId = response[0].joinDataSetId.id;
             $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
@@ -184,8 +183,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     $scope.errorHide = true;
                     $scope.errorMessage = "No Data Found";
                 }
-                console.log(response.columnDefs);
-                console.log(response.data);
             });
         });
     };
