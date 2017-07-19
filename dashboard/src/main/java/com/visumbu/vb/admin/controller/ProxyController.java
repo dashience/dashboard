@@ -230,6 +230,19 @@ public class ProxyController {
             // return dataMap;
         }
         dataMap.put("data", returnMap.get("data"));
+        List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
+        List<ColumnDef> columnDefs = (List<ColumnDef>)returnMap.get("columnDefs");
+        if (!isNullOrEmpty(widgetIdStr)) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            String filterStr = "date:browser";
+            if (filterStr != null) {
+                returnMap.put("filter", getDynamicFilter(dataList, filterStr, columnDefs));
+            }
+            System.out.println(returnMap.get("filter"));
+        }
+        
+        dataMap.put("filter", returnMap.get("filter"));
         // dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
         return dataMap;
     }
@@ -405,7 +418,6 @@ public class ProxyController {
                 }
             }
         }
-
 
         List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetId);
         List<String> mappings = new ArrayList<>();
@@ -622,6 +634,8 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getBingData(request, httpRequest, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
+        } else if (dataSourceType.equalsIgnoreCase("sql")) {
+            returnMap = getSqlData(request, httpRequest, response);
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("xls")) {
@@ -1926,6 +1940,208 @@ public class ProxyController {
             Object jsonObj = parser.parse(data);
             List dataList = JsonSimpleUtils.toList((JSONArray) jsonObj);
             return dataList;
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    private List<Map<String, Object>> getSampleData() {
+        List<Map<String, Object>> returnList = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            Map<String, Object> dataMap = new HashMap<>();
+            Double countryRandom = Math.random() * 10;
+            Double productTypeRandom = Math.random() * 10;
+            Double productRandom = Math.random() * 10;
+            Double stateRandom = Math.random() * 10;
+            Double cityRandom = Math.random() * 10;
+
+            dataMap.put("product", "Product-" + productRandom.intValue());
+            dataMap.put("productType", "PT-" + productTypeRandom.intValue());
+            dataMap.put("country", "Country-" + countryRandom.intValue());
+            dataMap.put("state", "State-" + countryRandom.intValue() + "" + stateRandom.intValue());
+            dataMap.put("city", "City-" + countryRandom.intValue() + "" + stateRandom.intValue() + "" + cityRandom.intValue());
+            dataMap.put("value", Math.random());
+            returnList.add(dataMap);
+        }
+        return returnList;
+    }
+
+    private List getDynamicFilter(List<Map<String, Object>> dataList, String filterString, List<ColumnDef> columnDefs) {
+        //filterString = "country:state:city,productType:product";
+        String[] filtersList = filterString.split(",");
+        List returnFilterData = new ArrayList<>();
+
+        //dataList = getSampleData();
+
+        Map returnFilterTemporaryData = new HashMap<>();
+        Map returnFilterPathData = new HashMap<>();
+        for (int i = 0; i < filtersList.length; i++) {
+            String filter = filtersList[i];
+            String[] filterInnter = filter.split(":");
+            List<String> asList = Arrays.asList(filterInnter);
+            Map groupData = groupData(dataList, asList, columnDefs);
+            returnFilterData.add(groupData);
+//                String filterPath = null;
+//                for (int j = 0; j < filterInnter.length; j++) {
+//                    String filterData = filterInnter[j];
+//                    if (filterPath != null) {
+//                        filterPath = filterPath + ":" + filterData + "|" + data.get(filterData);
+//                    } else {
+//                        filterPath = filterData + "|" + data.get(filterData);
+//                    }
+//                    returnFilterTemporaryData.put(filterData, data.get(filterData));
+//                    Object value = data.get(filterData);
+//                    List valueList = returnFilterData.get(filterPath);
+//                    if (valueList == null) {
+//                        valueList = new ArrayList<>();
+//                    }
+//                    if (value != null) {
+//                        valueList.add(value);
+//                    }
+//                    returnFilterData.put(filterPath, valueList);
+//                }
+        }
+
+//        for (Map.Entry<String, List> entry : returnFilterData.entrySet()) {
+//            String key = entry.getKey();
+//            List value = entry.getValue();
+//            if(value.size() > 0) {
+//                
+//            }
+//            
+//        }
+        return returnFilterData;
+    }
+
+    private Map groupData(List<Map<String, Object>> data, List<String> groupByFields, List<ColumnDef> columnDefs) {
+        System.out.println("Start function of groupData");
+        List<String> currentFields = groupByFields;
+        if (groupByFields.size() == 0) {
+            return null;
+        }
+        List<Map<String, Object>> actualList = data;
+        Map<String, Map<String, Object>> groupedData = new HashMap<>();
+        Map returnData = new HashMap<>();
+        String groupingField = currentFields.get(0);
+        Map<String, List<Map<String, Object>>> currentListGrouped = groupBy(actualList, groupingField);
+        for (Map.Entry<String, List<Map<String, Object>>> entrySet : currentListGrouped.entrySet()) {
+            String key = entrySet.getKey();
+            List<Map<String, Object>> value = entrySet.getValue();
+            Map dataToPush = new HashMap<>();
+            dataToPush.put("_key", key);
+            dataToPush.put(groupingField, key);
+            dataToPush.put("_groupField", groupingField);
+            // Merge aggregation
+            Map groupData = groupData(value, groupByFields.subList(1, groupByFields.size()), columnDefs);
+            String fieldName = null;
+
+            String displayName = null;
+            if (groupData != null) {
+                dataToPush.putAll(groupData);
+            }
+            groupedData.put(key, dataToPush);
+        }
+        returnData.put("fieldName", groupingField);
+        returnData.put("displayName", getColumnDef(groupingField, columnDefs));
+        returnData.put("options", groupedData);
+        System.out.println("End function of groupData");
+        return returnData;
+    }
+    
+    private ColumnDef getColumnDef(String fieldName, List<ColumnDef> columnDefs) {
+        for (Iterator<ColumnDef> iterator = columnDefs.iterator(); iterator.hasNext();) {
+            ColumnDef columnDef = iterator.next();
+            if(columnDef.getFieldName().equalsIgnoreCase(fieldName)) {
+                return columnDef;
+            }
+        }
+        return null;
+    }
+
+    private Map<String, List<Map<String, Object>>> groupBy(List<Map<String, Object>> data, String groupField) {
+        System.out.println("Start function of groupBy");
+        Map<String, List<Map<String, Object>>> returnMap = new HashMap<>();
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            String fieldValue = dataMap.get(groupField) + "";
+            List<Map<String, Object>> groupDataList = returnMap.get(fieldValue);
+
+            if (groupDataList == null) {
+                groupDataList = new ArrayList<>();
+            }
+            groupDataList.add(dataMap);
+            returnMap.put(fieldValue, groupDataList);
+        }
+        System.out.println("End function of groupBy");
+        return returnMap;
+    }
+
+    private Map getSqlData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
+            Integer accountId = Integer.parseInt(accountIdStr);
+            Account account = userService.getAccountId(accountId);
+            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+
+            for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+                Property property = iterator.next();
+                List<String> valueList = new ArrayList();
+                valueList.add(property.getPropertyValue());
+                valueMap.put(property.getPropertyName(), valueList);
+            }
+            String dataSetId = getFromMultiValueMap(valueMap, "dataSetId");
+            String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+            String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+            String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+//            if (timeSegment == null) {
+//                timeSegment = "daily";
+//            }
+//            if (productSegment == null) {
+//                productSegment = "none";
+//            }
+            Integer dataSetIdInt = null;
+            DataSet dataSet = null;
+            if (dataSetId != null) {
+                try {
+                    dataSetIdInt = Integer.parseInt(dataSetId);
+                } catch (Exception e) {
+
+                }
+                if (dataSetIdInt != null) {
+                    dataSet = uiService.readDataSet(dataSetIdInt);
+                }
+                if (dataSet != null) {
+                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+                    timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+                    productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
+                }
+            }
+            valueMap.put("timeSegment", Arrays.asList(timeSegment));
+            valueMap.put("productSegment", Arrays.asList(productSegment));
+            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
+
+            String url = "../dbApi/admin/bing/getData";
+            Integer port = 80;
+            if (request != null) {
+                port = request.getServerPort();
+            }
+
+            String localUrl = "http://localhost/";
+            if (request != null) {
+                localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
+            }
+            log.debug("UR:" + url);
+            if (url.startsWith("../")) {
+                url = url.replaceAll("\\.\\./", localUrl);
+            }
+            log.debug("url: " + url);
+            log.debug("valuemap: " + valueMap);
+            String data = Rest.getData(url, valueMap);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            Map returnData = JsonSimpleUtils.toMap((JSONObject) jsonObj);
+            return returnData;
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
