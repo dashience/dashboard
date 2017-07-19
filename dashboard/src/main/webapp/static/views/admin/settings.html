@@ -17,8 +17,24 @@
         </div>
     </div>
 </div>
+<div class="col-md-12">
+    <div class="nav-tabs-custom">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs">
+                <li ng-class="{ active: isSet(1) }" >
+                    <a href ng-click="setTab(1)"> Settings
+                    </a>
+                </li>
+                <li ng-class="{ active: isSet(2) }">
+                    <a ng-click="setTab(2)"> Color Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-<section class="content">    
+<section class="content" ng-show="isSet(1)">    
     <div class="row">
         <div class="col-lg-12 data-table-set">
             <div class="panel-group" id="accordion">
@@ -208,6 +224,18 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content" ng-show="isSet(2)">
+    <div class="form-group">
+        <div class="col-sm-12">
+            <label class="col-sm-2">Chart Color</label>
+            <div class="input-group colorText col-sm-10">
+                <input class="form-control chartColor" type="text" ng-model="chartColor.defaultChartColor" placeholder="color with , seperate">
+                <a class="colorpicker" title="Color Picker" ui-colorpicker ng-model="color" ng-change="selectChartColor(color, chartColor)"></a>
+                <a class="input-group-addon btn-default btn-sm" title="Save Color" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>
             </div>
         </div>
     </div>
