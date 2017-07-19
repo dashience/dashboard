@@ -29,15 +29,8 @@
         margin-top: 5px !important;
         padding: 0px 2px!important;
     }
-    /*    .select2-container {
-            width: 172px !important;
-            cursor: pointer;
-            z-index: 99999;
-        }*/
 
     .select-template .selectize-dropdown {
-        height: 60px;
-        overflow-y: scroll;
         z-index: 9999;
         position: relative;
     }
@@ -48,7 +41,7 @@
     <div class="normalheader transition animated fadeIn">
         <div class="hpanel">
             <div class="panel-body header-title">
-                <div id="hbreadcrumb" class="pull-right">
+                <div id="hbreadcrumb" class="page-toolbar">
                    
                     <div class="col-sm-12" ng-if="isAdmin != 'admin'">
 
@@ -63,13 +56,14 @@
 
                         <div class="btn-group pull-right">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Manage
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu temp-manage">
                                 <div class="col-lg-6">
                                     <div class="input-group">
-                                        <input type="text" ng-model="template.templateName"  class="form-control text-field-manage">
+                                        <input type="text" ng-model="template.templateName"  class="form-control text-field-manage" placeholder="Add/Save Template Name">
                                         <span class="input-group-btn manage-button">
                                             <a class="btn btn-default btn-xs" ng-click="saveTemplate(template);"><i class="fa fa-floppy-o" aria-hidden="true"></i>
                                             </a>
