@@ -1993,33 +1993,24 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             angular.forEach($scope.draggedFilterColumns, function (value, key) {
                 console.log(value)
                 if (count == 0) {
-                    console.log("first obj");
                     if (value.nodes.length != 0) {
-                        console.log(value.fieldName);
                         dynamicFilter = dynamicFilter + value.fieldName + ":";
                         dynamicFilter = findNode(value.nodes, dynamicFilter);
-                        console.log(dynamicFilter);
                     } else {
                         dynamicFilter = dynamicFilter + value.fieldName + ",";
                     }
                     count = count + 1;
                 } else if (count != 0) {
-                    console.log("not first obj");
                     if (value.nodes.length != 0) {
-                        console.log(value.fieldName);
                         dynamicFilter = dynamicFilter + value.fieldName + ":";
                         dynamicFilter = findNode(value.nodes, dynamicFilter);
-                        console.log(dynamicFilter);
                     } else {
                         dynamicFilter = dynamicFilter + value.fieldName + ",";
-                        console.log(dynamicFilter);
                     }
                 }
             });
         }
-        console.log(dynamicFilter);
         dynamicFilter = dynamicFilter.replace(/,\s*$/, "");
-        console.log(dynamicFilter);
         try {
             $scope.customStartDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -2150,6 +2141,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             }
             $scope.chartTypeName = "";
+            var widgetColors;
+            if ($scope.userChartColors.optionValue) {
+                widgetColors = $scope.userChartColors.optionValue.split(',');
+            }
             widget.id = data.id;
             widget.chartType = data.chartType;
             widget.chartColorOption = data.chartColorOption;
@@ -2168,11 +2163,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.allAccount = data.accountId;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
+            widget.chartColor = widgetColors;
             widget.dynamicFilterJsonData = data.dynamicFilterJsonData;
             widget.dynamicFilterAllColumn = data.dynamicFilterAllColumn;
             widget.dynamicFilter = data.dynamicFilter;
             widget = data;
             $scope.derivedColumns = [];
+            response.chartColors = widgetColors;
             if (!data.id) {
                 $scope.widgets.unshift(response);
             }

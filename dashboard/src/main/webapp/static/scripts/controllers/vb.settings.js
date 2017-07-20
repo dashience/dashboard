@@ -8,7 +8,7 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
-    $scope.ftps = [{userName: "admin", password: "password", url: "google.com", portNo: "8084"}]
+    $scope.ftps = [{userName: "admin", password: "password", url: "google.com", portNo: "8084"}];
 
     $scope.showSettings = true;
     function getSettings() {
@@ -30,7 +30,6 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
                         $scope.color = "#000000";
                     }
                 }
-
             });
         });
     }
@@ -111,7 +110,6 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
             id: chartColor.id,
             defaultChartColor: chartColor.defaultChartColor
         };
-        console.log(data)
         $http({method: chartColor.id ? 'PUT' : 'POST', url: 'admin/settings', data: data}).success(function (response) {
             getSettings();
         });
