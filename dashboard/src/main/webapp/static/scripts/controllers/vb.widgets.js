@@ -555,8 +555,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.collectionFields.forEach(function (val, key) {
                     $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []});
                 });
-//                $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
-//                $scope.dynamicFilterAllColumns.splice(0, 1);
             }
             var getWidgetColumns = widget.columns;
 
