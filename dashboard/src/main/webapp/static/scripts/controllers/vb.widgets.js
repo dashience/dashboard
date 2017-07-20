@@ -1125,25 +1125,50 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.filters = [];
     $scope.getDynamicFilterItems = function (dynamicFilterObj) {
-        angular.forEach(dynamicFilterObj.filter, function (val, key) {
-            var index = $scope.filters.findIndex(x => x.fieldName === val.fieldName);
-            if (index == -1) {
-                $scope.filters.push(val)
-            }
-        });
-        $scope.collectionFirst = [];
-        angular.forEach($scope.filters, function (val, key) {
-            angular.forEach(val.options, function (value, k) {
-                $scope.collectionFirst.push({[val.fieldName]: k, status: false, data: value})
+        if ($scope.filterLoaded != true) {
+            angular.forEach(dynamicFilterObj.filter, function (val, key) {
+                var index = $scope.filters.findIndex(x => x.fieldName === val.fieldName);
+                if (index == -1) {
+                    $scope.filters.push(val)
+                }
             });
-        });
+            $scope.collectionFirst = [];
+            angular.forEach($scope.filters, function (val, key) {
+                angular.forEach(val.options, function (value, k) {
+                    $scope.collectionFirst.push({[val.fieldName]: k, status: false, data: value})
+                });
+            });
+        }
     };
     $scope.collection2 = [];
     $scope.collection3 = [];
     $scope.emptyFirstLevelCollection = [];
     $scope.urlCollection = [];
-    $scope.getSelectedFirstLevel = function (filterObj, obj) {
+    $scope.selectedFilters = {};
+
+    $scope.getAllSelected = function () {
+        var allSelected = {};
+        var urlFilterParameter;
         $scope.reloadAllDirective = false;
+        $('.inputCheckbox:checked').each(function (key, value) {
+            var fieldname = $(value).attr('fieldname');
+            var fieldvalue = $(value).attr('fieldvalue');
+            if (!allSelected[fieldname]) {
+                allSelected[fieldname] = [];
+            }
+         urlFilterParameter =  allSelected[fieldname].push(fieldvalue);
+        });
+        $scope.widgets.forEach(function (val, key) {
+            val.filterUrlParameter = urlFilterParameter;
+        });
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+            $scope.filterLoaded = true;
+        }, 50);
+        console.log(allSelected);
+    };
+
+    $scope.getSelectedFirstLevel = function (filterObj, obj) {
         var urlFilterParameter = [];
         var checkObjStatus = angular.equals({}, filterObj.data);
         if (checkObjStatus === false && filterObj.data.options) {
@@ -1205,29 +1230,23 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             }
         }
-        $scope.collection2.forEach(function (val, key) {
-            var returnGetObj = [];
-            $.grep(val.data, function (value) {
-                returnGetObj.push(value.groupName)
-            });
-            urlFilterParameter.push({[val.parentFieldName]: {[val.fieldName]: returnGetObj}});
-        });
-
-        $scope.emptyFirstLevelCollection.forEach(function (val, k) {
-            var returnGetObj = [];
-            $.grep(val.data, function (value) {
-                returnGetObj.push(value.fieldName)
-            });
-            urlFilterParameter.push({[val.parentName]: returnGetObj});
-        });
-        console.log($scope.collection2)
-        $scope.urlCollection = urlFilterParameter;
-        $scope.widgets.forEach(function (val, key) {
-            val.filterUrlParameter = urlFilterParameter;
-        });
-        $timeout(function () {
-            $scope.reloadAllDirective = true;
-        }, 50);
+//        $scope.collection2.forEach(function (val, key) {
+//            var returnGetObj = [];
+//            $.grep(val.data, function (value) {
+//                returnGetObj.push(value.groupName)
+//            });
+//            urlFilterParameter.push({[val.parentFieldName]: {[val.fieldName]: returnGetObj}});
+//        });
+//
+//        $scope.emptyFirstLevelCollection.forEach(function (val, k) {
+//            var returnGetObj = [];
+//            $.grep(val.data, function (value) {
+//                returnGetObj.push(value.fieldName)
+//            });
+//            urlFilterParameter.push({[val.parentName]: returnGetObj});
+//        });
+//        $scope.urlCollection = urlFilterParameter;
+        
     };
 
     $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
@@ -1265,25 +1284,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             console.log(filterObj);
         }
-
-        $scope.collection3.forEach(function (val, k) {
-            var returnGetObj = []
-            $.grep(val.data, function (value) {
-                returnGetObj.push(value.groupName)
-            });
-            urlFilterParameter.push({[val.childGroupName]: returnGetObj});
-        });
-        $scope.urlCollection.push(urlFilterParameter)
-
-//        console.log($scope.widgets)
-        console.log($scope.urlCollection)
-//        console.log($scope.collection2)
-//        console.log($scope.collection3)
     };
 
     $scope.getSelectedThirdLevel = function (filterObj, filterList) {
-        console.log(filterObj)
-        console.log(filterList)
+        // console.log(filterObj)
+        //console.log(filterList)
     };
 
 
