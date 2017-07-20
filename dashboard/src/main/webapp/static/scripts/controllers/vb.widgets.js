@@ -1953,7 +1953,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.targetColors = "";
         $scope.draggedFilterColumns = "";
         $scope.dynamicFilterAllColumns = "";
-        $scope.dynamicFilter = "";
+        dynamicFilter = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;

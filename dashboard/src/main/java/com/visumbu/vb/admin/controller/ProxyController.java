@@ -2017,7 +2017,6 @@ public class ProxyController {
     }
 
     private Map groupData(List<Map<String, Object>> data, List<String> groupByFields, List<ColumnDef> columnDefs) {
-        System.out.println("Start function of groupData");
         List<String> currentFields = groupByFields;
         if (groupByFields.size() == 0) {
             return null;
@@ -2051,7 +2050,6 @@ public class ProxyController {
         }
         returnData.put("displayName", displayName);
         returnData.put("options", groupedData);
-        System.out.println("End function of groupData");
         return returnData;
     }
     
@@ -2066,7 +2064,6 @@ public class ProxyController {
     }
 
     private Map<String, List<Map<String, Object>>> groupBy(List<Map<String, Object>> data, String groupField) {
-        System.out.println("Start function of groupBy");
         Map<String, List<Map<String, Object>>> returnMap = new HashMap<>();
         for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
             Map<String, Object> dataMap = iterator.next();
@@ -2079,7 +2076,6 @@ public class ProxyController {
             groupDataList.add(dataMap);
             returnMap.put(fieldValue, groupDataList);
         }
-        System.out.println("End function of groupBy");
         return returnMap;
     }
 
