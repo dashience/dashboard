@@ -100,9 +100,9 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
         console.log(color);
         var chartColorOptions=$scope.chartColor ? $scope.chartColor.defaultChartColor : "";
         console.log(chartColorOptions);
-        if (chartColorOptions) {alert("if")
+        if (chartColorOptions) {
             $scope.chartColor.defaultChartColor = $scope.chartColor.defaultChartColor + "," + color;
-        } else {alert("else")
+        } else {
             $scope.chartColor = {
                 id: chartColor ? chartColor.id : null,
                 defaultChartColor: color

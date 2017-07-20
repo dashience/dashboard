@@ -473,6 +473,7 @@
                                     <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                          bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
                                          widget-Id="{{widget.id}}" 
+                                         get-Return-Dynamic-Filter="getDynamicFilterItems(dynamicFilterObj)"
                                          get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          widget-Columns="{{widget.columns}}" 
                                          widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
@@ -482,6 +483,7 @@
                             <div class="panel-body" ng-if="widget.chartType === 'pie'">
                                 <div>
                                     <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
+                                         get-Return-Dynamic-Filter="getDynamicFilterItems(dynamicFilterObj)"
                                          get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
                                          widget-Id="{{widget.id}}" 
@@ -527,6 +529,7 @@
                             <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
                                 <div>
                                     <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
+                                         get-Return-Dynamic-Filter="getDynamicFilterItems(dynamicFilterObj)"
                                          stacked-Bar-Chart-Directive 
                                          get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
