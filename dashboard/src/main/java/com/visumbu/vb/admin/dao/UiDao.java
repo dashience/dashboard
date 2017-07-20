@@ -473,6 +473,14 @@ public class UiDao extends BaseDao {
         return tabWidget;
     }
 
+    public List<DataSet> getDataSetByDataSourceId(Integer id) {
+        String queryStr = "select d from DataSet d where d.dataSourceId.id = :dataSourceId";
+//        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceId", id);
+        return query.list();
+    }
+
     public void removeDsFromDataSet(Integer id) {
         String queryStr = "delete DataSet d where d.dataSourceId.id = :dataSourceId";
 //        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
@@ -481,11 +489,11 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
-    public List<DataSource> getJoinDataSource(String name) {
-        String queryStr = "select d from DataSource d where d.name = :name and d.dataSourceType IS NULL";
-//        String queryStr = "update DataSet d set data_source_id=NULL  where d.dataSourceId = :dataSourceId";
+    public List<DataSource> getJoinDataSource(String name, VbUser user) {
+        String queryStr = "select d from DataSource d where d.name = :name and ( d.dataSourceType IS NULL or d.dataSourceType = 'join') and d.userId =:userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("name", name);
+        query.setParameter("userId", user);
         return query.list();
     }
 
@@ -498,7 +506,11 @@ public class UiDao extends BaseDao {
 
     public DataSource deleteDataSource(Integer id) {
         removeDsFromWidget(id);
-        removeDsFromDataSet(id);
+        List<DataSet> dataSetList = getDataSetByDataSourceId(id);
+        for (Iterator<DataSet> iterator = dataSetList.iterator(); iterator.hasNext();) {
+            DataSet dataSet = iterator.next();
+            deleteDataSet(dataSet.getId());
+        }
         String queryStr = "delete DataSource d where d.id = :dataSourceId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSourceId", id);
@@ -570,7 +582,7 @@ public class UiDao extends BaseDao {
     }
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
-        String queryStr = "delete DataSetColumns d where d.dataSetId.id = :dataSetId";
+        String queryStr = "delete DataSetColumns d where d.dataSetId.id = :dataSetId and d.widgetId IS NULL";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);
         query.executeUpdate();
@@ -677,7 +689,7 @@ public class UiDao extends BaseDao {
         query.setParameter("userId", userId);
         return query.list();
     }
-    
+
     public List<DataSetColumns> getDataSetColumnsByWidgetId(Integer dataSetId, Integer widgetId) {
         String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :dataSetId and d.widgetId.id = :widgetId)";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -736,10 +748,6 @@ public class UiDao extends BaseDao {
     public JoinDataSet getJoinDataSetById(Integer id) {
         JoinDataSet joinDataSet = (JoinDataSet) sessionFactory.getCurrentSession().get(JoinDataSet.class, id);
         return joinDataSet;
-//        String queryStr = "select d from JoinDataSet d where d.id = :joinDataSetId";
-//        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-//        query.setParameter("joinDataSetId", id);
-//        return (JoinDataSet) query.uniqueResult();
     }
 
     public List<JoinDataSetCondition> deleteJoinDataSetConditionById(Integer conditionId, Integer joinDataSetId) {
@@ -810,11 +818,11 @@ public class UiDao extends BaseDao {
         dataSetColumn.setDisplayFormat(columnDef.getDisplayFormat());
         return (DataSetColumns) create(dataSetColumn);
     }
-    
+
     public VbUser findUserById(Integer userId) {
         if (userId == null) {
-            return null; 
-       }
+            return null;
+        }
         VbUser user = (VbUser) sessionFactory.getCurrentSession().get(VbUser.class, userId);
         return user;
     }
@@ -910,5 +918,5 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("user", user);
         return (UserPreferences) query.uniqueResult();
-}
+    }
 }

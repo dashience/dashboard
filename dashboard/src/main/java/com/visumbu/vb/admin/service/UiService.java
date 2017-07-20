@@ -314,6 +314,9 @@ public class UiService {
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
         tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
+        tabWidget.setDynamicFilter(tabWidgetBean.getDynamicFilter());
+        tabWidget.setDynamicFilterJsonData(tabWidgetBean.getDynamicFilterJsonData());
+        tabWidget.setDynamicFilterAllColumn(tabWidgetBean.getDynamicFilterAllColumn());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -430,6 +433,9 @@ public class UiService {
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
         tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
+        tabWidget.setDynamicFilter(tabWidgetBean.getDynamicFilter());
+        tabWidget.setDynamicFilterJsonData(tabWidgetBean.getDynamicFilterJsonData());
+        tabWidget.setDynamicFilterAllColumn(tabWidgetBean.getDynamicFilterAllColumn());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
         System.out.println("new Widget Id ---> " + id);
@@ -1119,7 +1125,7 @@ public class UiService {
     }
 
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
-        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName());
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName(),dataSource.getUserId());
         System.out.println("dataSource" + dataSource.getName());
         DataSource newDataSource = new DataSource();
         if (joinDataSourceList.size() > 0) {
@@ -1127,12 +1133,14 @@ public class UiService {
             DataSource joinDataSource = joinDataSourceList.get(0);
             newDataSource.setId(joinDataSource.getId());
             newDataSource.setName(joinDataSource.getName());
+            newDataSource.setDataSourceType("join");
             newDataSource.setUserId(joinDataSource.getUserId());
             newDataSource.setAgencyId(joinDataSource.getAgencyId());
             uiDao.saveOrUpdate(newDataSource);
         } else {
             System.out.println("else create ---> ");
             newDataSource.setName(dataSource.getName());
+            newDataSource.setDataSourceType("join");
             newDataSource.setUserId(dataSource.getUserId());
             newDataSource.setAgencyId(dataSource.getAgencyId());
             uiDao.saveOrUpdate(newDataSource);
@@ -1202,9 +1210,8 @@ public class UiService {
     public UserPreferences addChartColor(UserPreferences userPreferences) {
         uiDao.saveOrUpdate(userPreferences);
         return userPreferences;
-    };
+    }
 
-    // adeed by subhadra for chart color
     public UserPreferences getChartColorByUserId(VbUser vbUser) {
         return uiDao.getChartColorByUserId(vbUser);
     }
@@ -1257,5 +1264,9 @@ public class UiService {
             dataSetColumns.add(dataSetColumn);
         }
         return dataSetColumns;
+    }
+
+    public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
+        return uiDao.getJoinDataSetById(joinDataSetId);
     }
 }
