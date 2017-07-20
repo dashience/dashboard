@@ -313,8 +313,7 @@
                             </li>
                         </ul>
                     </div>
-
-                    <div ng-repeat="collSecond in collection2" ng-if="collSecond.parentFieldName === filter.fieldName">
+                    <div ng-repeat="collSecond in collection2" ng-if="(collSecond.parentFieldName === filter.fieldName) && (collSecond.data.length > 0)">
                         <label>{{collSecond.displayName}}</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
@@ -341,7 +340,7 @@
                         </div>
                     </div>
 
-                    <div ng-repeat="collSecond in collection3" ng-if="collSecond.parentFieldName === filter.fieldName">
+                    <div ng-repeat="collSecond in collection3" ng-if="(collSecond.parentFieldName === filter.fieldName) && (collSecond.data.length > 0)">
                         <label>{{collSecond.displayName}}</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
@@ -452,7 +451,10 @@
                             <div class="panel-body" ng-if="widget.chartType === 'line'">
                                 <div>
                                     <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
-                                         line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                         get-Return-Dynamic-Filter="getDynamicFilterItems(dynamicFilterObj)"
+                                         filter-Data-List="filters"
+                                         line-Chart-Directive 
+                                         line-Chart-Source="{{widget.dataSetId}}" 
                                          widget-Id="{{widget.id}}" 
                                          get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          widget-Columns="{{widget.columns}}" 
