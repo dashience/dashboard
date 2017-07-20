@@ -551,12 +551,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             console.log($scope.dynamicFilterAllColumns);
             if ($scope.dynamicFilterAllColumns == null) {
                 $scope.dynamicFilterAllColumns = [];
-                $scope.draggedFilterColumns=[];
+                $scope.draggedFilterColumns = [];
                 $scope.collectionFields.forEach(function (val, key) {
-                    $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []})
+                    $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []});
                 });
-                $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
-                $scope.dynamicFilterAllColumns.splice(0, 1);
+//                $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
+//                $scope.dynamicFilterAllColumns.splice(0, 1);
             }
             var getWidgetColumns = widget.columns;
 
@@ -683,16 +683,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            } else {
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
-            console.log($scope.collectionFields);
-            // drag columns collection for dynamic filters
             $scope.collectionFields.forEach(function (val, key) {
-                $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []})
+                $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []});
             });
-//            $scope.dynamicFilterAllColumns = response.columnDefs;
-
-            $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
-            $scope.dynamicFilterAllColumns.splice(0, 1);
-//            }
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
             angular.forEach($scope.collectionFields, function (value, key) {
@@ -891,7 +884,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
 
-        var chartColors = userChartColors.optionValue;
+        var chartColors = userChartColors ? userChartColors.optionValue : null;
         console.log(chartColors);
         if (firstPreviewAfterEdit == 1) {
             $scope.chartColorOptionsVal = widgetObj.chartColorOption;
@@ -1154,7 +1147,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 var data = [];
                 if (index === -1) {
                     angular.forEach(filterObj.data.options, function (val, key) {
-                        data.push({fieldName: key, status: false, data: val})
+                        data.push({fieldName: key, status: false, data: val});
                     });
                     $scope.collection2.push({
                         parentDisplayName: obj.displayName,
@@ -1165,24 +1158,24 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     });
                 } else {
                     angular.forEach(filterObj.data.options, function (val, key) {
-                        data.push({fieldName: key, status: false, data: val})
+                        data.push({fieldName: key, status: false, data: val});
                     });
                     $scope.collection2.forEach(function (val, k) {
                         if (val.parentFieldName === obj.fieldName) {
-                            val.data.push({groupName: filterObj[obj.fieldName], options: data})
+                            val.data.push({groupName: filterObj[obj.fieldName], options: data});
                         }
                     });
                 }
             } else {
                 $scope.collection2.forEach(function (val, k) {
                     var tmp = $.grep(val.data, function (value) {
-                        return value.groupName === filterObj[obj.fieldName]
+                        return value.groupName === filterObj[obj.fieldName];
                     });
                     if (tmp.length > 0) {
                         angular.forEach(tmp, function (val, key) {
                             angular.forEach(val.options, function (val, key) {
                                 angular.forEach($scope.collection3, function (value, key) {
-                                    var getIndexOfList = value.data.findIndex(x => x.groupName === val.fieldName)
+                                    var getIndexOfList = value.data.findIndex(x => x.groupName === val.fieldName);
                                     if (getIndexOfList > -1) {
                                         value.data.splice(getIndexOfList, 1);
                                     }
@@ -1190,14 +1183,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                             });
                         });
                     }
-                    var getIndex = val.data.findIndex(x => x.groupName === filterObj[obj.fieldName])
+                    var getIndex = val.data.findIndex(x => x.groupName === filterObj[obj.fieldName]);
                     if (getIndex > -1) {
                         val.data.splice(getIndex, 1);
                     }
                 });
             }
         } else {
-            console.log(filterObj)
+            console.log(filterObj);
         }
         // console.log($scope.collection2);
 //        $timeout(function () {
@@ -1208,7 +1201,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
     $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
-        var data = []
+        var data = [];
         var checkObjStatus = angular.equals({}, filterObj.data);
         if (checkObjStatus === false) {
             if (filterObj.status === true) {
@@ -1228,12 +1221,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         data.push({fieldName: k, status: false});
                     });
                     $scope.collection3.forEach(function (val, k) {
-                        val.data.push({groupName: filterObj.fieldName, options: data})
+                        val.data.push({groupName: filterObj.fieldName, options: data});
                     });
                 }
             } else {
                 $scope.collection3.forEach(function (val, k) {
-                    var getIndex = val.data.findIndex(x => x.groupName === filterObj.fieldName)
+                    var getIndex = val.data.findIndex(x => x.groupName === filterObj.fieldName);
                     val.data.splice(getIndex, 1);
                 });
             }
@@ -1243,16 +1236,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.getSelectedThirdLevel = function (filterObj, filterList) {
-        console.log(filterObj)
-        console.log(filterList)
+        console.log(filterObj);
+        console.log(filterList);
     };
 
     $scope.chartSelectedFields = [];
     $scope.getChartFilterItems = function (filterBy) {
-        console.log(filterBy)
-        $scope.chartSelectedFields.push({xAxisValues: filterBy.xAxisValue, fieldName: filterBy.name, value: filterBy.value})
-        console.log($scope.chartSelectedFields)
-        $scope.$apply($scope.chartSelectedFields)
+        $scope.chartSelectedFields.push({xAxisValues: filterBy.xAxisValue, fieldName: filterBy.name, value: filterBy.value});
+        $scope.$apply($scope.chartSelectedFields);
 //        return;
 //        var getSelectedFilter = filterBy;
 //        $scope.filters.forEach(function (val, k) {
