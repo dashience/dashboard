@@ -364,41 +364,41 @@
 <script type="text/ng-template" id="allColumns.html">
     <div ui-tree-handle class="tree-node tree-node-content">
     {{dynamicFilterAllColumn.fieldName}}
-<!--    <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+    <!--    <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
     <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
     </div>
     <ol ui-tree-nodes="" ng-model="dynamicFilterAllColumn.nodes" ng-class="{hidden: collapsed}">
     <li ng-repeat="dynamicFilterAllColumn in dynamicFilterAllColumn.nodes" ui-tree-node ng-include="'allColumns.html'">
     </li>
-<!--</ol>-->
+    <!--</ol>-->
 </script>
 <script type="text/ng-template" id="draggedColumns.html">
-<div class="tree-node">
+    <div class="tree-node">
     <div class="pull-left tree-handle" ui-tree-handle>
-        <i class="fa fa-arrows" aria-hidden="true"></i>
+    <i class="fa fa-arrows" aria-hidden="true"></i>
     </div>
     <div class="tree-node-content">
-        <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this)">
-            <span class="glyphicon" ng-class="{
+    <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this)">
+    <span class="glyphicon" ng-class="{
     'glyphicon-chevron-right': !collapsed,
     'glyphicon-chevron-down': collapsed
     }">
-                  </span>
-            </a>
+    </span>
+    </a>
 
-            {{draggedFilterColumn.fieldName}}
+    {{draggedFilterColumn.fieldName}}
 
-            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeDraggedFilterColumn(draggedFilterColumn)">
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-            </a>
-            <!--<a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
-        </div>
+    <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeDraggedFilterColumn(draggedFilterColumn)">
+    <i class="fa fa-trash-o" aria-hidden="true"></i>
+    </a>
+    <!--<a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
+    </div>
     </div>
     <div ui-tree id="tree-root" data-max-depth="3">
-        <ol ui-tree-nodes="" ng-model="draggedFilterColumn.nodes" ng-class="{hidden: collapsed}" >
-            <li ng-repeat="draggedFilterColumn in draggedFilterColumn.nodes" ui-tree-node ng-include="'draggedColumns.html'">
-            </li>
-        </ol>
+    <ol ui-tree-nodes="" ng-model="draggedFilterColumn.nodes" ng-class="{hidden: collapsed}" >
+    <li ng-repeat="draggedFilterColumn in draggedFilterColumn.nodes" ui-tree-node ng-include="'draggedColumns.html'">
+    </li>
+    </ol>
     </div>
 </script>
 <div class="container">
@@ -552,9 +552,6 @@
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
-                    <input type="checkbox"  ng-init="widgetObj.allAccount = true" ng-model="widgetObj.allAccount">
-                    <!--<input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">-->
-                    <label>All Account</label>
                 </div>
             </div>
         </div>
