@@ -1251,43 +1251,51 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        $scope.urlCollection = urlFilterParameter;
 
     };
-
-    $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
-        var urlFilterParameter = [];
-        var data = [];
-        var checkObjStatus = angular.equals({}, filterObj.data);
-        if (checkObjStatus === false && filterObj.data.options) {
-            if (filterObj.status === true) {
-                var index = $scope.collection3.findIndex(x => x.fieldName === filterObj.data.fieldName);
-                if (index === -1) {
-                    angular.forEach(filterObj.data.options, function (val, k) {
-                        data.push({fieldName: k, status: false});
-                    });
-                    $scope.collection3.push({displayName: filterObj.data.displayName,
-                        parentDisplayName: obj.displayName,
-                        childGroupName: filterObj.data.groupField,
-                        parentFieldName: obj.fieldName,
-                        fieldName: filterObj.data.fieldName,
-                        data: [{groupName: filterObj.fieldName, options: data}]
-                    });
-                } else {
-                    angular.forEach(filterObj.data.options, function (val, k) {
-                        data.push({fieldName: k, status: false});
-                    });
-                    $scope.collection3.forEach(function (val, k) {
-                        val.data.push({groupName: filterObj.fieldName, options: data})
-                    });
-                }
-            } else {
-                $scope.collection3.forEach(function (val, k) {
-                    var getIndex = val.data.findIndex(x => x.groupName === filterObj.fieldName)
-                    val.data.splice(getIndex, 1);
-                });
+    $scope.getSelctionCount = function (checkboxCollection, fieldName) {
+        var count = 0;
+        checkboxCollection.forEach(function (value, key) {
+            if (value[fieldName] && value.status) {
+                count++;
             }
-        } else {
-            console.log(filterObj);
-        }
-    };
+        });
+        return count;
+    },
+            $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
+                var urlFilterParameter = [];
+                var data = [];
+                var checkObjStatus = angular.equals({}, filterObj.data);
+                if (checkObjStatus === false && filterObj.data.options) {
+                    if (filterObj.status === true) {
+                        var index = $scope.collection3.findIndex(x => x.fieldName === filterObj.data.fieldName);
+                        if (index === -1) {
+                            angular.forEach(filterObj.data.options, function (val, k) {
+                                data.push({fieldName: k, status: false});
+                            });
+                            $scope.collection3.push({displayName: filterObj.data.displayName,
+                                parentDisplayName: obj.displayName,
+                                childGroupName: filterObj.data.groupField,
+                                parentFieldName: obj.fieldName,
+                                fieldName: filterObj.data.fieldName,
+                                data: [{groupName: filterObj.fieldName, options: data}]
+                            });
+                        } else {
+                            angular.forEach(filterObj.data.options, function (val, k) {
+                                data.push({fieldName: k, status: false});
+                            });
+                            $scope.collection3.forEach(function (val, k) {
+                                val.data.push({groupName: filterObj.fieldName, options: data})
+                            });
+                        }
+                    } else {
+                        $scope.collection3.forEach(function (val, k) {
+                            var getIndex = val.data.findIndex(x => x.groupName === filterObj.fieldName)
+                            val.data.splice(getIndex, 1);
+                        });
+                    }
+                } else {
+                    console.log(filterObj);
+                }
+            };
 
     $scope.getSelectedThirdLevel = function (filterObj, filterList) {
         // console.log(filterObj)
@@ -1297,11 +1305,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 //    $scope.chartSelectedFields = [];
     $scope.getChartFilterItems = function (filterBy) {
-        //$scope.chartSelectedFields.push({name: filterBy.xAxisValue, fieldName: filterBy.name, data: [{value: filterBy.value}]})
-        $scope.$apply($scope.chartSelectedFields)
+        $scope.reloadAllDirective = false;
         var exist = false;
         angular.forEach($scope.collectionFirst, function (val) {
             if (parseInt(val[filterBy.name]) === filterBy.value) {
+                val.status = true;
+                exist = true;
+            }
+            if (val[filterBy.name] === filterBy.name) {
                 val.status = true;
                 exist = true;
             }
@@ -1315,12 +1326,39 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                             obj.status = true;
                             exist = true;
                         }
+                        if (obj.fieldName == filterBy.name) {
+                            obj.status = true;
+                            exist = true;
+                        }
+                    });
+                });
+            });
+        }
+        console.log(filterBy)
+        console.log($scope.collection2)
+        if (exist === false) {
+            angular.forEach($scope.collection2, function (val, k) {
+                $.grep(val.data, function (value) {
+                    angular.forEach(value.options, function (obj, key) {
+                        if (parseInt(obj.fieldName) == filterBy.value) {
+                            obj.status = true;
+                            exist = true;
+                        }
+                        if (obj.fieldName == filterBy.name) {
+                            obj.status = true;
+                            exist = true;
+                        }
                     });
                 });
             });
         }
         $scope.$apply($scope.collectionFirst)
         $scope.$apply($scope.collection3)
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+            $scope.filterLoaded = true;
+//            getAllSelected();
+        }, 50);
     };
 
     $scope.expandWidget = function (widget) {

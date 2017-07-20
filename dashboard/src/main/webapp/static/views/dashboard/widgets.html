@@ -297,7 +297,7 @@
                     <label>{{filter.displayName}}</label>
                     <div class="dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                            <span class="dateRange-Title">{{selectedAccountCount?selectedAccountCount+" ": 0+" "}} Selected</span>
+                            <span class="dateRange-Title">{{getSelctionCount(collectionFirst, filter.fieldName)}} Selected</span>
                             <span class="caret dateRange-Title-Icon"></span>
                         </button>
                         <ul class="dropdown-menu filters">  
@@ -319,7 +319,7 @@
                         <label>{{collSecond.displayName}}</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{selectedAccountCount?selectedAccountCount+" ": 0+" "}} Selected</span>
+                                <span class="dateRange-Title">{{getSelctionCount(collectionFirst, filter.fieldName)}} Selected</span>
                                 <span class="caret dateRange-Title-Icon"></span>
                             </button>
                             <ul class="dropdown-menu filters">  
@@ -348,7 +348,7 @@
                         <label>{{collSecond.displayName}}</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{selectedAccountCount?selectedAccountCount+" ": 0+" "}} Selected</span>
+                                <span class="dateRange-Title">{{getSelctionCount(collectionFirst, filter.fieldName)}} Selected</span>
                                 <span class="caret dateRange-Title-Icon"></span>
                             </button>
                             <ul class="dropdown-menu filters filters-city">  
@@ -507,6 +507,7 @@
                                     <div id="changes-height" class="project-list">
                                         <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                              dynamic-Table pdf-function="addToPdf(test)" 
+                                             get-Return-Dynamic-Filter="getDynamicFilterItems(dynamicFilterObj)"
                                              dynamic-Table-Source="{{widget.dataSetId}}" 
                                              widget-Id="{{widget.id}}" 
                                              widget-Obj="{{widget}}" 
