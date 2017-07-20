@@ -27,7 +27,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $state, $window, $interval, widgetService) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $state, $window, $interval) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
