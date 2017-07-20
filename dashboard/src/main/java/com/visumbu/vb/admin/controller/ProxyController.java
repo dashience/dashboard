@@ -186,7 +186,7 @@ public class ProxyController {
 //
 //            }
 //        } else {
-            returnMap = getData(valueMap, request, response);
+        returnMap = getData(valueMap, request, response);
 //        }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
 
@@ -217,6 +217,14 @@ public class ProxyController {
             if (tabWidget != null) {
                 queryFilter = tabWidget.getQueryFilter();
             }
+            if(queryFilter == null) {
+                queryFilter = "";
+            }
+            String dashboardFilter = request.getParameter("dashboardFilter");
+            if (!isNullOrEmpty(dashboardFilter)) {
+                queryFilter += getQueryFilter(dashboardFilter); //dashboardFilter;
+            }
+            System.out.println("DYnamic Query Filter ===> " + queryFilter);
             List<Map<String, Object>> originalData = (List<Map<String, Object>>) returnMap.get("data");
             List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
             returnMap.put("data", returnDataMap);
@@ -241,7 +249,7 @@ public class ProxyController {
             }
             System.out.println(returnMap.get("filter"));
         }
-        
+
         dataMap.put("filter", returnMap.get("filter"));
         // dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
         return dataMap;
@@ -296,7 +304,7 @@ public class ProxyController {
     public MultiValueMap<String, String> getRequest(DataSet dataSet, MultiValueMap valueMap) {
         MultiValueMap<String, String> joinValueMap = new LinkedMultiValueMap<>();
         if (dataSet.getReportName() != null) {
-        joinValueMap.put("dataSetReportName", Arrays.asList(dataSet.getReportName()));
+            joinValueMap.put("dataSetReportName", Arrays.asList(dataSet.getReportName()));
         }
         joinValueMap.put("dataSetId", Arrays.asList(dataSet.getId() + ""));
         if (dataSet.getJoinDataSetId() != null) {
@@ -636,7 +644,7 @@ public class ProxyController {
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("sql")) {
             returnMap = getSqlData(request, httpRequest, response);
-            List<Map<String, Object>> data = (List<Map<String, Object>>)returnMap.get("data");
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             returnMap.put("columnDefs", getColumnDefObject(data));
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
@@ -682,7 +690,7 @@ public class ProxyController {
                     if (column.getDataFormat().equalsIgnoreCase(",")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll(",", ""));
-                    } 
+                    }
                     if (column.getDataFormat().equalsIgnoreCase("$")) {
                         String value = data.get(column.getFieldName()) + "";
                         data.put(column.getFieldName(), value.replaceAll(",", ""));
@@ -1975,7 +1983,6 @@ public class ProxyController {
         List returnFilterData = new ArrayList<>();
 
         //dataList = getSampleData();
-
         Map returnFilterTemporaryData = new HashMap<>();
         Map returnFilterPathData = new HashMap<>();
         for (int i = 0; i < filtersList.length; i++) {
@@ -2045,18 +2052,18 @@ public class ProxyController {
         }
         returnData.put("fieldName", groupingField);
         String displayName = getColumnDef(groupingField, columnDefs).getDisplayName();
-        if(displayName == null) {
+        if (displayName == null) {
             displayName = groupingField;
         }
         returnData.put("displayName", displayName);
         returnData.put("options", groupedData);
         return returnData;
     }
-    
+
     private ColumnDef getColumnDef(String fieldName, List<ColumnDef> columnDefs) {
         for (Iterator<ColumnDef> iterator = columnDefs.iterator(); iterator.hasNext();) {
             ColumnDef columnDef = iterator.next();
-            if(columnDef.getFieldName().equalsIgnoreCase(fieldName)) {
+            if (columnDef.getFieldName().equalsIgnoreCase(fieldName)) {
                 return columnDef;
             }
         }
@@ -2139,15 +2146,15 @@ public class ProxyController {
             }
             log.debug("url: " + url);
             log.debug("valuemap: " + valueMap);
-            
+
             String query = getFromMultiValueMap(valueMap, "query");
             try {
-                query  = URLEncoder.encode(query, "UTF-8");
+                query = URLEncoder.encode(query, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
                 java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
             valueMap.put("query", Arrays.asList(query));
-            
+
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(data);
@@ -2642,6 +2649,33 @@ public class ProxyController {
             url = url.replaceAll("\\.\\./", localUrl);
         }
         log.debug(url);
+    }
+
+    private static String getQueryFilter(String jsonDynamicFilter) {
+        try {
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(jsonDynamicFilter);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = (Map<String, Object>) JsonSimpleUtils.jsonToMap(json);
+            List<String> queryString = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : jsonToMap.entrySet()) {
+                String key = entry.getKey();
+                List<String> value = (List<String>) entry.getValue();
+                List<String> innerQuery = new ArrayList<>();
+                for (Iterator<String> iterator = value.iterator(); iterator.hasNext();) {
+                    String valueString = iterator.next();
+                    innerQuery.add(key + " = " + "'" + valueString + "'");
+                }
+                String join = String.join(" OR ", innerQuery);
+                // String output = key + " in " + join;
+                queryString.add(" ( " + join + " ) ");
+            }
+            return String.join(" AND ", queryString);
+
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @ExceptionHandler

@@ -1189,7 +1189,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 var data = [];
                 if (index === -1) {
                     angular.forEach(filterObj.data.options, function (val, key) {
-                        data.push({fieldName: key, status: false, data: val});
+                        data.push({fieldName: key, status: false, data: val})
                     });
                     $scope.collection2.push({
                         parentDisplayName: obj.displayName,
@@ -1200,24 +1200,24 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     });
                 } else {
                     angular.forEach(filterObj.data.options, function (val, key) {
-                        data.push({fieldName: key, status: false, data: val});
+                        data.push({fieldName: key, status: false, data: val})
                     });
                     $scope.collection2.forEach(function (val, k) {
                         if (val.parentFieldName === obj.fieldName) {
-                            val.data.push({groupName: filterObj[obj.fieldName], options: data});
+                            val.data.push({groupName: filterObj[obj.fieldName], options: data})
                         }
                     });
                 }
             } else {
                 $scope.collection2.forEach(function (val, k) {
                     var tmp = $.grep(val.data, function (value) {
-                        return value.groupName === filterObj[obj.fieldName];
+                        return value.groupName === filterObj[obj.fieldName]
                     });
                     if (tmp.length > 0) {
                         angular.forEach(tmp, function (val, key) {
                             angular.forEach(val.options, function (val, key) {
                                 angular.forEach($scope.collection3, function (value, key) {
-                                    var getIndexOfList = value.data.findIndex(x => x.groupName === val.fieldName);
+                                    var getIndexOfList = value.data.findIndex(x => x.groupName === val.fieldName)
                                     if (getIndexOfList > -1) {
                                         value.data.splice(getIndexOfList, 1);
                                     }
@@ -1225,7 +1225,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                             });
                         });
                     }
-                    var getIndex = val.data.findIndex(x => x.groupName === filterObj[obj.fieldName]);
+                    var getIndex = val.data.findIndex(x => x.groupName === filterObj[obj.fieldName])
                     if (getIndex > -1) {
                         val.data.splice(getIndex, 1);
                     }
@@ -1254,7 +1254,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        $scope.urlCollection = urlFilterParameter;
 
     };
-
+    $scope.getSelctionCount = function (checkboxCollection, fieldName) {
+        var count = 0;
+        checkboxCollection.forEach(function (value, key) {
+            if (value[fieldName] && value.status) {
+                count++;
+            }
+        });
+        return count;
+    },
     $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
         var urlFilterParameter = [];
         var data = [];
@@ -1278,19 +1286,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         data.push({fieldName: k, status: false});
                     });
                     $scope.collection3.forEach(function (val, k) {
-                        val.data.push({groupName: filterObj.fieldName, options: data});
+                                val.data.push({groupName: filterObj.fieldName, options: data})
                     });
                 }
             } else {
                 $scope.collection3.forEach(function (val, k) {
-                    var getIndex = val.data.findIndex(x => x.groupName === filterObj.fieldName);
+                            var getIndex = val.data.findIndex(x => x.groupName === filterObj.fieldName)
                     val.data.splice(getIndex, 1);
                 });
             }
-        } else {
-            console.log(filterObj);
-        }
-    };
+                        } else {
+                    console.log(filterObj);
+                }
+            };
 
     $scope.getSelectedThirdLevel = function (filterObj, filterList) {
         // console.log(filterObj)
@@ -1300,11 +1308,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 //    $scope.chartSelectedFields = [];
     $scope.getChartFilterItems = function (filterBy) {
-        //$scope.chartSelectedFields.push({name: filterBy.xAxisValue, fieldName: filterBy.name, data: [{value: filterBy.value}]})
-        $scope.$apply($scope.chartSelectedFields)
+        $scope.reloadAllDirective = false;
         var exist = false;
         angular.forEach($scope.collectionFirst, function (val) {
             if (parseInt(val[filterBy.name]) === filterBy.value) {
+                val.status = true;
+                exist = true;
+            }
+            if (val[filterBy.name] === filterBy.name) {
                 val.status = true;
                 exist = true;
             }
@@ -1318,12 +1329,39 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                             obj.status = true;
                             exist = true;
                         }
+                        if (obj.fieldName == filterBy.name) {
+                            obj.status = true;
+                            exist = true;
+                        }
+                    });
+                });
+            });
+        }
+        console.log(filterBy)
+        console.log($scope.collection2)
+        if (exist === false) {
+            angular.forEach($scope.collection2, function (val, k) {
+                $.grep(val.data, function (value) {
+                    angular.forEach(value.options, function (obj, key) {
+                        if (parseInt(obj.fieldName) == filterBy.value) {
+                            obj.status = true;
+                            exist = true;
+                        }
+                        if (obj.fieldName == filterBy.name) {
+                            obj.status = true;
+                            exist = true;
+                        }
                     });
                 });
             });
         }
         $scope.$apply($scope.collectionFirst)
         $scope.$apply($scope.collection3)
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+            $scope.filterLoaded = true;
+//            getAllSelected();
+        }, 50);
     };
 
     $scope.expandWidget = function (widget) {
