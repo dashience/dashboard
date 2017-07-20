@@ -9,25 +9,19 @@
         <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
         <!-- Bootstrap 3.3.6 -->
         <link rel="stylesheet" href="static/lib/css/bootstrap.min.css">
-        <!-- Font Awesome -->
         <link rel="stylesheet" href="static/lib/css/font-awesome.min.css">
-        <!-- Ionicons -->
         <link rel="stylesheet" href="static/lib/css/ionicons.min.css">
-        <!-- Theme style -->
         <link rel="stylesheet" href="static/lib/css/L2T.css">
         <style type="text/css">
             .checkbox, .radio {
                 margin-left: 20px;
             }
-
             .login-page, .register-page {
                 background: #fff; 
             }
-
             .btn-l2t:hover, .btn-l2t:active, .btn-l2t {
                 background-color: #228995;
             }
-
             .hpanel .panel-body {
                 background: #fff;
                 border: 1px solid #e4e5e7;
@@ -35,15 +29,9 @@
                 padding: 20px;
                 position: relative;
             }
-
         </style>
     </head>
     <body ng-controller="LoginController" class="hold-transition login-page">
-        <!--<div class="login-box">
-            <div class="login-logo">
-                <a href="index.html"><img src="static/img/Logo-l2t.png" width="150" /></a>
-            </div>-->
-
         <div class="login-container">
             <div class="row">
                 <div class="col-md-12">
@@ -54,7 +42,6 @@
                             </span>
                         </div>
                     </div>
-
                     <div class="hpanel">
                         <h5 class="text-center text-danger" ng-show="showErrorMessage">{{errorMessage}}</h5>
                         <div class="panel-body">
@@ -67,12 +54,6 @@
                                     <label class="control-label" for="password">Password</label>
                                     <input type="password" title="Please enter your password" placeholder="Password" value="" name="password" id="password" class="form-control" ng-model="login.password">
                                 </div>
-
-                                <!--                                <div class="checkbox">
-                                                                    <input type="checkbox" class="i-checks" checked>
-                                                                    Remember login
-                                
-                                                                </div>-->
                                 <button class="btn btn-success btn-block" ng-click="authenticate(login)">Login</button>
                             </form>  
                         </div>
@@ -87,6 +68,4 @@
         <script src="static/lib/js/angular/angular-local-storage.min.js"></script>
         <script src="static/scripts/config/login.js"></script>
     </body>
-
-
 </html>

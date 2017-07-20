@@ -39,11 +39,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 controller: 'NewOrEditReportController',
                 activetab: 'report'
             })
-            .state("index.widgetEditByReport", {
-                url: "/updateReportWidget/:accountId/:accountName/:reportId/:reportWidgetId?:startDate/:endDate",
-                templateUrl: "static/views/reports/editReportWidget.html",
-                controller: 'WidgetEditReportController'
-            })
+//            .state("index.widgetEditByReport", {
+//                url: "/updateReportWidget/:accountId/:accountName/:reportId/:reportWidgetId?:startDate/:endDate",
+//                templateUrl: "static/views/reports/editReportWidget.html",
+//                controller: 'WidgetEditReportController'
+//            })
 //            .state("index.report.template", {
 //                url: "/template/:accountId/:accountName/:reportId?:startDate/:endDate",
 //                templateUrl: "static/views/reports/reportTemplate.html",

@@ -552,7 +552,9 @@
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> Cancel
                     </button>
-
+                    <input type="checkbox"  ng-init="widgetObj.allAccount = true" ng-model="widgetObj.allAccount">
+                    <!--<input type="checkbox" ng-checked="(widgetObj.allAccount == 0) || (widgetObj.allAccount == null)" ng-model="widgetObj.allAccount" ng-true-value="0" ng-false-value="1">-->
+                    <label>All Account</label>
                 </div>
             </div>
         </div>
@@ -668,8 +670,8 @@
                             </select>
                         </div>
                         <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
-                            <label ng-if="hideSelectedColumn === false">Select Y Axis</label>
-                            <select ng-if="hideSelectedColumn === false" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                            <label ng-if="hideSelectedColumn === false;">Select Y Axis</label>
+                            <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartYAxis" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="selectPieChartY(widgetObj, selectPieChartYAxis)">

@@ -44,7 +44,6 @@
     {
         display: none;
     }
-
 </style>
 
 <div class="normalheader transition animated fadeIn">
@@ -108,14 +107,49 @@
                                                 <div>
                                                     <input type="text" class="form-control" ng-model="account.accountName" placeholder="Name">
                                                 </div>
-                                            </div>
+                                            </div>      
 
-                                            <div class="form-group">
-                                                <label>Geo Location</label>
-                                                <div>
-                                                    <input type="text" class="form-control" ng-model="account.geoLocation" placeholder="Geo">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Group</label>
+                                                        <ui-select ng-model="account.groupName" ng-model-options="{debounce : 1000}" theme="bootstrap">
+                                                            <ui-select-match placeholder="Select Group Name">{{$select.selected}}</ui-select-match>
+                                                            <ui-select-choices repeat="group in getGroup($select.search) | filter: $select.search">
+                                                                <div ng-bind="group"></div>
+                                                            </ui-select-choices>
+                                                        </ui-select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Geo Location</label>
+                                                        <div>
+                                                            <input type="text" class="form-control" ng-model="account.geoLocation" placeholder="Geo">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Latitude</label>
+                                                        <div>
+                                                            <input type="text" class="form-control" ng-model="account.latitude" placeholder="Latitude">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Longitude</label>
+                                                        <div>
+                                                            <input type="text" class="form-control" ng-model="account.longitude" placeholder="Longitude">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
 
                                             <div class="form-group">
                                                 <label>Description</label>
@@ -123,14 +157,13 @@
                                                     <textarea class="form-control" ng-model="account.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
                                                 </div>
                                             </div>
+
                                             <div class="form-group pull-right">
                                                 <button class="btn btn-info" ng-click="saveAccount(account)">Save</button>
                                                 <button class="btn btn-warning" ng-click="clearAccount(account)">Cancel</button>
                                             </div>
                                         </form>
                                     </div>
-
-
                                 </div>
                                 <div ng-show="isSet(2)" class="license">
                                     <div class="col-lg-12" ng-hide="showEditPage">
@@ -400,8 +433,6 @@
                         </div>
                     </div>  
                 </div> 
-
-
             </div>
         </div>                
     </div>

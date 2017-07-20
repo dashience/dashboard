@@ -64,22 +64,31 @@
     .colorpicker .sp-dd {
         display:none;
     }
+    .dropdownAccountCheckbox{
+        min-height: 125px;
+        overflow-y: auto;
+        padding: 2px 5px;
+    }
+    .inputCheckbox{
+        margin: 4px 3px 0px 4px !important;
+        vertical-align: middle;
+
+    }
+    .dropdownDate{
+        margin-top: 10px;
+    }
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
     <div id="logo">
         <span>
             <img src="static/img/logos/dashience-logo.jpg" width="80" />
         </span>
-        <!--<img src="../img/logos/border.png" alt=""  width="1" height="50"/>-->
     </div>
-
     <div id="logo">
         <span>
             <img class="img-responsive img-thumbnail client-logo" ng-src="{{accountLogo}}" />
-            <!--<img src="static/img/logos/deeta-logo.png" width="100" />-->
         </span>
     </div>
-
     <nav role="navigation">
         <div class="small-logo">
             <span>
@@ -89,138 +98,10 @@
         <div class="small-logo">
             <span>
                 <img class="img-responsive img-thumbnail client-logo" ng-src="{{accountLogo}}" width="100" />
-                <!--<img src="static/img/logos/deeta-logo.png" width="100" />-->
             </span>
         </div>
         <nav class = "navbar-default" role = "navigation">
-            <!--            <div class = "navbar-header" id="animations">
-                            <button class="navbar-toggle"ng-click="showLeft($event)">Show Left Menu!</button>
-            
-                            <menu visible="leftVisible" alignment="left">
-                                <menu-item hash="first-page">First Page</menu-item>
-                                <menu-item hash="second-page">Second Page</menu-item>
-                                <menu-item hash="third-page">Third Page</menu-item>
-                            </menu>
-                        </div>-->
-            <!--            <div class = "navbar-header" id="animations">
-                            <button type="button" class="navbar-toggle mobile-menu-toggle" data-animation="am-slide-left" data-placement="left" bs-aside="aside">
-                                <span class = "sr-only">Toggle navigation</span>
-                                <span class = "icon-bar"></span>
-                                <span class = "icon-bar"></span>
-                                <span class = "icon-bar"></span><br>
-                            </button>
-                        </div>-->
         </nav>
-
-        <!--        <div class="mobile-menu">
-                    <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
-                        <i class="fa fa-chevron-down"></i>
-                    </button>
-                    <div class="collapse mobile-navbar" id="mobile-collapse">
-                        <ul class="nav navbar-nav">
-                            <li><a href="admin/user/logout">Logout</a></li>
-                        </ul>
-                    </div>
-                </div>-->
-        <!--        <nav class = "navbar-default" role = "navigation">
-                    <div class = "navbar-header">
-                        <button type = "button" class = "navbar-toggle mobile-menu-toggle" data-toggle = "collapse" data-target = "#mobile-collapse">                    
-                            <span class = "sr-only">Toggle navigation</span>
-                            <span class = "icon-bar"></span>
-                            <span class = "icon-bar"></span>
-                            <span class = "icon-bar"></span>
-                        </button>
-                    </div>
-                    <div class = "collapse mobile-navbar" id="mobile-collapse">
-        
-                        <ul class = "nav navbar-nav">
-                                                <li><a href = "#">iOS</a></li>
-                                                <li><a href = "#">SVN</a></li>
-                                                <li class = "dropdown">
-                                                    <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">
-                                                        Java 
-                                                        <b class = "caret"></b>
-                                                    </a>
-                                                    <ul class = "dropdown-menu">
-                                                        <li><a href = "#">jmeter</a></li>
-                                                        <li><a href = "#">EJB</a></li>
-                                                        <li><a href = "#">Jasper Report</a></li>
-                                                        <li><a href = "#">Separated link</a></li>
-                                                        <li><a href = "#">One more separated link</a></li>
-                                                    </ul>
-                                                </li>
-        
-                                                <li class="dropdown" id="daterange-btn">
-                                                    <a id="daterange-btn">
-                                                    <a class="date-border">
-                                                        {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
-                                                    </a> 
-                                                    </a>
-                                                </li>
-                            <li class="dropdown" id="daterange-b">
-                                <a class="date-border">
-                                    {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
-                                </a>
-                            </li>
-                            <li class="col-lg-3 icon-dash mobile-menus dropdown"  >
-                                <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">
-                                    Products 
-                                    <b class = "caret"></b>
-                                </a>
-                                <ul class="dropdown-menu active" ng-repeat="product in products| orderBy:'productOrder'" ng-if="product.showProduct == 1" >
-                                    <li ng-click="setParamsProduct(product)"><a>{{product.productName}}</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href = "#" class = "dropdown-toggle" data-toggle = "dropdown">
-                                    Report 
-                                    <b class = "caret"></b>
-                                </a>
-                                <ul class = "dropdown-menu">
-                                    <li ng-if="permission.createDataSource === true;">                     
-                                        <a class="product-dashboard-icon" ng-click="setParams()">
-                                            <span data-ui-sref="index.dataSource({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li ng-if="permission.createDataSet === true;">
-                                        <a class="product-dashboard-icon" ng-click="setParams()">
-                                            <span data-ui-sref="index.dataSet({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                                Data Sets
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li ng-if="isAdmin === 'admin'">
-                                        <a class="product-dashboard-icon" ng-click="setParams()">
-                                            <span data-ui-sref="index.agency({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                                Agency
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li ng-if="permission.createAccount === true;">
-                                        <a class="product-dashboard-icon" ng-click="setParams()">
-                                            <span data-ui-sref="index.account({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                                Account
-                                            </span>
-                                        </a>
-                                    </li>  
-                                    <li ng-if="permission.createUser === true;">
-                                        <a class="product-dashboard-icon" ng-click="setParams()">
-                                            <span data-ui-sref="index.user({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                                Users
-                                            </span>
-                                        </a>
-                                    </li>                                                              
-                                </ul>
-                            </li>
-        
-                            <li><a href="admin/user/logout">Logout</a></li>
-                        </ul>
-                    </div>
-        
-                </nav>-->
-
-
         <div class="navbar-right">
             <ul class="nav navbar-nav no-borders">
                 <li class="dropdown">
@@ -231,20 +112,65 @@
                     </a>
                 </li>
                 <li class="dropdown go"><span class="label label-success" ng-click="loadNewUrl()">Go</span></li>
-
-
                 <li class="dropdown">
-                    <form role="search" class="navbar-form-custom" method="post" action="#">
-                        <div class="form-group">
-                            <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected)" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                                <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
-                                <ui-select-choices repeat="account in accounts | filter: $select.search">
-                                    <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
-                                </ui-select-choices>
-                            </ui-select>
-                        </div>
-                    </form>
+                    <div class="dropdown dropdownDate">
+                        <button class="btn btn-default dropdown-toggle dateDuration-Box" type="button" data-toggle="dropdown">
+                            <span class="dateRange-Title">{{selectedAccountCount?selectedAccountCount+" ": 0+" "}}Account Selected</span>
+                            <span class="caret dateRange-Title-Icon"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdownAccountCheckbox">  
+                            <div class="form-group">
+                                <div class="form-group has-feedback">
+                                    <input type="text" class="form-control" ng-model="search.$" placeholder="Search"/>
+                                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                </div>
+                            </div>
+                            <li ng-repeat="allAccount in allAccounts| filter:search">
+                                <input type="checkbox" class="inputCheckbox" ng-model="allAccount.selectAllGroup" ng-click="getSelectedAccounts(allAccount)">
+                                <span ng-bind-html="allAccount.groupName | highlight:search.$"></span>
+                                <ul>
+                                    <li ng-repeat="account in allAccount.accounts">
+                                        <input type="checkbox" class="inputCheckbox" ng-model="account.select" ng-true-value="true" ng-click="unSelectAccount(allAccount, account); getSelectedAccounts(account)">
+                                        <span ng-bind-html="account.accountName | highlight:search.$"></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <div class="pull-right">
+                                <button type="button" ng-click="goToSearchByAccountId()" class="btn btn-sm">Apply</button>
+                            </div>
+                        </ul>
+                    </div>
                 </li>
+                <li class="dropdown">
+                    <div class="dropdown dropdownDate">
+                        <button class="btn btn-default dropdown-toggle dateDuration-Box" type="button" data-toggle="dropdown">
+                            <span class="dateRange-Title">{{selectedAccountCount1?selectedAccountCount1+" ": 0+" "}}Account Selected</span>
+                            <span class="caret dateRange-Title-Icon"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdownAccountCheckbox">  
+                            <div class="form-group">
+                                <div class="form-group has-feedback">
+                                    <input type="text" class="form-control" ng-model="search1.$" placeholder="Search"/>
+                                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                </div>
+                            </div>
+                            <li ng-repeat="allAccount in allAccounts| filter:search1">
+                                <input type="checkbox" class="inputCheckbox" ng-model="allAccount.selectAllGroup1" ng-click="getSelectedAccount1(allAccount)">
+                                <span ng-bind-html="allAccount.groupName | highlight:search1.$"></span>
+                                <ul>
+                                    <li ng-repeat="account in allAccount.accounts">
+                                        <input type="checkbox" class="inputCheckbox" ng-model="account.select1" ng-true-value="true" ng-click="unSelectAccount1(allAccount, account); getSelectedAccount1(account)">
+                                        <span ng-bind-html="account.accountName | highlight:search1.$"></span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <div class="pull-right">
+                                <button type="button" ng-click="goToSearchByAccountId1()" class="btn btn-sm">Apply</button>
+                            </div>
+                        </ul>
+                    </div>
+                </li>
+                
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         <i class="pe-7s-keypad"></i>
@@ -255,7 +181,6 @@
                                 <ul class="col-lg-3 icon-dash"  ng-if="product.showProduct == 1">
                                     <li class="product-dashboard-icon">
                                         <a class="active" ng-click="setParamsProduct(product)">
-                                            <!--data-ui-sref="index.dashboard.widget({accountId: accountId, accountName: accountName, productId: product.id, tabId: tabId, startDate: startDate, endDate: endDate})">-->
                                             <img class="product-icon img-responsive" ng-src="{{product.icon}}"/> 
                                         </a>
                                     </li>

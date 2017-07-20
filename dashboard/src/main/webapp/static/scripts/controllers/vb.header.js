@@ -51,46 +51,332 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
     $scope.product = [];
     $scope.selectAccount = {};
-
-    $http.get('admin/ui/userAccountByUser').success(function (response) {
+    $scope.selectedAccounts = [];
+    $scope.selectedAccount1 = [];
+    $scope.allAccounts = [];
+    $http.get('admin/ui/getUserAccountByGroupForUser').success(function (response) {
         if (!response[0]) {
             return;
         }
-        $scope.accounts = response;
-        $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
-        $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-        angular.forEach($scope.accounts, function (value, key) {
-            if (value.accountId.id == $stateParams.accountId) {
-                $scope.name = value;
+        $scope.allAccounts = response;
+        if (response) {
+            $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accounts[0].id;
+            $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accounts[0].accountName;
+            var accountName = $stateParams.accountName;//$stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
+            getAgencyProduct(response[0].accounts[0].agencyId.id);
+            $scope.selectedAccounts.push(response[0].accounts[0]);
+            $scope.selectedAccountCount = $scope.selectedAccounts.length;
+            $scope.allAccounts.forEach(function (val, key) {
+                // angular.forEach(val.accounts, function (value, key) {
+                if (val.accounts[0].accountName === accountName) {
+                    val.accounts[0].select = true;
+                }
+                // });
+            });
+            console.log($scope.allAccounts)
+        }
+    });
+    //////////////////////////////// Start-of-First-DropDown///////////////////////////////////
+    $scope.allAccount = {};
+    $scope.getSelectedAccounts = function (allAccount) {
+        var getGroupName = allAccount.groupName;
+        if (getGroupName && allAccount.selectAllGroup == 1) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select = true;
+            });
+
+            angular.forEach(allAccount.accounts, function (val, key) {
+                var getMachItem = $.grep($scope.selectedAccounts, function (value) {
+                    return val.accountName == value.accountName;
+                });
+                if (getMachItem.length == 0) {
+                    $scope.selectedAccounts.push(val);
+                }
+            });
+        }
+        if (getGroupName && allAccount.selectAllGroup == 0) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select = false;
+                $scope.selectedAccounts.splice(val, 1);
+            });
+        }
+        $scope.selectedAccountCount = $scope.selectedAccounts.length;
+    };
+
+    $scope.unSelectAccount = function (allAccount, account) {
+        if (account.select == true) {
+            $scope.selectedAccounts.push(account);
+        } else {
+            var getSelectedAccountIndex = $scope.selectedAccounts.indexOf(account);
+            $scope.selectedAccounts.splice(getSelectedAccountIndex, 1);
+        }
+        var getSelectMachGroupItem = $.grep($scope.selectedAccounts, function (val) {
+            return allAccount.groupName === val.groupName;
+        });
+        
+        if (allAccount.accounts.length === getSelectMachGroupItem.length) {
+            allAccount.selectAllGroup = true;
+        } else {
+            allAccount.selectAllGroup = false;
+        }
+    };
+    
+     $scope.goToSearchByAccountId = function () {
+        var getSelectedAccount = $scope.selectedAccounts.map(function (val, key) {
+            if (val) {
+                return val.id;
+            }
+        }).join(',');
+        console.log(getSelectedAccount)
+        console.log($scope.selectedAccounts)
+        $stateParams.accountId = getSelectedAccount;
+        $scope.loadNewUrl();
+    };
+    //////////////////////////////// End-of-First-DropDown//////////////////////////////////////
+    //////////////////////////////// Start-of-Second-DropDown///////////////////////////////////
+    $scope.getSelectedAccount1 = function (allAccount) {
+        var getGroupName = allAccount.groupName;
+        if (getGroupName && allAccount.selectAllGroup1 == 1) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select1 = true;
+            });
+
+            angular.forEach(allAccount.accounts, function (val, key) {
+                var getMachItem = $.grep($scope.selectedAccount1, function (value) {
+                    return val.accountName == value.accountName;
+                });
+                if (getMachItem.length == 0) {
+                    $scope.selectedAccount1.push(val);
+                }
+            });
+        }
+        if (getGroupName && allAccount.selectAllGroup1 == 0) {
+            angular.forEach(allAccount.accounts, function (val, k) {
+                val.select1 = false;
+                $scope.selectedAccount1.splice(val, 1)
+            });
+        }
+        $scope.selectedAccountCount1 = $scope.selectedAccount1.length;
+    };
+
+    $scope.unSelectAccount1 = function (allAccount, account) {
+        if (account.select1 == true) {
+            $scope.selectedAccount1.push(account)
+        } else {
+            var getSelectedAccountIndex = $scope.selectedAccount1.indexOf(account);
+            $scope.selectedAccount1.splice(getSelectedAccountIndex, 1);
+        }
+        var getSelectMachGroupItem = $.grep($scope.selectedAccount1, function (val) {
+            return allAccount.groupName === val.groupName;
+        });
+        if (allAccount.accounts.length === getSelectMachGroupItem.length) {
+            allAccount.selectAllGroup1 = true;
+        } else {
+            allAccount.selectAllGroup1 = false;
+        }
+    };
+
+    $scope.goToSearchByAccountId1 = function () {
+        var getSelectedAccount = $scope.selectedAccount1.map(function (val, key) {
+            if (val) {
+                return val.id;
+            }
+        }).join(',');
+        $stateParams.accountId = getSelectedAccount;
+        $scope.loadNewUrl();
+    };
+//////////////////////////////// End-of-Second-DropDown////////////////////////////////////// 
+//    $scope.getAccountId = function (account) {01191
+//        if ($stateParams.accountId != account.accountId.id) {
+//            $stateParams.tabId = 0;
+//            $stateParams.templateId = 0;
+//        }
+//        if (account.accountId.logo) {
+//            $scope.accountLogo = account.accountId.logo;
+//        } else {
+//            $scope.accountLogo = "";
+//        }
+//        $stateParams.accountId = account.accountId.id;
+//        $scope.selectAccount.selected = {accountName: account.accountId.accountName};
+//        $stateParams.accountName = account.accountId.accountName;
+//        $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
+//            $stateParams.templateId = response.id;
+//            $scope.loadNewUrl();
+//        });
+//    };
+
+    function getAgencyProduct(agencyId) {
+        $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
+            $scope.products = response;
+            if (!response) {
+                return;
+            }
+            if (!response[0]) {
+                return;
+            }
+            var getTemplateId = response[0].templateId ? response[0].templateId.id : 0
+            $stateParams.productId = $stateParams.productId ? $stateParams.productId : response[0].id;
+            var templateId = $stateParams.templateId = $stateParams.templateId ? $stateParams.templateId : getTemplateId;
+//            $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
+//                templateId = response.id;
+//            });
+//
+//            $stateParams.templateId = templateId ? templateId : getTemplateId;
+            try {
+                var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
+
+                var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
+            } catch (e) {
+            }
+            if ($scope.getCurrentPage() === "dashboard") {
+                $state.go("index.dashboard." + $scope.getCurrentTab(), {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    productId: $stateParams.productId,
+                    templateId: $stateParams.templateId,
+                    tabId: $stateParams.tabId,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "editWidget") {
+                $state.go("index.editWidget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    tabId: $stateParams.tabId,
+                    widgetId: $stateParams.widgetId,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "reports") {
+                $state.go("index.report.reports", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    productId: $stateParams.productId,
+                    tabId: $stateParams.tabId,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "newOrEdit") {
+                $state.go("index.report.newOrEdit", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    reportId: $stateParams.reportId,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "updateReportWidget") {
+                $state.go("index.widgetEditByReport", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    reportId: $stateParams.reportId,
+                    reportWidgetId: $stateParams.reportWidgetId,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }
+//            else if ($scope.getCurrentPage() === "franchiseMarketing") {
+//                $state.go("index.franchiseMarketing", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+//                    productId: $stateParams.productId,
+//                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+//                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+//                });
+//            } 
+            else if ($scope.getCurrentPage() === "dataSource") {
+                $state.go("index.dataSource", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "dataSet") {
+                $state.go("index.dataSet", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "scheduler") {
+                $state.go("index.schedulerIndex.scheduler", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
+                $state.go("index.schedulerIndex.editOrNewScheduler", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    schedulerId: $stateParams.schedulerId,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "user") {
+                $state.go("index.user", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "account") {
+                $state.go("index.account", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "agency") {
+                $state.go("index.agency", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            } else if ($scope.getCurrentPage() === "fieldSettings") {
+                $state.go("index.fieldSettings", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                });
+            }
+//            else if ($scope.getCurrentPage() === "tag") {
+//                $state.go("index.tag", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+//                    startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
+//                    endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+//                });
+//            }
+
+            else if ($scope.getCurrentPage() === "favourites") {
+                $state.go("index.favourites", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
+                $state.go("index.viewFavouritesWidget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+//                    favouriteId: $stateParams.favouriteId,
+                    productId: $stateParams.productId,
+                    favouriteName: $stateParams.favouriteName,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else if ($scope.getCurrentPage() === "settings") {
+                $state.go("index.settings", {
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            } else {
+                $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
             }
         });
-        $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        $scope.accountLogo = $scope.name.accountId.logo;
-        if (!$scope.name.userId.agencyId) {
-            $scope.loadNewUrl();
-            return;
-        }
-        getAgencyProduct($scope.name.userId.agencyId.id);
-    });
-
-    $scope.getAccountId = function (account) {
-        if ($stateParams.accountId != account.accountId.id) {
-            $stateParams.tabId = 0;
-            $stateParams.templateId = 0;
-        }
-        if (account.accountId.logo) {
-            $scope.accountLogo = account.accountId.logo;
-        } else {
-            $scope.accountLogo = "";
-        }
-        $stateParams.accountId = account.accountId.id;
-        $scope.selectAccount.selected = {accountName: account.accountId.accountName};
-        $stateParams.accountName = account.accountId.accountName;
-        $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
-            $stateParams.templateId = response.id;
-            $scope.loadNewUrl();
-        });
-    };
+    }
 
     $scope.toDate = function (strDate) {
         if (!strDate) {
@@ -721,4 +1007,11 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
         });
     });
+});
+app.filter('highlight', function () {
+    return function (text, phrase) {
+        return phrase
+                ? text.replace(new RegExp('(' + phrase + ')', 'gi'), '<kbd>$1</kbd>')
+                : text;
+    };
 });

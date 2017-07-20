@@ -559,7 +559,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //                $scope.dynamicFilterAllColumns.splice(0, 1);
             }
             var getWidgetColumns = widget.columns;
-
             $scope.collectionFields.forEach(function (value, k) {
                 var machField = $.grep(getWidgetColumns, function (b) {
                     return b.fieldName === value.fieldName;
@@ -619,6 +618,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
 
             resetQueryBuilder();
+            console.log($scope.collectionFields)
         });
     }
 
@@ -637,7 +637,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $scope.y1Column = "";
         $scope.xColumn = "";
-        $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
@@ -678,20 +677,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.afterLoadWidgetColumns = true;
             $scope.hideSelectedColumn = false;
-//            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
-//                $scope.collectionFields = response.columnDefs;
-//            } else {
-            $scope.collectionFields = response.columnDefs;
-            $scope.widgetDataSetColumnsDefs = response.columnDefs;
-            $scope.collectionFields.forEach(function (val, key) {
-                $scope.dynamicFilterAllColumns.push({fieldName: val.fieldName, displayName: val.displayName, fieldType: val.fieldType, nodes: []});
-            });
-            $scope.columnY1Axis = [];
-            $scope.columnY2Axis = [];
-            angular.forEach($scope.collectionFields, function (value, key) {
-                $scope.columnY1Axis.push(value);
-                $scope.columnY2Axis.push(value);
-            });
+            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
+                $scope.collectionFields = response.columnDefs;
+            } else {
+                $scope.collectionFields = response.columnDefs;
+            }
             resetQueryBuilder();
         });
     };
@@ -818,7 +808,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = true;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
-        $scope.showColor = false;
         $scope.hideSelectedColumn = false;
     };
 
