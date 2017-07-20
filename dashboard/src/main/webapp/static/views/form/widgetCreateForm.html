@@ -363,7 +363,6 @@
 </style>
 <script type="text/ng-template" id="allColumns.html">
     <div ui-tree-handle class="tree-node tree-node-content">
-    <a class="btn btn-success btn-xs" ng-click="toggle(this)"><span class="glyphicon" ng-class="{'glyphicon-chevron-right': !collapsed, 'glyphicon-chevron-down': collapsed}"></span></a>
     {{dynamicFilterAllColumn.fieldName}}
 <!--    <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
     <a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
@@ -376,7 +375,7 @@
 <script type="text/ng-template" id="draggedColumns.html">
 <div class="tree-node">
     <div class="pull-left tree-handle" ui-tree-handle>
-        <span class="glyphicon glyphicon-list"></span>
+        <i class="fa fa-arrows" aria-hidden="true"></i>
     </div>
     <div class="tree-node-content">
         <a class="btn btn-success btn-xs" data-nodrag ng-click="toggle(this)">
@@ -389,7 +388,9 @@
 
             {{draggedFilterColumn.fieldName}}
 
-            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeDraggedFilterColumn(draggedFilterColumn)"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeDraggedFilterColumn(draggedFilterColumn)">
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+            </a>
             <!--<a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span class="glyphicon glyphicon-plus"></span></a>-->
         </div>
     </div>
@@ -508,12 +509,12 @@
                                         ng-click="showSortingColumn()">
                                     Sort
                                 </button>
-                                <button class="btn btn-success" 
+                                <button class="btn btn-default" 
                                         ng-click="showColorList()">
                                     Color
                                 </button>
                             </div>
-                            <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
+                            <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
                                 <button class="btn btn-default" 
                                         ng-click="showEditor(chartTypeName, widgetObj)">
                                     Show Editor
@@ -950,7 +951,7 @@
                     <div class="footer-filter">
                         <div class="pull-right">
                             <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
-                            <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
+                            <button class="btn btn-default set-json" id="btn-reset" data-target="basic">Reset</button>
                         </div>
                     </div>
                 </div>
@@ -993,13 +994,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading btnAddon5">
                     <h3 class="panel-title">
-                        Color <button class="btn btn-success  pull-right" ng-click="addColors(widgetObj)"><i class="fa fa-plus"></i></button></h3>
+                        <button class="btn btn-xs btn-default" ng-click="addColors(widgetObj)"><i class="fa fa-plus"></i></button> Add Color</h3>
                 </div>
-                <div class="container" ng-repeat="widgetColor in widgetObj.targetColors">
-                    Color: <ui-colorpicker ng-model="widgetColor.color"  style="width:40%;padding: 10px;height"></ui-colorpicker>
+                <div class="container color-code" ng-repeat="widgetColor in widgetObj.targetColors">
+                    Color: <ui-colorpicker ng-model="widgetColor.color"  style="padding: 10px;"></ui-colorpicker>
                     Code: <input ng-model="widgetColor.color" ng-change="selectColorInPicker(widgetColor)"/>
                     <!--<button class="btn btn-primary btn-xs" ng-click="editColorOption(targetColors)"><i class="fa fa-edit"></i></button>-->
-                    <button class="btn btn-danger btn-xs" ng-click="deleteColorOption(widgetColor.color, $index)"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-default btn-sm" ng-click="deleteColorOption(widgetColor.color, $index)"><i class="fa fa-minus"></i></button>
                     <br/>
                 </div>
                 <br>

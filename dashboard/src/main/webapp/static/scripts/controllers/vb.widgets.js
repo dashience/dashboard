@@ -503,9 +503,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourcePassword = '';
         }
         var url = "admin/proxy/getData?";
-        if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
-            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
+//        if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
+//            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//        }
 
         var setProductSegment;
         var setTimeSegment;
@@ -646,9 +646,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widget.jsonData = null;
         widget.queryFilter = null;
         var url = "admin/proxy/getData?";
-        if (getDataSet.dataSourceId.dataSourceType == "sql") {
-            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
+//        if (getDataSet.dataSourceId.dataSourceType == "sql") {
+//            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//        }
         var dataSourcePassword;
         if (getDataSet.dataSourceId.password) {
             dataSourcePassword = getDataSet.dataSourceId.password;
@@ -1127,21 +1127,54 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.filters = [];
-    $http.get("static/datas/filters/filters.json").success(function (response) {
-        $scope.filters = response.filter;
-        $scope.collectionFirst = [];
-        angular.forEach($scope.filters, function (val, key) {
-            angular.forEach(val.options, function (value, k) {
-                $scope.collectionFirst.push({[val.fieldName]: k, status: false, data: value})
+    $scope.getDynamicFilterItems = function (dynamicFilterObj) {
+        if ($scope.filterLoaded != true) {
+            angular.forEach(dynamicFilterObj.filter, function (val, key) {
+                var index = $scope.filters.findIndex(x => x.fieldName === val.fieldName);
+                if (index == -1) {
+                    $scope.filters.push(val)
+                }
             });
-        });
-    });
-
+            $scope.collectionFirst = [];
+            angular.forEach($scope.filters, function (val, key) {
+                angular.forEach(val.options, function (value, k) {
+                    $scope.collectionFirst.push({[val.fieldName]: k, status: false, data: value})
+                });
+            });
+        }
+    };
     $scope.collection2 = [];
     $scope.collection3 = [];
+    $scope.emptyFirstLevelCollection = [];
+    $scope.urlCollection = [];
+    $scope.selectedFilters = {};
+
+    $scope.getAllSelected = function () {
+        var allSelected = {};
+        var urlFilterParameter;
+        $scope.reloadAllDirective = false;
+        $('.inputCheckbox:checked').each(function (key, value) {
+            var fieldname = $(value).attr('fieldname');
+            var fieldvalue = $(value).attr('fieldvalue');
+            if (!allSelected[fieldname]) {
+                allSelected[fieldname] = [];
+            }
+         urlFilterParameter =  allSelected[fieldname].push(fieldvalue);
+        });
+        $scope.widgets.forEach(function (val, key) {
+            val.filterUrlParameter = urlFilterParameter;
+        });
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+            $scope.filterLoaded = true;
+        }, 50);
+        console.log(allSelected);
+    };
+
     $scope.getSelectedFirstLevel = function (filterObj, obj) {
+        var urlFilterParameter = [];
         var checkObjStatus = angular.equals({}, filterObj.data);
-        if (checkObjStatus === false) {
+        if (checkObjStatus === false && filterObj.data.options) {
             if (filterObj.status === true) {
                 var index = $scope.collection2.findIndex(x => x.fieldName === filterObj.data.fieldName);
                 var data = [];
@@ -1190,20 +1223,40 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             }
         } else {
-            console.log(filterObj);
+            var getIndexOfEmptyLevel = $scope.emptyFirstLevelCollection.findIndex(x => x.parentName === obj.displayName);
+            if (getIndexOfEmptyLevel == -1) {
+                $scope.emptyFirstLevelCollection.push({parentName: obj.displayName, data: [{fieldName: filterObj[obj.fieldName]}]})
+            } else {
+                $scope.emptyFirstLevelCollection.forEach(function (val, k) {
+                    if (val.parentName === obj.displayName)
+                        val.data.push({fieldName: filterObj[obj.fieldName]})
+                });
+            }
         }
-        // console.log($scope.collection2);
-//        $timeout(function () {
-//            $scope.reloadAllDirective = true;
-//        }, 50);
-//    };
+//        $scope.collection2.forEach(function (val, key) {
+//            var returnGetObj = [];
+//            $.grep(val.data, function (value) {
+//                returnGetObj.push(value.groupName)
+//            });
+//            urlFilterParameter.push({[val.parentFieldName]: {[val.fieldName]: returnGetObj}});
+//        });
+//
+//        $scope.emptyFirstLevelCollection.forEach(function (val, k) {
+//            var returnGetObj = [];
+//            $.grep(val.data, function (value) {
+//                returnGetObj.push(value.fieldName)
+//            });
+//            urlFilterParameter.push({[val.parentName]: returnGetObj});
+//        });
+//        $scope.urlCollection = urlFilterParameter;
+        
     };
 
-
     $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
+        var urlFilterParameter = [];
         var data = [];
         var checkObjStatus = angular.equals({}, filterObj.data);
-        if (checkObjStatus === false) {
+        if (checkObjStatus === false && filterObj.data.options) {
             if (filterObj.status === true) {
                 var index = $scope.collection3.findIndex(x => x.fieldName === filterObj.data.fieldName);
                 if (index === -1) {
@@ -1212,6 +1265,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     });
                     $scope.collection3.push({displayName: filterObj.data.displayName,
                         parentDisplayName: obj.displayName,
+                        childGroupName: filterObj.data.groupField,
                         parentFieldName: obj.fieldName,
                         fieldName: filterObj.data.fieldName,
                         data: [{groupName: filterObj.fieldName, options: data}]
@@ -1236,14 +1290,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.getSelectedThirdLevel = function (filterObj, filterList) {
-        console.log(filterObj);
-        console.log(filterList);
+        // console.log(filterObj)
+        //console.log(filterList)
     };
+
 
     $scope.chartSelectedFields = [];
     $scope.getChartFilterItems = function (filterBy) {
-        $scope.chartSelectedFields.push({xAxisValues: filterBy.xAxisValue, fieldName: filterBy.name, value: filterBy.value});
-        $scope.$apply($scope.chartSelectedFields);
+        $scope.chartSelectedFields.push({xAxisValues: filterBy.xAxisValue, fieldName: filterBy.name, value: filterBy.value})
+        $scope.$apply($scope.chartSelectedFields)
 //        return;
 //        var getSelectedFilter = filterBy;
 //        $scope.filters.forEach(function (val, k) {
@@ -1883,7 +1938,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.targetColors = "";
         $scope.draggedFilterColumns = "";
         $scope.dynamicFilterAllColumns = "";
-        dynamicFilter = "";
+        $scope.dynamicFilter = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
@@ -2369,6 +2424,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
         scope: {
             setTableChartFn: '&',
             getSelectedFilterItem: '&',
+            getReturnDynamicFilter: '&',
             dynamicTableSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -2596,9 +2652,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 schema: 'vb'
             };
             var url = "admin/proxy/getData?";
-            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+//            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
+//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            }
 
             var dataSourcePassword;
             if (tableDataSource.dataSourceId.password) {
@@ -2655,7 +2711,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
-
+                    scope.getReturnDynamicFilter({dynamicFilterObj: response.filter})
                     if (!response.data) {
                         return;
                     }
@@ -2994,9 +3050,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
             var url = "admin/proxy/getData?";
-            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+//            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
+//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            }
             var dataSourcePassword;
             if (tickerDataSource.dataSourceId.password) {
                 dataSourcePassword = tickerDataSource.dataSourceId.password;
@@ -3092,7 +3148,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
     };
 });
 
-app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter) {
+app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter, $timeout) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -3100,6 +3156,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
         scope: {
             setLineChartFn: '&',
             getSelectedFilterItem: '&',
+            getReturnDynamicFilter: '&',
             lineChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -3256,9 +3313,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             if (scope.lineChartSource) {
 
                 var url = "admin/proxy/getData?";
-                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
                 var dataSourcePassword;
                 if (lineChartDataSource.dataSourceId.password) {
                     dataSourcePassword = lineChartDataSource.dataSourceId.password;
@@ -3333,6 +3390,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             scope.lineEmptyMessage = "No Data Found";
                             scope.hideEmptyLine = true;
                         } else {
+                            var getFilterLength = response.filter ? response.filter.length : null
+                            if (getFilterLength > 0) {
+                                scope.getReturnDynamicFilter({dynamicFilterObj: response})
+                            }
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
@@ -3411,6 +3472,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     types: chartCombinationtypes,
                                     onclick: function (obj, element) {
                                         obj.xAxisValue = xData[obj.index]
+                                        obj.filter = response.filter;
                                         scope.getSelectedFilterItem({filterBy: obj});
                                     }
                                 },
@@ -3455,6 +3517,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
         scope: {
             setBarChartFn: '&',
             getSelectedFilterItem: '&',
+            getReturnDynamicFilter: '&',
             barChartSource: '@',
             widgetId: '@',
             barChartId: '@',
@@ -3612,9 +3675,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
                 var url = "admin/proxy/getData?";
-                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
                 var dataSourcePassword;
                 if (barChartDataSource.dataSourceId.password) {
                     dataSourcePassword = barChartDataSource.dataSourceId.password;
@@ -3686,6 +3749,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             scope.barEmptyMessage = "No Data Found";
                             scope.hideEmptyBar = true;
                         } else {
+                            scope.getReturnDynamicFilter({dynamicFilter: response.filter})
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj)
@@ -3803,6 +3867,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
         scope: {
             setPieChartFn: '&',
             getSelectedFilterItem: '&',
+            getReturnDynamicFilter: '&',
             pieChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -3951,9 +4016,9 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
                 var url = "admin/proxy/getData?";
-                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (pieChartDataSource.dataSourceId.password) {
@@ -4026,6 +4091,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             scope.pieEmptyMessage = "No Data Found";
                             scope.hideEmptyPie = true;
                         } else {
+                            scope.getReturnDynamicFilter({dynamicFilter: response.filter})
                             var loopCount = 0;
                             var sortingObj;
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
@@ -4137,6 +4203,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
         scope: {
             setAreaChartFn: '&',
             getSelectedFilterItem: '&',
+            getReturnDynamicFilter: '&',
             widgetId: '@',
             areaChartSource: '@',
             widgetColumns: '@',
@@ -4291,9 +4358,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             if (scope.areaChartSource) {
                 console.log(areaChartDataSource)
                 var url = "admin/proxy/getData?";
-                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (areaChartDataSource.dataSourceId.password) {
@@ -4357,6 +4424,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             scope.areaEmptyMessage = "No Data Found";
                             scope.hideEmptyArea = true;
                         } else {
+                            scope.getReturnDynamicFilter({dynamicFilter: response.filter})
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
@@ -4478,6 +4546,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
         scope: {
             setStackedBarChartFn: '&',
             getSelectedFilterItem: '&',
+            getReturnDynamicFilter: '&',
             widgetId: '@',
             stackedBarChartSource: '@',
             widgetColumns: '@',
@@ -4637,9 +4706,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             var stackedBarChartDataSource = JSON.parse(scope.stackedBarChartSource);
             if (scope.stackedBarChartSource) {
                 var url = "admin/proxy/getData?";
-                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (stackedBarChartDataSource.dataSourceId.password) {
@@ -4704,6 +4773,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             scope.stackedBarEmptyMessage = "No Data Found";
                             scope.hideEmptyStackedBar = true;
                         } else {
+                            scope.getReturnDynamicFilter({dynamicFilter: response.filter})
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
@@ -4826,6 +4896,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
         scope: {
             setFunnelFn: '&',
             getSelectedFilterItem: '&',
+            getReturnDynamicFilter: '&',
             funnelSource: '@',
             funnelId: '@',
             funnelColumns: '@',
@@ -4865,9 +4936,9 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             var funnelDataSource = JSON.parse(scope.funnelSource);
             if (funnelDataSource) {
                 var url = "admin/proxy/getData?";
-                if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (funnelDataSource.dataSourceId.password) {
@@ -4935,6 +5006,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             if (!response) {
                                 return;
                             }
+                            scope.getReturnDynamicFilter({dynamicFilter: response.filter})
                             angular.forEach(funnelName, function (value, key) {
                                 var funnelData = response.data;
                                 var loopCount = 0;

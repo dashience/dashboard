@@ -2735,7 +2735,7 @@ h6 {
     min-width: 320px;
     padding: 8px 30px;
     position: relative;
-    z-index: 99;
+    z-index: 1;
 
 }
 @media (max-width: 768px) {
@@ -3212,8 +3212,10 @@ label.error:before {
     background: none repeat scroll 0 0 #f7f9fa;
     border: 1px dashed #e4e5e7;
     color: inherit;
-    padding: 10px;
+    padding: 5px 10px;
     border-radius: 3px;
+    margin: 10px 10px;
+
 }
 .tree-node .btn {
     min-width: 22px;
@@ -4251,4 +4253,18 @@ span.add-title {
 .field-wrap li .btn {
     margin-right: 2px;
 }
+
+.panel-title .btn-xs {
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    background: #5ba689;
+    color: #fff;
+}
+
+.color-code {
+    padding:5px;
+}
+
 
