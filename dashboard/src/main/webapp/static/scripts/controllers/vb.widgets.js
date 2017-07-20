@@ -1129,7 +1129,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.filters = [];
     $scope.getDynamicFilterItems = function (dynamicFilterObj) {
         if ($scope.filterLoaded != true) {
-            angular.forEach(dynamicFilterObj.filter, function (val, key) {
+
+            angular.forEach(dynamicFilterObj, function (val, key) {
                 var index = $scope.filters.findIndex(x => x.fieldName === val.fieldName);
                 if (index == -1) {
                     $scope.filters.push(val)
@@ -1148,10 +1149,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.emptyFirstLevelCollection = [];
     $scope.urlCollection = [];
     $scope.selectedFilters = {};
-
+    $scope.chartSelectedFields = []
     $scope.getAllSelected = function () {
         var allSelected = {};
-        var urlFilterParameter;
         $scope.reloadAllDirective = false;
         $('.inputCheckbox:checked').each(function (key, value) {
             var fieldname = $(value).attr('fieldname');
@@ -1159,20 +1159,29 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (!allSelected[fieldname]) {
                 allSelected[fieldname] = [];
             }
-         urlFilterParameter =  allSelected[fieldname].push(fieldvalue);
+//            var index = $scope.chartSelectedFields.findIndex(x => x.name === fieldname);
+//            if (index === -1) {
+//                $scope.chartSelectedFields.push({name: fieldname, fieldName: fieldname, data: [{value: fieldvalue}]})
+//            } else {
+//                $scope.chartSelectedFields.forEach(function (val, key) {
+//                    var getIndex = val.data.findIndex(x => x.value === fieldname)
+//                    if (getIndex === -1) {
+//                        val.data.push({value: fieldvalue})
+//                    }
+//                })
+//            }
+            allSelected[fieldname].push(fieldvalue);
         });
         $scope.widgets.forEach(function (val, key) {
-            val.filterUrlParameter = urlFilterParameter;
+            val.filterUrlParameter = allSelected;
         });
         $timeout(function () {
             $scope.reloadAllDirective = true;
             $scope.filterLoaded = true;
         }, 50);
-        console.log(allSelected);
     };
 
-    $scope.getSelectedFirstLevel = function (filterObj, obj) {
-        var urlFilterParameter = [];
+    $scope.getSelectedFirstLevel = function (filterObj, obj, count) {
         var checkObjStatus = angular.equals({}, filterObj.data);
         if (checkObjStatus === false && filterObj.data.options) {
             if (filterObj.status === true) {
@@ -1233,13 +1242,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             }
         }
-//        $scope.collection2.forEach(function (val, key) {
-//            var returnGetObj = [];
-//            $.grep(val.data, function (value) {
-//                returnGetObj.push(value.groupName)
-//            });
-//            urlFilterParameter.push({[val.parentFieldName]: {[val.fieldName]: returnGetObj}});
-//        });
+
 //
 //        $scope.emptyFirstLevelCollection.forEach(function (val, k) {
 //            var returnGetObj = [];
@@ -1249,7 +1252,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            urlFilterParameter.push({[val.parentName]: returnGetObj});
 //        });
 //        $scope.urlCollection = urlFilterParameter;
-        
+
     };
 
     $scope.getSelectedSecondLevel = function (filterObj, filterList, obj) {
@@ -1295,20 +1298,32 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
 
-    $scope.chartSelectedFields = [];
+//    $scope.chartSelectedFields = [];
     $scope.getChartFilterItems = function (filterBy) {
-        $scope.chartSelectedFields.push({xAxisValues: filterBy.xAxisValue, fieldName: filterBy.name, value: filterBy.value})
+        //$scope.chartSelectedFields.push({name: filterBy.xAxisValue, fieldName: filterBy.name, data: [{value: filterBy.value}]})
         $scope.$apply($scope.chartSelectedFields)
-//        return;
-//        var getSelectedFilter = filterBy;
-//        $scope.filters.forEach(function (val, k) {
-//            $.grep(val.listOfOptions, function (value) {
-//                if (value.name === getSelectedFilter.name) {
-//                    value.status = true;
-//                }
-//                ;
-//            });
-//        });
+        var exist = false;
+        angular.forEach($scope.collectionFirst, function (val) {
+            if (parseInt(val[filterBy.name]) === filterBy.value) {
+                val.status = true;
+                exist = true;
+            }
+
+        })
+        if (exist === false) {
+            angular.forEach($scope.collection3, function (val, k) {
+                $.grep(val.data, function (value) {
+                    angular.forEach(value.options, function (obj, key) {
+                        if (parseInt(obj.fieldName) == filterBy.value) {
+                            obj.status = true;
+                            exist = true;
+                        }
+                    });
+                });
+            });
+        }
+        $scope.$apply($scope.collectionFirst)
+        $scope.$apply($scope.collection3)
     };
 
     $scope.expandWidget = function (widget) {
@@ -3349,7 +3364,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                         } else {
                             var getFilterLength = response.filter ? response.filter.length : null
                             if (getFilterLength > 0) {
-                                scope.getReturnDynamicFilter({dynamicFilterObj: response})
+                                scope.getReturnDynamicFilter({dynamicFilterObj: response.filter})
                             }
                             var loopCount = 0;
                             var sortingObj;
@@ -4381,7 +4396,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             scope.areaEmptyMessage = "No Data Found";
                             scope.hideEmptyArea = true;
                         } else {
-                            scope.getReturnDynamicFilter({dynamicFilter: response.filter})
+                            scope.getReturnDynamicFilter({dynamicFilterObj: response.filter})
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);

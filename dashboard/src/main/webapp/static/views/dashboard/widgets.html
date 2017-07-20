@@ -239,7 +239,7 @@
         margin-right: 0px;
     }
     .btnAddon5{
-        background-color: #5ba689 !important;
+        background-color: #5f5f5f !important;
         color: #fff !important;
     }
     .inputCheckbox{
@@ -284,8 +284,8 @@
                 <div class="row">
                     <div class="" ng-repeat="chartSelectedField in chartSelectedFields">
                         <ul class="field-wrap">
-                            <li>     
-                                <span class="btn btn-default btn-sm">{{chartSelectedField.xAxisValues}} <i class="fa fa-close" ng-click=""></i></span>
+                            <li ng-repeat="obj in chartSelectedField.data">     
+                                <span class="btn btn-default btn-sm">{{chartSelectedField.name +" : "+ obj.value}} <i class="fa fa-close"></i></span>
                             </li>
                         </ul>
                     </div>
@@ -493,6 +493,7 @@
                             <div class="panel-body"  ng-if="widget.chartType === 'area'">
                                 <div>
                                     <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
+                                         get-Return-Dynamic-Filter="getDynamicFilterItems(dynamicFilterObj)"
                                          get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
                                          widget-Id="{{widget.id}}"
