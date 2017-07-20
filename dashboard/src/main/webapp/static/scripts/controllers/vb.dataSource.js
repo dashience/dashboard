@@ -32,7 +32,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: 'analytics',
                 name: 'Google Analytics'
-            
+
             },
             {
                 type: 'pinterest',
@@ -46,9 +46,13 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
 //                type: 'twitter',
 //                name: 'Twitter'
 //            },
-             {
+            {
                 type: 'bing',
                 name: 'Bing'
+            },
+            {
+                type: 'join',
+                name: 'Join'
             }
         ];
         function getItems() {
@@ -94,7 +98,6 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         //for authentication button flag enable status
         $scope.authenticateStatus = function (name)
         {
-            console.log(name.length);
             if (name.length != 0)
             {
                 $scope.authenticateFlag = false;
@@ -153,7 +156,6 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             });
         };
         $scope.saveDataSource = function (dataSource) {
-            console.log(dataSource)
             dataSource.code = $('#fbOauthToken').val();
             dataSource.accessToken = $('#fbAccessToken').val();
             var data = {
@@ -197,7 +199,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 userId: dataSource.userId.id
             };
             $scope.dataSource = data;
-            $scope.selectSourceType(dataSource)
+            $scope.selectSourceType(dataSource);
         };
         $scope.clearDataSource = function (dataSource) {
             $scope.dataSource = "";

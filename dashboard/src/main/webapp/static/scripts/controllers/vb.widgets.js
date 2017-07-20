@@ -290,7 +290,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     };
 
-    $rootScope.getWidgetItem = function() {
+    $rootScope.getWidgetItem = function () {
         if (!$stateParams.tabId) {
             $stateParams.tabId = 0;
         }
@@ -2937,7 +2937,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-
+                console.log(widgetChartColors);
+                console.log(setWidgetChartColors);
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
