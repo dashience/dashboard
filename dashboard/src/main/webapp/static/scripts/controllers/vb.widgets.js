@@ -32,6 +32,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgets = [];
     $scope.tags = [];
     $scope.collectionFields = [];
+    $scope.dynamicFilterAllColumns = [];
+    $scope.draggedFilterColumns = [];
     $scope.dragEnabled = true;
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
@@ -607,6 +609,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dispHideBuilder = true;
         widget.columns = [];
         $scope.collectionFields = [];
+        $scope.dynamicFilterAllColumns = [];
+        $scope.draggedFilterColumns = [];
         $scope.afterLoadWidgetColumns = false;
         var widgetList = widget;
         var getDataSet = widgetList.dataSetId;
@@ -661,6 +665,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            } else {
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
+            console.log($scope.collectionFields);
+            // drag columns collection for dynamic filters
+            $scope.dynamicFilterAllColumns = $scope.collectionFields;
+            angular.forEach($scope.dynamicFilterAllColumns, function (value, key) {
+                value.nodes = [];
+            });
+            $scope.draggedFilterColumns.push($scope.dynamicFilterAllColumns[0]);
+            $scope.dynamicFilterAllColumns.splice(0, 1);
 //            }
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
@@ -1490,7 +1502,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     ;
     //Derived Column
     $scope.showDerived = false;
-    $scope.dataSetColumn = {}
+    $scope.dataSetColumn = {};
     $scope.addDerived = function () {
         $scope.dataSetColumn = {};
         $scope.showDerived = true;
@@ -1949,6 +1961,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             }
             $scope.chartTypeName = "";
+            var widgetColors;
+            if ($scope.userChartColors.optionValue) {
+                widgetColors = $scope.userChartColors.optionValue.split(',');
+            }
             widget.id = data.id;
             widget.chartType = data.chartType;
             widget.chartColorOption = data.chartColorOption;
@@ -1967,10 +1983,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.allAccount = data.accountId;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
+            widget.chartColor = widgetColors;
             widget = data;
             $scope.derivedColumns = [];
+            console.log(response);
+
+            response.chartColors = widgetColors;
+            console.log(response);
             if (!data.id) {
                 $scope.widgets.push(response);
+                console.log($scope.widgets);
             }
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
@@ -2067,6 +2089,60 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj["targetColors"] = tempTargetColors;
         }
     };
+
+    // column drag and drop
+    function removeDraggedFilterColumn(draggedFilterColumn) {
+        console.log($scope.dynamicFilterAllColumns);
+        console.log(draggedFilterColumn);
+        $scope.dynamicFilterAllColumns.push(draggedFilterColumn);
+//        var index = $scope.draggedFilterColumns.indexOf(draggedFilterColumn);
+//        $scope.draggedFilterColumns.splice(index, 1);
+    }
+    ;
+
+
+    $scope.remove = function (scope, draggedFilterColumn) {
+        scope.remove();
+        removeDraggedFilterColumn(draggedFilterColumn);
+        console.log(draggedFilterColumn);
+//        $scope.dynamicFilterAllColumns.push(draggedFilterColumn);
+    };
+    $scope.toggle = function (scope) {
+        scope.toggle();
+    };
+    $scope.treeOptions = {
+        accept: function(sourceNodeScope, destNodesScope, destIndex) {
+          return true;
+        },
+        dropped: function(e) {
+          console.log (e.source.nodeScope.$modelValue);     
+        }
+//        dropped: function (event) {
+//             //To catch the event after dragged
+//
+//             //Value of model which is moving
+//             event.source.nodeScope.$modelValue;
+//             console.log(event.source.nodeScope.$modelValue)
+//
+//             //Source Parent from where we are moving model
+//             event.source.nodeScope.$parentNodeScope.$modelValue;
+//             console.log(event.source.nodeScope.$parentNodeScope.$modelValue);
+//             //Destination Parent to where we are moving model
+//             //Edit: Use "nodesScope" instead of "nodeScope" for dest object 
+//             event.dest.nodesScope.$nodeScope.$modelValue;
+//             console.log(event.dest.nodesScope.$nodeScope.$modelValue);
+//         }
+    };
+
+    $scope.newSubItem = function (scope) {
+        var nodeData = scope.$modelValue;
+        nodeData.nodes.push({
+            id: nodeData.id * 10 + nodeData.nodes.length,
+            title: nodeData.title + '.' + (nodeData.nodes.length + 1),
+            nodes: []
+        });
+    };
+
 });
 
 app.directive('uiColorpicker', function () {
@@ -2334,7 +2410,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
             }
             var fullAggreagtionList = aggreagtionList;
-            var tableDataSource = JSON.parse(scope.dynamicTableSource)
+            var tableDataSource = JSON.parse(scope.dynamicTableSource);
             var data = {
                 url: '../dbApi/admin/dataSet/getData',
                 connectionUrl: tableDataSource.dataSourceId.connectionString,
@@ -3016,12 +3092,14 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+                console.log(getWidgetObj);
                 console.log(scope.defaultChartColor);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
                 console.log(defaultColors);
                 //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
 
                 var widgetChartColors;
+                console.log(getWidgetObj.chartColorOption);
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
@@ -3364,7 +3442,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     dataSourcePassword = '';
                 }
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -3701,7 +3779,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4036,7 +4114,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4374,7 +4452,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -4598,9 +4676,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-
                 //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
-                var defaultColors = scope.defaultChartColor?JSON.parse(scope.defaultChartColor):"";
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
