@@ -14,11 +14,11 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
         $scope.favPdfWidgets = response;
         setInterval(function () {
             window.status = "done";
-        }, 10000)
+        }, 10000);
     });
     
    
     $scope.downloadUiPdf = function () {
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
-    }
+    };
 });
