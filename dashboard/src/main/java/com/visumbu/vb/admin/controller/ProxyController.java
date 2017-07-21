@@ -131,7 +131,7 @@ public class ProxyController {
     private final String urlDownload = "url.download";
 
     final static Logger log = Logger.getLogger(ProxyController.class);
-    
+
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
@@ -1997,27 +1997,39 @@ public class ProxyController {
             log.debug("valuemap: " + valueMap);
 
             String query = getFromMultiValueMap(valueMap, "query");
+
+            String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
+
+            if (isNullOrEmpty(dashboardFilter)) {
+                dashboardFilter = "";
+            }
+
+            dashboardFilter = getQueryFilter(dashboardFilter);
+            
+            if (!isNullOrEmpty(dashboardFilter.trim())) {
+                if (query != null) {
+                    if (query.indexOf("where") > 0) {
+                        query += " " + dashboardFilter;
+                    } else {
+                        query += " where " + dashboardFilter;
+                    }
+                }
+            }
+
+            System.out.println("Query ===> " + query);
+
             try {
                 query = URLEncoder.encode(query, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
                 java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
-            
-            if(isNullOrEmpty(dashboardFilter)) {
-                dashboardFilter = "";
-            }
-            
-            dashboardFilter = getQueryFilter(dashboardFilter);
-            
-            if(query != null) {
-                if(query.indexOf("where") > 0) {
-                    query += " " + dashboardFilter;
-                }
-            }
-            
             valueMap.put("query", Arrays.asList(query));
+            try {
+                dashboardFilter = URLEncoder.encode(dashboardFilter, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            valueMap.put("dashboardFilter", Arrays.asList(dashboardFilter));
 
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();
