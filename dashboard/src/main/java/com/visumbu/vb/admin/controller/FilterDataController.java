@@ -61,19 +61,19 @@ public class FilterDataController extends BaseController {
         String query = "";
 
         if (dataType.equalsIgnoreCase("salesType")) {
-            query = "select distinct SalesType as fieldName,  SalesType as displayName from skyzoneData ";
+            query = "select distinct sales_type as fieldName,  sales_type as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("country")) {
-            query = "select distinct Country as fieldName,  Country as displayName from skyzoneData ";
+            query = "select distinct country as fieldName,  country as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("state")) {
-            query = "select distinct State as fieldName,  State as displayName from skyzoneData ";
+            query = "select distinct state as fieldName,  state as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("city")) {
-            query = "select distinct City as fieldName,  City as displayName from skyzoneData ";
+            query = "select distinct city as fieldName,  city as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("store")) {
-            query = "select distinct Location as fieldName,  Location as displayName from skyzoneData ";
+            query = "select distinct location as fieldName,  location as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("category")) {
-            query = "select distinct Category as fieldName,  Category as displayName from skyzoneData ";
+            query = "select distinct category as fieldName,  category as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("subCategory")) {
-            query = "select distinct Sub_Category as fieldName,  Sub_Category as displayName from skyzoneData ";
+            query = "select distinct sub_category as fieldName,  sub_category as displayName from skyzone_center_edge ";
         }
         return getSqlData(request, response, query);
     }
@@ -121,7 +121,7 @@ public class FilterDataController extends BaseController {
             valueMap.put("driver", Arrays.asList("com.mysql.jdbc.Driver"));
             valueMap.put("username", Arrays.asList("root"));
             valueMap.put("password", Arrays.asList("root"));
-            valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/skyzone"));
+            valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/fpad_prod"));
 
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();

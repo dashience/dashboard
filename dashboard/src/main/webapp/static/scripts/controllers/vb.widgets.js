@@ -247,8 +247,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
     });
-
-
     $scope.networkTypes = [
         {
             type: 'SEARCH',
