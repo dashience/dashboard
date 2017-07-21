@@ -74,46 +74,46 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     });
 
-//    $scope.salesTypes = [
-//        {fieldName: "Domestic", displayName: "Domestic"},
-//        {fieldName: "International", displayName: "InterNational"}
-//    ]
-//    $scope.countries = [
-//        {fieldName: "Us", displayName: "US"},
-//        {fieldName: "India", displayName: "INDIA"}
-//    ]
-//    $scope.states = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "California", displayName: "California"},
-//        {fieldName: "New York", displayName: "New York"},
-//    ]
-//    $scope.cities = [
-//        {fieldName: "Alexander City", displayName: "Alexander City"},
-//        {fieldName: "Andalusia", displayName: "Andalusia"},
-//        {fieldName: "Anniston", displayName: "Anniston"},
-//        {fieldName: "Athens", displayName: "Athens"},
-//        {fieldName: "Alameda", displayName: "Alameda"},
-//        {fieldName: "Alhambra", displayName: "Alhambra"},
-//        {fieldName: "Anaheim", displayName: "Anaheim"},
-//        {fieldName: "Antioch", displayName: "Antioch"}]
-//    $scope.stores = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"}
-//    ]
-//    $scope.categories = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"}
-//    ]
-//    $scope.subCategories = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"}
-//    ]
+    $scope.salesTypes = [
+        {fieldName: "Domestic", displayName: "Domestic"},
+        {fieldName: "International", displayName: "InterNational"}
+    ]
+    $scope.countries = [
+        {fieldName: "Us", displayName: "US"},
+        {fieldName: "India", displayName: "INDIA"}
+    ]
+    $scope.states = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "California", displayName: "California"},
+        {fieldName: "New York", displayName: "New York"},
+    ]
+    $scope.cities = [
+        {fieldName: "Alexander City", displayName: "Alexander City"},
+        {fieldName: "Andalusia", displayName: "Andalusia"},
+        {fieldName: "Anniston", displayName: "Anniston"},
+        {fieldName: "Athens", displayName: "Athens"},
+        {fieldName: "Alameda", displayName: "Alameda"},
+        {fieldName: "Alhambra", displayName: "Alhambra"},
+        {fieldName: "Anaheim", displayName: "Anaheim"},
+        {fieldName: "Antioch", displayName: "Antioch"}]
+    $scope.stores = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"}
+    ]
+    $scope.categories = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"}
+    ]
+    $scope.subCategories = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"}
+    ]
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -141,7 +141,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $('.inputCheckbox:checked').each(function (key, value) {
             var fieldname = $(value).attr('fieldname');
             var fieldvalue = $(value).attr('fieldvalue');
-            var status = $(value).attr('status');
             if (!allSelected[fieldname]) {
                 allSelected[fieldname] = [];
             }
@@ -152,7 +151,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $timeout(function () {
             $scope.reloadAllDirective = true;
-            $scope.filterLoaded = true;
         }, 50);
         return allSelected;
     };
@@ -163,14 +161,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         angular.forEach(filtersArray, function (value) {
             var selectedFilter = $scope.getAllSelected();
             var dashboardFilter = {};
-            console.log(selectedFilter);
             if (value == "salesType") {
                 $http.get('admin/filterData/getFilter/salesType').success(function (response) {
                     $scope.salesTypes = response.data;
                 });
             }
             if (value == "country") {
-
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $http.get('admin/filterData/getFilter/country?dashboardFilter=' + queryString).success(function (response) {
@@ -218,28 +214,86 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
     };
-//    $http.get('admin/filterData/getFilter/salesType').success(function (response) {
-//        $scope.salesTypes = response.data;
-//    });
-//    $http.get('admin/filterData/getFilter/country').success(function (response) {
-//        $scope.countries = response.data;
-//    });
-//    $http.get('admin/filterData/getFilter/state').success(function (response) {
-//        $scope.states = response.data;
-//    });
-//    $http.get('admin/filterData/getFilter/city').success(function (response) {
-//        $scope.cities = response.data;
-//    });
-//    $http.get('admin/filterData/getFilter/store').success(function (response) {
-//        $scope.stores = response.data;
-//    });
-//    $http.get('admin/filterData/getFilter/category').success(function (response) {
-//        $scope.categories = response.data;
-//    });
-//    $http.get('admin/filterData/getFilter/subcategory').success(function (response) {
-//        $scope.subCategories = response.data;
-//    });
+
     $scope.updateFilter("salesType,country,state,city,store,category,subCategory");
+
+    $scope.getSelctionCount = function (checkboxCollection, type) {
+        var count = 0;
+        if (!checkboxCollection) {
+            return;
+        }
+        checkboxCollection.forEach(function (value, key) {
+            if (value.status) {
+                count++;
+            }
+        });
+        return count;
+    };
+
+    $scope.getChartFilterItems = function (filterBy) {
+       // filterBy.value = "Domestic"
+        angular.forEach($scope.salesTypes, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
+        console.log($scope.salesTypes)
+        angular.forEach($scope.countries, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.states, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.cities, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.stores, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.categories, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.subCategories, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
+        $scope.$apply($scope.salesTypes);
+        $scope.$apply($scope.countries);
+        $scope.$apply($scope.states);
+        $scope.$apply($scope.cities);
+        $scope.$apply($scope.stores);
+        $scope.$apply($scope.categories);
+        $scope.$apply($scope.subCategories);
+        $timeout(function () {
+            $scope.getAllSelected();
+        }, 100);
+    };
+
     $http.get("admin/settings/getSettings").success(function (response) {
         angular.forEach(response, function (value, key) {
             if (value.defaultChartColor) {
@@ -1248,19 +1302,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.setFunnelFn = function (funnelFn) {
         $scope.reloadDirFunnelFn = funnelFn;
-    };
-
-    $scope.getSelctionCount = function (checkboxCollection, type) {
-        var count = 0;
-        if (!checkboxCollection) {
-            return;
-        }
-        checkboxCollection.forEach(function (value, key) {
-            if (value.status) {
-                count++;
-            }
-        });
-        return count;
     };
 
     $scope.expandWidget = function (widget) {
@@ -2949,6 +2990,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 '<div ng-show="hideEmptyLine" class="text-center">{{lineEmptyMessage}}</div>',
         scope: {
             setLineChartFn: '&',
+            getSelectedFilterItem: '&',
             lineChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -3301,6 +3343,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 '<div ng-show="hideEmptyBar" class="text-center">{{barEmptyMessage}}</div>',
         scope: {
             setBarChartFn: '&',
+            getSelectedFilterItem: '&',
             barChartSource: '@',
             widgetId: '@',
             barChartId: '@',
@@ -3648,6 +3691,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 '<div ng-show="hideEmptyPie" class="text-center">{{pieEmptyMessage}}</div>',
         scope: {
             setPieChartFn: '&',
+            getSelectedFilterItem: '&',
             pieChartSource: '@',
             widgetId: '@',
             widgetColumns: '@',
@@ -3981,6 +4025,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
         scope: {
             setAreaChartFn: '&',
+            getSelectedFilterItem: '&',
             widgetId: '@',
             areaChartSource: '@',
             widgetColumns: '@',
@@ -4320,6 +4365,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 '<div ng-show="hideEmptyStackedBar" class="text-center">{{stackedBarEmptyMessage}}</div>',
         scope: {
             setStackedBarChartFn: '&',
+            getSelectedFilterItem: '&',
             widgetId: '@',
             stackedBarChartSource: '@',
             widgetColumns: '@',

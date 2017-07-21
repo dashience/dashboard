@@ -543,6 +543,7 @@
                                     <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                          line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
                                          widget-Id="{{widget.id}}" 
+                                         get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          widget-Columns="{{widget.columns}}" 
                                          widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
                                     </div>
@@ -553,6 +554,7 @@
                                     <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                          bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
                                          widget-Id="{{widget.id}}" 
+                                         get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          widget-Columns="{{widget.columns}}" 
                                          widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
                                     </div>
@@ -561,6 +563,7 @@
                             <div class="panel-body" ng-if="widget.chartType === 'pie'">
                                 <div>
                                     <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
+                                         get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
                                          widget-Id="{{widget.id}}" 
                                          widget-Columns="{{widget.columns}}" 
@@ -571,6 +574,7 @@
                             <div class="panel-body"  ng-if="widget.chartType === 'area'">
                                 <div>
                                     <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
+                                         get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
                                          widget-Id="{{widget.id}}"
                                          widget-Columns="{{widget.columns}}" 
@@ -603,6 +607,7 @@
                                 <div>
                                     <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
                                          stacked-Bar-Chart-Directive 
+                                         get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                                          stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
                                          widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
                                          widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
