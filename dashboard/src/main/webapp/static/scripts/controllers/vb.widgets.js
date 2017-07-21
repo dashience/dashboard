@@ -1190,21 +1190,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         return count;
     };
-    $scope.selectedOptions = []
-    $scope.getSelectionOptions = function (collection, type) {
-        return;
-        console.log(collection)
-        collection.forEach(function (value, key) {
-            if (value.status == true) {
-                $scope.selectedOptions.push({selectType: type, displayName: value.displayName, status: value.status})
-            } else{
-                var getIndex = $scope.selectedOptions.findIndex(x => x.status === false);
-                 $scope.selectedOptions.splice(getIndex, 1);
-            }
-        });
-        
-        $scope.$apply($scope.selectedOptions);
-    };
 
     $scope.updateCountrySelection = function (states, city, stores) {
 
