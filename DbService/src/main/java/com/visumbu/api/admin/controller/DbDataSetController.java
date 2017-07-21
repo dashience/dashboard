@@ -69,7 +69,7 @@ public class DbDataSetController {
         dataSource.setQuery(query);
         returnMap.put("columnDefs", dbDataSetService.getMeta(dataSource, parameterMap));
         if (fieldsOnly != null) {
-            return returnMap;
+            // return returnMap;
         }
         returnMap.put("data", dbDataSetService.getData(dataSource, parameterMap));
         return returnMap;
