@@ -821,8 +821,8 @@ body.blank {
 .navbar-nav .open > a:hover,
 .navbar-nav .open > a:focus {
     color: inherit;
-    background: #f7f8fa;
-    border-bottom: 1px solid #e4e5e7;
+    background: none;
+    border-bottom: none;
 }
 .chat-avatar {
     width: 36px;
@@ -2539,7 +2539,7 @@ h6 {
     margin: 5px 0;
 }
 .stats-title h4 {
-    text-transform: uppercase;
+    /*    text-transform: uppercase;*/
     font-size: 20px;
     font-weight: 600;
     padding: 2px;
@@ -2734,6 +2734,9 @@ h6 {
 .normalheader {
     min-width: 320px;
     padding: 8px 30px;
+    position: relative;
+    z-index: 1;
+
 }
 @media (max-width: 768px) {
     .normalheader {
@@ -4189,7 +4192,7 @@ span.add-title {
 
 .temp-manage .input-group {
     width: 100%;
-    min-width: 175px;
+    min-width: 217px;
     box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.21) !important;
 }
 
@@ -4197,6 +4200,55 @@ span.add-title {
     padding:5px 10px;
 }
 
-.text-field-manage {
-    min-width: 180px;
+.list-unstyled ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 10px;
 }
+.page-toolbar {
+    display: inline-block;
+    float: right;
+}
+
+.filters .form-group {
+    padding: 0px 3px 0px 3px;
+}
+
+.filters li {
+    padding-left: 10px;
+    vertical-align: middle;
+}
+
+.filters input[type="checkbox"] {
+    margin: 4px !important;
+    vertical-align: middle;
+}
+
+.filters {
+    max-height: 190px;
+    overflow-y: auto;
+    height: auto;
+}
+
+.selectize-input span {
+    color: #606265;
+}
+
+.field-wrap {
+    margin: 0;
+    padding: 0 10px;
+    list-style: none;
+}
+
+.field-wrap li {
+    color: #555555;
+    border-radius: 4px;
+    cursor: default;
+    float: left;
+    margin: 0px 0px 5px 0px;
+}
+
+.field-wrap li .btn {
+    margin-right: 2px;
+}
+

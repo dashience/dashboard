@@ -45,7 +45,48 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.userId = $cookies.getObject("userId");
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
+    $scope.reloadAllDirective = true;
 
+    $scope.salesTypes = [
+        {fieldName: "Domestic", displayName: "Domestic"},
+        {fieldName: "International", displayName: "InterNational"}
+    ]
+    $scope.countries = [
+        {fieldName: "Us", displayName: "US"},
+        {fieldName: "India", displayName: "INDIA"}
+    ]
+    $scope.states = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "California", displayName: "California"},
+        {fieldName: "New York", displayName: "New York"},
+    ]
+    $scope.cities = [
+        {fieldName: "Alexander City", displayName: "Alexander City"},
+        {fieldName: "Andalusia", displayName: "Andalusia"},
+        {fieldName: "Anniston", displayName: "Anniston"},
+        {fieldName: "Athens", displayName: "Athens"},
+        {fieldName: "Alameda", displayName: "Alameda"},
+        {fieldName: "Alhambra", displayName: "Alhambra"},
+        {fieldName: "Anaheim", displayName: "Anaheim"},
+        {fieldName: "Antioch", displayName: "Antioch"}]
+    $scope.stores = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"}
+    ]
+    $scope.categories = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"}
+    ]
+    $scope.subCategories = [
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"},
+        {fieldName: "Alabama", displayName: "Alabama"}
+    ]
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
@@ -86,7 +127,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
     });
-
+    $http.get("admin/settings/getSettings").success(function (response) {
+        angular.forEach(response, function (value, key) {
+            if (value.defaultChartColor) {
+                $scope.defaultChartColor = value.defaultChartColor.split(',');
+            }
+        });
+    });
     $scope.networkTypes = [
         {
             type: 'SEARCH',
@@ -369,7 +416,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setWidgetItems = function (widget) {
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
-        console.log(widget);
+
         $scope.widgetId = widget.id;
         if (widget.chartColorOption) {
             var widgetColors = widget.chartColorOption.split(',');
@@ -379,7 +426,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }
         }
-        console.log(widget.targetColors);
         setDefaultWidgetObj = [];
         var data = loadInitialWidgetColumnData(widget.columns);
         setDefaultWidgetObj.push({
@@ -486,9 +532,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourcePassword = '';
         }
         var url = "admin/proxy/getData?";
-        if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
-            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
+//        if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
+//            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//        }
 
         var setProductSegment;
         var setTimeSegment;
@@ -617,9 +663,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widget.jsonData = null;
         widget.queryFilter = null;
         var url = "admin/proxy/getData?";
-        if (getDataSet.dataSourceId.dataSourceType == "sql") {
-            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
+//        if (getDataSet.dataSourceId.dataSourceType == "sql") {
+//            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//        }
         var dataSourcePassword;
         if (getDataSet.dataSourceId.password) {
             dataSourcePassword = getDataSet.dataSourceId.password;
@@ -853,13 +899,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
 
-        var chartColors = userChartColors.optionValue;
-        console.log(chartColors);
+        var chartColors = userChartColors ? userChartColors.optionValue : null;
         if (firstPreviewAfterEdit == 1) {
             $scope.chartColorOptionsVal = widgetObj.chartColorOption;
         }
         firstPreviewAfterEdit = firstPreviewAfterEdit + 1;
-        console.log("Previous color option-->" + $scope.chartColorOptionsVal);
         if (widgetObj.targetColors) {
             var widgetChartColor = widgetObj.targetColors.map(function (val, key) {
                 if (val) {
@@ -871,7 +915,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (!widgetObj.chartColorOption) {
             widgetObj.chartColorOption = chartColors;
         }
-        console.log(widgetObj.chartColorOption);
         $scope.displayPreviewChart = widgetObj;
     };
 
@@ -943,7 +986,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     var addColor = [];
     $scope.addColors = function (widget) {
-        console.log(addColor);
         if (widget.targetColors) {
             widget.targetColors.push({color: "#62cb31"});
         } else {
@@ -1071,29 +1113,126 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.setLineChartFn = function (lineFn) {
-        $scope.directiveLineFn = lineFn;
+        $scope.reloadDirLineFn = lineFn;
     };
     $scope.setAreaChartFn = function (areaFn) {
-        $scope.directiveAreaFn = areaFn;
+        $scope.reloadDirAreaFn = areaFn;
     };
     $scope.setBarChartFn = function (barFn) {
-        $scope.directiveBarFn = barFn;
+        $scope.reloadDirBarFn = barFn;
     };
     $scope.setPieChartFn = function (pieFn) {
-        $scope.directivePieFn = pieFn;
+        $scope.reloadDirPieFn = pieFn;
     };
     $scope.setStackedBarChartFn = function (stackedBarChartFn) {
-        $scope.directiveStackedBarChartFn = stackedBarChartFn;
+        $scope.reloadDirStackedBarChartFn = stackedBarChartFn;
     };
     $scope.setTableChartFn = function (tableFn) {
-        $scope.directiveTableFn = tableFn;
+        $scope.reloadDirTableFn = tableFn;
     };
     $scope.setTickerFn = function (tickerFn) {
-        $scope.directiveTickerFn = tickerFn;
+        $scope.reloadDirTickerFn = tickerFn;
     };
     $scope.setFunnelFn = function (funnelFn) {
-        $scope.directiveFunnelFn = funnelFn;
+        $scope.reloadDirFunnelFn = funnelFn;
     };
+
+    $scope.getAllSelected = function () {
+        var allSelected = {};
+        $scope.reloadAllDirective = false;
+        $('.inputCheckbox:checked').each(function (key, value) {
+            var fieldname = $(value).attr('fieldname');
+            var fieldvalue = $(value).attr('fieldvalue');
+            var status = $(value).attr('status');
+            if (!allSelected[fieldname]) {
+                allSelected[fieldname] = [];
+            }
+            allSelected[fieldname].push(fieldvalue);
+        });
+        $scope.widgets.forEach(function (val, key) {
+            val.filterUrlParameter = allSelected;
+        });
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+            $scope.filterLoaded = true;
+        }, 50);
+    };
+
+    $scope.updateSalesTypeSelection = function (position, obj, countries, states, cities, stores) {
+        angular.forEach(obj, function (val, index) {
+            if (position != index) {
+                val.status = false;
+            } else {
+                val.status = true;
+            } 
+        });
+        
+        angular.forEach(countries, function (val, index) {
+            val.status = false;
+        });
+        angular.forEach(states, function (val, index) {
+            val.status = false;
+        });
+        angular.forEach(cities, function (val, index) {
+            val.status = false;
+        });
+        angular.forEach(stores, function (val, index) {
+            val.status = false;
+        });
+    };
+
+    $scope.getSelctionCount = function (checkboxCollection, type) {
+        var count = 0;
+        checkboxCollection.forEach(function (value, key) {
+            if (value.status) {
+                count++;
+            }
+        });
+        return count;
+    };
+    $scope.selectedOptions = []
+    $scope.getSelectionOptions = function (collection, type) {
+        return;
+        console.log(collection)
+        collection.forEach(function (value, key) {
+            if (value.status == true) {
+                $scope.selectedOptions.push({selectType: type, displayName: value.displayName, status: value.status})
+            } else{
+                var getIndex = $scope.selectedOptions.findIndex(x => x.status === false);
+                 $scope.selectedOptions.splice(getIndex, 1);
+            }
+        });
+        
+        $scope.$apply($scope.selectedOptions);
+    };
+
+    $scope.updateCountrySelection = function (states, city, stores) {
+
+    }
+
+    $scope.updateStateSelection = function (city, stores) {
+
+    }
+
+    $scope.updateCitySelection = function (stores) {
+
+    }
+
+    $scope.updateStoreSelection = function () {
+
+    }
+
+    $scope.updateCategorySelection = function (subCategories) {
+
+    }
+
+    $scope.updateSubCategorySelection = function () {
+
+    }
+
+    $scope.chartSelectedFields = []
+
+
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
@@ -1251,7 +1390,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
-        console.log(column);
 //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
         var index = $scope.columnY1Axis.indexOf(column);
@@ -1418,7 +1556,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     ;
     //Derived Column
     $scope.showDerived = false;
-    $scope.dataSetColumn = {}
+    $scope.dataSetColumn = {};
     $scope.addDerived = function () {
         $scope.dataSetColumn = {};
         $scope.showDerived = true;
@@ -1877,6 +2015,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             }
             $scope.chartTypeName = "";
+            var widgetColors;
+            if ($scope.userChartColors.optionValue) {
+                widgetColors = $scope.userChartColors.optionValue.split(',');
+            }
             widget.id = data.id;
             widget.chartType = data.chartType;
             widget.chartColorOption = data.chartColorOption;
@@ -1895,10 +2037,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.allAccount = data.accountId;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
+            widget.chartColor = widgetColors;
             widget = data;
             $scope.derivedColumns = [];
+            response.chartColors = widgetColors;
             if (!data.id) {
-                $scope.widgets.push(response);
+                $scope.widgets.unshift(response);
             }
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
@@ -1982,7 +2126,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
-        console.log($scope.chartColorOptionsVal);
         if ($scope.chartColorOptionsVal) {
             $scope.widgetObj.chartColorOption = $scope.chartColorOptionsVal;
             var widgetTargetColors = $scope.chartColorOptionsVal.split(",");
@@ -2262,7 +2405,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
             }
             var fullAggreagtionList = aggreagtionList;
-            var tableDataSource = JSON.parse(scope.dynamicTableSource)
+            var tableDataSource = JSON.parse(scope.dynamicTableSource);
             var data = {
                 url: '../dbApi/admin/dataSet/getData',
                 connectionUrl: tableDataSource.dataSourceId.connectionString,
@@ -2275,9 +2418,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 schema: 'vb'
             };
             var url = "admin/proxy/getData?";
-            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+//            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
+//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            }
 
             var dataSourcePassword;
             if (tableDataSource.dataSourceId.password) {
@@ -2307,6 +2450,13 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 setNetworkType = widgetData.networkType;
             }
 
+            var dashboardFilter;
+            if (widgetData.filterUrlParameter) {
+                dashboardFilter = JSON.stringify(widgetData.filterUrlParameter)
+            } else {
+                dashboardFilter = ""
+            }
+
             scope.refreshTable = function () {
                 $http.get(url + 'connectionUrl=' + tableDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tableDataSource.id +
@@ -2316,6 +2466,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
+                        "&dashboardFilter=" + dashboardFilter +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
@@ -2326,7 +2477,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
-
+                    //  scope.getReturnDynamicFilter({dynamicFilterObj: response.filter})
                     if (!response.data) {
                         return;
                     }
@@ -2567,7 +2718,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     }
                 });
                 return $filter('orderBy')(list, fieldsOrder);
-            }
+            };
             scope.group = function (list, fieldnames, aggreationList) {
                 var currentFields = fieldnames;
                 if (fieldnames.length == 0)
@@ -2664,9 +2815,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
             var url = "admin/proxy/getData?";
-            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+//            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
+//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            }
             var dataSourcePassword;
             if (tickerDataSource.dataSourceId.password) {
                 dataSourcePassword = tickerDataSource.dataSourceId.password;
@@ -2697,6 +2848,13 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 setNetworkType = getWidgetObj.networkType;
             }
 
+            var dashboardFilter;
+            if (getWidgetObj.filterUrlParameter) {
+                dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+            } else {
+                dashboardFilter = "";
+            }
+
             scope.refreshTicker = function () {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
@@ -2713,6 +2871,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
+                        "&dashboardFilter=" + dashboardFilter +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
@@ -2754,7 +2913,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
     };
 });
 
-app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter) {
+app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter, $timeout) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -2765,7 +2924,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             widgetId: '@',
             widgetColumns: '@',
             lineChartId: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -2916,9 +3076,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             if (scope.lineChartSource) {
 
                 var url = "admin/proxy/getData?";
-                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
                 var dataSourcePassword;
                 if (lineChartDataSource.dataSourceId.password) {
                     dataSourcePassword = lineChartDataSource.dataSourceId.password;
@@ -2927,9 +3087,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+                //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
 
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
@@ -2937,8 +3096,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-                console.log(widgetChartColors);
-                console.log(setWidgetChartColors);
+
                 var setProductSegment;
                 var setTimeSegment;
                 var setNetworkType;
@@ -2960,6 +3118,13 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
+
+                var dashboardFilter;
+                if (getWidgetObj.filterUrlParameter) {
+                    dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+                } else {
+                    dashboardFilter = ""
+                }
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
@@ -2971,9 +3136,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + dashboardFilter +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
-                            "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&widgetId=' + scope.widgetId +
                             '&url=' + lineChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
@@ -3060,7 +3225,12 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     columns: columns,
                                     labels: labels,
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
+                                        obj.filter = response.filter;
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -3106,7 +3276,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetId: '@',
             barChartId: '@',
             widgetColumns: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3258,18 +3429,17 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
                 var url = "admin/proxy/getData?";
-                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
                 var dataSourcePassword;
                 if (barChartDataSource.dataSourceId.password) {
                     dataSourcePassword = barChartDataSource.dataSourceId.password;
                 } else {
                     dataSourcePassword = '';
                 }
-
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -3299,6 +3469,13 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     setNetworkType = getWidgetObj.networkType;
                 }
 
+                var dashboardFilter;
+                if (getWidgetObj.filterUrlParameter) {
+                    dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+                } else {
+                    dashboardFilter = ""
+                }
+
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + barChartDataSource.id +
@@ -3312,6 +3489,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + dashboardFilter +
                             '&username=' + barChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3396,7 +3574,11 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     labels: labels,
                                     type: 'bar',
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -3442,7 +3624,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
             widgetColumns: '@',
             pieChartId: '@',
             loadingPie: '&',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3584,9 +3767,9 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
                 var url = "admin/proxy/getData?";
-                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (pieChartDataSource.dataSourceId.password) {
@@ -3596,8 +3779,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -3627,7 +3810,12 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-
+                var dashboardFilter;
+                if (getWidgetObj.filterUrlParameter) {
+                    dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+                } else {
+                    dashboardFilter = ""
+                }
                 scope.refreshPieChart = function () {
                     $http.get(url + 'connectionUrl=' + pieChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + pieChartDataSource.id +
@@ -3640,6 +3828,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + dashboardFilter +
                             '&username=' + pieChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3711,7 +3900,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: 50,
+                                    left: 50
                                 },
                                 bindto: element[0],
                                 data: {
@@ -3719,7 +3908,11 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     keys: {
                                         value: xData,
                                     },
-                                    type: 'pie'
+                                    type: 'pie',
+                                    onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -3763,7 +3956,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             areaChartSource: '@',
             widgetColumns: '@',
             pieChartId: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3910,11 +4104,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             }
             var areaChartDataSource = JSON.parse(scope.areaChartSource);
             if (scope.areaChartSource) {
-                console.log(areaChartDataSource)
                 var url = "admin/proxy/getData?";
-                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (areaChartDataSource.dataSourceId.password) {
@@ -3922,11 +4115,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     dataSourcePassword = '';
                 }
-
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -3969,6 +4160,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
                             '&username=' + areaChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -4047,7 +4239,18 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     labels: labels,
                                     type: 'area',
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+//                                    selection: {
+//                                        enabled: true
+//                                    },
+//                                    onselected: function (d, element) {
+//                                        console.log(xData[d.index]);
+//                                        alert('selected x: ' + xData[d.index] + ' value: ' + chart.selected()[0].value + ' name: ' + chart.selected()[0].name);
+//                                    }
+                                    onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -4092,7 +4295,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             stackedBarChartSource: '@',
             widgetColumns: '@',
             pieChartId: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -4246,9 +4450,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             var stackedBarChartDataSource = JSON.parse(scope.stackedBarChartSource);
             if (scope.stackedBarChartSource) {
                 var url = "admin/proxy/getData?";
-                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (stackedBarChartDataSource.dataSourceId.password) {
@@ -4257,9 +4461,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -4303,6 +4506,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
                             '&username=' + stackedBarChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -4388,7 +4592,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     type: 'bar',
                                     groups: [groupingNames],
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -4434,7 +4642,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             funnelId: '@',
             funnelColumns: '@',
             funnelTitleName: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             scope.loadingFunnel = true;
@@ -4468,9 +4677,9 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             var funnelDataSource = JSON.parse(scope.funnelSource);
             if (funnelDataSource) {
                 var url = "admin/proxy/getData?";
-                if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (funnelDataSource.dataSourceId.password) {
@@ -4480,8 +4689,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
-
-                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -4523,6 +4732,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
                             '&username=' + funnelDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.funnelId +
@@ -4550,7 +4760,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                                 for (var i = 0; i < setData.length; i++) {
                                     total += parseFloat(setData[i]);
                                 }
-                                scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total)});
+                                scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total), dataValue: total});
                             });
                         }
                         var data = scope.funnels;
@@ -4558,27 +4768,62 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
                         scope.fName = [];
                         scope.fValue = [];
+                        scope.dValue = []
                         angular.forEach(scope.funnels, function (value, key) {
                             var funnelFieldName = value.funnelTitle;
                             var funnelValue = value.totalValue;
+                            var dataValue = value.dataValue;
                             scope.fName.push(funnelFieldName);
                             scope.fValue.push(funnelValue);
+                            scope.dValue.push(dataValue);
                         });
-                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
+                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue, scope.dValue);
                         scope.funnelCharts = funnelData;
-                        function filterFunnelByValue(name, value) {
+                        function filterFunnelByValue(name, value, dataValue) {
                             var len = name.length;
-                            var temp, temp1 = 0;
+                            var temp, temp1 = 0, temp2 = 0;
                             for (var i = 0; i < len; i++) {
                                 for (var j = i + 1; j < len; j++) {
-                                    if (value[i] < value[j]) {
+                                    if (dataValue[i] < dataValue[j]) {
                                         temp = value[i];
                                         value[i] = value[j];
                                         value[j] = temp;
                                         temp1 = name[i];
                                         name[i] = name[j];
                                         name[j] = temp1;
+                                        temp2 = dataValue[i];
+                                        dataValue[i] = dataValue[j];
+                                        dataValue[j] = temp2;
                                     }
+//                                scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total)});
+//                            });
+//                        }
+//                        var data = scope.funnels;
+//                        scope.funnelCharts = [];
+//                        scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
+//                        scope.fName = [];
+//                        scope.fValue = [];
+//                        angular.forEach(scope.funnels, function (value, key) {
+//                            var funnelFieldName = value.funnelTitle;
+//                            var funnelValue = value.totalValue;
+//                            scope.fName.push(funnelFieldName);
+//                            scope.fValue.push(funnelValue);
+//                        });
+//                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
+//                        scope.funnelCharts = funnelData;
+//                        function filterFunnelByValue(name, value) {
+//                            var len = name.length;
+//                            var temp, temp1 = 0;
+//                            for (var i = 0; i < len; i++) {
+//                                for (var j = i + 1; j < len; j++) {
+//                                    if (value[i] < value[j]) {
+//                                        temp = value[i];
+//                                        value[i] = value[j];
+//                                        value[j] = temp;
+//                                        temp1 = name[i];
+//                                        name[i] = name[j];
+//                                        name[j] = temp1;
+//                                    }
                                 }
                             }
                             return funnelArrayObjects(name, value);
@@ -4595,10 +4840,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         }
 
                         /*Filter*/
-
-
-
-                        // width = $(element[0]).width();
                         function drawChart() {
                             var width = $(element[0]).width();
                             var height = 315;
@@ -4612,29 +4853,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             funnel.draw(element[0]);
                         }
                         drawChart();
-//                    var options = {
-//                        // width : width - 30,
-//                        // width: 1300,
-//                        width: 500,
-//                        // height: 400,
-//                        height: 300,
-//                        //bottomWidth : 1/3,
-//                        bottomPinch: 1, // How many sections to pinch
-//                        //isCurved : false,     // Whether the funnel is curved
-//                        //curveHeight : 20,     // The curvature amount
-//                        //fillType : "solid",   // Either "solid" or "gradient"
-//                        //isInverted : true,   // Whether the funnel is inverted
-//                        hoverEffects: true  // Whether the funnel has effects on hover
-//                    };
-//                    var funnel = new D3Funnel(scope.funnelCharts, options);
-//                    funnel.draw(element[0]);
                         $(window).on("resize", function () {
                             drawChart();
-//        var width = $(element[0]).width();
-//                //$( "#funnelContainer" ).css( "width", width);
-//                options.width = width;
-//                var funnel = new D3Funnel(scope.funnelCharts, options);
-//                funnel.draw(element[0]);
                         });
                     });
                 }
@@ -5014,5 +5234,12 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             });
         }
 
+    };
+});
+app.filter('highlight', function () {
+    return function (text, phrase) {
+        return phrase
+                ? text.replace(new RegExp('(' + phrase + ')', 'gi'), '<kbd>$1</kbd>')
+                : text;
     };
 });
