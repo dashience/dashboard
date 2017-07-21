@@ -864,7 +864,10 @@ public class UiService {
         List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
             DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
-            System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
+            DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(), dataSet);
+            if (checkDbForColumn.getWidgetId() != null) {
+                System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
+            }
             if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
                 DataSetColumns dataSetFields = new DataSetColumns();
@@ -918,8 +921,8 @@ public class UiService {
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetList.add(dataSetFields);
             }
-        }
 
+        }
         DataSetColumns dataSetColumns = new DataSetColumns();
         dataSetColumns.setId(dataSetColumnBean.getId());
         dataSetColumns.setExpression(dataSetColumnBean.getExpression());
@@ -999,8 +1002,6 @@ public class UiService {
                 if (widgetId != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
-                    dataSetFields.setDataSetId(tabWidget.getDataSetId());
-                    dataSetFields.setUserId(allDataSetColumn.getUserId());
                 }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
@@ -1026,10 +1027,9 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
-                if (allDataSetColumn.getUserId() != null) {
+                if (widgetId != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
-                    dataSetFields.setUserId(allDataSetColumn.getUserId());
                 }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
@@ -1118,7 +1118,7 @@ public class UiService {
     }
 
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
-        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName(),dataSource.getUserId());
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName(), dataSource.getUserId());
         System.out.println("dataSource" + dataSource.getName());
         DataSource newDataSource = new DataSource();
         if (joinDataSourceList.size() > 0) {
@@ -1240,13 +1240,17 @@ public class UiService {
         for (Iterator<DataSetColumnBean> iterator = dataSetColumnBeans.iterator(); iterator.hasNext();) {
             DataSetColumnBean columnBean = iterator.next();
             DataSetColumns dataSetColumnFromDb = uiDao.getDataSetColumn(columnBean.getFieldName(), dataSet);
+            System.out.println("DataSetColumnFromDB ---> " + dataSetColumnFromDb);
             if (dataSetColumnFromDb == null) {
                 continue;
             }
             DataSetColumns dataSetColumn = new DataSetColumns();
             dataSetColumn.setFieldName(columnBean.getFieldName());
+            System.out.println("FIELDNAME ============> " + columnBean.getFieldName());
             dataSetColumn.setFieldType(columnBean.getFieldType());
             dataSetColumn.setDataSetId(dataSet);
+            System.out.println("EXPRESSION ============> " + columnBean.getExpression());
+            dataSetColumn.setExpression(columnBean.getExpression());
             dataSetColumn.setDisplayFormat(columnBean.getDisplayFormat());
             dataSetColumn.setDisplayName(columnBean.getDisplayName());
             dataSetColumn.setDataFormat(columnBean.getDataFormat());

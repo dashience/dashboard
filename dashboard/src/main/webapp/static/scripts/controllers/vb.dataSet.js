@@ -78,11 +78,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 return; //response;
             }
         });
-
-
     }
     $scope.selectFirstDataSet = function (dataSet) {
-
         $scope.firstDataSet = JSON.parse(dataSet.firstDataSet);
         $scope.firstDataSetName = $scope.firstDataSet.name;
         $scope.dataSetIdFirst = $scope.firstDataSet.id;
@@ -128,7 +125,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.joinDataSetList = response;
         });
     };
-    
+
     var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
@@ -358,7 +355,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'getOrganicData',
             name: 'getOrganicData'
         }
-    ]
+    ];
 
     $scope.bingPerformance = [
         {
@@ -508,9 +505,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'city',
                     name: 'City'
-                },
+                }
             ]
-        },
+        }
     ];
     $scope.facebookPerformance = [
         {
@@ -746,7 +743,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        },
+        }
     ];
     $scope.instagramPerformance = [
         {
@@ -1723,8 +1720,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSet.productSegment = {name: 'None', type: 'none'};
         }
 
-        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
-        {
+        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook") {
             console.log($scope.facebookPerformance);
             console.log($scope.dataSet.reportName);
 

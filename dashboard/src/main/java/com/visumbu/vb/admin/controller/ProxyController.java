@@ -406,7 +406,6 @@ public class ProxyController {
             }
         }
 
-
         List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetId);
         List<String> mappings = new ArrayList<>();
 
@@ -676,7 +675,7 @@ public class ProxyController {
                     } else if (column.getFieldType() != null && column.getFieldType().equalsIgnoreCase("date") && column.getDataFormat() != null && !column.getDataFormat().isEmpty()) {
                         String value = data.get(column.getFieldName()) + "";
                         Date toDate = DateUtils.toDate(value, column.getDataFormat());
-                        data.put(column.getFieldName(), DateUtils.dateToString(toDate, "MM/dd/yyyy"));
+                            data.put(column.getFieldName(), DateUtils.dateToString(toDate, "MM/dd/yyyy"));
                         System.out.println("VALUE =============> " + value);
                     }
                 }

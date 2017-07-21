@@ -232,10 +232,10 @@ public class ColumnDef {
     public void setDataFormat(String dataFormat) {
         this.dataFormat = dataFormat;
     }
-    
+
     @Override
     public String toString() {
-        return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';
+        return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", dataFormat=" + dataFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';
     }
-
+    
 }

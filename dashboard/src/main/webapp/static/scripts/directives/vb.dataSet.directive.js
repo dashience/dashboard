@@ -749,7 +749,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.dataSetItems();
                 });
             };
-//            };
 
             scope.editDataset = function (dataSetColumn) {
                 if (dataSetColumn.customStartDate == "" && dataSetColumn.customStartDate == null && dataSetColumn.customEndDate == "" && dataSetColumn.customEndDate == null) {

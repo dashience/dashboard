@@ -812,6 +812,7 @@ public class UiDao extends BaseDao {
         DataSetColumns dataSetColumn = new DataSetColumns();
         dataSetColumn.setFieldName(columnDef.getFieldName());
         dataSetColumn.setFieldType(columnDef.getFieldType());
+        dataSetColumn.setExpression(columnDef.getExpression());
         dataSetColumn.setDataSetId(getDataSetById(dataSetId));
         dataSetColumn.setWidgetId(getWidgetById(widgetId));
         dataSetColumn.setUserId(findUserById(userId));
