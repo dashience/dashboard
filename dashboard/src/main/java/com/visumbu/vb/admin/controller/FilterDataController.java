@@ -102,7 +102,7 @@ public class FilterDataController extends BaseController {
             }
             dashboardFilter = getQueryFilter(dashboardFilter);
 
-            if (!isNullOrEmpty(dashboardFilter)) {
+            if (!isNullOrEmpty(dashboardFilter.trim())) {
                 if (query != null) {
                     if (query.indexOf("where") > 0) {
                         query += " " + dashboardFilter;
