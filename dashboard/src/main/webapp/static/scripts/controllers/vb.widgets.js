@@ -47,51 +47,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetDataSetColumnsDefs = [];
     $scope.reloadAllDirective = true;
 
-    $scope.salesTypes = [
-        {fieldName: "Domestic", displayName: "Domestic"},
-        {fieldName: "International", displayName: "InterNational"}
-    ]
-    $scope.countries = [
-        {fieldName: "Us", displayName: "US"},
-        {fieldName: "India", displayName: "INDIA"}
-    ]
-    $scope.states = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "California", displayName: "California"},
-        {fieldName: "New York", displayName: "New York"},
-    ]
-    $scope.cities = [
-        {fieldName: "Alexander City", displayName: "Alexander City"},
-        {fieldName: "Andalusia", displayName: "Andalusia"},
-        {fieldName: "Anniston", displayName: "Anniston"},
-        {fieldName: "Athens", displayName: "Athens"},
-        {fieldName: "Alameda", displayName: "Alameda"},
-        {fieldName: "Alhambra", displayName: "Alhambra"},
-        {fieldName: "Anaheim", displayName: "Anaheim"},
-        {fieldName: "Antioch", displayName: "Antioch"}]
-    $scope.stores = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
-    $scope.categories = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
-    $scope.subCategories = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
         $scope.showCreateReport = false;
     }
+    
+    $scope.salesTypes= [];
+    $scope.countries =[];
+    $scope.states =  [];
+    $scope.categories = [];
+    $scope.subCategories = [];
 
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
@@ -107,6 +73,47 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.templateUserId = template.userId.id;
         }
     });
+
+//    $scope.salesTypes = [
+//        {fieldName: "Domestic", displayName: "Domestic"},
+//        {fieldName: "International", displayName: "InterNational"}
+//    ]
+//    $scope.countries = [
+//        {fieldName: "Us", displayName: "US"},
+//        {fieldName: "India", displayName: "INDIA"}
+//    ]
+//    $scope.states = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "California", displayName: "California"},
+//        {fieldName: "New York", displayName: "New York"},
+//    ]
+//    $scope.cities = [
+//        {fieldName: "Alexander City", displayName: "Alexander City"},
+//        {fieldName: "Andalusia", displayName: "Andalusia"},
+//        {fieldName: "Anniston", displayName: "Anniston"},
+//        {fieldName: "Athens", displayName: "Athens"},
+//        {fieldName: "Alameda", displayName: "Alameda"},
+//        {fieldName: "Alhambra", displayName: "Alhambra"},
+//        {fieldName: "Anaheim", displayName: "Anaheim"},
+//        {fieldName: "Antioch", displayName: "Antioch"}]
+//    $scope.stores = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
+//    $scope.categories = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
+//    $scope.subCategories = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -126,6 +133,27 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
+    });    
+    $http.get('admin/filterData/getFilter/salesType').success(function (response) {
+        $scope.salesTypes = response.data;
+    });
+    $http.get('admin/filterData/getFilter/country').success(function (response) {
+        $scope.countries = response.data;
+    });
+    $http.get('admin/filterData/getFilter/state').success(function (response) {
+        $scope.states = response.data;
+    });
+    $http.get('admin/filterData/getFilter/city').success(function (response) {
+        $scope.cities = response.data;
+    });
+    $http.get('admin/filterData/getFilter/store').success(function (response) {
+        $scope.stores = response.data;
+    });
+    $http.get('admin/filterData/getFilter/category').success(function (response) {
+        $scope.categories = response.data;
+    });
+    $http.get('admin/filterData/getFilter/subcategory').success(function (response) {
+        $scope.subCategories = response.data;
     });
     $http.get("admin/settings/getSettings").success(function (response) {
         angular.forEach(response, function (value, key) {
@@ -1164,9 +1192,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 val.status = false;
             } else {
                 val.status = true;
-            } 
+            }
         });
-        
+
         angular.forEach(countries, function (val, index) {
             val.status = false;
         });
@@ -1183,6 +1211,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.getSelctionCount = function (checkboxCollection, type) {
         var count = 0;
+        if(!checkboxCollection){
+            return;
+        }
         checkboxCollection.forEach(function (value, key) {
             if (value.status) {
                 count++;

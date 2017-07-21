@@ -307,7 +307,7 @@
                             <li ng-repeat="salesType in salesTypes| filter:searchSales">
                                 <input type="checkbox" fieldname="SalesType" fieldvalue="{{salesType.fieldName}}" 
                                        class="inputCheckbox" status="{{salesType.status}}" ng-model="salesType.status" 
-                                       ng-click="updateSalesTypeSelection($index, salesTypes, countries, states, cities, stores);getSelectionOptions(salesTypes, 'Sales Type')">
+                                       ng-click="updateSalesTypeSelection($index, salesTypes, countries, states, cities, stores);getFiltereData(sales)">
                                 <span ng-bind-html="salesType.displayName| highlight:searchSales.$"></span>
                             </li>
                         </ul>
