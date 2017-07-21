@@ -131,7 +131,7 @@ public class ProxyController {
     private final String urlDownload = "url.download";
 
     final static Logger log = Logger.getLogger(ProxyController.class);
-
+    
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
@@ -406,7 +406,6 @@ public class ProxyController {
             }
         }
 
-
         List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetId);
         List<String> mappings = new ArrayList<>();
 
@@ -622,6 +621,10 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getBingData(request, httpRequest, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
+        } else if (dataSourceType.equalsIgnoreCase("sql")) {
+            returnMap = getSqlData(request, httpRequest, response);
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            returnMap.put("columnDefs", getColumnDefObject(data));
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("xls")) {
@@ -1932,6 +1935,101 @@ public class ProxyController {
         return null;
     }
 
+    private Map getSqlData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
+            Integer accountId = Integer.parseInt(accountIdStr);
+            Account account = userService.getAccountId(accountId);
+            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+
+            for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+                Property property = iterator.next();
+                List<String> valueList = new ArrayList();
+                valueList.add(property.getPropertyValue());
+                valueMap.put(property.getPropertyName(), valueList);
+            }
+            String dataSetId = getFromMultiValueMap(valueMap, "dataSetId");
+            String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+            String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+            String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+//            if (timeSegment == null) {
+//                timeSegment = "daily";
+//            }
+//            if (productSegment == null) {
+//                productSegment = "none";
+//            }
+            Integer dataSetIdInt = null;
+            DataSet dataSet = null;
+            if (dataSetId != null) {
+                try {
+                    dataSetIdInt = Integer.parseInt(dataSetId);
+                } catch (Exception e) {
+
+                }
+                if (dataSetIdInt != null) {
+                    dataSet = uiService.readDataSet(dataSetIdInt);
+                }
+                if (dataSet != null) {
+                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+                    timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+                    productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
+                }
+            }
+            valueMap.put("timeSegment", Arrays.asList(timeSegment));
+            valueMap.put("productSegment", Arrays.asList(productSegment));
+            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
+
+            String url = "../dbApi/admin/dataSet/getData";
+            Integer port = 80;
+            if (request != null) {
+                port = request.getServerPort();
+            }
+
+            String localUrl = "http://localhost/";
+            if (request != null) {
+                localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
+            }
+            log.debug("UR:" + url);
+            if (url.startsWith("../")) {
+                url = url.replaceAll("\\.\\./", localUrl);
+            }
+            log.debug("url: " + url);
+            log.debug("valuemap: " + valueMap);
+
+            String query = getFromMultiValueMap(valueMap, "query");
+            try {
+                query = URLEncoder.encode(query, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
+            
+            if(isNullOrEmpty(dashboardFilter)) {
+                dashboardFilter = "";
+            }
+            
+            dashboardFilter = getQueryFilter(dashboardFilter);
+            
+            if(query != null) {
+                if(query.indexOf("where") > 0) {
+                    query += " " + dashboardFilter;
+                }
+            }
+            
+            valueMap.put("query", Arrays.asList(query));
+
+            String data = Rest.getData(url, valueMap);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            Map returnData = JsonSimpleUtils.toMap((JSONObject) jsonObj);
+            return returnData;
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();
@@ -2415,6 +2513,33 @@ public class ProxyController {
             url = url.replaceAll("\\.\\./", localUrl);
         }
         log.debug(url);
+    }
+
+    private static String getQueryFilter(String jsonDynamicFilter) {
+        try {
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(jsonDynamicFilter);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = (Map<String, Object>) JsonSimpleUtils.jsonToMap(json);
+            List<String> queryString = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : jsonToMap.entrySet()) {
+                String key = entry.getKey();
+                List<String> value = (List<String>) entry.getValue();
+                List<String> innerQuery = new ArrayList<>();
+                for (Iterator<String> iterator = value.iterator(); iterator.hasNext();) {
+                    String valueString = iterator.next();
+                    innerQuery.add(key + " = " + "'" + valueString + "'");
+                }
+                String join = String.join(" OR ", innerQuery);
+                // String output = key + " in " + join;
+                queryString.add(" ( " + join + " ) ");
+            }
+            return String.join(" AND ", queryString);
+
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     @ExceptionHandler
