@@ -95,12 +95,6 @@ public class FilterDataController extends BaseController {
                 url = url.replaceAll("\\.\\./", localUrl);
             }
 
-            try {
-                query = URLEncoder.encode(query, "UTF-8");
-            } catch (UnsupportedEncodingException ex) {
-                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
             String dashboardFilter = request.getParameter("dashboardFilter");
 
             if (isNullOrEmpty(dashboardFilter)) {
@@ -108,7 +102,7 @@ public class FilterDataController extends BaseController {
             }
             dashboardFilter = getQueryFilter(dashboardFilter);
 
-            if (dashboardFilter != null) {
+            if (!isNullOrEmpty(dashboardFilter)) {
                 if (query != null) {
                     if (query.indexOf("where") > 0) {
                         query += " " + dashboardFilter;
@@ -117,7 +111,11 @@ public class FilterDataController extends BaseController {
                     }
                 }
             }
-
+            try {
+                query = URLEncoder.encode(query, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
             valueMap.put("query", Arrays.asList(query));
             valueMap.put("driver", Arrays.asList("com.mysql.jdbc.Driver"));

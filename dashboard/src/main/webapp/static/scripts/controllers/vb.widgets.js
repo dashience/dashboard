@@ -47,51 +47,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetDataSetColumnsDefs = [];
     $scope.reloadAllDirective = true;
 
-    $scope.salesTypes = [
-        {fieldName: "Domestic", displayName: "Domestic"},
-        {fieldName: "International", displayName: "InterNational"}
-    ]
-    $scope.countries = [
-        {fieldName: "Us", displayName: "US"},
-        {fieldName: "India", displayName: "INDIA"}
-    ]
-    $scope.states = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "California", displayName: "California"},
-        {fieldName: "New York", displayName: "New York"},
-    ]
-    $scope.cities = [
-        {fieldName: "Alexander City", displayName: "Alexander City"},
-        {fieldName: "Andalusia", displayName: "Andalusia"},
-        {fieldName: "Anniston", displayName: "Anniston"},
-        {fieldName: "Athens", displayName: "Athens"},
-        {fieldName: "Alameda", displayName: "Alameda"},
-        {fieldName: "Alhambra", displayName: "Alhambra"},
-        {fieldName: "Anaheim", displayName: "Anaheim"},
-        {fieldName: "Antioch", displayName: "Antioch"}]
-    $scope.stores = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
-    $scope.categories = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
-    $scope.subCategories = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
         $scope.showCreateReport = false;
     }
+
+    $scope.salesTypes = [];
+    $scope.countries = [];
+    $scope.states = [];
+    $scope.categories = [];
+    $scope.subCategories = [];
 
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
@@ -107,6 +73,47 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.templateUserId = template.userId.id;
         }
     });
+
+//    $scope.salesTypes = [
+//        {fieldName: "Domestic", displayName: "Domestic"},
+//        {fieldName: "International", displayName: "InterNational"}
+//    ]
+//    $scope.countries = [
+//        {fieldName: "Us", displayName: "US"},
+//        {fieldName: "India", displayName: "INDIA"}
+//    ]
+//    $scope.states = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "California", displayName: "California"},
+//        {fieldName: "New York", displayName: "New York"},
+//    ]
+//    $scope.cities = [
+//        {fieldName: "Alexander City", displayName: "Alexander City"},
+//        {fieldName: "Andalusia", displayName: "Andalusia"},
+//        {fieldName: "Anniston", displayName: "Anniston"},
+//        {fieldName: "Athens", displayName: "Athens"},
+//        {fieldName: "Alameda", displayName: "Alameda"},
+//        {fieldName: "Alhambra", displayName: "Alhambra"},
+//        {fieldName: "Anaheim", displayName: "Anaheim"},
+//        {fieldName: "Antioch", displayName: "Antioch"}]
+//    $scope.stores = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
+//    $scope.categories = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
+//    $scope.subCategories = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -127,6 +134,112 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
     });
+
+    $scope.getAllSelected = function () {
+        var allSelected = {};
+        $scope.reloadAllDirective = false;
+        $('.inputCheckbox:checked').each(function (key, value) {
+            var fieldname = $(value).attr('fieldname');
+            var fieldvalue = $(value).attr('fieldvalue');
+            var status = $(value).attr('status');
+            if (!allSelected[fieldname]) {
+                allSelected[fieldname] = [];
+            }
+            allSelected[fieldname].push(fieldvalue);
+        });
+        $scope.widgets.forEach(function (val, key) {
+            val.filterUrlParameter = allSelected;
+        });
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+            $scope.filterLoaded = true;
+        }, 50);
+        return allSelected;
+    };
+
+
+    $scope.updateFilter = function (filters) {
+        var filtersArray = filters.split(",");
+        angular.forEach(filtersArray, function (value) {
+            var selectedFilter = $scope.getAllSelected();
+            var dashboardFilter = {};
+            console.log(selectedFilter);
+            if (value == "salesType") {
+                $http.get('admin/filterData/getFilter/salesType').success(function (response) {
+                    $scope.salesTypes = response.data;
+                });
+            }
+            if (value == "country") {
+
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $http.get('admin/filterData/getFilter/country?dashboardFilter=' + queryString).success(function (response) {
+                    $scope.countries = response.data;
+                });
+            }
+            if (value == "state") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.country = selectedFilter.Country;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $http.get('admin/filterData/getFilter/state?dashboardFilter=' + queryString).success(function (response) {
+                    $scope.states = response.data;
+                });
+            }
+            if (value == "city") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.country = selectedFilter.Country;
+                dashboardFilter.state = selectedFilter.State;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $http.get('admin/filterData/getFilter/city?dashboardFilter=' + queryString).success(function (response) {
+                    $scope.cities = response.data;
+                });
+            }
+            if (value == "store") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.country = selectedFilter.Country;
+                dashboardFilter.state = selectedFilter.State;
+                dashboardFilter.city = selectedFilter.City;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $http.get('admin/filterData/getFilter/store?dashboardFilter=' + queryString).success(function (response) {
+                    $scope.stores = response.data;
+                });
+            }
+            if (value == "category") {
+                $http.get('admin/filterData/getFilter/category').success(function (response) {
+                    $scope.categories = response.data;
+                });
+            }
+            if (value == "subCategory") {
+                dashboardFilter.category = selectedFilter.Category;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $http.get('admin/filterData/getFilter/subcategory?dashboardFilter=' + queryString).success(function (response) {
+                    $scope.subCategories = response.data;
+                });
+            }
+        });
+    };
+//    $http.get('admin/filterData/getFilter/salesType').success(function (response) {
+//        $scope.salesTypes = response.data;
+//    });
+//    $http.get('admin/filterData/getFilter/country').success(function (response) {
+//        $scope.countries = response.data;
+//    });
+//    $http.get('admin/filterData/getFilter/state').success(function (response) {
+//        $scope.states = response.data;
+//    });
+//    $http.get('admin/filterData/getFilter/city').success(function (response) {
+//        $scope.cities = response.data;
+//    });
+//    $http.get('admin/filterData/getFilter/store').success(function (response) {
+//        $scope.stores = response.data;
+//    });
+//    $http.get('admin/filterData/getFilter/category').success(function (response) {
+//        $scope.categories = response.data;
+//    });
+//    $http.get('admin/filterData/getFilter/subcategory').success(function (response) {
+//        $scope.subCategories = response.data;
+//    });
+    $scope.updateFilter("salesType,country,state,city,store,category,subCategory");
     $http.get("admin/settings/getSettings").success(function (response) {
         angular.forEach(response, function (value, key) {
             if (value.defaultChartColor) {
@@ -134,6 +247,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
     });
+
+
     $scope.networkTypes = [
         {
             type: 'SEARCH',
@@ -1137,52 +1252,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reloadDirFunnelFn = funnelFn;
     };
 
-    $scope.getAllSelected = function () {
-        var allSelected = {};
-        $scope.reloadAllDirective = false;
-        $('.inputCheckbox:checked').each(function (key, value) {
-            var fieldname = $(value).attr('fieldname');
-            var fieldvalue = $(value).attr('fieldvalue');
-            var status = $(value).attr('status');
-            if (!allSelected[fieldname]) {
-                allSelected[fieldname] = [];
-            }
-            allSelected[fieldname].push(fieldvalue);
-        });
-        $scope.widgets.forEach(function (val, key) {
-            val.filterUrlParameter = allSelected;
-        });
-        $timeout(function () {
-            $scope.reloadAllDirective = true;
-            $scope.filterLoaded = true;
-        }, 50);
-    };
-
-    $scope.updateSalesTypeSelection = function (position, obj, countries, states, cities, stores) {
-        angular.forEach(obj, function (val, index) {
-            if (position != index) {
-                val.status = false;
-            } else {
-                val.status = true;
-            } 
-        });
-        
-        angular.forEach(countries, function (val, index) {
-            val.status = false;
-        });
-        angular.forEach(states, function (val, index) {
-            val.status = false;
-        });
-        angular.forEach(cities, function (val, index) {
-            val.status = false;
-        });
-        angular.forEach(stores, function (val, index) {
-            val.status = false;
-        });
-    };
-
     $scope.getSelctionCount = function (checkboxCollection, type) {
         var count = 0;
+        if (!checkboxCollection) {
+            return;
+        }
         checkboxCollection.forEach(function (value, key) {
             if (value.status) {
                 count++;
@@ -1190,34 +1264,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         return count;
     };
-
-    $scope.updateCountrySelection = function (states, city, stores) {
-
-    }
-
-    $scope.updateStateSelection = function (city, stores) {
-
-    }
-
-    $scope.updateCitySelection = function (stores) {
-
-    }
-
-    $scope.updateStoreSelection = function () {
-
-    }
-
-    $scope.updateCategorySelection = function (subCategories) {
-
-    }
-
-    $scope.updateSubCategorySelection = function () {
-
-    }
-
-    $scope.chartSelectedFields = []
-
-
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
@@ -2451,7 +2497,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
-                        "&dashboardFilter=" + dashboardFilter +
+                        "&dashboardFilter=" + encodeURI(dashboardFilter) +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
                         '&username=' + tableDataSource.dataSourceId.userName +
@@ -2856,7 +2902,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
-                        "&dashboardFilter=" + dashboardFilter +
+                        "&dashboardFilter=" + encodeURI(dashboardFilter) +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
@@ -3121,7 +3167,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboardFilter=" + dashboardFilter +
+                            "&dashboardFilter=" + encodeURI(dashboardFilter) +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3474,7 +3520,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboardFilter=" + dashboardFilter +
+                            "&dashboardFilter=" + encodeURI(dashboardFilter) +
                             '&username=' + barChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -3813,7 +3859,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboardFilter=" + dashboardFilter +
+                            "&dashboardFilter=" + encodeURI(dashboardFilter) +
                             '&username=' + pieChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -4145,7 +4191,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboardFilter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
+                            "&dashboardFilter=" + encodeURI(JSON.stringify(getWidgetObj.filterUrlParameter)) +
                             '&username=' + areaChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -4491,7 +4537,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboardFilter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
+                            "&dashboardFilter=" + encodeURI(JSON.stringify(getWidgetObj.filterUrlParameter)) +
                             '&username=' + stackedBarChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
@@ -4717,7 +4763,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            "&dashboardFilter=" + JSON.stringify(getWidgetObj.filterUrlParameter) +
+                            "&dashboardFilter=" + encodeURI(JSON.stringify(getWidgetObj.filterUrlParameter)) +
                             '&username=' + funnelDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.funnelId +

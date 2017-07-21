@@ -307,7 +307,7 @@
                             <li ng-repeat="salesType in salesTypes| filter:searchSales">
                                 <input type="checkbox" fieldname="SalesType" fieldvalue="{{salesType.fieldName}}" 
                                        class="inputCheckbox" status="{{salesType.status}}" ng-model="salesType.status" 
-                                       ng-click="updateSalesTypeSelection($index, salesTypes, countries, states, cities, stores);getSelectionOptions(salesTypes, 'Sales Type')">
+                                       ng-click="updateFilter('country,state,city,store')">
                                 <span ng-bind-html="salesType.displayName| highlight:searchSales.$"></span>
                             </li>
                         </ul>
@@ -329,7 +329,7 @@
                                 <li ng-repeat="country in countries|filter:searchCountry">
                                     <input type="checkbox" class="inputCheckbox" fieldname="Country" 
                                            fieldvalue="{{country.fieldName}}" ng-model="country.status" 
-                                           ng-click="getSelectionOptions(countries, 'Country');updateCountrySelection(states,city,stores)">
+                                           ng-click="updateFilter('state,city,store');getSelectionOptions(countries, 'Country');updateCountrySelection(states,city,stores)">
                                     <span ng-bind-html="country.displayName| highlight:searchCountry.$"></span>
                                 </li>
                             </ul>
@@ -353,7 +353,7 @@
                                 <li ng-repeat="state in states|filter:searchState">
                                     <input type="checkbox" fieldname="State" 
                                            fieldvalue="{{state.fieldName}}" class="inputCheckbox" 
-                                           ng-model="state.status" ng-click="getSelectionOptions(state, 'State');updateStateSelection(city,stores)">
+                                           ng-model="state.status" ng-click="updateFilter('city,store');getSelectionOptions(state, 'State');updateStateSelection(city,stores)">
                                     <span ng-bind-html="state.displayName | highlight:searchState.$"></span>
                                 </li>
                             </ul>
@@ -377,7 +377,7 @@
                                 <li ng-repeat="city in cities|filter:searchCity">
                                     <input type="checkbox" fieldname="City" 
                                            fieldvalue="{{city.fieldName}}" class="inputCheckbox" 
-                                           ng-model="city.status" ng-click="getSelectionOptions(city, 'City');updateCitySelection(stores)">
+                                           ng-model="city.status" ng-click="updateFilter('store');getSelectionOptions(city, 'City');updateCitySelection(stores)">
                                     <span ng-bind-html="city.displayName | highlight:searchCity.$"></span>
                                 </li>
                             </ul>
@@ -425,7 +425,7 @@
                                 <li ng-repeat="category in categories|filter:searchCategory">
                                     <input type="checkbox" fieldname="Category" 
                                            fieldvalue="{{category.fieldName}}" class="inputCheckbox" 
-                                           ng-model="category.status" ng-click="getSelectionOptions(category, 'Category'); updateCategorySelection(subCategories)">
+                                           ng-model="category.status" ng-click="updateFilter('subCategory');getSelectionOptions(category, 'Category'); updateCategorySelection(subCategories)">
                                     <span ng-bind-html="category.displayName | highlight:searchCategory.$"></span>
                                 </li>
                             </ul>
