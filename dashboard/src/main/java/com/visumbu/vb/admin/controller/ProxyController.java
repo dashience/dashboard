@@ -2009,7 +2009,10 @@ public class ProxyController {
             if (dashboardFilter != null && !isNullOrEmpty(dashboardFilter.trim())) {
                 if (query != null) {
                     if (query.indexOf("where") > 0) {
-                        query += " " + dashboardFilter;
+                        String[] queryArray = query.split("where");
+                        queryArray[1] = dashboardFilter + " and " + queryArray[1];
+
+                        query = String.join("where", queryArray);
                     } else {
                         query += " where " + dashboardFilter;
                     }
@@ -2548,6 +2551,7 @@ public class ProxyController {
                     String valueString = iterator.next();
                     innerQuery.add(key + " = " + "'" + valueString + "'");
                 }
+                innerQuery.add(key + " is NULL ");
                 String join = String.join(" OR ", innerQuery);
                 // String output = key + " in " + join;
                 queryString.add(" ( " + join + " ) ");

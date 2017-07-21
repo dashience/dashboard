@@ -151,7 +151,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $timeout(function () {
             $scope.reloadAllDirective = true;
-        }, 50);
+        }, 500);
         return allSelected;
     };
 
@@ -291,7 +291,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.$apply($scope.subCategories);
         $timeout(function () {
             $scope.getAllSelected();
-        }, 100);
+        }, 500);
     };
 
     $http.get("admin/settings/getSettings").success(function (response) {
