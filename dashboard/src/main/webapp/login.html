@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
-        <title>Deeta Dashboard | Log in</title>
+        <title>Franchise PAD | Log in</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
@@ -12,74 +12,45 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="static/lib/css/font-awesome.min.css">
         <!-- Ionicons -->
+        <link href="static/lib/css/login.css" rel="stylesheet" type="text/css"/>
         <link rel="stylesheet" href="static/lib/css/ionicons.min.css">
         <!-- Theme style -->
-        <link rel="stylesheet" href="static/lib/css/L2T.css">
-        <style type="text/css">
-            .checkbox, .radio {
-                margin-left: 20px;
-            }
 
-            .login-page, .register-page {
-                background: #fff; 
-            }
 
-            .btn-l2t:hover, .btn-l2t:active, .btn-l2t {
-                background-color: #228995;
-            }
-
-            .hpanel .panel-body {
-                background: #fff;
-                border: 1px solid #e4e5e7;
-                border-radius: 2px;
-                padding: 20px;
-                position: relative;
-            }
-
-        </style>
     </head>
     <body ng-controller="LoginController" class="hold-transition login-page">
-        <!--<div class="login-box">
-            <div class="login-logo">
-                <a href="index.html"><img src="static/img/Logo-l2t.png" width="150" /></a>
-            </div>-->
 
-        <div class="login-container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="text-center m-b-md">
-                        <div>
-                            <span>
-                                <img src="static/img/logos/deeta-logo.png" width="180" />
-                            </span>
-                        </div>
-                    </div>
+        <div class="content">
 
-                    <div class="hpanel">
+
+            <div class="main">
+
+                <div class="franchise-left">
+
+                    <div class="franch_form">
+                        <h2><a class="logo" href="/"><img src="https://d3fg11dgb68kbp.cloudfront.net/assets/skyzone_logo-8515cb7a7fc5831f65f9cf48ea32ab27.svg" /></a></h2>
+                        <h3>Franchisee Performance Dashboard</h3>
                         <h5 class="text-center text-danger" ng-show="showErrorMessage">{{errorMessage}}</h5>
-                        <div class="panel-body">
                             <form ng-submit="submitForm()" name="adminForm">
-                                <div class="form-group">
-                                    <label class="control-label" for="username">Username</label>
-                                    <input type="text" placeholder="Username" title="Please enter you username" value="" name="username" id="username" class="form-control" ng-model="login.username">
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label" for="password">Password</label>
-                                    <input type="password" title="Please enter your password" placeholder="Password" value="" name="password" id="password" class="form-control" ng-model="login.password">
-                                </div>
+      <input type="text" placeholder="Username" title="Username" value="" name="username" id="username" class="logo" ng-model="login.username">
 
-                                <!--                                <div class="checkbox">
-                                                                    <input type="checkbox" class="i-checks" checked>
-                                                                    Remember login
+                            <input type="password" title="Please enter your password" placeholder="Password" value="" name="password" id="password" class="key" ng-model="login.password">
                                 
-                                                                </div>-->
-                                <button class="btn btn-success btn-block" ng-click="authenticate(login)">Login</button>
+                           
+                            <input type="submit" value="Login" ng-click="authenticate(login)">
                             </form>  
+                        <p align="center">
+                            <a class="powered">Powered by</a><img src="static/img/dashience-logo-reverse.png" width="150" />
+                        </p>
                         </div>
+
+
+                    <div class="clear"></div>
                     </div>
+
                 </div>
             </div>
-        </div>
+
         <script src="static/lib/js/jquery/jquery-2.2.3.min.js"></script>
         <script src="static/lib/js/bootstrap.min.js"></script>
         <script src="static/lib/js/angular/angular.min.js"></script>
