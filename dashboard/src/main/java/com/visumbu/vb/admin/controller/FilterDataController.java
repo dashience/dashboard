@@ -102,7 +102,7 @@ public class FilterDataController extends BaseController {
             }
             dashboardFilter = getQueryFilter(dashboardFilter);
 
-            if (!isNullOrEmpty(dashboardFilter.trim())) {
+            if (dashboardFilter!= null && !isNullOrEmpty(dashboardFilter.trim())) {
                 if (query != null) {
                     if (query.indexOf("where") > 0) {
                         query += " " + dashboardFilter;
@@ -160,7 +160,7 @@ public class FilterDataController extends BaseController {
             return String.join(" AND ", queryString);
 
         } catch (ParseException ex) {
-            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            // java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

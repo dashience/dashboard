@@ -2005,8 +2005,8 @@ public class ProxyController {
             }
 
             dashboardFilter = getQueryFilter(dashboardFilter);
-            
-            if (!isNullOrEmpty(dashboardFilter.trim())) {
+
+            if (dashboardFilter != null && !isNullOrEmpty(dashboardFilter.trim())) {
                 if (query != null) {
                     if (query.indexOf("where") > 0) {
                         query += " " + dashboardFilter;
@@ -2025,6 +2025,9 @@ public class ProxyController {
             }
             valueMap.put("query", Arrays.asList(query));
             try {
+                if (isNullOrEmpty(dashboardFilter)) {
+                    dashboardFilter = "";
+                }
                 dashboardFilter = URLEncoder.encode(dashboardFilter, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
                 java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -2529,6 +2532,9 @@ public class ProxyController {
 
     private static String getQueryFilter(String jsonDynamicFilter) {
         try {
+            if (jsonDynamicFilter == null || jsonDynamicFilter.isEmpty()) {
+                return null;
+            }
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(jsonDynamicFilter);
             JSONObject json = (JSONObject) jsonObj;
