@@ -864,10 +864,7 @@ public class UiService {
         List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
             DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
-            DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(), dataSet);
-            if (checkDbForColumn.getWidgetId() != null) {
-                System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
-            }
+            System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
             if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
                 DataSetColumns dataSetFields = new DataSetColumns();
@@ -921,7 +918,6 @@ public class UiService {
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetList.add(dataSetFields);
             }
-
         }
         DataSetColumns dataSetColumns = new DataSetColumns();
         dataSetColumns.setId(dataSetColumnBean.getId());
