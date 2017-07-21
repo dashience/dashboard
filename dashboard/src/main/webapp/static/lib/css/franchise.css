@@ -2735,7 +2735,7 @@ h6 {
     min-width: 320px;
     padding: 8px 30px;
     position: relative;
-    z-index: 99;
+    z-index: 1;
 
 }
 @media (max-width: 768px) {
@@ -4267,4 +4267,6 @@ span.add-title {
     padding:5px;
 }
 
-
+.date-widget .form-control {
+margin: 0px 0px 10px 0px;
+}
