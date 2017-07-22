@@ -38,6 +38,7 @@ import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
@@ -312,6 +313,7 @@ public class UiService {
         tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
+        tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -427,6 +429,7 @@ public class UiService {
         tabWidget.setTimeSegment(tabWidgetBean.getTimeSegment());
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
+        tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
         System.out.println("new Widget Id ---> " + id);
@@ -963,9 +966,9 @@ public class UiService {
             }
             if (widgetId != null) {
                 TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
-                dataSet =  tabWidget.getDataSetId();
-                DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(),dataSet);
-                if(checkDbForColumn != null) {
+                dataSet = tabWidget.getDataSetId();
+                DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(), dataSet);
+                if (checkDbForColumn != null) {
                     continue;
                 }
             }
@@ -1001,7 +1004,6 @@ public class UiService {
                 }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
-
             } else if (!Objects.equals(allDataSetColumn.getId(), dataSetColumnBean.getId())) {
                 System.out.println("else if");
                 DataSetColumns dataSetFields = new DataSetColumns();
@@ -1116,7 +1118,7 @@ public class UiService {
     }
 
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
-        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName());
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName(),dataSource.getUserId());
         System.out.println("dataSource" + dataSource.getName());
         DataSource newDataSource = new DataSource();
         if (joinDataSourceList.size() > 0) {
@@ -1124,12 +1126,14 @@ public class UiService {
             DataSource joinDataSource = joinDataSourceList.get(0);
             newDataSource.setId(joinDataSource.getId());
             newDataSource.setName(joinDataSource.getName());
+            newDataSource.setDataSourceType("join");
             newDataSource.setUserId(joinDataSource.getUserId());
             newDataSource.setAgencyId(joinDataSource.getAgencyId());
             uiDao.saveOrUpdate(newDataSource);
         } else {
             System.out.println("else create ---> ");
             newDataSource.setName(dataSource.getName());
+            newDataSource.setDataSourceType("join");
             newDataSource.setUserId(dataSource.getUserId());
             newDataSource.setAgencyId(dataSource.getAgencyId());
             uiDao.saveOrUpdate(newDataSource);
@@ -1175,44 +1179,44 @@ public class UiService {
         return uiDao.getDefaultTemplate(agencyId);
     }
 
+    public UserPreferences updateChartColor(UserPreferences userPreferences) {
+        uiDao.saveOrUpdate(userPreferences);
+        return userPreferences;
+    }
+
+    //added by Paramvir for theme settings
+    public UserPreferences updateThemeSettings(UserPreferences userPreferences) {
+        VbUser user = userPreferences.getUserId();
+        Integer userId = user.getId();
+        UserPreferences userPreferencesList = uiDao.getThemeByUserId(user);
+        if (userPreferencesList != null) {
+            userPreferences.setId(userPreferencesList.getId());
+        }
+        uiDao.saveOrUpdate(userPreferences);
+        return userPreferences;
+    }
+
+    public UserPreferences getThemeByUserId(VbUser userId) {
+        return uiDao.getThemeByUserId(userId);
+    }
+
+    public UserPreferences addChartColor(UserPreferences userPreferences) {
+        uiDao.saveOrUpdate(userPreferences);
+        return userPreferences;
+    }
+
+    public UserPreferences getChartColorByUserId(VbUser vbUser) {
+        return uiDao.getChartColorByUserId(vbUser);
+    }
+
     public List<DashboardTemplate> getTemplates(VbUser user, Agency agency, AgencyProduct agencyProduct) {
         return uiDao.getTemplates(user, agency, agencyProduct);
     }
 
-//    public DataSet updateDataSetEnableDisable(DataSet dataSet) {
-//        return uiDao.updateDataSetEnableDisable(dataSet);
-//    }
     public List<DashboardTemplate> getUserTemplate(VbUser user) {
         return uiDao.getUserTemplate(user);
     }
 
-//    public DashboardTemplate shareDashboardTemplate(DashboardTemplate dashboardTemplateBean) {
-//        List<VbUser> userList = uiDao.getUsersByAgency(dashboardTemplateBean.getAgencyId());
-//        for (Iterator<VbUser> iterator = userList.iterator(); iterator.hasNext();) {
-//            VbUser userId = iterator.next();
-//            if (!(userId.equals(dashboardTemplateBean.getUserId()))) {
-//                DashboardTemplate dashboardTemplate = new DashboardTemplate();
-//                dashboardTemplate.setTemplateName(dashboardTemplateBean.getTemplateName());
-//                dashboardTemplate.setAgencyId(dashboardTemplateBean.getAgencyId());
-//                dashboardTemplate.setUserId(userId);
-//                dashboardTemplate.setAgencyProductId(dashboardTemplateBean.getAgencyProductId());
-//                List<TemplateTabs> templateTabsList = uiDao.getTabByTemplateId(dashboardTemplateBean.getId());
-//                uiDao.saveOrUpdate(dashboardTemplate);
-//                for (Iterator<TemplateTabs> iterator1 = templateTabsList.iterator(); iterator1.hasNext();) {
-//                    TemplateTabs templateTabs = iterator1.next();
-//                    Integer tabId = templateTabs.getTabId().getId();
-//                    // DashboardTabs dashboardTab = uiDao.getTabById(tabId);
-//                    DashboardTabs duplicateTab = duplicateTab(tabId, userId);
-//                    TemplateTabs templateTab = new TemplateTabs();
-//                    templateTab.setTemplateId(dashboardTemplate);
-//                    templateTab.setUserId(userId);
-//                    templateTab.setTabId(duplicateTab);
-//                    uiDao.saveOrUpdate(templateTab);
-//                }
-//            }
-//        }
-//        return null;
-//    }
     public void deleteUserTemplate(Integer templateId) {
         uiDao.deleteUserTemplate(templateId);
     }
@@ -1253,5 +1257,9 @@ public class UiService {
             dataSetColumns.add(dataSetColumn);
         }
         return dataSetColumns;
+    }
+
+    public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
+        return uiDao.getJoinDataSetById(joinDataSetId);
     }
 }

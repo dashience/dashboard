@@ -68,7 +68,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     };
     var tabUrl;
     if ($stateParams.templateId > 0) {
-        tabUrl = 'admin/ui/dbTabs/' + $stateParams.templateId;
+        tabUrl = 'admin/ui/templateTabs/' + $stateParams.templateId;
     } else {
         tabUrl = "admin/ui/dbTabs/" + $stateParams.productId + "/" + $stateParams.accountId;
     }

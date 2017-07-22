@@ -120,13 +120,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetColumnList.push({});
     };
     $scope.removeJoinDataSetColumn = function (index, conditionId) {
+        console.log(conditionId);
         $scope.dataSetColumnList.splice(index, 1);
         $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId + "/" + joinDataSetId}).success(function (response) {
             $scope.joinDataSetList = response;
         });
-    }
-    var joinDataSetId = null;
-
+    };
+    
+    var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
     $scope.loadingResult = false;
@@ -183,6 +184,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.cancelJoinDataSet = function () {
         $scope.joinDataSetColumn = "";
+        joinDataSetId = "";
 //        $scope.dataSetColumn = "";
         $scope.dataSetColumnList = [];
         $scope.hideCondition = false;

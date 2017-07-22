@@ -15,12 +15,10 @@
         position: relative;
         z-index: 10000;
     }
-
     .product-icon {
         width: 70px;
         margin: 0px auto;
     }
-
     .admin-fnt {
         font-size: 12px;
         padding-top: 20px;
@@ -35,6 +33,36 @@
     }
     .navbar-nav > li, .navbar-nav > li > a{
         height: auto! important; 
+    }
+    .themeSettings{
+        min-width: 450px;
+    }
+    .chartColor {
+        width:241px !important;
+    }
+    .form-control.chartColor::placeholder {
+        text-align: right;
+    }
+    .colorText {
+        width: 305px !important;
+    }
+    .col-sm-3.control-label{
+        font-size: medium;
+        padding-left: 12px;
+        padding-top: 4px;
+    }
+    .colorpicker .sp-replacer {
+        width: 10% !important;
+        padding: 0px;
+        border: none;
+        height: 38px;
+    }
+    .colorpicker .sp-preview {
+        width: 98% !important;
+        height: 38px;
+    }
+    .colorpicker .sp-dd {
+        display:none;
     }
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
@@ -330,7 +358,32 @@
                         </div>
                     </div>
                 </li>
+                <li class="dropdown" ng-if="isAdmin != 'admin'">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <div class="dropdown-menu themeSettings">
+                        <!--                        <div class="form-group">
+                                                    <label class="control-label col-md-3">Theme </label>
+                                                    <div class="col-md-9 ">
+                                                        <select class="col-md-12 inside" ng-change="themeDropDownChange(theme)" ng-model="theme" ng-options="theme.name for theme in themes track by theme.name">
+                                                        </select>
+                                                    </div>
+                                                </div>-->
 
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Chart Color</label>
+                            <div class="col-md-9">
+                                <div class="input-group colorText">
+                                    <input class="form-control chartColor" type="text" ng-model="chartColor.optionValue" placeholder="color with , seperate">
+                                    <a class="colorpicker" title="Color Picker" ui-colorpicker ng-model="color" ng-change="selectChartColor(color,chartColor)"></a>
+                                    <a class="input-group-addon btn-default btn-sm" title="Save Color" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <!--                <li class="dropdown">
                                     <a href="login.html">
                                         <i class="pe-7s-upload pe-rotate-90"></i>
