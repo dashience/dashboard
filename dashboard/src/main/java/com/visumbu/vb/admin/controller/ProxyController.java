@@ -645,6 +645,8 @@ public class ProxyController {
         List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
         System.out.println("Column Def For Data Format");
         System.out.println(returnMap);
+        System.out.println("coulum defs--");
+        System.out.println(columnDefs);
         returnMap.put("data", formatData(dataList, columnDefs));
         return returnMap;
     }
@@ -2038,6 +2040,10 @@ public class ProxyController {
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(data);
             Map returnData = JsonSimpleUtils.toMap((JSONObject) jsonObj);
+            System.out.println("Sql return log");
+            System.out.println("***************************************************************");
+                    System.out.println(returnData);
+            System.out.println("***************************************************************");
             return returnData;
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);

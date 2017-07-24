@@ -74,46 +74,46 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     });
 
-    $scope.salesTypes = [
-        {fieldName: "Domestic", displayName: "Domestic"},
-        {fieldName: "International", displayName: "InterNational"}
-    ]
-    $scope.countries = [
-        {fieldName: "Us", displayName: "US"},
-        {fieldName: "India", displayName: "INDIA"}
-    ]
-    $scope.states = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "California", displayName: "California"},
-        {fieldName: "New York", displayName: "New York"},
-    ]
-    $scope.cities = [
-        {fieldName: "Alexander City", displayName: "Alexander City"},
-        {fieldName: "Andalusia", displayName: "Andalusia"},
-        {fieldName: "Anniston", displayName: "Anniston"},
-        {fieldName: "Athens", displayName: "Athens"},
-        {fieldName: "Alameda", displayName: "Alameda"},
-        {fieldName: "Alhambra", displayName: "Alhambra"},
-        {fieldName: "Anaheim", displayName: "Anaheim"},
-        {fieldName: "Antioch", displayName: "Antioch"}]
-    $scope.stores = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
-    $scope.categories = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
-    $scope.subCategories = [
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"},
-        {fieldName: "Alabama", displayName: "Alabama"}
-    ]
+//    $scope.salesTypes = [
+//        {fieldName: "Domestic", displayName: "Domestic"},
+//        {fieldName: "International", displayName: "InterNational"}
+//    ]
+//    $scope.countries = [
+//        {fieldName: "Us", displayName: "US"},
+//        {fieldName: "India", displayName: "INDIA"}
+//    ]
+//    $scope.states = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "California", displayName: "California"},
+//        {fieldName: "New York", displayName: "New York"},
+//    ]
+//    $scope.cities = [
+//        {fieldName: "Alexander City", displayName: "Alexander City"},
+//        {fieldName: "Andalusia", displayName: "Andalusia"},
+//        {fieldName: "Anniston", displayName: "Anniston"},
+//        {fieldName: "Athens", displayName: "Athens"},
+//        {fieldName: "Alameda", displayName: "Alameda"},
+//        {fieldName: "Alhambra", displayName: "Alhambra"},
+//        {fieldName: "Anaheim", displayName: "Anaheim"},
+//        {fieldName: "Antioch", displayName: "Antioch"}]
+//    $scope.stores = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
+//    $scope.categories = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
+//    $scope.subCategories = [
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"},
+//        {fieldName: "Alabama", displayName: "Alabama"}
+//    ]
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;

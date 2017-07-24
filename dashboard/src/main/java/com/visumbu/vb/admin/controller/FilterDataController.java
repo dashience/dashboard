@@ -63,7 +63,7 @@ public class FilterDataController extends BaseController {
         if (dataType.equalsIgnoreCase("salesType")) {
             query = "select distinct sales_type as fieldName,  sales_type as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("country")) {
-            query = "select distinct country as fieldName,  country as displayName from skyzone_center_edge ";
+            query = "select distinct country as fieldName,  country as displayName from skyzone_wtd ";
         } else if (dataType.equalsIgnoreCase("state")) {
             query = "select distinct state as fieldName,  state as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("city")) {
