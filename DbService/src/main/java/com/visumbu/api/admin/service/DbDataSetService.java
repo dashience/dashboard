@@ -46,6 +46,7 @@ public class DbDataSetService {
             // ResultSetHandler
             MapListHandler handler = new MapListHandler();
             String queryString = ApiUtils.compileQuery(dataSource.getQuery(), parameters);
+            System.out.println("dataasource ---->"+dataSource.getQuery());
             System.out.println("Query String ---> " + queryString);
             results = (List) query.query(connection, queryString, handler);
         } catch (SQLException ex) {
