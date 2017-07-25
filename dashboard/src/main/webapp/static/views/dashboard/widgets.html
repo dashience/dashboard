@@ -254,12 +254,8 @@
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
         </div>
         <div class="btn-group" ng-if="permission.downloadReport === true;">
-            <!--<a class="refresh" ng-click="downloadUiPdf()"><i class="fa fa-print"></i> Print</a>-->
             <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{templateId}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
         </div>
-        <!--                <div class="btn-group">
-                            <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>
-                        </div>-->
         <div class="btn-group dropdown" ng-if="(permission.addWidget === true) && (templateUserId === userId)">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
                 <button type="button" class="btn btn-block btn-info" ng-click="clearChartType()"
@@ -268,6 +264,17 @@
                     <i class="fa fa-plus-circle"></i> Add Widget
                 </button>
             </a>
+        </div>
+    </div>
+    <div class="pull-left multi-select-container" ng-if="selectItems.length > 0">
+        <div class="col-sm-12 row">
+            <ul class="multi-select-render">
+                <li ng-repeat="list in selectItems" class="multi-select-dropdown">
+                    <span class="multi-select-remove">{{list.type}} : {{list.name}} 
+                        <i class="fa fa-close multi-close" ng-click="deleteFilterItem($index, list)">                        
+                        </i></span>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -329,7 +336,7 @@
                                 <li ng-repeat="country in countries|filter:searchCountry">
                                     <input type="checkbox" class="inputCheckbox" fieldname="Country" 
                                            fieldvalue="{{country.fieldName}}" ng-model="country.status" 
-                                           ng-click="updateFilter('state,city,store');getSelectionOptions(countries, 'Country');updateCountrySelection(states,city,stores)">
+                                           ng-click="updateFilter('state,city,store')">
                                     <span ng-bind-html="country.displayName| highlight:searchCountry.$"></span>
                                 </li>
                             </ul>
@@ -353,7 +360,7 @@
                                 <li ng-repeat="state in states|filter:searchState">
                                     <input type="checkbox" fieldname="State" 
                                            fieldvalue="{{state.fieldName}}" class="inputCheckbox" 
-                                           ng-model="state.status" ng-click="updateFilter('city,store');getSelectionOptions(state, 'State');updateStateSelection(city,stores)">
+                                           ng-model="state.status" ng-click="updateFilter('city,store')">
                                     <span ng-bind-html="state.displayName | highlight:searchState.$"></span>
                                 </li>
                             </ul>
@@ -377,7 +384,7 @@
                                 <li ng-repeat="city in cities|filter:searchCity">
                                     <input type="checkbox" fieldname="City" 
                                            fieldvalue="{{city.fieldName}}" class="inputCheckbox" 
-                                           ng-model="city.status" ng-click="updateFilter('store');getSelectionOptions(city, 'City');updateCitySelection(stores)">
+                                           ng-model="city.status" ng-click="updateFilter('store')">
                                     <span ng-bind-html="city.displayName | highlight:searchCity.$"></span>
                                 </li>
                             </ul>
@@ -401,7 +408,7 @@
                                 <li ng-repeat="store in stores|filter:searchStore">
                                     <input type="checkbox" fieldname="Store" 
                                            fieldvalue="{{store.fieldName}}" class="inputCheckbox" 
-                                           ng-model="store.status" ng-click="getSelectionOptions(store, 'Store'); updateStoreSelection()">
+                                           ng-model="store.status" ng-click="updateFilter('none')">
                                     <span ng-bind-html="store.displayName | highlight:searchStore.$"></span>
                                 </li>
                             </ul>
@@ -449,13 +456,35 @@
                                 <li ng-repeat="subCategory in subCategories|filter:searchSubCategory">
                                     <input type="checkbox" fieldname="SubCategory" 
                                            fieldvalue="{{subCategory.fieldName}}" class="inputCheckbox" 
-                                           ng-model="subCategory.status" ng-click="getSelectionOptions(subCategory, 'Sub Category'); updateSubCategorySelection()">
+                                           ng-model="subCategory.status" ng-click="updateFilter('none')">
                                     <span ng-bind-html="subCategory.displayName | highlight:searchSubCategory.$"></span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-
+                    <div>
+                        <label>Park Type</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(parkTypes)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters filters-city">  
+                                <div class="form-group">
+                                    <div class="has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchParkType.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="parkType in parkTypes|filter:searchSubCategory">
+                                    <input type="checkbox" fieldname="ParkType" 
+                                           fieldvalue="{{parkType.fieldName}}" class="inputCheckbox" 
+                                           ng-model="parkType.status" ng-click="updateFilter('none')">
+                                    <span ng-bind-html="parkType.displayName | highlight:searchParkType.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

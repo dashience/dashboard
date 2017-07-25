@@ -73,47 +73,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.templateUserId = template.userId.id;
         }
     });
-
-//    $scope.salesTypes = [
-//        {fieldName: "Domestic", displayName: "Domestic"},
-//        {fieldName: "International", displayName: "InterNational"}
-//    ]
-//    $scope.countries = [
-//        {fieldName: "Us", displayName: "US"},
-//        {fieldName: "India", displayName: "INDIA"}
-//    ]
-//    $scope.states = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "California", displayName: "California"},
-//        {fieldName: "New York", displayName: "New York"},
-//    ]
-//    $scope.cities = [
-//        {fieldName: "Alexander City", displayName: "Alexander City"},
-//        {fieldName: "Andalusia", displayName: "Andalusia"},
-//        {fieldName: "Anniston", displayName: "Anniston"},
-//        {fieldName: "Athens", displayName: "Athens"},
-//        {fieldName: "Alameda", displayName: "Alameda"},
-//        {fieldName: "Alhambra", displayName: "Alhambra"},
-//        {fieldName: "Anaheim", displayName: "Anaheim"},
-//        {fieldName: "Antioch", displayName: "Antioch"}]
-//    $scope.stores = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"}
-//    ]
-//    $scope.categories = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"}
-//    ]
-//    $scope.subCategories = [
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"},
-//        {fieldName: "Alabama", displayName: "Alabama"}
-//    ]
+    
+    $scope.parkTypes = [
+        {fieldName: "Established", displayName: "Established"},
+        {fieldName: "New", displayName: "New"}
+    ];
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -149,11 +113,73 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgets.forEach(function (val, key) {
             val.filterUrlParameter = allSelected;
         });
+        dispAllFilter(allSelected)
         $timeout(function () {
             $scope.reloadAllDirective = true;
         }, 500);
         return allSelected;
     };
+    function dispAllFilter(filterItems) {
+        $scope.selectItems = [];
+        angular.forEach(filterItems, function (value, key) {
+            if (key == "SalesType") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "SalesType", name: value[i]});
+                    }
+                }
+            }
+            if (key == "Country") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "Country", name: value[i]});
+                    }
+                }
+            }
+            if (key == "City") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "City", name: value[i]});
+                    }
+                }
+            }
+            if (key == "State") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "State", name: value[i]});
+                    }
+                }
+            }
+            if (key == "Store") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "Store", name: value[i]})
+                    }
+                }
+            }
+            if (key == "Category") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "Category", name: value[i]})
+                    }
+                }
+            }
+            if (key == "SubCategory") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "SubCategory", name: value[i]})
+                    }
+                }
+            }
+            if (key == "ParkType") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "ParkType", name: value[i]})
+                    }
+                }
+            }
+        });
+    }
 
 
     $scope.updateFilter = function (filters) {
@@ -212,6 +238,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.subCategories = response.data;
                 });
             }
+            if (value == "parkType") {
+                dashboardFilter.parkType = selectedFilter.ParkType;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $http.get('admin/filterData/getFilter/parktype?dashboardFilter=' + queryString).success(function (response) {
+                    $scope.parkTypes = response.data;
+                });
+            }
+            if (value == "none") {
+            }
         });
     };
 
@@ -230,8 +265,71 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         return count;
     };
 
+    $scope.deleteFilterItem = function (index, obj) {
+        $scope.selectItems.splice(index, 1)
+        if (obj.type == "SalesType") {
+            angular.forEach($scope.salesTypes, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        if (obj.type == "Country") {
+            angular.forEach($scope.countries, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        if (obj.type == "City") {
+            angular.forEach($scope.cities, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        if (obj.type == "State") {
+            angular.forEach($scope.states, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        if (obj.type == "Store") {
+            angular.forEach($scope.stores, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        if (obj.type == "Category") {
+            angular.forEach($scope.categories, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        if (obj.type == "SubCategory") {
+            angular.forEach($scope.subCategories, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        if (obj.type == "ParkType") {
+            angular.forEach($scope.parkTypes, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                }
+            });
+        }
+        $timeout(function () {
+            $scope.getAllSelected();
+        }, 500);
+    };
+
     $scope.getChartFilterItems = function (filterBy) {
-       // filterBy.value = "Domestic"
+        // filterBy.value = "Domestic"
         angular.forEach($scope.salesTypes, function (val, key) {
             if (val.fieldName == filterBy.name) {
                 val.status = true;
@@ -239,7 +337,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 val.status = false;
             }
         });
-        console.log($scope.salesTypes)
         angular.forEach($scope.countries, function (val, key) {
             if (val.fieldName == filterBy.name) {
                 val.status = true;
@@ -282,6 +379,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 val.status = false;
             }
         });
+        angular.forEach($scope.parkTypes, function (val, key) {
+            if (val.fieldName == filterBy.name) {
+                val.status = true;
+            } else {
+                val.status = false;
+            }
+        });
         $scope.$apply($scope.salesTypes);
         $scope.$apply($scope.countries);
         $scope.$apply($scope.states);
@@ -289,6 +393,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.$apply($scope.stores);
         $scope.$apply($scope.categories);
         $scope.$apply($scope.subCategories);
+        $scope.$apply($scope.parkTypes);
         $timeout(function () {
             $scope.getAllSelected();
         }, 500);
@@ -2938,9 +3043,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&location=" + $stateParams.locationId +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
-                        "&productSegment=" + setProductSegment +
-                        "&timeSegment=" + setTimeSegment +
-                        "&networkType=" + setNetworkType +
                         "&dashboardFilter=" + encodeURI(dashboardFilter) +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
