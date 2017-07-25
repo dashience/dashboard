@@ -19,14 +19,24 @@ a{text-decoration:none;}
 .vertical-top{	vertical-align:top;}/* vertical align top */
 nav.vertical ul li{	display:block;}/* vertical menu */
 nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
-img{max-width:100%;margin-top:10px;}
+img{max-width:100%;}
 /*end reset*/
 
 body{
     padding:0;
     margin:0;
-    background: #e76f4b;
     font-family: sans-serif !important;
+    width: 100%;
+    background:url("../../../static/img/pic3.jpg") no-repeat 0px 0px;
+    background-size:cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+    -moz-background-size: cover;
+    height: 100%;
+    overflow: hidden;
+    min-height:100%;
+    position: relative;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -43,16 +53,20 @@ label{
     margin:0;
 }
 
+.dashience-logo {
+    margin-top: 20px;
+}
+
 h3 {
     color: #ffffff;
-    /*font-size: 20px;*/
+    font-size:40px;
     margin-bottom: 17px;
     text-align: center;
 }
 
 /*-- main --*/
 .content{
-    padding:80px 0;
+    padding:0px 0;
 }
 .content h1{
     margin-bottom:50px;
@@ -60,8 +74,8 @@ h3 {
     font-size:45px;
     color:#fff;	
 }
-.main {
-    width: 60%;
+/*.main {
+    width: 100%;
     margin: 0 auto 0 auto;
     background:url("../../../static/img/pic3.jpg") no-repeat 0px 0px;
     background-size:cover;
@@ -69,20 +83,24 @@ h3 {
     -o-background-size: cover;
     -ms-background-size: cover;
     -moz-background-size: cover;
-    min-height:515px;
+    min-height:800px;
+    height: 100%;
+    overflow: hidden;
     position: relative;	
     box-shadow: 3px 5px 5px #542310;
     -o-box-shadow: 3px 5px 5px #542310;
     -moz-box-shadow: 3px 5px 5px #542310;
     -webkit-box-shadow: 3px 5px 5px #542310;
-}
+}*/
 .franchise-left {
     float:left;
     width: 40%;
     background: rgba(1, 10, 19, 0.69);
     padding: 1.5em 3em;
-    height: 515px;
-    min-height:100%;
+    height: 100%;
+    min-height:800px;
+    overflow: hidden;
+    position: relative;	
 }
 .powered{
     color: #fff;
@@ -96,7 +114,7 @@ h3 {
     border: none;
     border-bottom: 2px solid #e6e6e6;
     outline: none;
-    color: #ccc;
+    color: #333;
     margin-bottom: 20px;
 }
 .franch_form form input.logo {
@@ -178,12 +196,17 @@ p.footer a:hover{
 
 }
 @media (max-width: 1366px){
-    	
+body {
+        overflow-y: auto;
+    }
 }
 @media (max-width: 1280px){
     .franchise-left {
-        width: 34%;
-    }	
+        width: 50%;
+    }
+    body {
+        overflow-y: auto;
+    }
 }
 @media (max-width: 1080px){
     .main {
@@ -203,14 +226,17 @@ p.footer a:hover{
 @media (max-width: 800px){
     .main {
         width: 86%;
-    }	
+    }
+    body{
+        overflow-y:auto;
+    }
     .franchise-left {
-        width: 37%;
+        width: 75%;
         padding: 2em 2em 0;
         height: 368px;
     }
     .main {
-        min-height: 400px;
+        min-height: 800px;
     }
     .content h1 {
         font-size: 38px;
@@ -231,23 +257,32 @@ p.footer a:hover{
     }
     .content h1 {
         margin-bottom: 70px;
-    }	
+    }
+    body{
+        overflow-y:auto;
+    }
 }
 @media (max-width: 736px){
     .content {
         padding: 100px 0;
     }
-    
+    body{
+        overflow-y:auto;
+    }
+
 }
 @media (max-width: 667px){
     .main {
-        width: 90%;
+        width: 100%;
     }
     .franch_form form input[type="submit"] {
         padding: 10px 0;
     }
     .franch_form form input.logo,.franch_form form input.key {
-        background-size: 5.5% !important;
+        background-size: 4.5% !important;
+    }
+    body{
+        overflow-y:auto;
     }
 }
 @media (max-width: 640px){
@@ -257,7 +292,7 @@ p.footer a:hover{
     .content h1 {
         font-size: 32px;
     }
-   
+
     .franch_form h2 {
         font-size: 24px;
         margin-bottom: 15px;
@@ -266,13 +301,17 @@ p.footer a:hover{
         margin-bottom: 50px;
     }
     .franchise-left {
-        width: 40%;
+        width: 100%;
         padding: 1em 1em 0;
-        height: 310px;
+        height: 800px;
     }
-   
+    
+    body{
+        overflow-y:auto;
+    }
+
     .main {
-        min-height: 326px;
+        min-height: 800px;
     }
     .franch_form form input.logo, .franch_form form input.key {
         background-size: 6.5% !important;
@@ -280,7 +319,10 @@ p.footer a:hover{
 }
 @media (max-width: 600px){
     .franch_form form input[type="text"], .franch_form form input[type="password"] {
-        width: 73%;
+        width: 100%;
+    }
+    body{
+        overflow-y:auto;
     }
 }
 @media (max-width: 568px){
@@ -296,7 +338,10 @@ p.footer a:hover{
     p.footer {
         margin-top: 50px;
         font-size: 13px;
-    }	
+    }
+    body{
+        overflow-y:auto;
+    }
 }
 @media (max-width: 414px){
     .franchise-left {
@@ -306,7 +351,7 @@ p.footer a:hover{
         width: 32%;
     }
     .main {
-        min-height: 526px;
+        min-height: 800px;
     }
     .franch_form form input[type="text"], .franch_form form input[type="password"] {
         margin-bottom: 30px;
@@ -315,20 +360,23 @@ p.footer a:hover{
         line-height: 1.8em;
     }
     .franchise-left {
-        height: 510px;
+        height: 800px;
     }
     .content h1 {
         font-size: 25px;
     }
     .main {
-        min-height: 510px;
+        min-height: 800px;
     }
     .main {
         background: url("../../../static/img/pic3.jpg") no-repeat -473px 0px;
         background-size: 289% !important;
     }
     .franch_form form input[type="text"], .franch_form form input[type="password"] {
-        width: 85%;
+        width: 100%;
+    }
+    body{
+        overflow-y:auto;
     }
 }
 @media (max-width: 384px){
@@ -338,7 +386,10 @@ p.footer a:hover{
         margin: 50px auto 0;
     }
     .main {
-        min-height: 505px;
+        min-height: 800px;
+    }
+    body{
+        overflow-y:auto;
     }
     .main {
         background: url("../../../static/img/pic3.jpg") no-repeat -473px 0px;
@@ -350,7 +401,10 @@ p.footer a:hover{
 }
 @media (max-width: 375px){
     .franch_form form input[type="text"], .franch_form form input[type="password"] {
-        width: 83%;
+        width: 100%;
+    }
+    body{
+        overflow-y:auto;
     }
 }
 @media (max-width: 320px){
@@ -366,6 +420,9 @@ p.footer a:hover{
     }
     .franchise-left {
         width: 100%;
+    }
+    body{
+        overflow-y:auto;
     }
     .content h1 {
         margin-bottom: 30px;
