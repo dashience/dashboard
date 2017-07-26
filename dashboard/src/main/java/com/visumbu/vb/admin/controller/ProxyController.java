@@ -149,6 +149,10 @@ public class ProxyController {
                 valueMap.put(key, Arrays.asList(value));
             }
         }
+        String joinDataSetId = getFromMultiValueMap(valueMap, "joinDataSetId");
+        if (joinDataSetId == null) {
+            valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
+        }
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String dataSetId = request.getParameter("dataSetId");
@@ -607,7 +611,9 @@ public class ProxyController {
             }
         }
         String joinDataSetId = getFromMultiValueMap(request, "joinDataSetId");
-        request.put("joinDataSetId", Arrays.asList(joinDataSetId));
+        if (joinDataSetId == null) {
+            request.put("joinDataSetId", Arrays.asList(joinDataSetId));
+        }
         if (isNullOrEmpty(dataSourceType)) {
             dataSourceType = "join";
         }
@@ -1955,8 +1961,6 @@ public class ProxyController {
             String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
             String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
             String productSegment = getFromMultiValueMap(valueMap, "productSegment");
-            String joinDataSetId = getFromMultiValueMap(valueMap, "joinDataSetId");
-            valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
 
 //            if (timeSegment == null) {
 //                timeSegment = "daily";
