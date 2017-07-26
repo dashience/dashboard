@@ -606,7 +606,8 @@ public class ProxyController {
                 dataSourceType = (dataSourceType == null || dataSourceType.isEmpty()) ? dataSet.getDataSourceId().getDataSourceType() : dataSourceType;
             }
         }
-
+        String joinDataSetId = getFromMultiValueMap(request, "joinDataSetId");
+        request.put("joinDataSetId", Arrays.asList(joinDataSetId));
         if (isNullOrEmpty(dataSourceType)) {
             dataSourceType = "join";
         }
@@ -1956,7 +1957,7 @@ public class ProxyController {
             String productSegment = getFromMultiValueMap(valueMap, "productSegment");
             String joinDataSetId = getFromMultiValueMap(valueMap, "joinDataSetId");
             valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
-            
+
 //            if (timeSegment == null) {
 //                timeSegment = "daily";
 //            }
