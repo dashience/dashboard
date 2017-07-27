@@ -634,6 +634,10 @@ public class ProxyController {
             returnMap = getSqlData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             returnMap.put("columnDefs", getColumnDefObject(data));
+        } else if (dataSourceType.equalsIgnoreCase("skyzone")) {
+            returnMap = getSkyZoneData(request, httpRequest, response);
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            returnMap.put("columnDefs", getColumnDefObject(data));
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("xls")) {
@@ -1944,6 +1948,45 @@ public class ProxyController {
         return null;
     }
 
+    private static String getQuery(String reportName, String level, String segment, String frequency) {
+        String query = "select ";
+        List<String> select = new ArrayList<>();
+        List<String> groupBy = new ArrayList<>();
+        List<String> orderBy = new ArrayList<>();
+
+        if (level != null && level.equalsIgnoreCase("Overall")) {
+            groupBy.add(level);
+            select.add(level);
+        }
+        if (segment != null) {
+            groupBy.add(segment);
+            select.add(segment);
+        }
+        if (frequency != null) {
+            groupBy.add(frequency);
+            select.add(frequency);
+        }
+        String allMetrics[] = {"Customers", "sales", "established parks", "new_park", "NPS"};
+
+        for (int i = 0; i < allMetrics.length; i++) {
+            if (level.equalsIgnoreCase("location") && allMetrics[i].equalsIgnoreCase("nps")) {
+                continue;
+            }
+            String metric = "sum(" + allMetrics[i] + ") " + allMetrics[i];
+            select.add(metric);
+        }
+
+        String selectQry = String.join(",", select);
+        String groupQry = String.join(",", groupBy);
+
+        String queryStr = "select " + selectQry + " from " + reportName + " group by " + groupQry;
+        return queryStr;
+    }
+
+    private Map getSkyZoneData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        return getSqlData(valueMap, request, response);
+    }
+
     private Map getSqlData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
         try {
             String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
@@ -2006,7 +2049,14 @@ public class ProxyController {
             log.debug("url: " + url);
             log.debug("valuemap: " + valueMap);
 
+            // String query = getFromMultiValueMap(valueMap, "query");
+            String level = null;
+            String segment = null;
+            String frequency = null;
             String query = getFromMultiValueMap(valueMap, "query");
+            if (isNullOrEmpty(query)) {
+                query = getQuery(dataSetReportName, level, segment, frequency);
+            }
 
             String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
 
