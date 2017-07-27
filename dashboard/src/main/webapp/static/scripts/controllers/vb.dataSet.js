@@ -1906,14 +1906,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
-            if ($scope.dataSet.reportName == 'geoPerformance') {
+            console.log("Report Name-->"+$scope.dataSet.reportName);
                 if (!dataSet.timeSegment) {
+            if ($scope.dataSet.reportName == 'geoPerformance') {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+
                 } else {
+          
                     getTimeSegment(timeSegmentList, timeSegmentName)
                 }
                 if (!dataSet.productSegment) {
+                      console.log("Inside product segment");
                     $scope.dataSet.productSegment = {name: 'City', type: 'city'};
+//                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
                     getProductSegment(productList, productSegmentName)
                 }
@@ -1945,14 +1950,30 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = true;
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
+            
+            if ($scope.dataSet.reportName == 'placementReport') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+              
+                $scope.dataSet.networkType={name: 'None', type: 'none'};
+            } 
+            
+             if ($scope.dataSet.reportName == 'videoPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+              
+                $scope.dataSet.networkType={name: 'None', type: 'none'};
+            } 
+            
             if ($scope.dataSet.reportName == 'geoPerformance') {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
-                $scope.dataSet.productSegment = {name: 'City', type: 'city'};
-//                $scope.networkTypes={name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+              
+                $scope.dataSet.networkType={name: 'None', type: 'none'};
             } else {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
-//                $scope.networkTypes={name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
             }
         }
 
@@ -1970,6 +1991,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
+            
             if (!dataSet.timeSegment) {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
             } else {
