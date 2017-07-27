@@ -1,4 +1,86 @@
 {
+    "skyZone": [{
+            "name": "Performance Summary",
+            "type": "performanceSummary",
+            "dataSetType": "wtd",
+            "timeSegments": [{
+                    "name": "Overall"
+                }],
+            "productSegments": [
+                {
+                    "name": "Sales Type",
+                    "type": "salesType"
+                }, {
+                    "name": "Country",
+                    "type": "country"
+                }, {
+                    "name": "State",
+                    "type": "state"
+                }, {
+                    "name": "City",
+                    "type": "city"
+                }, {
+                    "name": "Location",
+                    "type": "location"
+                }, {
+                    "name": "Park Type",
+                    "type": "parkType"
+                }, {
+                    "name": "None",
+                    "type": "None"
+                }],
+            "frequency": [{
+                    "name": "Date",
+                    "type": "Date"
+                }, {
+                    "name": "None",
+                    "type": "none"
+                }]
+        }, {
+            "name": "Detailed Summary",
+            "type": "detailedSummary",
+            "dataSetType": "CenterEdge",
+            "timeSegments": [{
+                    "name": "Category",
+                    "type": "category"
+                }, 
+                {
+                    "name": "Sub-category",
+                    "type": "subCategory"
+                },
+                {
+                    "name": "Description",
+                    "type": "description"
+                }
+            ],
+            "productSegments": [
+                {
+                    "name": "Sales Type",
+                    "type": "salesType"
+                }, {
+                    "name": "Country",
+                    "type": "country"
+                }, {
+                    "name": "State",
+                    "type": "state"
+                }, {
+                    "name": "City",
+                    "type": "city"
+                }, {
+                    "name": "Location",
+                    "type": "location"
+                }, {
+                    "name": "None",
+                    "type": "None"
+                }],           
+            "frequency": [{
+                    "name": "Date",
+                    "type": "Date"
+                }, {
+                    "name": "None",
+                    "type": "none"
+                }]
+        }],
     "bing": [{
             "type": "accountPerformance",
             "name": "Account Performance",

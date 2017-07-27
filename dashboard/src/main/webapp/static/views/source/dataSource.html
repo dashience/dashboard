@@ -149,7 +149,7 @@
                                 <option ng-repeat="sourceType in dataSourceTypes"  value="{{sourceType.type}}">{{sourceType.name}}</option>
                             </select>
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql' || dataSource.dataSourceType === 'skyZone'">
                             <label>Connection String</label>
                             <input type="text" class="form-control" ng-model="dataSource.connectionString">
                         </div>
@@ -186,15 +186,15 @@
                                 <div class="upload-border">{{sourceFileName?sourceFileName:dataSource.connectionString}}</div>
                             </div>
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql' || dataSource.dataSourceType === 'skyZone'">
                             <label>Driver</label>
                             <input type="text" class="form-control" ng-model="dataSource.sqlDriver">
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql' || dataSource.dataSourceType === 'skyZone'">
                             <label>User Name</label>
                             <input type="text" class="form-control" ng-model="dataSource.userName">
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql' || dataSource.dataSourceType === 'skyZone'">
                             <label>Password</label>
                             <input type="text" class="form-control" ng-model="dataSource.password">
                         </div>

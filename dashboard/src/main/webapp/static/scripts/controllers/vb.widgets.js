@@ -73,7 +73,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.templateUserId = template.userId.id;
         }
     });
-    
+
     $scope.parkTypes = [
         {fieldName: "Established", displayName: "Established"},
         {fieldName: "New", displayName: "New"}
@@ -1007,8 +1007,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     function getSegments(widget) {
+        console.log(widget)
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
+        var frequencyType = widget.networkType;
         var getDataSourceType = widget.dataSourceId ? widget.dataSourceId.dataSourceType : null;
         if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls' || getDataSourceType === "") {
             return;
@@ -1021,10 +1023,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 return;
             }
             getDataSetPerformance.forEach(function (val, key) {
-                var getPerformanceType = val.type;
+                var getPerformanceType
+                if (getDataSourceType == 'skyZone') {
+                    getPerformanceType = val.dataSetType;
+                } else {
+                    getPerformanceType = val.type;
+                }
                 if (getReportName === getPerformanceType) {
                     $scope.timeSegments = val.timeSegments;
                     $scope.productSegments = val.productSegments;
+                    if (val.frequency) {
+                        $scope.frequency = val.frequency;
+                    }
                     if (!$scope.timeSegments) {
                         return;
                     }
@@ -1041,6 +1051,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                             $scope.widgetObj.productSegment = val;
                         }
                     });
+                    if (getDataSourceType == 'skyZone') {
+                        $scope.frequency.forEach(function (val, key) {
+                            if (val.type === frequencyType) {
+                                $scope.widgetObj.networkType = val;
+                            }
+                        });
+                    }
                 }
             });
         });

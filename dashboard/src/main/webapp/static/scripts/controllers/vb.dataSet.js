@@ -128,7 +128,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.joinDataSetList = response;
         });
     };
-    
+
     var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
@@ -314,6 +314,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.report = $scope.bingPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+        } else if (dataSource === "skyZone")
+        {
+            $scope.report = $scope.skyZone;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
@@ -358,7 +363,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'getOrganicData',
             name: 'getOrganicData'
         }
-    ]
+    ];
+    
+    $scope.skyZone = [
+        {name: 'Detailed Summary', type: 'CenterEdge'},
+        {name: 'Performance Summary', type: 'wtd'}
+    ];
 
     $scope.bingPerformance = [
         {
@@ -2198,6 +2208,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             {
                 $scope.report = $scope.linkedinPerformance;
                 $scope.getTimeSegements();
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+            }  else if (dataSet.dataSourceId.dataSourceType === "skyZone")
+            {
+                $scope.report = $scope.skyZone;
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
             } else {
