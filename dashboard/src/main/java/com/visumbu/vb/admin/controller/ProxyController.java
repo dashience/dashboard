@@ -248,6 +248,7 @@ public class ProxyController {
             if (dataSetColumn != null) {
                 column.setId(dataSetColumn.getId());
                 column.setExpression(dataSetColumn.getExpression());
+                column.setFunctionName(dataSetColumn.getFunctionName());
                 column.setDisplayFormat(dataSetColumn.getDisplayFormat());
                 column.setUserId(dataSetColumn.getUserId());
                 column.setWidgetId(dataSetColumn.getWidgetId());
