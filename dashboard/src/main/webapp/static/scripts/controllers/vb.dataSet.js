@@ -255,6 +255,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             type: 'none',
             name: 'None'
+        }, 
+        {
+            type:'All',
+            name:'All'
         }
     ];
     $scope.dataSetFlagValidation = function (dataSource)

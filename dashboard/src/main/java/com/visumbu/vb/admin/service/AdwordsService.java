@@ -975,15 +975,13 @@ public class AdwordsService {
         if (timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")) {
         } else {
             fieldList.add("AllConversions");
-
         }
         fieldList.remove("AdNetworkType2");
         System.out.println("Filter Test ====> " + filter);
-        if (filter == null || filter.equalsIgnoreCase("All")) {
-            fieldList.add("AdNetworkType2");
+        if (filter == null || filter.equalsIgnoreCase("none") || filter.equalsIgnoreCase("undefined")) {
         } else {
+             fieldList.add("AdNetworkType2");
         }
-
         selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);

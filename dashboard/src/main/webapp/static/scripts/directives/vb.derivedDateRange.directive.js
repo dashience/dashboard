@@ -12,8 +12,7 @@ app.directive('functionDateRange', function ($stateParams, $timeout) {
                 console.log(scope.widgetTableDateRange)
                 var derivedColumn = scope.widgetTableDateRange;
                 var columnStartDate = derivedColumn.customStartDate ? derivedColumn.customStartDate : $stateParams.startDate; //JSON.parse(scope.widgetTableDateRange).customStartDate;
-                var columnEndDate = derivedColumn.customEndDate ? derivedColumn.customEndDate : $stateParams.endDate;
-                ; //JSON.parse(scope.widgetTableDateRange).customEndDate;
+                var columnEndDate = derivedColumn.customEndDate ? derivedColumn.customEndDate : $stateParams.endDate;//JSON.parse(scope.widgetTableDateRange).customEndDate;
                 //Date range as a button
                 $(element[0]).daterangepicker(
                         {
