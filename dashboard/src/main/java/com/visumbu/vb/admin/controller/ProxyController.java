@@ -1984,6 +1984,17 @@ public class ProxyController {
     }
 
     private Map getSkyZoneData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+        String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+        String filter = getFromMultiValueMap(valueMap, "filter");
+
+        String level = timeSegment;
+        String segment = productSegment;
+        String frequency = filter;
+        String query = getQuery(dataSetReportName, level, segment, frequency);
+        valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
+
         return getSqlData(valueMap, request, response);
     }
 
@@ -2049,15 +2060,8 @@ public class ProxyController {
             log.debug("url: " + url);
             log.debug("valuemap: " + valueMap);
 
-            // String query = getFromMultiValueMap(valueMap, "query");
-            String level = null;
-            String segment = null;
-            String frequency = null;
             String query = getFromMultiValueMap(valueMap, "query");
-            if (isNullOrEmpty(query)) {
-                query = getQuery(dataSetReportName, level, segment, frequency);
-            }
-
+            
             String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
 
             if (isNullOrEmpty(dashboardFilter)) {
