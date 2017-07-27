@@ -145,7 +145,13 @@ public class ProxyController {
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
             String[] value = entrySet.getValue();
-            valueMap.put(key, Arrays.asList(value));
+            if (value != null) {
+                valueMap.put(key, Arrays.asList(value));
+            }
+        }
+        String joinDataSetId = getFromMultiValueMap(valueMap, "joinDataSetId");
+        if (joinDataSetId == null) {
+            valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
         }
         String fieldsOnly = request.getParameter("fieldsOnly");
 
@@ -604,7 +610,10 @@ public class ProxyController {
                 dataSourceType = (dataSourceType == null || dataSourceType.isEmpty()) ? dataSet.getDataSourceId().getDataSourceType() : dataSourceType;
             }
         }
-
+        String joinDataSetId = getFromMultiValueMap(request, "joinDataSetId");
+        if (joinDataSetId == null) {
+            request.put("joinDataSetId", Arrays.asList(joinDataSetId));
+        }
         if (isNullOrEmpty(dataSourceType)) {
             dataSourceType = "join";
         }
@@ -621,6 +630,10 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getBingData(request, httpRequest, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
+        } else if (dataSourceType.equalsIgnoreCase("sql")) {
+            returnMap = getSqlData(request, httpRequest, response);
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            returnMap.put("columnDefs", getColumnDefObject(data));
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("xls")) {
@@ -1453,7 +1466,7 @@ public class ProxyController {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
-        String filter = getFromMultiValueMap(request, "filter");
+        String filter = getFromMultiValueMap(request, "networkType");
         String productSegment = getFromMultiValueMap(request, "productSegment");
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
@@ -1925,6 +1938,114 @@ public class ProxyController {
             Object jsonObj = parser.parse(data);
             List dataList = JsonSimpleUtils.toList((JSONArray) jsonObj);
             return dataList;
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    private Map getSqlData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
+            Integer accountId = Integer.parseInt(accountIdStr);
+            Account account = userService.getAccountId(accountId);
+            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+
+            for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+                Property property = iterator.next();
+                List<String> valueList = new ArrayList();
+                valueList.add(property.getPropertyValue());
+                valueMap.put(property.getPropertyName(), valueList);
+            }
+            String dataSetId = getFromMultiValueMap(valueMap, "dataSetId");
+            String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+            String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+            String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+
+//            if (timeSegment == null) {
+//                timeSegment = "daily";
+//            }
+//            if (productSegment == null) {
+//                productSegment = "none";
+//            }
+            Integer dataSetIdInt = null;
+            DataSet dataSet = null;
+            if (dataSetId != null) {
+                try {
+                    dataSetIdInt = Integer.parseInt(dataSetId);
+                } catch (Exception e) {
+
+                }
+                if (dataSetIdInt != null) {
+                    dataSet = uiService.readDataSet(dataSetIdInt);
+                }
+                if (dataSet != null) {
+                    dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
+                    timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
+                    productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
+                }
+            }
+            valueMap.put("timeSegment", Arrays.asList(timeSegment == null ? "" : timeSegment));
+            valueMap.put("productSegment", Arrays.asList(productSegment == null ? "" : productSegment));
+            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName == null ? "" : dataSetReportName));
+
+            String url = "../dbApi/admin/dataSet/getData";
+            Integer port = 80;
+            if (request != null) {
+                port = request.getServerPort();
+            }
+
+            String localUrl = "http://localhost/";
+            if (request != null) {
+                localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
+            }
+            log.debug("UR:" + url);
+            if (url.startsWith("../")) {
+                url = url.replaceAll("\\.\\./", localUrl);
+            }
+            log.debug("url: " + url);
+            log.debug("valuemap: " + valueMap);
+
+            String query = getFromMultiValueMap(valueMap, "query");
+
+            String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
+
+            if (isNullOrEmpty(dashboardFilter)) {
+                dashboardFilter = "";
+            }
+
+            dashboardFilter = getQueryFilter(dashboardFilter);
+
+            if (!isNullOrEmpty(dashboardFilter.trim())) {
+                if (query != null) {
+                    if (query.indexOf("where") > 0) {
+                        query += " " + dashboardFilter;
+                    } else {
+                        query += " where " + dashboardFilter;
+                    }
+                }
+            }
+
+            System.out.println("Query ===> " + query);
+
+            try {
+                query = URLEncoder.encode(query, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            valueMap.put("query", Arrays.asList(query));
+            try {
+                dashboardFilter = URLEncoder.encode(dashboardFilter, "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            valueMap.put("dashboardFilter", Arrays.asList(dashboardFilter));
+
+            String data = Rest.getData(url, valueMap);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            Map returnData = JsonSimpleUtils.toMap((JSONObject) jsonObj);
+            return returnData;
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2414,6 +2535,36 @@ public class ProxyController {
             url = url.replaceAll("\\.\\./", localUrl);
         }
         log.debug(url);
+    }
+
+    private static String getQueryFilter(String jsonDynamicFilter) {
+        try {
+            if (jsonDynamicFilter == null || jsonDynamicFilter.isEmpty()) {
+                return "";
+            }
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(jsonDynamicFilter);
+            JSONObject json = (JSONObject) jsonObj;
+            Map<String, Object> jsonToMap = (Map<String, Object>) JsonSimpleUtils.jsonToMap(json);
+            List<String> queryString = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : jsonToMap.entrySet()) {
+                String key = entry.getKey();
+                List<String> value = (List<String>) entry.getValue();
+                List<String> innerQuery = new ArrayList<>();
+                for (Iterator<String> iterator = value.iterator(); iterator.hasNext();) {
+                    String valueString = iterator.next();
+                    innerQuery.add(key + " = " + "'" + valueString + "'");
+                }
+                String join = String.join(" OR ", innerQuery);
+                // String output = key + " in " + join;
+                queryString.add(" ( " + join + " ) ");
+            }
+            return String.join(" AND ", queryString);
+
+        } catch (ParseException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
     }
 
     @ExceptionHandler

@@ -286,6 +286,9 @@ public class AdwordsService {
         String[] filterArr = filters.split(",");
         for (int i = 0; i < filterArr.length; i++) {
             String filter = filterArr[i];
+            if(filter.equalsIgnoreCase("all")) {
+                continue;
+            }
             final Predicate predicate = new Predicate();
             predicate.setField("AdNetworkType1");
             predicate.setOperator(PredicateOperator.IN);
@@ -968,12 +971,19 @@ public class AdwordsService {
         AdWordsSession session = getSession(accountId);
         Selector selector = new Selector();
         ArrayList<String> fieldList = Lists.newArrayList(fields);
+        fieldList.remove("AllConversions");
         if (timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")) {
-            fieldList.remove("AllConversions");
+        } else {
+            fieldList.add("AllConversions");
+
         }
-        if(filter == null || !filter.equalsIgnoreCase("ALL")) {
-            fieldList.remove("AdNetworkType2");
+        fieldList.remove("AdNetworkType2");
+        System.out.println("Filter Test ====> " + filter);
+        if (filter == null || filter.equalsIgnoreCase("All")) {
+            fieldList.add("AdNetworkType2");
+        } else {
         }
+
         selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);
