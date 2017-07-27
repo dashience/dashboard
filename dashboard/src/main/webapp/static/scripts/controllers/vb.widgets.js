@@ -1760,6 +1760,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.customStartDate = "";
             $scope.customEndDate = "";
         }
+        console.log($scope.customStartDate);
+        console.log($scope.customEndDate);
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -2634,7 +2636,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             widgetObj: '@'
         },
         link: function (scope, element, attr) {
-            var getWidgetObj = JSON.parse(scope.widgetObj)
+            var getWidgetObj = JSON.parse(scope.widgetObj);
             scope.loadingTicker = true;
             var tickerName = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
