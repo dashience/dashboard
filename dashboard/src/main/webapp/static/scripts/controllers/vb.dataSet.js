@@ -63,7 +63,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 '&password=' + dataSourcePassword +
                 '&url=' + dataSet.url +
                 '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
-            console.log(response);
             if (selectType == "dataSet1") {
                 $scope.firstDataSetLoading = false;
                 $scope.firstDataSetLoadingCompleted = true;
@@ -87,8 +86,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.firstDataSetLoading = true;
         $scope.loadingResultCompleted = false;
         getPreviewDataSet($scope.firstDataSet, "dataSet1");
-
     };
+    
     $scope.selectSecondDataSet = function (dataSet) {
         $scope.secondDataSet = JSON.parse(dataSet.secondDataSet);
         $scope.secondDataSetName = $scope.secondDataSet.name;
@@ -108,7 +107,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.hideCondition = false;
     $scope.selectJoinType = function (joinDataSetColumn) {
         $scope.operationType = joinDataSetColumn.joinType;
-        console.log($scope.operationType);
         if (joinDataSetColumn.joinType != null) {
             $scope.hideCondition = true;
         }
@@ -180,15 +178,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     $scope.errorHide = true;
                     $scope.errorMessage = "No Data Found";
                 }
-                console.log(response.columnDefs);
-                console.log(response.data);
             });
         });
     };
     $scope.cancelJoinDataSet = function () {
         $scope.joinDataSetColumn = "";
         joinDataSetId = "";
-//        $scope.dataSetColumn = "";
         $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
         $scope.secondDataSetLoadingCompleted = false;
@@ -206,7 +201,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             userId: dataSet.userId
         };
         $http({method: 'POST', url: 'admin/ui/joinDataSource', data: joinDataSource}).success(function (response) {
-            console.log(response)
+            console.log(response);
             dataSourceId = response.id;
 
             var joinDataSetList = {
