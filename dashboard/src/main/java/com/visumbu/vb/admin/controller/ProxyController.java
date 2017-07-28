@@ -1987,24 +1987,29 @@ public class ProxyController {
             groupBy.add(frequency);
             select.add(frequency);
         }
-        String allMetrics1[] = {"net_sales", "net_qty", "returns"};
-        String allMetrics2[] = {"head_count", "net_sales", "establish_park_sales", "new_park_sales"};
+        String allMetrics1[] = {"sum(net_sales) net_sales ", "sum(net_qty) net_qty", "sum(returns) returns"};
+
+        String allMetrics2[] = {"sum(head_count) head_count",
+            "sum(net_sales) net_sales ", "sum(establish_park_sales) establish_park_sales ",
+            "sum(new_park_sales) new_park_sales", "avg(capacity) capacity", "avg(TrampolineParkGt18) TrampolineParkGt18",
+            "avg(TrampolineParkLt18) TrampolineParkLt18"};
 
         if (reportName.equalsIgnoreCase("CenterEdge")) {
             for (int i = 0; i < allMetrics1.length; i++) {
 
-                String metric = "sum(" + allMetrics1[i] + ") " + allMetrics1[i];
+                String metric = allMetrics1[i];
                 select.add(metric);
             }
         }
         if (reportName.equalsIgnoreCase("wtd")) {
             for (int i = 0; i < allMetrics2.length; i++) {
 
-                String metric = "sum(" + allMetrics2[i] + ") " + allMetrics2[i];
+                String metric = allMetrics2[i];
                 select.add(metric);
             }
             if (segment != null && segment.equalsIgnoreCase("location")) {
-                select.add(" sum(nps_score) nps_score ");
+                select.add(" avg(nps_score) nps_score ");
+                select.add("avg(datediff('" + DateUtils.dateToString(endDate, "yyyy-MM-dd") + "', open_date)) noOfDaysOpen");
             }
         }
         String selectQry = String.join(",", select);
