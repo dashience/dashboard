@@ -99,6 +99,86 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tags = response;
     });
 
+    var xlsStyle = {
+        headers: true,
+    };
+
+
+
+    $scope.getWidgetObjScatter = function (obj) {
+        console.log(obj)
+    };
+
+    $scope.downloadXLSByWidget = function (widget) {
+        console.log(widget)
+        var fileName;
+        var name = widget.widgetTitle;
+        if (name) {
+            fileName = name.split(' ').join("");
+        } else {
+            fileName = "Skyzone"
+        }
+        var url = "admin/proxy/getData?";
+        var setProductSegment;
+        var setTimeSegment;
+        var setNetworkType;
+
+        if (widget.productSegment && widget.productSegment.type) {
+            setProductSegment = widget.productSegment.type;
+        } else {
+            setProductSegment = widget.productSegment;
+        }
+
+        if (widget.timeSegment && widget.timeSegment.type) {
+            setTimeSegment = widget.timeSegment.type;
+        } else {
+            setTimeSegment = widget.timeSegment;
+        }
+
+        if (widget.networkType && widget.networkType.type) {
+            setNetworkType = widget.networkType.type;
+        } else {
+            setNetworkType = widget.networkType;
+        }
+
+        var dataSourcePassword;
+        if (!widget.dataSetId) {
+            return;
+        }
+        if (widget.dataSetId.dataSourceId.password) {
+            dataSourcePassword = widget.dataSetId.dataSourceId.password;
+        } else {
+            dataSourcePassword = '';
+        }
+
+        var dashboardFilter;
+        if (widget.filterUrlParameter) {
+            dashboardFilter = JSON.stringify(widget.filterUrlParameter)
+        } else {
+            dashboardFilter = "";
+        }
+        $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
+                "&dataSetId=" + widget.dataSetId.id +
+                "&accountId=" + (widget.accountId ? (widget.accountId.id ? widget.accountId.id : widget.accountId) : $stateParams.accountId) +
+                "&userId=" + (widget.dataSetId.userId ? widget.dataSetId.userId.id : null) +
+                "&driver=" + widget.dataSourceId.sqlDriver +
+                "&productSegment=" + setProductSegment +
+                "&timeSegment=" + setTimeSegment +
+                "&networkType=" + setNetworkType +
+                "&dashboardFilter=" + encodeURI(dashboardFilter) +
+                "&startDate=" + $stateParams.startDate +
+                "&endDate=" + $stateParams.endDate +
+                '&username=' + widget.dataSetId.dataSourceId.userName +
+                "&dataSetReportName=" + widget.dataSetId.reportName +
+                '&password=' + dataSourcePassword +
+                '&widgetId=' + widget.id +
+                '&url=' + widget.dataSetId.url +
+                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query)).success(function (response) {
+            var data = response.data;
+            alasql('SELECT * INTO XLSXML("' + fileName + '.xls",?) FROM ?', [xlsStyle, data]);
+        });
+    };
+
     $scope.getAllSelected = function () {
         var allSelected = {};
         $scope.reloadAllDirective = false;
@@ -3321,13 +3401,14 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
                             "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
-                            "&startDate=" + $stateParams.startDate +
-                            "&endDate=" + $stateParams.endDate +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
                             "&dashboardFilter=" + encodeURI(dashboardFilter) +
+                            "&startDate=" + $stateParams.startDate +
+                            "&endDate=" + $stateParams.endDate +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
+                            "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
                             '&url=' + lineChartDataSource.url +
@@ -3672,16 +3753,15 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             "&dataSetId=" + barChartDataSource.id +
                             "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (barChartDataSource.userId ? barChartDataSource.userId.id : null) +
-                            "&dataSetReportName=" + barChartDataSource.reportName +
                             "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
-                            "&location=" + $stateParams.locationId +
-                            "&startDate=" + $stateParams.startDate +
-                            "&endDate=" + $stateParams.endDate +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
                             "&dashboardFilter=" + encodeURI(dashboardFilter) +
+                            "&startDate=" + $stateParams.startDate +
+                            "&endDate=" + $stateParams.endDate +
                             '&username=' + barChartDataSource.dataSourceId.userName +
+                            "&dataSetReportName=" + barChartDataSource.reportName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
                             '&url=' + barChartDataSource.url +
@@ -4825,6 +4905,369 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
         }
     };
 });
+
+
+
+app.directive('scatterChartDirective', function ($http, $filter, $stateParams, orderByFilter, $timeout) {
+    return{
+        restrict: 'A',
+        template: '<div ng-show="loadingScatter" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
+                '<div ng-show="hideEmptyScatter" class="text-center">{{scatterEmptyMessage}}</div>',
+        scope: {
+            setScatterChartFn: '&',
+            getSelectedFilterItem: '&',
+            getScatterWidgetObj: '&',
+            scatterChartSource: '@',
+            widgetId: '@',
+            widgetColumns: '@',
+            scatterChartId: '@',
+            widgetObj: '@',
+            defaultChartColor: '@'
+        },
+        link: function (scope, element, attr) {
+            var labels = {format: {}};
+            scope.loadingScatter = true;
+            var yAxis = [];
+            var columns = [];
+            var xAxis;
+            var ySeriesOrder = 1;
+            var sortField = "";
+            var sortOrder = 0;
+            var sortDataType = "number";
+            var displayDataFormat = {};
+            var y2 = {show: false, label: ''};
+            var axes = {};
+            var startDate = "";
+            var endDate = "";
+            var sortFields = [];
+            var combinationTypes = [];
+            var chartCombinationtypes = [];
+
+            angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
+                if (!labels["format"]) {
+                    labels = {format: {}};
+                }
+                if (value.displayFormat) {
+                    var format = value.displayFormat;
+                    var displayName = value.displayName;
+
+                    if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                        labels["format"][displayName] = function (value) {
+                            if (format.indexOf("%") > -1) {
+                                return d3.format(format)(value / 100);
+                            }
+                            return d3.format(format)(value);
+                        };
+                    } else {
+                        labels["format"][displayName] = function (value) {
+                            return formatBySecond(parseInt(value))
+                        };
+                    }
+                } else {
+                    var displayName = value.displayName;
+                    labels["format"][displayName] = function (value) {
+                        return value;
+                    };
+                }
+                if (value.sortOrder) {
+                    sortField = value.fieldName;
+                    sortOrder = value.sortOrder;
+                }
+                if (value.xAxis) {
+                    xAxis = {fieldName: value.fieldName, displayName: value.displayName};
+                }
+                if (value.yAxis) {
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
+                }
+                if (value.yAxis > 1) {
+                    y2 = {show: true, label: ''};
+                }
+                if (value.sortOrder) {
+                    sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
+                if (value.combinationType) {
+                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
+                }
+            });
+            var xData = [];
+            var xTicks = [];
+            scope.orderData = function (list, fieldnames) {
+                if (fieldnames.length == 0) {
+                    return list;
+                }
+                var fieldsOrder = [];
+                angular.forEach(fieldnames, function (value, key) {
+                    if (value.fieldType == "string") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(value.fieldName);
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push("-" + value.fieldName);
+                        }
+                    } else if (value.fieldType == "number") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
+                        }
+                    } else if (value.fieldType == "date") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
+                        }
+                    } else {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedValue = parseFloat(a[value.fieldName]);
+                                if (isNaN(parsedValue)) {
+                                    return a[value.fieldName];
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                return -1 * parseFloat(a[value.fieldName])
+                            });
+                        }
+                    }
+                });
+                return $filter('orderBy')(list, fieldsOrder);
+            }
+            function maximumRecord(maxValue, list) {
+                var maxData;
+                if (maxValue.maxRecord > 0) {
+                    maxData = list.slice(0, maxValue.maxRecord);
+                }
+                return maxData;
+            }
+            var scatterChartDataSource = JSON.parse(scope.scatterChartSource);
+            if (scope.scatterChartSource) {
+
+                var url = "admin/proxy/getData?";
+//                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
+                var dataSourcePassword;
+                if (scatterChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = scatterChartDataSource.dataSourceId.password;
+                } else {
+                    dataSourcePassword = '';
+                }
+
+                var getWidgetObj = JSON.parse(scope.widgetObj);
+                var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+                //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+
+                var setProductSegment;
+                var setTimeSegment;
+                var setNetworkType;
+
+                if (getWidgetObj.productSegment && getWidgetObj.productSegment.type) {
+                    setProductSegment = getWidgetObj.productSegment.type;
+                } else {
+                    setProductSegment = getWidgetObj.productSegment;
+                }
+
+                if (getWidgetObj.timeSegment && getWidgetObj.timeSegment.type) {
+                    setTimeSegment = getWidgetObj.timeSegment.type;
+                } else {
+                    setTimeSegment = getWidgetObj.timeSegment;
+                }
+
+                if (getWidgetObj.networkType && getWidgetObj.networkType.type) {
+                    setNetworkType = getWidgetObj.networkType.type;
+                } else {
+                    setNetworkType = getWidgetObj.networkType;
+                }
+
+                var dashboardFilter;
+                if (getWidgetObj.filterUrlParameter) {
+                    dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
+                } else {
+                    dashboardFilter = ""
+                }
+                scope.refreshScatterChart = function () {
+                    $http.get(url + 'connectionUrl=' + scatterChartDataSource.dataSourceId.connectionString +
+                            "&dataSetId=" + scatterChartDataSource.id +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
+                            "&userId=" + (scatterChartDataSource.userId ? scatterChartDataSource.userId.id : null) +
+                            "&driver=" + scatterChartDataSource.dataSourceId.sqlDriver +
+                            "&startDate=" + $stateParams.startDate +
+                            "&endDate=" + $stateParams.endDate +
+                            "&productSegment=" + setProductSegment +
+                            "&timeSegment=" + setTimeSegment +
+                            "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + encodeURI(dashboardFilter) +
+                            '&username=' + scatterChartDataSource.dataSourceId.userName +
+                            '&password=' + dataSourcePassword +
+                            "&dataSetReportName=" + scatterChartDataSource.reportName +
+                            '&widgetId=' + scope.widgetId +
+                            '&url=' + scatterChartDataSource.url +
+                            '&port=3306&schema=vb&query=' + encodeURI(scatterChartDataSource.query)).success(function (response) {
+                        scope.loadingScatter = false;
+                        if (!response.data) {
+                            return;
+                        }
+                        scope.getScatterWidgetObj({obj: response.data})
+                        if (response.data.length === 0) {
+                            scope.scatterEmptyMessage = "No Data Found";
+                            scope.hideEmptyScatter = true;
+                        } else {
+                            var loopCount = 0;
+                            var sortingObj;
+                            var gridData = JSON.parse(scope.widgetObj);
+                            var chartMaxRecord = JSON.parse(scope.widgetObj)
+                            var chartData = response.data;
+                            if (sortFields.length > 0) {
+                                angular.forEach(sortFields, function (value, key) {
+                                    if (value.fieldType != 'day') {
+                                        sortingObj = scope.orderData(chartData, sortFields);
+                                        if (chartMaxRecord.maxRecord) {
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        } else {
+                                            chartData = sortingObj;
+                                        }
+                                    } else {
+                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                        sortingObj = orderByFilter(chartData, function (item) {
+                                            if (value.sortOrder === 'asc') {
+                                                return dateOrders.indexOf(item[value.fieldName]);
+                                            } else if (value.sortOrder === 'desc') {
+                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                            }
+                                        });
+
+                                        if (chartMaxRecord.maxRecord) {
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                        } else {
+                                            chartData = sortingObj;
+                                        }
+                                    }
+                                });
+                            }
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
+                            }
+                            xTicks = [xAxis.fieldName];
+                            xData = chartData.map(function (a) {
+                                xTicks.push(loopCount);
+                                loopCount++;
+                                return a[xAxis.fieldName];
+                            });
+                            columns.push(xTicks);
+
+                            angular.forEach(yAxis, function (value, key) {
+                                ySeriesData = chartData.map(function (a) {
+                                    return a[value.fieldName] || "0";
+                                });
+                                ySeriesData.unshift(value.displayName);
+                                columns.push(ySeriesData);
+                            });
+
+                            angular.forEach(combinationTypes, function (value, key) {
+                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                            });
+                            var gridScatter = false;
+                            if (gridData.isGridLine == 'Yes') {
+                                gridScatter = true;
+                            } else {
+                                gridScatter = false;
+                            }
+
+
+                            var chart = c3.generate({
+                                padding: {
+                                    top: 10,
+                                    right: 50,
+                                    bottom: 10,
+                                    left: 50,
+                                },
+                                bindto: element[0],
+                                data: {
+                                    x: xAxis.fieldName,
+                                    columns: columns,
+                                    labels: labels,
+                                    axes: axes,
+                                    type: 'scatter',
+                                    onclick: function (obj, element) {
+                                        obj.xAxisValue = xData[obj.index]
+                                        obj.filter = response.filter;
+                                        scope.getSelectedFilterItem({filterBy: obj});
+                                    }
+                                },
+                                color: {
+                                    pattern: chartColors ? chartColors : defaultColors
+                                },
+                                tooltip: {show: false},
+                                axis: {
+                                    x: {
+                                        tick: {
+                                            format: function (x) {
+                                                return xData[x];
+                                            },
+                                            fit: false
+                                        }
+                                    },
+                                    y2: y2
+                                },
+
+                                grid: {
+                                    x: {
+                                        show: gridScatter
+                                    },
+                                    y: {
+                                        show: gridScatter
+                                    }
+                                }
+                            });
+                        }
+                    });
+                };
+                scope.setScatterChartFn({scatterFn: scope.refreshScatterChart});
+                scope.refreshScatterChart();
+            }
+        }
+    };
+});
+
+
+
 app.directive('funnelDirective', function ($http, $stateParams, $filter) {
     return{
         restrict: 'AE',
