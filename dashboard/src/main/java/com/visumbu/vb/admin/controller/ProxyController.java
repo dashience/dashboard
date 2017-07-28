@@ -1987,25 +1987,6 @@ public class ProxyController {
             String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
             String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
             String productSegment = getFromMultiValueMap(valueMap, "productSegment");
-            Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
-            Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
-            String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
-            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-                Integer widgetId = Integer.parseInt(widgetIdStr);
-                TabWidget widget = uiService.getWidgetById(widgetId);
-                if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
-                    if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
-                        startDate = DateUtils.getStartDate(widget.getCustomStartDate());
-                        endDate = DateUtils.getEndDate(widget.getCustomEndDate());
-                    } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
-                        Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
-                        startDate = dateRange.get("startDate");
-                        endDate = dateRange.get("endDate");
-                    }
-                }
-            }
-            String startDateStr = DateUtils.dateToString(startDate, "MM/dd/YYYY");
-            String endDateStr = DateUtils.dateToString(endDate, "MM/dd/YYYY");
 //            if (timeSegment == null) {
 //                timeSegment = "daily";
 //            }
@@ -2032,8 +2013,6 @@ public class ProxyController {
             valueMap.put("timeSegment", Arrays.asList(timeSegment == null ? "" : timeSegment));
             valueMap.put("productSegment", Arrays.asList(productSegment == null ? "" : productSegment));
             valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName == null ? "" : dataSetReportName));
-            valueMap.put("startDate",Arrays.asList(startDateStr));
-            valueMap.put("endDate",Arrays.asList(endDateStr));
 
             String url = "../dbApi/admin/dataSet/getData";
             Integer port = 80;
