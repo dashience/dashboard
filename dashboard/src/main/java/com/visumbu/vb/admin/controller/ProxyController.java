@@ -145,7 +145,13 @@ public class ProxyController {
         for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
             String key = entrySet.getKey();
             String[] value = entrySet.getValue();
-            valueMap.put(key, Arrays.asList(value));
+            if (value != null) {
+                valueMap.put(key, Arrays.asList(value));
+            }
+        }
+        String joinDataSetId = getFromMultiValueMap(valueMap, "joinDataSetId");
+        if (joinDataSetId == null) {
+            valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
         }
         String fieldsOnly = request.getParameter("fieldsOnly");
 
@@ -604,7 +610,10 @@ public class ProxyController {
                 dataSourceType = (dataSourceType == null || dataSourceType.isEmpty()) ? dataSet.getDataSourceId().getDataSourceType() : dataSourceType;
             }
         }
-
+        String joinDataSetId = getFromMultiValueMap(request, "joinDataSetId");
+        if (joinDataSetId == null) {
+            request.put("joinDataSetId", Arrays.asList(joinDataSetId));
+        }
         if (isNullOrEmpty(dataSourceType)) {
             dataSourceType = "join";
         }
@@ -623,6 +632,10 @@ public class ProxyController {
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("sql")) {
             returnMap = getSqlData(request, httpRequest, response);
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            returnMap.put("columnDefs", getColumnDefObject(data));
+        } else if (dataSourceType.equalsIgnoreCase("skyzone")) {
+            returnMap = getSkyZoneData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             returnMap.put("columnDefs", getColumnDefObject(data));
         } else if (dataSourceType.equalsIgnoreCase("https")) {
@@ -1935,6 +1948,85 @@ public class ProxyController {
         return null;
     }
 
+    private static String getQuery(String reportName, String level, String segment, String frequency, Date startDate, Date endDate) {
+
+        System.out.println("REPORT ===> " + reportName + " LEVEL " + level + " Segment ===> " + segment + " Frequency ====> " + frequency);
+        String query = "select ";
+        List<String> select = new ArrayList<>();
+        List<String> groupBy = new ArrayList<>();
+        List<String> orderBy = new ArrayList<>();
+
+        if (level != null && !level.equalsIgnoreCase("Overall")) {
+            groupBy.add(level);
+            select.add(level);
+        }
+        if (segment != null && !segment.equalsIgnoreCase("none")) {
+            groupBy.add(segment);
+            select.add(segment);
+        }
+        if (frequency != null && !frequency.equalsIgnoreCase("none")) {
+            groupBy.add(frequency);
+            select.add(frequency);
+        }
+        String allMetrics1[] = {"net_sales", "net_qty", "returns"};
+        String allMetrics2[] = {"head_count", "net_sales", "establish_park_sales", "new_park_sales"};
+
+        if (reportName.equalsIgnoreCase("CenterEdge")) {
+            for (int i = 0; i < allMetrics1.length; i++) {
+
+                String metric = "sum(" + allMetrics1[i] + ") " + allMetrics1[i];
+                select.add(metric);
+            }
+        }
+        if (reportName.equalsIgnoreCase("wtd")) {
+            for (int i = 0; i < allMetrics2.length; i++) {
+
+                String metric = "sum(" + allMetrics2[i] + ") " + allMetrics2[i];
+                select.add(metric);
+            }
+            if (segment != null && segment.equalsIgnoreCase("location")) {
+                select.add(" sum(nps_score) nps_score ");
+            }
+        }
+        String selectQry = String.join(",", select);
+        String groupQry = String.join(",", groupBy);
+        String groupByAppender = "";
+        if (groupQry != null && !(groupQry.trim().isEmpty())) {
+            groupByAppender = " group by " + groupQry;
+        }
+        String tableName = "skyzone_wtd";
+        if (reportName.equalsIgnoreCase("CenterEdge")) {
+            tableName = "skyzone_center_edge";
+        }
+
+        String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+        String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
+        String whereCondition = " where Date between '" + startDateStr + "' and '" + endDateStr + "' ";
+        String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender;
+        return queryStr;
+    }
+
+    private Map getSkyZoneData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+        String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+        String filter = getFromMultiValueMap(valueMap, "networkType");
+
+        System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
+
+        String level = isNullOrEmpty(timeSegment) ? null : timeSegment;
+        String segment = isNullOrEmpty(productSegment) ? null : productSegment;
+        String frequency = isNullOrEmpty(filter) ? null : filter;
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
+
+        String query = getQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
+
+        valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
+
+        return getSqlData(valueMap, request, response);
+    }
+
     private Map getSqlData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
         try {
             String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
@@ -1952,6 +2044,7 @@ public class ProxyController {
             String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
             String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
             String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+
 //            if (timeSegment == null) {
 //                timeSegment = "daily";
 //            }
@@ -1975,9 +2068,9 @@ public class ProxyController {
                     productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
                 }
             }
-            valueMap.put("timeSegment", Arrays.asList(timeSegment));
-            valueMap.put("productSegment", Arrays.asList(productSegment));
-            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
+            valueMap.put("timeSegment", Arrays.asList(timeSegment == null ? "" : timeSegment));
+            valueMap.put("productSegment", Arrays.asList(productSegment == null ? "" : productSegment));
+            valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName == null ? "" : dataSetReportName));
 
             String url = "../dbApi/admin/dataSet/getData";
             Integer port = 80;
@@ -2536,7 +2629,7 @@ public class ProxyController {
     private static String getQueryFilter(String jsonDynamicFilter) {
         try {
             if (jsonDynamicFilter == null || jsonDynamicFilter.isEmpty()) {
-                return null;
+                return "";
             }
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(jsonDynamicFilter);
@@ -2561,7 +2654,7 @@ public class ProxyController {
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return "";
     }
 
     @ExceptionHandler

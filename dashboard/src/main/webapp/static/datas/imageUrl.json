@@ -1,28 +1,24 @@
 [
     {
         "id": 1,
-        "url": "static/img/areachart.png",
         "type": "area",
         "name": "Area Chart",
         "icon": "fa-area-chart"
     },
     {
         "id": 2,
-        "url": "static/img/barchart.png",
         "type": "bar",
         "name": "Bar Chart",
         "icon": "fa-bar-chart"
     },
     {
         "id": 3,
-        "url": "static/img/linechart.ico",
         "type": "line",
         "name": "Line Chart",
         "icon": "fa-line-chart"
     },
     {
         "id": 4,
-        "url": "static/img/piechart.ico",
         "type": "pie",
         "name": "Pie Chart",
         "icon": "fa-pie-chart"
@@ -36,30 +32,33 @@
     },
     {
         "id": 8,
-        "url": "static/img/table.png",
         "type": "ticker",
         "name": "Tickers",
         "icon": "fa-check"
     },
     {
         "id": 9,
-        "url": "static/img/table.png",
         "type": "text",
         "name": "Text",
         "icon": "fa-file-text-o"
     },
     {
         "id": 10,
-        "url": "static/img/stackedbarchart.png",
         "type": "stackedbar",
         "name": "Stacked Bar",
         "icon": "fa-braille"
     },
     {
-       "id": 11,
-       "url": "static/img/funnel.png",
-       "type": "funnel",
-       "name": "Funnel",
-       "icon": "fa-filter"
-   }
+        "id": 11,
+        "type": "funnel",
+        "name": "Funnel",
+        "icon": "fa-filter"
+    },
+    {
+        "id": 12,
+        "url": "static/img/icons/scatter-plot.png",
+        "type": "scatter",
+        "name": "Scatter",
+        "icon": ""
+    }
 ]

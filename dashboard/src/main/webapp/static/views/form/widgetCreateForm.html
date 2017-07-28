@@ -358,6 +358,7 @@
                                         <span class="previewChart" title="{{chartType.name}}">
                                             <i style="cursor: pointer" class="fa {{chartType.icon}} typeChart" 
                                                ng-class="{'selected': chartType.type == (selectedChartType?selectedChartType:widgetObj.chartType)}"></i> 
+                                            <img ng-src="{{chartType.url}}" />
                                         </span>
                                     </a>
                                 </div>
@@ -419,6 +420,7 @@
                                     <label>Frequency</label>
                                     <select class="form-control"
                                             ng-model="widgetObj.networkType" 
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="networkType.name for networkType in frequency track by networkType.type">
                                     </select>
                                 </div>
@@ -843,6 +845,16 @@
                              widget-Obj="{{displayPreviewChart}}">                         
                         </div>
                     </div>                            
+                </div>
+                <div ng-if="chartTypeName === 'scatter'">
+                    <div>
+                        <div scatter-Chart-Source='{{displayPreviewChart.dataSetId}}' 
+                             widget-Id="{{displayPreviewChart.id}}" 
+                             widget-Columns="{{displayPreviewChart.columns}}" 
+                             scatter-Chart-Directive 
+                             widget-Obj="{{displayPreviewChart}}">                                            
+                        </div>
+                    </div>
                 </div>
                 <div ng-if="chartTypeName === 'funnel'">
                     <div>
