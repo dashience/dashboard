@@ -240,6 +240,9 @@ public class ShuntingYard {
                 String operator = postFixToken;
                 String operand1 = getOperand(stack.pop(), mapData);
                 String operand2 = getOperand(stack.pop(), mapData);
+                System.out.println("Operand 1 ---> "+operand1);
+                System.out.println("Operand 2 ---> "+operand2);
+                        
                 stack.push(calculate(operand1, operand2, operator) + "");
             } else {
                 stack.push(postFixToken);
@@ -297,6 +300,7 @@ public class ShuntingYard {
         }
 
         if (operator.trim().equalsIgnoreCase("LIKE")) {
+            operand2 = operand2.replaceAll("\\s+","_");
             return like(operand2, operand1);
         }
 
@@ -367,22 +371,27 @@ public class ShuntingYard {
     }
 
     private static String getOperand(String operand, Map<String, Object> mapData) {
+        System.out.println("Get operand ---> "+operand);
+        System.out.println("Map DAta ===> "+mapData);
         if (operand.equalsIgnoreCase("true") || operand.equalsIgnoreCase("false")) {
             return operand;
         }
         try {
             Double value = Double.parseDouble(operand);
+            System.out.println("Operand ---> "+operand);
+            System.out.println("VAlue ---> "+value);
             return operand;
         } catch (Exception e) {
 
         }
 
         if ((operand.startsWith("'") && operand.endsWith("'"))) {
+            System.out.println("oprand with string --> "+operand.substring(1, operand.length() - 1));
             return operand.substring(1, operand.length() - 1);
 //            String fieldName = operand.split("\\.")[1];
 //            return mapData.get(fieldName) + "";
         }
-
+                    System.out.println("operand final ---> "+mapData.get(operand) + "");
         return mapData.get(operand) + "";
     }
 
