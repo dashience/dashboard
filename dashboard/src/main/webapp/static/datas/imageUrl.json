@@ -59,6 +59,6 @@
         "url": "static/img/icons/scatter-plot.png",
         "type": "scatter",
         "name": "Scatter",
-        "icon": ""
+        "icon": "fa-ellipsis-h"
     }
 ]
