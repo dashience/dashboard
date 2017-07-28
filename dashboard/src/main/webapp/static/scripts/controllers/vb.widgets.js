@@ -5850,7 +5850,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
     return{
         restrict: 'A',
         scope: {
-            queryData: '@',
+            queryData: '@'
         },
         link: function (scope, element, attr) {
             scope.columns = scope.queryData;
@@ -5858,7 +5858,8 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             var columnList = JSON.parse(scope.queryData);
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
-                var typeOfValue = value.type ? value.type : value.fieldType;
+                console.log(value);
+                var typeOfValue = value.fieldType;
                 if (typeOfValue == 'number') {
                     scope.fieldsType = "integer";
                 } else if (typeOfValue == 'string') {
@@ -5870,7 +5871,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 } else {
                     scope.fieldsType = value.fieldType;
                 }
-                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
+                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType});
             });
             scope.buildQuery = filterList;
             if (jsonFilter.jsonData != null) {

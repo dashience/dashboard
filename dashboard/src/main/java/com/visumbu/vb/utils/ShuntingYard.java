@@ -155,7 +155,7 @@ public class ShuntingYard {
     }
 
     public static String executeExpression(Map<String, Object> mapData, String postFixRules) {
-        System.out.println("mapData ---> "+mapData);
+        System.out.println("mapData ---> " + mapData);
         String[] postfixRulesList = postFixRules.trim().split("\\s+");
         Deque<String> stack = new LinkedList<>();
         for (int i = 0; i < postfixRulesList.length; i++) {
@@ -240,6 +240,9 @@ public class ShuntingYard {
                 String operator = postFixToken;
                 String operand1 = getOperand(stack.pop(), mapData);
                 String operand2 = getOperand(stack.pop(), mapData);
+                System.out.println("Operand 1 ---> " + operand1);
+                System.out.println("Operand 2 ---> " + operand2);
+
                 stack.push(calculate(operand1, operand2, operator) + "");
             } else {
                 stack.push(postFixToken);
@@ -252,6 +255,7 @@ public class ShuntingYard {
     private static Boolean calculate(String operand1, String operand2, String operator) {
         System.out.println("Operand 1 " + operand1 + " Operand 2 " + operand2 + " Operator " + operator);
         if (operator.trim().equalsIgnoreCase("=")) {
+            operand2 = operand2.replaceAll("\\s+", "_");
             return operand1.equalsIgnoreCase(operand2);
         }
         if (operator.trim().equalsIgnoreCase("and")) {
@@ -262,6 +266,7 @@ public class ShuntingYard {
         }
         if (operator.trim().equalsIgnoreCase("!=")) {
             System.out.println("NOT EQUAL TO");
+            operand2 = operand2.replaceAll("\\s+", "_");
             return (!operand1.equalsIgnoreCase(operand2));
         }
         if (operator.trim().equalsIgnoreCase("<")) {
@@ -286,21 +291,24 @@ public class ShuntingYard {
         }
         if (operator.trim().equalsIgnoreCase("=''")) {
             System.out.println("is empty");
+            operand2 = operand2.replaceAll("\\s+", "_");
             System.out.println("operand1" + operand1 + "operand2" + operand2 + "operator" + operator);
             return (operand2.equals(""));
 
         }
         if (operator.trim().equalsIgnoreCase("!=''")) {
             System.out.println("not empty");
+            operand2 = operand2.replaceAll("\\s+", "_");
             return (!operand2.isEmpty());
-
         }
 
         if (operator.trim().equalsIgnoreCase("LIKE")) {
+            operand2 = operand2.replaceAll("\\s+", "_");
             return like(operand2, operand1);
         }
 
         if (operator.trim().equalsIgnoreCase("NOTLIKE")) {
+            operand2 = operand2.replaceAll("\\s+", "_");
             return notLike(operand2, operand1);
         }
         if (operator.trim().equalsIgnoreCase("NULL")) {
@@ -322,6 +330,7 @@ public class ShuntingYard {
             if (by.startsWith("%") && by.endsWith("%")) {
                 System.out.println("Contains");
                 by = by.replaceAll("%", "");
+                System.out.println("by ---> " + by);
                 return (toBeCompare.contains(by));
             } else if (by.endsWith("%")) {
                 System.out.println("beginWith");
@@ -367,22 +376,27 @@ public class ShuntingYard {
     }
 
     private static String getOperand(String operand, Map<String, Object> mapData) {
+        System.out.println("Get operand ---> " + operand);
+        System.out.println("Map DAta ===> " + mapData);
         if (operand.equalsIgnoreCase("true") || operand.equalsIgnoreCase("false")) {
             return operand;
         }
         try {
             Double value = Double.parseDouble(operand);
+            System.out.println("Operand ---> " + operand);
+            System.out.println("VAlue ---> " + value);
             return operand;
         } catch (Exception e) {
 
         }
 
         if ((operand.startsWith("'") && operand.endsWith("'"))) {
+            System.out.println("oprand with string --> " + operand.substring(1, operand.length() - 1));
             return operand.substring(1, operand.length() - 1);
 //            String fieldName = operand.split("\\.")[1];
 //            return mapData.get(fieldName) + "";
         }
-
+        System.out.println("operand final ---> " + mapData.get(operand) + "");
         return mapData.get(operand) + "";
     }
 
