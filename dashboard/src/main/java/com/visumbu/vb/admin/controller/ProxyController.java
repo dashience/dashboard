@@ -36,6 +36,7 @@ import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.utils.CsvDataSet;
+import com.visumbu.vb.utils.DataExporter;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.PropertyReader;
@@ -131,6 +132,24 @@ public class ProxyController {
     private final String urlDownload = "url.download";
 
     final static Logger log = Logger.getLogger(ProxyController.class);
+
+    @RequestMapping(value = "downloadData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    void downloadData(HttpServletRequest request, HttpServletResponse response) {
+        Map dataMap = (Map) getGenericData(request, response);
+
+        List<Map<String, Object>> dataList = (List<Map<String, Object>>) dataMap.get("data");
+
+        DataExporter exporter = new DataExporter();
+        List<ColumnDef> columnDef = (List<ColumnDef>) dataMap.get("columnDefs");
+        try {
+            response.setContentType("application/xlsx");
+            response.setHeader("Content-disposition", "attachment; filename=widget.xlsx");
+            exporter.exportToXls(columnDef, dataList, response.getOutputStream());
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody

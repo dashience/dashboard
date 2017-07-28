@@ -118,7 +118,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             fileName = "Skyzone"
         }
-        var url = "admin/proxy/getData?";
+        var url = "admin/proxy/downloadData?";
         var setProductSegment;
         var setTimeSegment;
         var setNetworkType;
@@ -157,7 +157,29 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             dashboardFilter = "";
         }
-        $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
+//       $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
+//                "&dataSetId=" + widget.dataSetId.id +
+//                "&accountId=" + (widget.accountId ? (widget.accountId.id ? widget.accountId.id : widget.accountId) : $stateParams.accountId) +
+//                "&userId=" + (widget.dataSetId.userId ? widget.dataSetId.userId.id : null) +
+//                "&driver=" + widget.dataSourceId.sqlDriver +
+//                "&productSegment=" + setProductSegment +
+//                "&timeSegment=" + setTimeSegment +
+//                "&networkType=" + setNetworkType +
+//                "&dashboardFilter=" + encodeURI(dashboardFilter) +
+//                "&startDate=" + $stateParams.startDate +
+//                "&endDate=" + $stateParams.endDate +
+//                '&username=' + widget.dataSetId.dataSourceId.userName +
+//                "&dataSetReportName=" + widget.dataSetId.reportName +
+//                '&password=' + dataSourcePassword +
+//                '&widgetId=' + widget.id +
+//                '&url=' + widget.dataSetId.url +
+//                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query)).success(function (response) {
+//            //var data = response.data;
+//           // alasql('SELECT * INTO XLSXML("' + fileName + '.xls",?) FROM ?', [xlsStyle, data]);
+//        })
+
+        window.open("admin/proxy/downloadData?connectionUrl=" +
+                widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
                 "&accountId=" + (widget.accountId ? (widget.accountId.id ? widget.accountId.id : widget.accountId) : $stateParams.accountId) +
                 "&userId=" + (widget.dataSetId.userId ? widget.dataSetId.userId.id : null) +
@@ -173,10 +195,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 '&password=' + dataSourcePassword +
                 '&widgetId=' + widget.id +
                 '&url=' + widget.dataSetId.url +
-                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query)).success(function (response) {
-            var data = response.data;
-            alasql('SELECT * INTO XLSXML("' + fileName + '.xls",?) FROM ?', [xlsStyle, data]);
-        });
+                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query));
     };
 
     $scope.getAllSelected = function () {
