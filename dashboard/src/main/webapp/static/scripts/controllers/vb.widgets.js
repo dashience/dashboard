@@ -428,59 +428,69 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.getChartFilterItems = function (filterBy) {
+        console.log(filterBy)
+        var reload = false;
         // filterBy.value = "Domestic"
         angular.forEach($scope.salesTypes, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
         });
         angular.forEach($scope.countries, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
         });
         angular.forEach($scope.states, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
         });
         angular.forEach($scope.cities, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
         });
         angular.forEach($scope.stores, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
         });
         angular.forEach($scope.categories, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
         });
         angular.forEach($scope.subCategories, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
         });
         angular.forEach($scope.parkTypes, function (val, key) {
-            if (val.fieldName == filterBy.name) {
+            if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reload = true;
             } else {
                 val.status = false;
             }
@@ -493,9 +503,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.$apply($scope.categories);
         $scope.$apply($scope.subCategories);
         $scope.$apply($scope.parkTypes);
-        $timeout(function () {
-            $scope.getAllSelected();
-        }, 500);
+        if (reload == true) {
+            $timeout(function () {
+                $scope.getAllSelected();
+            }, 500);
+        }
     };
 
     $http.get("admin/settings/getSettings").success(function (response) {

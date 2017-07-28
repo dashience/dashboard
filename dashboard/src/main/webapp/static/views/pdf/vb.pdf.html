@@ -235,6 +235,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="widget.chartType === 'scatter'">
+                            <div  class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
+                                <div scatter-Chart-Directive 
+                                     scatter-Chart-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}">                                     
+                                </div>
+                            </div>
+                        </div>
                         <div class="list pageBreak" ng-if="widget.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div id="changes-height" class="project-list">
