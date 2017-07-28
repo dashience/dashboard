@@ -16,7 +16,7 @@ function dashboardFormat(column, value) {
     if (column.displayFormat.indexOf("%") > -1) {
         return d3.format(column.displayFormat)(value / 100);
     } else if (column.displayFormat == 'H:M:S') {
-        return formatBySecond(parseInt(value))
+        return formatBySecond(parseInt(value));
     } else {
         return d3.format(column.displayFormat)(value);
     }
