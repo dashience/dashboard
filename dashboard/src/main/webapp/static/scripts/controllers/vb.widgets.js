@@ -27,7 +27,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
+app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -212,10 +212,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgets.forEach(function (val, key) {
             val.filterUrlParameter = allSelected;
         });
-        dispAllFilter(allSelected)
-        $timeout(function () {
-            $scope.reloadAllDirective = true;
-        }, 500);
+        // dispAllFilter(allSelected)
+
         return allSelected;
     };
     function dispAllFilter(filterItems) {
@@ -283,37 +281,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.updateFilter = function (filters) {
         var filtersArray = filters.split(",");
+        allRequests = [];
         angular.forEach(filtersArray, function (value) {
             var selectedFilter = $scope.getAllSelected();
             var dashboardFilter = {};
             if (value == "salesType") {
-                $http.get('admin/filterData/getFilter/salesType').success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/salesType').success(function (response) {
                     $scope.salesTypes = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "country") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $http.get('admin/filterData/getFilter/country?dashboardFilter=' + queryString).success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/country?dashboardFilter=' + queryString).success(function (response) {
                     $scope.countries = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "state") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 dashboardFilter.country = selectedFilter.Country;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $http.get('admin/filterData/getFilter/state?dashboardFilter=' + queryString).success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/state?dashboardFilter=' + queryString).success(function (response) {
                     $scope.states = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "city") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 dashboardFilter.country = selectedFilter.Country;
                 dashboardFilter.state = selectedFilter.State;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $http.get('admin/filterData/getFilter/city?dashboardFilter=' + queryString).success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/city?dashboardFilter=' + queryString).success(function (response) {
                     $scope.cities = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "store") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
@@ -321,31 +324,57 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 dashboardFilter.state = selectedFilter.State;
                 dashboardFilter.city = selectedFilter.City;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $http.get('admin/filterData/getFilter/store?dashboardFilter=' + queryString).success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/store?dashboardFilter=' + queryString).success(function (response) {
                     $scope.stores = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "category") {
-                $http.get('admin/filterData/getFilter/category').success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/category').success(function (response) {
                     $scope.categories = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "subCategory") {
                 dashboardFilter.category = selectedFilter.Category;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $http.get('admin/filterData/getFilter/subcategory?dashboardFilter=' + queryString).success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/subcategory?dashboardFilter=' + queryString).success(function (response) {
                     $scope.subCategories = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "parkType") {
                 dashboardFilter.parkType = selectedFilter.ParkType;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $http.get('admin/filterData/getFilter/parktype?dashboardFilter=' + queryString).success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/parktype?dashboardFilter=' + queryString).success(function (response) {
                     $scope.parkTypes = response.data;
                 });
+                allRequests.push(request);
             }
             if (value == "none") {
             }
+        });
+
+        $q.all(allRequests).then(function (values) {
+            console.log(values);
+            var allSelected = {};
+            $scope.reloadAllDirective = false;
+            $('.inputCheckbox:checked').each(function (key, value) {
+                var fieldname = $(value).attr('fieldname');
+                var fieldvalue = $(value).attr('fieldvalue');
+                if (!allSelected[fieldname]) {
+                    allSelected[fieldname] = [];
+                }
+                allSelected[fieldname].push(fieldvalue);
+            });
+            $scope.widgets.forEach(function (val, key) {
+                val.filterUrlParameter = allSelected;
+            });
+            dispAllFilter(allSelected);
+            $timeout(function () {
+                $scope.reloadAllDirective = true;
+            }, 500);
+            //alert("All Loaded")
         });
     };
 
@@ -725,7 +754,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $stateParams.tabId = 0;
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId + '/' + $stateParams.accountId).success(function (response) {
-            var widgetItems = [];      
+            var widgetItems = [];
             $scope.selectItems = "";
             widgetItems = response;
             if (response) {
