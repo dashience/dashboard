@@ -463,10 +463,12 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         console.log(filterBy)
         var reload = false;
         // filterBy.value = "Domestic"
+        var reloadType = "";
         angular.forEach($scope.salesTypes, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
+                reloadType = "country,state,city,store";
             } else {
                 val.status = false;
             }
@@ -475,6 +477,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
+                reloadType = "state,city,store";
             } else {
                 val.status = false;
             }
@@ -482,6 +485,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         angular.forEach($scope.states, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
+                reloadType = "city,store";
                 reload = true;
             } else {
                 val.status = false;
@@ -491,6 +495,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
+                reloadType = "store";
             } else {
                 val.status = false;
             }
@@ -507,6 +512,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
+                reloadType = "subCategory";
             } else {
                 val.status = false;
             }
@@ -535,11 +541,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.$apply($scope.categories);
         $scope.$apply($scope.subCategories);
         $scope.$apply($scope.parkTypes);
-        // if (reload == true) {
-        $timeout(function () {
-            $scope.getAllSelected();
-        }, 500);
-        // }
+         if (reload == true) {
+            $timeout(function () {
+                $scope.updateFilter(reloadType);
+            }, 500);
+         }
     };
 
     $http.get("admin/settings/getSettings").success(function (response) {

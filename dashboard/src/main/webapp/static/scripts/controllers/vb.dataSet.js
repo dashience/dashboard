@@ -318,7 +318,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             $scope.report = $scope.skyZone;
             $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
+            $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.showLabelName = true;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
@@ -364,10 +367,102 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'getOrganicData'
         }
     ];
-    
+
     $scope.skyZone = [
-        {name: 'Detailed Summary', type: 'CenterEdge'},
-        {name: 'Performance Summary', type: 'wtd'}
+        {
+            name: 'Detailed Summary',
+            type: 'CenterEdge',
+            timeSegments: [
+                {
+                    name: "Category",
+                    type: "category"
+                },
+                {
+                    name: "Sub-category",
+                    type: "subCategory"
+                },
+                {
+                    name: "Description",
+                    type: "description"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "Sales Type",
+                    type: "salesType"
+                }, {
+                    name: "Country",
+                    type: "country"
+                }, {
+                    name: "State",
+                    type: "state"
+                }, {
+                    name: "City",
+                    type: "city"
+                }, {
+                    name: "Location",
+                    type: "location"
+                }, {
+                    name: "None",
+                    type: "None"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Date",
+                    type: "Date"
+                }, {
+                    name: "None",
+                    type: "none"
+                }
+            ]
+        },
+        {
+            name: 'Performance Summary',
+            type: 'wtd',
+            timeSegments: [
+                {
+                    name: "Overall",
+                    type: "overall"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "Sales Type",
+                    type: "salesType"
+                }, {
+                    name: "Country",
+                    type: "country"
+                }, {
+                    name: "State",
+                    type: "state"
+                }, {
+                    name: "City",
+                    type: "city"
+                }, {
+                    name: "Location",
+                    type: "location"
+                }, {
+                    name: "Park Type",
+                    type: "parkType"
+                }, {
+                    name: "None",
+                    type: "None"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Date",
+                    type: "Date"
+                }, {
+                    name: "Day of Week",
+                    type: "weekday"
+                }, {
+                    name: "None",
+                    type: "none"
+                }
+            ]
+        }
     ];
 
     $scope.bingPerformance = [
@@ -2014,6 +2109,49 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegFlag = false;
         }
 
+        if ($scope.dataSet.dataSourceId.dataSourceType == "skyZone")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.skyZone);
+            $scope.timeSegment = $scope.skyZone[index].timeSegments;
+            $scope.productSegment = $scope.skyZone[index].productSegments;
+            $scope.frequency = $scope.skyZone[index].frequency;
+
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.showLabelName = true;
+            $scope.productSegFlag = true;
+
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+
+            var frequencyList = $scope.frequency;
+            var frequencyName = dataSet.networkType;
+
+
+            if (!dataSet.timeSegment) {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            } else {
+                getTimeSegment(timeSegmentList, timeSegmentName)
+            }
+            if (!dataSet.productSegment) {
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            } else {
+                getProductSegment(productList, productSegmentName)
+            }
+            if (!dataSet.networkType) {
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
+            } else {
+                getFrequency(frequencyList, frequencyName)
+            }
+            // $scope.nwStatusFlag = false;
+            // $scope.timeSegFlag = false;
+            // $scope.productSegFlag = false;
+        }
+
         function getIndex(data, object)
         {
             for (var i = 0; i < object.length; i++)
@@ -2030,6 +2168,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         productList.forEach(function (val, key) {
             if (productSegmentName == val.type) {
                 $scope.dataSet.productSegment = val;
+            }
+        });
+    }
+
+    function getFrequency(frequencyList, frequencyName) {
+        frequencyList.forEach(function (val, key) {
+            if (frequencyName == val.type) {
+                $scope.dataSet.networkType = val;
             }
         });
     }
@@ -2096,6 +2242,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSet.dataSourceId = null;
         }
+
+        //if(dataSet)
+        dataSet.networkType = (dataSet.networkType ? (dataSet.networkType.type ? dataSet.networkType.type : dataSet.networkType) : "");
         $scope.nwStatusFlag = true;
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             var getDataSetId = response.id;
@@ -2210,11 +2359,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.getTimeSegements();
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
-            }  else if (dataSet.dataSourceId.dataSourceType === "skyZone")
+            } else if (dataSet.dataSourceId.dataSourceType === "skyZone")
             {
                 $scope.report = $scope.skyZone;
+                $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
-                $scope.nwStatusFlag = false;
+                $scope.nwStatusFlag = true;
+                $scope.timeSegFlag = true;
+                $scope.showLabelName = true;
+                $scope.productSegFlag = true;
             } else {
                 $scope.dataSetFlag = false;
                 $scope.nwStatusFlag = false;

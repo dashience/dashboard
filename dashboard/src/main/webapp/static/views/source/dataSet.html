@@ -208,7 +208,10 @@
                                                 {{reportPerformances.name}}</option>
                                         </select>
 
-                                        <label ng-show="timeSegFlag">Time Segments</label>
+                                        <label ng-show="timeSegFlag">
+                                            <span ng-if="showLabelName == false;">Time Segments</span>
+                                            <span ng-if="showLabelName == true;">Level</span>
+                                        </label>
 
                                         <!--                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
                                                                             <option value="" selected="selected" ng-disabled="false">None</option>
@@ -221,14 +224,16 @@
                                         </select>
                                         <!--ng-if="dataSet.reportName == 'campaignPerformance'"-->
                                         <!--<label ng-if="!(dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>-->
-                                        <label ng-show="productSegFlag" >Product Segments</label>
+                                        <label ng-show="productSegFlag" >
+                                            <span ng-if="showLabelName == false;">Product Segments</span>
+                                            <span ng-if="showLabelName == true;">Segment</span>
+                                        </label>
                                         <!--                                <select ng-show ="productSegFlag" class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);">
                                                                             <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
                                                                         </select>-->
                                         <select  ng-show="productSegFlag" class="form-control" ng-model="dataSet.productSegment"
                                                  ng-change="refreshDataSet(dataSet)"
                                                  ng-options="productSegments.name for productSegments in productSegment track by productSegments.type">
-
                                         </select>
 
 
@@ -237,11 +242,22 @@
                                                                             <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
                                                                         </select>-->
 
-                                        <label ng-show="nwStatusFlag">Network Type</label>
-                                        <select ng-show="nwStatusFlag" class="form-control"
+                                        <label ng-if="showLabelName == false;">
+                                            <span ng-show="nwStatusFlag">NetWork Type</span>                                            
+                                        </label>
+                                        <select ng-if="showLabelName == false;" ng-show="nwStatusFlag" class="form-control"
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
                                                 ng-options="network.name for network in networkTypes track by network.type">
+                                            <!--                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                                                                        <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>-->
+                                        </select>
+
+                                        <label ng-if="showLabelName == true;">Frequency</label>
+                                        <select ng-if="showLabelName == true;" class="form-control"
+                                                ng-change="refreshDataSet(dataSet)" 
+                                                ng-model="dataSet.networkType"
+                                                ng-options="network.name for network in frequency track by network.type">
                                             <!--                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                                                                         <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>-->
                                         </select>
