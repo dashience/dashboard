@@ -13,6 +13,9 @@ function dashboardFormat(column, value) {
     if (column.fieldType === "date") {
         return value;
     }
+    if (column.fieldType === "string") {
+        return value;
+    }
     if (column.displayFormat.indexOf("%") > -1) {
         return d3.format(column.displayFormat)(value / 100);
     } else if (column.displayFormat == 'H:M:S') {
@@ -532,11 +535,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.$apply($scope.categories);
         $scope.$apply($scope.subCategories);
         $scope.$apply($scope.parkTypes);
-       // if (reload == true) {
-            $timeout(function () {
-                $scope.getAllSelected();
-            }, 500);
-       // }
+        // if (reload == true) {
+        $timeout(function () {
+            $scope.getAllSelected();
+        }, 500);
+        // }
     };
 
     $http.get("admin/settings/getSettings").success(function (response) {
@@ -1368,6 +1371,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 displayName: obj.displayName,
                 expression: obj.expression,
                 fieldName: obj.fieldName,
+                fieldType: obj.fieldType,
                 functionName: obj.functionName,
                 groupPriority: obj.groupPriority,
                 selectColumnDef: obj.selectColumnDef,
@@ -2692,9 +2696,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     return "-";
                 }
                 if (column.displayFormat) {
-                    if (isNaN(value)) {
-                        return "-";
-                    }
+//                    if (isNaN(value)) {
+//                        return "aa-";
+//                    }
                     return dashboardFormat(column, value);
                 }
                 return value;
@@ -4005,10 +4009,10 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     sortOrder = value.sortOrder;
                 }
                 if (value.xAxis) {
-                    xAxis = {fieldName: value.fieldName, displayName: value.displayName, displayFormat:value.displayFormat};
+                    xAxis = {fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat:value.displayFormat});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {

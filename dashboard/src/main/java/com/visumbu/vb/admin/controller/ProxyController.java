@@ -218,21 +218,21 @@ public class ProxyController {
         updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt);
 
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
-
-        List<DataSetColumns> dataSetColumnList = null;
-        if (widgetIdInt == null) {
-            dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
-        } else {
-            dataSetColumnList = uiService.getDataSetColumns(dataSetIdInt, widgetIdInt); // DataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
-        }
-        if (dataSetColumnList.size() > 0) {
-            List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
-            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
-            System.out.println(dataSetColumnList);
-            System.out.println("DATA INSIDE DERIVED COLUMN");
-            System.out.println(dataWithDerivedColumns);
-            returnMap.put("data", dataWithDerivedColumns);
-        }
+//
+//        List<DataSetColumns> dataSetColumnList = null;
+//        if (widgetIdInt == null) {
+//            dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+//        } else {
+//            dataSetColumnList = uiService.getDataSetColumns(dataSetIdInt, widgetIdInt); // DataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+//        }
+//        if (dataSetColumnList.size() > 0) {
+//            List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, data, valueMap, request, response);
+//            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
+//            System.out.println(dataSetColumnList);
+//            System.out.println("DATA INSIDE DERIVED COLUMN");
+//            System.out.println(dataWithDerivedColumns);
+//            returnMap.put("data", dataWithDerivedColumns);
+//        }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
         System.out.println("returnMap 1234 ----> " + returnMap);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
@@ -248,14 +248,11 @@ public class ProxyController {
         }
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
-//        if (dataSetIdInt != null) {
-//            dataMap.put("columnDefs", updateDataSetColumnId((List) returnMap.get("columnDefs"), userIdInt, dataSetIdInt, widgetIdInt));
-//        }
+
         if (fieldsOnly != null) {
             // return dataMap;
         }
         dataMap.put("data", returnMap.get("data"));
-        // dataMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) dataMap.get("data")));
         return dataMap;
     }
 
@@ -674,9 +671,42 @@ public class ProxyController {
             returnMap = getJoinDataSet(request, httpRequest, response, dataSetIdInt);
         }
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
-        List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
         System.out.println("Column Def For Data Format");
         System.out.println(returnMap);
+
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");// request.getParameter("widgetId");
+        String userIdStr = getFromMultiValueMap(request, "userId"); // request.getParameter("userId");
+        Integer widgetIdInt = null;
+        Integer userIdInt = null;
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
+            widgetIdInt = Integer.parseInt(widgetIdStr);
+        }
+        if (userIdStr != null) {
+            try {
+                userIdInt = Integer.parseInt(userIdStr);
+            } catch (NumberFormatException e) {
+
+            }
+        }
+
+        List<DataSetColumns> dataSetColumnList = null;
+        if (widgetIdInt == null) {
+            dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+        } else {
+            dataSetColumnList = uiService.getDataSetColumns(dataSetIdInt, widgetIdInt); // DataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
+        }
+        if (dataSetColumnList.size() > 0) {
+            List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataList, request, httpRequest, response);
+            List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
+            System.out.println(dataSetColumnList);
+            System.out.println("DATA INSIDE DERIVED COLUMN");
+            System.out.println(dataWithDerivedColumns);
+            returnMap.put("data", dataWithDerivedColumns);
+        }
+        dataList = (List<Map<String, Object>>) returnMap.get("data");
+        returnMap.put("columnDefs", getColumnDefObject(dataList));
+        List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
+
         returnMap.put("data", formatData(dataList, columnDefs));
         return returnMap;
     }
@@ -710,13 +740,13 @@ public class ProxyController {
                         data.put(column.getFieldName(), value.replaceAll("%", ""));
                     } else if (column.getFieldType() != null && column.getFieldType().equalsIgnoreCase("date") && column.getDataFormat() != null && !column.getDataFormat().isEmpty()) {
                         String value = data.get(column.getFieldName()) + "";
+                        System.out.println(" Field Name ===> " + column.getFieldName() + " ----- " + column.getDataFormat());
                         Date toDate = DateUtils.toDate(value, column.getDataFormat());
                         if (toDate == null) {
                             data.put(column.getFieldName(), value);
                         } else {
                             data.put(column.getFieldName(), DateUtils.dateToString(toDate, "MM/dd/yyyy"));
                         }
-                        System.out.println("VALUE =============> " + value);
                     }
                 }
             }
@@ -1988,8 +2018,13 @@ public class ProxyController {
             select.add(segment);
         }
         if (frequency != null && !frequency.equalsIgnoreCase("none")) {
-            groupBy.add(frequency);
-            select.add(frequency);
+            if (frequency.equalsIgnoreCase("weekDay")) {
+                groupBy.add("weekday, weekDayNo");
+                select.add("weekday, weekDayNo");
+            } else {
+                groupBy.add(frequency);
+                select.add(frequency);
+            }
         }
         String allMetrics1[] = {"sum(net_sales) net_sales ", "sum(net_qty) net_qty", "sum(returns) returns"};
 
