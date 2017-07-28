@@ -358,7 +358,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: 'Custom', value: 'custom'}
             ];
             scope.loadingTable = true;
-
             var dataSourcePath = JSON.parse(scope.path)
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
@@ -385,7 +384,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         return "-";
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
-                         return d3.format(column.displayFormat)(value / 100);
+                        return d3.format(column.displayFormat)(value / 100);
                     }
                     return d3.format(column.displayFormat)(value);
                 }

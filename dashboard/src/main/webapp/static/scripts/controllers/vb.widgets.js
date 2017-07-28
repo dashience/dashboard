@@ -35,6 +35,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.dragEnabled = true;
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
+    $scope.showDateRange = false;
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -853,13 +854,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
 
-        var chartColors = userChartColors.optionValue;
-        console.log(chartColors);
+        var chartColors = userChartColors ? userChartColors.optionValue : null;
         if (firstPreviewAfterEdit == 1) {
             $scope.chartColorOptionsVal = widgetObj.chartColorOption;
         }
         firstPreviewAfterEdit = firstPreviewAfterEdit + 1;
-        console.log("Previous color option-->" + $scope.chartColorOptionsVal);
         if (widgetObj.targetColors) {
             var widgetChartColor = widgetObj.targetColors.map(function (val, key) {
                 if (val) {
@@ -871,7 +870,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (!widgetObj.chartColorOption) {
             widgetObj.chartColorOption = chartColors;
         }
-        console.log(widgetObj.chartColorOption);
         $scope.displayPreviewChart = widgetObj;
     };
 
@@ -943,7 +941,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     var addColor = [];
     $scope.addColors = function (widget) {
-        console.log(addColor);
         if (widget.targetColors) {
             widget.targetColors.push({color: "#62cb31"});
         } else {
@@ -4552,7 +4549,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                                 for (var i = 0; i < setData.length; i++) {
                                     total += parseFloat(setData[i]);
                                 }
-                                scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total)});
+                                scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total), dataValue: total});
                             });
                         }
                         var data = scope.funnels;
@@ -4560,26 +4557,32 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
                         scope.fName = [];
                         scope.fValue = [];
+                        scope.dValue = [];
                         angular.forEach(scope.funnels, function (value, key) {
                             var funnelFieldName = value.funnelTitle;
                             var funnelValue = value.totalValue;
+                            var dataValue = value.dataValue;
                             scope.fName.push(funnelFieldName);
                             scope.fValue.push(funnelValue);
+                            scope.dValue.push(dataValue);
                         });
-                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue);
+                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue, scope.dValue);
                         scope.funnelCharts = funnelData;
-                        function filterFunnelByValue(name, value) {
+                        function filterFunnelByValue(name, value, dataValue) {
                             var len = name.length;
-                            var temp, temp1 = 0;
+                            var temp, temp1 = 0, temp2 = 0;
                             for (var i = 0; i < len; i++) {
                                 for (var j = i + 1; j < len; j++) {
-                                    if (value[i] < value[j]) {
+                                    if (dataValue[i] < dataValue[j]) {
                                         temp = value[i];
                                         value[i] = value[j];
                                         value[j] = temp;
                                         temp1 = name[i];
                                         name[i] = name[j];
                                         name[j] = temp1;
+                                        temp2 = dataValue[i];
+                                        dataValue[i] = dataValue[j];
+                                        dataValue[j] = temp2;
                                     }
                                 }
                             }
@@ -4597,10 +4600,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         }
 
                         /*Filter*/
-
-
-
-                        // width = $(element[0]).width();
                         function drawChart() {
                             var width = $(element[0]).width();
                             var height = 315;
@@ -4614,29 +4613,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             funnel.draw(element[0]);
                         }
                         drawChart();
-//                    var options = {
-//                        // width : width - 30,
-//                        // width: 1300,
-//                        width: 500,
-//                        // height: 400,
-//                        height: 300,
-//                        //bottomWidth : 1/3,
-//                        bottomPinch: 1, // How many sections to pinch
-//                        //isCurved : false,     // Whether the funnel is curved
-//                        //curveHeight : 20,     // The curvature amount
-//                        //fillType : "solid",   // Either "solid" or "gradient"
-//                        //isInverted : true,   // Whether the funnel is inverted
-//                        hoverEffects: true  // Whether the funnel has effects on hover
-//                    };
-//                    var funnel = new D3Funnel(scope.funnelCharts, options);
-//                    funnel.draw(element[0]);
                         $(window).on("resize", function () {
                             drawChart();
-//        var width = $(element[0]).width();
-//                //$( "#funnelContainer" ).css( "width", width);
-//                options.width = width;
-//                var funnel = new D3Funnel(scope.funnelCharts, options);
-//                funnel.draw(element[0]);
                         });
                     });
                 }
@@ -4874,7 +4852,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
     return{
         restrict: 'A',
         scope: {
-            widgetTableDateRange: '@',
+            widgetTableDateRange: '@'
         },
         link: function (scope, element, attr) {
 //            $(document).ready(function (e) {
