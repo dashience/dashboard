@@ -725,7 +725,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $stateParams.tabId = 0;
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId + '/' + $stateParams.accountId).success(function (response) {
-            var widgetItems = [];
+            var widgetItems = [];      
+            $scope.selectItems = "";
             widgetItems = response;
             if (response) {
                 // $scope.productName = response[0].tabId.agencyProductId.productName;

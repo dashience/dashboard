@@ -32,6 +32,9 @@
             "frequency": [{
                     "name": "Date",
                     "type": "Date"
+                },{
+                    "name": "Day of Week",
+                    "type": "weekday"
                 }, {
                     "name": "None",
                     "type": "none"
