@@ -1415,7 +1415,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     ;
     //Derived Column
     $scope.showDerived = false;
-    $scope.dataSetColumn = {}
+    $scope.dataSetColumn = {};
     $scope.addDerived = function () {
         $scope.dataSetColumn = {};
         $scope.showDerived = true;
@@ -1887,6 +1887,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.networkType = data.networkType;
             widget.columns = data.widgetColumns;
             widget.dateRangeName = data.dateRangeName;
+            widget.customStartDate = data.customStartDate;
+            widget.customEndDate = data.customEndDate;
             widget.lastNdays = data.lastNdays;
             widget.lastNweeks = data.lastNweeks;
             widget.lastNmonths = data.lastNmonths;
@@ -1945,7 +1947,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.id = val.id;
             $scope.widgetObj.previewTitle = val.widgetTitle;
             $scope.widgetObj.chartType = val.chartType;
-//            $scope.selectedChartType = val.chartType;
             $scope.widgetObj.dataSourceId = val.dataSourceId;
             $scope.widgetObj.dataSetId = val.dataSetId;
             $scope.widgetObj.timeSegment = val.timeSegment;

@@ -242,7 +242,7 @@ public class ProxyController {
 
     private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
-        if(columnDefObject == null){
+        if (columnDefObject == null) {
             return null;
         }
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
@@ -1549,7 +1549,7 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String adwordsAccountId = getAccountId(accountProperty, "adwordsAccountId");
-        
+
         List<Map<String, Object>> data = adwordsService.getAdwordsReport(dataSetReportName, startDate, endDate, adwordsAccountId, timeSegment, productSegment, filter);
         System.out.println("Adwords Data ===> " + data);
         if (data == null) {
@@ -1591,7 +1591,7 @@ public class ProxyController {
                     if (countryCriteria != null) {
                         Integer criteriaId = Integer.parseInt(countryCriteria + "");
                         AdwordsCriteria criteria = uiService.getAdwordsCriteria(criteriaId);
-                        System.out.println("criteria  ----> "+criteria);
+                        System.out.println("criteria  ----> " + criteria);
                         if (criteria != null) {
                             dataMap.put("countryName", criteria.getCriteriaName());
                         }
@@ -1987,7 +1987,25 @@ public class ProxyController {
             String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
             String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
             String productSegment = getFromMultiValueMap(valueMap, "productSegment");
-
+            Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
+            Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
+            String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
+            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+                Integer widgetId = Integer.parseInt(widgetIdStr);
+                TabWidget widget = uiService.getWidgetById(widgetId);
+                if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                    if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                        startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                        endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                    } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                        Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                        startDate = dateRange.get("startDate");
+                        endDate = dateRange.get("endDate");
+                    }
+                }
+            }
+            String startDateStr = DateUtils.dateToString(startDate, "MM/dd/YYYY");
+            String endDateStr = DateUtils.dateToString(endDate, "MM/dd/YYYY");
 //            if (timeSegment == null) {
 //                timeSegment = "daily";
 //            }
@@ -2014,6 +2032,8 @@ public class ProxyController {
             valueMap.put("timeSegment", Arrays.asList(timeSegment == null ? "" : timeSegment));
             valueMap.put("productSegment", Arrays.asList(productSegment == null ? "" : productSegment));
             valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName == null ? "" : dataSetReportName));
+            valueMap.put("startDate",Arrays.asList(startDateStr));
+            valueMap.put("endDate",Arrays.asList(endDateStr));
 
             String url = "../dbApi/admin/dataSet/getData";
             Integer port = 80;
@@ -2029,8 +2049,9 @@ public class ProxyController {
             if (url.startsWith("../")) {
                 url = url.replaceAll("\\.\\./", localUrl);
             }
-            log.debug("url: " + url);
-            log.debug("valuemap: " + valueMap);
+
+            System.out.println("url ===========> " + url);
+            System.out.println("valuemap ============> " + valueMap);
 
             String query = getFromMultiValueMap(valueMap, "query");
 
@@ -2052,7 +2073,7 @@ public class ProxyController {
                 }
             }
 
-            System.out.println("Query ===> " + query);
+            System.out.println("Query 123===> " + query);
 
             try {
                 query = URLEncoder.encode(query, "UTF-8");
