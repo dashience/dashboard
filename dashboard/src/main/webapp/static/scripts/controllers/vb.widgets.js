@@ -532,11 +532,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.$apply($scope.categories);
         $scope.$apply($scope.subCategories);
         $scope.$apply($scope.parkTypes);
-        if (reload == true) {
+       // if (reload == true) {
             $timeout(function () {
                 $scope.getAllSelected();
             }, 500);
-        }
+       // }
     };
 
     $http.get("admin/settings/getSettings").success(function (response) {
@@ -4005,10 +4005,10 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                     sortOrder = value.sortOrder;
                 }
                 if (value.xAxis) {
-                    xAxis = {fieldName: value.fieldName, displayName: value.displayName};
+                    xAxis = {fieldName: value.fieldName, displayName: value.displayName, displayFormat:value.displayFormat};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat:value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
@@ -4245,6 +4245,13 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     onclick: function (obj, element) {
                                         obj.xAxisValue = xData[obj.index]
                                         scope.getSelectedFilterItem({filterBy: obj});
+                                    }
+                                },
+                                pie: {
+                                    label: {
+                                        format: function (value, ratio, id) {
+                                            return dashboardFormat(yAxisField, value);
+                                        }
                                     }
                                 },
                                 color: {
