@@ -1160,7 +1160,7 @@ public class UiService {
 //        return dataSetColumn;
 //    }
     public List<DataSetColumns> getDataSetColumns(Integer datasetId, Integer widgetId) {
-        return uiDao.getDataSetColumn(datasetId, widgetId);
+        return uiDao.getDataSetColumnOfAll(datasetId, widgetId);
     }
 
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
