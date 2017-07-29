@@ -4260,7 +4260,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 pie: {
                                     label: {
                                         format: function (value, ratio, id) {
-                                            return dashboardFormat(yAxisField, value);
+                                            var percentage = d3.format("%.2f")(ratio);
+                                            return  percentage + ", " + dashboardFormat(yAxisField, value);
                                         }
                                     }
                                 },
