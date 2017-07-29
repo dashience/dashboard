@@ -160,27 +160,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         } else {
             dashboardFilter = "";
         }
-//       $http.get(url + 'connectionUrl=' + widget.dataSetId.dataSourceId.connectionString +
-//                "&dataSetId=" + widget.dataSetId.id +
-//                "&accountId=" + (widget.accountId ? (widget.accountId.id ? widget.accountId.id : widget.accountId) : $stateParams.accountId) +
-//                "&userId=" + (widget.dataSetId.userId ? widget.dataSetId.userId.id : null) +
-//                "&driver=" + widget.dataSourceId.sqlDriver +
-//                "&productSegment=" + setProductSegment +
-//                "&timeSegment=" + setTimeSegment +
-//                "&networkType=" + setNetworkType +
-//                "&dashboardFilter=" + encodeURI(dashboardFilter) +
-//                "&startDate=" + $stateParams.startDate +
-//                "&endDate=" + $stateParams.endDate +
-//                '&username=' + widget.dataSetId.dataSourceId.userName +
-//                "&dataSetReportName=" + widget.dataSetId.reportName +
-//                '&password=' + dataSourcePassword +
-//                '&widgetId=' + widget.id +
-//                '&url=' + widget.dataSetId.url +
-//                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query)).success(function (response) {
-//            //var data = response.data;
-//           // alasql('SELECT * INTO XLSXML("' + fileName + '.xls",?) FROM ?', [xlsStyle, data]);
-//        })
-
         window.open("admin/proxy/downloadData?connectionUrl=" +
                 widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
@@ -541,11 +520,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.$apply($scope.categories);
         $scope.$apply($scope.subCategories);
         $scope.$apply($scope.parkTypes);
-         if (reload == true) {
+        if (reload == true) {
             $timeout(function () {
                 $scope.updateFilter(reloadType);
             }, 500);
-         }
+        }
     };
 
     $http.get("admin/settings/getSettings").success(function (response) {
@@ -3143,18 +3122,30 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat})
             });
 
-            var format = function (column, value) {
+//            var format = function (column, value) {
+//                if (!value) {
+//                    return "-";
+//                }
+//                if (column.displayFormat) {
+//                    if (isNaN(value)) {
+//                        return "-";
+//                    }
+//                    if (column.displayFormat.indexOf("%") > -1) {
+//                        return d3.format(column.displayFormat)(value / 100);
+//                    }
+//                    return d3.format(column.displayFormat)(value);
+//                }
+//                return value;
+//            };
+            scope.format = function (column, value) {
                 if (!value) {
                     return "-";
                 }
                 if (column.displayFormat) {
-                    if (isNaN(value)) {
-                        return "-";
-                    }
-                    if (column.displayFormat.indexOf("%") > -1) {
-                        return d3.format(column.displayFormat)(value / 100);
-                    }
-                    return d3.format(column.displayFormat)(value);
+//                    if (isNaN(value)) {
+//                        return "aa-";
+//                    }
+                    return dashboardFormat(column, value);
                 }
                 return value;
             };
@@ -3244,7 +3235,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                             for (var i = 0; i < setData.length; i++) {
                                 total += parseFloat(setData[i]);
                             }
-                            scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
+                            scope.tickers.push({tickerTitle: value.displayName, totalValue: scope.format(value, total)});
                         });
                     }
                     scope.firstLevelTicker = scope.tickers[0];
@@ -3298,7 +3289,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 if (value.displayFormat) {
                     var format = value.displayFormat;
-                    var displayName = value.displayName;
+                    var displayName = value.displayName;         
 
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
