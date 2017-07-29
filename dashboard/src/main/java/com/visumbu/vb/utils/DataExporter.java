@@ -6,6 +6,7 @@
 package com.visumbu.vb.utils;
 
 import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.model.WidgetColumn;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -25,7 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class DataExporter {
 
-    public void exportToXls(List<ColumnDef> columnDef, List<Map<String, Object>> data, OutputStream out) {
+    public void exportToXls(List<WidgetColumn> columnDef, List<Map<String, Object>> data, OutputStream out) {
         //Blank workbook
         XSSFWorkbook workbook = new XSSFWorkbook();
 
@@ -36,8 +37,8 @@ public class DataExporter {
         int rownum = 0;
         int cellnum = 0;
         Row rowh = sheet.createRow(rownum++);
-        for (Iterator<ColumnDef> iterator = columnDef.iterator(); iterator.hasNext();) {
-            ColumnDef columnDefObj = iterator.next();
+        for (Iterator<WidgetColumn> iterator = columnDef.iterator(); iterator.hasNext();) {
+            WidgetColumn columnDefObj = iterator.next();
             String fieldName = columnDefObj.getDisplayName();
             Cell cell = rowh.createCell(cellnum++);
             cell.setCellValue(fieldName);
@@ -47,8 +48,8 @@ public class DataExporter {
             Map<String, Object> dataMap = iterator.next();
             Row row = sheet.createRow(rownum++);
             cellnum = 0;
-            for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
-                ColumnDef columnDefObj = iterator1.next();
+            for (Iterator<WidgetColumn> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
+                WidgetColumn columnDefObj = iterator1.next();
                 String fieldName = columnDefObj.getFieldName();
                 Cell cell = row.createCell(cellnum++);
                 cell.setCellValue(dataMap.get(fieldName) + "");

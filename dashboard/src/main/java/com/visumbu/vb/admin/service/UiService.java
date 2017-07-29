@@ -72,6 +72,10 @@ public class UiService {
     @Autowired
     private UserDao userDao;
 
+    public List<WidgetColumn> getWidgetColumns(Integer widgetId) {
+        return uiDao.getWidgetColumnsByWidgetId(widgetId);
+    }
+    
     public List<Product> getProduct() {
         return uiDao.read(Product.class);
 //        List<Product> product = uiDao.read(Product.class);
