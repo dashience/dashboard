@@ -286,7 +286,7 @@ public class AdwordsService {
         String[] filterArr = filters.split(",");
         for (int i = 0; i < filterArr.length; i++) {
             String filter = filterArr[i];
-            if(filter.equalsIgnoreCase("all")) {
+            if (filter.equalsIgnoreCase("all")) {
                 continue;
             }
             final Predicate predicate = new Predicate();
@@ -962,7 +962,7 @@ public class AdwordsService {
     Map<String, AdwordsReport> adwordsReports = ApiUtils.getAllAdwordsReports();
 
     public List<Map<String, Object>> getAdwordsReport(String reportName, Date startDate, Date endDate, String accountId,
-            String timeSegment, String productSegment, String filter) {
+        String timeSegment, String productSegment, String filter) {
         AdwordsReport adwordsData = adwordsReports.get(reportName);
         System.out.println(adwordsData);
         String[] fields = adwordsData.getFields();
@@ -980,8 +980,14 @@ public class AdwordsService {
         System.out.println("Filter Test ====> " + filter);
         if (filter == null || filter.equalsIgnoreCase("none") || filter.equalsIgnoreCase("undefined")) {
         } else {
-             fieldList.add("AdNetworkType2");
+            fieldList.add("AdNetworkType2");
         }
+
+        if (filter == null) {
+        } else if (timeSegment == null && productSegment == null && filter.equalsIgnoreCase("SEARCH")) {
+            fieldList.remove("AdNetworkType2");
+        }
+        System.out.println("FieldList ====> "+fieldList);
         selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);
