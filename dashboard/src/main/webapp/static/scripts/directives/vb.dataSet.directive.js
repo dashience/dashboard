@@ -362,9 +362,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
             if (dataSourcePath.dataSourceId != null) {
-                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 if (dataSourcePath.dataSourceId.password) {
                     dataSourcePassword = dataSourcePath.dataSourceId.password;

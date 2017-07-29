@@ -368,9 +368,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+        console.log(widget);
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
-        console.log(widget);
         $scope.widgetId = widget.id;
         if (widget.chartColorOption) {
             var widgetColors = widget.chartColorOption.split(',');
@@ -395,6 +395,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             networkType: widget.networkType,
             targetColors: widget.targetColors,
             dateRangeName: widget.dateRangeName,
+            customStartDate: widget.customStartDate,
+            customEndDate: widget.customEndDate,
             lastNdays: widget.lastNdays,
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
@@ -409,6 +411,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj = widget;
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         $scope.queryBuilderList = widget;
+        console.log($scope.queryBuilderList);
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
         });
@@ -428,7 +431,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.selectPieChartXAxis = val;
                 $scope.selectX1Axis(widget, val);
             }
-            ;
             if (val.yAxis == 1) {
                 if (val.fieldName) {
                     if (widget.chartType == "pie") {
@@ -443,7 +445,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }
             if (val.groupField) {
-                $scope.groupingFields.push(val)
+                $scope.groupingFields.push(val);
             }
             if (widget.chartType === 'ticker') {
                 $scope.tickerItem.push(val);
@@ -487,9 +489,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourcePassword = '';
         }
         var url = "admin/proxy/getData?";
-        if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
-            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
+//        if (widget.dataSetId.dataSourceId.dataSourceType == "sql") {
+//            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//        }
 
         var setProductSegment;
         var setTimeSegment;
@@ -591,7 +593,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 var index = $scope.columnY2Axis.indexOf(data);
                 $scope.columnY2Axis.splice(index, 1);
             });
-
             resetQueryBuilder();
         });
     }
@@ -618,9 +619,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         widget.jsonData = null;
         widget.queryFilter = null;
         var url = "admin/proxy/getData?";
-        if (getDataSet.dataSourceId.dataSourceType == "sql") {
-            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-        }
+//        if (getDataSet.dataSourceId.dataSourceType == "sql") {
+//            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//        }
         var dataSourcePassword;
         if (getDataSet.dataSourceId.password) {
             dataSourcePassword = getDataSet.dataSourceId.password;
@@ -1737,6 +1738,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }).join(',');
         }
+        console.log(widgetColor);
 
         if (widget.chartType != 'text') {
             try {
@@ -1748,6 +1750,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
             }
         }
+        console.log($scope.jsonData);
+        console.log($scope.queryFilter);
         try {
             $scope.customStartDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -1847,7 +1851,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             createdBy: widget.createdBy,
             chartColorOption: widgetColor
         };
-
+        var chartColors = $scope.userChartColors ? $scope.userChartColors.optionValue.split(",") : "";
         clearEditAllWidgetData();
         widget.chartType = "";
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
@@ -1879,6 +1883,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.chartTypeName = "";
             widget.id = data.id;
             widget.chartType = data.chartType;
+            console.log(data.chartColorOption);
             widget.chartColorOption = data.chartColorOption;
             widget.widgetTitle = data.widgetTitle;
             widget.dataSetId = dataSetObj;
@@ -1895,13 +1900,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.lastNmonths = data.lastNmonths;
             widget.lastNyears = data.lastNyears;
             widget.allAccount = data.accountId;
+            widget.chartColors = chartColors;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
+            data.chartColors = chartColors;
+            console.log(widget);
+            response.chartColors = chartColors;
             widget = data;
+            console.log(widget);
             $scope.derivedColumns = [];
             if (!data.id) {
                 $scope.widgets.push(response);
             }
+            console.log($scope.widgets);
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
@@ -1942,6 +1953,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     var tempTargetColors = [];
     $scope.cancel = function (widgetObj) {
+        resetQueryBuilder();
         addColor = [];
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
@@ -1955,6 +1967,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
             $scope.widgetObj.dateRangeName = val.dateRangeName;
+            $scope.widgetObj.customStartDate = val.customStartDate;
+            $scope.widgetObj.customEndDate = val.customEndDate;
             $scope.widgetObj.lastNdays = val.lastNdays;
             $scope.widgetObj.lastNweeks = val.lastNweeks;
             $scope.widgetObj.lastNmonths = val.lastNmonths;
@@ -2276,9 +2290,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 schema: 'vb'
             };
             var url = "admin/proxy/getData?";
-            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+//            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
+//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            }
 
             var dataSourcePassword;
             if (tableDataSource.dataSourceId.password) {
@@ -2665,9 +2679,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
             var url = "admin/proxy/getData?";
-            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
-                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-            }
+//            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
+//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            }
             var dataSourcePassword;
             if (tickerDataSource.dataSourceId.password) {
                 dataSourcePassword = tickerDataSource.dataSourceId.password;
@@ -2917,9 +2931,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             if (scope.lineChartSource) {
 
                 var url = "admin/proxy/getData?";
-                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
                 var dataSourcePassword;
                 if (lineChartDataSource.dataSourceId.password) {
                     dataSourcePassword = lineChartDataSource.dataSourceId.password;
@@ -3259,9 +3273,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
                 var url = "admin/proxy/getData?";
-                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
                 var dataSourcePassword;
                 if (barChartDataSource.dataSourceId.password) {
                     dataSourcePassword = barChartDataSource.dataSourceId.password;
@@ -3585,9 +3599,9 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
                 var url = "admin/proxy/getData?";
-                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (pieChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (pieChartDataSource.dataSourceId.password) {
@@ -3597,14 +3611,19 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+                console.log(getWidgetObj);
 
                 var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
                 }
+                console.log(widgetChartColors);
+                console.log(getWidgetObj.chartColors);
                 var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                console.log(setWidgetChartColors);
                 var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
+                console.log(chartColors);
 
                 var setWidgetAccountId;
                 var setProductSegment;
@@ -3705,8 +3724,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             chartData.forEach(function (e) {
                                 legends.push(e[xAxis.fieldName]);
                                 data[e[xAxis.fieldName]] = data[e[xAxis.fieldName]] ? data[e[xAxis.fieldName]] : 0 + e[yAxisField.fieldName] ? e[yAxisField.fieldName] : 0;
-                            })
-
+                            });
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -3913,9 +3931,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             if (scope.areaChartSource) {
                 console.log(areaChartDataSource)
                 var url = "admin/proxy/getData?";
-                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (areaChartDataSource.dataSourceId.password) {
@@ -4247,9 +4265,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             var stackedBarChartDataSource = JSON.parse(scope.stackedBarChartSource);
             if (scope.stackedBarChartSource) {
                 var url = "admin/proxy/getData?";
-                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (stackedBarChartDataSource.dataSourceId.password) {
@@ -4469,9 +4487,9 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
             var funnelDataSource = JSON.parse(scope.funnelSource);
             if (funnelDataSource) {
                 var url = "admin/proxy/getData?";
-                if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (funnelDataSource.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 var dataSourcePassword;
                 if (funnelDataSource.dataSourceId.password) {
@@ -4944,7 +4962,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
     return{
         restrict: 'A',
         scope: {
-            queryData: '@',
+            queryData: '@'
         },
         link: function (scope, element, attr) {
             scope.columns = scope.queryData;
