@@ -2211,6 +2211,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     }
 
     $scope.save = function (widget) {
+        console.log(widget);
         addColor = [];
         var widgetColor = "";
         if (widget.targetColors) {
@@ -2241,6 +2242,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.customStartDate = "";
             $scope.customEndDate = "";
         }
+        console.log($scope.customStartDate);
+        console.log($scope.customEndDate);
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -2317,8 +2320,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             isGridLine: widget.isGridLine,
-            customStartDate: $scope.customStartDate,
-            customEndDate: $scope.customEndDate,
+            customStartDate: $scope.customStartDate ? $scope.customStartDate : widget.customStartDate,
+            customEndDate: $scope.customEndDate ? $scope.customEndDate : widget.customEndDate,
             jsonData: $scope.jsonData ? $scope.jsonData : null,
             queryFilter: $scope.queryFilter ? $scope.queryFilter : null,
             accountId: widget.accountId,
@@ -2373,6 +2376,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             widget.networkType = data.networkType;
             widget.columns = data.widgetColumns;
             widget.dateRangeName = data.dateRangeName;
+            widget.customStartDate = data.customStartDate;
+            widget.customEndDate = data.customEndDate;
             widget.lastNdays = data.lastNdays;
             widget.lastNweeks = data.lastNweeks;
             widget.lastNmonths = data.lastNmonths;
