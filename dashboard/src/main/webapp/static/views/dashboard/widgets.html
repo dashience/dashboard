@@ -298,26 +298,52 @@
                     </div>
                 </div>
                 <div>
-                    <label>Sales Type</label>
-                    <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                            <span class="dateRange-Title">{{getSelctionCount(salesTypes)}} Selected</span>
-                            <span class="caret dateRange-Title-Icon"></span>
-                        </button>
-                        <ul class="dropdown-menu filters">  
-                            <div class="form-group">
-                                <div class="form-group has-feedback">
-                                    <input type="text" class="form-control" ng-model="searchSales.$" placeholder="Search"/>
-                                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    <div>
+                        <label>Park Type</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(parkTypes)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters filters-city">  
+                                <div class="form-group">
+                                    <div class="has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchParkType.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
                                 </div>
-                            </div>
-                            <li ng-repeat="salesType in salesTypes| filter:searchSales">
-                                <input type="checkbox" fieldname="SalesType" fieldvalue="{{salesType.fieldName}}" 
-                                       class="inputCheckbox" status="{{salesType.status}}" ng-model="salesType.status" 
-                                       ng-click="updateFilter('country,state,city,store')">
-                                <span ng-bind-html="salesType.displayName| highlight:searchSales.$"></span>
-                            </li>
-                        </ul>
+                                <li ng-repeat="parkType in parkTypes|filter:searchSubCategory">
+                                    <input type="checkbox" fieldname="ParkType" 
+                                           fieldvalue="{{parkType.fieldName}}" class="inputCheckbox" 
+                                           ng-model="parkType.status" ng-click="updateFilter('none')">
+                                    <span ng-bind-html="parkType.displayName | highlight:searchParkType.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Sales Type</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(salesTypes)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters">  
+                                <div class="form-group">
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchSales.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="salesType in salesTypes| filter:searchSales">
+                                    <input type="checkbox" fieldname="SalesType" fieldvalue="{{salesType.fieldName}}" 
+                                           class="inputCheckbox" status="{{salesType.status}}" ng-model="salesType.status" 
+                                           ng-click="updateFilter('country,state,city,store')">
+                                    <span ng-bind-html="salesType.displayName| highlight:searchSales.$"></span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div>
                         <label>Country</label>
@@ -461,30 +487,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
-                    <div>
-                        <label>Park Type</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(parkTypes)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters filters-city">  
-                                <div class="form-group">
-                                    <div class="has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchParkType.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                    </div>
-                                </div>
-                                <li ng-repeat="parkType in parkTypes|filter:searchSubCategory">
-                                    <input type="checkbox" fieldname="ParkType" 
-                                           fieldvalue="{{parkType.fieldName}}" class="inputCheckbox" 
-                                           ng-model="parkType.status" ng-click="updateFilter('none')">
-                                    <span ng-bind-html="parkType.displayName | highlight:searchParkType.$"></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    </div>                    
                 </div>
             </div>
         </div>
