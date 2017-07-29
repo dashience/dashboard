@@ -1727,6 +1727,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
+        console.log(widget);
         addColor = [];
         var widgetColor = "";
         if (widget.targetColors) {
@@ -1835,8 +1836,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             isGridLine: widget.isGridLine,
-            customStartDate: $scope.customStartDate,
-            customEndDate: $scope.customEndDate,
+            customStartDate: $scope.customStartDate ? $scope.customStartDate : widget.customStartDate,
+            customEndDate: $scope.customEndDate ? $scope.customEndDate : widget.customEndDate,
             jsonData: $scope.jsonData ? $scope.jsonData : null,
             queryFilter: $scope.queryFilter ? $scope.queryFilter : null,
             accountId: widget.accountId,
