@@ -1868,6 +1868,21 @@ public class ProxyController {
 
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
@@ -1917,6 +1932,25 @@ public class ProxyController {
             String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
             String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
             String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+            Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
+
+            Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
+            String fieldsOnly = getFromMultiValueMap(valueMap, "fieldsOnly");
+            String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
+            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+                Integer widgetId = Integer.parseInt(widgetIdStr);
+                TabWidget widget = uiService.getWidgetById(widgetId);
+                if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                    if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                        startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                        endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                    } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                        Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                        startDate = dateRange.get("startDate");
+                        endDate = dateRange.get("endDate");
+                    }
+                }
+            }
 //            if (timeSegment == null) {
 //                timeSegment = "daily";
 //            }
@@ -1943,6 +1977,8 @@ public class ProxyController {
             valueMap.put("timeSegment", Arrays.asList(timeSegment));
             valueMap.put("productSegment", Arrays.asList(productSegment));
             valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName));
+            valueMap.put("startDate", Arrays.asList(DateUtils.dateToString(startDate, "MM/dd/yyyy")));
+            valueMap.put("endDate", Arrays.asList(DateUtils.dateToString(endDate, "MM/dd/yyyy")));
 
             String url = "../dbApi/admin/bing/getData";
             Integer port = 80;
@@ -2047,7 +2083,22 @@ public class ProxyController {
         String frequency = isNullOrEmpty(filter) ? null : filter;
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
+        String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
 
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
         String query = getQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
 
         valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
@@ -2099,6 +2150,31 @@ public class ProxyController {
             valueMap.put("timeSegment", Arrays.asList(timeSegment == null ? "" : timeSegment));
             valueMap.put("productSegment", Arrays.asList(productSegment == null ? "" : productSegment));
             valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName == null ? "" : dataSetReportName));
+            String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
+
+            Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+            Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+                Integer widgetId = Integer.parseInt(widgetIdStr);
+                TabWidget widget = uiService.getWidgetById(widgetId);
+                if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                    if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                        startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                        endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                    } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                        Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                        startDate = dateRange.get("startDate");
+                        endDate = dateRange.get("endDate");
+                    }
+                }
+            }
+            
+            try {
+                valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
+                valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             String url = "../dbApi/admin/dataSet/getData";
             Integer port = 80;
@@ -2114,8 +2190,9 @@ public class ProxyController {
             if (url.startsWith("../")) {
                 url = url.replaceAll("\\.\\./", localUrl);
             }
-            log.debug("url: " + url);
-            log.debug("valuemap: " + valueMap);
+
+            System.out.println("url ===========> " + url);
+            System.out.println("valuemap ============> " + valueMap);
 
             String query = getFromMultiValueMap(valueMap, "query");
 
@@ -2246,6 +2323,25 @@ public class ProxyController {
         String query = request.getParameter("query");
         log.debug("QUERY FROM BROWSER " + query);
         String dealerId = request.getParameter("dealerId");
+        String widgetIdStr = request.getParameter("widgetId");
+
+        Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+        Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
+
         Map<String, String> dealerAccountDetails = dealerService.getDealerAccountDetails(dealerId);
         Integer port = request.getServerPort();
         String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
@@ -2270,6 +2366,13 @@ public class ProxyController {
                 }
                 valueMap.put(key, Arrays.asList(value));
             }
+            try {
+                valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
+                valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
+            } catch (UnsupportedEncodingException ex) {
+                java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("VAlue MAp ----> " + valueMap);
             String data = Rest.getData(url, valueMap);
             return data;
         } catch (Exception ex) {
