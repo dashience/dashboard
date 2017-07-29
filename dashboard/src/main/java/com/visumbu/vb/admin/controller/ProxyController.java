@@ -139,13 +139,19 @@ public class ProxyController {
         Map dataMap = (Map) getGenericData(request, response);
 
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) dataMap.get("data");
-
+        String widgetIdStr = request.getParameter("widgetId");
+        Integer widgetIdInt = null;
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
+            widgetIdInt = Integer.parseInt(widgetIdStr);
+        }
+        TabWidget widget = uiService.getWidgetById(widgetIdInt);
         DataExporter exporter = new DataExporter();
         List<ColumnDef> columnDef = (List<ColumnDef>) dataMap.get("columnDefs");
+        List<WidgetColumn> widgetColumns = uiService.getWidgetColumns(widgetIdInt);
         try {
             response.setContentType("application/xlsx");
-            response.setHeader("Content-disposition", "attachment; filename=widget.xlsx");
-            exporter.exportToXls(columnDef, dataList, response.getOutputStream());
+            response.setHeader("Content-disposition", "attachment; filename=" + widget.getWidgetTitle().replaceAll(" ", "_") + ".xlsx");
+            exporter.exportToXls(widgetColumns, dataList, response.getOutputStream());
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2110,8 +2116,22 @@ public class ProxyController {
         String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
         String productSegment = getFromMultiValueMap(valueMap, "productSegment");
         String filter = getFromMultiValueMap(valueMap, "networkType");
+        if (filter == null) {
+            filter = getFromMultiValueMap(valueMap, "filter");
+        }
 
         System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
+
+        if (timeSegment != null && timeSegment.equalsIgnoreCase("none")) {
+            timeSegment = null;
+        }
+
+        if (productSegment != null && productSegment.equalsIgnoreCase("none")) {
+            productSegment = null;
+        }
+        if (filter != null && filter.equalsIgnoreCase("none")) {
+            filter = null;
+        }
 
         String level = isNullOrEmpty(timeSegment) ? null : timeSegment;
         String segment = isNullOrEmpty(productSegment) ? null : productSegment;
