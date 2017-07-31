@@ -1615,6 +1615,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Quarter'
                 },
                 {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'Device',
+                    name: 'Device'
+                },
+                {
+                    type: 'AdNetworkType1',
+                    name: 'Network Search Partner'
+                },
+                {
                     type: 'RegionCriteriaId',
                     name: 'Region'
                 },
@@ -1629,20 +1643,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'CityCriteriaId,RegionCriteriaId,MostSpecificCriteriaId',
                     name: 'Zip'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'Device',
-                    name: 'Device'
-                },
-                {
-                    type: 'AdNetworkType1',
-                    name: 'Network Search Partner'
                 },
                 {
                     type: 'none',
@@ -1971,7 +1971,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 $scope.dataSet.networkType = {name: 'None', type: 'none'};
-                
+
             }
         }
 
