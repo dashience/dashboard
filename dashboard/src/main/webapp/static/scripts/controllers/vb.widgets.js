@@ -1737,6 +1737,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.save = function (widget) {
         console.log(widget);
         addColor = [];
+        $scope.jsonData = "";
+        $scope.queryFilter = "";
         var widgetColor = "";
         if (widget.targetColors) {
             widgetColor = widget.targetColors.map(function (value, key) {
@@ -1757,8 +1759,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
             }
         }
-        console.log($scope.jsonData);
-        console.log($scope.queryFilter);
         try {
             $scope.customStartDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -1828,6 +1828,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widget.accountId = parseInt($stateParams.accountId);
         }
+        console.log(widgetColumnsData);
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
