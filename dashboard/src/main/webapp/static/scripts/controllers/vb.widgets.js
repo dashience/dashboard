@@ -296,6 +296,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $stateParams.tabId = 0;
         }
         $http.get("admin/ui/dbWidget/" + $stateParams.tabId + '/' + $stateParams.accountId).success(function (response) {
+            console.log(response);
             var widgetItems = [];
             widgetItems = response;
             if (response) {
@@ -329,6 +330,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $rootScope.getWidgetItem();
 
     function loadInitialWidgetColumnData(columns) {
+        console.log(columns);
         var data = [];
         columns.forEach(function (value, key) {
             data.push({
@@ -368,6 +370,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+        $scope.dispHideBuilder = true;
         console.log(widget);
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
@@ -410,8 +413,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $scope.widgetObj = widget;
         $scope.widgetObj.previewTitle = widget.widgetTitle;
-        $scope.queryBuilderList = widget;
-        console.log($scope.queryBuilderList);
+//        $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
         });
@@ -455,6 +457,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
         tableDef(widget, $scope.y1Column, $scope.y2Column);
+        $timeout(function () {
+            $scope.queryBuilderList = widget;
+            console.log($scope.queryBuilderList);
+            resetQueryBuilder();
+        }, 50);
     };
     function getNetworkTypebyObj(widget) {
         var getNetworkType = widget.networkType;
@@ -1901,6 +1908,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.lastNyears = data.lastNyears;
             widget.allAccount = data.accountId;
             widget.chartColors = chartColors;
+            widget.jsonData = data.jsonData;
+            widget.queryFilter = data.queryFilter;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
             data.chartColors = chartColors;
@@ -4970,6 +4979,9 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             var columnList = JSON.parse(scope.queryData);
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
+                console.log(value);
+                console.log(value.fieldType);
+                console.log(value.fieldName);
                 var typeOfValue = value.type ? value.type : value.fieldType;
                 if (typeOfValue == 'number') {
                     scope.fieldsType = "integer";
@@ -4982,13 +4994,14 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 } else {
                     scope.fieldsType = value.fieldType;
                 }
-                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType})
+                filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType});
             });
             scope.buildQuery = filterList;
+            console.log(filterList);
             if (jsonFilter.jsonData != null) {
                 scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
             }
-
+            console.log(scope.jsonBuild);
 //            scope.buildQuery = filterList;
 //            if (jsonFilter.jsonData != null) {
 //                scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
