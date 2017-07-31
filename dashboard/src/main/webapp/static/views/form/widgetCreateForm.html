@@ -564,11 +564,11 @@
                             <span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>
 
                         </div>
-                        <div class="form-group col-xs-12">
+                        <div class="form-group col-xs-12" ng-show="showDerived">
                             <label>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
-                                      ng-model="text" 
+                                      ng-model="dataSetColumn.textExpression" 
                                       ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
                         </div>
@@ -588,7 +588,7 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
+                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>

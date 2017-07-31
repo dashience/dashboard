@@ -713,10 +713,9 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.selectedChartType = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
-        $scope.dataSetColumn.expression = "";
+        $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
-        $scope.text = "";
         $scope.xColumn = "";
         $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
@@ -1890,17 +1889,14 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     $scope.addDerived = function () {
         $scope.dataSetColumn = {};
         $scope.showDerived = true;
-        $scope.text = "";
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
-        $scope.text = "";
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
     };
     //Edit Derived
     $scope.editDerivedColumn = function (collectionField, widgetObj) {
         $scope.showDerived = false;
-        console.log(collectionField);
         $scope.dataSetColumn = {};
         if (collectionField.userId != null) {
             $scope.showDerived = true;
@@ -1912,7 +1908,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 sortOrder: collectionField.sortOrder,
                 sortPriority: collectionField.sortPriority,
                 status: collectionField.status,
-                expression: collectionField.expression,
+                textExpression: collectionField.expression,
                 fieldType: collectionField.fieldType,
                 fieldName: collectionField.fieldName,
                 displayName: collectionField.displayName,
@@ -1921,19 +1917,17 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 widgetId: widgetObj.id
             };
             $scope.dataSetColumn = data;
-            $scope.text = collectionField.expression;
         }
     };
     //Save DerivedColumn
-    $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
-        $scope.text = text;
+    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
         $scope.collectionField = {};
         var dataSetColumnData = {
             functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
             id: dataSetColumn.id ? dataSetColumn.id : null,
             sortPriority: dataSetColumn.sortPriority ? dataSetColumn.sortPriority : null,
             status: dataSetColumn.status ? dataSetColumn.status : null,
-            expression: $scope.text,
+            expression:dataSetColumn.textExpression,
             fieldName: dataSetColumn.fieldName,
             displayName: dataSetColumn.fieldName,
             fieldType: dataSetColumn.fieldType,
@@ -1978,7 +1972,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
-        $scope.text = "";
     };
 
     //check FieldName
@@ -1997,7 +1990,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         }
     };
     //Auto Complete
-    $scope.text = "";
     $scope.config = {
         autocomplete: [
             {
@@ -2165,10 +2157,9 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.widgetObj.networkType = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
-        $scope.dataSetColumn.expression = "";
+        $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
-        $scope.text = "";
         $scope.widgetObj.lastNdays = "";
         $scope.widgetObj.lastNweeks = "";
         $scope.widgetObj.lastNmonths = "";
@@ -2307,7 +2298,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             createdBy: widget.createdBy,
             chartColorOption: widgetColor
         };
-        clearEditAllWidgetData();        
+        clearEditAllWidgetData();
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             if (!data.id) {
                 $scope.columnHeaderColuction = [];
