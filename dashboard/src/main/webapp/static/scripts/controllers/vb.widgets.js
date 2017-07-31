@@ -817,6 +817,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+        $scope.dispHideBuilder = true;
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
 
@@ -843,6 +844,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             networkType: widget.networkType,
             targetColors: widget.targetColors,
             dateRangeName: widget.dateRangeName,
+            customStartDate: widget.customStartDate,
+            customEndDate: widget.customEndDate,
             lastNdays: widget.lastNdays,
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
@@ -856,7 +859,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         }
         $scope.widgetObj = widget;
         $scope.widgetObj.previewTitle = widget.widgetTitle;
-        $scope.queryBuilderList = widget;
+//        $scope.queryBuilderList = widget;
         $scope.widgetObj.columns.forEach(function (val, key) {
             val.columnsButtons = true;
         });
@@ -876,7 +879,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 $scope.selectPieChartXAxis = val;
                 $scope.selectX1Axis(widget, val);
             }
-            ;
             if (val.yAxis == 1) {
                 if (val.fieldName) {
                     if (widget.chartType == "pie") {
@@ -891,7 +893,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 }
             }
             if (val.groupField) {
-                $scope.groupingFields.push(val)
+                $scope.groupingFields.push(val);
             }
             if (widget.chartType === 'ticker') {
                 $scope.tickerItem.push(val);
@@ -901,6 +903,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             }
         });
         tableDef(widget, $scope.y1Column, $scope.y2Column);
+        $timeout(function () {
+            $scope.queryBuilderList = widget;
+            console.log($scope.queryBuilderList);
+            resetQueryBuilder();
+        }, 50);
     };
     function getNetworkTypebyObj(widget) {
         var getNetworkType = widget.networkType;
@@ -1039,7 +1046,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 var index = $scope.columnY2Axis.indexOf(data);
                 $scope.columnY2Axis.splice(index, 1);
             });
-
             resetQueryBuilder();
         });
     }
@@ -2184,6 +2190,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     $scope.save = function (widget) {
         console.log(widget);
         addColor = [];
+        $scope.jsonData = "";
+        $scope.queryFilter = "";
         var widgetColor = "";
         if (widget.targetColors) {
             widgetColor = widget.targetColors.map(function (value, key) {
@@ -2356,9 +2364,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             widget.lastNmonths = data.lastNmonths;
             widget.lastNyears = data.lastNyears;
             widget.allAccount = data.accountId;
+            widget.jsonData = data.jsonData;
+            widget.queryFilter = data.queryFilter;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
-            widget.chartColor = widgetColors;
+            widget.chartColors = widgetColors;
             widget = data;
             $scope.derivedColumns = [];
             response.chartColors = widgetColors;
@@ -2406,6 +2416,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
     var tempTargetColors = [];
     $scope.cancel = function (widgetObj) {
+        resetQueryBuilder();
         addColor = [];
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
@@ -2420,6 +2431,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.widgetObj.networkType = val.networkType;
             $scope.widgetObj.columns = val.columns;
             $scope.widgetObj.dateRangeName = val.dateRangeName;
+            $scope.widgetObj.customStartDate = val.customStartDate;
+            $scope.widgetObj.customEndDate = val.customEndDate;
             $scope.widgetObj.lastNdays = val.lastNdays;
             $scope.widgetObj.lastNweeks = val.lastNweeks;
             $scope.widgetObj.lastNmonths = val.lastNmonths;
@@ -5918,8 +5931,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             var columnList = JSON.parse(scope.queryData);
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
-                console.log(value);
-                var typeOfValue = value.fieldType;
+                var typeOfValue = value.type ? value.type : value.fieldType;
                 if (typeOfValue == 'number') {
                     scope.fieldsType = "integer";
                 } else if (typeOfValue == 'string') {
