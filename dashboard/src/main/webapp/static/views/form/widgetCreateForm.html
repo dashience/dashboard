@@ -522,7 +522,12 @@
                                        ng-true-value="1" ng-false-value="0" ng-click="selectColumnItem(collectionField, widgetObj)">
                                 <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
                                     <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}}</a>
-                                </label>
+                                </label>{{collectionField.expression}}
+                                <span class="pull-right" ng-if="collectionField.expression">
+                                    <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </span>
                             </div>
                         </li>
                     </ul>
@@ -570,7 +575,7 @@
                         <div class="form-group col-xs-12">
                             <label>Field Type</label>
                             <select class="form-control" ng-model="dataSetColumn.fieldType">
-                                <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
+                                <option ng-repeat="fieldType in fieldTypes track by fieldType.value" value="{{fieldType.value}}">
                                     {{fieldType.name}}
                                 </option>
                             </select>

@@ -16,12 +16,14 @@ function dashboardFormat(column, value) {
     if (column.fieldType === "string") {
         return value;
     }
-    if (column.displayFormat.indexOf("%") > -1) {
-        return d3.format(column.displayFormat)(value / 100);
-    } else if (column.displayFormat == 'H:M:S') {
-        return formatBySecond(parseInt(value))
-    } else {
-        return d3.format(column.displayFormat)(value);
+    if (column && column.displayFormat) {
+        if (column.displayFormat.indexOf("%") > -1) {
+            return d3.format(column.displayFormat)(value / 100);
+        } else if (column.displayFormat == 'H:M:S') {
+            return formatBySecond(parseInt(value))
+        } else {
+            return d3.format(column.displayFormat)(value);
+        }
     }
 }
 
@@ -1890,32 +1892,32 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.dataSetColumn = "";
     };
     //Edit Derived
-//    $scope.editDerivedColumn = function (collectionField, widgetObj) {
-//        $scope.showDerived = false;
-//        console.log(collectionField);
-//        $scope.dataSetColumn = {};
-//        if (collectionField.userId != null) {
-//            $scope.showDerived = true;
-//            var data = {
-//                agregationFunction: collectionField.agregationFunction,
-//                functionName: collectionField.functionName,
-//                groupPriority: collectionField.groupPriority,
-//                id: collectionField.id,
-//                sortOrder: collectionField.sortOrder,
-//                sortPriority: collectionField.sortPriority,
-//                status: collectionField.status,
-//                expression: collectionField.expression,
-//                fieldType: collectionField.type,
-//                fieldName: collectionField.fieldName,
-//                displayName: collectionField.displayName,
-//                userId: collectionField.userId,
-//                displayFormat: collectionField.displayFormat,
-//                widgetId: widgetObj.id
-//            };
-//            $scope.dataSetColumn = data;
-//            $scope.text = collectionField.expression;
-//        }
-//    };
+    $scope.editDerivedColumn = function (collectionField, widgetObj) {
+        $scope.showDerived = false;
+        console.log(collectionField);
+        $scope.dataSetColumn = {};
+        if (collectionField.userId != null) {
+            $scope.showDerived = true;
+            var data = {
+                agregationFunction: collectionField.agregationFunction,
+                functionName: collectionField.functionName,
+                groupPriority: collectionField.groupPriority,
+                id: collectionField.id,
+                sortOrder: collectionField.sortOrder,
+                sortPriority: collectionField.sortPriority,
+                status: collectionField.status,
+                expression: collectionField.expression,
+                fieldType: collectionField.type,
+                fieldName: collectionField.fieldName,
+                displayName: collectionField.displayName,
+                userId: collectionField.userId,
+                displayFormat: collectionField.displayFormat,
+                widgetId: widgetObj.id
+            };
+            $scope.dataSetColumn = data;
+            $scope.text = collectionField.expression;
+        }
+    };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
         $scope.text = text;
@@ -1931,16 +1933,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             fieldType: dataSetColumn.fieldType,
             dataSetId: widget.dataSetId.id,
             userId: dataSetColumn.userId ? dataSetColumn.userId : $scope.userId,
-//            baseField: dataSetColumn.baseField,
             displayFormat: dataSetColumn.displayFormat
-//            columnName: dataSetColumn.columnName,
-//            dateRangeName: dataSetColumn.dateRangeName,
-//            customStartDate: scope.customStartDate,
-//            customEndDate: scope.customEndDate,
-//            lastNdays: dataSetColumn.lastNdays,
-//            lastNweeks: dataSetColumn.lastNweeks,
-//            lastNmonths: dataSetColumn.lastNmonths,
-//            lastNyears: dataSetColumn.lastNyears
         };
         var oldFieldName = "";
         if (!dataSetColumn.id) {
@@ -1955,7 +1948,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     val.functionName = dataSetColumnData.functionName;
                     val.fieldType = dataSetColumnData.fieldType;
                     val.displayFormat = dataSetColumnData.displayFormat;
-                    //val.derivedId = dataSetColumnData.id;
                     val.status = dataSetColumnData.status;
                     val.dataSetId = dataSetColumnData.dataSetId;
                     val.userId = dataSetColumnData.userId;
@@ -2316,6 +2308,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             if (!data.id) {
                 $scope.columnHeaderColuction = [];
+                console.log($scope.widgetDataSetColumnsDef)
                 $scope.widgetDataSetColumnsDefs.forEach(function (val, key) {
                     var collectionFieldDefs = {
                         id: val.id,
@@ -2337,6 +2330,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForWidget/' + response.id, data: $scope.columnHeaderColuction}).success(function (data) {
+                    console.log(data)
                 });
             }
             $scope.chartTypeName = "";
@@ -2371,6 +2365,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (!data.id) {
                 $scope.widgets.unshift(response);
             }
+            console.log($scope.collectionFields)
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
@@ -3289,7 +3284,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 if (value.displayFormat) {
                     var format = value.displayFormat;
-                    var displayName = value.displayName;         
+                    var displayName = value.displayName;
 
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
@@ -4257,14 +4252,35 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     label: {
                                         format: function (value, ratio, id) {
                                             var percentage = d3.format("%.2f")(ratio);
-                                            return  percentage + ", " + dashboardFormat(yAxisField, value);
+                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
                                         }
                                     }
+//                                    labels: {
+//                                        show: true,
+//                                        threshold: 0.1,
+//                                        format: {
+//                                            A: function (value, ratio, id) {
+//                                                var percentage = d3.format("%.2f")(ratio);
+//                                                return  percentage + ", " + dashboardFormat(yAxisField, value);
+////                                                if (value = 20) {
+////                                                    return "A<br/>9item<br/>20.2%";
+////                                                }
+//                                            }
+//                                        }
+//                                    }
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
                                 },
-                                tooltip: {show: false},
+                                tooltip: {
+                                    show: true,
+                                    format: {
+                                        value: function (value, ratio, id) {
+                                            var percentage = d3.format("%.2f")(ratio);
+                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
+                                        }
+                                    }
+                                },
                                 axis: {
                                     x: {
                                         tick: {
