@@ -239,7 +239,6 @@ public class ProxyController {
 //            // System.out.println(dataWithDerivedColumns);
 //            returnMap.put("data", dataWithDerivedColumns);
 //        }
-        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
         // System.out.println("returnMap 1234 ----> " + returnMap);
         if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
             String queryFilter = null;
