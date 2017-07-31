@@ -1913,7 +1913,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 sortPriority: collectionField.sortPriority,
                 status: collectionField.status,
                 expression: collectionField.expression,
-                fieldType: collectionField.type,
+                fieldType: collectionField.fieldType,
                 fieldName: collectionField.fieldName,
                 displayName: collectionField.displayName,
                 userId: collectionField.userId,
@@ -2415,7 +2415,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.widgetObj.id = val.id;
             $scope.widgetObj.previewTitle = val.widgetTitle;
             $scope.widgetObj.chartType = val.chartType;
-//            $scope.selectedChartType = val.chartType;
             $scope.widgetObj.dataSourceId = val.dataSourceId;
             $scope.widgetObj.dataSetId = val.dataSetId;
             $scope.widgetObj.timeSegment = val.timeSegment;
