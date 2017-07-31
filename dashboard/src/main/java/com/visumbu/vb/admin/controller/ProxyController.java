@@ -1228,22 +1228,6 @@ public class ProxyController {
                 }
             }
             String accountIdStr = getFromMultiValueMap(request, "accountId");
-            Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
-            Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
-            String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
-
-            String widgetIdStr = getFromMultiValueMap(request, "widgetId");
-            if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
-                Integer widgetId = Integer.parseInt(widgetIdStr);
-                TabWidget widget = uiService.getWidgetById(widgetId);
-                startDate = DateUtils.getStartDate(widget.getCustomStartDate());
-                endDate = DateUtils.getEndDate(widget.getCustomEndDate());
-                if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration")) {
-                    Map dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
-                    startDate = DateUtils.getStartDate(dateRange.get("startDate") + "");
-                    endDate = DateUtils.getEndDate(dateRange.get("endDate") + "");
-                }
-            }
 
             Integer accountId = Integer.parseInt(accountIdStr);
             Account account = userService.getAccountId(accountId);

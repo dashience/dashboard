@@ -166,6 +166,9 @@ angular.module('smartArea', [])
                             $scope.trackCaret = function () {
                                 var text = $scope.areaData,
                                         position = getCharacterPosition();
+                                if (!text) {
+                                    return;
+                                }
 
                                 $scope.fakeArea = $sce.trustAsHtml(text.substring(0, position) + '<span class="sa-tracking"></span>' + text.substring(position));
 
@@ -346,6 +349,9 @@ angular.module('smartArea', [])
                                     // Check if the trigger is under the cursor
                                     var text = $scope.areaData,
                                             position = getCharacterPosition();
+                                    if (!text) {
+                                        return;
+                                    }
                                     if (typeof (element.trigger) === 'string' && element.trigger === text.substr(position - element.trigger.length, element.trigger.length)) {
                                         // The cursor is exactly at the end of the trigger
 
@@ -366,6 +372,9 @@ angular.module('smartArea', [])
                                         });
                                     } else if (typeof (element.trigger) === 'object') {
                                         // I need to get the index of the last match
+                                        if (!text) {
+                                            return;
+                                        }
                                         var searchable = text.substr(0, position),
                                                 match, found = false, lastPosition = -1;
                                         element.trigger.lastIndex = 0;
@@ -415,8 +424,11 @@ angular.module('smartArea', [])
                                 var autocomplete = [],
                                         suggestions = [],
                                         text = $scope.areaData,
-                                        position = getCharacterPosition(),
-                                        lastWord = text.substr(0, position).split(/[\s\b{}]/);
+                                        position = getCharacterPosition();
+                                if (!text) {
+                                    return;
+                                }
+                                var lastWord = text.substr(0, position).split(/[\s\b{}]/);
 
                                 // Get the last typed word
                                 lastWord = lastWord[lastWord.length - 1];
