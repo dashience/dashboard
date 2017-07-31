@@ -2188,7 +2188,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     }
 
     $scope.save = function (widget) {
-        console.log(widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2221,8 +2220,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.customStartDate = "";
             $scope.customEndDate = "";
         }
-        console.log($scope.customStartDate);
-        console.log($scope.customEndDate);
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
@@ -2310,13 +2307,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             createdBy: widget.createdBy,
             chartColorOption: widgetColor
         };
-
-        clearEditAllWidgetData();
-        widget.chartType = "";
+        clearEditAllWidgetData();        
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             if (!data.id) {
                 $scope.columnHeaderColuction = [];
-                console.log($scope.widgetDataSetColumnsDef)
                 $scope.widgetDataSetColumnsDefs.forEach(function (val, key) {
                     var collectionFieldDefs = {
                         id: val.id,
@@ -2338,44 +2332,9 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForWidget/' + response.id, data: $scope.columnHeaderColuction}).success(function (data) {
-                    console.log(data)
                 });
             }
-            $scope.chartTypeName = "";
-            var widgetColors;
-            if ($scope.userChartColors.optionValue) {
-                widgetColors = $scope.userChartColors.optionValue.split(',');
-            }
-            widget.id = data.id;
-            widget.chartType = data.chartType;
-            widget.chartColorOption = data.chartColorOption;
-            widget.widgetTitle = data.widgetTitle;
-            widget.dataSetId = dataSetObj;
-            widget.dataSourceId = dataSourceObj;
-            widget.timeSegment = data.timeSegment;
-            widget.productSegment = data.productSegment;
-            widget.networkType = data.networkType;
-            widget.columns = data.widgetColumns;
-            widget.dateRangeName = data.dateRangeName;
-            widget.customStartDate = data.customStartDate;
-            widget.customEndDate = data.customEndDate;
-            widget.lastNdays = data.lastNdays;
-            widget.lastNweeks = data.lastNweeks;
-            widget.lastNmonths = data.lastNmonths;
-            widget.lastNyears = data.lastNyears;
-            widget.allAccount = data.accountId;
-            widget.jsonData = data.jsonData;
-            widget.queryFilter = data.queryFilter;
-            data.dataSourceId = dataSourceObj;
-            data.dataSetId = dataSetObj;
-            widget.chartColors = widgetColors;
-            widget = data;
             $scope.derivedColumns = [];
-            response.chartColors = widgetColors;
-            if (!data.id) {
-                $scope.widgets.unshift(response);
-            }
-            console.log($scope.collectionFields)
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
@@ -2404,13 +2363,46 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             var colData = {
                 tableColumns: $scope.derivedColumns
             };
+            widget.chartType = "";
+            $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
+                $scope.chartTypeName = "";
+                var widgetColors;
+                if ($scope.userChartColors.optionValue) {
+                    widgetColors = $scope.userChartColors.optionValue.split(',');
+                }
+                widget.id = data.id;
+                widget.chartType = data.chartType;
+                widget.chartColorOption = data.chartColorOption;
+                widget.widgetTitle = data.widgetTitle;
+                widget.dataSetId = dataSetObj;
+                widget.dataSourceId = dataSourceObj;
+                widget.timeSegment = data.timeSegment;
+                widget.productSegment = data.productSegment;
+                widget.networkType = data.networkType;
+                widget.columns = data.widgetColumns;
+                widget.dateRangeName = data.dateRangeName;
+                widget.customStartDate = data.customStartDate;
+                widget.customEndDate = data.customEndDate;
+                widget.lastNdays = data.lastNdays;
+                widget.lastNweeks = data.lastNweeks;
+                widget.lastNmonths = data.lastNmonths;
+                widget.lastNyears = data.lastNyears;
+                widget.allAccount = data.accountId;
+                widget.jsonData = data.jsonData;
+                widget.queryFilter = data.queryFilter;
+                data.dataSourceId = dataSourceObj;
+                data.dataSetId = dataSetObj;
+                widget.chartColors = widgetColors;
+                widget = data;
+                response.chartColors = widgetColors;
+                if (!data.id) {
+                    $scope.widgets.unshift(response);
+                }
+            });
             if (!response.id) {
                 $('.showEditWidget').modal('hide');
                 return;
             }
-
-            $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
-            });
             $('.showEditWidget').modal('hide');
         });
     };
