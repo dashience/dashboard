@@ -13,6 +13,9 @@ function dashboardFormat(column, value) {
     if (column.fieldType === "date") {
         return value;
     }
+    if (column.fieldType === "string") {
+        return value;
+    }
     if (column.displayFormat.indexOf("%") > -1) {
         return d3.format(column.displayFormat)(value / 100);
     } else if (column.displayFormat == 'H:M:S') {
@@ -893,6 +896,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 displayName: obj.displayName,
                 expression: obj.expression,
                 fieldName: obj.fieldName,
+                fieldType: obj.fieldType,
                 functionName: obj.functionName,
                 groupPriority: obj.groupPriority,
                 selectColumnDef: obj.selectColumnDef,
@@ -2217,9 +2221,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     return "-";
                 }
                 if (column.displayFormat) {
-                    if (isNaN(value)) {
-                        return "-";
-                    }
+//                    if (isNaN(value)) {
+//                        return "aa-";
+//                    }
                     return dashboardFormat(column, value);
                 }
                 return value;
