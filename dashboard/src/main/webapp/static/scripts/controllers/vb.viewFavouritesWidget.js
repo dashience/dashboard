@@ -67,7 +67,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         } else {
             widget.width = 3;
         }
-        saveWidgetSize(widget, expandchart)
+        saveWidgetSize(widget, expandchart);
     };
 
     function saveWidgetSize(widget, expandchart) {
@@ -186,5 +186,5 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
             }
         }
-    }
+    };
 });
