@@ -11,7 +11,21 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
     });
     
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
-        $scope.favPdfWidgets = response;
+//        $scope.favPdfWidgets = response;
+        var widgetItems = response;
+        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.userChartColors = response;
+            var widgetColors;
+            if (response.optionValue) {
+                widgetColors = response.optionValue.split(',');
+            }
+            widgetItems.forEach(function (value, key) {
+                value.widgetId.chartColors = widgetColors;
+            });
+            $scope.favPdfWidgets = widgetItems;
+        }).error(function () {
+            $scope.favPdfWidgets = widgetItems;
+        });
         setInterval(function () {
             window.status = "done";
         }, 10000);

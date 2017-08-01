@@ -396,7 +396,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
+                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls') || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label>Time Segment</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 

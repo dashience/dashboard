@@ -21,9 +21,20 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                     value.widgetId.isFav = false;
                 }
             });
+            $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+                $scope.userChartColors = response;
+                var widgetColors;
+                if (response.optionValue) {
+                    widgetColors = response.optionValue.split(',');
+                }
+                widgetItems.forEach(function (value, key) {
+                    value.widgetId.chartColors = widgetColors;
         });
-
         $scope.favouritesWidgets = widgetItems;
+            }).error(function () {
+                $scope.favouritesWidgets = widgetItems;
+    });
+        });
     });
 
     $scope.toggleFavourite = function (favouritesWidget, index) {
