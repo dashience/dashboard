@@ -265,10 +265,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.selectedChartType = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
-        $scope.dataSetColumn.expression = "";
+        $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
-        $scope.text = "";
         $scope.xColumn = "";
         $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
@@ -1420,72 +1419,58 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function resetQueryBuilder() {
         $scope.dispHideBuilder = false;
     }
-    ;
+    
     //Derived Column
     $scope.showDerived = false;
     $scope.dataSetColumn = {};
     $scope.addDerived = function () {
         $scope.dataSetColumn = {};
         $scope.showDerived = true;
-        $scope.text = "";
     };
     $scope.cancelDerivedColumn = function (dataSetColumn) {
-        $scope.text = "";
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
     };
     //Edit Derived
-//    $scope.editDerivedColumn = function (collectionField, widgetObj) {
-//        $scope.showDerived = false;
-//        console.log(collectionField);
-//        $scope.dataSetColumn = {};
-//        if (collectionField.userId != null) {
-//            $scope.showDerived = true;
-//            var data = {
-//                agregationFunction: collectionField.agregationFunction,
-//                functionName: collectionField.functionName,
-//                groupPriority: collectionField.groupPriority,
-//                id: collectionField.id,
-//                sortOrder: collectionField.sortOrder,
-//                sortPriority: collectionField.sortPriority,
-//                status: collectionField.status,
-//                expression: collectionField.expression,
-//                fieldType: collectionField.type,
-//                fieldName: collectionField.fieldName,
-//                displayName: collectionField.displayName,
-//                userId: collectionField.userId,
-//                displayFormat: collectionField.displayFormat,
-//                widgetId: widgetObj.id
-//            };
-//            $scope.dataSetColumn = data;
-//            $scope.text = collectionField.expression;
-//        }
-//    };
+    $scope.editDerivedColumn = function (collectionField, widgetObj) {
+        $scope.showDerived = false;
+        $scope.dataSetColumn = {};
+        if (collectionField.userId != null) {
+            $scope.showDerived = true;
+            var data = {
+                agregationFunction: collectionField.agregationFunction,
+                functionName: collectionField.functionName,
+                groupPriority: collectionField.groupPriority,
+                id: collectionField.id,
+                sortOrder: collectionField.sortOrder,
+                sortPriority: collectionField.sortPriority,
+                status: collectionField.status,
+                textExpression: collectionField.expression,
+                fieldType: collectionField.type,
+                fieldName: collectionField.fieldName,
+                displayName: collectionField.displayName,
+                userId: collectionField.userId,
+                displayFormat: collectionField.displayFormat,
+                widgetId: widgetObj.id
+            };
+            $scope.dataSetColumn = data;
+        }
+    };
     //Save DerivedColumn
-    $scope.saveDerivedColumn = function (dataSetColumn, widget, text) {
-        $scope.text = text;
+    $scope.saveDerivedColumn = function (dataSetColumn, widget) {
         $scope.collectionField = {};
         var dataSetColumnData = {
             functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
             id: dataSetColumn.id ? dataSetColumn.id : null,
             sortPriority: dataSetColumn.sortPriority ? dataSetColumn.sortPriority : null,
             status: dataSetColumn.status ? dataSetColumn.status : null,
-            expression: $scope.text,
+            expression: dataSetColumn.textExpression,
             fieldName: dataSetColumn.fieldName,
             displayName: dataSetColumn.fieldName,
             fieldType: dataSetColumn.fieldType,
             dataSetId: widget.dataSetId.id,
             userId: dataSetColumn.userId ? dataSetColumn.userId : $scope.userId,
-//            baseField: dataSetColumn.baseField,
             displayFormat: dataSetColumn.displayFormat
-//            columnName: dataSetColumn.columnName,
-//            dateRangeName: dataSetColumn.dateRangeName,
-//            customStartDate: scope.customStartDate,
-//            customEndDate: scope.customEndDate,
-//            lastNdays: dataSetColumn.lastNdays,
-//            lastNweeks: dataSetColumn.lastNweeks,
-//            lastNmonths: dataSetColumn.lastNmonths,
-//            lastNyears: dataSetColumn.lastNyears
         };
         var oldFieldName = "";
         if (!dataSetColumn.id) {
@@ -1525,7 +1510,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
-        $scope.text = "";
     };
 
     //check FieldName
@@ -1544,7 +1528,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     };
     //Auto Complete
-    $scope.text = "";
     $scope.config = {
         autocomplete: [
             {
@@ -1712,10 +1695,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.networkType = "";
         $scope.chartTypeName = "";
         $scope.dataSetColumn.fieldName = "";
-        $scope.dataSetColumn.expression = "";
+        $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
-        $scope.text = "";
         $scope.widgetObj.lastNdays = "";
         $scope.widgetObj.lastNweeks = "";
         $scope.widgetObj.lastNmonths = "";
@@ -1914,15 +1896,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
             data.chartColors = chartColors;
-            console.log(widget);
             response.chartColors = chartColors;
             widget = data;
-            console.log(widget);
             $scope.derivedColumns = [];
             if (!data.id) {
                 $scope.widgets.push(response);
             }
-            console.log($scope.widgets);
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
