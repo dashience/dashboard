@@ -303,7 +303,6 @@ angular.module('smartArea', [])
                              */
                             function highlightText() {
                                 var text = $scope.areaData;
-                                console.log(text);
 
                                 if (typeof ($scope.areaConfig.autocomplete) === 'undefined' || $scope.areaConfig.autocomplete.length === 0) {
                                     return;
@@ -322,7 +321,6 @@ angular.module('smartArea', [])
                                 });
                                 // Add to the fakeArea
                                 $scope.fakeArea = $sce.trustAsHtml(text);
-                                console.log($scope.fakeArea);
                             }
 
                             /**
@@ -434,7 +432,6 @@ angular.module('smartArea', [])
 
                                 // Get the last typed word
                                 lastWord = lastWord[lastWord.length - 1];
-                                console.log(lastWord);
 
                                 $scope.areaConfig.autocomplete.forEach(function (autoList) {
                                     autoList.words.forEach(function (word) {
