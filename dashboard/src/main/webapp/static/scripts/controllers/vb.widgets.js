@@ -115,13 +115,12 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.downloadXLSByWidget = function (widget) {
-        console.log(widget)
         var fileName;
         var name = widget.widgetTitle;
         if (name) {
             fileName = name.split(' ').join("");
         } else {
-            fileName = "Skyzone"
+            fileName = "Skyzone";
         }
         var url = "admin/proxy/downloadData?";
         var setProductSegment;
@@ -158,7 +157,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
 
         var dashboardFilter;
         if (widget.filterUrlParameter) {
-            dashboardFilter = JSON.stringify(widget.filterUrlParameter)
+            dashboardFilter = JSON.stringify(widget.filterUrlParameter);
         } else {
             dashboardFilter = "";
         }
@@ -463,7 +462,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.getChartFilterItems = function (filterBy) {
-        console.log(filterBy)
         var reload = false;
         // filterBy.value = "Domestic"
         var reloadType = "";
