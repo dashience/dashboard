@@ -1958,8 +1958,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         var oldFieldName = "";
         if (!dataSetColumn.id) {
             $scope.collectionFields.push(dataSetColumnData);
-            $scope.columnY1Axis.push(dataSetColumnData)
-            $scope.columnY2Axis.push(dataSetColumnData)
+            $scope.columnY1Axis.push(dataSetColumnData);
+            $scope.columnY2Axis.push(dataSetColumnData);
         } else {
             $scope.collectionFields.forEach(function (val, key) {
                 if (val.id === dataSetColumn.id) {
