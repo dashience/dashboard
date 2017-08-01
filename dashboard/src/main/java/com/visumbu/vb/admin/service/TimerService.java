@@ -171,7 +171,8 @@ public class TimerService {
             }
             System.out.println("TO Address============================================>");
             System.out.println(toAddress);
-            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
+            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + currentDateStr;
+//            String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = subject + "\n\n- System";
             //            String status = scheduler.getStatus();
 //            if (status.equalsIgnoreCase("Active")) {

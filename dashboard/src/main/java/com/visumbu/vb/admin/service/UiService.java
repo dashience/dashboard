@@ -973,10 +973,19 @@ public class UiService {
                 dataSet = tabWidget.getDataSetId();
                 DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(), dataSet);
                 if (checkDbForColumn != null) {
-                    checkDbForColumn.setExpression(allDataSetColumn.getExpression());
-                    checkDbForColumn.setFieldName(allDataSetColumn.getFieldName());
-                    checkDbForColumn.setDisplayName(allDataSetColumn.getDisplayName());
-                    checkDbForColumn.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                    if (allDataSetColumn.getExpression() != null && !allDataSetColumn.getExpression().isEmpty()) {
+                        checkDbForColumn.setExpression(allDataSetColumn.getExpression());
+                    }
+                    if (allDataSetColumn.getFieldName() != null && !allDataSetColumn.getFieldName().isEmpty()) {
+                        checkDbForColumn.setFieldName(allDataSetColumn.getFieldName());
+                    }
+
+                    if (allDataSetColumn.getDisplayName() != null && !allDataSetColumn.getDisplayName().isEmpty()) {
+                        checkDbForColumn.setDisplayName(allDataSetColumn.getDisplayName());
+                    }
+                    if (allDataSetColumn.getDisplayFormat() != null && !allDataSetColumn.getDisplayFormat().isEmpty()) {
+                        checkDbForColumn.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                    }
                     checkDbForColumn.setStatus(allDataSetColumn.getStatus());
                     checkDbForColumn.setFunctionName(allDataSetColumn.getFunctionName());
                     checkDbForColumn.setColumnName(allDataSetColumn.getColumnName());
@@ -988,7 +997,9 @@ public class UiService {
                     checkDbForColumn.setLastNmonths(allDataSetColumn.getLastNmonths());
                     checkDbForColumn.setLastNweeks(allDataSetColumn.getLastNweeks());
                     checkDbForColumn.setLastNyears(allDataSetColumn.getLastNyears());
-                    checkDbForColumn.setFieldType(allDataSetColumn.getFieldType());
+                    if (allDataSetColumn.getFieldType() != null && !allDataSetColumn.getFieldType().isEmpty()) {
+                        checkDbForColumn.setFieldType(allDataSetColumn.getFieldType());
+                    }
                     checkDbForColumn.setSortPriority(allDataSetColumn.getSortPriority());
                     if (widgetId != null) {
                         checkDbForColumn.setWidgetId(tabWidget);

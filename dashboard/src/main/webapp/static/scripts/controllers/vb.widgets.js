@@ -195,8 +195,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.widgets.forEach(function (val, key) {
             val.filterUrlParameter = allSelected;
         });
-        // dispAllFilter(allSelected)
-
         return allSelected;
     };
     function dispAllFilter(filterItems) {
@@ -269,6 +267,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             var selectedFilter = $scope.getAllSelected();
             var dashboardFilter = {};
             if (value == "salesType") {
+                $scope.salesTypes = [];
                 var request = $http.get('admin/filterData/getFilter/salesType').success(function (response) {
                     $scope.salesTypes = response.data;
                 });
@@ -277,6 +276,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (value == "country") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.countries = [];
                 var request = $http.get('admin/filterData/getFilter/country?dashboardFilter=' + queryString).success(function (response) {
                     $scope.countries = response.data;
                 });
@@ -286,6 +286,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 dashboardFilter.country = selectedFilter.Country;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.states= [];
                 var request = $http.get('admin/filterData/getFilter/state?dashboardFilter=' + queryString).success(function (response) {
                     $scope.states = response.data;
                 });
@@ -296,6 +297,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.country = selectedFilter.Country;
                 dashboardFilter.state = selectedFilter.State;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                 $scope.cities = [];
                 var request = $http.get('admin/filterData/getFilter/city?dashboardFilter=' + queryString).success(function (response) {
                     $scope.cities = response.data;
                 });
@@ -307,12 +309,14 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.state = selectedFilter.State;
                 dashboardFilter.city = selectedFilter.City;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.stores = [];
                 var request = $http.get('admin/filterData/getFilter/store?dashboardFilter=' + queryString).success(function (response) {
                     $scope.stores = response.data;
                 });
                 allRequests.push(request);
             }
             if (value == "category") {
+                $scope.categories = [];
                 var request = $http.get('admin/filterData/getFilter/category').success(function (response) {
                     $scope.categories = response.data;
                 });
@@ -321,6 +325,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (value == "subCategory") {
                 dashboardFilter.category = selectedFilter.Category;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.subCategories = [];
                 var request = $http.get('admin/filterData/getFilter/subcategory?dashboardFilter=' + queryString).success(function (response) {
                     $scope.subCategories = response.data;
                 });
@@ -329,6 +334,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (value == "parkType") {
                 dashboardFilter.parkType = selectedFilter.ParkType;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.parkTypes = [];
                 var request = $http.get('admin/filterData/getFilter/parktype?dashboardFilter=' + queryString).success(function (response) {
                     $scope.parkTypes = response.data;
                 });
@@ -339,9 +345,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
 
         $q.all(allRequests).then(function (values) {
-            console.log(values);
             var allSelected = {};
-            $scope.reloadAllDirective = false;
             $('.inputCheckbox:checked').each(function (key, value) {
                 var fieldname = $(value).attr('fieldname');
                 var fieldvalue = $(value).attr('fieldvalue');
@@ -350,11 +354,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 }
                 allSelected[fieldname].push(fieldvalue);
             });
+            $scope.reloadAllDirective = false;
             $scope.widgets.forEach(function (val, key) {
                 val.filterUrlParameter = allSelected;
             });
-            dispAllFilter(allSelected);
+            
+            console.log(allSelected)
+//                $scope.selectItems = "";
             $timeout(function () {
+                dispAllFilter(allSelected);
                 $scope.reloadAllDirective = true;
             }, 500);
         });
@@ -1947,7 +1955,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             id: dataSetColumn.id ? dataSetColumn.id : null,
             sortPriority: dataSetColumn.sortPriority ? dataSetColumn.sortPriority : null,
             status: dataSetColumn.status ? dataSetColumn.status : null,
-            expression:dataSetColumn.textExpression,
+            expression: dataSetColumn.textExpression,
             fieldName: dataSetColumn.fieldName,
             displayName: dataSetColumn.fieldName,
             fieldType: dataSetColumn.fieldType,
