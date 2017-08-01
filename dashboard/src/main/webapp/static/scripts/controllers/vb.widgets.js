@@ -358,7 +358,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $timeout(function () {
                 $scope.reloadAllDirective = true;
             }, 500);
-            //alert("All Loaded")
         });
     };
 
@@ -378,11 +377,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.deleteFilterItem = function (index, obj) {
-        $scope.selectItems.splice(index, 1)
+        var allSelected = {};
+        var reloadType;
+        $scope.reloadAllDirective = false;
+        $scope.selectItems.splice(index, 1);
         if (obj.type == "SalesType") {
             angular.forEach($scope.salesTypes, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
+                    reloadType = "country,state,city,store";
                 }
             });
         }
@@ -390,6 +393,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.countries, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
+                    reloadType = "state,city,store";
                 }
             });
         }
@@ -397,6 +401,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.cities, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
+                    reloadType = "city,store";
                 }
             });
         }
@@ -411,6 +416,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.stores, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
+                    reloadType = "store";
                 }
             });
         }
@@ -418,6 +424,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.categories, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
+                    reloadType = "subCategory";
                 }
             });
         }
@@ -435,8 +442,23 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 }
             });
         }
+        if (!reloadType) {
+            reloadType = "none";
+        }
+
         $timeout(function () {
-            $scope.getAllSelected();
+            $('.inputCheckbox:checked').each(function (key, value) {
+                var fieldname = $(value).attr('fieldname');
+                var fieldvalue = $(value).attr('fieldvalue');
+                if (!allSelected[fieldname]) {
+                    allSelected[fieldname] = [];
+                }
+                allSelected[fieldname].push(fieldvalue);
+            });
+            $scope.widgets.forEach(function (val, key) {
+                val.filterUrlParameter = allSelected;
+            });
+            $scope.updateFilter(reloadType);
         }, 500);
     };
 
@@ -1938,6 +1960,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         var oldFieldName = "";
         if (!dataSetColumn.id) {
             $scope.collectionFields.push(dataSetColumnData);
+            $scope.columnY1Axis.push(dataSetColumnData)
+            $scope.columnY2Axis.push(dataSetColumnData)
         } else {
             $scope.collectionFields.forEach(function (val, key) {
                 if (val.id === dataSetColumn.id) {
@@ -1954,22 +1978,37 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     val.sortPriority = dataSetColumnData.sortPriority;
                 }
             });
+            $scope.columnY1Axis.forEach(function (val, key) {
+                if (val.id === dataSetColumn.id) {
+                    oldFieldName = val.fieldName;
+                    val.fieldName = dataSetColumnData.fieldName;
+                    val.displayName = dataSetColumnData.displayName;
+                    val.expression = dataSetColumnData.expression;
+                    val.functionName = dataSetColumnData.functionName;
+                    val.fieldType = dataSetColumnData.fieldType;
+                    val.displayFormat = dataSetColumnData.displayFormat;
+                    val.status = dataSetColumnData.status;
+                    val.dataSetId = dataSetColumnData.dataSetId;
+                    val.userId = dataSetColumnData.userId;
+                    val.sortPriority = dataSetColumnData.sortPriority;
+                }
+            });
         }
-        widget.columns.forEach(function (val, key) {
-            if (val.derivedId === dataSetColumn.id || val.fieldName === oldFieldName) {
-                val.fieldName = dataSetColumnData.fieldName;
-                val.displayName = dataSetColumnData.displayName;
-                val.expression = dataSetColumnData.expression;
-                val.functionName = dataSetColumnData.functionName;
-                val.fieldType = dataSetColumnData.fieldType;
-                val.displayFormat = dataSetColumnData.displayFormat;
-                val.derivedId = dataSetColumnData.id;
-                val.status = dataSetColumnData.status;
-                val.dataSetId = dataSetColumnData.dataSetId;
-                val.userId = dataSetColumnData.userId;
-                val.sortPriority = dataSetColumnData.sortPriority;
-            }
-        });
+//        widget.columns.forEach(function (val, key) {
+//            if (val.derivedId === dataSetColumn.id || val.fieldName === oldFieldName) {
+//                val.fieldName = dataSetColumnData.fieldName;
+//                val.displayName = dataSetColumnData.displayName;
+//                val.expression = dataSetColumnData.expression;
+//                val.functionName = dataSetColumnData.functionName;
+//                val.fieldType = dataSetColumnData.fieldType;
+//                val.displayFormat = dataSetColumnData.displayFormat;
+//                val.derivedId = dataSetColumnData.id;
+//                val.status = dataSetColumnData.status;
+//                val.dataSetId = dataSetColumnData.dataSetId;
+//                val.userId = dataSetColumnData.userId;
+//                val.sortPriority = dataSetColumnData.sortPriority;
+//            }
+//        });
         $scope.showDerived = false;
         $scope.dataSetColumn = "";
     };
@@ -2300,6 +2339,13 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         };
         clearEditAllWidgetData();
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
+            var widgetColors;
+            var newWidgetResponse = response;
+            if ($scope.userChartColors.optionValue) {
+                widgetColors = $scope.userChartColors.optionValue.split(',');
+            }
+            response.chartColors = widgetColors;
+            // if()
             if (!data.id) {
                 $scope.columnHeaderColuction = [];
                 $scope.widgetDataSetColumnsDefs.forEach(function (val, key) {
@@ -2357,10 +2403,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             widget.chartType = "";
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
                 $scope.chartTypeName = "";
-                var widgetColors;
-                if ($scope.userChartColors.optionValue) {
-                    widgetColors = $scope.userChartColors.optionValue.split(',');
-                }
                 widget.id = data.id;
                 widget.chartType = data.chartType;
                 widget.chartColorOption = data.chartColorOption;
@@ -2385,15 +2427,14 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 data.dataSetId = dataSetObj;
                 widget.chartColors = widgetColors;
                 widget = data;
-                response.chartColors = widgetColors;
                 if (!data.id) {
-                    $scope.widgets.unshift(response);
+                    $scope.widgets.unshift(newWidgetResponse);
                 }
             });
-            if (!response.id) {
-                $('.showEditWidget').modal('hide');
-                return;
-            }
+//            if (!response.id) {
+//                $('.showEditWidget').modal('hide');
+//                return;
+//            }
             $('.showEditWidget').modal('hide');
         });
     };
