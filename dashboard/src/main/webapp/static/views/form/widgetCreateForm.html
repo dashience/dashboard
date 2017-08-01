@@ -396,7 +396,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
+                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls') || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label>Time Segment</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
@@ -514,6 +514,11 @@
                                 <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
                                     <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}}</a>
                                 </label>
+                                 <span class="pull-right" ng-if="collectionField.expression">
+                                    <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </span>
                             </div>
                         </li>
                     </ul>
@@ -554,14 +559,14 @@
                             <label>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
-                                      ng-model="text" 
+                                      ng-model="dataSetColumn.textExpression" 
                                       ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
                         </div>
                         <div class="form-group col-xs-12">
                             <label>Field Type</label>
                             <select class="form-control" ng-model="dataSetColumn.fieldType">
-                                <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
+                                <option ng-repeat="fieldType in fieldTypes track by fieldType.value" value="{{fieldType.value}}">
                                     {{fieldType.name}}
                                 </option>
                             </select>
@@ -574,7 +579,7 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
+                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>
@@ -674,7 +679,8 @@
                     </div>
                 </div>
             </div>            
-            <div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">
+            <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
+            <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
                 <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
             </div>
         </div>
@@ -747,9 +753,7 @@
                                     <button class="btn btn-default" type="button">
                                         Custom</button>
                                 </span>
-                                <a class="form-control pull-right custom-daterange-box" custom-Widget-Date-Range
-                                   ng-click="selectDateRangeName(widgetObj)" 
-                                   widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
+                                <a class="form-control pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
                                     <span class="date-border" 
                                           customStartDate="{{widgetObj.customStartDate}}" 
                                           customEndDate="{{widgetObj.customEndDate}}">
@@ -848,6 +852,16 @@
                              widget-Obj="{{displayPreviewChart}}">                         
                         </div>
                     </div>                            
+                </div>
+                <div ng-if="chartTypeName === 'scatter'">
+                    <div>
+                        <div scatter-Chart-Source='{{displayPreviewChart.dataSetId}}' 
+                             widget-Id="{{displayPreviewChart.id}}" 
+                             widget-Columns="{{displayPreviewChart.columns}}" 
+                             scatter-Chart-Directive 
+                             widget-Obj="{{displayPreviewChart}}">                                            
+                        </div>
+                    </div>
                 </div>
                 <div ng-if="chartTypeName === 'funnel'">
                     <div>

@@ -248,12 +248,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Youtube Watch'
         },
         {
-            type: 'none',
-            name: 'None'
-        },
-        {
             type: 'All',
             name: 'All'
+        },
+        {
+            type: 'none',
+            name: 'None'
         }
     ];
     $scope.dataSetFlagValidation = function (dataSource)
@@ -1905,7 +1905,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
-            console.log("Report Name-->" + $scope.dataSet.reportName);
             if (!dataSet.timeSegment) {
                 if ($scope.dataSet.reportName == 'geoPerformance') {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
@@ -1913,9 +1912,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
-                    console.log("Inside product segment");
                     $scope.dataSet.productSegment = {name: 'City', type: 'city'};
-//                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
                     getProductSegment(productList, productSegmentName);
                 }
@@ -1986,7 +1983,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
-
             if (!dataSet.timeSegment) {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
             } else {

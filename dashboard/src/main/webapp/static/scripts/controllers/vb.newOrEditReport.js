@@ -23,9 +23,20 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     });
 
     $http.get('admin/report/reportWidget/' + $stateParams.reportId).success(function (response) {
-        $scope.reportWidgets = response;
-        angular.forEach(response, function (value, key) {
-        })
+        var widgetItems = response;
+        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.userChartColors = response;
+            var widgetColors;
+            if (response.optionValue) {
+                widgetColors = response.optionValue.split(',');
+            }
+            widgetItems.forEach(function (value, key) {
+                value.widgetId.chartColors = widgetColors;
+            });
+            $scope.reportWidgets = widgetItems;
+        }).error(function () {
+            $scope.reportWidgets = widgetItems;
+        });
     });
 
     $scope.downloadReportPdf = function (report) {
@@ -81,7 +92,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         }
         saveWidgetSize(widget, expandchart)
     };
-    
+
     $scope.reduceWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
@@ -145,7 +156,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         }
         ;
     };
-    
+
     $scope.deleteReportWidget = function (reportWidget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/report/reportWidget/' + reportWidget.id}).success(function (response) {
             $scope.reportWidgets.splice(index, 1);

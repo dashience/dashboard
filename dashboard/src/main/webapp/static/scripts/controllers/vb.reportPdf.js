@@ -17,10 +17,23 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
     });
     
     $http.get('admin/report/reportWidget/' + $stateParams.reportId).success(function (response) {
-        $scope.reportWidgets = response;
+        var widgetItems = response;
+        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.userChartColors = response;
+            var widgetColors;
+            if (response.optionValue) {
+                widgetColors = response.optionValue.split(',');
+            }
+            widgetItems.forEach(function (value, key) {
+                value.widgetId.chartColors = widgetColors;
+            });
+            $scope.reportWidgets = widgetItems;
+        }).error(function () {
+            $scope.reportWidgets = widgetItems;
+        });
         setInterval(function () {
             window.status = "done";
-        }, 10000)
+        }, 10000);
     });
     $scope.downloadUiPdf = function () {
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
