@@ -323,6 +323,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.chartColors = widgetColors;
                 });
                 $scope.widgets = widgetItems;
+                $scope.widgets.forEach(function(val,key){
+//                   val.height=$('.grid-stack').parent().height() / (options.cellHeight + options.verticalMargin);
+                    val.widget=5;
+                    
+                    val.height=6;
+                });
+                console.log("scope values");
+                console.log($scope.widgets);
             });
         });
     };

@@ -1,0 +1,295 @@
+<style>    
+    .report-bottomMenu{
+        z-index: 9999;
+        position: fixed;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        font-size: 12px;
+        width: 400px;
+        height: 466px;
+        right: 70px;
+        bottom: 0px;
+        padding: 0;
+
+    }
+    .report-menuBody{
+        padding: 0px 0px 0px 0px;
+    }
+    .report-menuHeader{
+        background: #304445 none repeat scroll 0 0 !important;
+        border-bottom: 3px solid #ccc;
+        color: #fff;
+        display: inline-block;
+        width: 100%;
+        padding: 8px;
+    }
+    .report-header-icon{
+        border: 2px solid #5a7172;
+        border-radius: 12px;
+        float: left;
+        width: 14px;
+        margin: 3px;
+    }
+    .report-header-title{
+        float: left;
+        font-size: 18px;
+        margin: 0px 0px 5px 5px;
+    }
+    .report-header-tools{
+        margin: 2px 0 0;
+    }
+    .report-header-closeBtn{
+        background: transparent none repeat scroll 0 0;
+        border: 1px solid #fff;
+        border-radius: 7px;
+        font-size: 10px;
+        height: 17px;
+        opacity: 0.9;
+        padding: 0;
+        text-align: center;
+        width: 18px;
+    }
+    .report-body-content{
+        padding: 16px;
+        overflow: auto;
+        height: 308px;
+    }
+    .report-body-img{
+        float: left;
+    }
+    .report-body-imgs.in{
+        border-radius: 50%;
+        width: 74px;
+        height: 74px;
+    }
+    .report-body-imgs{
+        border: 0 none;
+        box-sizing: border-box;
+        height: auto;
+        max-width: 100%;
+        vertical-align: middle;
+    }
+    .report-body-descr{
+        list-style: outside none none;
+        padding: 0;
+        float: left;
+        margin: 0 0 0 20px;
+        max-width: 62%;
+    }
+    .report-desc-list{
+        background: #FCFBF6 none repeat scroll 0 0;
+        color: #000000;
+        border-radius: 12px;
+        clear: both;
+        display: block;
+        float: left;
+        font-size: 13px;
+        padding: 8px 16px;
+        position: relative;
+        margin: 0;
+        list-style: outside none none;
+        word-break: break-all;
+    }
+    .report-footer-btn{
+        padding: 16px;
+    }
+    .scheduler-checkBox-label{
+        display: block;
+        padding-left: 15px;
+        text-indent: -15px;
+        cursor: pointer;
+    }
+    .scheduler-checkBox{
+        width: 13px;
+        height: 13px;
+        padding: 0;
+        margin:0;
+        vertical-align: bottom;
+        position: relative;
+        top: -1px;
+        *overflow: hidden;
+    }
+    .agency-bt {
+        margin-bottom: 10px;
+    }
+    .nav-tabs-custom {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }
+    .add-group {
+        margin-right:0px;
+        padding:10px 0px;
+    }
+</style>
+
+<section class="content">
+    <div class="pull-right add-group">
+
+        <span ng-if="permission.createReport === true;" ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> Add Reports</button></span>
+
+    </div>
+
+    <table class="table table-bordered table-hover table-responsive table-reports">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Report Name</th>
+                <!--                <th>Created Time</th>-->
+                <th>Agency</th>
+                <!--<th>Logo</th>-->
+                <th ng-if="permission.createReport === true || permission.downloadReport === true || permission.deleteReport === true"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="report in reports">
+                <td>{{$index + 1}}</td>
+                <td>{{report.reportTitle}}</td>
+                <!--<td ui-sref="index.report.newOrEdit({locationId: locationId, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})">{{report.time}}</td>-->
+                <td>{{report.agencyId.agencyName}}</td>
+                <!--<td><img class="img-responsive img-thumbnail" src="{{report.logo}}"/></td>-->
+                <td ng-if="permission.createReport === true || permission.downloadReport === true || permission.deleteReport === true">
+                    <button ng-if="permission.createReport === true;" class="btn btn-default btn-xs" ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: report.id?report.id:0, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></button>
+                    <a ng-if="permission.downloadReport === true;" class="btn btn-info btn-xs" ng-href="#viewReportPdf/{{accountId}}/{{report.id}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-download"></i></a>
+                    <!--<button ng-if="permission.downloadReport === true;" class="btn btn-info btn-xs" ng-click="downloadReportPdf(report)"><i class="fa fa-download"></i></button>-->
+                    <button ng-show="showSchedulerReport" class="btn btn-primary btn-xs" 
+                            ng-click="showSchedulerList[report.id] = true; scheduler.reportId = report.reportTitle">
+                        <i class="fa fa-times-circle-o"></i>
+                    </button>
+                    <div class="report-bottomMenu pull-right" ng-show="showSchedulerList[report.id]">
+                        <div class="report-menuHeader">
+                            <div class="col-md-10">
+                                <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
+                                <h1 class="report-header-title">Schedule {{report.reportTitle}}</h1>
+                            </div>
+                            <div class="report-header-tools pull-right">
+                                <button class="report-header-closeBtn" ng-click="showSchedulerList[report.id] = false;"><i class="fa fa-close"></i></button>
+                            </div>
+                        </div>
+                        <div class="report-menuBody">
+                            <form class="form-horizontal">
+                                <div class="report-body-content">
+                                    <div class="form-group">
+                                        <label class="col-sm-3">Report</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" ng-model="scheduler.reportId" class="form-control" ng-disabled="true">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3">Scheduler</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" ng-model="scheduler.schedulerName" class="form-control" placeholder="Scheduler Name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3">Start Date</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" jqdatepicker placeholder="Start Date" ng-model="scheduler.startDate" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3">End Date</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" jqdatepicker placeholder="End Date" ng-model="scheduler.endDate" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3">Repeat</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control" ng-options="schedulerRepeat for schedulerRepeat in schedulerRepeats" ng-model="scheduler.schedulerRepeatType"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly'">
+                                        <label class="col-sm-3">Select Week</label>
+                                        <div class="col-sm-9">
+                                            <select class="form-control" ng-options="week for week in weeks" ng-model="scheduler.schedulerWeekly"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
+                                        <label class="col-sm-3">Time</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" jqdatepicker-Time placeholder="Time" ng-model="scheduler.schedulerTime" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Monthly'">
+                                        <label class="col-sm-3">Select Date And Time</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" jqdatetimepicker placeholder="Select Date And Time" ng-model="scheduler.schedulerMonthly" class="form-control">
+                                        </div>
+                                    </div>
+<!--                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
+                                        <label class="col-sm-3">Select Month, Date And Time</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" jqdatetimepicker placeholder="Select Month, Date And Time" ng-model="scheduler.schedulerYearly" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Year Of Week'">
+                                        <label class="col-sm-3">Year Of Week</label>
+                                        <div class="col-sm-9">
+                                            <ui-select ng-model="scheduler.schedulerYearOfWeek" theme="select2" ng-disabled="disabled" style="width:266px">
+                                                <ui-select-match placeholder="Select Year Of Week...">{{$select.selected}}</ui-select-match>
+                                                <ui-select-choices repeat="totalYearOfWeek in totalYearOfWeeks | filter: $select.search">
+                                                    <span ng-bind-html="totalYearOfWeek | highlight: $select.search"></span>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                    </div>-->
+                                    <div class="form-group">
+                                        <label class="col-sm-3">Type</label>
+                                        <div class="col-sm-9">
+                                            <div class="col-sm-4"><p><label class="scheduler-checkBox-label"><input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" /> <span>PDF</span></label></p></div>
+                                            <!--<div class="col-sm-4"><p><label class="scheduler-checkBox-label"><input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'ppt'" ng-true-value="'ppt'" ng-model="scheduler.schedulerType" /> <span>PPT</span></label></p></div>-->
+                                            <!--<div class="col-sm-4"><p><label class="scheduler-checkBox-label"><input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'xls'" ng-true-value="'xls'" ng-model="scheduler.schedulerType" /> <span>XLS</span></label></p></div>-->
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="report-footer-btn">
+                                    <button class="btn btn-success pull-left" ng-click="goScheduler()">Goto Scheduler</button>
+                                    <button class="btn btn-success" ng-click="addReportToScheduler(scheduler, report); showSchedulerList[report.id] = false;" style="float: right">Add</button>
+                                </div>
+                            </form>
+                        </div> 
+                    </div>
+                    <button ng-if="permission.deleteReport === true;" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteReport{{report.id}}"><i class="fa fa-trash"></i></button>
+                    <div class="modal hmodal-success" id="deleteReport{{report.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="color-line"></div>
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Delete</h4>
+                                    <small class="font-bold"></small>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-horizontal" role="form">
+                                        <div class="form-group">
+                                            <div class="col-sm-12  col-md-12">
+                                                <span>Want to delete ?</span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="col-sm-12">
+                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                ng-click="deleteReport(report, $index)" 
+                                                data-dismiss="modal">
+                                            <span class="fa fa-trash"></span> Yes
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-xs " 
+                                                data-dismiss="modal">
+                                            <span class="fa fa-times"></span> No
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>

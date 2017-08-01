@@ -1,0 +1,72 @@
+<section class="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="text"><h2 class="font-bold m-b-xs">Franchise Marketing</h2>
+            </div>
+        </div>
+<!--        <div class="col-lg-4">
+            <div class="form-group">
+                <label>Franchise Name</label>
+                <select class="form-control" ng-repeat="franchisName in franchisNames">
+                    <option>{{franchisName.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>Invoice Date</label>
+                <a class="form-control" id="daterange-franchisMarketing">                   
+                    <span class="date-border">
+                        01/24/2017
+                        {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
+                    </span>
+                </a>  
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="form-group">
+                <label></label>
+                <button class="btn btn-block btn-info franchise-btn" ng-click="submit()">Submit</button>
+            </div>
+        </div>-->
+        <div class="col-md-12 row">
+            <div class="col-md-6">
+                <div class="hpanel hgreen border-table">
+                    <div class="panel-heading">Customers</div>
+                    <div franchis-Bar-Chart style="background:#fff;"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="hpanel hgreen border-table">
+                    <div class="panel-heading">Revenue</div>
+                    <div  franchis-Bar-Chart style="background:#fff;"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="hpanel hgreen border-table">
+                    <div class="panel-heading">Total Customers Trends</div>
+                    <div franchis-Line-Chart style="background:#fff;"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="hpanel hgreen border-table">
+                    <div class="panel-heading">Total Customers Revenue</div>
+                    <div franchis-Line-Chart style="background:#fff;"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="hpanel hgreen border-table">
+                    <div class="panel-heading">Total Customers Trends</div>
+                    <div class="panel-body" franchis-Table-Chart></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="hpanel hgreen border-table">
+                    <div class="panel-heading">Total Customers Revenue</div>
+                    
+                    <div class="panel-body"franchis-Table-Chart></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

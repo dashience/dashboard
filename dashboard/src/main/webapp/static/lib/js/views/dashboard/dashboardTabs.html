@@ -1,0 +1,65 @@
+<!--<div class="panel-heading">
+    <ul class="nav nav-tabs">
+        <li ng-repeat="tab in tabs" ui-sref-active="active">
+            <a class="active" ui-sref="dashboard.tab.widget({widgetId: tabItem.tabUrl})" style="padding:3px 15px;display: inline-block;">
+                {{tab.tabName}}
+            </a>
+            <sup style="top:-1.5em;left:-0.6em;cursor: pointer;">
+                <i class="glyphicon glyphicon-remove" ng-if="tabItem.tabClose" ng-click="deleteTab($index, tab)"></i>
+            </sup>
+        </li>
+        <a class="add-tab" ng-click="addTab()" style="cursor: pointer">+ Add Tab</a>
+        <li> <span class="fa fa-plus-circle" ng-click="addTab(tab)"> Add Tab</span></li>
+    </ul>
+            <div class="pull-right l2t-tab">
+                <a class="btn btn-warning" ng-click="add()"><i class="fa fa-plus"></i> Add New</a>
+                <a class="btn btn-warning" ng-click="fullscreenCtrl.toggleFullscreen()"><i class="fa fa-arrows-alt"></i> Full screen</a>
+                <a href="#" class="btn btn-warning"><i class="fa fa-refresh"></i> Refresh</a>
+            </div>
+</div>
+   
+<div class="panel-body">
+    <div class="tab-content">
+        <div class="tab-pane fade in active">                
+            <div class="row" ngsf-fullscreen="fullscreenCtrl">
+                <ui-view></ui-view>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+
+
+<!--<div class="row">
+    <div class="col-md-12">
+        <div class="panel with-nav-tabs">
+            <div class="panel-heading">
+                <ul class="nav nav-tabs">
+                    <li>
+                        <a class="active" ui-sref="dashboard.tab.widget({widgetId: tabItem.tabUrl})" style="padding:3px 15px;display: inline-block;">
+                            {{tab.tabName}}
+                        </a>
+                    </li>
+                    <li class="{{isActive('media')}}">
+                        <a ui-sref="app.dashboard.v1.media({tab: media, searchId: path?path:0, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                            Media
+                        </a>
+                    </li>
+                    <li class="{{isActive('url')}}">
+                        <a ui-sref="app.dashboard.v1.url({tab: url, searchId: path?path:0, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                            URL
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div class="row" ngsf-fullscreen="fullscreenCtrl">
+                        <ui-view></ui-view>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
