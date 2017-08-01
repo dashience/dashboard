@@ -183,6 +183,7 @@
                         <a ng-if="reportWidget.widgetId.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
                         <a ng-if="reportWidget.widgetId.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                         <a ng-if="reportWidget.widgetId.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="reportWidget.widgetId..chartType === 'scatter'" title="Refresh" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
                         <a class="edit" ng-click="editReportWidget(reportWidget);"
 
                            ui-sref="index.editWidget({accountId: accountId, 
@@ -224,13 +225,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'funnel'">
+                <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'funnel'">
                     <div>
                         <div funnel-Directive
                              funnel-Source="{{reportWidget.widgetId.dataSetId}}" 
                              widget-Obj="{{reportWidget.widgetId}}" 
                              funnel-Id="{{reportWidget.widgetId.id}}"
                              funnel-Columns="{{reportWidget.widgetId.columns}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'scatter'">
+                    <div>
+                        <div scatter-Chart-Directive 
+                             scatter-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                             widget-Id="{{reportWidget.widgetId.id}}" 
+                             widget-Columns="{{reportWidget.widgetId.columns}}" 
+                             widget-Obj="{{reportWidget.widgetId}}">                                     
                         </div>
                     </div>
                 </div>

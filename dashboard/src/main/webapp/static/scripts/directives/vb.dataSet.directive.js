@@ -363,9 +363,9 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
             if (dataSourcePath.dataSourceId != null) {
-                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 if (dataSourcePath.dataSourceId.password) {
                     dataSourcePassword = dataSourcePath.dataSourceId.password;
@@ -385,7 +385,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         return "-";
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
-                         return d3.format(column.displayFormat)(value / 100);
+                        return d3.format(column.displayFormat)(value / 100);
                     }
                     return d3.format(column.displayFormat)(value);
                 }
@@ -749,7 +749,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.dataSetItems();
                 });
             };
-//            };
 
             scope.editDataset = function (dataSetColumn) {
                 if (dataSetColumn.customStartDate == "" && dataSetColumn.customStartDate == null && dataSetColumn.customEndDate == "" && dataSetColumn.customEndDate == null) {

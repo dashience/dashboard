@@ -78,11 +78,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 return; //response;
             }
         });
-
-
     }
     $scope.selectFirstDataSet = function (dataSet) {
-
         $scope.firstDataSet = JSON.parse(dataSet.firstDataSet);
         $scope.firstDataSetName = $scope.firstDataSet.name;
         $scope.dataSetIdFirst = $scope.firstDataSet.id;
@@ -126,7 +123,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.joinDataSetList = response;
         });
     };
-    
+
     var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
@@ -248,6 +245,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Youtube Watch'
         },
         {
+            type: 'All',
+            name: 'All'
+        },
+        {
             type: 'none',
             name: 'None'
         }
@@ -350,7 +351,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'getOrganicData',
             name: 'getOrganicData'
         }
-    ]
+    ];
 
     $scope.bingPerformance = [
         {
@@ -500,9 +501,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'city',
                     name: 'City'
-                },
+                }
             ]
-        },
+        }
     ];
     $scope.facebookPerformance = [
         {
@@ -738,7 +739,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        },
+        }
     ];
     $scope.instagramPerformance = [
         {
@@ -1608,6 +1609,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Quarter'
                 },
                 {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'Device',
+                    name: 'Device'
+                },
+                {
+                    type: 'AdNetworkType1',
+                    name: 'Network Search Partner'
+                },
+                {
                     type: 'RegionCriteriaId',
                     name: 'Region'
                 },
@@ -1622,20 +1637,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'CityCriteriaId,RegionCriteriaId,MostSpecificCriteriaId',
                     name: 'Zip'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'Device',
-                    name: 'Device'
-                },
-                {
-                    type: 'AdNetworkType1',
-                    name: 'Network Search Partner'
                 },
                 {
                     type: 'none',
@@ -1715,8 +1716,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSet.productSegment = {name: 'None', type: 'none'};
         }
 
-        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
-        {
+        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook") {
             console.log($scope.facebookPerformance);
             console.log($scope.dataSet.reportName);
 
@@ -1902,27 +1902,27 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
-            if ($scope.dataSet.reportName == 'geoPerformance') {
-                if (!dataSet.timeSegment) {
+            if (!dataSet.timeSegment) {
+                if ($scope.dataSet.reportName == 'geoPerformance') {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'City', type: 'city'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             } else {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
         }
@@ -1941,14 +1941,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = true;
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
+
+            if ($scope.dataSet.reportName == 'placementReport') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'videoPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
+            }
+
             if ($scope.dataSet.reportName == 'geoPerformance') {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
-                $scope.dataSet.productSegment = {name: 'City', type: 'city'};
-//                $scope.networkTypes={name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
             } else {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
-//                $scope.networkTypes={name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
+
             }
         }
 

@@ -317,7 +317,7 @@ public class DateUtils {
             Date date = format.parse(dateStr);
             return date;
         } catch (ParseException ex) {
-            Logger.getLogger(DateUtils.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(DateUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

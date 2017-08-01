@@ -58,7 +58,7 @@ public class CsvDataSet {
    
     public static void main(String[] argv) {
         try {
-            System.out.println(CsvDataSet("/tmp/employees.csv"));
+            System.out.println(CsvDataSet("/tmp/data.csv"));
         } catch (IOException ex) {
             Logger.getLogger(CsvDataSet.class.getName()).log(Level.SEVERE, null, ex);
         }

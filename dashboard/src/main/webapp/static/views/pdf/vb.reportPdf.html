@@ -238,6 +238,16 @@
                                      widget-Obj="{{reportWidget.widgetId}}"></div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'scatter'">
+                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
+                                <div scatter-Chart-Directive 
+                                     scatter-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}">                                     
+                                </div>
+                            </div>
+                        </div>                       
                         <div class="list pageBreak" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div id="changes-height" class="project-list">

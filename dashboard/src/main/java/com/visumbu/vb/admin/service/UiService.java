@@ -72,6 +72,10 @@ public class UiService {
     @Autowired
     private UserDao userDao;
 
+    public List<WidgetColumn> getWidgetColumns(Integer widgetId) {
+        return uiDao.getWidgetColumnsByWidgetId(widgetId);
+    }
+
     public List<Product> getProduct() {
         return uiDao.read(Product.class);
 //        List<Product> product = uiDao.read(Product.class);
@@ -919,7 +923,6 @@ public class UiService {
                 dataSetList.add(dataSetFields);
             }
         }
-
         DataSetColumns dataSetColumns = new DataSetColumns();
         dataSetColumns.setId(dataSetColumnBean.getId());
         dataSetColumns.setExpression(dataSetColumnBean.getExpression());
@@ -947,7 +950,7 @@ public class UiService {
         return dataSetList;
     }
 
-    public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
+        public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
         List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         List<DataSetColumns> dataSetColumn = new ArrayList<>();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
@@ -969,6 +972,29 @@ public class UiService {
                 dataSet = tabWidget.getDataSetId();
                 DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(), dataSet);
                 if (checkDbForColumn != null) {
+                    checkDbForColumn.setExpression(allDataSetColumn.getExpression());
+                    checkDbForColumn.setFieldName(allDataSetColumn.getFieldName());
+                    checkDbForColumn.setDisplayName(allDataSetColumn.getDisplayName());
+                    checkDbForColumn.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                    checkDbForColumn.setStatus(allDataSetColumn.getStatus());
+                    checkDbForColumn.setFunctionName(allDataSetColumn.getFunctionName());
+                    checkDbForColumn.setColumnName(allDataSetColumn.getColumnName());
+                    checkDbForColumn.setBaseField(allDataSetColumn.getBaseField());
+                    checkDbForColumn.setDateRangeName(allDataSetColumn.getDateRangeName());
+                    checkDbForColumn.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                    checkDbForColumn.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                    checkDbForColumn.setLastNdays(allDataSetColumn.getLastNdays());
+                    checkDbForColumn.setLastNmonths(allDataSetColumn.getLastNmonths());
+                    checkDbForColumn.setLastNweeks(allDataSetColumn.getLastNweeks());
+                    checkDbForColumn.setLastNyears(allDataSetColumn.getLastNyears());
+                    checkDbForColumn.setFieldType(allDataSetColumn.getFieldType());
+                    checkDbForColumn.setSortPriority(allDataSetColumn.getSortPriority());
+                    if (widgetId != null) {
+                        checkDbForColumn.setWidgetId(tabWidget);
+                        checkDbForColumn.setDataSetId(tabWidget.getDataSetId());
+                        checkDbForColumn.setUserId(allDataSetColumn.getUserId());
+                    }
+                    uiDao.saveOrUpdate(checkDbForColumn);
                     continue;
                 }
             }
@@ -1118,7 +1144,7 @@ public class UiService {
     }
 
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
-        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName(),dataSource.getUserId());
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getUserId());
         System.out.println("dataSource" + dataSource.getName());
         DataSource newDataSource = new DataSource();
         if (joinDataSourceList.size() > 0) {
@@ -1160,7 +1186,7 @@ public class UiService {
 //        return dataSetColumn;
 //    }
     public List<DataSetColumns> getDataSetColumns(Integer datasetId, Integer widgetId) {
-        return uiDao.getDataSetColumn(datasetId, widgetId);
+        return uiDao.getDataSetColumnOfAll(datasetId, widgetId);
     }
 
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {

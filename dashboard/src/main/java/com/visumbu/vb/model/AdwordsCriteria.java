@@ -143,7 +143,7 @@ public class AdwordsCriteria implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.AdwordsCriteria[ id=" + id + " ]";
+        return "AdwordsCriteria{" + "id=" + id + ", criteriaName=" + criteriaName + ", canonicalName=" + canonicalName + ", parentId=" + parentId + ", countryCode=" + countryCode + ", targetType=" + targetType + ", criteriaStatus=" + criteriaStatus + '}';
     }
     
 }
