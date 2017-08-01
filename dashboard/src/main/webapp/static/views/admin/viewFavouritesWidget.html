@@ -186,10 +186,22 @@
                     <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>
                 </div>
                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
-                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                         line-Chart-Directive 
+                         line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                         widget-Id="{{favouritesWidget.widgetId.id}}" 
+                         widget-Columns="{{favouritesWidget.widgetId.columns}}" 
+                         widget-Obj="{{favouritesWidget.widgetId}}">                             
+                    </div>
                 </div> 
                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'bar'">
-                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                         bar-Chart-Directive 
+                         bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                         widget-Id="{{favouritesWidget.widgetId.id}}" 
+                         widget-Columns="{{favouritesWidget.widgetId.columns}}"
+                         widget-Obj="{{favouritesWidget.widgetId}}">                             
+                    </div>
                 </div> 
                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'pie'">
                     <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{favouritesWidget.widgetId.dataSetId}}' widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
@@ -233,72 +245,72 @@
                     </div>
                 </div>
             </div>
-        <div class="report-bottomMenu pull-right" ng-show="showReportList[favouritesWidget.widgetId.id]">
-            <div class="report-menuHeader">
-                <div class="col-md-10">
-                    <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
-                    <h1 class="report-header-title">Add {{favouritesWidget.widgetId.widgetTitle}} To Report</h1>
-                </div>
-                <div class="report-header-tools pull-right">
-                    <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[favouritesWidget.widgetId.id] = false;"><i class="fa fa-close"></i></button>
-                </div>
-            </div>
-            <div class="report-menuBody">
-                <label class="col-sm-2">Report</label>
-                <div class="col-sm-10">
-                    <ui-select ng-model="favouritesWidget.widgetId.reportWidget" on-select="selectReport(favouritesWidget.widgetId.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
-                        <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
-                        <ui-select-choices repeat="report in reportList | filter: $select.search">
-                            <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="report-body-content">
-                    <div class="row report-chat-box">
-                        <div class="report-body-img">
-                            <img class="report-body-imgs in" src="{{favouritesWidget.reportLogo}}">
-                        </div>
-                        <div class="form-group">
-                            <ul class="report-body-descr" ng-if="reportDescription">
-                                <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
-                                    <p>
-                                        {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
-                                        <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
-                                        <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
+            <div class="report-bottomMenu pull-right" ng-show="showReportList[favouritesWidget.widgetId.id]">
+                <div class="report-menuHeader">
+                    <div class="col-md-10">
+                        <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
+                        <h1 class="report-header-title">Add {{favouritesWidget.widgetId.widgetTitle}} To Report</h1>
                     </div>
+                    <div class="report-header-tools pull-right">
+                        <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[favouritesWidget.widgetId.id] = false;"><i class="fa fa-close"></i></button>
+                    </div>
+                </div>
+                <div class="report-menuBody">
+                    <label class="col-sm-2">Report</label>
+                    <div class="col-sm-10">
+                        <ui-select ng-model="favouritesWidget.widgetId.reportWidget" on-select="selectReport(favouritesWidget.widgetId.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
+                            <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
+                            <ui-select-choices repeat="report in reportList | filter: $select.search">
+                                <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="report-body-content">
+                        <div class="row report-chat-box">
+                            <div class="report-body-img">
+                                <img class="report-body-imgs in" src="{{favouritesWidget.reportLogo}}">
+                            </div>
+                            <div class="form-group">
+                                <ul class="report-body-descr" ng-if="reportDescription">
+                                    <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
+                                        <p>
+                                            {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
+                                            <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
+                                            <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
 
-                    <div class="row form-group">
-                        <div class="col-sm-12">
-                            <table class="table table-bordered" ng-show="showReportWidgetName">
-                                <thead>
-                                    <tr>
-                                        <th>Sl.No</th>
-                                        <th>Widget Name</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="titleName in reportWidgetTitle">
-                                        <td>{{$index + 1}}</td>
-                                        <td>{{titleName.widgetId.widgetTitle}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div ng-show="showReportEmptyMessage">
-                                <span><h4>{{reportEmptyMessage}}</h4></span>
+                        <div class="row form-group">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered" ng-show="showReportWidgetName">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl.No</th>
+                                            <th>Widget Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="titleName in reportWidgetTitle">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{titleName.widgetId.widgetTitle}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div ng-show="showReportEmptyMessage">
+                                    <span><h4>{{reportEmptyMessage}}</h4></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="report-footer-btn">
-                    <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
-                    <button class="btn btn-success" ng-click="addWidgetToReport(favouritesWidget); showReportList[favouritesWidget.widgetId.id] = false;" style="float: right">Add</button>
+                    <div class="report-footer-btn">
+                        <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
+                        <button class="btn btn-success" ng-click="addWidgetToReport(favouritesWidget); showReportList[favouritesWidget.widgetId.id] = false;" style="float: right">Add</button>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 </div>
