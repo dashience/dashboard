@@ -230,6 +230,16 @@
                         </div>
                     </div>
                 </div>
+                <div class="panel-body" ng-if="favouritesWidget.widgetId.chartType === 'scatter'">
+                    <div>
+                        <div scatter-Chart-Directive 
+                             scatter-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                             widget-Id="{{favouritesWidget.widgetId.id}}" 
+                             widget-Columns="{{favouritesWidget.widgetId.columns}}" 
+                             widget-Obj="{{favouritesWidget.widgetId}}">                                     
+                        </div>
+                    </div>
+                </div>
                 <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>
                     <div class="table-responsive project-list">
                         <div id="changes-height" class="project-list">
