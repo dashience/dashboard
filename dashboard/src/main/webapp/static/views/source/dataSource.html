@@ -149,11 +149,12 @@
                                 <option ng-repeat="sourceType in dataSourceTypes"  value="{{sourceType.type}}">{{sourceType.name}}</option>
                             </select>
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'|| dataSource.dataSourceType === 'mongodb'">
                             <label>Connection String</label>
                             <input type="text" class="form-control" ng-model="dataSource.connectionString">
                         </div>
-
+                        
+                        
                         <!--                                <div class="form-group" ng-if="dataSource.dataSourceType === 'csv'">
                                                             <label>File Upload</label>
                                                             <div class="fileUpload btn btn-primary">
@@ -190,11 +191,11 @@
                             <label>Driver</label>
                             <input type="text" class="form-control" ng-model="dataSource.sqlDriver">
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'|| dataSource.dataSourceType === 'mongodb'">
                             <label>User Name</label>
                             <input type="text" class="form-control" ng-model="dataSource.userName">
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'|| dataSource.dataSourceType === 'mongodb'">
                             <label>Password</label>
                             <input type="text" class="form-control" ng-model="dataSource.password">
                         </div>

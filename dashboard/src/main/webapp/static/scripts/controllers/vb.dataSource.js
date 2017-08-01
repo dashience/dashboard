@@ -7,6 +7,10 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 name: "SQL"
             },
             {
+                type: "mongodb",
+                name: "MONGODB"
+            },
+            {
                 type: "csv",
                 name: "CSV"
             },
