@@ -1212,6 +1212,20 @@
                     "name": "Quarter"
                 },
                 {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "Device",
+                    "name": "Device"
+                },
+                {
+                    "type": "AdNetworkType1",
+                    "name": "Network Search Partner"
+                },
+                 {
                     "type": "RegionCriteriaId",
                     "name": "Region"
                 },
@@ -1226,20 +1240,6 @@
                 {
                     "type": "CityCriteriaId,RegionCriteriaId,MostSpecificCriteriaId",
                     "name": "Zip"
-                },
-                {
-                    "type": "none",
-                    "name": "None"
-                }
-            ],
-            "productSegments": [
-                {
-                    "type": "Device",
-                    "name": "Device"
-                },
-                {
-                    "type": "AdNetworkType1",
-                    "name": "Network Search Partner"
                 },
                 {
                     "type": "none",

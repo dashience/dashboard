@@ -358,6 +358,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: 'Custom', value: 'custom'}
             ];
             scope.loadingTable = true;
+
             var dataSourcePath = JSON.parse(scope.path)
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';

@@ -72,6 +72,10 @@ public class UiService {
     @Autowired
     private UserDao userDao;
 
+    public List<WidgetColumn> getWidgetColumns(Integer widgetId) {
+        return uiDao.getWidgetColumnsByWidgetId(widgetId);
+    }
+
     public List<Product> getProduct() {
         return uiDao.read(Product.class);
 //        List<Product> product = uiDao.read(Product.class);
@@ -1182,7 +1186,7 @@ public class UiService {
 //        return dataSetColumn;
 //    }
     public List<DataSetColumns> getDataSetColumns(Integer datasetId, Integer widgetId) {
-        return uiDao.getDataSetColumn(datasetId, widgetId);
+        return uiDao.getDataSetColumnOfAll(datasetId, widgetId);
     }
 
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
@@ -1262,17 +1266,13 @@ public class UiService {
         for (Iterator<DataSetColumnBean> iterator = dataSetColumnBeans.iterator(); iterator.hasNext();) {
             DataSetColumnBean columnBean = iterator.next();
             DataSetColumns dataSetColumnFromDb = uiDao.getDataSetColumn(columnBean.getFieldName(), dataSet);
-            System.out.println("DataSetColumnFromDB ---> " + dataSetColumnFromDb);
             if (dataSetColumnFromDb == null) {
                 continue;
             }
             DataSetColumns dataSetColumn = new DataSetColumns();
             dataSetColumn.setFieldName(columnBean.getFieldName());
-            System.out.println("FIELDNAME ============> " + columnBean.getFieldName());
             dataSetColumn.setFieldType(columnBean.getFieldType());
             dataSetColumn.setDataSetId(dataSet);
-            System.out.println("EXPRESSION ============> " + columnBean.getExpression());
-            dataSetColumn.setExpression(columnBean.getExpression());
             dataSetColumn.setDisplayFormat(columnBean.getDisplayFormat());
             dataSetColumn.setDisplayName(columnBean.getDisplayName());
             dataSetColumn.setDataFormat(columnBean.getDataFormat());
