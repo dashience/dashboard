@@ -767,7 +767,7 @@ public class AdwordsService {
         }
         return null;
     }
-//
+
 //    public AdReport getKeywordReport(Date startDate, Date endDate, String accountId, String timeSegment, String productSegment, String filter) {
 //        AdWordsSession session = getSession(accountId);
 //        Selector selector = new Selector();
@@ -962,7 +962,7 @@ public class AdwordsService {
     Map<String, AdwordsReport> adwordsReports = ApiUtils.getAllAdwordsReports();
 
     public List<Map<String, Object>> getAdwordsReport(String reportName, Date startDate, Date endDate, String accountId,
-        String timeSegment, String productSegment, String filter) {
+            String timeSegment, String productSegment, String filter) {
         AdwordsReport adwordsData = adwordsReports.get(reportName);
         System.out.println(adwordsData);
         String[] fields = adwordsData.getFields();
@@ -976,18 +976,24 @@ public class AdwordsService {
         } else {
             fieldList.add("AllConversions");
         }
-        fieldList.remove("AdNetworkType2");
+
+        if (productSegment != null && productSegment.equalsIgnoreCase("AdNetworkType1")) {
+            fieldList.remove("AdNetworkType1");
+        } else {
+            fieldList.remove("AdNetworkType2");
+        }
         System.out.println("Filter Test ====> " + filter);
         if (filter == null || filter.equalsIgnoreCase("none") || filter.equalsIgnoreCase("undefined")) {
         } else {
-            fieldList.add("AdNetworkType2");
+            fieldList.add("AdNetworkType1");
         }
+        System.out.println("FieldList 1====> " + fieldList);
 
         if (filter == null) {
         } else if (timeSegment == null && productSegment == null && filter.equalsIgnoreCase("SEARCH")) {
             fieldList.remove("AdNetworkType2");
         }
-        System.out.println("FieldList ====> "+fieldList);
+        System.out.println("FieldList 2====> " + fieldList);
         selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);

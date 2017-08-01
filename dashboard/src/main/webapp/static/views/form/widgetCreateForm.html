@@ -514,6 +514,11 @@
                                 <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
                                     <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}}</a>
                                 </label>
+                                 <span class="pull-right" ng-if="collectionField.expression">
+                                    <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </span>
                             </div>
                         </li>
                     </ul>

@@ -29,6 +29,8 @@ public class CsvDataSet {
         //initialize the CSVParser object
         CSVParser parser = new CSVParser(new FileReader(filename), format);
         Map<String, Integer> headerMap = parser.getHeaderMap();
+        System.out.println("Heder map data");
+        System.out.println(headerMap);
         List<ColumnDef> columnDefs = new ArrayList<>();
         for (Map.Entry<String, Integer> entrySet : headerMap.entrySet()) {
             String key = entrySet.getKey();
@@ -58,7 +60,7 @@ public class CsvDataSet {
    
     public static void main(String[] argv) {
         try {
-            System.out.println(CsvDataSet("/tmp/employees.csv"));
+            System.out.println(CsvDataSet("/tmp/data.csv"));
         } catch (IOException ex) {
             Logger.getLogger(CsvDataSet.class.getName()).log(Level.SEVERE, null, ex);
         }
