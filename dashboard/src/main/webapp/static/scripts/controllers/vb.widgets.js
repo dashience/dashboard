@@ -323,7 +323,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.chartColors = widgetColors;
                 });
                 $scope.widgets = widgetItems;
-                
+
                 $scope.widgets.forEach(function (val, key) {
 //                   val.height=$('.grid-stack').parent().height() / (options.cellHeight + options.verticalMargin);
                     val.widget = 5;
@@ -334,15 +334,32 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     else {
                         val.height=5;
                     }
+
+//                    $('.grid-stack-item')[1],
+//                    $($('.grid-stack-item')[1]).attr('data-gs-width'),
+//                    Math.ceil(($('.grid-stack-item-content')[1].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin))
+
+
+
+
+//                    console.log("the key value is -->" + key);
+//                    $('.grid-stack-item').eq(0),
+//                    $($('.grid-stack-item').eq(0)).attr('data-gs-width'),
+//                    val.height = Math.ceil(($('.grid-stack-item-content').eq(0).scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin))
+////                    console.log(Math.ceil(($('.grid-stack-item-content')[0].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin)));
+//                    console.log("val height-->"+val.height);
                 });
+                
+                var element=$(".grid-stack-item-content");
+                console.log(element);
                 console.log("scope values");
                 console.log($scope.widgets);
             });
         });
     };
     $rootScope.getWidgetItem();
-    
-    
+
+
 
 
 
