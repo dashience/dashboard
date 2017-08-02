@@ -330,9 +330,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     console.log(val.chartType);
                     if (val.chartType != "table") {
                         val.height = 18;
-                    }
-                    else {
-                        val.height=5;
+                    } else {
+                        val.height = 5;
                     }
 
 //                    $('.grid-stack-item')[1],
@@ -349,8 +348,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 ////                    console.log(Math.ceil(($('.grid-stack-item-content')[0].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin)));
 //                    console.log("val height-->"+val.height);
                 });
-                
-                var element=$(".grid-stack-item-content");
+
+                var element = $(".grid-stack-item-content");
                 console.log(element);
                 console.log("scope values");
                 console.log($scope.widgets);
@@ -2147,7 +2146,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             widgetColumns: '@',
             tableFooter: '@',
             widgetObj: '@',
-            pdfFunction: '&'
+            pdfFunction: '&',
+            widgetItemIndex: '@'
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
 //                Start Table
@@ -2226,6 +2226,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 '</table>' +
                 '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         link: function (scope, element, attr) {
+            console.log(scope.widgetItemIndex)
             var widgetData = JSON.parse(scope.widgetObj);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
@@ -2681,7 +2682,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     data.push(dataToPush);
                 });
                 return data;
-            };
+            };            
         }
     };
 });

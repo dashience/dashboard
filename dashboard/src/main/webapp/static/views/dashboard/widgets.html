@@ -280,9 +280,9 @@
     <div gridstack class="grid-stack grid1" options="options" on-change="onChange(event,items)" 
          on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" 
          on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
-        <div gridstack-item ng-repeat="widget in widgets" widgetId="{{widget.id}}" class="grid-stack-item" gs-item-x="widget.x" gs-item-y="widget.y"
+        <div gridstack-item ng-repeat="(key, widget) in widgets" widgetId="{{widget.id}}" class="grid-stack-item" gs-item-x="widget.x" gs-item-y="widget.y"
              gs-item-width="widget.width" gs-item-height="widget.height" gs-item-autopos="1" widget="{{widget}}"
-             on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)">
+             on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)" widgetItemIndex="{{key}}">
             <div class="grid-stack-item-content">
                 <div ng-if="widget.chartType == 'ticker'" >
                     <div>
@@ -406,6 +406,7 @@
                                 <div class="table-responsive project-list">
                                     <div id="changes-height" class="project-list">
                                         <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                             widget-Item-Index ="{{key}}"
                                              dynamic-Table pdf-function="addToPdf(test)" 
                                              dynamic-Table-Source="{{widget.dataSetId}}" 
                                              widget-Id="{{widget.id}}" 
