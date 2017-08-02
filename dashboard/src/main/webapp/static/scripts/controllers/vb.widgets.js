@@ -27,7 +27,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval, $log) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -323,11 +323,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.chartColors = widgetColors;
                 });
                 $scope.widgets = widgetItems;
-                $scope.widgets.forEach(function(val,key){
+                
+                $scope.widgets.forEach(function (val, key) {
 //                   val.height=$('.grid-stack').parent().height() / (options.cellHeight + options.verticalMargin);
-                    val.widget=5;
-                    
-                    val.height=6;
+                    val.widget = 5;
+                    console.log(val.chartType);
+                    if (val.chartType != "table") {
+                        val.height = 18;
+                    }
+                    else {
+                        val.height=5;
+                    }
                 });
                 console.log("scope values");
                 console.log($scope.widgets);
@@ -335,6 +341,68 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
     $rootScope.getWidgetItem();
+    
+    
+
+
+
+    //added code starts
+    $scope.options = {
+        cellHeight: 20,
+        verticalMargin: 5,
+
+    };
+
+//    $scope.addWidget = function () {
+//        var newWidget = {x: 0, y: 0, width: 1, height: 1};
+//        $scope.widgets.push(newWidget);
+//    };
+
+//    $scope.removeWidget = function (w) {
+//        var index = $scope.widgets.indexOf(w);
+//        $scope.widgets.splice(index, 1);
+//    };
+
+    $scope.onChange = function (event, items) {
+        $log.log("onChange event: " + event + " items:" + items);
+        console.log(items);
+    };
+
+    $scope.onDragStart = function (event, ui) {
+        $log.log("onDragStart event: " + event + " ui:" + ui);
+    };
+
+    $scope.onDragStop = function (event, ui) {
+        $log.log("onDragStop event: " + event + " ui:" + ui);
+    };
+
+    $scope.onResizeStart = function (event, ui) {
+        $log.log("onResizeStart event: " + event + " ui:" + ui);
+
+    };
+
+    $scope.onResizeStop = function (event, ui) {
+        $log.log("onResizeStop event: " + event + " ui:" + ui);
+        console.log("widgets stop");
+        var widgetId = ui.element[0].attributes['widgetid'].value;
+        var widget = $scope.widgets.filter(function (data) {
+            return data.id === parseInt(widgetId);
+        })[0];
+        $scope.expandWidget(widget);
+
+    };
+
+    $scope.onItemAdded = function (item) {
+        $log.log("onItemAdded item: " + item);
+    };
+
+    $scope.onItemRemoved = function (item) {
+        $log.log("onItemRemoved item: " + item);
+    };
+
+
+
+
 
     function loadInitialWidgetColumnData(columns) {
         var data = [];
