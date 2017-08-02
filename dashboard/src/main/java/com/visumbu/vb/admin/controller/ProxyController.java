@@ -405,11 +405,11 @@ public class ProxyController {
         MultiValueMap<String, String> request2 = getRequest(dataSetIdSecond, valueMap);
         Map dataMap1 = getJoinDataSet(request1, request, response, dataSetIdFirst.getId());
         Map dataMap2 = getJoinDataSet(request2, request, response, dataSetIdSecond.getId());
-        
+
         System.out.println("Before Join1 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
+
         List<Map<String, Object>> dataList1 = (List<Map<String, Object>>) dataMap1.get("data");
         //dataList1 = addDerivedColumnsToDataSet(dataSetIdFirst.getId(), userIdInt, dataList1, request1, request, response);
 
@@ -419,8 +419,7 @@ public class ProxyController {
         System.out.println("Before Join2 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
-        
+
         Integer secondDataSetAppender = dataSetIdSecond.getId();
         if (!operationType.equalsIgnoreCase("union")) {
             Set<String> columnSet = dataList1.get(0).keySet();
@@ -529,6 +528,10 @@ public class ProxyController {
             returnMap = getSkyZoneData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             returnMap.put("columnDefs", getColumnDefObject(data));
+        } else if (dataSourceType.equalsIgnoreCase("auto")) {
+            returnMap = getAutoData(request, httpRequest, response);
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            returnMap.put("columnDefs", getColumnDefObject(data));
         } else if (dataSourceType.equalsIgnoreCase("https")) {
             getHttpsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("xls")) {
@@ -586,7 +589,7 @@ public class ProxyController {
         return returnMap;
     }
 
-    public  List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
+    public List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
         boolean formatRequired = false;
         for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
             ColumnDef column = iterator1.next();
@@ -948,7 +951,7 @@ public class ProxyController {
             if (isDerivedColumn) {
                 if (dataSetColumn.getExpression() != null) {
                     String expressionValue = executeExpression(dataSetColumn, data);
-                     System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
+                    System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
                     if ((expressionValue.startsWith("'") && expressionValue.endsWith("'"))) {
                         Object expValue = expressionValue.substring(1, expressionValue.length() - 1);
                         returnMap.put(dataSetColumn.getFieldName(), expValue);
@@ -1169,7 +1172,6 @@ public class ProxyController {
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                     // System.out.println(pinterestData);
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
 //                fbData.lastIndexOf(jsonObj);
 //                String likesCount = fbData.size() + "";
 //                Map<String, String> boardsSize = new HashMap<>();
@@ -2018,6 +2020,98 @@ public class ProxyController {
         return getSqlData(valueMap, request, response);
     }
 
+    private static String getAutoQuery(String reportName, String level, String segment, String frequency, Date startDate, Date endDate) {
+
+        // System.out.println("REPORT ===> " + reportName + " LEVEL " + level + " Segment ===> " + segment + " Frequency ====> " + frequency);
+        String query = "select ";
+        List<String> select = new ArrayList<>();
+        List<String> groupBy = new ArrayList<>();
+        List<String> orderBy = new ArrayList<>();
+
+        if (level != null && !level.equalsIgnoreCase("Overall")) {
+            groupBy.add(level);
+            select.add(level);
+        }
+        if (segment != null && !segment.equalsIgnoreCase("none")) {
+            groupBy.add(segment);
+            select.add(segment);
+        }
+        if (frequency != null && !frequency.equalsIgnoreCase("none")) {
+            groupBy.add(frequency);
+            select.add(frequency);
+        }
+        String allMetrics1[] = {"count(1) noOfItems ", "avg(days) avgDays"};
+
+        for (int i = 0; i < allMetrics1.length; i++) {
+
+            String metric = allMetrics1[i];
+            select.add(metric);
+        }
+
+        String selectQry = String.join(",", select);
+        String groupQry = String.join(",", groupBy);
+        String groupByAppender = "";
+        if (groupQry != null && !(groupQry.trim().isEmpty())) {
+            groupByAppender = " group by " + groupQry;
+        }
+        String tableName = "auto";
+
+        String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+        String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
+        String whereCondition = " where dateCreated between '" + startDateStr + "' and '" + endDateStr + "' ";
+        String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender;
+        return queryStr;
+    }
+
+    private Map getAutoData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+        String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+        String filter = getFromMultiValueMap(valueMap, "networkType");
+        if (filter == null) {
+            filter = getFromMultiValueMap(valueMap, "filter");
+        }
+
+        // System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
+        if (timeSegment != null && timeSegment.equalsIgnoreCase("none")) {
+            timeSegment = null;
+        }
+
+        if (productSegment != null && productSegment.equalsIgnoreCase("none")) {
+            productSegment = null;
+        }
+        if (filter != null && filter.equalsIgnoreCase("none")) {
+            filter = null;
+        }
+
+        String level = isNullOrEmpty(timeSegment) ? null : timeSegment;
+        String segment = isNullOrEmpty(productSegment) ? null : productSegment;
+        String frequency = isNullOrEmpty(filter) ? null : filter;
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
+        String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
+
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
+        String query = getAutoQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
+
+        valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
+
+        return getSqlData(valueMap, request, response);
+    }
+
     private Map getSqlData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
         try {
             String accountIdStr = getFromMultiValueMap(valueMap, "accountId");
@@ -2080,7 +2174,7 @@ public class ProxyController {
                     }
                 }
             }
-            
+
             try {
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
@@ -2130,7 +2224,6 @@ public class ProxyController {
             }
 
             // System.out.println("Query ===> " + query);
-
             try {
                 query = URLEncoder.encode(query, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
