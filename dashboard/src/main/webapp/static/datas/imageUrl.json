@@ -60,5 +60,12 @@
         "type": "scatter",
         "name": "Scatter",
         "icon": "fa-ellipsis-h"
+    },
+    {
+        "id": 13,
+        "url": "static/img/icons/gauge.png",
+        "type": "gauge",
+        "name": "Gauge",
+        "icon": "fa-clock-o"
     }
 ]
