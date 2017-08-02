@@ -58,11 +58,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showCreateReport = false;
     }
 
-    $scope.salesTypes = [];
-    $scope.countries = [];
-    $scope.states = [];
-    $scope.categories = [];
-    $scope.subCategories = [];
+    $scope.models = [];
+    $scope.brands = [];
+    $scope.years = [];
+//    $scope.categories = [];
+//    $scope.subCategories = [];
 
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
@@ -79,10 +79,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         }
     });
 
-    $scope.parkTypes = [
-        {fieldName: "Test", displayName: "Test"},
-        {fieldName: "Testing", displayName: "Testing"}
-    ];
+//    $scope.parkTypes = [
+//        {fieldName: "Test", displayName: "Test"},
+//        {fieldName: "Testing", displayName: "Testing"}
+//    ];
 
     $http.get("admin/report/reportWidget").success(function (response) {
         $scope.reportWidgets = response;
@@ -200,62 +200,30 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     function dispAllFilter(filterItems) {
         $scope.selectItems = [];
         angular.forEach(filterItems, function (value, key) {
-            if (key == "SalesType") {
+            if (key == "Model") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
-                        $scope.selectItems.push({type: "SalesType", name: value[i]});
+                        $scope.selectItems.push({type: "Model", name: value[i]});
                     }
                 }
             }
-            if (key == "Country") {
+            if (key == "Brand") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
-                        $scope.selectItems.push({type: "Country", name: value[i]});
+                        $scope.selectItems.push({type: "Brand", name: value[i]});
                     }
                 }
             }
-            if (key == "City") {
+
+            if (key == "Year") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
-                        $scope.selectItems.push({type: "City", name: value[i]});
+                        $scope.selectItems.push({type: "Year", name: value[i]});
                     }
                 }
             }
-            if (key == "State") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "State", name: value[i]});
-                    }
-                }
-            }
-            if (key == "Store") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "Store", name: value[i]})
-                    }
-                }
-            }
-            if (key == "Category") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "Category", name: value[i]})
-                    }
-                }
-            }
-            if (key == "SubCategory") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "SubCategory", name: value[i]})
-                    }
-                }
-            }
-            if (key == "ParkType") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "ParkType", name: value[i]})
-                    }
-                }
-            }
+
+
         });
     }
 
@@ -266,80 +234,37 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         angular.forEach(filtersArray, function (value) {
             var selectedFilter = $scope.getAllSelected();
             var dashboardFilter = {};
-            if (value == "salesType") {
+            if (value == "model") {
                 $scope.salesTypes = [];
-                var request = $http.get('admin/filterData/getFilter/salesType').success(function (response) {
-                    $scope.salesTypes = response.data;
+                var request = $http.get('admin/filterData/getFilter/model').success(function (response) {
+                    $scope.models = response.data;
+                    console.log($scope.models);
                 });
                 allRequests.push(request);
             }
-            if (value == "country") {
+            if (value == "brand") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.countries = [];
+                $scope.brands = [];
                 var request = $http.get('admin/filterData/getFilter/country?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.countries = response.data;
+                    $scope.brands = response.data;
+                    console.log($scope.brands);
+                    
                 });
                 allRequests.push(request);
             }
-            if (value == "state") {
+            if (value == "year") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.country = selectedFilter.Country;
+                dashboardFilter.year = selectedFilter.Year;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.states= [];
-                var request = $http.get('admin/filterData/getFilter/state?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.states = response.data;
+                $scope.years= [];
+                var request = $http.get('admin/filterData/getFilter/year?dashboardFilter=' + queryString).success(function (response) {
+                    $scope.years = response.data;
+                    console.log($scope.years);
                 });
                 allRequests.push(request);
             }
-            if (value == "city") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.country = selectedFilter.Country;
-                dashboardFilter.state = selectedFilter.State;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                 $scope.cities = [];
-                var request = $http.get('admin/filterData/getFilter/city?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.cities = response.data;
-                });
-                allRequests.push(request);
-            }
-            if (value == "store") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.country = selectedFilter.Country;
-                dashboardFilter.state = selectedFilter.State;
-                dashboardFilter.city = selectedFilter.City;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.stores = [];
-                var request = $http.get('admin/filterData/getFilter/store?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.stores = response.data;
-                });
-                allRequests.push(request);
-            }
-            if (value == "category") {
-                $scope.categories = [];
-                var request = $http.get('admin/filterData/getFilter/category').success(function (response) {
-                    $scope.categories = response.data;
-                });
-                allRequests.push(request);
-            }
-            if (value == "subCategory") {
-                dashboardFilter.category = selectedFilter.Category;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.subCategories = [];
-                var request = $http.get('admin/filterData/getFilter/subcategory?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.subCategories = response.data;
-                });
-                allRequests.push(request);
-            }
-            if (value == "parkType") {
-                dashboardFilter.parkType = selectedFilter.ParkType;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.parkTypes = [];
-                var request = $http.get('admin/filterData/getFilter/parktype?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.parkTypes = response.data;
-                });
-                allRequests.push(request);
-            }
+
             if (value == "none") {
             }
         });
@@ -388,15 +313,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         var reloadType;
         $scope.reloadAllDirective = false;
         $scope.selectItems.splice(index, 1);
-        if (obj.type == "SalesType") {
-            angular.forEach($scope.salesTypes, function (val, key) {
+        if (obj.type == "Model") {
+            angular.forEach($scope.models, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
                     reloadType = "country,state,city,store";
                 }
             });
         }
-        if (obj.type == "Country") {
+        if (obj.type == "Brand") {
             angular.forEach($scope.countries, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
@@ -404,51 +329,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 }
             });
         }
-        if (obj.type == "City") {
-            angular.forEach($scope.cities, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
-                    reloadType = "city,store";
-                }
-            });
-        }
-        if (obj.type == "State") {
-            angular.forEach($scope.states, function (val, key) {
+
+        if (obj.type == "Year") {
+            angular.forEach($scope.years, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
                 }
             });
         }
-        if (obj.type == "Store") {
-            angular.forEach($scope.stores, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
-                    reloadType = "store";
-                }
-            });
-        }
-        if (obj.type == "Category") {
-            angular.forEach($scope.categories, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
-                    reloadType = "subCategory";
-                }
-            });
-        }
-        if (obj.type == "SubCategory") {
-            angular.forEach($scope.subCategories, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
-                }
-            });
-        }
-        if (obj.type == "ParkType") {
-            angular.forEach($scope.parkTypes, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
-                }
-            });
-        }
+
         if (!reloadType) {
             reloadType = "none";
         }
@@ -473,7 +362,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         var reload = false;
         // filterBy.value = "Domestic"
         var reloadType = "";
-        angular.forEach($scope.salesTypes, function (val, key) {
+        angular.forEach($scope.modelss, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
@@ -482,7 +371,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 val.status = false;
             }
         });
-        angular.forEach($scope.countries, function (val, key) {
+        angular.forEach($scope.brands, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
@@ -491,7 +380,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 val.status = false;
             }
         });
-        angular.forEach($scope.states, function (val, key) {
+        angular.forEach($scope.years, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reloadType = "city,store";
@@ -500,56 +389,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 val.status = false;
             }
         });
-        angular.forEach($scope.cities, function (val, key) {
-            if (val.fieldName == filterBy.xAxisValue) {
-                val.status = true;
-                reload = true;
-                reloadType = "store";
-            } else {
-                val.status = false;
-            }
-        });
-        angular.forEach($scope.stores, function (val, key) {
-            if (val.fieldName == filterBy.xAxisValue) {
-                val.status = true;
-                reload = true;
-            } else {
-                val.status = false;
-            }
-        });
-        angular.forEach($scope.categories, function (val, key) {
-            if (val.fieldName == filterBy.xAxisValue) {
-                val.status = true;
-                reload = true;
-                reloadType = "subCategory";
-            } else {
-                val.status = false;
-            }
-        });
-        angular.forEach($scope.subCategories, function (val, key) {
-            if (val.fieldName == filterBy.xAxisValue) {
-                val.status = true;
-                reload = true;
-            } else {
-                val.status = false;
-            }
-        });
-        angular.forEach($scope.parkTypes, function (val, key) {
-            if (val.fieldName == filterBy.xAxisValue) {
-                val.status = true;
-                reload = true;
-            } else {
-                val.status = false;
-            }
-        });
-        $scope.$apply($scope.salesTypes);
-        $scope.$apply($scope.countries);
-        $scope.$apply($scope.states);
-        $scope.$apply($scope.cities);
-        $scope.$apply($scope.stores);
-        $scope.$apply($scope.categories);
-        $scope.$apply($scope.subCategories);
-        $scope.$apply($scope.parkTypes);
+        $scope.$apply($scope.models);
+        $scope.$apply($scope.brands);
+        $scope.$apply($scope.years);
+
         if (reload == true) {
             $timeout(function () {
                 $scope.updateFilter(reloadType);
