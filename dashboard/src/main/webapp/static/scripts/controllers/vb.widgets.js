@@ -321,10 +321,12 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.deleteFilterItem = function (index, obj) {
+        console.log(obj)
         var allSelected = {};
         var reloadType;
         $scope.reloadAllDirective = false;
         $scope.selectItems.splice(index, 1);
+        console.log($scope.selectItems)
         if (obj.type == "Model") {
             angular.forEach($scope.models, function (val, key) {
                 if (val.fieldName == obj.name) {
@@ -334,7 +336,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             });
         }
         if (obj.type == "Brand") {
-            angular.forEach($scope.countries, function (val, key) {
+            angular.forEach($scope.brands, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
                     reloadType = "none";
@@ -366,13 +368,13 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.widgets.forEach(function (val, key) {
                 val.filterUrlParameter = allSelected;
             });
-            $scope.updateFilter(reloadType);
+            $scope.reloadAllDirective = true;
+          //  $scope.updateFilter(reloadType);
         }, 500);
     };
 
     $scope.getChartFilterItems = function (filterBy) {
         var reload = false;
-        // filterBy.value = "Domestic"
         var reloadType = "";
         angular.forEach($scope.modelss, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
