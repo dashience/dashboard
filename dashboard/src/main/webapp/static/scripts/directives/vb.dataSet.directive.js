@@ -461,6 +461,10 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
+                    if (response.data == null) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                    }
                     scope.tableRows = response.data.slice(0, 5);
                     function dayOfWeekAsString(dayIndex) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];

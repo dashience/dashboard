@@ -2088,8 +2088,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSetList.productSegment = null;
         }
-
+        console.log(dataSetList);
+        if (dataSetList.networkType != null) {
+            dataSetList.networkType = dataSetList.networkType.type;
+        } else {
+            dataSetList.networkType = null;
+        }
         var dataSet = dataSetList;
+        console.log(dataSet);
         if (dataSet.dataSourceId != null) {
             dataSet.dataSourceId = dataSet.dataSourceId.id;
         } else {
