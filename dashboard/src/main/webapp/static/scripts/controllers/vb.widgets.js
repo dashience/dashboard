@@ -327,13 +327,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.widgets.forEach(function (val, key) {
 //                   val.height=$('.grid-stack').parent().height() / (options.cellHeight + options.verticalMargin);
                     val.widget = 5;
-                    console.log(val.chartType);
-                    if (val.chartType != "table") {
-                        val.height = 18;
-                    }
-                    else {
-                        val.height=5;
-                    }
+//                    console.log(val.chartType);
+//                    if (val.chartType != "table") {
+//                        val.height = 18;
+//                    } else {
+//                        val.height = 5;
+//                    }
 
 //                    $('.grid-stack-item')[1],
 //                    $($('.grid-stack-item')[1]).attr('data-gs-width'),
@@ -349,9 +348,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 ////                    console.log(Math.ceil(($('.grid-stack-item-content')[0].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin)));
 //                    console.log("val height-->"+val.height);
                 });
-                
-                var element=$(".grid-stack-item-content");
-                console.log(element);
+
+//                var element=$(".grid-stack-item-content");
+//                console.log(element);
                 console.log("scope values");
                 console.log($scope.widgets);
             });
@@ -3181,6 +3180,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             });
                         }
                     });
+
+
                 };
                 scope.setLineChartFn({lineFn: scope.refreshLineChart});
                 scope.refreshLineChart();
@@ -5091,3 +5092,15 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
 
     };
 });
+app.directive("gridElementHeight", function () {
+    return {
+        restrict: 'A',
+        scope: {
+            getWidgetId:'@'
+        },
+        link: function (scope, element, attr) {
+            console.log("widget Postion-->"+scope.getWidgetId);
+            console.log(element[scope.getWidgetId].scrollHeight);
+        }
+    }
+})

@@ -280,10 +280,10 @@
     <div gridstack class="grid-stack grid1" options="options" on-change="onChange(event,items)" 
          on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" 
          on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
-        <div gridstack-item ng-repeat="widget in widgets" widgetId="{{widget.id}}" class="grid-stack-item" gs-item-x="widget.x" gs-item-y="widget.y"
-             gs-item-width="widget.width" gs-item-height="widget.height" gs-item-autopos="1" widget="{{widget}}"
-             on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)">
-            <div class="grid-stack-item-content">
+        <div  gridstack-item ng-repeat="(key,widget) in widgets" widgetId="{{widget.id}}" class="grid-stack-item" gs-item-x="widget.x" gs-item-y="widget.y"
+             gs-item-width="widget.width" gs-item-height="widget.height" gs-item-autopos="1"
+             on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)" get-Widget-Id="{{key}}">
+            <div class="grid-stack-item-content" grid-element-height >
                 <div ng-if="widget.chartType == 'ticker'" >
                     <div>
                         <div class="hpanel border-table" >
@@ -361,7 +361,7 @@
                                 <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
 
                             </div>
-                            <div class="panel-body" ng-if="widget.chartType === 'line'">
+                            <div class="panel-body" ng-if="widget.chartType === 'line'" grid-element-height>
                                 <div>
                                     <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                          line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
@@ -432,7 +432,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-body" ng-if="widget.chartType === 'funnel'">
+                            <div class="panel-body" ng-if="widget.chartType === 'funnel'" >
                                 <div>
                                     <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
                                          funnel-Directive funnel-Source="{{widget.dataSetId}}" 
