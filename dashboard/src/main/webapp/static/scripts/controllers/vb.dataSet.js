@@ -261,7 +261,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     ];
     $scope.dataSetFlagValidation = function (dataSource)
-    {
+    { console.log(dataSource)
         if (dataSource === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
@@ -320,6 +320,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = true;
             $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.showLabelName = true;
+        } else if (dataSource === "autoMobiles")
+        {
+            console.log(dataSource)
+            $scope.report = $scope.autoMobiles;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = false;
             $scope.productSegFlag = true;
             $scope.showLabelName = true;
         } else {
@@ -463,6 +472,143 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         }
+    ];
+    
+    
+    $scope.autoMobiles = [
+        {
+            name: 'Offer',
+            type: 'offer',
+            productSegments: [
+                {
+                    name: "Model",
+                    type: "model"
+                }, {
+                    name: "Brand",
+                    type: "brand"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Month",
+                    type: "month"
+                }, {
+                    name: "Day",
+                    type: "day"
+                }
+            ]
+        },
+        {
+            name: 'Seller',
+            type: 'seller',
+            productSegments: [
+                {
+                    name: "Model",
+                    type: "model"
+                }, {
+                    name: "Brand",
+                    type: "brand"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Month",
+                    type: "month"
+                }, {
+                    name: "Day",
+                    type: "day"
+                }
+            ]
+        },
+        {
+            name: 'Vehicle',
+            type: 'vehicle',
+            productSegments: [
+                {
+                    name: "Model",
+                    type: "model"
+                }, {
+                    name: "Brand",
+                    type: "brand"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Month",
+                    type: "month"
+                }, {
+                    name: "Day",
+                    type: "day"
+                }
+            ]
+        },
+        {
+            name: 'Fuel',
+            type: 'fuel',
+            productSegments: [
+                {
+                    name: "Model",
+                    type: "model"
+                }, {
+                    name: "Brand",
+                    type: "brand"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Month",
+                    type: "month"
+                }, {
+                    name: "Day",
+                    type: "day"
+                }
+            ]
+        }, 
+         {
+            name: 'Gear',
+            type: 'gear',
+            productSegments: [
+                {
+                    name: "Model",
+                    type: "model"
+                }, {
+                    name: "Brand",
+                    type: "brand"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Month",
+                    type: "month"
+                }, {
+                    name: "Day",
+                    type: "day"
+                }
+            ]
+        },
+         {
+            name: 'Repaired',
+            type: 'repaired',
+            productSegments: [
+                {
+                    name: "Model",
+                    type: "model"
+                }, {
+                    name: "Brand",
+                    type: "brand"
+                }
+            ],
+            frequency: [
+                {
+                    name: "Month",
+                    type: "month"
+                }, {
+                    name: "Day",
+                    type: "day"
+                }
+            ]
+        }
+        
     ];
 
     $scope.bingPerformance = [
@@ -2151,6 +2297,51 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             // $scope.timeSegFlag = false;
             // $scope.productSegFlag = false;
         }
+        
+        if ($scope.dataSet.dataSourceId.dataSourceType == "autoMobiles")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.autoMobiles);
+            
+            console.log($scope.dataSet.reportName);
+//            $scope.timeSegment = $scope.autoMobiles[index].timeSegments;
+            $scope.productSegment = $scope.autoMobiles[index].productSegments;
+            $scope.frequency = $scope.autoMobiles[index].frequency;
+
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.showLabelName = true;
+            $scope.productSegFlag = true;
+
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+
+            var frequencyList = $scope.frequency;
+            var frequencyName = dataSet.networkType;
+
+
+//            if (!dataSet.timeSegment) {
+//                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+//            } else {
+//                getTimeSegment(timeSegmentList, timeSegmentName)
+//            }
+            if (!dataSet.productSegment) {
+                $scope.dataSet.productSegment = {name: 'Model', type: 'model'};
+            } else {
+                getProductSegment(productList, productSegmentName)
+            }
+            if (!dataSet.networkType) {
+                $scope.dataSet.networkType = {name: 'Month', type: 'month'};
+            } else {
+                getFrequency(frequencyList, frequencyName)
+            }
+            // $scope.nwStatusFlag = false;
+            // $scope.timeSegFlag = false;
+            // $scope.productSegFlag = false;
+        }
 
         function getIndex(data, object)
         {
@@ -2368,7 +2559,17 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.timeSegFlag = true;
                 $scope.showLabelName = true;
                 $scope.productSegFlag = true;
-            } else {
+            }
+            else if (dataSet.dataSourceId.dataSourceType === "autoMobiles")
+            {
+                $scope.report = $scope.autoMobiles;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = true;
+                $scope.timeSegFlag = false;
+                $scope.showLabelName = true;
+                $scope.productSegFlag = true;
+            }else {
                 $scope.dataSetFlag = false;
                 $scope.nwStatusFlag = false;
             }

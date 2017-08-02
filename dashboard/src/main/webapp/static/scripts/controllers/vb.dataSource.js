@@ -57,6 +57,10 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: "skyZone",
                 name: "SkyZone"
+            },
+            {
+                type: "autoMobiles",
+                name: "AutoMobiles"
             }
         ];
         function getItems() {

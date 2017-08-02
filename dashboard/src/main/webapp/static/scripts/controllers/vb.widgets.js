@@ -80,8 +80,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     });
 
     $scope.parkTypes = [
-        {fieldName: "Established", displayName: "Established"},
-        {fieldName: "New", displayName: "New"}
+        {fieldName: "Test", displayName: "Test"},
+        {fieldName: "Testing", displayName: "Testing"}
     ];
 
     $http.get("admin/report/reportWidget").success(function (response) {
