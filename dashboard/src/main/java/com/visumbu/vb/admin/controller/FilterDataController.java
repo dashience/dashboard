@@ -74,7 +74,14 @@ public class FilterDataController extends BaseController {
             query = "select distinct category as fieldName,  category as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("subCategory")) {
             query = "select distinct sub_category as fieldName,  sub_category as displayName from skyzone_center_edge ";
+        } else if (dataType.equalsIgnoreCase("brand")) {
+            query = "select distinct brand as fieldName,  brand as displayName from auto ";
+        } else if (dataType.equalsIgnoreCase("model")) {
+            query = "select distinct model as fieldName,  model as displayName from auto ";
+        } else if (dataType.equalsIgnoreCase("year")) {
+            query = "select distinct yearOfRegistration as fieldName,  yearOfRegistration as displayName from auto ";
         }
+        
         return getSqlData(request, response, query);
     }
 
