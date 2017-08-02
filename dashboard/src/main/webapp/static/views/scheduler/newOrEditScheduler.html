@@ -189,29 +189,7 @@
                                         </ui-select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label>Account</label>
-                                    <div>
-                                        <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">
-                                            <ui-select-match placeholder="Select Year Account...">{{$select.selected.accountName}}</ui-select-match>
-                                            <ui-select-choices repeat="account in accounts | filter: $select.search">
-                                                <span ng-bind-html="account.accountName | highlight: $select.search"></span>
-                                            </ui-select-choices>
-                                        </ui-select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-6">
-
-                                    <label class="scheduler-checkBox-label">
-                                        <span> Send to Account</span>
-                                    </label>
-                                    <div> <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.isAccountEmail == true;" ng-model="scheduler.isAccountEmail" ng-true-value="1" />
-                                    </div>
-
-                                </div>
-                                <div class="col-md-6">
+                                 <div class="col-md-6">
                                     <label>Date Range</label>
                                     <div>
                                         <div>
@@ -289,7 +267,107 @@
                                     
                                     <span class="text-danger" ng-show="showSchedulerMsg">{{showErrorDateRangeMessage}}</span>
                                 </div>
+<!--                                <div class="col-md-6">
+                                    <label>Account</label>
+                                    <div>
+                                        <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">
+                                            <ui-select-match placeholder="Select Year Account...">{{$select.selected.accountName}}</ui-select-match>
+                                            <ui-select-choices repeat="account in accounts | filter: $select.search">
+                                                <span ng-bind-html="account.accountName | highlight: $select.search"></span>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                </div>-->
                             </div>
+<!--                            <div class="form-group">
+                                <div class="col-sm-6">
+
+                                    <label class="scheduler-checkBox-label">
+                                        <span> Send to Account</span>
+                                    </label>
+                                    <div> <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.isAccountEmail == true;" ng-model="scheduler.isAccountEmail" ng-true-value="1" />
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Date Range</label>
+                                    <div>
+                                        <div>
+                                            <button class="drop btn btn-default" type="button">
+                                                <span id="customDateRangeName">{{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}</span>
+                                                <span class="caret"></span></button>
+                                            <ul class="dropdown-menu scheduler-list-style">
+                                                <li ng-click="selectDuration('Custom', scheduler)" >
+
+                                                    <a>Custom</a>
+                                                    <div class="col-md-12 custom-picker">
+                                                                                                                <label>Custom Range</label>
+                                                        <a class="pull-right custom-daterange-box" id="customDateRange" style="padding: 6px !important;">
+                                                            <span class="date-border">
+
+                                                                {{startDate}}
+                                                                {{scheduler.customStartDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate | date: "MM/dd/yyyy"}} 
+                                                                {{scheduler.customStartDate ? scheduler.customStartDate : startDate| date: "MM/dd/yyyy"}} - {{scheduler.customEndDate ? scheduler.customEndDate : endDate| date: "MM/dd/yyyy"}} 
+                                                                <i class="custom-daterange-box-icon fa fa-caret-down"></i>
+                                                            </span>
+                                                        </a> 
+                                                    </div>
+                                                </li>
+                                                                                            <li ng-click="selectDuration('Today', null)"><a>Today</a></li>
+                                                                                                <li ng-click="selectDuration('Yesterday', null)"><a>Yesterday</a></li>
+                                                                                                <li ng-click="selectDuration('This Week', null)"><a>This Week</a></li>
+                                                                                                <li ng-click="selectDuration('Last Week', null)"><a>Last Week</a></li>
+                                                                                                <li ng-click="selectDuration('This Month', null)"><a>This Month</a></li>
+                                                                                                <li ng-click="selectDuration('Last Month', null)"><a>Last Month</a></li>
+                                                                                                <li ng-click="selectDuration('This Year', null)"><a>This Year</a></li>
+                                                                                                <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>
+                                                <li ng-click="selectDuration('Last N Days', scheduler)">
+                                                    <a>Last <input type="text"
+                                                                   ng-model="scheduler.lastNdays" 
+                                                                   ng-change="selectDuration('Last N Days', scheduler)" 
+                                                                   class="form-control" 
+                                                                   ng-model-options="{debounce: 500}"
+                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                        Days
+                                                    </a>
+                                                </li>
+                                                <li ng-click="selectDuration('Last N Weeks', scheduler)">
+                                                    <a>Last <input type="text" 
+                                                                   ng-model="scheduler.lastNweeks" 
+                                                                   ng-change="selectDuration('Last N Weeks', scheduler)"
+                                                                   class="form-control" 
+                                                                   ng-model-options="{debounce: 500}"
+                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                        Weeks
+                                                    </a>
+                                                </li>
+                                                <li ng-click="selectDuration('Last N Months', scheduler)">
+                                                    <a>Last <input type="text" 
+                                                                   ng-model="scheduler.lastNmonths" 
+                                                                   ng-change="selectDuration('Last N Months', scheduler)"
+                                                                   class="form-control" 
+                                                                   ng-model-options="{debounce: 500}"
+                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                        Months
+                                                    </a>
+                                                </li>
+                                                <li ng-click="selectDuration('Last N Years', scheduler)">
+                                                    <a>Last <input type="text" 
+                                                                   ng-model="scheduler.lastNyears" 
+                                                                   ng-change="selectDuration('Last N Years', scheduler)"
+                                                                   class="form-control" 
+                                                                   ng-model-options="{debounce: 500}"
+                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                        Years
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <span class="text-danger" ng-show="showSchedulerMsg">{{showErrorDateRangeMessage}}</span>
+                                </div>
+                            </div>-->
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <label>Email Ids</label>

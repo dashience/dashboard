@@ -151,8 +151,10 @@
         float: left;
     }
     .report-body-imgs.in{
-        border-radius: 50%;
+        /*border-radius: 50%;*/
         width: 74px;
+        margin-left: 13px;
+
     }
     .report-body-imgs{
         border: 0 none;
@@ -716,7 +718,7 @@
                                 <div class="row report-chat-box">
                                     <div class="report-body-img" ng-if="hideReportsTable === false;">
                                         <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
-                                        <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/logos/deeta-logo.png" />
+                                        <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/sky-zone.jpg" />
                                     </div>
                                     <div class="form-group">
                                         <ul class="report-body-descr" ng-if="reportDescription">
