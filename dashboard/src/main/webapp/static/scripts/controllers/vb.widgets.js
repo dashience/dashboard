@@ -108,6 +108,19 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         headers: true,
     };
 
+    $scope.types = [
+        {name: 'Offer', type: 'offer'},
+        {name: 'Seller', type: 'seller'},
+        {name: 'Vehicle', type: 'vehicle'},
+        {name: 'Fuel', type: 'fuel'},
+        {name: 'Gear', type: 'gear'},
+        {name: 'Repaired', type: 'repaired'}
+    ];
+
+    $scope.autoProducts = [{name: 'Model', type: 'model'}, {name: 'Brand', type: 'brand'}];
+
+    $scope.frequencies = [{name: 'Month', type: 'month'}, {name: 'Day', type: 'day'}];
+
 
 
     $scope.getWidgetObjScatter = function (obj) {
@@ -246,10 +259,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.brands = [];
-                var request = $http.get('admin/filterData/getFilter/country?dashboardFilter=' + queryString).success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/brand?dashboardFilter=' + queryString).success(function (response) {
                     $scope.brands = response.data;
                     console.log($scope.brands);
-                    
+
                 });
                 allRequests.push(request);
             }
@@ -257,7 +270,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 dashboardFilter.year = selectedFilter.Year;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.years= [];
+                $scope.years = [];
                 var request = $http.get('admin/filterData/getFilter/year?dashboardFilter=' + queryString).success(function (response) {
                     $scope.years = response.data;
                     console.log($scope.years);
@@ -283,9 +296,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.widgets.forEach(function (val, key) {
                 val.filterUrlParameter = allSelected;
             });
-            
+
             console.log(allSelected)
-//                $scope.selectItems = "";
             $timeout(function () {
                 dispAllFilter(allSelected);
                 $scope.reloadAllDirective = true;
@@ -293,7 +305,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
     };
 
-    $scope.updateFilter("salesType,country,state,city,store,category,subCategory");
+    $scope.updateFilter("model,brand,year");
 
     $scope.getSelctionCount = function (checkboxCollection, type) {
         var count = 0;
@@ -317,7 +329,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.models, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
-                    reloadType = "country,state,city,store";
+                    reloadType = "none";
                 }
             });
         }
@@ -325,7 +337,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.countries, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
-                    reloadType = "state,city,store";
+                    reloadType = "none";
                 }
             });
         }
@@ -366,7 +378,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
-                reloadType = "country,state,city,store";
+                reloadType = "none";
             } else {
                 val.status = false;
             }
@@ -375,7 +387,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reload = true;
-                reloadType = "state,city,store";
+                reloadType = "none";
             } else {
                 val.status = false;
             }
@@ -383,7 +395,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         angular.forEach($scope.years, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
-                reloadType = "city,store";
+                reloadType = "none";
                 reload = true;
             } else {
                 val.status = false;
@@ -1023,51 +1035,69 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             return;
         }
         var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
-        $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
-            var getDataSetObjs = response;
-            var getDataSetPerformance = getDataSetObjs[getDataSourceType];
-            if (!getDataSetPerformance) {
-                return;
-            }
-            getDataSetPerformance.forEach(function (val, key) {
-                var getPerformanceType
-                if (getDataSourceType == 'skyZone') {
-                    getPerformanceType = val.dataSetType;
-                } else {
-                    getPerformanceType = val.type;
+        if (getDataSourceType != 'autoMobiles') {
+            $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
+                var getDataSetObjs = response;
+                var getDataSetPerformance = getDataSetObjs[getDataSourceType];
+                if (!getDataSetPerformance) {
+                    return;
                 }
-                if (getReportName === getPerformanceType) {
-                    $scope.timeSegments = val.timeSegments;
-                    $scope.productSegments = val.productSegments;
-                    if (val.frequency) {
-                        $scope.frequency = val.frequency;
-                    }
-                    if (!$scope.timeSegments) {
-                        return;
-                    }
-                    $scope.timeSegments.forEach(function (val, key) {
-                        if (val.type === timeSegmentType) {
-                            $scope.widgetObj.timeSegment = val;
-                        }
-                    });
-                    if (!$scope.productSegments) {
-                        return;
-                    }
-                    $scope.productSegments.forEach(function (val, key) {
-                        if (val.type === productSegmentType) {
-                            $scope.widgetObj.productSegment = val;
-                        }
-                    });
+                getDataSetPerformance.forEach(function (val, key) {
+                    var getPerformanceType
                     if (getDataSourceType == 'skyZone') {
-                        $scope.frequency.forEach(function (val, key) {
-                            if (val.type === frequencyType) {
-                                $scope.widgetObj.networkType = val;
+                        getPerformanceType = val.dataSetType;
+                    } else {
+                        getPerformanceType = val.type;
+                    }
+                    if (getReportName === getPerformanceType) {
+                        $scope.timeSegments = val.timeSegments;
+                        $scope.productSegments = val.productSegments;
+                        if (val.frequency) {
+                            $scope.frequency = val.frequency;
+                        }
+                        if (!$scope.timeSegments) {
+                            return;
+                        }
+                        $scope.timeSegments.forEach(function (val, key) {
+                            if (val.type === timeSegmentType) {
+                                $scope.widgetObj.timeSegment = val;
                             }
                         });
+                        if (!$scope.productSegments) {
+                            return;
+                        }
+                        $scope.productSegments.forEach(function (val, key) {
+                            if (val.type === productSegmentType) {
+                                $scope.widgetObj.productSegment = val;
+                            }
+                        });
+                        if (getDataSourceType == 'skyZone') {
+                            $scope.frequency.forEach(function (val, key) {
+                                if (val.type === frequencyType) {
+                                    $scope.widgetObj.networkType = val;
+                                }
+                            });
+                        }
                     }
+                });
+            });
+        } else {
+            $scope.types.forEach(function (val, k) {
+                if (val.type === timeSegmentType) {
+                    $scope.widgetObj.timeSegment = val;
                 }
             });
-        });
+            $scope.autoProducts.forEach(function (val, key) {
+                if (val.type === productSegmentType) {
+                    $scope.widgetObj.productSegment = val;
+                }
+            });
+            $scope.frequencies.forEach(function (val, key) {
+                if (val.type === frequencyType) {
+                    $scope.widgetObj.networkType = val;
+                }
+            });
+        }
     }
 
     function getNetworkTypebyObj(widget) {

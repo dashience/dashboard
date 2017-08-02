@@ -330,7 +330,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = true;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = true;
-            $scope.showLabelName = true;
+            $scope.showLabelName = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
@@ -2329,12 +2329,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //                getTimeSegment(timeSegmentList, timeSegmentName)
 //            }
             if (!dataSet.productSegment) {
-                $scope.dataSet.productSegment = {name: 'Model', type: 'model'};
+               //$scope.dataSet.productSegment = {name: 'Model', type: 'model'};
             } else {
                 getProductSegment(productList, productSegmentName)
             }
             if (!dataSet.networkType) {
-                $scope.dataSet.networkType = {name: 'Month', type: 'month'};
+               // $scope.dataSet.networkType = {name: 'Month', type: 'month'};
             } else {
                 getFrequency(frequencyList, frequencyName)
             }

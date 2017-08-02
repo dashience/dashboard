@@ -114,8 +114,6 @@
                                     <select class="form-control" ng-change="clearDataSet(dataSet)"
                                             ng-options="dataSource.name for dataSource in searchDataSourceItems track by dataSource.id"
                                             ng-model="selectedItems">
-
-                                        <!--<option value="" selected="selected" ng-disabled="true">Search Data Source...</option>-->
                                     </select>
                                 </div></div>
                             <table class="table table-fixed">
@@ -141,7 +139,6 @@
                                         <td class="col-xs-2" ng-if="dataSet.publish !== 'Active'" ng-click="editDataSet(dataSet)">
                                         </td>
                                         <td class="col-md-1">
-                                            <!--<button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = true"><i class="fa fa-pencil"></i></button>-->
                                             <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSet{{dataSet.id}}"><i class="fa fa-trash-o"></i></button>
                                             <div class="modal hmodal-success" id="deleteDataSet{{dataSet.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                                 <div class="modal-dialog">
@@ -201,47 +198,30 @@
                                     </select>
 
                                     <div ng-show="dataSetFlag">
-                                        <label>Report</label>
+                                        <label>Type</label>
                                         <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(dataSet); refreshDataSet(dataSet)">
                                             <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                             <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
                                                 {{reportPerformances.name}}</option>
                                         </select>
-
-                                        <label ng-show="timeSegFlag">
-                                            <span ng-if="showLabelName == false;">Time Segments</span>
-                                            <span ng-if="showLabelName == true;">Level</span>
-                                        </label>
-
-                                        <!--                                <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment" ng-change="refreshDataSet(dataSet)">
-                                                                            <option value="" selected="selected" ng-disabled="false">None</option>
-                                                                            <option ng-repeat="timeSegments in timeSegment" value="{{timeSegments.type}}">
-                                                                                {{timeSegments.name}}</option>
-                                                                        </select>-->
-                                        <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment"
-                                                 ng-change="refreshDataSet(dataSet)"
-                                                 ng-options="timeSegments.name for timeSegments in timeSegment track by timeSegments.type">
-                                        </select>
-                                        <!--ng-if="dataSet.reportName == 'campaignPerformance'"-->
-                                        <!--<label ng-if="!(dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">Product Segments</label>-->
+                                        <div ng-if="dataSet.dataSourceId.dataSourceType != 'autoMobiles'">
+                                            <label ng-show="timeSegFlag">
+                                                <span ng-if="showLabelName == false;">Time Segments</span>
+                                                <span ng-if="showLabelName == true;">Level</span>
+                                            </label>
+                                            <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment"
+                                                     ng-change="refreshDataSet(dataSet)"
+                                                     ng-options="timeSegments.name for timeSegments in timeSegment track by timeSegments.type">
+                                            </select>
+                                        </div>
                                         <label ng-show="productSegFlag" >
                                             <span ng-if="showLabelName == false;">Product Segments</span>
                                             <span ng-if="showLabelName == true;">Segment</span>
                                         </label>
-                                        <!--                                <select ng-show ="productSegFlag" class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);">
-                                                                            <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
-                                                                        </select>-->
                                         <select  ng-show="productSegFlag" class="form-control" ng-model="dataSet.productSegment"
                                                  ng-change="refreshDataSet(dataSet)"
                                                  ng-options="productSegments.name for productSegments in productSegment track by productSegments.type">
                                         </select>
-
-
-                                        <!--                                <select class="form-control" ng-model="dataSet.productSegment" ng-change="refreshDataSet(dataSet);" ng-if="!(dataSet.dataSourceId.dataSourceType == 'facebook' || dataSet.dataSourceId.dataSourceType == 'instagram' || dataSet.dataSourceId.dataSourceType == 'pinterest')">
-                                                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                                            <option ng-repeat="productSegments in productSegment" value="{{productSegments.type}}">{{productSegments.name}}</option>
-                                                                        </select>-->
-
                                         <label ng-if="showLabelName == false;">
                                             <span ng-show="nwStatusFlag">NetWork Type</span>                                            
                                         </label>
@@ -249,8 +229,6 @@
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
                                                 ng-options="network.name for network in networkTypes track by network.type">
-                                            <!--                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                                                        <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>-->
                                         </select>
 
                                         <label ng-if="showLabelName == true;">Frequency</label>
@@ -258,21 +236,12 @@
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
                                                 ng-options="network.name for network in frequency track by network.type">
-                                            <!--                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
-                                                                                        <option ng-repeat="network in networkTypes" value="{{network.type}}">{{network.name}}</option>-->
-                                        </select>
-                                        <!--                                <ui-select ng-show="nwStatusFlag"  ng-change="refreshDataSet(dataSet)" ng-model="dataSet.networkType" on-removed="removed($item)" theme="select2" ng-disabled="disabled" class="form-control">
-                                                                            <ui-select-match placeholder="Select Network...">{{$item.name}}</ui-select-match>
-                                                                            <ui-select-choices repeat="network in networkTypes | filter:$select.search">
-                                                                                {{network.name}}
-                                                                            </ui-select-choices>
-                                                                        </ui-select>-->
+                                        </select>                                       
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
                                     <label>Query</label>
-                                    <!--<textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>-->
                                     <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
                                 </div>
 

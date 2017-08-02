@@ -397,19 +397,35 @@
                                 </div>
                             </div>
                             <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls') || widgetObj.dataSourceId.dataSourceType == 'join')">
-                                <div class="form-group widget-title col-sm-6"> 
+<!--                                <div class="form-group widget-title col-sm-6" ng-if="widgetObj.dataSourceId.dataSourceType != 'autoMobiles'"> 
                                     <label>Level</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="timeSeg.name for timeSeg in timeSegments track by timeSeg.type">
                                     </select>
                                 </div>
-                                <div class="form-group widget-title col-sm-6"> 
+                                <div class="form-group widget-title col-sm-6" ng-if="widgetObj.dataSourceId.dataSourceType != 'autoMobiles'"> 
                                     <label>Segment</label>
                                     <select class="form-control" 
                                             ng-model="widgetObj.productSegment" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="productSeg.name for productSeg in productSegments track by productSeg.type">
+                                    </select>
+                                </div>-->
+                                
+                                <div class="form-group widget-title col-sm-6"> 
+                                    <label>Type</label>
+                                    <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
+                                            ng-options="timeSeg.name for timeSeg in types track by timeSeg.type">
+                                    </select>
+                                </div>                                
+                                <div class="form-group widget-title col-sm-6"> 
+                                    <label>Product</label>
+                                    <select class="form-control" 
+                                            ng-model="widgetObj.productSegment" 
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
+                                            ng-options="productSeg.name for productSeg in autoProducts track by productSeg.type">
                                     </select>
                                 </div>
                             </div>
@@ -420,7 +436,7 @@
                                     <select class="form-control"
                                             ng-model="widgetObj.networkType" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
-                                            ng-options="networkType.name for networkType in frequency track by networkType.type">
+                                            ng-options="networkType.name for networkType in frequencies track by networkType.type">
                                     </select>
                                 </div>
                             </div>

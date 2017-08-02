@@ -528,7 +528,7 @@ public class ProxyController {
             returnMap = getSkyZoneData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             returnMap.put("columnDefs", getColumnDefObject(data));
-        } else if (dataSourceType.equalsIgnoreCase("auto")) {
+        } else if (dataSourceType.equalsIgnoreCase("automobiles")) {
             returnMap = getAutoData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             returnMap.put("columnDefs", getColumnDefObject(data));

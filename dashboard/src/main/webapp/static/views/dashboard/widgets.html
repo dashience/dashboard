@@ -300,8 +300,6 @@
                     </div>
                 </div>
                 <div>
-
-
                     <div>
                         <label>Model</label>
                         <div class="dropdown">
@@ -319,7 +317,7 @@
                                 <li ng-repeat="model in models| filter:searchModels">
                                     <input type="checkbox" fieldname="Model" fieldvalue="{{model.fieldName}}" 
                                            class="inputCheckbox" status="{{model.status}}" ng-model="model.status" 
-                                           ng-click="updateFilter('country,state,city,store')">
+                                           ng-click="updateFilter('none')">
                                     <span ng-bind-html="model.displayName| highlight:searchModels.$"></span>
                                 </li>
                             </ul>
@@ -342,13 +340,12 @@
                                 <li ng-repeat="brand in brands|filter:searchBrands">
                                     <input type="checkbox" class="inputCheckbox" fieldname="Brand" 
                                            fieldvalue="{{brand.fieldName}}" ng-model="brand.status" 
-                                           ng-click="updateFilter('state,city,store')">
+                                           ng-click="updateFilter('none')">
                                     <span ng-bind-html="brand.displayName| highlight:searchBrand.$"></span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-
                     <div>
                         <label>Year</label>
                         <div class="dropdown">
@@ -366,14 +363,12 @@
                                 <li ng-repeat="year in years|filter:searchState">
                                     <input type="checkbox" fieldname="Year" 
                                            fieldvalue="{{year.fieldName}}" class="inputCheckbox" 
-                                           ng-model="year.status" ng-click="updateFilter('city,store')">
+                                           ng-model="year.status" ng-click="updateFilter('none')">
                                     <span ng-bind-html="year.displayName | highlight:searchYear.$"></span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
