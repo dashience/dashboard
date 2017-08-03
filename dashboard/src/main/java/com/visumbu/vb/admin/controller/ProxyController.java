@@ -1980,7 +1980,6 @@ public class ProxyController {
         }
 
         // System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
-
         if (timeSegment != null && timeSegment.equalsIgnoreCase("none")) {
             timeSegment = null;
         }
@@ -2035,12 +2034,25 @@ public class ProxyController {
         if (segment != null && !segment.equalsIgnoreCase("none")) {
             groupBy.add(segment);
             select.add(segment);
+            if (segment.equalsIgnoreCase("kilometerRange")) {
+                groupBy.add("kilometerRangeOrder");
+                select.add("kilometerRangeOrder");
+                orderBy.add("kilometerRangeOrder");
+            }
+            if (segment.equalsIgnoreCase("priceRange")) {
+                groupBy.add("priceRangeOrder");
+                select.add("priceRangeOrder");
+                orderBy.add("priceRangeOrder");
+            }
         }
         if (frequency != null && !frequency.equalsIgnoreCase("none")) {
             groupBy.add(frequency);
             select.add(frequency);
+            if (frequency.equalsIgnoreCase("monthName")) {
+                orderBy.add("monthOfRegistration asc");
+            }
         }
-        String allMetrics1[] = {"count(1) noOfItems ", "avg(days) avgDays"};
+        String allMetrics1[] = {"count(1) noOfItems ", "avg(days) avgDays", "min(price) minPrice", "max(price) maxPrice", "avg(price) agvPrice", "sum(price) sumPrice"};
 
         for (int i = 0; i < allMetrics1.length; i++) {
 
@@ -2050,6 +2062,12 @@ public class ProxyController {
 
         String selectQry = String.join(",", select);
         String groupQry = String.join(",", groupBy);
+        String orderQry = String.join(",", orderBy);
+
+        String orderByAppender = "";
+        if (orderQry != null && !(orderQry.trim().isEmpty())) {
+            orderByAppender = " order by " + orderQry;
+        }
         String groupByAppender = "";
         if (groupQry != null && !(groupQry.trim().isEmpty())) {
             groupByAppender = " group by " + groupQry;
@@ -2059,7 +2077,7 @@ public class ProxyController {
         String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
         String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
         String whereCondition = " where dateCreated between '" + startDateStr + "' and '" + endDateStr + "' ";
-        String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender;
+        String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender + " " + orderByAppender;
         return queryStr;
     }
 

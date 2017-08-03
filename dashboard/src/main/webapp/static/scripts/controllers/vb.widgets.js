@@ -109,17 +109,28 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.types = [
-        {name: 'Offer', type: 'offer'},
+        {name: 'Offer', type: 'offerType'},
         {name: 'Seller', type: 'seller'},
-        {name: 'Vehicle', type: 'vehicle'},
-        {name: 'Fuel', type: 'fuel'},
-        {name: 'Gear', type: 'gear'},
-        {name: 'Repaired', type: 'repaired'}
+        {name: 'Vehicle', type: 'vehicleType'},
+        {name: 'Fuel', type: 'fuelType'},
+        {name: 'Gear', type: 'gearbox'},
+        {name: 'Repaired', type: 'notRepairedDamage'},
+        {name: 'None', type: 'none'}
     ];
 
-    $scope.autoProducts = [{name: 'Model', type: 'model'}, {name: 'Brand', type: 'brand'}];
+    $scope.autoProducts = [{name: 'Model', type: 'model'},
+        {name: 'Brand', type: 'brand'},
+        {name: 'None', type: 'none'}, 
+        {
+            name: "Kilometer",
+            type: "kilometerRange"
+        }, 
+        {
+            name: "Price",
+            type: "priceRange"
+        }];
 
-    $scope.frequencies = [{name: 'Month', type: 'month'}, {name: 'Day', type: 'day'}];
+    $scope.frequencies = [{name: 'Month', type: 'monthOfRegistration'}, {name: 'Day', type: 'dayCreated'}, {name: 'None', type: 'none'}];
 
 
 
@@ -369,7 +380,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 val.filterUrlParameter = allSelected;
             });
             $scope.reloadAllDirective = true;
-          //  $scope.updateFilter(reloadType);
+            //  $scope.updateFilter(reloadType);
         }, 500);
     };
 

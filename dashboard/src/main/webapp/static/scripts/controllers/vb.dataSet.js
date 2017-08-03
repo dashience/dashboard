@@ -475,141 +475,63 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     ];
     
     
-    $scope.autoMobiles = [
-        {
-            name: 'Offer',
-            type: 'offer',
-            productSegments: [
+    $scope.autoMobiles = [{
+            name: "Auto",
+            type: "auto",
+            timeSegments: [{
+                    name: 'Offer',
+                    type: 'offerType'
+                }, {
+                    name: 'Seller',
+                    type: 'seller'
+                }, {
+                    name: 'Vehicle',
+                    type: 'vehicleType'
+                }, {
+                    name: 'Fuel',
+                    type: 'fuelType'
+                }, {
+                    name: 'Gear',
+                    type: 'gearbox'
+                }, {
+                    name: 'Repaired',
+                    type: 'notRepairedDamage'
+                }, {
+                    name: 'None',
+                    type: 'none'
+                }
+            ],
+             productSegments: [
                 {
                     name: "Model",
                     type: "model"
                 }, {
                     name: "Brand",
                     type: "brand"
+                }, {
+                    name: "Kilometer",
+                    type: "kilometerRange"
+                }, {
+                    name: "Price",
+                    type: "priceRange"
+                }, {
+                    name: "None",
+                    type: "none"
                 }
             ],
             frequency: [
                 {
                     name: "Month",
-                    type: "month"
+                    type: "monthName"
                 }, {
                     name: "Day",
-                    type: "day"
+                    type: "dateCreated"
+                }, {
+                    name: "None",
+                    type: "none"
                 }
             ]
-        },
-        {
-            name: 'Seller',
-            type: 'seller',
-            productSegments: [
-                {
-                    name: "Model",
-                    type: "model"
-                }, {
-                    name: "Brand",
-                    type: "brand"
-                }
-            ],
-            frequency: [
-                {
-                    name: "Month",
-                    type: "month"
-                }, {
-                    name: "Day",
-                    type: "day"
-                }
-            ]
-        },
-        {
-            name: 'Vehicle',
-            type: 'vehicle',
-            productSegments: [
-                {
-                    name: "Model",
-                    type: "model"
-                }, {
-                    name: "Brand",
-                    type: "brand"
-                }
-            ],
-            frequency: [
-                {
-                    name: "Month",
-                    type: "month"
-                }, {
-                    name: "Day",
-                    type: "day"
-                }
-            ]
-        },
-        {
-            name: 'Fuel',
-            type: 'fuel',
-            productSegments: [
-                {
-                    name: "Model",
-                    type: "model"
-                }, {
-                    name: "Brand",
-                    type: "brand"
-                }
-            ],
-            frequency: [
-                {
-                    name: "Month",
-                    type: "month"
-                }, {
-                    name: "Day",
-                    type: "day"
-                }
-            ]
-        }, 
-         {
-            name: 'Gear',
-            type: 'gear',
-            productSegments: [
-                {
-                    name: "Model",
-                    type: "model"
-                }, {
-                    name: "Brand",
-                    type: "brand"
-                }
-            ],
-            frequency: [
-                {
-                    name: "Month",
-                    type: "month"
-                }, {
-                    name: "Day",
-                    type: "day"
-                }
-            ]
-        },
-         {
-            name: 'Repaired',
-            type: 'repaired',
-            productSegments: [
-                {
-                    name: "Model",
-                    type: "model"
-                }, {
-                    name: "Brand",
-                    type: "brand"
-                }
-            ],
-            frequency: [
-                {
-                    name: "Month",
-                    type: "month"
-                }, {
-                    name: "Day",
-                    type: "day"
-                }
-            ]
-        }
-        
-    ];
+    }]   
 
     $scope.bingPerformance = [
         {
@@ -2293,17 +2215,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             } else {
                 getFrequency(frequencyList, frequencyName)
             }
-            // $scope.nwStatusFlag = false;
-            // $scope.timeSegFlag = false;
-            // $scope.productSegFlag = false;
         }
-        
         if ($scope.dataSet.dataSourceId.dataSourceType == "autoMobiles")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.autoMobiles);
-            
-            console.log($scope.dataSet.reportName);
-//            $scope.timeSegment = $scope.autoMobiles[index].timeSegments;
+            $scope.timeSegment = $scope.autoMobiles[index].timeSegments;
             $scope.productSegment = $scope.autoMobiles[index].productSegments;
             $scope.frequency = $scope.autoMobiles[index].frequency;
 
@@ -2323,25 +2239,24 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var frequencyName = dataSet.networkType;
 
 
-//            if (!dataSet.timeSegment) {
-//                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
-//            } else {
-//                getTimeSegment(timeSegmentList, timeSegmentName)
-//            }
+            if (!dataSet.timeSegment) {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            } else {
+                getTimeSegment(timeSegmentList, timeSegmentName)
+            }
             if (!dataSet.productSegment) {
-               //$scope.dataSet.productSegment = {name: 'Model', type: 'model'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
             } else {
                 getProductSegment(productList, productSegmentName)
             }
             if (!dataSet.networkType) {
-               // $scope.dataSet.networkType = {name: 'Month', type: 'month'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
             } else {
                 getFrequency(frequencyList, frequencyName)
             }
-            // $scope.nwStatusFlag = false;
-            // $scope.timeSegFlag = false;
-            // $scope.productSegFlag = false;
         }
+        
+       
 
         function getIndex(data, object)
         {
@@ -2566,7 +2481,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = true;
-                $scope.timeSegFlag = false;
+                $scope.timeSegFlag = true;
                 $scope.showLabelName = true;
                 $scope.productSegFlag = true;
             }else {
