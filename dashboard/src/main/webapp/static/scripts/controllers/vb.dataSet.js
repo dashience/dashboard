@@ -2108,8 +2108,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             var getDataSetId = response.id;
             var data = $scope.columnsHeaderDefs;
+            console.log(data);
             var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
-            if (gatDataSourceType != "sql") {
+            if (gatDataSourceType != "sql" && data != null) {
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
                     getItems();
                 });
