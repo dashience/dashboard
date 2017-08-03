@@ -16,6 +16,9 @@ function dashboardFormat(column, value) {
     if (column.fieldType === "string") {
         return value;
     }
+    if(column.displayFormat == null){
+        return value;
+    }
     if (column && column.displayFormat) {
         if (column.displayFormat.indexOf("%") > -1) {
             return d3.format(column.displayFormat)(value / 100);
@@ -3799,10 +3802,26 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     },
                                     type: 'pie'
                                 },
+                                pie: {
+                                    label: {
+                                        format: function (value, ratio, id) {
+                                            var percentage = d3.format("%.2f")(ratio);
+                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
+                                        }
+                                    }
+                                },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
                                 },
-                                tooltip: {show: false},
+                                tooltip: {
+                                    show: true,
+                                    format: {
+                                        value: function (value, ratio, id) {
+                                            var percentage = d3.format("%.2f")(ratio);
+                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
+                                        }
+                                    }
+                                },
                                 axis: {
                                     x: {
                                         tick: {

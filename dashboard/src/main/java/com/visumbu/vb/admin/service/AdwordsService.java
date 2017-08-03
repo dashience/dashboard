@@ -974,11 +974,11 @@ public class AdwordsService {
         ArrayList<String> fieldList = Lists.newArrayList(fields);
         fieldList.remove("AllConversions");
         if (timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")) {
+        } else if (reportName != null && reportName.equalsIgnoreCase("videoPerformance")) {
         } else {
             fieldList.add("AllConversions");
         }
 
-        System.out.println("Filter Test ====> " + filter);
         if (filter == null || filter.equalsIgnoreCase("none") || filter.equalsIgnoreCase("undefined")) {
         } else {
             fieldList.add("AdNetworkType1");
@@ -989,7 +989,7 @@ public class AdwordsService {
         } else {
             fieldList.remove("AdNetworkType2");
         }
-        
+
         System.out.println("FieldList 1====> " + fieldList);
 
         if (filter == null) {
