@@ -44,7 +44,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         $window.open(url);
     }
 
-    $scope.uploadLogo = "static/img/sky-zone.jpg";       //Logo Upload
+    $scope.uploadLogo = "static/img/auto/auto-mobiles-logo.png";       //Logo Upload
     $scope.imageUpload = function (event) {
         var files = event.target.files;
         for (var i = 0; i < files.length; i++) {

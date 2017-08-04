@@ -78,10 +78,24 @@ public class FilterDataController extends BaseController {
             query = "select distinct brand as fieldName,  brand as displayName from auto ";
         } else if (dataType.equalsIgnoreCase("model")) {
             query = "select distinct model as fieldName,  model as displayName from auto ";
-        } else if (dataType.equalsIgnoreCase("year")) {
-            query = "select distinct yearOfRegistration as fieldName,  yearOfRegistration as displayName from auto ";
+        } else if (dataType.equalsIgnoreCase("yearOfRegistration")) {
+            query = "select distinct yearOfRegistration as fieldName,  yearOfRegistration as displayName from auto orderby 1";
+        } else if (dataType.equalsIgnoreCase("kilometer")) {
+            query = "select distinct kilometer as fieldName,  kilometer as displayName from auto orderby 1";
+        } else if (dataType.equalsIgnoreCase("price")) {
+            query = "select distinct price as fieldName,  price as displayName from auto orderby 1";
+        } else if (dataType.equalsIgnoreCase("seller")) {
+            query = "select distinct seller as fieldName,  seller as displayName from auto ";
+        } else if (dataType.equalsIgnoreCase("vehicleType")) {
+            query = "select distinct vehicleType as fieldName,  vehicleType as displayName from auto ";
+        } else if (dataType.equalsIgnoreCase("offerType")) {
+            query = "select distinct offerType as fieldName,  offerType as displayName from auto ";
+        } else if (dataType.equalsIgnoreCase("fuelType")) {
+            query = "select distinct fuelType as fieldName,  fuelType as displayName from auto ";
+        } else if (dataType.equalsIgnoreCase("gearBox")) {
+            query = "select distinct gearBox as fieldName,  gearBox as displayName from auto ";
         }
-        
+
         return getSqlData(request, response, query);
     }
 
@@ -109,7 +123,7 @@ public class FilterDataController extends BaseController {
             }
             dashboardFilter = getQueryFilter(dashboardFilter);
 
-            if (dashboardFilter!= null && !isNullOrEmpty(dashboardFilter.trim())) {
+            if (dashboardFilter != null && !isNullOrEmpty(dashboardFilter.trim())) {
                 if (query != null) {
                     if (query.indexOf("where") > 0) {
                         query += " " + dashboardFilter;
@@ -127,7 +141,7 @@ public class FilterDataController extends BaseController {
             valueMap.put("query", Arrays.asList(query));
             valueMap.put("driver", Arrays.asList("com.mysql.jdbc.Driver"));
             valueMap.put("username", Arrays.asList("root"));
-            valueMap.put("password", Arrays.asList("root"));
+            valueMap.put("password", Arrays.asList("test@123"));
             valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/retail_prod"));
 
             String data = Rest.getData(url, valueMap);

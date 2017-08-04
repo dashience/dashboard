@@ -249,6 +249,33 @@
         vertical-align: middle;
 
     }
+
+    .slider {
+        position: relative;
+        text-align: left;
+        border: 1px solid gray;
+        height: 0.6em;
+    }
+    .slider .handle {
+        position: absolute;
+        z-index: 2;
+        width: 1.2em;
+        height: 1.2em;
+        background-color: gray;
+    }
+    .handle {
+        top: -0.3em;
+        margin-left: -0.6em;
+    }
+    .slider .range {
+        position: absolute;
+        z-index: 1;
+        display: block;
+        font-size: .7em;
+        background-color: red;
+        top: 0;
+        height: 100%;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
@@ -301,6 +328,29 @@
                 </div>
                 <div>
                     <div>
+                        <label>Brand</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(brands)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters">  
+                                <div class="form-group">
+                                    <div class="has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchBrands.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="brand in brands|filter:searchBrands">
+                                    <input type="checkbox" class="inputCheckbox" fieldname="Brand" 
+                                           fieldvalue="{{brand.fieldName}}" ng-model="brand.status" 
+                                           ng-click="updateFilter('none')">
+                                    <span ng-bind-html="brand.displayName| highlight:searchBrands.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
                         <label>Model</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
@@ -322,61 +372,149 @@
                                 </li>
                             </ul>
                         </div>
+                    </div>                    
+                    <div>
+                        <label>Year</label>
+                        <slider-range min="10" max="200" value-min="search.minYear" value-max="search.maxYear"></slider-range>
                     </div>
                     <div>
-                        <label>Brand</label>
+                        <label>Price</label>
+                        <slider-range min="10" max="200" value-min="search.minPrice" value-max="search.maxPrice"></slider-range>
+                    </div>
+                    <div>
+                        <label>Kilometer</label>
+                        <slider-range min="10" max="200" value-min="search.minKilometer" value-max="search.maxKilometer"></slider-range>
+                    </div>
+
+                    <label>Type</label>
+                    <div>
+                        <label>Seller</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(brands)}} Selected</span>
+                                <span class="dateRange-Title">{{getSelctionCount(sellers)}} Selected</span>
                                 <span class="caret dateRange-Title-Icon"></span>
                             </button>
                             <ul class="dropdown-menu filters">  
                                 <div class="form-group">
-                                    <div class="has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchBrand.$" placeholder="Search"/>
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchSellers.$" placeholder="Search"/>
                                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                     </div>
                                 </div>
-                                <li ng-repeat="brand in brands|filter:searchBrands">
-                                    <input type="checkbox" class="inputCheckbox" fieldname="Brand" 
-                                           fieldvalue="{{brand.fieldName}}" ng-model="brand.status" 
+                                <li ng-repeat="seller in sellers| filter:searchSellers">
+                                    <input type="checkbox" fieldname="Seller" fieldvalue="{{seller.fieldName}}" 
+                                           class="inputCheckbox" status="{{seller.status}}" ng-model="seller.status" 
                                            ng-click="updateFilter('none')">
-                                    <span ng-bind-html="brand.displayName| highlight:searchBrand.$"></span>
+                                    <span ng-bind-html="seller.displayName| highlight:searchSellers.$"></span>
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div>  
                     <div>
-                        <label>Year</label>
+                        <label>Vehicle</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(years)}} Selected</span>
+                                <span class="dateRange-Title">{{getSelctionCount(vehicles)}} Selected</span>
                                 <span class="caret dateRange-Title-Icon"></span>
                             </button>
-                            <ul class="dropdown-menu filters filters-city">  
+                            <ul class="dropdown-menu filters">  
                                 <div class="form-group">
-                                    <div class="has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchYear.$" placeholder="Search"/>
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchVehicles.$" placeholder="Search"/>
                                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                     </div>
                                 </div>
-                                <li ng-repeat="year in years|filter:searchState">
-                                    <input type="checkbox" fieldname="Year" 
-                                           fieldvalue="{{year.fieldName}}" class="inputCheckbox" 
-                                           ng-model="year.status" ng-click="updateFilter('none')">
-                                    <span ng-bind-html="year.displayName | highlight:searchYear.$"></span>
+                                <li ng-repeat="vehicle in vehicles| filter:searchVehicles">
+                                    <input type="checkbox" fieldname="Vehicle" fieldvalue="{{vehicle.fieldName}}" 
+                                           class="inputCheckbox" status="{{vehicle.status}}" ng-model="model.status" 
+                                           ng-click="updateFilter('none')">
+                                    <span ng-bind-html="vehicle.displayName| highlight:searchVehicles.$"></span>
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div>  
+                    <div>
+                        <label>Offer</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(offers)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters">  
+                                <div class="form-group">
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchOffers.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="offer in offers| filter:searchOffers">
+                                    <input type="checkbox" fieldname="offer" fieldvalue="{{offer.fieldName}}" 
+                                           class="inputCheckbox" status="{{offer.status}}" ng-model="offer.status" 
+                                           ng-click="updateFilter('none')">
+                                    <span ng-bind-html="offer.displayName| highlight:searchOffers.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div> 
+                    <div>
+                        <label>Fuel</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(fuels)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters">  
+                                <div class="form-group">
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchFuels.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="fuel in fuels| filter:searchFuels">
+                                    <input type="checkbox" fieldname="Fuel" fieldvalue="{{fuel.fieldName}}" 
+                                           class="inputCheckbox" status="{{fuel.status}}" ng-model="fuel.status" 
+                                           ng-click="updateFilter('none')">
+                                    <span ng-bind-html="fuel.displayName| highlight:searchFuels.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>  
+                    <div>
+                        <label>Gear Box</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(gears)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters">  
+                                <div class="form-group">
+                                    <div class="form-group has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchGears.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="gear in gears| filter:searchGears">
+                                    <input type="checkbox" fieldname="Gear" fieldvalue="{{gear.fieldName}}" 
+                                           class="inputCheckbox" status="{{gear.status}}" ng-model="gear.status" 
+                                           ng-click="updateFilter('none')">
+                                    <span ng-bind-html="gear.displayName| highlight:searchGears.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>     
+
+
+
+
+
                 </div>
             </div>
         </div>
     </div>
-<!--    <div class="col-md-10" ng-show="loadAllWidgetObj">  
-        <img src="static/img/logos/loader.gif" width="80"></div>
-        <img src="static/img/logos/dashience-logo.jpg" width="80" />
-    </div>-->
+    <!--    <div class="col-md-10" ng-show="loadAllWidgetObj">  
+            <img src="static/img/logos/loader.gif" width="80"></div>
+            <img src="static/img/logos/dashience-logo.jpg" width="80" />
+        </div>-->
     <div class="col-md-10">
         <div ui-if="reloadAllDirective === true">
             <div ng-repeat="widget in widgets">
@@ -597,7 +735,7 @@
                                 <div class="row report-chat-box">
                                     <div class="report-body-img" ng-if="hideReportsTable === false;">
                                         <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
-                                        <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/sky-zone.jpg" />
+                                        <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/auto/auto-mobiles-logo.png" />
                                     </div>
                                     <div class="form-group">
                                         <ul class="report-body-descr" ng-if="reportDescription">

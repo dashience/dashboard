@@ -16,6 +16,9 @@ function dashboardFormat(column, value) {
     if (column.fieldType === "string") {
         return value;
     }
+    if(column.displayFormat == null){
+        return value;
+    }
     if (column && column.displayFormat) {
         if (column.displayFormat.indexOf("%") > -1) {
             return d3.format(column.displayFormat)(value / 100);
@@ -58,9 +61,16 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showCreateReport = false;
     }
 
-    $scope.models = [];
     $scope.brands = [];
+    $scope.models = [];
     $scope.years = [];
+    $scope.prices = [];
+    $scope.kilometers = [];
+    $scope.sellers = [];
+    $scope.vehicles = [];
+    $scope.offers = [];
+    $scope.fuels = [];
+    $scope.gears = [];
 //    $scope.categories = [];
 //    $scope.subCategories = [];
 
@@ -258,6 +268,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         angular.forEach(filtersArray, function (value) {
             var selectedFilter = $scope.getAllSelected();
             var dashboardFilter = {};
+            if (value == "brand") {
+                $scope.brands = [];
+                var request = $http.get('admin/filterData/getFilter/brand').success(function (response) {
+                    $scope.brands = response.data;
+                    console.log($scope.brands);
+
+                });
+                allRequests.push(request);
+            }
             if (value == "model") {
                 $scope.salesTypes = [];
                 var request = $http.get('admin/filterData/getFilter/model').success(function (response) {
@@ -266,25 +285,88 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 });
                 allRequests.push(request);
             }
-            if (value == "brand") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.brands = [];
-                var request = $http.get('admin/filterData/getFilter/brand?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.brands = response.data;
-                    console.log($scope.brands);
-
+            if (value == "year") {
+                $scope.years = [];
+                var request = $http.get('admin/filterData/getFilter/year').success(function (response) {
+                    $scope.years = response.data;
+                    console.log($scope.years);
                 });
                 allRequests.push(request);
             }
-            if (value == "year") {
+            if (value == "price") {
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 dashboardFilter.year = selectedFilter.Year;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.years = [];
-                var request = $http.get('admin/filterData/getFilter/year?dashboardFilter=' + queryString).success(function (response) {
-                    $scope.years = response.data;
-                    console.log($scope.years);
+                $scope.prices = [];
+                var request = $http.get('admin/filterData/getFilter/price').success(function (response) {
+                    $scope.prices = response.data;
+                    console.log($scope.prices);
+                });
+                allRequests.push(request);
+            }
+            if (value == "kilometer") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.year = selectedFilter.Year;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.kilometers = [];
+                var request = $http.get('admin/filterData/getFilter/kilometer').success(function (response) {
+                    $scope.kilometers = response.data;
+                    console.log($scope.kilometers);
+                });
+                allRequests.push(request);
+            }
+            if (value == "seller") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.year = selectedFilter.Year;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.sellers = [];
+                var request = $http.get('admin/filterData/getFilter/seller').success(function (response) {
+                    $scope.sellers = response.data;
+                    console.log($scope.sellers);
+                });
+                allRequests.push(request);
+            }
+            if (value == "vehicle") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.year = selectedFilter.Year;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.vehicles = [];
+                var request = $http.get('admin/filterData/getFilter/vehicle').success(function (response) {
+                    $scope.vehicles = response.data;
+                    console.log($scope.vehicles);
+                });
+                allRequests.push(request);
+            }
+            if (value == "offer") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.year = selectedFilter.Year;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.offers = [];
+                var request = $http.get('admin/filterData/getFilter/offer').success(function (response) {
+                    $scope.offers = response.data;
+                    console.log($scope.offers);
+                });
+                allRequests.push(request);
+            }
+            if (value == "fuel") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.year = selectedFilter.Year;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.fuels = [];
+                var request = $http.get('admin/filterData/getFilter/fuel').success(function (response) {
+                    $scope.fuels = response.data;
+                    console.log($scope.fuels);
+                });
+                allRequests.push(request);
+            }
+            if (value == "gear") {
+                dashboardFilter.salesType = selectedFilter.SalesType;
+                dashboardFilter.year = selectedFilter.Year;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.gears = [];
+                var request = $http.get('admin/filterData/getFilter/gear').success(function (response) {
+                    $scope.gears = response.data;
+                    console.log($scope.gears);
                 });
                 allRequests.push(request);
             }
@@ -316,7 +398,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
     };
 
-    $scope.updateFilter("model,brand,year");
+    $scope.updateFilter("brand,model,year,price,kilometer,seller,vehicle,offer,fuel,gear");
 
     $scope.getSelctionCount = function (checkboxCollection, type) {
         var count = 0;
