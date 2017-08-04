@@ -277,6 +277,13 @@
         top: 0;
         height: 100%;
     }
+    .unSelectTest{
+        -moz-user-select: none; 
+        -webkit-user-select: none; 
+        -ms-user-select:none; 
+        user-select:none;
+        -o-user-select:none;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
@@ -352,7 +359,7 @@
                         </div>
                     </div>
                     <div>
-                        <label>Model</label>
+                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Model</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                                 <span class="dateRange-Title">{{getSelctionCount(models)}} Selected</span>
@@ -376,19 +383,19 @@
                     </div>                    
                     
                     <div ng-if="yearsMin">
-                        <label>Year ({{search.minYear}} to {{search.maxYear}})</label>
-                        <slider-range min="{{yearsMin}}" max="{{yearsMax}}" ng-click="findSearchYear(search, 'Year')" value-min="search.minYear" value-max="search.maxYear"></slider-range>
+                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Year ({{search.minYear}} to {{search.maxYear}} {{setYearsMinMax(search.minYear, search.maxYear)}})</label>
+                        <slider-range min="{{yearsMin}}" max="{{yearsMax}}" value-min="search.minYear" value-max="search.maxYear" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
                     </div>
                     <div ng-if="priceMax">
-                        <label>Price ({{search.minPrice}} to {{search.maxPrice}})</label>
-                        <slider-range min="{{priceMin}}" max="{{priceMax}}" ng-click="findSearchYear(search, 'Price')" value-min="search.minPrice" value-max="search.maxPrice"></slider-range>
+                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Price ({{filterFormat('$,',search.minPrice)}} to {{filterFormat('$,' ,search.maxPrice)}} {{setPriceMinMax(search.minPrice, search.maxPrice)}})</label>
+                        <slider-range min="{{priceMin}}" max="{{priceMax}}" value-min="search.minPrice" value-max="search.maxPrice" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
                     </div>
                     <div ng-if="kilometerMin">
-                        <label>Kilometer ({{search.minKilometer}} to {{search.maxKilometer}})</label>
-                        <slider-range min="{{kilometerMin}}" max="{{kilometerMax}}" ng-click="findSearchYear(search, 'Kilometer')" value-min="search.minKilometer" value-max="search.maxKilometer"></slider-range>
+                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Kilometer ({{filterFormat(',.0f',search.minKilometer)}} to {{filterFormat(',.0f' ,search.maxKilometer)}} {{setKilometerMinMax(search.minKilometer, search.maxKilometer)}})</label>
+                        <slider-range min="{{kilometerMin}}" max="{{kilometerMax}}" value-min="search.minKilometer" value-max="search.maxKilometer" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
                     </div>
 
-                    <label>Type</label>
+                    <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Type</label>
                     <div>
                         <label>Seller</label>
                         <div class="dropdown">
