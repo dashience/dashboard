@@ -287,7 +287,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             }
             if (value == "year") {
                 $scope.years = [];
-                var request = $http.get('admin/filterData/getFilter/year').success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/yearOfRegistration').success(function (response) {
                     $scope.years = response.data;
                     console.log($scope.years);
                 });
@@ -331,7 +331,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.year = selectedFilter.Year;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.vehicles = [];
-                var request = $http.get('admin/filterData/getFilter/vehicle').success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/vehicleType').success(function (response) {
                     $scope.vehicles = response.data;
                     console.log($scope.vehicles);
                 });
@@ -342,7 +342,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.year = selectedFilter.Year;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.offers = [];
-                var request = $http.get('admin/filterData/getFilter/offer').success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/offerType').success(function (response) {
                     $scope.offers = response.data;
                     console.log($scope.offers);
                 });
@@ -353,7 +353,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.year = selectedFilter.Year;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.fuels = [];
-                var request = $http.get('admin/filterData/getFilter/fuel').success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/fuelType').success(function (response) {
                     $scope.fuels = response.data;
                     console.log($scope.fuels);
                 });
@@ -364,7 +364,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.year = selectedFilter.Year;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.gears = [];
-                var request = $http.get('admin/filterData/getFilter/gear').success(function (response) {
+                var request = $http.get('admin/filterData/getFilter/gearBox').success(function (response) {
                     $scope.gears = response.data;
                     console.log($scope.gears);
                 });
