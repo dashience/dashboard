@@ -79,11 +79,11 @@ public class FilterDataController extends BaseController {
         } else if (dataType.equalsIgnoreCase("model")) {
             query = "select distinct model as fieldName,  model as displayName from auto ";
         } else if (dataType.equalsIgnoreCase("yearOfRegistration")) {
-            query = "select distinct yearOfRegistration as fieldName,  yearOfRegistration as displayName from auto orderby 1";
+            query = "select distinct yearOfRegistration as fieldName,  yearOfRegistration as displayName from auto order by 1";
         } else if (dataType.equalsIgnoreCase("kilometer")) {
-            query = "select distinct kilometer as fieldName,  kilometer as displayName from auto orderby 1";
+            query = "select distinct kilometer as fieldName,  kilometer as displayName from auto order by 1";
         } else if (dataType.equalsIgnoreCase("price")) {
-            query = "select distinct price as fieldName,  price as displayName from auto orderby 1";
+            query = "select distinct price as fieldName,  price as displayName from auto order by 1";
         } else if (dataType.equalsIgnoreCase("seller")) {
             query = "select distinct seller as fieldName,  seller as displayName from auto ";
         } else if (dataType.equalsIgnoreCase("vehicleType")) {
@@ -141,8 +141,8 @@ public class FilterDataController extends BaseController {
             valueMap.put("query", Arrays.asList(query));
             valueMap.put("driver", Arrays.asList("com.mysql.jdbc.Driver"));
             valueMap.put("username", Arrays.asList("root"));
-            valueMap.put("password", Arrays.asList("test@123"));
-            valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/retail_prod"));
+            valueMap.put("password", Arrays.asList("root"));
+            valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/new_skyzone"));
 
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();

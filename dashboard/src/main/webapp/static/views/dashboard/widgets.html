@@ -253,7 +253,8 @@
     .slider {
         position: relative;
         text-align: left;
-        border: 1px solid gray;
+        border: 1px solid #cdcdcd;
+        margin:  5px;
         height: 0.6em;
     }
     .slider .handle {
@@ -272,7 +273,7 @@
         z-index: 1;
         display: block;
         font-size: .7em;
-        background-color: red;
+        background-color: #ddd;
         top: 0;
         height: 100%;
     }
@@ -373,17 +374,18 @@
                             </ul>
                         </div>
                     </div>                    
-                    <div>
-                        <label>Year</label>
-                        <slider-range min="10" max="200" value-min="search.minYear" value-max="search.maxYear"></slider-range>
+                    
+                    <div ng-if="yearsMin">
+                        <label>Year ({{search.minYear}} to {{search.maxYear}})</label>
+                        <slider-range min="{{yearsMin}}" max="{{yearsMax}}" ng-click="findSearchYear(search, 'Year')" value-min="search.minYear" value-max="search.maxYear"></slider-range>
                     </div>
-                    <div>
-                        <label>Price</label>
-                        <slider-range min="10" max="200" value-min="search.minPrice" value-max="search.maxPrice"></slider-range>
+                    <div ng-if="priceMax">
+                        <label>Price ({{search.minPrice}} to {{search.maxPrice}})</label>
+                        <slider-range min="{{priceMin}}" max="{{priceMax}}" ng-click="findSearchYear(search, 'Price')" value-min="search.minPrice" value-max="search.maxPrice"></slider-range>
                     </div>
-                    <div>
-                        <label>Kilometer</label>
-                        <slider-range min="10" max="200" value-min="search.minKilometer" value-max="search.maxKilometer"></slider-range>
+                    <div ng-if="kilometerMin">
+                        <label>Kilometer ({{search.minKilometer}} to {{search.maxKilometer}})</label>
+                        <slider-range min="{{kilometerMin}}" max="{{kilometerMax}}" ng-click="findSearchYear(search, 'Kilometer')" value-min="search.minKilometer" value-max="search.maxKilometer"></slider-range>
                     </div>
 
                     <label>Type</label>

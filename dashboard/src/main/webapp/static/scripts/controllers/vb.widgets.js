@@ -16,7 +16,7 @@ function dashboardFormat(column, value) {
     if (column.fieldType === "string") {
         return value;
     }
-    if(column.displayFormat == null){
+    if (column.displayFormat == null) {
         return value;
     }
     if (column && column.displayFormat) {
@@ -130,11 +130,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
 
     $scope.autoProducts = [{name: 'Model', type: 'model'},
         {name: 'Brand', type: 'brand'},
-        {name: 'None', type: 'none'}, 
+        {name: 'None', type: 'none'},
         {
             name: "Kilometer",
             type: "kilometerRange"
-        }, 
+        },
         {
             name: "Price",
             type: "priceRange"
@@ -289,36 +289,36 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 $scope.years = [];
                 var request = $http.get('admin/filterData/getFilter/yearOfRegistration').success(function (response) {
                     $scope.years = response.data;
-                    console.log($scope.years);
+                    if ($scope.years.length > 0) {
+                        $scope.yearsMin = $scope.years[0].fieldName;
+                        $scope.yearsMax = $scope.years[$scope.years.length - 1].fieldName;
+                    }
                 });
                 allRequests.push(request);
             }
             if (value == "price") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.prices = [];
                 var request = $http.get('admin/filterData/getFilter/price').success(function (response) {
                     $scope.prices = response.data;
-                    console.log($scope.prices);
+                    if ($scope.prices.length > 0) {
+                        $scope.priceMin = $scope.prices[0].fieldName;
+                        $scope.priceMax = $scope.prices[$scope.prices.length - 1].fieldName;
+                    }
                 });
                 allRequests.push(request);
             }
             if (value == "kilometer") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.kilometers = [];
                 var request = $http.get('admin/filterData/getFilter/kilometer').success(function (response) {
                     $scope.kilometers = response.data;
-                    console.log($scope.kilometers);
+                    if ($scope.kilometers.length > 0) {
+                        $scope.kilometerMin = $scope.kilometers[0].fieldName;
+                        $scope.kilometerMax = $scope.kilometers[$scope.kilometers.length - 1].fieldName;
+                    }
                 });
                 allRequests.push(request);
             }
             if (value == "seller") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
                 $scope.sellers = [];
                 var request = $http.get('admin/filterData/getFilter/seller').success(function (response) {
                     $scope.sellers = response.data;
@@ -399,6 +399,48 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.updateFilter("brand,model,year,price,kilometer,seller,vehicle,offer,fuel,gear");
+    
+    $scope.findSearchYear = function (list, type) {
+        console.log(list)
+        var allSelected = {};
+        $('.inputCheckbox:checked').each(function (key, value) {
+            var fieldname = $(value).attr('fieldname');
+            var fieldvalue = $(value).attr('fieldvalue');
+            if (!allSelected[fieldname]) {
+                allSelected[fieldname] = [];
+            }
+            allSelected[fieldname].push(fieldvalue);
+        });
+
+        if (type == 'Year') {
+            if (!allSelected.yearOfRegistration) {
+                allSelected.yearOfRegistration = [];
+            }
+            allSelected.yearOfRegistration.push(list.minYear, list.maxYear)
+        }
+        if (type == 'Price') {
+            if (!allSelected.price) {
+                allSelected.price = [];
+            }
+            allSelected.price.push(list.minPrice, list.maxPrice)
+        }
+        if (type == 'Kilometer') {
+            if (!allSelected.kilometer) {
+                allSelected.kilometer = [];
+            }
+            allSelected.kilometer.push(list.minKilometer, list.maxKilometer)
+        }
+        
+        $scope.reloadAllDirective = false;
+        $scope.widgets.forEach(function (val, key) {
+            val.filterUrlParameter = allSelected;
+        });
+        
+        $timeout(function () {
+//                dispAllFilter(allSelected);
+            $scope.reloadAllDirective = true;
+        }, 500);
+    };
 
     $scope.getSelctionCount = function (checkboxCollection, type) {
         var count = 0;

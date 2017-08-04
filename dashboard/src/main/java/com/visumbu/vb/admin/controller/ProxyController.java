@@ -2049,6 +2049,8 @@ public class ProxyController {
             groupBy.add(frequency);
             select.add(frequency);
             if (frequency.equalsIgnoreCase("monthName")) {
+                groupBy.add("monthOfRegistration");
+                select.add("monthOfRegistration");
                 orderBy.add("monthOfRegistration asc");
             }
         }
@@ -2792,13 +2794,27 @@ public class ProxyController {
             List<String> queryString = new ArrayList<>();
             for (Map.Entry<String, Object> entry : jsonToMap.entrySet()) {
                 String key = entry.getKey();
-                List<String> value = (List<String>) entry.getValue();
+                List<Object> value = (List<Object>) entry.getValue();
                 List<String> innerQuery = new ArrayList<>();
-                for (Iterator<String> iterator = value.iterator(); iterator.hasNext();) {
-                    String valueString = iterator.next();
-                    innerQuery.add(key + " = " + "'" + valueString + "'");
+                System.out.println("TEST KEY ===> " + key);
+                if (key.equalsIgnoreCase("kilometer") || key.equalsIgnoreCase("price") || key.equalsIgnoreCase("yearOfRegistration")) {
+                    String firstValue = null;
+                    String lastValue = null;
+                    for (Iterator<Object> iterator = value.iterator(); iterator.hasNext();) {
+                        String valueString = "" + iterator.next();
+                        if (firstValue == null) {
+                            firstValue = valueString;
+                        }
+                        lastValue = valueString;
+                    }
+                    innerQuery.add(key + " between " + firstValue + " and " + lastValue);
+                } else {
+                    for (Iterator<Object> iterator = value.iterator(); iterator.hasNext();) {
+                        String valueString = "" + iterator.next();
+                        innerQuery.add(key + " = " + "'" + valueString + "'");
+                    }
+                    innerQuery.add(key + " is NULL ");
                 }
-                innerQuery.add(key + " is NULL ");
                 String join = String.join(" OR ", innerQuery);
                 // String output = key + " in " + join;
                 queryString.add(" ( " + join + " ) ");
