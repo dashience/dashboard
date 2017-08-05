@@ -651,8 +651,7 @@
             detachNode = typeof detachNode === 'undefined' ? true : detachNode;
             var maxHeight = 0;
             _.each(nodes, function(n) {
-                console.log("n value is");
-                console.log(n);
+
                 if (detachNode && n._id === null) {
                     if (n.el) {
                         n.el.remove();
