@@ -352,8 +352,8 @@
                                 <li ng-repeat="brand in brands|filter:searchBrands">
                                     <input type="checkbox" class="inputCheckbox" fieldname="Brand" 
                                            fieldvalue="{{brand.fieldName}}" ng-model="brand.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="brand.displayName| highlight:searchBrands.$"></span>
+                                           ng-click="updateFilter('model')">
+                                    <span ng-bind-html="(brand.displayName?brand.displayName:'-') | highlight:searchBrands.$"></span>
                                 </li>
                             </ul>
                         </div>
@@ -376,22 +376,22 @@
                                     <input type="checkbox" fieldname="Model" fieldvalue="{{model.fieldName}}" 
                                            class="inputCheckbox" status="{{model.status}}" ng-model="model.status" 
                                            ng-click="updateFilter('none')">
-                                    <span ng-bind-html="model.displayName| highlight:searchModels.$"></span>
+                                    <span ng-bind-html="(model.displayName ? model.displayName:'-') | highlight:searchModels.$"></span>
                                 </li>
                             </ul>
                         </div>
                     </div>                    
-                    
+
                     <div ng-if="yearsMin">
                         <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Year ({{search.minYear}} to {{search.maxYear}} {{setYearsMinMax(search.minYear, search.maxYear)}})</label>
-                        <slider-range min="{{yearsMin}}" max="{{yearsMax}}" value-min="search.minYear" value-max="search.maxYear" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
+                        <slider-range min="{{yearsMin}}" steps="1" max="{{yearsMax}}" value-min="search.minYear" value-max="search.maxYear" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
                     </div>
                     <div ng-if="priceMax">
-                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Price ({{filterFormat('$,',search.minPrice)}} to {{filterFormat('$,' ,search.maxPrice)}} {{setPriceMinMax(search.minPrice, search.maxPrice)}})</label>
+                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Price ({{filterFormat('$,', search.minPrice)}} to {{filterFormat('$,', search.maxPrice)}} {{setPriceMinMax(search.minPrice, search.maxPrice)}})</label>
                         <slider-range min="{{priceMin}}" max="{{priceMax}}" value-min="search.minPrice" value-max="search.maxPrice" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
                     </div>
                     <div ng-if="kilometerMin">
-                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Kilometer ({{filterFormat(',.0f',search.minKilometer)}} to {{filterFormat(',.0f' ,search.maxKilometer)}} {{setKilometerMinMax(search.minKilometer, search.maxKilometer)}})</label>
+                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Kilometer ({{filterFormat(',.0f', search.minKilometer)}} to {{filterFormat(',.0f', search.maxKilometer)}} {{setKilometerMinMax(search.minKilometer, search.maxKilometer)}})</label>
                         <slider-range min="{{kilometerMin}}" max="{{kilometerMax}}" value-min="search.minKilometer" value-max="search.maxKilometer" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
                     </div>
 
@@ -414,7 +414,7 @@
                                     <input type="checkbox" fieldname="Seller" fieldvalue="{{seller.fieldName}}" 
                                            class="inputCheckbox" status="{{seller.status}}" ng-model="seller.status" 
                                            ng-click="updateFilter('none')">
-                                    <span ng-bind-html="seller.displayName| highlight:searchSellers.$"></span>
+                                    <span ng-bind-html="(seller.displayName?seller.displayName:'-') | highlight:searchSellers.$"></span>
                                 </li>
                             </ul>
                         </div>
@@ -434,10 +434,10 @@
                                     </div>
                                 </div>
                                 <li ng-repeat="vehicle in vehicles| filter:searchVehicles">
-                                    <input type="checkbox" fieldname="Vehicle" fieldvalue="{{vehicle.fieldName}}" 
-                                           class="inputCheckbox" status="{{vehicle.status}}" ng-model="model.status" 
+                                    <input type="checkbox" fieldname="vehicleType" fieldvalue="{{vehicle.fieldName}}" 
+                                           class="inputCheckbox" status="{{vehicle.status}}" ng-model="vehicle.status" 
                                            ng-click="updateFilter('none')">
-                                    <span ng-bind-html="vehicle.displayName| highlight:searchVehicles.$"></span>
+                                    <span ng-bind-html="(vehicle.displayName ? vehicle.displayName : '-') | highlight:searchVehicles.$"></span>
                                 </li>
                             </ul>
                         </div>
@@ -457,10 +457,10 @@
                                     </div>
                                 </div>
                                 <li ng-repeat="offer in offers| filter:searchOffers">
-                                    <input type="checkbox" fieldname="offer" fieldvalue="{{offer.fieldName}}" 
+                                    <input type="checkbox" fieldname="offerType" fieldvalue="{{offer.fieldName}}" 
                                            class="inputCheckbox" status="{{offer.status}}" ng-model="offer.status" 
                                            ng-click="updateFilter('none')">
-                                    <span ng-bind-html="offer.displayName| highlight:searchOffers.$"></span>
+                                    <span ng-bind-html="(offer.displayName?offer.displayName:'-') | highlight:searchOffers.$"></span>
                                 </li>
                             </ul>
                         </div>
@@ -480,10 +480,10 @@
                                     </div>
                                 </div>
                                 <li ng-repeat="fuel in fuels| filter:searchFuels">
-                                    <input type="checkbox" fieldname="Fuel" fieldvalue="{{fuel.fieldName}}" 
+                                    <input type="checkbox" fieldname="fuelType" fieldvalue="{{fuel.fieldName}}" 
                                            class="inputCheckbox" status="{{fuel.status}}" ng-model="fuel.status" 
                                            ng-click="updateFilter('none')">
-                                    <span ng-bind-html="fuel.displayName| highlight:searchFuels.$"></span>
+                                    <span ng-bind-html="(fuel.displayName?fuel.displayName:'-') | highlight:searchFuels.$"></span>
                                 </li>
                             </ul>
                         </div>
@@ -503,10 +503,10 @@
                                     </div>
                                 </div>
                                 <li ng-repeat="gear in gears| filter:searchGears">
-                                    <input type="checkbox" fieldname="Gear" fieldvalue="{{gear.fieldName}}" 
+                                    <input type="checkbox" fieldname="gearBox" fieldvalue="{{gear.fieldName}}" 
                                            class="inputCheckbox" status="{{gear.status}}" ng-model="gear.status" 
                                            ng-click="updateFilter('none')">
-                                    <span ng-bind-html="gear.displayName| highlight:searchGears.$"></span>
+                                    <span ng-bind-html="(gear.displayName?gear.displayName:'-') | highlight:searchGears.$"></span>
                                 </li>
                             </ul>
                         </div>

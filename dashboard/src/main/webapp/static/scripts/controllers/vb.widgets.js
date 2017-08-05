@@ -321,28 +321,28 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     }
                 }
             }
-            if (key == "Vehicle") {
+            if (key == "vehicleType") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
                         $scope.selectItems.push({type: "Vehicle", name: value[i]});
                     }
                 }
             }
-            if (key == "Offer") {
+            if (key == "offerType") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
                         $scope.selectItems.push({type: "Offer", name: value[i]});
                     }
                 }
             }
-            if (key == "Fuel") {
+            if (key == "fuelType") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
                         $scope.selectItems.push({type: "Fuel", name: value[i]});
                     }
                 }
             }
-            if (key == "Gear") {
+            if (key == "gearBox") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
                         $scope.selectItems.push({type: "Gear", name: value[i]});
@@ -368,8 +368,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 allRequests.push(request);
             }
             if (value == "model") {
-                $scope.salesTypes = [];
-                var request = $http.get('admin/filterData/getFilter/model').success(function (response) {
+                $scope.models = [];
+                dashboardFilter.brand = selectedFilter.Brand;
+                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                var request = $http.get('admin/filterData/getFilter/model?dashboardFilter=' + queryString).success(function (response) {
                     $scope.models = response.data;
                     console.log($scope.models);
                 });
@@ -418,47 +420,31 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 });
                 allRequests.push(request);
             }
-            if (value == "vehicle") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+            if (value == "vehicleType") {
                 $scope.vehicles = [];
                 var request = $http.get('admin/filterData/getFilter/vehicleType').success(function (response) {
                     $scope.vehicles = response.data;
-                    console.log($scope.vehicles);
                 });
                 allRequests.push(request);
             }
-            if (value == "offer") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+            if (value == "offerType") {
                 $scope.offers = [];
                 var request = $http.get('admin/filterData/getFilter/offerType').success(function (response) {
                     $scope.offers = response.data;
-                    console.log($scope.offers);
                 });
                 allRequests.push(request);
             }
-            if (value == "fuel") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+            if (value == "fuelType") {
                 $scope.fuels = [];
                 var request = $http.get('admin/filterData/getFilter/fuelType').success(function (response) {
                     $scope.fuels = response.data;
-                    console.log($scope.fuels);
                 });
                 allRequests.push(request);
             }
-            if (value == "gear") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
+            if (value == "gearBox") {
                 $scope.gears = [];
                 var request = $http.get('admin/filterData/getFilter/gearBox').success(function (response) {
                     $scope.gears = response.data;
-                    console.log($scope.gears);
                 });
                 allRequests.push(request);
             }
@@ -515,9 +501,9 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
     };
 
-    $scope.updateFilter("brand,model,year,price,kilometer,seller,vehicle,offer,fuel,gear");
+    $scope.updateFilter("brand,model,year,price,kilometer,seller,vehicleType,offerType,fuelType,gearBox");
 
-    $scope.getSelctionCount = function (checkboxCollection, type) {
+    $scope.getSelctionCount = function (checkboxCollection) {
         var count = 0;
         if (!checkboxCollection) {
             return;
@@ -531,6 +517,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.deleteFilterItem = function (index, obj) {
+        console.log(obj)
         var allSelected = {};
         var reloadType;
         $scope.reloadAllDirective = false;
@@ -699,7 +686,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
         $scope.$apply($scope.models);
         $scope.$apply($scope.brands);
-
+        $scope.$apply($scope.sellers);
+        $scope.$apply($scope.vehicles);
+        $scope.$apply($scope.offers);
+        $scope.$apply($scope.fuels);
+        $scope.$apply($scope.gears);
         if (reload == true) {
             $timeout(function () {
                 $scope.updateFilter(reloadType);
