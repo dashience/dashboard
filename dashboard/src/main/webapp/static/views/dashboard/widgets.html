@@ -277,6 +277,13 @@
         top: 0;
         height: 100%;
     }
+    .unSelectTest{
+        -moz-user-select: none; 
+        -webkit-user-select: none; 
+        -ms-user-select:none; 
+        user-select:none;
+        -o-user-select:none;
+    }
 </style>
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
@@ -328,182 +335,225 @@
                     </div>
                 </div>
                 <div>
-                    <div>
-                        <label>Brand</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(brands)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters">  
-                                <div class="form-group">
-                                    <div class="has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchBrands.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                    </div>
-                                </div>
-                                <li ng-repeat="brand in brands|filter:searchBrands">
-                                    <input type="checkbox" class="inputCheckbox" fieldname="Brand" 
-                                           fieldvalue="{{brand.fieldName}}" ng-model="brand.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="brand.displayName| highlight:searchBrands.$"></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <label>Model</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(models)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters">  
-                                <div class="form-group">
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchModels.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                    </div>
-                                </div>
-                                <li ng-repeat="model in models| filter:searchModels">
-                                    <input type="checkbox" fieldname="Model" fieldvalue="{{model.fieldName}}" 
-                                           class="inputCheckbox" status="{{model.status}}" ng-model="model.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="model.displayName| highlight:searchModels.$"></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>                    
-                    
-                    <div ng-if="yearsMin">
-                        <label>Year ({{search.minYear}} to {{search.maxYear}})</label>
-                        <slider-range min="{{yearsMin}}" max="{{yearsMax}}" ng-click="findSearchYear(search, 'Year')" value-min="search.minYear" value-max="search.maxYear"></slider-range>
-                    </div>
-                    <div ng-if="priceMax">
-                        <label>Price ({{search.minPrice}} to {{search.maxPrice}})</label>
-                        <slider-range min="{{priceMin}}" max="{{priceMax}}" ng-click="findSearchYear(search, 'Price')" value-min="search.minPrice" value-max="search.maxPrice"></slider-range>
-                    </div>
-                    <div ng-if="kilometerMin">
-                        <label>Kilometer ({{search.minKilometer}} to {{search.maxKilometer}})</label>
-                        <slider-range min="{{kilometerMin}}" max="{{kilometerMax}}" ng-click="findSearchYear(search, 'Kilometer')" value-min="search.minKilometer" value-max="search.maxKilometer"></slider-range>
-                    </div>
 
-                    <label>Type</label>
-                    <div>
-                        <label>Seller</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(sellers)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters">  
-                                <div class="form-group">
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchSellers.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    <div ng-repeat="filterObj in filterObjs| orderBy: 'orderBy'">
+                        <div ng-if="filterObj.type == 'dropdown'">
+                            <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">{{filterObj.displayName}}</label>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                    <span class="dateRange-Title">{{getSelctionCount(filterObj.data)}} Selected</span>
+                                    <span class="caret dateRange-Title-Icon"></span>
+                                </button>
+                                <!--{{filterObj.data}}-->
+                                <ul class="dropdown-menu filters">  
+                                    <div class="form-group">
+                                        <div class="has-feedback">
+                                            <input type="text" class="form-control" ng-model="searchBrands.$" placeholder="Search"/>
+                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                        </div>
                                     </div>
-                                </div>
-                                <li ng-repeat="seller in sellers| filter:searchSellers">
-                                    <input type="checkbox" fieldname="Seller" fieldvalue="{{seller.fieldName}}" 
-                                           class="inputCheckbox" status="{{seller.status}}" ng-model="seller.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="seller.displayName| highlight:searchSellers.$"></span>
-                                </li>
-                            </ul>
+                                    <li ng-repeat="list in filterObj.data">
+                                        <input type="checkbox" class="inputCheckbox" fieldname="{{filterObj.fieldName}}" 
+                                               fieldvalue="{{list.fieldName}}" ng-model="list.status" 
+                                               ng-click="updateFilter(filterObj)">
+                                        <span ng-bind-html="(list.displayName?list.displayName:'-') | highlight:searchBrands.$"></span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>  
-                    <div>
-                        <label>Vehicle</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(vehicles)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters">  
-                                <div class="form-group">
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchVehicles.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                    </div>
-                                </div>
-                                <li ng-repeat="vehicle in vehicles| filter:searchVehicles">
-                                    <input type="checkbox" fieldname="Vehicle" fieldvalue="{{vehicle.fieldName}}" 
-                                           class="inputCheckbox" status="{{vehicle.status}}" ng-model="model.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="vehicle.displayName| highlight:searchVehicles.$"></span>
-                                </li>
-                            </ul>
+                        <div ng-if="filterObj.type == 'range'">
+                            <div ng-if="filterObj.min?filterObj.min:filterObj.max">
+                                <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">
+                                    {{filterObj.displayName}} ({{search.min}} to {{search.max}} {{setMinMax(filterObj, search)}})
+                                    <!--<span ng-bind="event.generatePercent(key)"></span>-->
+                                </label>
+                                <slider-range 
+                                    min="{{filterObj.min}}"
+                                    steps="1" 
+                                    max="{{filterObj.max}}" 
+                                    value-min="search.min" 
+                                    value-max="search.max" 
+                                    ng-click="findSearchRange(search, filterObj); myModel = search">                                                  
+                                </slider-range>
+                            </div>
                         </div>
-                    </div>  
-                    <div>
-                        <label>Offer</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(offers)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters">  
-                                <div class="form-group">
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchOffers.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                    </div>
-                                </div>
-                                <li ng-repeat="offer in offers| filter:searchOffers">
-                                    <input type="checkbox" fieldname="offer" fieldvalue="{{offer.fieldName}}" 
-                                           class="inputCheckbox" status="{{offer.status}}" ng-model="offer.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="offer.displayName| highlight:searchOffers.$"></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div> 
-                    <div>
-                        <label>Fuel</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(fuels)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters">  
-                                <div class="form-group">
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchFuels.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                    </div>
-                                </div>
-                                <li ng-repeat="fuel in fuels| filter:searchFuels">
-                                    <input type="checkbox" fieldname="Fuel" fieldvalue="{{fuel.fieldName}}" 
-                                           class="inputCheckbox" status="{{fuel.status}}" ng-model="fuel.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="fuel.displayName| highlight:searchFuels.$"></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>  
-                    <div>
-                        <label>Gear Box</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">{{getSelctionCount(gears)}} Selected</span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu filters">  
-                                <div class="form-group">
-                                    <div class="form-group has-feedback">
-                                        <input type="text" class="form-control" ng-model="searchGears.$" placeholder="Search"/>
-                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                    </div>
-                                </div>
-                                <li ng-repeat="gear in gears| filter:searchGears">
-                                    <input type="checkbox" fieldname="Gear" fieldvalue="{{gear.fieldName}}" 
-                                           class="inputCheckbox" status="{{gear.status}}" ng-model="gear.status" 
-                                           ng-click="updateFilter('none')">
-                                    <span ng-bind-html="gear.displayName| highlight:searchGears.$"></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>     
+                    </div>
+                    <!--                    <div>
+                                            <label>Brand</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <span class="dateRange-Title">{{getSelctionCount(brands)}} Selected</span>
+                                                    <span class="caret dateRange-Title-Icon"></span>
+                                                </button>
+                                                <ul class="dropdown-menu filters">  
+                                                    <div class="form-group">
+                                                        <div class="has-feedback">
+                                                            <input type="text" class="form-control" ng-model="searchBrands.$" placeholder="Search"/>
+                                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                    <li ng-repeat="brand in brands|filter:searchBrands">
+                                                        <input type="checkbox" class="inputCheckbox" fieldname="Brand" 
+                                                               fieldvalue="{{brand.fieldName}}" ng-model="brand.status" 
+                                                               ng-click="updateFilter('model')">
+                                                        <span ng-bind-html="(brand.displayName?brand.displayName:'-') | highlight:searchBrands.$"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Model</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <span class="dateRange-Title">{{getSelctionCount(models)}} Selected</span>
+                                                    <span class="caret dateRange-Title-Icon"></span>
+                                                </button>
+                                                <ul class="dropdown-menu filters">  
+                                                    <div class="form-group">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" ng-model="searchModels.$" placeholder="Search"/>
+                                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                    <li ng-repeat="model in models| filter:searchModels">
+                                                        <input type="checkbox" fieldname="Model" fieldvalue="{{model.fieldName}}" 
+                                                               class="inputCheckbox" status="{{model.status}}" ng-model="model.status" 
+                                                               ng-click="updateFilter('none')">
+                                                        <span ng-bind-html="(model.displayName ? model.displayName:'-') | highlight:searchModels.$"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>                    
+                    
+                                        <div ng-if="yearsMin">
+                                            <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Year ({{search.minYear}} to {{search.maxYear}} {{setYearsMinMax(search.minYear, search.maxYear)}})</label>
+                                            <slider-range min="{{yearsMin}}" steps="1" max="{{yearsMax}}" value-min="search.minYear" value-max="search.maxYear" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
+                                        </div>
+                                        <div ng-if="priceMax">
+                                            <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Price ({{filterFormat('$,', search.minPrice)}} to {{filterFormat('$,', search.maxPrice)}} {{setPriceMinMax(search.minPrice, search.maxPrice)}})</label>
+                                            <slider-range min="{{priceMin}}" max="{{priceMax}}" value-min="search.minPrice" value-max="search.maxPrice" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
+                                        </div>
+                                        <div ng-if="kilometerMin">
+                                            <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Kilometer ({{filterFormat(',.0f', search.minKilometer)}} to {{filterFormat(',.0f', search.maxKilometer)}} {{setKilometerMinMax(search.minKilometer, search.maxKilometer)}})</label>
+                                            <slider-range min="{{kilometerMin}}" max="{{kilometerMax}}" value-min="search.minKilometer" value-max="search.maxKilometer" ng-click="findSearchRange(search, 'Year,Price,Kilometer')"></slider-range>
+                                        </div>
+                    
+                                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">Type</label>
+                                        <div>
+                                            <label>Seller</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <span class="dateRange-Title">{{getSelctionCount(sellers)}} Selected</span>
+                                                    <span class="caret dateRange-Title-Icon"></span>
+                                                </button>
+                                                <ul class="dropdown-menu filters">  
+                                                    <div class="form-group">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" ng-model="searchSellers.$" placeholder="Search"/>
+                                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                    <li ng-repeat="seller in sellers| filter:searchSellers">
+                                                        <input type="checkbox" fieldname="Seller" fieldvalue="{{seller.fieldName}}" 
+                                                               class="inputCheckbox" status="{{seller.status}}" ng-model="seller.status" 
+                                                               ng-click="updateFilter('none')">
+                                                        <span ng-bind-html="(seller.displayName?seller.displayName:'-') | highlight:searchSellers.$"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>  
+                                        <div>
+                                            <label>Vehicle</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <span class="dateRange-Title">{{getSelctionCount(vehicles)}} Selected</span>
+                                                    <span class="caret dateRange-Title-Icon"></span>
+                                                </button>
+                                                <ul class="dropdown-menu filters">  
+                                                    <div class="form-group">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" ng-model="searchVehicles.$" placeholder="Search"/>
+                                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                    <li ng-repeat="vehicle in vehicles| filter:searchVehicles">
+                                                        <input type="checkbox" fieldname="vehicleType" fieldvalue="{{vehicle.fieldName}}" 
+                                                               class="inputCheckbox" status="{{vehicle.status}}" ng-model="vehicle.status" 
+                                                               ng-click="updateFilter('none')">
+                                                        <span ng-bind-html="(vehicle.displayName ? vehicle.displayName : '-') | highlight:searchVehicles.$"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>  
+                                        <div>
+                                            <label>Offer</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <span class="dateRange-Title">{{getSelctionCount(offers)}} Selected</span>
+                                                    <span class="caret dateRange-Title-Icon"></span>
+                                                </button>
+                                                <ul class="dropdown-menu filters">  
+                                                    <div class="form-group">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" ng-model="searchOffers.$" placeholder="Search"/>
+                                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                    <li ng-repeat="offer in offers| filter:searchOffers">
+                                                        <input type="checkbox" fieldname="offerType" fieldvalue="{{offer.fieldName}}" 
+                                                               class="inputCheckbox" status="{{offer.status}}" ng-model="offer.status" 
+                                                               ng-click="updateFilter('none')">
+                                                        <span ng-bind-html="(offer.displayName?offer.displayName:'-') | highlight:searchOffers.$"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div> 
+                                        <div>
+                                            <label>Fuel</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <span class="dateRange-Title">{{getSelctionCount(fuels)}} Selected</span>
+                                                    <span class="caret dateRange-Title-Icon"></span>
+                                                </button>
+                                                <ul class="dropdown-menu filters">  
+                                                    <div class="form-group">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" ng-model="searchFuels.$" placeholder="Search"/>
+                                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                    <li ng-repeat="fuel in fuels| filter:searchFuels">
+                                                        <input type="checkbox" fieldname="fuelType" fieldvalue="{{fuel.fieldName}}" 
+                                                               class="inputCheckbox" status="{{fuel.status}}" ng-model="fuel.status" 
+                                                               ng-click="updateFilter('none')">
+                                                        <span ng-bind-html="(fuel.displayName?fuel.displayName:'-') | highlight:searchFuels.$"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>  
+                                        <div>
+                                            <label>Gear Box</label>
+                                            <div class="dropdown">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <span class="dateRange-Title">{{getSelctionCount(gears)}} Selected</span>
+                                                    <span class="caret dateRange-Title-Icon"></span>
+                                                </button>
+                                                <ul class="dropdown-menu filters">  
+                                                    <div class="form-group">
+                                                        <div class="form-group has-feedback">
+                                                            <input type="text" class="form-control" ng-model="searchGears.$" placeholder="Search"/>
+                                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                        </div>
+                                                    </div>
+                                                    <li ng-repeat="gear in gears| filter:searchGears">
+                                                        <input type="checkbox" fieldname="gearBox" fieldvalue="{{gear.fieldName}}" 
+                                                               class="inputCheckbox" status="{{gear.status}}" ng-model="gear.status" 
+                                                               ng-click="updateFilter('none')">
+                                                        <span ng-bind-html="(gear.displayName?gear.displayName:'-') | highlight:searchGears.$"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>     -->
 
 
 

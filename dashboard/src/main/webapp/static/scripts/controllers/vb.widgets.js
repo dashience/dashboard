@@ -215,6 +215,197 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query));
     };
 
+
+    $scope.filterFormat = function (column, value) {
+        return d3.format(column)(value);
+    }
+
+    $scope.setYearsMinMax = function (min, max) {
+        $scope.yearsMinSelected = min;
+        $scope.yearsMaxSelected = max;
+    }
+    $scope.setPriceMinMax = function (min, max) {
+        $scope.priceMinSelected = min;
+        $scope.priceMaxSelected = max;
+    }
+    $scope.setKilometerMinMax = function (min, max) {
+        $scope.kilometerMinSelected = min;
+        $scope.kilometerMaxSelected = max;
+    }
+
+    $scope.minMax = [];
+    $scope.setMinMax = function (obj, minMax) {
+//        $scope.minMax.push({fieldName: obj.fieldName, displayName: obj.displayName,  dependent: obj.dependent, min: minMax.min, max: minMax.max})
+//        console.log($scope.minMax)
+    };
+
+//    $scope.$watch("myModel", function (newValue, oldValue) {
+//        console.log(newValue)
+//        console.log(oldValue)
+//        // do something
+//    });
+
+    $scope.filterObjs = [];
+    $http.get('static/datas/filters/filters.json').success(function (response) {
+        $scope.filters = response.filters;
+        $scope.filters.forEach(function (val, k) {
+            var range = {};
+            $http.get(val.url).success(function (response) {
+                var getData = response.data;
+                if (val.type == 'range') {
+                    range.min = getData[0].fieldName;
+                    range.max = getData[getData.length - 1].fieldName;
+                } else {
+                    range.min = "";
+                    range.max = "";
+                }
+                $scope.filterObjs.push({
+                    displayName: val.displayName,
+                    fieldName: val.fieldName,
+                    url: val.url,
+                    orderBy: val.orderBy,
+                    type: val.type,
+                    dependent: val.dependent,
+                    data: getData,
+                    min: range.min, max: range.max
+                });
+            });
+        });
+    });
+
+    $scope.updateFilter = function (filter) {
+        var filterDependent = filter.dependent;
+        var filtersArray = filterDependent.split(",");
+        allRequests = [];
+        var getDependentFilter = [];
+        angular.forEach(filtersArray, function (value) {
+            var getDependentObj = $.grep($scope.filterObjs, function (val) {
+                return val.fieldName == value;
+            })
+            if (getDependentObj.length > 0) {
+                angular.forEach(getDependentObj, function (val, k) {
+                    getDependentFilter.push(val);
+                })
+            }
+        });
+        angular.forEach(getDependentFilter, function (val, k) {
+            var selectedFilter = $scope.getAllSelected();
+            var dashboardFilter = {};
+            dashboardFilter[filter.fieldName] = selectedFilter[filter.fieldName];
+            var queryString = encodeURI(JSON.stringify(dashboardFilter));
+            var range = {};
+            var request = $http.get(val.url + "?dashboardFilter=" + queryString).success(function (response) {
+                var getData = response.data;
+                if (val.type == 'range') {
+                    range.min = getData[0].fieldName;
+                    range.max = getData[getData.length - 1].fieldName;
+                } else {
+                    range.min = "";
+                    range.max = "";
+                }
+                $scope.filterObjs.forEach(function (value, key) {
+                    if (value.fieldName == val.fieldName) {
+                        value.data = getData;
+                        value.min = range.min;
+                        value.max = range.max;
+                    }
+                });
+            });
+
+            allRequests.push(request);
+        });
+
+        $q.all(allRequests).then(function (values) {
+            var allSelected = {};
+            $('.inputCheckbox:checked').each(function (key, value) {
+                var fieldname = $(value).attr('fieldname');
+                var fieldvalue = $(value).attr('fieldvalue');
+                if (!allSelected[fieldname]) {
+                    allSelected[fieldname] = [];
+                }
+                allSelected[fieldname].push(fieldvalue);
+            });
+
+            var fieldName;
+
+            if ($scope.yearsMinSelected) {
+                fieldName = "yearOfRegistration"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.yearsMinSelected, $scope.yearsMaxSelected)
+            }
+            if ($scope.priceMaxSelected) {
+                fieldName = "price"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.priceMinSelected, $scope.priceMaxSelected)
+            }
+            if ($scope.kilometerMinSelected) {
+                fieldName = "kilometer"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.kilometerMinSelected, $scope.kilometerMaxSelected)
+            }
+
+            $scope.reloadAllDirective = false;
+            $scope.widgets.forEach(function (val, key) {
+                val.filterUrlParameter = allSelected;
+            });
+            $timeout(function () {
+                dispAllFilter(allSelected);
+                $scope.reloadAllDirective = true;
+            }, 500);
+        });
+    };
+
+    $scope.findSearchRange = function (list, type) {
+        var allSelected = {};
+        return;
+        var filtersArray = type.split(",");
+        $('.inputCheckbox:checked').each(function (key, value) {
+            var fieldname = $(value).attr('fieldname');
+            var fieldvalue = $(value).attr('fieldvalue');
+            if (!allSelected[fieldname]) {
+                allSelected[fieldname] = [];
+            }
+            allSelected[fieldname].push(fieldvalue);
+        });
+        var fieldName
+        angular.forEach(filtersArray, function (val, k) {
+            if (val == 'Year') {
+                fieldName = "yearOfRegistration"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.yearsMinSelected, $scope.yearsMaxSelected)
+            }
+            if (val == 'Price') {
+                fieldName = "price"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.priceMinSelected, $scope.priceMaxSelected)
+            }
+            if (val == 'Kilometer') {
+                fieldName = "kilometer"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.kilometerMinSelected, $scope.kilometerMaxSelected)
+            }
+        })
+        $scope.reloadAllDirective = false;
+        $scope.widgets.forEach(function (val, key) {
+            val.filterUrlParameter = allSelected;
+        });
+        $timeout(function () {
+            $scope.reloadAllDirective = true;
+        }, 500);
+    }
+
     $scope.getAllSelected = function () {
         var allSelected = {};
         $scope.reloadAllDirective = false;
@@ -231,218 +422,25 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
         return allSelected;
     };
+
+
+
     function dispAllFilter(filterItems) {
         $scope.selectItems = [];
-        angular.forEach(filterItems, function (value, key) {
-            if (key == "Model") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "Model", name: value[i]});
+        angular.forEach(filterItems, function (val, key) {
+            $.grep($scope.filterObjs, function (value, k) {
+                if (value.fieldName == key) {
+                    for (var i = 0; i <= val.length; i++) {
+                        if (val[i]) {
+                            $scope.selectItems.push({type: key, name: val[i]});
+                        }
                     }
                 }
-            }
-            if (key == "Brand") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "Brand", name: value[i]});
-                    }
-                }
-            }
-
-            if (key == "Year") {
-                for (var i = 0; i <= value.length; i++) {
-                    if (value[i]) {
-                        $scope.selectItems.push({type: "Year", name: value[i]});
-                    }
-                }
-            }
-
-
+            });
         });
     }
 
-
-    $scope.updateFilter = function (filters) {
-        var filtersArray = filters.split(",");
-        allRequests = [];
-        angular.forEach(filtersArray, function (value) {
-            var selectedFilter = $scope.getAllSelected();
-            var dashboardFilter = {};
-            if (value == "brand") {
-                $scope.brands = [];
-                var request = $http.get('admin/filterData/getFilter/brand').success(function (response) {
-                    $scope.brands = response.data;
-                    console.log($scope.brands);
-
-                });
-                allRequests.push(request);
-            }
-            if (value == "model") {
-                $scope.salesTypes = [];
-                var request = $http.get('admin/filterData/getFilter/model').success(function (response) {
-                    $scope.models = response.data;
-                    console.log($scope.models);
-                });
-                allRequests.push(request);
-            }
-            if (value == "year") {
-                $scope.years = [];
-                var request = $http.get('admin/filterData/getFilter/yearOfRegistration').success(function (response) {
-                    $scope.years = response.data;
-                    if ($scope.years.length > 0) {
-                        $scope.yearsMin = $scope.years[0].fieldName;
-                        $scope.yearsMax = $scope.years[$scope.years.length - 1].fieldName;
-                    }
-                });
-                allRequests.push(request);
-            }
-            if (value == "price") {
-                $scope.prices = [];
-                var request = $http.get('admin/filterData/getFilter/price').success(function (response) {
-                    $scope.prices = response.data;
-                    if ($scope.prices.length > 0) {
-                        $scope.priceMin = $scope.prices[0].fieldName;
-                        $scope.priceMax = $scope.prices[$scope.prices.length - 1].fieldName;
-                    }
-                });
-                allRequests.push(request);
-            }
-            if (value == "kilometer") {
-                $scope.kilometers = [];
-                var request = $http.get('admin/filterData/getFilter/kilometer').success(function (response) {
-                    $scope.kilometers = response.data;
-                    if ($scope.kilometers.length > 0) {
-                        $scope.kilometerMin = $scope.kilometers[0].fieldName;
-                        $scope.kilometerMax = $scope.kilometers[$scope.kilometers.length - 1].fieldName;
-                    }
-                });
-                allRequests.push(request);
-            }
-            if (value == "seller") {
-                $scope.sellers = [];
-                var request = $http.get('admin/filterData/getFilter/seller').success(function (response) {
-                    $scope.sellers = response.data;
-                    console.log($scope.sellers);
-                });
-                allRequests.push(request);
-            }
-            if (value == "vehicle") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.vehicles = [];
-                var request = $http.get('admin/filterData/getFilter/vehicleType').success(function (response) {
-                    $scope.vehicles = response.data;
-                    console.log($scope.vehicles);
-                });
-                allRequests.push(request);
-            }
-            if (value == "offer") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.offers = [];
-                var request = $http.get('admin/filterData/getFilter/offerType').success(function (response) {
-                    $scope.offers = response.data;
-                    console.log($scope.offers);
-                });
-                allRequests.push(request);
-            }
-            if (value == "fuel") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.fuels = [];
-                var request = $http.get('admin/filterData/getFilter/fuelType').success(function (response) {
-                    $scope.fuels = response.data;
-                    console.log($scope.fuels);
-                });
-                allRequests.push(request);
-            }
-            if (value == "gear") {
-                dashboardFilter.salesType = selectedFilter.SalesType;
-                dashboardFilter.year = selectedFilter.Year;
-                var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.gears = [];
-                var request = $http.get('admin/filterData/getFilter/gearBox').success(function (response) {
-                    $scope.gears = response.data;
-                    console.log($scope.gears);
-                });
-                allRequests.push(request);
-            }
-
-            if (value == "none") {
-            }
-        });
-
-        $q.all(allRequests).then(function (values) {
-            var allSelected = {};
-            $('.inputCheckbox:checked').each(function (key, value) {
-                var fieldname = $(value).attr('fieldname');
-                var fieldvalue = $(value).attr('fieldvalue');
-                if (!allSelected[fieldname]) {
-                    allSelected[fieldname] = [];
-                }
-                allSelected[fieldname].push(fieldvalue);
-            });
-            $scope.reloadAllDirective = false;
-            $scope.widgets.forEach(function (val, key) {
-                val.filterUrlParameter = allSelected;
-            });
-
-            console.log(allSelected)
-            $timeout(function () {
-                dispAllFilter(allSelected);
-                $scope.reloadAllDirective = true;
-            }, 500);
-        });
-    };
-
-    $scope.updateFilter("brand,model,year,price,kilometer,seller,vehicle,offer,fuel,gear");
-    
-    $scope.findSearchYear = function (list, type) {
-        console.log(list)
-        var allSelected = {};
-        $('.inputCheckbox:checked').each(function (key, value) {
-            var fieldname = $(value).attr('fieldname');
-            var fieldvalue = $(value).attr('fieldvalue');
-            if (!allSelected[fieldname]) {
-                allSelected[fieldname] = [];
-            }
-            allSelected[fieldname].push(fieldvalue);
-        });
-
-        if (type == 'Year') {
-            if (!allSelected.yearOfRegistration) {
-                allSelected.yearOfRegistration = [];
-            }
-            allSelected.yearOfRegistration.push(list.minYear, list.maxYear)
-        }
-        if (type == 'Price') {
-            if (!allSelected.price) {
-                allSelected.price = [];
-            }
-            allSelected.price.push(list.minPrice, list.maxPrice)
-        }
-        if (type == 'Kilometer') {
-            if (!allSelected.kilometer) {
-                allSelected.kilometer = [];
-            }
-            allSelected.kilometer.push(list.minKilometer, list.maxKilometer)
-        }
-        
-        $scope.reloadAllDirective = false;
-        $scope.widgets.forEach(function (val, key) {
-            val.filterUrlParameter = allSelected;
-        });
-        
-        $timeout(function () {
-//                dispAllFilter(allSelected);
-            $scope.reloadAllDirective = true;
-        }, 500);
-    };
-
-    $scope.getSelctionCount = function (checkboxCollection, type) {
+    $scope.getSelctionCount = function (checkboxCollection) {
         var count = 0;
         if (!checkboxCollection) {
             return;
@@ -456,36 +454,19 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     };
 
     $scope.deleteFilterItem = function (index, obj) {
-        console.log(obj)
         var allSelected = {};
         var reloadType;
         $scope.reloadAllDirective = false;
         $scope.selectItems.splice(index, 1);
-        console.log($scope.selectItems)
-        if (obj.type == "Model") {
-            angular.forEach($scope.models, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
-                    reloadType = "none";
-                }
-            });
-        }
-        if (obj.type == "Brand") {
-            angular.forEach($scope.brands, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
-                    reloadType = "none";
-                }
-            });
-        }
 
-        if (obj.type == "Year") {
-            angular.forEach($scope.years, function (val, key) {
-                if (val.fieldName == obj.name) {
-                    val.status = false;
+        $scope.filterObjs.forEach(function (val, k) {
+            angular.forEach(val.data, function (value) {
+                if (value.fieldName === obj.name) {
+                    value.status = false;
+                    reloadType = "none";
                 }
             });
-        }
+        });
 
         if (!reloadType) {
             reloadType = "none";
@@ -500,11 +481,33 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 }
                 allSelected[fieldname].push(fieldvalue);
             });
+            var fieldName;
+
+            if ($scope.yearsMinSelected) {
+                fieldName = "yearOfRegistration"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.yearsMinSelected, $scope.yearsMaxSelected)
+            }
+            if ($scope.priceMaxSelected) {
+                fieldName = "price"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.priceMinSelected, $scope.priceMaxSelected)
+            }
+            if ($scope.kilometerMinSelected) {
+                fieldName = "kilometer"
+                if (!allSelected[fieldName]) {
+                    allSelected[fieldName] = [];
+                }
+                allSelected[fieldName].push($scope.kilometerMinSelected, $scope.kilometerMaxSelected)
+            }
             $scope.widgets.forEach(function (val, key) {
                 val.filterUrlParameter = allSelected;
             });
             $scope.reloadAllDirective = true;
-            //  $scope.updateFilter(reloadType);
         }, 500);
     };
 
@@ -529,7 +532,43 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 val.status = false;
             }
         });
-        angular.forEach($scope.years, function (val, key) {
+        angular.forEach($scope.sellers, function (val, key) {
+            if (val.fieldName == filterBy.xAxisValue) {
+                val.status = true;
+                reloadType = "none";
+                reload = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.vehicles, function (val, key) {
+            if (val.fieldName == filterBy.xAxisValue) {
+                val.status = true;
+                reloadType = "none";
+                reload = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.offers, function (val, key) {
+            if (val.fieldName == filterBy.xAxisValue) {
+                val.status = true;
+                reloadType = "none";
+                reload = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.fuels, function (val, key) {
+            if (val.fieldName == filterBy.xAxisValue) {
+                val.status = true;
+                reloadType = "none";
+                reload = true;
+            } else {
+                val.status = false;
+            }
+        });
+        angular.forEach($scope.gears, function (val, key) {
             if (val.fieldName == filterBy.xAxisValue) {
                 val.status = true;
                 reloadType = "none";
@@ -540,8 +579,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
         $scope.$apply($scope.models);
         $scope.$apply($scope.brands);
-        $scope.$apply($scope.years);
-
+        $scope.$apply($scope.sellers);
+        $scope.$apply($scope.vehicles);
+        $scope.$apply($scope.offers);
+        $scope.$apply($scope.fuels);
+        $scope.$apply($scope.gears);
         if (reload == true) {
             $timeout(function () {
                 $scope.updateFilter(reloadType);
