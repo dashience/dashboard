@@ -261,27 +261,29 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     ];
     $scope.dataSetFlagValidation = function (dataSource)
-    { console.log(dataSource)
-        if (dataSource === "adwords")
+    {
+        console.log(dataSource)
+        var dataSourceType = dataSource.dataSourceType;
+        if (dataSourceType === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
-        } else if (dataSource === "analytics")
+        } else if (dataSourceType === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = true;
-        } else if (dataSource === "facebook")
+        } else if (dataSourceType === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        } else if (dataSource === "pinterest")
+        } else if (dataSourceType === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
             console.log($scope.report);
@@ -290,31 +292,31 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
 
-        } else if (dataSource === "instagram")
+        } else if (dataSourceType === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
-        } else if (dataSource === "pinterest")
+        } else if (dataSourceType === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
-        } else if (dataSource === "linkedin")
+        } else if (dataSourceType === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
-        } else if (dataSource === "bing")
+        } else if (dataSourceType === "bing")
         {
             $scope.report = $scope.bingPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-        } else if (dataSource === "skyZone")
+        } else if (dataSourceType === "skyZone")
         {
             $scope.report = $scope.skyZone;
             $scope.dataSetFlag = true;
@@ -322,7 +324,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.showLabelName = true;
-        } else if (dataSource === "autoMobiles")
+        } else if (dataSourceType === "autoMobiles")
         {
             console.log(dataSource)
             $scope.report = $scope.autoMobiles;
@@ -331,11 +333,26 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = true;
             $scope.showLabelName = false;
+        } else if (dataSourceType === "dataSetSql") {
+            getDataSets(dataSource)
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.showLabelName = true;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
         }
     };
+
+    function getDataSets(dataSource) {
+        var dataSourceType = dataSource.dataSourceType;
+        $http.get('admin/dataSet/getAllDataSet/' + dataSourceType).success(function (response) {
+            $scope.report = response;
+        });
+    }
+
     $scope.linkedinPerformance = [
         {
             type: 'organic',
@@ -473,8 +490,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
-    
-    
+
+
     $scope.autoMobiles = [{
             name: "Auto",
             type: "auto",
@@ -501,7 +518,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'none'
                 }
             ],
-             productSegments: [
+            productSegments: [
                 {
                     name: "Model",
                     type: "model"
@@ -531,7 +548,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: "none"
                 }
             ]
-    }]   
+        }]
 
     $scope.bingPerformance = [
         {
@@ -2252,12 +2269,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             if (!dataSet.networkType) {
                 $scope.dataSet.networkType = {name: 'None', type: 'none'};
             } else {
-                getFrequency(frequencyList, frequencyName)
+                getFrequency(frequencyList, frequencyName);
+            }
+            if ($scope.dataSet.dataSourceId.dataSourceType == "dataSetSql") {
+                getAllSets(dataSet)
             }
         }
-        
-       
-
         function getIndex(data, object)
         {
             for (var i = 0; i < object.length; i++)
@@ -2269,6 +2286,16 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             }
         }
     };
+
+    function getAllSets(dataSet) {
+        var dataSourceType = dataSet.dataSourceId.dataSourceType;
+        var dataSetReportName = dataSet.reportName;
+        $http.get('admin/dataSet/getAll/' + dataSourceType + "/" + dataSetReportName).success(function (response) {
+            $scope.timeSegment = response.level;
+            $scope.productSegment = response.segment;
+            $scope.frequency = response.frequency;
+        })
+    }
 
     function getProductSegment(productList, productSegmentName) {
         productList.forEach(function (val, key) {
@@ -2474,8 +2501,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.timeSegFlag = true;
                 $scope.showLabelName = true;
                 $scope.productSegFlag = true;
-            }
-            else if (dataSet.dataSourceId.dataSourceType === "autoMobiles")
+            } else if (dataSet.dataSourceId.dataSourceType === "autoMobiles")
             {
                 $scope.report = $scope.autoMobiles;
                 $scope.getTimeSegements(dataSet);
@@ -2484,7 +2510,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.timeSegFlag = true;
                 $scope.showLabelName = true;
                 $scope.productSegFlag = true;
-            }else {
+            } else if (dataSet.dataSourceId.dataSourceType === "dataSetSql") {
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = true;
+                $scope.timeSegFlag = true;
+                $scope.showLabelName = true;
+                $scope.productSegFlag = true;
+            } else {
                 $scope.dataSetFlag = false;
                 $scope.nwStatusFlag = false;
             }

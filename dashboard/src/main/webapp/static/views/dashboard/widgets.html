@@ -365,7 +365,7 @@
                             <div ng-if="filterObj.min?filterObj.min:filterObj.max">
                                 <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">
                                     {{filterObj.displayName}} ({{search.min}} to {{search.max}} {{setMinMax(filterObj, search)}})
-                                    <!--<span ng-bind="event.generatePercent(key)"></span>-->
+                                    <span ng-watch="event.generatePercent(search)"></span>
                                 </label>
                                 <slider-range 
                                     min="{{filterObj.min}}"

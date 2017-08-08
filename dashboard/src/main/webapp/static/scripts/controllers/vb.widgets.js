@@ -245,6 +245,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
 //        // do something
 //    });
 
+    $scope.generatePercent = function (minMax) {
+        console.log(minMax);
+    };
+
     $scope.filterObjs = [];
     $http.get('static/datas/filters/filters.json').success(function (response) {
         $scope.filters = response.filters;
