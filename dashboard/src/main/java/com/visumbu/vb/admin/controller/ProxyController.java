@@ -26,6 +26,7 @@ import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
+import com.visumbu.vb.model.DataSourceFilter;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -158,11 +159,7 @@ public class ProxyController {
         }
     }
 
-    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
-
-        Map returnMap = new HashMap<>();
+    private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest request, HttpServletResponse response) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         String joinDataSetIdStr = request.getParameter("joinDataSetId");
         String dataSourceId = request.getParameter("dataSourceId");
@@ -179,6 +176,15 @@ public class ProxyController {
         if (joinDataSetId == null) {
             valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
         }
+
+        return valueMap;
+    }
+
+    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
+
+        Map returnMap = new HashMap<>();
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String dataSetId = request.getParameter("dataSetId");
@@ -218,6 +224,7 @@ public class ProxyController {
 //
 //            }
 //        } else {
+        MultiValueMap<String, String> valueMap = getValueMapFromRequest(request, response);
         returnMap = getData(valueMap, request, response);
 //        }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
@@ -482,6 +489,37 @@ public class ProxyController {
 
     private boolean isNullOrEmpty(String value) {
         return value == null || value.isEmpty() || value.equalsIgnoreCase("null") || value.equalsIgnoreCase("undefined");
+    }
+
+    @RequestMapping(value = "getFilters/{dataSourceId}/{dataSetReport}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map getFilters(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSourceId, @PathVariable String dataSetReport) {
+        Map returnMap = new HashMap<>();
+        DataSource dataSource = uiService.getDataSourceById(dataSourceId);
+        List<DataSourceFilter> dataSourceFilters = uiService.getDataSourceFilter(dataSource.getName(), dataSetReport);
+        returnMap.put("filters", dataSourceFilters);
+        return returnMap;
+    }
+
+    @RequestMapping(value = "getFilterData/{dataSourceId}/{dataSetReport}/{fieldName}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map getDataSetFilterData(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSourceId, @PathVariable String dataSetReport, @PathVariable String fieldName) {
+        Map returnMap = new HashMap<>();
+        String query = "select distinct(" + fieldName + ") " + fieldName + dataSetReport;
+        MultiValueMap<String, String> valueMap = getValueMapFromRequest(request, response);
+        DataSource dataSource = uiService.getDataSourceById(dataSourceId);
+        if (dataSource != null) {
+            valueMap.put("connectionUrl", Arrays.asList(dataSource.getConnectionString()));
+            valueMap.put("dataSourceId", Arrays.asList(dataSource.getId() + ""));
+            valueMap.put("driver", Arrays.asList(dataSource.getDataSourceType()));
+            valueMap.put("dataSourceType", Arrays.asList(dataSource.getDataSourceType()));
+            valueMap.put("username", Arrays.asList(dataSource.getUserName()));
+            valueMap.put("password", Arrays.asList(dataSource.getPassword()));
+        }
+        valueMap.put("query", Arrays.asList(query));
+        returnMap = getSqlData(valueMap, request, response);
+        returnMap.put("filters", returnMap.get("data"));
+        return returnMap;
     }
 
     public Map getData(MultiValueMap request, HttpServletRequest httpRequest, HttpServletResponse response) {

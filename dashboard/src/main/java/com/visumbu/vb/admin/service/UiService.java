@@ -25,6 +25,7 @@ import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
+import com.visumbu.vb.model.DataSourceFilter;
 import com.visumbu.vb.model.DataSourceSetting;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
@@ -1301,6 +1302,10 @@ public class UiService {
 
     public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
         return uiDao.getJoinDataSetById(joinDataSetId);
+    }
+    
+    public List<DataSourceFilter> getDataSourceFilter(String dataSourceName, String reportName) {
+        return uiDao.getDataSourceFilters(dataSourceName, reportName);
     }
 
     public String getDataSourceQuery(String dataSource, String dataSetReportName, String level, String segment, String frequency, Date startDate, Date endDate) {
