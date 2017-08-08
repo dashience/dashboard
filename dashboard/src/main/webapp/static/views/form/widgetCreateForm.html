@@ -396,7 +396,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls') || widgetObj.dataSourceId.dataSourceType == 'join')">
+                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === 'csv' || widgetObj.dataSourceId.dataSourceType == 'sql' || widgetObj.dataSourceId.dataSourceType == 'xls' || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label>Time Segment</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
@@ -414,7 +414,7 @@
                                 </div>
                             </div>
 
-                            <div class="data-3" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
+                            <div class="data-3" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === 'csv' || widgetObj.dataSourceId.dataSourceType == 'sql' || widgetObj.dataSourceId.dataSourceType == 'xls' || widgetObj.dataSourceId.dataSourceType == 'analytics' || widgetObj.dataSourceId.dataSourceType == 'pinterest' || widgetObj.dataSourceId.dataSourceType == 'https' || widgetObj.dataSourceId.dataSourceType == 'facebook' || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-12"> 
                                     <label>Network Type</label>
                                     <select class="form-control"
@@ -514,7 +514,7 @@
                                 <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
                                     <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}}</a>
                                 </label>
-                                 <span class="pull-right" ng-if="collectionField.expression">
+                                <span class="pull-right" ng-if="collectionField.expression">
                                     <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
                                         <i class="fa fa-pencil"></i>
                                     </a>
@@ -680,7 +680,7 @@
                 </div>
             </div>            
             <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
-            <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
+                <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
                 <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
             </div>
         </div>
