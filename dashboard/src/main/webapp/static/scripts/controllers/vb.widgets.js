@@ -86,6 +86,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
+        console.log($scope.dataSources);
     });
 
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
