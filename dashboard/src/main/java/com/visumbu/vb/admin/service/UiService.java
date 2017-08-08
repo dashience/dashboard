@@ -25,6 +25,7 @@ import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
+import com.visumbu.vb.model.DataSourceSetting;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -42,6 +43,7 @@ import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
+import com.visumbu.vb.utils.DateUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1299,5 +1301,70 @@ public class UiService {
 
     public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
         return uiDao.getJoinDataSetById(joinDataSetId);
+    }
+
+    public String getDataSourceQuery(String dataSource, String dataSetReportName, String level, String segment, String frequency, Date startDate, Date endDate) {
+        List<String> select = new ArrayList<>();
+        List<String> groupBy = new ArrayList<>();
+        List<String> orderBy = new ArrayList<>();
+
+        List<DataSourceSetting> dataSourceSettings = uiDao.getDataSourceSettings(dataSource, dataSetReportName);
+
+        for (Iterator<DataSourceSetting> iterator = dataSourceSettings.iterator(); iterator.hasNext();) {
+            DataSourceSetting dataSourceSetting = iterator.next();
+            String metricQuery = dataSourceSetting.getMetricQuery();
+            String metricName = dataSourceSetting.getMetricName();
+            String orderByForMetric = dataSourceSetting.getOrderBy();
+            String groupByForMetric = dataSourceSetting.getGroupBy();
+            if (metricQuery == null && metricName == null) {
+                continue;
+            }
+            String metricQueryName = (metricQuery == null ? metricName : metricQuery) + " " + (metricName == null ? metricQuery : metricName);
+            select.add(metricQueryName);
+            if (groupByForMetric != null && !groupByForMetric.trim().isEmpty()) {
+                groupBy.add(groupByForMetric);
+            }
+
+            if (orderByForMetric != null && !orderByForMetric.trim().isEmpty()) {
+                orderBy.add(orderByForMetric);
+            }
+
+        }
+
+        if (level != null && !level.equalsIgnoreCase("Overall")) {
+            groupBy.add(level);
+            select.add(level);
+        }
+
+        if (segment != null && !segment.equalsIgnoreCase("none")) {
+            groupBy.add(segment);
+            select.add(segment);
+           
+        }
+        if (frequency != null && !frequency.equalsIgnoreCase("none")) {
+            groupBy.add(frequency);
+            select.add(frequency);
+            
+        }
+        String selectQry = String.join(",", select);
+        String groupQry = String.join(",", groupBy);
+        String orderQry = String.join(",", orderBy);
+
+        String orderByAppender = "";
+        if (orderQry != null && !(orderQry.trim().isEmpty())) {
+            orderByAppender = " order by " + orderQry;
+        }
+        String groupByAppender = "";
+        if (groupQry != null && !(groupQry.trim().isEmpty())) {
+            groupByAppender = " group by " + groupQry;
+        }
+        String tableName = "auto";
+
+        String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+        String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
+        String whereCondition = " where dateCreated between '" + startDateStr + "' and '" + endDateStr + "' ";
+        String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender + " " + orderByAppender;
+        return queryStr;
+
     }
 }

@@ -20,6 +20,7 @@ import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
+import com.visumbu.vb.model.DataSourceSetting;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -928,5 +929,14 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("user", user);
         return (UserPreferences) query.uniqueResult();
+    }
+
+    public List<DataSourceSetting> getDataSourceSettings(String dataSource, String dataSetReportName) {
+        String queryStr = "SELECT d FROM DataSourceSetting d where d.dataSourceName = :dataSourceName and d.reportName = :reportName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceName", dataSource);
+        query.setParameter("reportName", dataSetReportName);
+        List<DataSourceSetting> list = query.list();
+        return list;
     }
 }

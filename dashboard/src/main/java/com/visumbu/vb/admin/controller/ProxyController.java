@@ -17,6 +17,7 @@ import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.bean.DataSourceMetric;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.controller.BaseController;
@@ -520,6 +521,10 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getBingData(request, httpRequest, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
+        } else if (dataSourceType.equalsIgnoreCase("dataSetsql")) {
+            returnMap = getDataSourceData(request, httpRequest, response);
+            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+            returnMap.put("columnDefs", getColumnDefObject(data));
         } else if (dataSourceType.equalsIgnoreCase("sql")) {
             returnMap = getSqlData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
@@ -2126,6 +2131,56 @@ public class ProxyController {
             }
         }
         String query = getAutoQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
+
+        valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
+
+        return getSqlData(valueMap, request, response);
+    }
+
+    private Map getDataSourceData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
+        String dataSourceName = getFromMultiValueMap(valueMap, "dataSourceName");
+        String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
+        String productSegment = getFromMultiValueMap(valueMap, "productSegment");
+        String filter = getFromMultiValueMap(valueMap, "networkType");
+        if (filter == null) {
+            filter = getFromMultiValueMap(valueMap, "filter");
+        }
+
+        // System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
+        if (timeSegment != null && timeSegment.equalsIgnoreCase("none")) {
+            timeSegment = null;
+        }
+
+        if (productSegment != null && productSegment.equalsIgnoreCase("none")) {
+            productSegment = null;
+        }
+        if (filter != null && filter.equalsIgnoreCase("none")) {
+            filter = null;
+        }
+
+        String level = isNullOrEmpty(timeSegment) ? null : timeSegment;
+        String segment = isNullOrEmpty(productSegment) ? null : productSegment;
+        String frequency = isNullOrEmpty(filter) ? null : filter;
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
+        String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
+
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
+        String query = uiService.getDataSourceQuery(dataSourceName, dataSetReportName, level, segment, frequency, startDate, endDate);
 
         valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
 
