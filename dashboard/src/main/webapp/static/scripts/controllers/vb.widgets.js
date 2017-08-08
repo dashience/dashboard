@@ -223,15 +223,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     $scope.setYearsMinMax = function (min, max) {
         $scope.yearsMinSelected = min;
         $scope.yearsMaxSelected = max;
-    }
+    };
     $scope.setPriceMinMax = function (min, max) {
         $scope.priceMinSelected = min;
         $scope.priceMaxSelected = max;
-    }
+    };
     $scope.setKilometerMinMax = function (min, max) {
         $scope.kilometerMinSelected = min;
         $scope.kilometerMaxSelected = max;
-    }
+    };
 
     $scope.minMax = [];
     $scope.setMinMax = function (obj, minMax) {
@@ -244,6 +244,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
 //        console.log(oldValue)
 //        // do something
 //    });
+
+    $scope.generatePercent = function (minMax) {
+        console.log(minMax);
+    };
 
     $scope.filterObjs = [];
     $http.get('static/datas/filters/filters.json').success(function (response) {
@@ -1111,6 +1115,29 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
     }
 
+
+    $scope.selectWidgetDataSource = function (dataSourceName) {
+        if (!dataSourceName) {
+            return;
+        }
+        $scope.y1Column = "";
+        $scope.selectPieChartXAxis = "";
+        $scope.selectPieChartYAxis = "";
+        $scope.y2Column = "";
+        $scope.tickerItem = "";
+        $scope.funnelItem = "";
+        $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
+            $scope.dataSets = [];
+            angular.forEach(response, function (value, key) {
+                if (!value.dataSourceId) {
+                    return;
+                }
+                if (value.dataSourceId.name === dataSourceName.name) {
+                    $scope.dataSets.push(value);
+                }
+            });
+        });
+    };
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
         $scope.hideSelectedColumn = true;
         $scope.dispHideBuilder = true;
@@ -1129,13 +1156,16 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-        getSegments(widget);
+
+        var getDataSourceType = widget.dataSourceId ? widget.dataSourceId.dataSourceType : null;
+        if (getDataSourceType != "dataSetSql") {
+            getSegments(widget);
+        } else {
+            getAllSets(widget)
+        }
         widget.jsonData = null;
         widget.queryFilter = null;
         var url = "admin/proxy/getData?";
-//        if (getDataSet.dataSourceId.dataSourceType == "sql") {
-//            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-//        }
         var dataSourcePassword;
         if (getDataSet.dataSourceId.password) {
             dataSourcePassword = getDataSet.dataSourceId.password;
@@ -1165,12 +1195,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 "&fieldsOnly=true").success(function (response) {
             $scope.afterLoadWidgetColumns = true;
             $scope.hideSelectedColumn = false;
-//            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
-//                $scope.collectionFields = response.columnDefs;
-//            } else {
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
-//            }
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
             angular.forEach($scope.collectionFields, function (value, key) {
@@ -1181,28 +1207,45 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
     };
 
-    $scope.selectWidgetDataSource = function (dataSourceName) {
-        if (!dataSourceName) {
-            return;
-        }
-        $scope.y1Column = "";
-        $scope.selectPieChartXAxis = "";
-        $scope.selectPieChartYAxis = "";
-        $scope.y2Column = "";
-        $scope.tickerItem = "";
-        $scope.funnelItem = "";
-        $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
-            $scope.dataSets = [];
-            angular.forEach(response, function (value, key) {
-                if (!value.dataSourceId) {
-                    return;
-                }
-                if (value.dataSourceId.name === dataSourceName.name) {
-                    $scope.dataSets.push(value);
+    function getAllSets(widget) {
+        var dataSet = widget;
+        var dataSourceType = dataSet.dataSourceId.dataSourceType;
+        var dataSetReportName = dataSet.reportName;
+        var timeSegmentType = widget.timeSegment;
+        var productSegmentType = widget.productSegment;
+        var frequencyType = widget.networkType;
+        $http.get('admin/dataSet/getAll/' + dataSourceType + "/" + dataSetReportName).success(function (response) {
+            $scope.timeSegment = response.level;
+            $scope.productSegment = response.segment;
+            $scope.frequencies = response.frequency;
+            
+            if (!$scope.timeSegments) {
+                return;
+            }
+            $scope.timeSegments.forEach(function (val, key) {
+                if (val.type === timeSegmentType) {
+                    $scope.widgetObj.timeSegment = val;
                 }
             });
-        });
-    };
+            if (!$scope.productSegments) {
+                return;
+            }
+            $scope.productSegments.forEach(function (val, key) {
+                if (val.type === productSegmentType) {
+                    $scope.widgetObj.productSegment = val;
+                }
+            });            
+            if (!$scope.frequencies) {
+                return;
+            }
+            $scope.frequencies.forEach(function (val, key) {
+                if (val.type === frequencyType) {
+                    $scope.widgetObj.networkType = val;
+                }
+            });
+
+        })
+    }
 
     function getSegments(widget) {
         console.log(widget)

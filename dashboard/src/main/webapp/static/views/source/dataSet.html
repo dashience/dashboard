@@ -193,7 +193,7 @@
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id"
                                             placeholder="Data Source"
                                             ng-value="dataSource.connectionString"
-                                            ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId); showPreviewChart = false;">
+                                            ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId); selectXlsSheet(dataSet.dataSourceId); showPreviewChart = false;">
                                         <option value="" selected="selected" ng-disabled="true">Choose one</option>
                                     </select>
 
