@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DataSetColumnBean;
+import com.visumbu.vb.bean.DataSetReport;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
@@ -948,5 +949,12 @@ public class UiDao extends BaseDao {
         query.setParameter("reportName", dataSetReportName);
         List<DataSourceFilter> list = query.list();
         return list;
+    }
+
+    public List getDataSetReport(String dataSourceName) {
+        String queryStr = "SELECT distinct d.reportName FROM DataSourceSetting d where d.dataSourceName = :dataSourceName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceName", dataSourceName);
+        return query.list();
     }
 }
