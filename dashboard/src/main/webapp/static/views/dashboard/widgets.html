@@ -277,535 +277,296 @@
 <div ng-show="loading" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div>
 
-    <!--    <div test-Directive>
-            
-        </div>-->
-    <div test-Directive my-directive-fn="controllerFunction">
-        <div   gridstack class="grid-stack grid1" options="options" 
-               on-change="onChange(event,items)" 
-               on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" 
-               on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
-            <div  gridstack-item ng-repeat="(key,widget) in widgets" widgetId="{{widget.id}}" class="grid-stack-item" 
-                  gs-item-x="widget.x" gs-item-y="widget.y"
-                  gs-item-width="widget.width" gs-item-height="widget.height" gs-item-autopos="1"
-                  on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)" >
-                <div class="grid-stack-item-content"  >
-                    <div ng-if="widget.chartType == 'ticker'" >
-                        <div>
-                            <div class="hpanel border-table" >
-                                <div class="panel-tools">
-                                    <a class="refresh" ng-click="directiveTickerFn()" title="Refresh">
-                                        <i class="fa fa-repeat"></i></a>
-                                    <a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-                                    <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" 
-                                       ng-click='setWidgetItems(widget)' 
-                                       class="edit" title="Edit" 
-                                       data-toggle="modal" 
-                                       data-target="#editWidget" 
-                                       data-backdrop="static" 
-                                       data-keyboard="false"><i class="fa fa-pencil"></i>
-                                    </a>
-                                    <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
-                                    <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                                    <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
-                                </div>
-                                <div set-Ticker-Fn="setTickerFn(tickerFn)" widget-Obj="{{widget}}" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+    <div gridstack class="grid-stack grid1" options="options" on-change="onChange(event,items)" 
+         on-drag-start="onDragStart(event,ui)" on-drag-stop="onDragStop(event,ui)" 
+         on-resize-start="onResizeStart(event,ui)" on-resize-stop="onResizeStop(event,ui)">
+        <div  gridstack-item ng-repeat="(key,widget) in widgets" widgetId="{{widget.id}}" class="grid-stack-item" gs-item-x="widget.x" gs-item-y="widget.y"
+             gs-item-width="widget.width" gs-item-height="widget.height" gs-item-autopos="1"
+             on-item-added="onItemAdded(item)" on-item-removed="onItemRemoved(item)" >
+            <div class="grid-stack-item-content" grid-element-height >
+                <div ng-if="widget.chartType == 'ticker'" >
+                    <div>
+                        <div class="hpanel border-table" >
+                            <div class="panel-tools">
+                                <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+                                <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" 
+                                   ng-click='setWidgetItems(widget)' 
+                                   class="edit" title="Edit" 
+                                   data-toggle="modal" 
+                                   data-target="#editWidget" 
+                                   data-backdrop="static" 
+                                   data-keyboard="false"><i class="fa fa-pencil"></i>
+                                </a>
+                                <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                                <!--<a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>-->
+                                <!--<a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>-->
                             </div>
-                        </div>
-                        <!--                    <div id="delete{{widget.id}}" class="modal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <strong>Delete</strong>
-                                                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <span>Want to delete ? </span>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
-                                                            <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>-->
-                    </div>   
-                    <div ng-if="widget.chartType != 'ticker'" >
-                        <div class="col-md-{{widget.width}} table-deeta">
-                            <div class="hpanel hgreen border-table">
-                                <div class="table-deeta">
-                                    <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" >
-                                        <div class="panel-heading">
-                                            <div class="panel-tools">
-                                                <div> 
-                                                    <a title="Favorites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
-                                                    <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
-                                                    <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                                                    <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                                                    <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                                                    <a ng-if="widget.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                                                    <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                                                    <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                                                    <a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                                                    <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-                                                    <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="Edit" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
-
-
-
-
-
-                                                    <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>
-                                                    <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)"  data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
-                                                    <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)"  ng-click="deleteWidgetItem(widget, $index)" data-toggle="modal" data-target="#delete" title="Delete"><i class="fa fa-times"></i></a>
-
-                                                    <a ng-if="////widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                                                    <a ng-if="////widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
-                                                </div>
-                                            </div>
-
-                                            <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>
-                                            <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
-
-                                        </div>
-                                        <div class="panel-body" ng-if="widget.chartType === 'line'">
-                                            <div>
-                                                <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
-                                                     line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
-                                                     widget-Id="{{widget.id}}" 
-                                                     widget-Columns="{{widget.columns}}" 
-                                                     widget-Obj="{{widget}}">                                     
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body" ng-if="widget.chartType === 'bar'" >
-                                            <div>
-                                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
-                                                     bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
-                                                     widget-Id="{{widget.id}}" 
-                                                     widget-Columns="{{widget.columns}}"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                                                     widget-Obj="{{widget}}" >                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       >                                     
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body" ng-if="widget.chartType === 'pie'">
-                                            <div>
-                                                <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
-                                                     pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
-                                                     widget-Id="{{widget.id}}" 
-                                                     widget-Columns="{{widget.columns}}" 
-                                                     widget-Obj="{{widget}}">                                     
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body"  ng-if="widget.chartType === 'area'">
-                                            <div>
-                                                <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
-                                                     area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
-                                                     widget-Id="{{widget.id}}"
-                                                     widget-Columns="{{widget.columns}}" 
-                                                     widget-Obj="{{widget}}"
-                                                     chart_Colors="{{widget.chartColors}}">                                     
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="list" ng-if="widget.chartType === 'table'"  adjust-height>
-                                            <div class="table-responsive project-list">
-                                                <div id="changes-height" class="project-list">
-                                                    <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
-                                                         dynamic-Table pdf-function="addToPdf(test)" 
-                                                         dynamic-Table-Source="{{widget.dataSetId}}" 
-                                                         widget-Id="{{widget.id}}" 
-                                                         widget-Obj="{{widget}}" 
-                                                         table-Footer="{{widget.tableFooter}}" 
-                                                         widget-Columns="{{widget.columns}}">                                         
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body"  ng-if="widget.chartType === 'text'">
-                                            <div class="col-md-12">
-                                                <div class="text-widget">
-                                                    <span ng-bind-html="widget.content"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
-                                            <div>
-                                                <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
-                                                     stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
-                                                     widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
-                                                     widget-Obj="{{widget}}">                                     
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="panel-body" ng-if="widget.chartType === 'funnel'" >
-                                            <div>
-                                                <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
-                                                     funnel-Directive funnel-Source="{{widget.dataSetId}}" 
-                                                     funnel-Title-Name="{{widget.widgetTitle}}" 
-                                                     funnel-Id="{{widget.id}}" funnel-Columns="{{widget.columns}}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>  
-
-                                <div id="delete{{widget.id}}" class="modal">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <strong>Delete</strong>
-                                                <strong><button class="close" data-dismiss="modal">&times;</button></strong>
-                                            </div>
-                                            <div class="modal-body">
-                                                <span>Want to delete ? </span>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
-                                                <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="report-bottomMenu pull-right" ng-if="showReportList[widget.id] == true;">
-                                    <div class="report-menuHeader">
-                                        <div class="col-md-10">
-                                            <i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>
-                                            <h1 class="report-header-title">Add {{widget.widgetTitle| limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
-                                        </div>
-                                        <div class="report-header-tools pull-right">
-                                            <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="report-menuBody">
-                                        <label class="col-sm-2">Report</label>
-                                        <div class="col-sm-10">
-                                            <ui-select ng-model="widget.reportWidget" on-select="selectReport(widget.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
-                                                <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
-                                                <ui-select-choices repeat="report in reportList | filter: $select.search">
-                                                    <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                        <div class="text-center" ng-if="hideReportsTable === true;">
-                                            <img src="static/img/logos/loader.gif" width="40">
-                                        </div>
-                                        <div ng-hide="hideReportsTable" class="report-body-content">
-                                            <div class="row report-chat-box">
-                                                <div class="report-body-img" ng-if="hideReportsTable === false;">
-                                                    <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
-                                                    <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/logos/deeta-logo.png" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <ul class="report-body-descr" ng-if="reportDescription">
-                                                        <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
-                                                            <p>
-                                                                {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
-                                                                <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
-                                                                <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
-                                                            </p>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-                                            <div class="row form-group">
-                                                <div class="col-sm-12">
-                                                    <table class="table table-bordered" ng-show="showReportWidgetName">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Sl.No</th>
-                                                                <th>Widget Name</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr ng-repeat="titleName in reportWidgetTitle">
-                                                                <td>{{$index + 1}}</td>
-                                                                <td>{{titleName.widgetId.widgetTitle}}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <div ng-show="showReportEmptyMessage">
-                                                        <h4><span>{{reportEmptyMessage}}</span></h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="report-footer-btn">
-                                            <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
-                                            <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right">Add</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            end of ticker 
-
+                            <div set-Ticker-Fn="setTickerFn(tickerFn)" widget-Obj="{{widget}}" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
                         </div>
                     </div>
-                </div>
-
-
-
-                <!--    <div ng-repeat="widget in widgets">
-                        <div ng-if="widget.chartType == 'ticker'">
-                            <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
-                                <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
-                                    <div class="panel-tools">
-                                        <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
-                                        <a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-                                        <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" 
-                                           ng-click='setWidgetItems(widget)' 
-                                           class="edit" title="Edit" 
-                                           data-toggle="modal" 
-                                           data-target="#editWidget" 
-                                           data-backdrop="static" 
-                                           data-keyboard="false"><i class="fa fa-pencil"></i>
-                                        </a>
-                                        <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
-                                        <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                                        <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
-                                    </div>
-                                    <div set-Ticker-Fn="setTickerFn(tickerFn)" widget-Obj="{{widget}}" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+<!--                    <div id="delete{{widget.id}}" class="modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <strong>Delete</strong>
+                                    <strong><button class="close" data-dismiss="modal">&times;</button></strong>
                                 </div>
-                            </div>
-                            <div id="delete{{widget.id}}" class="modal">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <strong>Delete</strong>
-                                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
-                                        </div>
-                                        <div class="modal-body">
-                                            <span>Want to delete ? </span>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
-                                            <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
-                                        </div>
-                                    </div>
+                                <div class="modal-body">
+                                    <span>Want to delete ? </span>
                                 </div>
-                            </div>
-                        </div>
-                        <div ng-if="widget.chartType != 'ticker'">
-                                        <div class="col-md-{{widget.width}} table-deeta">
-                                            <div class="hpanel hgreen border-table">
-                            <div class="col-md-{{widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
-                                <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget">
-                                    <div class="panel-heading">
-                                        <div class="panel-tools">
-                                            <div> 
-                                                <a title="Favorites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
-                                                <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
-                                                <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                                                <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                                                <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                                                <a ng-if="widget.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                                                <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                                                <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                                                <a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                                                <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-                
-                                                <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="Edit" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
-                
-                
-                
-                
-                                                <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>
-                                                <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
-                
-                                                <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                                                <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
-                                            </div>
-                                        </div>
-                
-                                        <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>
-                                        <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
-                
-                                    </div>
-                                    <div class="panel-body" ng-if="widget.chartType === 'line'">
-                                        <div>
-                                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
-                                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
-                                                 widget-Id="{{widget.id}}" 
-                                                 widget-Columns="{{widget.columns}}" 
-                                                 widget-Obj="{{widget}}">                                     
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body" ng-if="widget.chartType === 'bar'">
-                                        <div>
-                                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
-                                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
-                                                 widget-Id="{{widget.id}}" 
-                                                 widget-Columns="{{widget.columns}}" 
-                                                 widget-Obj="{{widget}}">                                     
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body" ng-if="widget.chartType === 'pie'">
-                                        <div>
-                                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
-                                                 pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
-                                                 widget-Id="{{widget.id}}" 
-                                                 widget-Columns="{{widget.columns}}" 
-                                                 widget-Obj="{{widget}}">                                     
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body"  ng-if="widget.chartType === 'area'">
-                                        <div>
-                                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
-                                                 area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
-                                                 widget-Id="{{widget.id}}"
-                                                 widget-Columns="{{widget.columns}}" 
-                                                 widget-Obj="{{widget}}"
-                                                 chart_Colors="{{widget.chartColors}}">                                     
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
-                                        <div class="table-responsive project-list">
-                                            <div id="changes-height" class="project-list">
-                                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
-                                                     dynamic-Table pdf-function="addToPdf(test)" 
-                                                     dynamic-Table-Source="{{widget.dataSetId}}" 
-                                                     widget-Id="{{widget.id}}" 
-                                                     widget-Obj="{{widget}}" 
-                                                     table-Footer="{{widget.tableFooter}}" 
-                                                     widget-Columns="{{widget.columns}}">                                         
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body"  ng-if="widget.chartType === 'text'">
-                                        <div class="col-md-12">
-                                            <div class="text-widget">
-                                                <span ng-bind-html="widget.content"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
-                                        <div>
-                                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
-                                                 stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
-                                                 widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
-                                                 widget-Obj="{{widget}}">                                     
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-body" ng-if="widget.chartType === 'funnel'">
-                                        <div>
-                                            <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
-                                                 funnel-Directive funnel-Source="{{widget.dataSetId}}" 
-                                                 funnel-Title-Name="{{widget.widgetTitle}}" 
-                                                 funnel-Id="{{widget.id}}" funnel-Columns="{{widget.columns}}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                
-                            <div id="delete{{widget.id}}" class="modal">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <strong>Delete</strong>
-                                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
-                                        </div>
-                                        <div class="modal-body">
-                                            <span>Want to delete ? </span>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
-                                            <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="report-bottomMenu pull-right" ng-if="showReportList[widget.id] == true;">
-                                <div class="report-menuHeader">
-                                    <div class="col-md-10">
-                                        <i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>
-                                        <h1 class="report-header-title">Add {{widget.widgetTitle| limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
-                                    </div>
-                                    <div class="report-header-tools pull-right">
-                                        <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
-                                    </div>
-                                </div>
-                                <div class="report-menuBody">
-                                    <label class="col-sm-2">Report</label>
-                                    <div class="col-sm-10">
-                                        <ui-select ng-model="widget.reportWidget" on-select="selectReport(widget.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
-                                            <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
-                                            <ui-select-choices repeat="report in reportList | filter: $select.search">
-                                                <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
-                                            </ui-select-choices>
-                                        </ui-select>
-                                    </div>
-                                    <div class="text-center" ng-if="hideReportsTable === true;">
-                                        <img src="static/img/logos/loader.gif" width="40">
-                                    </div>
-                                    <div ng-hide="hideReportsTable" class="report-body-content">
-                                        <div class="row report-chat-box">
-                                            <div class="report-body-img" ng-if="hideReportsTable === false;">
-                                                <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
-                                                <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/logos/deeta-logo.png" />
-                                            </div>
-                                            <div class="form-group">
-                                                <ul class="report-body-descr" ng-if="reportDescription">
-                                                    <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
-                                                        <p>
-                                                            {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
-                                                            <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
-                                                            <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
-                                                        </p>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                
-                                        <div class="row form-group">
-                                            <div class="col-sm-12">
-                                                <table class="table table-bordered" ng-show="showReportWidgetName">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Sl.No</th>
-                                                            <th>Widget Name</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr ng-repeat="titleName in reportWidgetTitle">
-                                                            <td>{{$index + 1}}</td>
-                                                            <td>{{titleName.widgetId.widgetTitle}}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                <div ng-show="showReportEmptyMessage">
-                                                    <h4><span>{{reportEmptyMessage}}</span></h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="report-footer-btn">
-                                        <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
-                                        <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right">Add</button>
-                                    </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
+                                    <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
                                 </div>
                             </div>
                         </div>
                     </div>-->
-                <div id="editWidget" class="showEditWidget modal">
-                    <div class="editWidget-modal-top modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                                <div ng-include="'static/views/form/widgetCreateForm.html'"></div>
+                </div> <!-- end of not a ticker -->
+
+                <!-- start of ticker -->
+                <div ng-if="widget.chartType != 'ticker'" >
+                    <!--            <div class="col-md-{{widget.width}} table-deeta">
+                                    <div class="hpanel hgreen border-table">-->
+                    <div class="table-deeta">
+                        <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" >
+                            <div class="panel-heading">
+                                <div class="panel-tools">
+                                    <div> 
+                                        <a title="Favorites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
+                                        <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
+                                        <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                                        <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
+                                        <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+                                        <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="Edit" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
+                                        
+
+
+
+
+                                        <!--<a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>-->
+                                        <!--<a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)"  data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>-->
+<a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)"  ng-click="deleteWidgetItem(widget,$index)" data-toggle="modal" data-target="#delete" title="Delete"><i class="fa fa-times"></i></a>
+
+<!--                                        <a ng-if="////widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
+                                        <a ng-if="////widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>-->
+</div>
+</div>
+
+<span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>
+                                <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
+
+                            </div>
+                            <div class="panel-body" ng-if="widget.chartType === 'line'" grid-element-height>
+                                <div>
+                                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                         line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                         widget-Id="{{widget.id}}" 
+                                         widget-Columns="{{widget.columns}}" 
+                                         widget-Obj="{{widget}}">                                     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body" ng-if="widget.chartType === 'bar'" >
+                                <div>
+                                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                         bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                         widget-Id="{{widget.id}}" 
+                                         widget-Columns="{{widget.columns}}"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                         widget-Obj="{{widget}}"  get-Widget-Id="{{key}}"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       >                                     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body" ng-if="widget.chartType === 'pie'">
+                                <div>
+                                    <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
+                                         pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
+                                         widget-Id="{{widget.id}}" 
+                                         widget-Columns="{{widget.columns}}" 
+                                         widget-Obj="{{widget}}">                                     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body"  ng-if="widget.chartType === 'area'">
+                                <div>
+                                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
+                                         area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
+                                         widget-Id="{{widget.id}}"
+                                         widget-Columns="{{widget.columns}}" 
+                                         widget-Obj="{{widget}}"
+                                         chart_Colors="{{widget.chartColors}}">                                     
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="list" ng-if="widget.chartType === 'table'"  adjust-height>
+                                <div class="table-responsive project-list">
+                                    <div id="changes-height" class="project-list">
+                                        <div class="table-grid" set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                             dynamic-Table pdf-function="addToPdf(test)" 
+                                             dynamic-Table-Source="{{widget.dataSetId}}" 
+                                             widget-Id="{{widget.id}}" 
+                                             widget-Obj="{{widget}}" 
+                                             table-Footer="{{widget.tableFooter}}" 
+                                             widget-Columns="{{widget.columns}}" grid-height="test">                                    
+                                        </div>
+                                        height-->    {{test}}  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body"  ng-if="widget.chartType === 'text'">
+                                <div class="col-md-12">
+                                    <div class="text-widget">
+                                        <span ng-bind-html="widget.content"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
+                                <div>
+                                    <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
+                                         stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
+                                         widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
+                                         widget-Obj="{{widget}}">                                     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body" ng-if="widget.chartType === 'funnel'" >
+                                <div>
+                                    <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
+                                         funnel-Directive funnel-Source="{{widget.dataSetId}}" 
+                                         funnel-Title-Name="{{widget.widgetTitle}}" 
+                                         funnel-Id="{{widget.id}}" funnel-Columns="{{widget.columns}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+
+                    <div id="delete{{widget.id}}" class="modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <strong>Delete</strong>
+                                    <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                                </div>
+                                <div class="modal-body">
+                                    <span>Want to delete ? </span>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
+                                    <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-bottomMenu pull-right" ng-if="showReportList[widget.id] == true;">
+                        <div class="report-menuHeader">
+                            <div class="col-md-10">
+                                <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
+                                <h1 class="report-header-title">Add {{widget.widgetTitle| limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
+                            </div>
+                            <div class="report-header-tools pull-right">
+                                <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
+                            </div>
+                        </div>
+                        <div class="report-menuBody">
+                            <label class="col-sm-2">Report</label>
+                            <div class="col-sm-10">
+                                <ui-select ng-model="widget.reportWidget" on-select="selectReport(widget.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
+                                    <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
+                                    <ui-select-choices repeat="report in reportList | filter: $select.search">
+                                        <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                            <div class="text-center" ng-if="hideReportsTable === true;">
+                                <img src="static/img/logos/loader.gif" width="40">
+                            </div>
+                            <div ng-hide="hideReportsTable" class="report-body-content">
+                                <div class="row report-chat-box">
+                                    <div class="report-body-img" ng-if="hideReportsTable === false;">
+                                        <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
+                                        <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/logos/deeta-logo.png" />
+                                    </div>
+                                    <div class="form-group">
+                                        <ul class="report-body-descr" ng-if="reportDescription">
+                                            <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
+                                                <p>
+                                                    {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
+                                                    <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
+                                                    <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-sm-12">
+                                        <table class="table table-bordered" ng-show="showReportWidgetName">
+                                            <thead>
+                                                <tr>
+                                                    <th>Sl.No</th>
+                                                    <th>Widget Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="titleName in reportWidgetTitle">
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{titleName.widgetId.widgetTitle}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div ng-show="showReportEmptyMessage">
+                                            <h4><span>{{reportEmptyMessage}}</span></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="report-footer-btn">
+                                <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
+                                <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right">Add</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="delete" class="modal">
+                <!-- end of ticker -->
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!--    <div ng-repeat="widget in widgets">
+            <div ng-if="widget.chartType == 'ticker'">
+                <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
+                    <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
+                        <div class="panel-tools">
+                            <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+                            <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" 
+                               ng-click='setWidgetItems(widget)' 
+                               class="edit" title="Edit" 
+                               data-toggle="modal" 
+                               data-target="#editWidget" 
+                               data-backdrop="static" 
+                               data-keyboard="false"><i class="fa fa-pencil"></i>
+                            </a>
+                            <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                            <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
+                            <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                        </div>
+                        <div set-Ticker-Fn="setTickerFn(tickerFn)" widget-Obj="{{widget}}" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+                    </div>
+                </div>
+                <div id="delete{{widget.id}}" class="modal">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -814,16 +575,252 @@
                             </div>
                             <div class="modal-body">
                                 <span>Want to delete ? </span>
-                                <!--{{deleteWidgetItemObj}}-->
                             </div>
                             <div class="modal-footer">
-                                <button class="btn btn-info btn-xs" ng-click="deleteWidget(deleteWidgetItemObj, deleteWidgetItemIndex)" data-dismiss="modal"> Yes</button>
+                                <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
                                 <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div ng-if="widget.chartType != 'ticker'">
+                            <div class="col-md-{{widget.width}} table-deeta">
+                                <div class="hpanel hgreen border-table">
+                <div class="col-md-{{widget.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data,$event)">
+                    <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl"  ng-drag="true" ng-drag-data="widget">
+                        <div class="panel-heading">
+                            <div class="panel-tools">
+                                <div> 
+                                    <a title="Favorites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
+                                    <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
+                                    <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                    <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                    <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                                    <a ng-if="widget.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                                    <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                                    <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                                    <a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                                    <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+    
+                                    <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="Edit" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
+    
+    
+    
+    
+                                    <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>
+                                    <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
+    
+                                    <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
+                                    <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+    
+                            <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>
+                            <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
+    
+                        </div>
+                        <div class="panel-body" ng-if="widget.chartType === 'line'">
+                            <div>
+                                <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                     line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}">                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" ng-if="widget.chartType === 'bar'">
+                            <div>
+                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                     bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}">                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" ng-if="widget.chartType === 'pie'">
+                            <div>
+                                <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
+                                     pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}">                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body"  ng-if="widget.chartType === 'area'">
+                            <div>
+                                <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
+                                     area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}"
+                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}"
+                                     chart_Colors="{{widget.chartColors}}">                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
+                            <div class="table-responsive project-list">
+                                <div id="changes-height" class="project-list">
+                                    <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                         dynamic-Table pdf-function="addToPdf(test)" 
+                                         dynamic-Table-Source="{{widget.dataSetId}}" 
+                                         widget-Id="{{widget.id}}" 
+                                         widget-Obj="{{widget}}" 
+                                         table-Footer="{{widget.tableFooter}}" 
+                                         widget-Columns="{{widget.columns}}">                                         
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body"  ng-if="widget.chartType === 'text'">
+                            <div class="col-md-12">
+                                <div class="text-widget">
+                                    <span ng-bind-html="widget.content"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
+                            <div>
+                                <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
+                                     stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}">                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" ng-if="widget.chartType === 'funnel'">
+                            <div>
+                                <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
+                                     funnel-Directive funnel-Source="{{widget.dataSetId}}" 
+                                     funnel-Title-Name="{{widget.widgetTitle}}" 
+                                     funnel-Id="{{widget.id}}" funnel-Columns="{{widget.columns}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+    
+                <div id="delete{{widget.id}}" class="modal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <strong>Delete</strong>
+                                <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                            </div>
+                            <div class="modal-body">
+                                <span>Want to delete ? </span>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
+                                <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="report-bottomMenu pull-right" ng-if="showReportList[widget.id] == true;">
+                    <div class="report-menuHeader">
+                        <div class="col-md-10">
+                            <i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>
+                            <h1 class="report-header-title">Add {{widget.widgetTitle| limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
+                        </div>
+                        <div class="report-header-tools pull-right">
+                            <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
+                        </div>
+                    </div>
+                    <div class="report-menuBody">
+                        <label class="col-sm-2">Report</label>
+                        <div class="col-sm-10">
+                            <ui-select ng-model="widget.reportWidget" on-select="selectReport(widget.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
+                                <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
+                                <ui-select-choices repeat="report in reportList | filter: $select.search">
+                                    <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="text-center" ng-if="hideReportsTable === true;">
+                            <img src="static/img/logos/loader.gif" width="40">
+                        </div>
+                        <div ng-hide="hideReportsTable" class="report-body-content">
+                            <div class="row report-chat-box">
+                                <div class="report-body-img" ng-if="hideReportsTable === false;">
+                                    <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
+                                    <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/logos/deeta-logo.png" />
+                                </div>
+                                <div class="form-group">
+                                    <ul class="report-body-descr" ng-if="reportDescription">
+                                        <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
+                                            <p>
+                                                {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
+                                                <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
+                                                <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+    
+                            <div class="row form-group">
+                                <div class="col-sm-12">
+                                    <table class="table table-bordered" ng-show="showReportWidgetName">
+                                        <thead>
+                                            <tr>
+                                                <th>Sl.No</th>
+                                                <th>Widget Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="titleName in reportWidgetTitle">
+                                                <td>{{$index + 1}}</td>
+                                                <td>{{titleName.widgetId.widgetTitle}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div ng-show="showReportEmptyMessage">
+                                        <h4><span>{{reportEmptyMessage}}</span></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="report-footer-btn">
+                            <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
+                            <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+    <div id="editWidget" class="showEditWidget modal">
+        <div class="editWidget-modal-top modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div ng-include="'static/views/form/widgetCreateForm.html'"></div>
+                </div>
+            </div>
         </div>
-    </div> 
-+
+    </div>
+    
+      <div id="delete" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <strong>Delete</strong>
+                    <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                </div>
+                <div class="modal-body">
+                    <span>Want to delete ? </span>
+                    <!--{{deleteWidgetItemObj}}-->
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info btn-xs" ng-click="deleteWidget(deleteWidgetItemObj,deleteWidgetItemIndex)" data-dismiss="modal"> Yes</button>
+                    <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+</div>

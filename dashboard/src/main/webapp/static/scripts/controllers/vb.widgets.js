@@ -27,7 +27,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval, $log) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -52,14 +52,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     } else {
         $scope.showCreateReport = false;
     }
-
-
-    $scope.updateWidgetHeight = function (widgets) {
-        console.log(widgets)
-        $scope.widgets = widgets;
-
-        //$scope.$apply();
-    };
 
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
@@ -330,109 +322,35 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widgetItems.forEach(function (value, key) {
                     value.chartColors = widgetColors;
                 });
+                console.log("scope table height --->" + $(".table-grid").data("grid-height"));
 
-
-                $scope.widgets = widgetItems;
-
-//                $scope.widgets.forEach(function (val, key) {
+                
+                widgetItems.forEach(function (val, key) {
 //                   val.height=$('.grid-stack').parent().height() / (options.cellHeight + options.verticalMargin);
-//                    val.widget = 5;
-//                    console.log(val.chartType);
-//                    if (val.chartType != "table") {
-//                        val.height = 18;
-//                    } else {
-//                        val.height = 5;
-//                    }
+                    val.widget = 5;
+                    if (val.chartType != "table") {
+                        val.height = 10;
+                    }
+                    if (val.chartType == "table") {
+                        $scope.test = function (data) {
+                            console.log(data);
+                            val.height = data+5;
+//                            $scope.tableHeight = data;
+                             console.log("table chart height-->" + val.height);
+                        }
 
-//                    $('.grid-stack-item')[1],
-//                    $($('.grid-stack-item')[1]).attr('data-gs-width'),
-//                    Math.ceil(($('.grid-stack-item-content')[1].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin))
+                       
+                    }
 
 
-
-
-//                    console.log("the key value is -->" + key);
-//                    $('.grid-stack-item').eq(0),
-//                    $($('.grid-stack-item').eq(0)).attr('data-gs-width'),
-//                    val.height = Math.ceil(($('.grid-stack-item-content').eq(0).scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin))
-////                    console.log(Math.ceil(($('.grid-stack-item-content')[0].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin)));
-//                    console.log("val height-->"+val.height);
-//                });
-
-//                var element=$(".grid-stack-item-content");
-//                console.log(element);
+                });
+                $scope.widgets = widgetItems;
                 console.log("scope values");
                 console.log($scope.widgets);
             });
-            $scope.controllerFunction = function (valueFromDirective) {
-                console.log(valueFromDirective);
-            }
         });
-
     };
     $rootScope.getWidgetItem();
-
-
-
-
-
-    //added code starts
-    $scope.options = {
-        cellHeight: 20,
-        verticalMargin: 5,
-
-    };
-
-//    $scope.addWidget = function () {
-//        var newWidget = {x: 0, y: 0, width: 1, height: 1};
-//        $scope.widgets.push(newWidget);
-//    };
-
-//    $scope.removeWidget = function (w) {
-//        var index = $scope.widgets.indexOf(w);
-//        $scope.widgets.splice(index, 1);
-//    };
-
-    $scope.onChange = function (event, items) {
-        $log.log("onChange event: " + event + " items:" + items);
-        console.log(items);
-    };
-
-    $scope.onDragStart = function (event, ui) {
-        $log.log("onDragStart event: " + event + " ui:" + ui);
-    };
-
-    $scope.onDragStop = function (event, ui) {
-        $log.log("onDragStop event: " + event + " ui:" + ui);
-    };
-
-    $scope.onResizeStart = function (event, ui) {
-        $log.log("onResizeStart event: " + event + " ui:" + ui);
-
-    };
-
-    $scope.onResizeStop = function (event, ui) {
-        $log.log("onResizeStop event: " + event + " ui:" + ui);
-        console.log("widgets stop");
-        var widgetId = ui.element[0].attributes['widgetid'].value;
-        var widget = $scope.widgets.filter(function (data) {
-            return data.id === parseInt(widgetId);
-        })[0];
-        $scope.expandWidget(widget);
-
-    };
-
-    $scope.onItemAdded = function (item) {
-        $log.log("onItemAdded item: " + item);
-    };
-
-    $scope.onItemRemoved = function (item) {
-        $log.log("onItemRemoved item: " + item);
-    };
-
-
-
-
 
     function loadInitialWidgetColumnData(columns) {
         var data = [];
@@ -472,15 +390,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
     var setDefaultWidgetObj = [];
-
-    //delete widget 
-    $scope.deleteWidgetItem = function (widget, index) {
-        console.log(widget);
-        console.log("index-->" + index);
-        $scope.deleteWidgetItemObj = widget;
-        $scope.deleteWidgetItemIndex = index;
-    }
-
 
     $scope.setWidgetItems = function (widget) {
         firstPreviewAfterEdit = 1;
@@ -852,6 +761,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
     }
+    ;
 
     $scope.selectChart = function (chartType, widget) {
         addColor = [];
@@ -1069,9 +979,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.deleteWidget = function (widget, index) {
-        console.log("deleetw widget");
-        console.log(widget);
-        console.log(index);
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + widget.id}).success(function (response) {
             $scope.widgets.splice(index, 1);
         });
@@ -2015,21 +1922,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widget.allAccount = data.accountId;
             data.dataSourceId = dataSourceObj;
             data.dataSetId = dataSetObj;
-
-            console.log("height -->" + widget.height);
             widget = data;
             $scope.derivedColumns = [];
             if (!data.id) {
-                if (response.chartType !== "table") {
-                    response.height = 18;
-                } else {
-                    response.height = 3;
-                }
                 $scope.widgets.push(response);
-                console.log(response);
             }
-
-
             $scope.collectionFields.forEach(function (value, key) {
                 var columnData = {
                     id: value.id,
@@ -2182,7 +2079,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             widgetColumns: '@',
             tableFooter: '@',
             widgetObj: '@',
-            pdfFunction: '&'
+            pdfFunction: '&',
+            gridHeight: '='
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
 //                Start Table
@@ -2466,6 +2364,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         pdfData[scope.widgetId] = "No Data Found";
                     } else {
                         var responseData = response.data;
+//                        scope.gridHeight=response.data.length;
+//                        console.log(scope.gridHeight);
+                        scope.gridHeight(response.data.length);
                         scope.orignalData = response.data;
                         pdfData[scope.widgetId] = scope.orignalData;
                         angular.forEach(sortFields, function (value, key) {
@@ -3216,8 +3117,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             });
                         }
                     });
-
-
                 };
                 scope.setLineChartFn({lineFn: scope.refreshLineChart});
                 scope.refreshLineChart();
@@ -3237,8 +3136,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             widgetId: '@',
             barChartId: '@',
             widgetColumns: '@',
-            widgetObj: '@',
-            getWidgetId: '@'
+            widgetObj: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3559,17 +3457,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 scope.setBarChartFn({barFn: scope.refreshBarChart});
                 scope.refreshBarChart();
             }
-            console.log(scope.getWidgetId)
-            $('.grid-stack').data('gridstack').resize(
-//                    console.log("bar chart");
-
-
-//                    Math.ceil(($('.grid-stack-item-content')[1].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin))
-//                    console.log(Math.ceil(($('.grid-stack-item-content')[1].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin)));
-                    );
-
-
-        }//end of link function
+        }
     };
 });
 app.directive('pieChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
@@ -4562,8 +4450,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 scope.refreshStackedBarChart();
 
             }
-
-        } //end of link function
+        }
     };
 });
 app.directive('funnelDirective', function ($http, $stateParams, $filter) {
@@ -5140,50 +5027,3 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
 
     };
 });
-app.directive("testDirective", function () {
-    return {
-        restrict: 'AE',
-        scope: {
-            "myDirectiveFn": "="
-        },
-        link: function (scope, element, attr) {
-//            if (scope.$last) {
-//            scope.getElementHeight();
-//            scope.getElementHeight = function () {
-            console.log(element);
-            if (scope.$last) {
-                console.log($(".grid-stack-item-content"));
-                console.log($(".grid-stack-item-content")[0]);
-                console.log($(".grid-stack-item-content")[0].scrollHeight);
-                var dataElement = $(".grid-stack-item-content");
-                console.log(dataElement.length);
-                console.log(dataElement[0].scrollHeight);
-                for (var i = 0; i < dataElement.length; i++) {
-                    console.log("ScrollHeight-->");
-                    console.log(dataElement[i].scrollHeight);
-                    var height = Math.ceil((dataElement[i].scrollHeight + $('.grid-stack').data('gridstack').opts.verticalMargin) / ($('.grid-stack').data('gridstack').cellHeight() + $('.grid-stack').data('gridstack').opts.verticalMargin));
-//                    scope.widgets.height=
-                    console.log("new height-->" + height);
-                    console.log(scope.widgets[i]);
-                    scope.widgets[i].newheight = dataElement[i].scrollHeight;
-
-                }
-                console.log(scope.widgets);
-                scope.myDirectiveFn(dataElement);
-//                scope.$apply(function () {
-//                    scope.updateWidgetHeight(scope.widgets);
-//                });
-//                scope.$apply(scope.widgets);
-//                scope.pageRefresh();
-            }
-//            console.log("widget Postion-->" + scope.getWidgetId);
-//            console.log(element[scope.getWidgetId].scrollHeight);
-        }
-    }
-});
-//app.service('gridElementService', function () {
-//    this.getGirdObject = function () {
-//        var dataElement = $(".grid-stack-item-content");
-//        return dataElement;
-//    }
-//});

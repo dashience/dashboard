@@ -2085,6 +2085,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
+        console.log("dataset details");
+        console.log(dataSetList);
         if (dataSetList.timeSegment != null) {
             dataSetList.timeSegment = dataSetList.timeSegment.type;
         } else {
