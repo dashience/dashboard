@@ -11,6 +11,7 @@ import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
+import com.visumbu.vb.bean.DataSetReport;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
@@ -1303,6 +1304,16 @@ public class UiService {
     public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
         return uiDao.getJoinDataSetById(joinDataSetId);
     }
+    
+    public List getDataSetReports(Integer dataSourceId) {
+        DataSource dataSource = uiDao.getDataSourceById(dataSourceId);
+        return getDataSetReports(dataSource.getName());
+    }
+    
+    public List getDataSetReports(String dataSourceType) {
+        return uiDao.getDataSetReport(dataSourceType);
+    }
+    
     
     public List<DataSourceFilter> getDataSourceFilter(String dataSourceName, String reportName) {
         return uiDao.getDataSourceFilters(dataSourceName, reportName);

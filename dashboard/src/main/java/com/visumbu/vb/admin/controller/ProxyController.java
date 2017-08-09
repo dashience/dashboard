@@ -19,6 +19,7 @@ import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.bean.DataSetReport;
 import com.visumbu.vb.bean.DataSourceMetric;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
@@ -498,13 +499,18 @@ public class ProxyController {
 
     @RequestMapping(value = "getAllDataSet/{dataSourceType}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
-    Map getAllDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable String dataSourceType) {
-        Map returnMap = new HashMap<>();
+    List getAllDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable String dataSourceType) {
+        List<String> data = uiService.getDataSetReports(dataSourceType);
+        List<DataSetReport> dataSetReports = new ArrayList<>();
+        for (Iterator<String> iterator = data.iterator(); iterator.hasNext();) {
+            String reportName = iterator.next();
+            DataSetReport dataSetReport = new DataSetReport();
+            dataSetReport.setName(reportName);
+            dataSetReport.setType(reportName);
+            dataSetReports.add(dataSetReport);
+        }
         
-       // DataSource dataSource = uiService.getDataSourceById(dataSourceId);
-       // List<DataSourceFilter> dataSourceFilters = uiService.getDataSourceFilter(dataSource.getName(), dataSetReport);
-      // returnMap.put("filters", dataSourceFilters);
-        return returnMap;
+        return dataSetReports;
     }
         
     @RequestMapping(value = "getFilters/{dataSourceId}/{dataSetReport}", method = RequestMethod.GET, produces = "application/json")
@@ -2017,7 +2023,7 @@ public class ProxyController {
         return null;
     }
 
-    private static String getQuery(String reportName, String level, String segment, String frequency, Date startDate, Date endDate) {
+    private static String getSkyzoneQuery(String reportName, String level, String segment, String frequency, Date startDate, Date endDate) {
 
         // System.out.println("REPORT ===> " + reportName + " LEVEL " + level + " Segment ===> " + segment + " Frequency ====> " + frequency);
         String query = "select ";
@@ -2127,7 +2133,7 @@ public class ProxyController {
                 }
             }
         }
-        String query = getQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
+        String query = getSkyzoneQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
 
         valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
 
