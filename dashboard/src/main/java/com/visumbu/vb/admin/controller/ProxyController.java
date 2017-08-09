@@ -513,6 +513,14 @@ public class ProxyController {
         return dataSetReports;
     }
         
+    @RequestMapping(value = "getReportDetails/{dataSourceId}/{dataSetReport}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map getDataSetReportDetails(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSourceId, @PathVariable String dataSetReport) {
+        DataSource dataSource = uiService.getDataSourceById(dataSourceId);
+        Map<String, List<DataSetReport>> reportDetails = uiService.getReportDetails(dataSource.getName(), dataSetReport);
+        return reportDetails;
+    }
+        
     @RequestMapping(value = "getFilters/{dataSourceId}/{dataSetReport}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map getFilters(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSourceId, @PathVariable String dataSetReport) {

@@ -957,4 +957,11 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSourceName", dataSourceName);
         return query.list();
     }
+    
+    public List getDataSetReportSegments(String dataSourceName, String reportName, String segmentName) {
+        String queryStr = "SELECT distinct d. FROM DataSourceSetting d where d.dataSourceName = :dataSourceName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceName", dataSourceName);
+        return query.list();
+    }
 }
