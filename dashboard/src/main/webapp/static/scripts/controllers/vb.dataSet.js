@@ -339,6 +339,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.showLabelName = true;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "semRush")
         {
             $scope.report = $scope.semRush;
