@@ -46,13 +46,20 @@ import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
 import com.visumbu.vb.utils.DateUtils;
+import com.visumbu.vb.utils.PropertyReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
@@ -1304,17 +1311,16 @@ public class UiService {
     public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
         return uiDao.getJoinDataSetById(joinDataSetId);
     }
-    
+
     public List getDataSetReports(Integer dataSourceId) {
         DataSource dataSource = uiDao.getDataSourceById(dataSourceId);
         return getDataSetReports(dataSource.getName());
     }
-    
+
     public List getDataSetReports(String dataSourceType) {
         return uiDao.getDataSetReport(dataSourceType);
     }
-    
-    
+
     public List<DataSourceFilter> getDataSourceFilter(String dataSourceName, String reportName) {
         return uiDao.getDataSourceFilters(dataSourceName, reportName);
     }
@@ -1355,12 +1361,12 @@ public class UiService {
         if (segment != null && !segment.equalsIgnoreCase("none")) {
             groupBy.add(segment);
             select.add(segment);
-           
+
         }
         if (frequency != null && !frequency.equalsIgnoreCase("none")) {
             groupBy.add(frequency);
             select.add(frequency);
-            
+
         }
         String selectQry = String.join(",", select);
         String groupQry = String.join(",", groupBy);
@@ -1382,5 +1388,68 @@ public class UiService {
         String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender + " " + orderByAppender;
         return queryStr;
 
+    }
+
+    public Map<String, List<DataSetReport>> getReportDetails(String dataSourceName, String dataSetReport) {
+        ClassLoader classLoader = PropertyReader.class.getClassLoader();
+        File file = new File(classLoader.getResource("datasource/datasource.properties").getFile());
+        String levelPropertyValue = readProperty(file, dataSourceName + "." + dataSetReport + ".level");
+        String segmentsPropertyValue = readProperty(file, dataSourceName + "." + dataSetReport + ".segment");
+        String frequencyPropertyValue = readProperty(file, dataSourceName + "." + dataSetReport + ".frequency");
+        List<DataSetReport> levelsForReport = new ArrayList<>();
+        List<DataSetReport> segmentsForReport = new ArrayList<>();
+        List<DataSetReport> frequencyForReport = new ArrayList<>();
+
+        String[] frequencyList = frequencyPropertyValue.split(";");
+        for (int i = 0; i < frequencyList.length; i++) {
+            String levels = frequencyList[i];
+            String[] level = levels.split(",");
+            DataSetReport segmentDataSetReport = new DataSetReport();
+            segmentDataSetReport.setType(level[0]);
+            segmentDataSetReport.setName(level[1]);
+            frequencyForReport.add(segmentDataSetReport);
+        }
+        String[] segmentsList = segmentsPropertyValue.split(";");
+        for (int i = 0; i < segmentsList.length; i++) {
+            String levels = segmentsList[i];
+            String[] level = levels.split(",");
+            DataSetReport segmentDataSetReport = new DataSetReport();
+            segmentDataSetReport.setType(level[0]);
+            segmentDataSetReport.setName(level[1]);
+            segmentsForReport.add(segmentDataSetReport);
+        }
+        String[] levelsList = levelPropertyValue.split(";");
+        for (int i = 0; i < levelsList.length; i++) {
+            String levels = levelsList[i];
+            String[] level = levels.split(",");
+            DataSetReport levelDataSetReport = new DataSetReport();
+            levelDataSetReport.setType(level[0]);
+            levelDataSetReport.setName(level[1]);
+            levelsForReport.add(levelDataSetReport);
+        }
+
+        Map<String, List<DataSetReport>> returnMap = new HashMap();
+        returnMap.put("levels", levelsForReport);
+        returnMap.put("segments", segmentsForReport);
+        returnMap.put("frequency", frequencyForReport);
+        return returnMap;
+    }
+
+    public String readProperty(File file, String name) {
+        FileInputStream fileInput;
+        Properties prop = new Properties();
+        String returnProp = null;
+        try {
+            fileInput = new FileInputStream(file);
+            prop.load(fileInput);
+            returnProp = prop.getProperty(name);
+            fileInput.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PropertyReader.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (IOException ex) {
+            Logger.getLogger(PropertyReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returnProp;
     }
 }
