@@ -358,7 +358,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     function getDataSets(dataSource) {
-        var dataSourceType = dataSource.dataSourceType;
+        $scope.report  = []
+        console.log(dataSource)
+        var dataSourceType = dataSource.name;
         $http.get('admin/proxy/getAllDataSet/' + dataSourceType).success(function (response) {
             $scope.report = response;
         });
@@ -2410,9 +2412,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSourceId = dataSet.dataSourceId.id;
         var dataSourceType = dataSet.dataSourceId.dataSourceType;
         var dataSetReportName = dataSet.reportName;
-        $http.get('admin/proxy/getFilters/' + dataSourceId + "/" + dataSetReportName).success(function (response) {
-            $scope.timeSegment = response.level;
-            $scope.productSegment = response.segment;
+//        $scope.timeSegment = [];
+//        $scope.productSegment = [];
+        $http.get('admin/proxy/getReportDetails/' + dataSourceId + "/" + dataSetReportName).success(function (response) {
+            console.log(response)
+            $scope.timeSegment = response.levels;
+            $scope.productSegment = response.segments;
             $scope.frequency = response.frequency;
         })
     }
