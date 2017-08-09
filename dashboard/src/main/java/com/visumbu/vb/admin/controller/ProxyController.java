@@ -491,6 +491,17 @@ public class ProxyController {
         return value == null || value.isEmpty() || value.equalsIgnoreCase("null") || value.equalsIgnoreCase("undefined");
     }
 
+    @RequestMapping(value = "getAllDataSet/{dataSourceType}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map getAllDataSet(HttpServletRequest request, HttpServletResponse response, @PathVariable String dataSourceType) {
+        Map returnMap = new HashMap<>();
+        
+       // DataSource dataSource = uiService.getDataSourceById(dataSourceId);
+       // List<DataSourceFilter> dataSourceFilters = uiService.getDataSourceFilter(dataSource.getName(), dataSetReport);
+      // returnMap.put("filters", dataSourceFilters);
+        return returnMap;
+    }
+        
     @RequestMapping(value = "getFilters/{dataSourceId}/{dataSetReport}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map getFilters(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSourceId, @PathVariable String dataSetReport) {

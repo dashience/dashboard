@@ -228,16 +228,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             });
         });
     };
-    /*
-     * 
-     * All
-     search
-     unknown
-     content
-     youtubeSearch
-     youtubeWatch
-     
-     */
     $scope.networkTypes = [
         {
             type: 'SEARCH',
@@ -271,18 +261,21 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = true;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
@@ -291,19 +284,21 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
-
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
@@ -311,11 +306,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "bing")
         {
             $scope.report = $scope.bingPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "skyZone")
         {
             $scope.report = $scope.skyZone;
@@ -324,6 +321,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.showLabelName = true;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "autoMobiles")
         {
             console.log(dataSource)
@@ -333,6 +331,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = true;
             $scope.showLabelName = false;
+            $scope.semRushFlag = false;
         } else if (dataSourceType === "dataSetSql") {
             getDataSets(dataSource)
             $scope.dataSetFlag = true;
@@ -340,15 +339,26 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.showLabelName = true;
+        } else if (dataSourceType === "semRush")
+        {
+            $scope.report = $scope.semRush;
+            console.log($scope.report);
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = false;
+            $scope.semRushFlag = true;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
+
         }
     };
 
     function getDataSets(dataSource) {
         var dataSourceType = dataSource.dataSourceType;
-        $http.get('admin/dataSet/getAllDataSet/' + dataSourceType).success(function (response) {
+        $http.get('admin/proxy/getAllDataSet/' + dataSourceType).success(function (response) {
             $scope.report = response;
         });
     }
@@ -548,7 +558,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: "none"
                 }
             ]
-        }]
+        }];
 
     $scope.bingPerformance = [
         {
@@ -1885,6 +1895,35 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
+    $scope.semRush = [
+        {
+            type: 'overview',
+            name: 'Overview Report',
+            timeSegments: [{}],
+            productSegments: [{}]
+        }, {
+            type: 'domain',
+            name: 'Domain Report',
+            timeSegments: [{}],
+            productSegments: [{}]
+        }, {
+            type: 'keyword',
+            name: 'Keyword Report',
+            timeSegments: [{}],
+            productSegments: [{}]
+        }, {
+            type: 'url',
+            name: 'Url Report',
+            timeSegments: [{}],
+            productSegments: [{}]
+        }, {
+            type: 'backlinks',
+            name: 'Backlinks Report',
+            timeSegments: [{}],
+            productSegments: [{}]
+        }
+    ];
+
     $scope.getTimeSegements = function (dataSet) {
         console.log(dataSet);
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
@@ -2271,8 +2310,87 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             } else {
                 getFrequency(frequencyList, frequencyName);
             }
-            if ($scope.dataSet.dataSourceId.dataSourceType == "dataSetSql") {
-                getAllSets(dataSet)
+        }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "dataSetSql") {
+            getAllSets(dataSet)
+        }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "semRush")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.semRush);
+            $scope.timeSegment = $scope.semRush[index].timeSegments;
+            $scope.productSegment = $scope.semRush[index].productSegments;
+
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+
+            if ($scope.dataSet.reportName !== "") {
+                $scope.nwStatusFlag = false;
+                $scope.timeSegFlag = true;
+                $scope.productSegFlag = true;
+            }
+
+            if ($scope.dataSet.reportName == 'overview') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'domain') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'keyword') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'url') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'backlinks') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
             }
         }
         function getIndex(data, object)
@@ -2288,9 +2406,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     function getAllSets(dataSet) {
+        var dataSourceId = dataSet.dataSourceId.id;
         var dataSourceType = dataSet.dataSourceId.dataSourceType;
         var dataSetReportName = dataSet.reportName;
-        $http.get('admin/dataSet/getAll/' + dataSourceType + "/" + dataSetReportName).success(function (response) {
+        $http.get('admin/proxy/getFilters/' + dataSourceId + "/" + dataSetReportName).success(function (response) {
             $scope.timeSegment = response.level;
             $scope.productSegment = response.segment;
             $scope.frequency = response.frequency;
@@ -2456,42 +2575,49 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.getTimeSegements();
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "facebook")
             {
                 $scope.report = $scope.facebookPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "bing")
             {
                 $scope.report = $scope.bingPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
             {
                 $scope.report = $scope.pinterestPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "adwords")
             {
                 $scope.report = $scope.adwordsPerformance;
                 $scope.getTimeSegements();
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = true;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "analytics")
             {
                 $scope.report = $scope.analyticsPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
             {
                 $scope.report = $scope.linkedinPerformance;
                 $scope.getTimeSegements();
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "skyZone")
             {
                 $scope.report = $scope.skyZone;
@@ -2501,6 +2627,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.timeSegFlag = true;
                 $scope.showLabelName = true;
                 $scope.productSegFlag = true;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "autoMobiles")
             {
                 $scope.report = $scope.autoMobiles;
@@ -2510,6 +2637,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.timeSegFlag = true;
                 $scope.showLabelName = true;
                 $scope.productSegFlag = true;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "dataSetSql") {
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
@@ -2517,9 +2645,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.timeSegFlag = true;
                 $scope.showLabelName = true;
                 $scope.productSegFlag = true;
+                $scope.semRushFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "semRush")
+            {
+                $scope.report = $scope.semRush;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = true;
+                $scope.timeSegFlag = true;
+                $scope.semRushFlag = true;
+                $scope.productSegFlag = true;
             } else {
                 $scope.dataSetFlag = false;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             }
         }
 

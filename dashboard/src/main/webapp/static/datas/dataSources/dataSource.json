@@ -59,6 +59,10 @@
         {
             "type": "dataSetSql",
             "name": "SQL Data Set"
+        },
+        {
+            "type": "semRush",
+            "name": "SEM Rush"
         }
     ]
 }
