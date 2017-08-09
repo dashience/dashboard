@@ -230,6 +230,7 @@
                                                  ng-change="refreshDataSet(dataSet)"
                                                  ng-options="productSegments.name for productSegments in productSegment track by productSegments.type">
                                         </select>
+                                <div ng-if="dataSet.dataSourceId.dataSourceType != 'semRush'">        
                                         <label ng-if="showLabelName == false;">
                                             <span ng-show="nwStatusFlag">NetWork Type</span>                                            
                                         </label>
@@ -243,13 +244,14 @@
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
                                                 ng-options="network.name for network in frequency track by network.type">
-                                        </select>                                       
-                                        <label ng-if="semRushFlag == true;">Domain</label>
+                                        </select>   
+                                        </div>
+<!--                                        <label ng-if="semRushFlag == true;">Domain</label>
                                         <select ng-if="semRushFlag == true;" class="form-control"
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
                                                 ng-options="network.name for network in frequency track by network.type">
-                                        </select>                                       
+                                        </select>                                       -->
                                     </div>
                                 </div>
 
