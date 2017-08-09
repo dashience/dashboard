@@ -12,6 +12,8 @@ import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
+import com.visumbu.vb.admin.service.SemrushService;
+import static com.visumbu.vb.admin.service.SemrushService.API_KEY;
 import com.visumbu.vb.admin.service.SettingsService;
 import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.UiService;
@@ -128,6 +130,9 @@ public class ProxyController {
 
     @Autowired
     private TwitterService twitterService;
+
+    @Autowired
+    private SemrushService semrushService;
 
     PropertyReader propReader = new PropertyReader();
 
@@ -562,6 +567,8 @@ public class ProxyController {
             returnMap = (Map) getFbData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("csv")) {
             returnMap = (Map) getCsvData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("semRush")) {
+            returnMap = (Map) getSemRushData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("adwords")) {
             returnMap = (Map) getAdwordsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("analytics")) {
@@ -1039,6 +1046,60 @@ public class ProxyController {
             return true;
         }
         return false;
+    }
+
+    Map getSemRushData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String connectionString = getFromMultiValueMap(request, "connectionUrl");
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String level = getFromMultiValueMap(request, "timeSegment");
+        String region = getFromMultiValueMap(request, "productSegment");
+        String domain = getFromMultiValueMap(request, "filter");
+
+        if (domain == null) {
+            domain = getFromMultiValueMap(request, "networkType");
+        }
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+
+        Integer dataSetIdInt = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+        }
+
+        DataSet dataSet = null;
+
+        if (dataSetIdInt != null) {
+            dataSet = uiService.readDataSet(dataSetIdInt);
+        }
+
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            dataSet = widget.getDataSetId();
+        }
+        if (dataSet != null) {
+            connectionString = (connectionString == null || connectionString.isEmpty()) ? dataSet.getDataSourceId().getConnectionString() : connectionString;
+            level = (level == null || level.isEmpty()) ? dataSet.getTimeSegment() : level;
+            region = (region == null || region.isEmpty()) ? dataSet.getProductSegment() : region;
+            domain = (domain == null || domain.isEmpty()) ? dataSet.getNetworkType() : domain;
+        }
+
+//        String level = "domain_ranks";
+//        String region = "us";
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = DateUtils.get30DaysBack();
+//        String domain = "seobook.com";
+        try {
+            return semrushService.getData(connectionString, level, region, domain, startDate, endDate);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     Map getCsvData(MultiValueMap<String, String> request, HttpServletResponse response) {
