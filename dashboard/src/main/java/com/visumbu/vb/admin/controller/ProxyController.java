@@ -509,10 +509,10 @@ public class ProxyController {
             dataSetReport.setType(reportName);
             dataSetReports.add(dataSetReport);
         }
-        
+
         return dataSetReports;
     }
-        
+
     @RequestMapping(value = "getReportDetails/{dataSourceId}/{dataSetReport}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map getDataSetReportDetails(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSourceId, @PathVariable String dataSetReport) {
@@ -520,7 +520,7 @@ public class ProxyController {
         Map<String, List<DataSetReport>> reportDetails = uiService.getReportDetails(dataSource.getName(), dataSetReport);
         return reportDetails;
     }
-        
+
     @RequestMapping(value = "getFilters/{dataSourceId}/{dataSetReport}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Map getFilters(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer dataSourceId, @PathVariable String dataSetReport) {
@@ -1069,9 +1069,17 @@ public class ProxyController {
         String region = getFromMultiValueMap(request, "productSegment");
         String domain = getFromMultiValueMap(request, "filter");
 
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
         if (domain == null) {
             domain = getFromMultiValueMap(request, "networkType");
         }
+        if (domain == null || domain.isEmpty() || domain.equalsIgnoreCase("undefined") || domain.equalsIgnoreCase("none")) {
+            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+            domain = getAccountId(accountProperty, "semRushDomain");
+        }
+
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
 
@@ -2268,12 +2276,12 @@ public class ProxyController {
         String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
         String productSegment = getFromMultiValueMap(valueMap, "productSegment");
         String filter = getFromMultiValueMap(valueMap, "networkType");
-        
-        if(dataSourceId != null) {
+
+        if (dataSourceId != null) {
             DataSource dataSource = uiService.getDataSourceById(Integer.parseInt(dataSourceId));
             dataSourceName = dataSource.getName();
         }
-        
+
         if (filter == null) {
             filter = getFromMultiValueMap(valueMap, "filter");
         }
