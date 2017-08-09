@@ -2263,10 +2263,17 @@ public class ProxyController {
 
     private Map getDataSourceData(MultiValueMap<String, String> valueMap, HttpServletRequest request, HttpServletResponse response) {
         String dataSourceName = getFromMultiValueMap(valueMap, "dataSourceName");
+        String dataSourceId = getFromMultiValueMap(valueMap, "dataSourceId");
         String dataSetReportName = getFromMultiValueMap(valueMap, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(valueMap, "timeSegment");
         String productSegment = getFromMultiValueMap(valueMap, "productSegment");
         String filter = getFromMultiValueMap(valueMap, "networkType");
+        
+        if(dataSourceId != null) {
+            DataSource dataSource = uiService.getDataSourceById(Integer.parseInt(dataSourceId));
+            dataSourceName = dataSource.getName();
+        }
+        
         if (filter == null) {
             filter = getFromMultiValueMap(valueMap, "filter");
         }

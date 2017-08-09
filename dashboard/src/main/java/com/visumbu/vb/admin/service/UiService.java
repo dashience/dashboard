@@ -1329,7 +1329,9 @@ public class UiService {
         List<String> select = new ArrayList<>();
         List<String> groupBy = new ArrayList<>();
         List<String> orderBy = new ArrayList<>();
-
+        System.out.println("Data Source Name " + dataSource);
+        System.out.println("Data Set Report Name " + dataSetReportName);
+        String dateField = readProperty("datasource/datasource.properties", dataSource + "." + dataSetReportName + ".datefield");
         List<DataSourceSetting> dataSourceSettings = uiDao.getDataSourceSettings(dataSource, dataSetReportName);
 
         for (Iterator<DataSourceSetting> iterator = dataSourceSettings.iterator(); iterator.hasNext();) {
@@ -1380,11 +1382,14 @@ public class UiService {
         if (groupQry != null && !(groupQry.trim().isEmpty())) {
             groupByAppender = " group by " + groupQry;
         }
-        String tableName = "auto";
+        String tableName = dataSetReportName;
 
         String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
         String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
-        String whereCondition = " where dateCreated between '" + startDateStr + "' and '" + endDateStr + "' ";
+        String whereCondition = "";
+        if (dateField != null) {
+            whereCondition = " where " + dateField + " between '" + startDateStr + "' and '" + endDateStr + "' ";
+        }
         String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender + " " + orderByAppender;
         return queryStr;
 
@@ -1433,6 +1438,12 @@ public class UiService {
         returnMap.put("segments", segmentsForReport);
         returnMap.put("frequency", frequencyForReport);
         return returnMap;
+    }
+
+    public String readProperty(String filename, String name) {
+        ClassLoader classLoader = PropertyReader.class.getClassLoader();
+        File file = new File(classLoader.getResource(filename).getFile());
+        return readProperty(file, name);
     }
 
     public String readProperty(File file, String name) {
