@@ -157,6 +157,7 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.searchAgencyItem = agencyList;
     }
     $scope.agencyProducts = [];
+    $scope.agencyProperties = [];
     function getAgencyLicence(agency) {
         $http.get('admin/user/agencyLicence/' + agency.id).success(function (response) {
             $scope.agencyLicence = {}
@@ -183,7 +184,10 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agencySetting.id = response.id;
             $scope.agencySetting.currencyId = response.currencyId;
             $scope.agencySetting.timeZoneId = response.timeZoneId;
+        });
 
+        $http.get('admin/user/agencyProperty/' + agency.id).success(function (response) {
+            $scope.agencyProperties = response;
         });
     }
 
@@ -414,6 +418,43 @@ app.controller('AgencyController', function ($scope, $http) {
 //        if (order) {
         $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
 //        }
+    };
+
+    $scope.addAgencyProperties = function () {
+        $scope.agencyProperties.push({isEdit: true});
+    };
+    $scope.saveAgencyProperty = function (agencyProperty) {
+        var agencyId = $scope.agencyById;
+        if (!agencyId) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Agency</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            var data = {
+                id: agencyProperty.id,
+                propertyName: agencyProperty.propertyName,
+                propertyValue: agencyProperty.propertyValue,
+                agencyId: agencyId ? agencyId.id : null
+            };
+
+            $http({method: agencyProperty.id ? 'PUT' : 'POST', url: 'admin/user/agencyProperty', data: data}).success(function (response) {
+                getAgencyLicence(agencyId);
+            });
+
+            $scope.agencyProperty = "";
+        }
+    };
+
+    $scope.deleteAgencyProperty = function (agencyProperty, index) {
+        $http({method: 'Delete', url: 'admin/user/agencyProperty/' + agencyProperty.id}).success(function (response) {
+            $scope.agencyProperties.splice(index, 1);
+        });
     };
 });
 app.directive("datePicker", function () {

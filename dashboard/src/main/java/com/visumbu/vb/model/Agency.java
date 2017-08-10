@@ -41,9 +41,9 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")})
 public class Agency implements Serializable {
 
-    @Lob
+    @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "logo")
-    private byte[] logo;
+    private String logo;
     @OneToMany(mappedBy = "agencyId")
     private Collection<DashboardTemplate> dashboardTemplateCollection;
     @OneToMany(mappedBy = "agencyId")
@@ -135,6 +135,14 @@ public class Agency implements Serializable {
         this.agencyDashiencePath = agencyDashiencePath;
     }
 
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -159,7 +167,6 @@ public class Agency implements Serializable {
     public String toString() {
         return "Agency{" + "id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
     }
-
 
     @XmlTransient
     @JsonIgnore
@@ -191,7 +198,6 @@ public class Agency implements Serializable {
         this.dataSourceCollection = dataSourceCollection;
     }
 
-
     @XmlTransient
     @JsonIgnore
     public Collection<DashboardTemplate> getDashboardTemplateCollection() {
@@ -221,13 +227,4 @@ public class Agency implements Serializable {
     public void setAccountCollection(Collection<Account> accountCollection) {
         this.accountCollection = accountCollection;
     }
-
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
-    }
-    
 }

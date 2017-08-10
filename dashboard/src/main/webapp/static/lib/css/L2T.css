@@ -3915,7 +3915,7 @@ thead {
 .border-table {
     border: 1px solid #ddd;
     border-radius:2px;
-    z-index: 9999;
+    z-index: 999;
     position: relative
 }
 
