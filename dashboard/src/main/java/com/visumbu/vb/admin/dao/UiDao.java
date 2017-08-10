@@ -488,10 +488,10 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
-    public List<DataSource> getJoinDataSource(String name, VbUser user) {
-        String queryStr = "select d from DataSource d where d.name = :name and ( d.dataSourceType IS NULL or d.dataSourceType = 'join') and d.userId =:userId";
+    public List<DataSource> getJoinDataSource(VbUser user) {
+        String queryStr = "select d from DataSource d where d.dataSourceType = 'join' and d.userId =:userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("name", name);
+//        query.setParameter("name", name);
         query.setParameter("userId", user);
         return query.list();
     }
@@ -654,25 +654,26 @@ public class UiDao extends BaseDao {
     }
 
     public List<DataSet> getDataSetByUser(VbUser user) {
-        String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId";
+        String queryStr = "select d from DataSet d where d.agencyId = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("userId", user.getId());
+//        query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());
         return query.list();
     }
 
     public List<DataSet> getPublishDataSetByUser(VbUser user) {
-        String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId and d.publish = 'Active' ";
+        String queryStr = "select d from DataSet d where d.agencyId = :agencyId and d.publish = 'Active' ";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("userId", user.getId());
+//        query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());
         return query.list();
     }
 
     public List<DataSource> getDataSourceByUser(VbUser user) {
-        String queryStr = "select d from DataSource d where d.userId.id = :userId and d.agencyId = :agencyId";
+        String queryStr = "select d from DataSource d where d.agencyId = :agencyId";
+//        String queryStr = "select d from DataSource d where d.userId.id = :userId and d.agencyId = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("userId", user.getId());
+//        query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());
         return query.list();
     }
@@ -808,10 +809,20 @@ public class UiDao extends BaseDao {
         return list;
     }
 
+    public List<DataSetColumns> getDataSetColumnOfAll(Integer dataSetId, Integer widgetId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id and (d.widgetId is null or d.widgetId.id = :widgetId) ";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", dataSetId);
+        query.setParameter("widgetId", widgetId);
+        List<DataSetColumns> list = query.list();
+        return list;
+    }
+
     public DataSetColumns createDataSetColumn(ColumnDef columnDef, Integer dataSetId, Integer userId, Integer widgetId) {
         DataSetColumns dataSetColumn = new DataSetColumns();
         dataSetColumn.setFieldName(columnDef.getFieldName());
         dataSetColumn.setFieldType(columnDef.getFieldType());
+        dataSetColumn.setExpression(columnDef.getExpression());
         dataSetColumn.setDataSetId(getDataSetById(dataSetId));
         dataSetColumn.setWidgetId(getWidgetById(widgetId));
         dataSetColumn.setUserId(findUserById(userId));
