@@ -35,6 +35,7 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name = "Agency.findAll", query = "SELECT a FROM Agency a")
     , @NamedQuery(name = "Agency.findById", query = "SELECT a FROM Agency a WHERE a.id = :id")
     , @NamedQuery(name = "Agency.findByAgencyName", query = "SELECT a FROM Agency a WHERE a.agencyName = :agencyName")
+    , @NamedQuery(name = "Agency.findByAgencyDashiencePath", query = "SELECT a FROM Agency a WHERE a.agencyDashiencePath = :agencyDashiencePath")
     , @NamedQuery(name = "Agency.findByDescription", query = "SELECT a FROM Agency a WHERE a.description = :description")
     , @NamedQuery(name = "Agency.findByStatus", query = "SELECT a FROM Agency a WHERE a.status = :status")
     , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")})
@@ -65,6 +66,9 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "agency_name")
     private String agencyName;
+    @Size(max = 4096)
+    @Column(name = "agency_dashience_path")
+    private String agencyDashiencePath;
     @Size(max = 4096)
     @Column(name = "description")
     private String description;
@@ -123,6 +127,13 @@ public class Agency implements Serializable {
         this.email = email;
     }
 
+    public String getAgencyDashiencePath() {
+        return agencyDashiencePath;
+    }
+
+    public void setAgencyDashiencePath(String agencyDashiencePath) {
+        this.agencyDashiencePath = agencyDashiencePath;
+    }
 
     @Override
     public int hashCode() {

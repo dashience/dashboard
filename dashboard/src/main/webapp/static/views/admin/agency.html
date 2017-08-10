@@ -126,7 +126,7 @@
                     <div class="tab-content">
                         <div ng-show="isSetAgency(1)" class="license">
                             <div class="col-md-12">
-                                <form class="form-horizontal">
+                                <form class="form-horizontal" novalidate name="myForm">
                                     <div class="form-group">
                                         <div class="row col-md-4 image-upload">
                                             <label for="file-input">
@@ -139,10 +139,21 @@
                                             <button class="btn btn-success" ng-click="addAgency()">New</button>
                                         </div>
                                     </div>
+
                                     <div class="form-group"> 
                                         <label>Agency Name</label>
                                         <div>
                                             <input type="text" class="form-control" ng-model="agency.agencyName" placeholder="Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group"> 
+                                        <label>Dashience Domain Name</label>
+                                        <div> 
+
+                                            <input type="text" name="domain" id="domain" class="form-control" ng-pattern="/^[a-zA-Z]*$/" ng-model="agency.agencyDashiencePath" placeholder="Domain Name">
+                                            <span class="text-danger"  ng-show="myForm.domain.$error.pattern">
+                                                Not a valid String</span>
                                         </div>
                                     </div>
 
@@ -160,7 +171,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group pull-right">
-                                        <button class="btn btn-info" ng-click="saveAgency(agency)">Save</button>
+                                        <button class="btn btn-info" ng-disabled="myForm.domain.$error.pattern" ng-click="saveAgency(agency)">Save</button>
                                         <button class="btn btn-warning" ng-click="clearAgency(agency)">Cancel</button>
                                     </div>
                                 </form>
@@ -461,6 +472,7 @@
                             <tr>
                                 <th class="col-xs-5">Name</th>
                                 <th class="col-xs-6">Email</th>
+                                <th class="col-xs-6">Dashience Domain Name</th>
                                 <th class="col-xs-1"></th>
                             </tr>
                         </thead>
@@ -468,11 +480,14 @@
 
                             <tr class="accountUser-Table" data-dir-paginate="agency in agencies| filter: searchAgency| filter: searchAgencyItem.agencyName| itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
                                 <!--<tr ng-repeat="agency in agencies| filter: searchAgency" ng-class="{'selectedTableRow':$index == selectedRow}">-->
-                                <td class="col-xs-5" ng-click="editAgency(agency, $index); agencyData()">
+                                <td class="col-xs-5" ng-click="editAgency(agency, $index)">
                                     {{agency.agencyName}}
                                 </td>
-                                <td class="col-xs-6" ng-click="editAgency(agency, $index); agencyData()">
+                                <td class="col-xs-6" ng-click="editAgency(agency, $index)">
                                     {{agency.email}}
+                                </td>
+                                <td class="col-xs-6" ng-click="editAgency(agency, $index)">
+                                    {{agency.agencyDashiencePath}}
                                 </td>
                                 <td class="col-xs-1s">
                                     <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgency{{agency.id}}"><i class="fa fa-trash-o"></i></button>

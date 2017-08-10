@@ -98,6 +98,7 @@ app.controller('AgencyController', function ($scope, $http) {
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
+            agencyDashiencePath: agency.agencyDashiencePath,
             email: agency.email,
             description: agency.description,
             status: agency.status,
@@ -133,6 +134,7 @@ app.controller('AgencyController', function ($scope, $http) {
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
+            agencyDashiencePath: agency.agencyDashiencePath,
             email: agency.email,
             description: agency.description,
             status: agency.status,
