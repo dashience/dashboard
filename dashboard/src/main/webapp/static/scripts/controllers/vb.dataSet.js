@@ -63,7 +63,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 '&password=' + dataSourcePassword +
                 '&url=' + dataSet.url +
                 '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSet.query)).success(function (response) {
-            console.log(response);
             if (selectType == "dataSet1") {
                 $scope.firstDataSetLoading = false;
                 $scope.firstDataSetLoadingCompleted = true;
@@ -87,8 +86,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.firstDataSetLoading = true;
         $scope.loadingResultCompleted = false;
         getPreviewDataSet($scope.firstDataSet, "dataSet1");
-
     };
+    
     $scope.selectSecondDataSet = function (dataSet) {
         $scope.secondDataSet = JSON.parse(dataSet.secondDataSet);
         $scope.secondDataSetName = $scope.secondDataSet.name;
@@ -108,7 +107,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.hideCondition = false;
     $scope.selectJoinType = function (joinDataSetColumn) {
         $scope.operationType = joinDataSetColumn.joinType;
-        console.log($scope.operationType);
         if (joinDataSetColumn.joinType != null) {
             $scope.hideCondition = true;
         }
@@ -186,7 +184,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.cancelJoinDataSet = function () {
         $scope.joinDataSetColumn = "";
         joinDataSetId = "";
-//        $scope.dataSetColumn = "";
         $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
         $scope.secondDataSetLoadingCompleted = false;
@@ -204,7 +201,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             userId: dataSet.userId
         };
         $http({method: 'POST', url: 'admin/ui/joinDataSource', data: joinDataSource}).success(function (response) {
-            console.log(response)
+            console.log(response);
             dataSourceId = response.id;
 
             var joinDataSetList = {
@@ -2091,8 +2088,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSetList.productSegment = null;
         }
-
+        console.log(dataSetList);
+        if (dataSetList.networkType != null) {
+            dataSetList.networkType = dataSetList.networkType.type;
+        } else {
+            dataSetList.networkType = null;
+        }
         var dataSet = dataSetList;
+        console.log(dataSet);
         if (dataSet.dataSourceId != null) {
             dataSet.dataSourceId = dataSet.dataSourceId.id;
         } else {
@@ -2102,8 +2105,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
             var getDataSetId = response.id;
             var data = $scope.columnsHeaderDefs;
+            console.log(data);
             var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
-            if (gatDataSourceType != "sql") {
+            if (gatDataSourceType != "sql" && data != null) {
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
                     getItems();
                 });

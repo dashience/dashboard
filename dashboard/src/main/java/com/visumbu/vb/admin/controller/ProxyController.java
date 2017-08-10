@@ -263,12 +263,16 @@ public class ProxyController {
 
     private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
+        if(columnDefObject == null){
+            return null;
+        }
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
             DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
             if (dataSetColumn != null) {
                 column.setId(dataSetColumn.getId());
                 column.setExpression(dataSetColumn.getExpression());
+                column.setFunctionName(dataSetColumn.getFunctionName());
                 column.setDisplayFormat(dataSetColumn.getDisplayFormat());
                 column.setUserId(dataSetColumn.getUserId());
                 column.setWidgetId(dataSetColumn.getWidgetId());
@@ -405,11 +409,11 @@ public class ProxyController {
         MultiValueMap<String, String> request2 = getRequest(dataSetIdSecond, valueMap);
         Map dataMap1 = getJoinDataSet(request1, request, response, dataSetIdFirst.getId());
         Map dataMap2 = getJoinDataSet(request2, request, response, dataSetIdSecond.getId());
-        
+
         System.out.println("Before Join1 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
+
         List<Map<String, Object>> dataList1 = (List<Map<String, Object>>) dataMap1.get("data");
         //dataList1 = addDerivedColumnsToDataSet(dataSetIdFirst.getId(), userIdInt, dataList1, request1, request, response);
 
@@ -419,8 +423,7 @@ public class ProxyController {
         System.out.println("Before Join2 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
-        
+
         Integer secondDataSetAppender = dataSetIdSecond.getId();
         if (!operationType.equalsIgnoreCase("union")) {
             Set<String> columnSet = dataList1.get(0).keySet();
@@ -586,7 +589,10 @@ public class ProxyController {
         return returnMap;
     }
 
-    public  List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
+    public List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
+        if(columnDef == null){
+            return null;
+        }
         boolean formatRequired = false;
         for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
             ColumnDef column = iterator1.next();
@@ -1169,7 +1175,6 @@ public class ProxyController {
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                     // System.out.println(pinterestData);
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
 //                fbData.lastIndexOf(jsonObj);
 //                String likesCount = fbData.size() + "";
 //                Map<String, String> boardsSize = new HashMap<>();
@@ -1386,7 +1391,10 @@ public class ProxyController {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
-        String filter = getFromMultiValueMap(request, "filter");
+        String filter = getFromMultiValueMap(request, "networkType");
+        if (filter == null) {
+            filter = getFromMultiValueMap(request, "filter");
+        }
         String productSegment = getFromMultiValueMap(request, "productSegment");
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
@@ -1435,6 +1443,7 @@ public class ProxyController {
             String widgetProductSegment = widget.getProductSegment();
             String widgetTimeSegment = widget.getTimeSegment();
             String widgetNetworkType = widget.getNetworkType();
+            System.out.println("widgetNetworkType --> " + widgetNetworkType);
 
             if (widgetNetworkType != null && !widgetNetworkType.isEmpty() && !widgetNetworkType.equalsIgnoreCase("none") && !widgetNetworkType.equalsIgnoreCase("undefined")) {
                 filter = widgetNetworkType;
@@ -1899,7 +1908,7 @@ public class ProxyController {
         }
         return null;
     }
-    
+
     private static String getQuery(String reportName, String level, String segment, String frequency, Date startDate, Date endDate) {
 
         // System.out.println("REPORT ===> " + reportName + " LEVEL " + level + " Segment ===> " + segment + " Frequency ====> " + frequency);
@@ -1978,7 +1987,6 @@ public class ProxyController {
         }
 
         // System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
-
         if (timeSegment != null && timeSegment.equalsIgnoreCase("none")) {
             timeSegment = null;
         }
@@ -2080,7 +2088,7 @@ public class ProxyController {
                     }
                 }
             }
-            
+
             try {
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
@@ -2130,7 +2138,6 @@ public class ProxyController {
             }
 
             // System.out.println("Query ===> " + query);
-
             try {
                 query = URLEncoder.encode(query, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
