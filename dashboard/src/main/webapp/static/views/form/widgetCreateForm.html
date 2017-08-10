@@ -417,7 +417,7 @@
                                     <label>Type</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
-                                            ng-options="timeSeg.name for timeSeg in types track by timeSeg.type">
+                                            ng-options="timeSeg.name for timeSeg in timeSegment track by timeSeg.type">
                                     </select>
                                 </div>                                
                                 <div class="form-group widget-title col-sm-6"> 
@@ -425,7 +425,7 @@
                                     <select class="form-control" 
                                             ng-model="widgetObj.productSegment" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
-                                            ng-options="productSeg.name for productSeg in autoProducts track by productSeg.type">
+                                            ng-options="productSeg.name for productSeg in productSegment track by productSeg.type">
                                     </select>
                                 </div>
                             </div>

@@ -118,29 +118,29 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         headers: true,
     };
 
-    $scope.types = [
-        {name: 'Offer', type: 'offerType'},
-        {name: 'Seller', type: 'seller'},
-        {name: 'Vehicle', type: 'vehicleType'},
-        {name: 'Fuel', type: 'fuelType'},
-        {name: 'Gear', type: 'gearbox'},
-        {name: 'Repaired', type: 'notRepairedDamage'},
-        {name: 'None', type: 'none'}
-    ];
-
-    $scope.autoProducts = [{name: 'Model', type: 'model'},
-        {name: 'Brand', type: 'brand'},
-        {name: 'None', type: 'none'},
-        {
-            name: "Kilometer",
-            type: "kilometerRange"
-        },
-        {
-            name: "Price",
-            type: "priceRange"
-        }];
-
-    $scope.frequencies = [{name: 'Month', type: 'monthOfRegistration'}, {name: 'Day', type: 'dayCreated'}, {name: 'None', type: 'none'}];
+//    $scope.types = [
+//        {name: 'Offer', type: 'offerType'},
+//        {name: 'Seller', type: 'seller'},
+//        {name: 'Vehicle', type: 'vehicleType'},
+//        {name: 'Fuel', type: 'fuelType'},
+//        {name: 'Gear', type: 'gearbox'},
+//        {name: 'Repaired', type: 'notRepairedDamage'},
+//        {name: 'None', type: 'none'}
+//    ];
+//
+//    $scope.autoProducts = [{name: 'Model', type: 'model'},
+//        {name: 'Brand', type: 'brand'},
+//        {name: 'None', type: 'none'},
+//        {
+//            name: "Kilometer",
+//            type: "kilometerRange"
+//        },
+//        {
+//            name: "Price",
+//            type: "priceRange"
+//        }];
+//
+//    $scope.frequencies = [{name: 'Month', type: 'monthOfRegistration'}, {name: 'Day', type: 'dayCreated'}, {name: 'None', type: 'none'}];
 
 
 
@@ -1156,7 +1156,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-
         var getDataSourceType = widget.dataSourceId ? widget.dataSourceId.dataSourceType : null;
         if (getDataSourceType != "dataSetSql") {
             getSegments(widget);
@@ -1209,28 +1208,28 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
 
     function getAllSets(widget) {
         var dataSet = widget;
-        var dataSourceType = dataSet.dataSourceId.dataSourceType;
-        var dataSetReportName = dataSet.reportName;
+        var dataSourceId = dataSet.dataSourceId.id;
+        var dataSetReportName = dataSet.dataSetId.reportName;
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
         var frequencyType = widget.networkType;
-        $http.get('admin/dataSet/getAll/' + dataSourceType + "/" + dataSetReportName).success(function (response) {
-            $scope.timeSegment = response.level;
-            $scope.productSegment = response.segment;
+        $http.get('admin/proxy/getReportDetails/' + dataSourceId + "/" + dataSetReportName).success(function (response) {
+            $scope.timeSegment = response.levels;
+            $scope.productSegment = response.segments;
             $scope.frequencies = response.frequency;
             
-            if (!$scope.timeSegments) {
+            if (!$scope.timeSegment) {
                 return;
             }
-            $scope.timeSegments.forEach(function (val, key) {
+            $scope.timeSegment.forEach(function (val, key) {
                 if (val.type === timeSegmentType) {
                     $scope.widgetObj.timeSegment = val;
                 }
             });
-            if (!$scope.productSegments) {
+            if (!$scope.productSegment) {
                 return;
             }
-            $scope.productSegments.forEach(function (val, key) {
+            $scope.productSegment.forEach(function (val, key) {
                 if (val.type === productSegmentType) {
                     $scope.widgetObj.productSegment = val;
                 }
@@ -1243,12 +1242,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     $scope.widgetObj.networkType = val;
                 }
             });
-
-        })
+        });
     }
 
     function getSegments(widget) {
-        console.log(widget)
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
         var frequencyType = widget.networkType;
