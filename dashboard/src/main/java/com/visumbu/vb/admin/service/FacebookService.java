@@ -107,7 +107,6 @@ public class FacebookService {
         if (dataSet.equalsIgnoreCase("pageReactions")) {
             return getPageReactions(organicAccountId, startDate, endDate, aggregation, productSegement);
         }
-
         return null;
     }
 
