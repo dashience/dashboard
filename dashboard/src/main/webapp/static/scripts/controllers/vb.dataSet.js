@@ -258,6 +258,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     ];
     $scope.dataSetFlagValidation = function (dataSource)
     {
+        $scope.reportSelected = true;
+        $scope.enableMe = true;
+        $scope.dataSet.reportName = "";
         if (dataSource === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
@@ -270,13 +273,16 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-            $scope.timeSegFlag = true;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
         } else if (dataSource === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
@@ -285,7 +291,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
-
         } else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
@@ -1692,7 +1697,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
     ];
     $scope.getTimeSegements = function (dataSet) {
-        console.log(dataSet);
+        $scope.reportSelected = false;
+        $scope.enableMe = true;
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.instagramPerformance);
@@ -2047,6 +2053,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.endDate = $stateParams.endDate;
     function getItems() {
         $http.get('admin/ui/dataSet').success(function (response) {
+            console.log(response);
             $scope.dataSets = response;
         });
     }
@@ -2054,12 +2061,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.searchDataSourceItems = [];
         $scope.dataSources = response;
-        $scope.searchDataSourceItems.unshift({name: 'All Data Source', value: '', id: 0});
+//        $scope.searchDataSourceItems.unshift({dataSourceId:{name: ''}});
         angular.forEach(response, function (value, key) {
-            $scope.searchDataSourceItems.push({name: value.name, value: value.name, id: value.id});
+            $scope.searchDataSourceItems.push({dataSourceId: {name: value.name}});
         });
     });
-    $scope.selectedItems = {name: "All Data Source", value: '', id: 0};
+//    $scope.selectedItems = {dataSourceId: {name: ''}};
 
     $scope.selectXlsSheet = function (dataSource) {
         if (dataSource.dataSourceType == 'xls') {
@@ -2136,8 +2143,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.editDataSet = function (dataSet) {
         $scope.nwStatusFlag = true;
-        console.log(dataSet.networkType);
-        console.log(dataSet);
         var joinDataSetId = null;
         var publish = false;
         if (dataSet.joinDataSetId != null) {
@@ -2264,6 +2269,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         dataSet.productSegment = '';
     };
     $scope.clearDataSet = function (dataSet) {
+        $scope.selected = true;
+        $scope.reportSelected = true;
+        $scope.enableMe = true;
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
@@ -2275,6 +2283,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSets.splice(index, 1);
             getItems();
         });
+        $scope.clearDataSet(dataSet);
+        $scope.selectedRow = null;
     };
     $scope.selectedRow = null;
     $scope.setClickedRow = function (index) {
