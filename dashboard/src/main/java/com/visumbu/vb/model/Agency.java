@@ -35,14 +35,15 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name = "Agency.findAll", query = "SELECT a FROM Agency a")
     , @NamedQuery(name = "Agency.findById", query = "SELECT a FROM Agency a WHERE a.id = :id")
     , @NamedQuery(name = "Agency.findByAgencyName", query = "SELECT a FROM Agency a WHERE a.agencyName = :agencyName")
+    , @NamedQuery(name = "Agency.findByAgencyDashiencePath", query = "SELECT a FROM Agency a WHERE a.agencyDashiencePath = :agencyDashiencePath")
     , @NamedQuery(name = "Agency.findByDescription", query = "SELECT a FROM Agency a WHERE a.description = :description")
     , @NamedQuery(name = "Agency.findByStatus", query = "SELECT a FROM Agency a WHERE a.status = :status")
     , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")})
 public class Agency implements Serializable {
 
-    @Lob
+    @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "logo")
-    private byte[] logo;
+    private String logo;
     @OneToMany(mappedBy = "agencyId")
     private Collection<DashboardTemplate> dashboardTemplateCollection;
     @OneToMany(mappedBy = "agencyId")
@@ -65,6 +66,9 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "agency_name")
     private String agencyName;
+    @Size(max = 4096)
+    @Column(name = "agency_dashience_path")
+    private String agencyDashiencePath;
     @Size(max = 4096)
     @Column(name = "description")
     private String description;
@@ -123,6 +127,21 @@ public class Agency implements Serializable {
         this.email = email;
     }
 
+    public String getAgencyDashiencePath() {
+        return agencyDashiencePath;
+    }
+
+    public void setAgencyDashiencePath(String agencyDashiencePath) {
+        this.agencyDashiencePath = agencyDashiencePath;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
     @Override
     public int hashCode() {
@@ -148,7 +167,6 @@ public class Agency implements Serializable {
     public String toString() {
         return "Agency{" + "id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
     }
-
 
     @XmlTransient
     @JsonIgnore
@@ -180,7 +198,6 @@ public class Agency implements Serializable {
         this.dataSourceCollection = dataSourceCollection;
     }
 
-
     @XmlTransient
     @JsonIgnore
     public Collection<DashboardTemplate> getDashboardTemplateCollection() {
@@ -210,13 +227,4 @@ public class Agency implements Serializable {
     public void setAccountCollection(Collection<Account> accountCollection) {
         this.accountCollection = accountCollection;
     }
-
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
-    }
-    
 }
