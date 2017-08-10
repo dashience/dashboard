@@ -121,10 +121,11 @@ public class UserController extends BaseController {
     @RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     LoginUserBean login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginUserBean loginUserBean) {
+        HttpSession session = request.getSession();
         LoginUserBean userBean = userService.authenicate(loginUserBean);
         System.out.println("----------------------------------------------->");
         System.out.println(userBean);
-        HttpSession session = request.getSession();
+        
         session.setAttribute("isAuthenticated", userBean.getAuthenticated());
         session.setAttribute("username", userBean.getUsername());
         session.setAttribute("agencyId", userBean.getAgencyId());
