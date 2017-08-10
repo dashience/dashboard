@@ -162,10 +162,10 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $scope.scheduler.lastNmonths = "";
             $scope.scheduler.lastNyears = "";
         }
-        
+
         $scope.showSchedulerMsg = false
         $scope.showErrorDateRangeMessage = ""
-        
+
         console.log(scheduler)
     }
     $scope.saveScheduler = function (scheduler) {
@@ -300,9 +300,11 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                             'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
                             'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
                             'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
-                            'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+                            'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                            'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().startOf('week')],
+//                        'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
-                            'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
