@@ -1,0 +1,350 @@
+<style> 
+    #editor {
+        height: 300px;
+    }
+    .table-fixed thead {
+        width: 100%;
+        border-bottom: none;
+    }
+    .table-fixed tbody {
+        /*        height: 430px;*/
+        /*        overflow-y: auto !important;*/
+        width: 100%;
+    }
+    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+        display: block;
+    }
+    .table-fixed tbody td, .table-fixed thead > tr> th {
+        float: left;
+        border-bottom-width: 0;
+    }
+    .table-fixed tr td {
+        cursor:pointer;
+    }
+    .account-new{
+        margin-bottom: 10px;
+    }
+
+    .agency-bt {
+        margin-bottom: 10px;
+    }
+    .nav-tabs-custom {
+        padding-top: 0px;
+        padding-bottom: 10px;
+    }
+    .hpanel .panel-body {
+        border: 1px solid #e4e5e7;
+    }  
+    .image-upload img{
+        width: 100px;
+        display: block;
+        cursor: pointer;
+    }
+    .image-upload > input
+    {
+        display: none;
+    }
+
+</style>
+
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body header-title">
+            <div id="hbreadcrumb" class="pull-right">
+            </div>
+            <h2 class="font-bold m-b-xs ng-binding">
+                Data Source Configuration
+            </h2>               
+        </div>
+    </div>
+</div>
+
+
+<div class="col-sm-12">
+    <div class="form-group">
+        <label class="col-sm-2">Data Source</label>
+        <div class="col-sm-3">
+            <select class="form-control"
+                    ng-options="dataSource.name for dataSource in dataSources track by dataSource.id"
+                    placeholder="Data Source"
+                    ng-model="dataSource"  ng-change="dataSourceSelect(dataSource);">
+                <option value="" selected="selected" ng-disabled="true">Choose one</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="row">
+        <div class="nav-tabs-custom col-md-12">
+            <ul class="nav nav-tabs">
+                <li ng-class="{ active: isSet(1) }">
+                    <a href ng-click="setTab(1)"> Level</a>
+                </li>
+                <li ng-class="{ active: isSet(2) }">
+                    <a href ng-click="setTab(2)"> Segment
+                    </a>
+                </li>
+                <li ng-class="{ active: isSet(3) }">
+                    <a href ng-click="setTab(3)"> Frequency
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-md-6">
+                    <div class="hpanel">                        
+                        <div class="panel-body">
+                            <div class="tab-content">
+                                <div ng-show="isSet(1)">                                   
+
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-sm-3">Metrics</th>
+                                                    <th class="col-sm-3">Alias</th>
+                                                    <th class="col-sm-3">Order By</th>
+                                                    <th class="col-sm-3">
+                                                        <button class="btn btn-success btn-xs" ng-click="addLevel()"><i class="fa fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="level in levels">
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="level.isEdit">{{level.metrics}}</div>
+                                                        <div ng-show="level.isEdit">
+                                                            <input type="text" class="form-control" ng-model="level.metrics">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="level.isEdit">{{level.alias}}</div>
+                                                        <div ng-show="level.isEdit">                 
+                                                            <input type="text" class="form-control" ng-model="level.alias">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="level.isEdit">{{level.orderBy}}</div>
+                                                        <div ng-show="level.isEdit">
+                                                            <input type="text" class="form-control" ng-model="level.orderBy">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="level.isEdit">
+                                                            <button class="btn btn-default btn-xs" ng-click="level.isEdit = true;">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </button>
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteLevel(level)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+
+
+                                                        <div ng-show="level.isEdit">
+                                                            <button class="btn btn-default btn-xs" ng-click="saveLevel(level); level.isEdit = false;">
+                                                                <i class="fa fa-save"></i>
+                                                            </button>
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteFieldLevel($index)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+                                </div>
+                                <div ng-show="isSet(2)">
+                                    <div class="col-md-12">
+
+                                        <table class="table table-bordered table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-sm-3">Metrics</th>
+                                                    <th class="col-sm-3">Alias</th>
+                                                    <th class="col-sm-3">Order By</th>
+                                                    <th class="col-sm-3">
+                                                        <button class="btn btn-success btn-xs" ng-click="addSegment()"><i class="fa fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="segment in segments">
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="segment.isEdit">{{segment.metrics}}</div>
+                                                        <div ng-show="segment.isEdit">
+                                                            <input type="text" class="form-control" ng-model="segment.metrics">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="segment.isEdit">{{segment.alias}}</div>
+                                                        <div ng-show="segment.isEdit">                 
+                                                            <input type="text" class="form-control" ng-model="segment.alias">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="segment.isEdit">{{segment.orderBy}}</div>
+                                                        <div ng-show="segment.isEdit">
+                                                            <input type="text" class="form-control" ng-model="segment.orderBy">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="segment.isEdit">
+                                                            <button class="btn btn-default btn-xs" ng-click="segment.isEdit = true;">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </button>
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteSegment(segment)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+
+
+                                                        <div ng-show="segment.isEdit">
+                                                            <button class="btn btn-default btn-xs" ng-click="saveSegment(segment); segment.isEdit = false;">
+                                                                <i class="fa fa-save"></i>
+                                                            </button>
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteFieldSegment($index)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                                <div ng-show="isSet(3)">
+
+                                    <div class="col-md-12">
+
+                                        <table class="table table-bordered table-responsive">
+                                            <thead>
+                                                <tr>
+                                                    <th class="col-sm-3">Metrics</th>
+                                                    <th class="col-sm-3">Alias</th>
+                                                    <th class="col-sm-3">Order By</th>
+                                                    <th class="col-sm-3">
+                                                        <button class="btn btn-success btn-xs" ng-click="addFrequency()"><i class="fa fa-plus"></i></button>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="frequency in frequencys">
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="frequency.isEdit">{{frequency.metrics}}</div>
+                                                        <div ng-show="frequency.isEdit">
+                                                            <input type="text" class="form-control" ng-model="frequency.metrics">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="frequency.isEdit">{{frequency.alias}}</div>
+                                                        <div ng-show="frequency.isEdit">                 
+                                                            <input type="text" class="form-control" ng-model="frequency.alias">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="frequency.isEdit">{{frequency.orderBy}}</div>
+                                                        <div ng-show="frequency.isEdit">
+                                                            <input type="text" class="form-control" ng-model="frequency.orderBy">
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-sm-3">
+                                                        <div ng-hide="frequency.isEdit">
+                                                            <button class="btn btn-default btn-xs" ng-click="frequency.isEdit = true;">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </button>
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteFrequency(frequency)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+
+
+                                                        <div ng-show="frequency.isEdit">
+                                                            <button class="btn btn-default btn-xs" ng-click="saveFrequency(frequency); frequency.isEdit = false;">
+                                                                <i class="fa fa-save"></i>
+                                                            </button>
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteFieldFrequency($index)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-6">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Sl.No</th>
+                                <th>Data Set Name</th>
+                                <th>
+                                    <button class="btn btn-success btn-xs" ng-click="addDataSet();"><i class="fa fa-plus"></i></button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dataSet in dataSets" ng-click="dataSetSelect(dataSet);">
+                                <td>
+                                    <div ng-hide="dataSet.isEdit">{{$index + 1}}</div>
+                                    <div ng-show="dataSet.isEdit">
+                                        {{$index + 1}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div ng-hide="dataSet.isEdit">{{dataSet.dataSetName}}</div>
+                                    <div ng-show="dataSet.isEdit">                 
+                                        <input type="text" class="form-control" ng-model="dataSet.dataSetName">
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div ng-hide="dataSet.isEdit">
+                                        <button class="btn btn-default btn-xs" ng-click="dataSet.isEdit = true;">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-default btn-xs" ng-click="deleteDataSet(dataSet)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+
+
+                                    <div ng-show="dataSet.isEdit">
+                                        <button class="btn btn-default btn-xs" ng-click="saveDataSet(dataSet); dataSet.isEdit = false;">
+                                            <i class="fa fa-save"></i>
+                                        </button>
+                                        <button class="btn btn-default btn-xs" ng-click="deleteFieldDataSet($index)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> 
+
+
+            </div>
+        </div>                
+    </div>
+</section>

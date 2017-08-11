@@ -115,6 +115,17 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 templateUrl: "static/views/admin/settings.html",
                 controller: 'SettingsController'
             })
+            .state("index.dataSourceConfig", {
+                url: "/dataSourceConfig?:startDate/:endDate",
+                templateUrl: "static/views/admin/dataSourceConfiguration.html",
+                controller: 'DataSourceConfigurationController'
+            })
+            
+            .state("index.filterConfig", {
+                url: "/filterConfig?:startDate/:endDate",
+                templateUrl: "static/views/admin/filterConfig.html",
+                controller: 'FilterConfigController'
+            })
             .state("viewPdf", {
                 url: "/viewPdf/:accountId/:accountName/:productId/:templateId/:tabId?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.pdf.html",

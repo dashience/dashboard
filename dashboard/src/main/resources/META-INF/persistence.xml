@@ -51,6 +51,13 @@
     <class>com.visumbu.vb.model.DataSet</class>
     <class>com.visumbu.vb.model.DashboardTemplate</class>
     <class>com.visumbu.vb.model.TemplateTabs</class>
+    <class>com.visumbu.vb.model.DataSourceConfigurationReport</class>
+    <class>com.visumbu.vb.model.DataSourceConfigurationSegment</class>
+    <class>com.visumbu.vb.model.DataSourceConfigurationFrequency</class>
+    <class>com.visumbu.vb.model.DataSourceConfigDataset</class>
+    <class>com.visumbu.vb.model.DataSourceConfigDatasetLevel</class>
+    <class>com.visumbu.vb.model.DataSourceConfigDatasetSegment</class>
+    <class>com.visumbu.vb.model.DataSourceConfigDatasetFrequency</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

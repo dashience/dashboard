@@ -43,6 +43,12 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "DataSource.findByDataSourceType", query = "SELECT d FROM DataSource d WHERE d.dataSourceType = :dataSourceType")})
 public class DataSource implements Serializable {
 
+    @OneToMany(mappedBy = "dataSourceId")
+    private Collection<DataSourceConfigDataset> dataSourceConfigDatasetCollection;
+
+    @OneToMany(mappedBy = "dataSourceId")
+    private Collection<DataSourceConfigDataset> dataSourceConfigurationReportCollection;
+
     @Size(max = 500)
     @Column(name = "code")
     private String code;
@@ -231,6 +237,16 @@ public class DataSource implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DataSourceConfigDataset> getDataSourceConfigDatasetCollection() {
+        return dataSourceConfigDatasetCollection;
+    }
+
+    public void setDataSourceConfigDatasetCollection(Collection<DataSourceConfigDataset> dataSourceConfigDatasetCollection) {
+        this.dataSourceConfigDatasetCollection = dataSourceConfigDatasetCollection;
     }
     
 }
