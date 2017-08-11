@@ -394,29 +394,31 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widgetItems.forEach(function (value, key) {
                     value.chartColors = widgetColors;
                 });
-                console.log("scope table height --->" + $(".table-grid").data("grid-height"));
 
                 
-                widgetItems.forEach(function (val, key) {
-//                   val.height=$('.grid-stack').parent().height() / (options.cellHeight + options.verticalMargin);
-                    val.widget = 5;
-                    if (val.chartType != "table") {
-                        val.height = 10;
-                    }
-                    if (val.chartType == "table") {
-                        $scope.test = function (data) {
-                            console.log(data);
-                            val.height = data+5;
-//                            $scope.tableHeight = data;
-                             console.log("table chart height-->" + val.height);
-                        }
-
-                       
-                    }
-
-
-                });
+//                widgetItems.forEach(function (val, key) {
+////                   val.height=$('.grid-stack').parent().height() / (options.cellHeight + options.verticalMargin);
+//                    val.widget = 5;
+//                    if (val.chartType != "table") {
+//                        val.height = 10;
+//                    }
+//                    if (val.chartType == "table") {
+//                        $scope.test = function (data) {
+//                            console.log(data);
+//                            val.height = data+5;
+////                            $scope.tableHeight = data;
+//                             console.log("table chart height-->" + val.height);
+//                        }
+//
+//                       
+//                    }
+//
+//
+//                });
                 $scope.widgets = widgetItems;
+                $scope.widgets.forEach(function(val,key){
+                    val.height=6;
+                });
                 console.log("scope values");
                 console.log($scope.widgets);
             });
