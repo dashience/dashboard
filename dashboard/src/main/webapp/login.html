@@ -49,7 +49,10 @@
                 <div class="col-md-12">
                     <div class="text-center m-b-md">
                         <div>
-                            <span>
+                            <span ng-if="agency">
+                                <img src="{{agency.logo}}" width="180" />
+                            </span>
+                            <span ng-if="!agency">
                                 <img src="static/img/logos/deeta-logo.png" width="180" />
                             </span>
                         </div>
