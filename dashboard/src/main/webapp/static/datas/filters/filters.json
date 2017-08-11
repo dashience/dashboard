@@ -1,0 +1,73 @@
+{
+    "filters": [{
+            "displayName": "Brand",
+            "fieldName": "brand",
+            "type": "dropdown",
+            "dependent": "model,seller",
+            "url": "admin/filterData/getFilter/brand",
+            "orderBy":1
+        }, {
+            "displayName": "Model",
+            "fieldName": "model",
+            "type": "dropdown",
+            "dependent": "seller",
+            "url": "admin/filterData/getFilter/model",
+            "orderBy":2
+        }, {
+            "displayName": "Year",
+            "fieldName": "year",
+            "type": "range",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/yearOfRegistration",
+            "orderBy":3
+        }, {
+            "displayName": "Price",
+            "fieldName": "price",
+            "type": "range",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/price",
+            "orderBy":4
+        }, {
+            "displayName": "Kilometer",
+            "fieldName": "kilometer",
+            "type": "range",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/kilometer",
+            "orderBy":5
+        }, {
+            "displayName": "Seller",
+            "fieldName": "seller",
+            "type": "dropdown",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/seller",
+            "orderBy":6
+        }, {
+            "displayName": "Vehicle",
+            "fieldName": "vehicleType",
+            "type": "dropdown",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/vehicleType",
+            "orderBy":7
+        }, {
+            "displayName": "Offer",
+            "fieldName": "offerType",
+            "type": "dropdown",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/offerType",
+            "orderBy":8
+        }, {
+            "displayName": "Fuel",
+            "fieldName": "fuelType",
+            "type": "dropdown",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/fuelType",
+            "orderBy":9
+        }, {
+            "displayName": "Gear Box",
+            "fieldName": "gearBox",
+            "type": "dropdown",
+            "dependent": "none",
+            "url": "admin/filterData/getFilter/gearBox",
+            "orderBy":10
+        }]
+}

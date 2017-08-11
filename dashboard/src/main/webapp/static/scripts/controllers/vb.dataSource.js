@@ -1,63 +1,9 @@
 app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', function ($scope, $stateParams, $http, $rootScope) {
 //    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
         $scope.authenticateFlag = true;
-        $scope.dataSourceTypes = [
-            {
-                type: "sql",
-                name: "SQL"
-            },
-            {
-                type: "csv",
-                name: "CSV"
-            },
-            {
-                type: "https",
-                name: "HTTPS"
-            },
-            {
-                type: "xls",
-                name: "XLS"
-            },
-            {
-                type: "facebook",
-                name: "Facebook"
-//                url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:9090/VizBoard/fbPost.html'
-            },
-            {
-                type: 'instagram',
-                name: 'Instagram'
-//                url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
-            },
-            {
-                type: 'adwords',
-                name: 'Google AdWords'
-            },
-            {
-                type: 'analytics',
-                name: 'Google Analytics'
-
-            },
-            {
-                type: 'pinterest',
-                name: 'Pinterest'
-            },
-            {
-                type: 'linkedin',
-                name: 'LinkedIn'
-            },
-//            {
-//                type: 'twitter',
-//                name: 'Twitter'
-//            },
-            {
-                type: 'bing',
-                name: 'Bing'
-            },
-            {
-                type: 'join',
-                name: 'Join'
-            }
-        ];
+        $http.get('static/datas/dataSources/dataSource.json').success(function (response) {
+            $scope.dataSourceTypes = response.dataSource;
+        });
         function getItems() {
             $http.get('admin/ui/dataSource').success(function (response) {
                 $scope.dataSources = response;
@@ -109,10 +55,13 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             }
         };
         $scope.getDataSource = function (data) {
+            console.log(data);
             $("#dataSourceType").val(data.dataSourceType);
             localStorage.setItem("dataSourceType", $("#dataSourceType").val());
             $scope.dataSourceUrl = getDataSourceUrl(data.dataSourceType);
+            console.log(data);
             window.open($scope.dataSourceUrl, data.dataSourceType, "myWindow", 'width=800,height=600');
+            console.log($scope.dataSourceUrl);
             function getDataSourceUrl(dataSourceType)
             {
                 console.log(dataSourceType);

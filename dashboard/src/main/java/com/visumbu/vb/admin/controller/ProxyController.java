@@ -12,11 +12,15 @@ import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
+import com.visumbu.vb.admin.service.SemrushService;
+import static com.visumbu.vb.admin.service.SemrushService.API_KEY;
 import com.visumbu.vb.admin.service.SettingsService;
 import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
+import com.visumbu.vb.bean.DataSetReport;
+import com.visumbu.vb.bean.DataSourceMetric;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.controller.BaseController;
@@ -25,6 +29,7 @@ import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
+import com.visumbu.vb.model.DataSourceFilter;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -127,6 +132,9 @@ public class ProxyController {
     @Autowired
     private TwitterService twitterService;
 
+    @Autowired
+    private SemrushService semrushService;
+
     PropertyReader propReader = new PropertyReader();
 
     private final String urlDownload = "url.download";
@@ -157,11 +165,7 @@ public class ProxyController {
         }
     }
 
-    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
-
-        Map returnMap = new HashMap<>();
+private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest request, HttpServletResponse response) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         String joinDataSetIdStr = request.getParameter("joinDataSetId");
         String dataSourceId = request.getParameter("dataSourceId");
@@ -178,6 +182,15 @@ public class ProxyController {
         if (joinDataSetId == null) {
             valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
         }
+
+        return valueMap;
+    }
+
+    @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
+
+        Map returnMap = new HashMap<>();
         String fieldsOnly = request.getParameter("fieldsOnly");
 
         String dataSetId = request.getParameter("dataSetId");
@@ -217,6 +230,7 @@ public class ProxyController {
 //
 //            }
 //        } else {
+        MultiValueMap<String, String> valueMap = getValueMapFromRequest(request, response);
         returnMap = getData(valueMap, request, response);
 //        }
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data")));
@@ -263,9 +277,9 @@ public class ProxyController {
 
     private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
-        if (columnDefObject == null) {
-            return null;
-        }
+//        if (columnDefObject == null) {
+//            return null;
+//        }
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
             DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
@@ -524,6 +538,8 @@ public class ProxyController {
             returnMap = (Map) getFbData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("csv")) {
             returnMap = (Map) getCsvData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("semRush")) {
+            returnMap = (Map) getSemRushData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("adwords")) {
             returnMap = (Map) getAdwordsData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("analytics")) {
@@ -532,7 +548,13 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getBingData(request, httpRequest, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
-        } else if (dataSourceType.equalsIgnoreCase("sql")) {
+        } 
+//        else if (dataSourceType.equalsIgnoreCase("dataSetsql")) {
+//            returnMap = getDataSourceData(request, httpRequest, response);
+//            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+//            returnMap.put("columnDefs", getColumnDefObject(data));
+//        }
+        else if (dataSourceType.equalsIgnoreCase("sql")) {
             returnMap = getSqlData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
             returnMap.put("columnDefs", getColumnDefObject(data));
@@ -998,6 +1020,68 @@ public class ProxyController {
         return false;
     }
 
+    Map getSemRushData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String connectionString = getFromMultiValueMap(request, "connectionUrl");
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String level = getFromMultiValueMap(request, "timeSegment");
+        String region = getFromMultiValueMap(request, "productSegment");
+        String domain = getFromMultiValueMap(request, "filter");
+
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        if (domain == null) {
+            domain = getFromMultiValueMap(request, "networkType");
+        }
+        if (domain == null || domain.isEmpty() || domain.equalsIgnoreCase("undefined") || domain.equalsIgnoreCase("none")) {
+            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+            domain = getAccountId(accountProperty, "semRushDomain");
+        }
+
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+
+        Integer dataSetIdInt = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+        }
+
+        DataSet dataSet = null;
+
+        if (dataSetIdInt != null) {
+            dataSet = uiService.readDataSet(dataSetIdInt);
+        }
+
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            dataSet = widget.getDataSetId();
+        }
+        if (dataSet != null) {
+            connectionString = (connectionString == null || connectionString.isEmpty()) ? dataSet.getDataSourceId().getConnectionString() : connectionString;
+            level = (level == null || level.isEmpty()) ? dataSet.getTimeSegment() : level;
+            region = (region == null || region.isEmpty()) ? dataSet.getProductSegment() : region;
+            domain = (domain == null || domain.isEmpty()) ? dataSet.getNetworkType() : domain;
+        }
+
+//        String level = "domain_ranks";
+//        String region = "us";
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = DateUtils.get30DaysBack();
+//        String domain = "seobook.com";
+        try {
+            return semrushService.getData(connectionString, level, region, domain, startDate, endDate);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     Map getCsvData(MultiValueMap<String, String> request, HttpServletResponse response) {
         try {
             String connectionString = getFromMultiValueMap(request, "connectionUrl");
@@ -1317,7 +1401,6 @@ public class ProxyController {
             timeSegment = null;
         }
         String productSegment = getFromMultiValueMap(request, "productSegment");
-        System.out.println("product Segment ---> " + productSegment);
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null"))) {
             // System.out.println("In ifffff productSegment...");
             productSegment = null;
@@ -1335,16 +1418,16 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
-                System.out.println("productSegment ---> " + productSegment);
-                System.out.println("productSegment dataset---> " + dataSet.getProductSegment());
+                // System.out.println("productSegment ---> " + productSegment);
+                // System.out.println("productSegment dataset---> " + dataSet.getProductSegment());
 
                 dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
                 productSegment = (productSegment == null || productSegment.isEmpty()) ? dataSet.getProductSegment() : productSegment;
             }
         }
-        System.out.println("timeSegment ---> " + timeSegment);
-        System.out.println("productSegment2 ---> " + productSegment);
+        // System.out.println("timeSegment ---> " + timeSegment);
+        // System.out.println("productSegment2 ---> " + productSegment);
 
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
@@ -1452,7 +1535,6 @@ public class ProxyController {
             String widgetProductSegment = widget.getProductSegment();
             String widgetTimeSegment = widget.getTimeSegment();
             String widgetNetworkType = widget.getNetworkType();
-            System.out.println("widgetNetworkType --> " + widgetNetworkType);
 
             if (widgetNetworkType != null && !widgetNetworkType.isEmpty() && !widgetNetworkType.equalsIgnoreCase("none") && !widgetNetworkType.equalsIgnoreCase("undefined")) {
                 filter = widgetNetworkType;
@@ -1921,7 +2003,7 @@ public class ProxyController {
         return null;
     }
 
-    private static String getQuery(String reportName, String level, String segment, String frequency, Date startDate, Date endDate) {
+    private static String getSkyzoneQuery(String reportName, String level, String segment, String frequency, Date startDate, Date endDate) {
 
         // System.out.println("REPORT ===> " + reportName + " LEVEL " + level + " Segment ===> " + segment + " Frequency ====> " + frequency);
         String query = "select ";
@@ -2031,7 +2113,7 @@ public class ProxyController {
                 }
             }
         }
-        String query = getQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
+        String query = getSkyzoneQuery(dataSetReportName, level, segment, frequency, startDate, endDate);
 
         valueMap.put("query", Arrays.asList(query == null ? getFromMultiValueMap(valueMap, "query") : query));
 
@@ -2685,6 +2767,7 @@ public class ProxyController {
         if (url.startsWith("../")) {
             url = url.replaceAll("\\.\\./", localUrl);
         }
+        System.out.println("TEST");
         log.debug(url);
     }
 
