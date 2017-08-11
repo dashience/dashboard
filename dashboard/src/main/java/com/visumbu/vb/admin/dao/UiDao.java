@@ -8,6 +8,7 @@ package com.visumbu.vb.admin.dao;
 import com.visumbu.vb.admin.dao.bean.ProductBean;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DataSetColumnBean;
+import com.visumbu.vb.bean.DataSetReport;
 import com.visumbu.vb.dao.BaseDao;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
@@ -20,6 +21,8 @@ import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
+import com.visumbu.vb.model.DataSourceFilter;
+import com.visumbu.vb.model.DataSourceSetting;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -488,10 +491,10 @@ public class UiDao extends BaseDao {
         query.executeUpdate();
     }
 
-    public List<DataSource> getJoinDataSource(String name, VbUser user) {
-        String queryStr = "select d from DataSource d where d.name = :name and ( d.dataSourceType IS NULL or d.dataSourceType = 'join') and d.userId =:userId";
+    public List<DataSource> getJoinDataSource(VbUser user) {
+        String queryStr = "select d from DataSource d where d.dataSourceType = 'join' and d.userId =:userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("name", name);
+//        query.setParameter("name", name);
         query.setParameter("userId", user);
         return query.list();
     }
@@ -654,25 +657,26 @@ public class UiDao extends BaseDao {
     }
 
     public List<DataSet> getDataSetByUser(VbUser user) {
-        String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId";
+        String queryStr = "select d from DataSet d where d.agencyId = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("userId", user.getId());
+//        query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());
         return query.list();
     }
 
     public List<DataSet> getPublishDataSetByUser(VbUser user) {
-        String queryStr = "select d from DataSet d where d.userId.id = :userId and d.agencyId = :agencyId and d.publish = 'Active' ";
+        String queryStr = "select d from DataSet d where d.agencyId = :agencyId and d.publish = 'Active' ";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("userId", user.getId());
+//        query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());
         return query.list();
     }
 
     public List<DataSource> getDataSourceByUser(VbUser user) {
-        String queryStr = "select d from DataSource d where d.userId.id = :userId and d.agencyId = :agencyId";
+        String queryStr = "select d from DataSource d where d.agencyId = :agencyId";
+//        String queryStr = "select d from DataSource d where d.userId.id = :userId and d.agencyId = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("userId", user.getId());
+//        query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());
         return query.list();
     }
@@ -808,6 +812,15 @@ public class UiDao extends BaseDao {
         return list;
     }
 
+    public List<DataSetColumns> getDataSetColumnOfAll(Integer dataSetId, Integer widgetId) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id and (d.widgetId is null or d.widgetId.id = :widgetId) ";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", dataSetId);
+        query.setParameter("widgetId", widgetId);
+        List<DataSetColumns> list = query.list();
+        return list;
+    }
+
     public DataSetColumns createDataSetColumn(ColumnDef columnDef, Integer dataSetId, Integer userId, Integer widgetId) {
         DataSetColumns dataSetColumn = new DataSetColumns();
         dataSetColumn.setFieldName(columnDef.getFieldName());
@@ -920,5 +933,37 @@ public class UiDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("user", user);
         return (UserPreferences) query.uniqueResult();
+    }
+
+    public List<DataSourceSetting> getDataSourceSettings(String dataSource, String dataSetReportName) {
+        String queryStr = "SELECT d FROM DataSourceSetting d where d.dataSourceName = :dataSourceName and d.reportName = :reportName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceName", dataSource);
+        query.setParameter("reportName", dataSetReportName);
+        List<DataSourceSetting> list = query.list();
+        return list;
+}
+    
+    public List<DataSourceFilter> getDataSourceFilters(String dataSource, String dataSetReportName) {
+        String queryStr = "SELECT d FROM DataSourceFilter d where d.dataSourceName = :dataSourceName and d.reportName = :reportName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceName", dataSource);
+        query.setParameter("reportName", dataSetReportName);
+        List<DataSourceFilter> list = query.list();
+        return list;
+    }
+
+    public List getDataSetReport(String dataSourceName) {
+        String queryStr = "SELECT distinct d.reportName FROM DataSourceSetting d where d.dataSourceName = :dataSourceName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceName", dataSourceName);
+        return query.list();
+    }
+    
+    public List getDataSetReportSegments(String dataSourceName, String reportName, String segmentName) {
+        String queryStr = "SELECT distinct d. FROM DataSourceSetting d where d.dataSourceName = :dataSourceName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSourceName", dataSourceName);
+        return query.list();
     }
 }

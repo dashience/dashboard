@@ -183,15 +183,16 @@
                         <a ng-if="reportWidget.widgetId.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
                         <a ng-if="reportWidget.widgetId.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                         <a ng-if="reportWidget.widgetId.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                        <a class="edit" ng-click="editReportWidget(reportWidget);"
-
-                           ui-sref="index.editWidget({accountId: accountId, 
-                           accountName: accountName, 
-                           productId: 0, tabId: reportWidget.widgetId.tabId.id, 
-                           widgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">
-                            <!--ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">-->
-                            <i class="fa fa-pencil"></i>
-                        </a>
+                        <a ng-if="reportWidget.widgetId..chartType === 'scatter'" title="Refresh" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                        <!--                        <a class="edit" ng-click="editReportWidget(reportWidget);"
+                        
+                                                   ui-sref="index.editWidget({accountId: accountId, 
+                                                   accountName: accountName, 
+                                                   productId: 0, tabId: reportWidget.widgetId.tabId.id, 
+                                                   widgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">
+                                                    ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>-->
                         <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
 
                         <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
@@ -200,7 +201,16 @@
                     <span class="{{reportWidget.icon}}"></span> 
                     <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle}}</span>
                 </div>
-
+                <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'ticker'">
+                    <div set-Ticker-Fn="setTickerFn(tickerFn)"
+                         widget-Obj="{{reportWidget.widgetId}}"
+                         ticker-Directive
+                         ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}"
+                         ticker-Source="{{reportWidget.widgetId.dataSetId}}"
+                         ticker-Id="{{reportWidget.widgetId.id}}" 
+                         ticker-Columns="{{reportWidget.widgetId.columns}}">
+                    </div>
+                </div>
                 <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'line'">
                     <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                 </div> 
@@ -224,13 +234,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'funnel'">
+                <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'funnel'">
                     <div>
                         <div funnel-Directive
                              funnel-Source="{{reportWidget.widgetId.dataSetId}}" 
                              widget-Obj="{{reportWidget.widgetId}}" 
                              funnel-Id="{{reportWidget.widgetId.id}}"
                              funnel-Columns="{{reportWidget.widgetId.columns}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'scatter'">
+                    <div>
+                        <div scatter-Chart-Directive 
+                             scatter-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                             widget-Id="{{reportWidget.widgetId.id}}" 
+                             widget-Columns="{{reportWidget.widgetId.columns}}" 
+                             widget-Obj="{{reportWidget.widgetId}}">                                     
                         </div>
                     </div>
                 </div>

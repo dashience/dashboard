@@ -18,6 +18,7 @@ import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.AgencyProperty;
 import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
@@ -466,7 +467,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agency", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Object createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
-       
+
         return userService.createAgency(agency);
     }
 
@@ -560,7 +561,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agencySetting", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     AgencySettings createAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
-     
+
         return userService.createAgencySettings(agencySettings);
     }
 
@@ -569,11 +570,35 @@ public class UserController extends BaseController {
     AgencySettings updateAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
         return userService.updateAgencySettings(agencySettings);
     }
-    
+
     @RequestMapping(value = "agencySetting/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     AgencySettings getAgencySettingsById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
         return userService.getAgencySettingsById(agencyId);
+    }
+
+    @RequestMapping(value = "agencyProperty/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgencyPropertyById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+        return userService.getAgencyPropertyById(agencyId);
+    }
+
+    @RequestMapping(value = "agencyProperty", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    AgencyProperty createAgencyProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencyProperty agencyProperty) {
+        return userService.createAgencyProperty(agencyProperty);
+    }
+
+    @RequestMapping(value = "agencyProperty", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    AgencyProperty updateAgencyProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencyProperty agencyProperty) {
+        return userService.updateAgencyProperty(agencyProperty);
+    }
+
+    @RequestMapping(value = "agencyProperty/{agencyPropertyId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    AgencyProperty deleteAgencyPropertyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyPropertyId) {
+        return userService.deleteAgencyPropertyId(agencyPropertyId);
     }
 
     @ExceptionHandler
@@ -582,4 +607,3 @@ public class UserController extends BaseController {
         e.printStackTrace();
     }
 }
- 

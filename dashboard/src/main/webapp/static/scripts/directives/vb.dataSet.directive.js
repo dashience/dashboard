@@ -11,6 +11,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
+                '<div class="message" ng-if="showMessage">No Data Found</div>' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
                 '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
                 '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
@@ -123,11 +124,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
 //                '</div>' +
 //                '</div>' +
-
-
-
-
-
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-8">' +
@@ -358,13 +354,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: 'Custom', value: 'custom'}
             ];
             scope.loadingTable = true;
+
             var dataSourcePath = JSON.parse(scope.path)
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
             if (dataSourcePath.dataSourceId != null) {
-                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 if (dataSourcePath.dataSourceId.password) {
                     dataSourcePassword = dataSourcePath.dataSourceId.password;
@@ -459,8 +456,15 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.dataSetColumns = response.columnDefs;
                         scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
                     }
+                    console.log(response);
                     scope.tableColumns = response.columnDefs;
-                    scope.tableRows = response.data.slice(0, 5);
+                    if (response.data == null || response.data.length == 0) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.showMessage = true;
+                    } else {
+                        scope.tableRows = response.data.slice(0, 5);
+                    }
                     function dayOfWeekAsString(dayIndex) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
                     }

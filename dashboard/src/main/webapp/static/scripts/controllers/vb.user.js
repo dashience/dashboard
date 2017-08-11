@@ -91,15 +91,16 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                 });
             }
         });
-
     };
 
     $scope.clearUser = function () {
         $scope.user = "";
+        $scope.selectedUser = null;
     };
 
     $scope.addUser = function () {
         $scope.user = '';
+        $scope.selectedUser = null;
     };
 
     $scope.selectedUser = null;
@@ -126,6 +127,7 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
         $http({method: 'DELETE', url: 'admin/ui/user/' + user.id}).success(function (response) {
             $scope.users.splice(index, 1);
         });
+        $scope.clearUser();
     };
 
     function getUserAccount(user) {
@@ -170,6 +172,7 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     $scope.userAccounts = [];
     $scope.addUserAccount = function () {
         $scope.userAccounts.push({isEdit: true});
+        $scope.selectedUser = null;
     };
 
     $scope.saveUserAccount = function (userAccount) {
@@ -197,7 +200,7 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
 //            userAccount(currentUserId);
             });
             userAccount.isEdit = false;
-
+            $scope.selectedUser = null;
         }
     };
 
@@ -214,7 +217,9 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     };
 
     $scope.removeUserAccount = function (index) {
+        console.log(index);
         $scope.userAccounts.splice(index, 1);
+        $scope.selectedUser = null;
     };
 
     $scope.setUserPermission = function (permission) {
@@ -223,7 +228,6 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
 
     $scope.saveUserPermission = function (permission) {
         var userPermissionId = $scope.hasData(permission.permissionName).id;
-
         var currentUserId = $scope.userId;
         var data = {
             id: $scope.hasData(permission.permissionName).id,

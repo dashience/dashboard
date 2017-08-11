@@ -338,6 +338,13 @@
     .sp-preview {
         width: 89px !important;
     }
+    .editor{
+        overflow: auto;
+        height: 391px;
+        width: 520px;
+        padding-left: 27px;
+    }
+
 </style>
 <div class="container">
     <div class="row main col-md-6">
@@ -396,7 +403,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
+                            <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === 'csv' || widgetObj.dataSourceId.dataSourceType == 'sql' || widgetObj.dataSourceId.dataSourceType == 'xls' || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label>Time Segment</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
@@ -414,7 +421,7 @@
                                 </div>
                             </div>
 
-                            <div class="data-3" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === ('csv' || 'sql' || 'xls'))">
+                            <div class="data-3" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === 'csv' || widgetObj.dataSourceId.dataSourceType == 'sql' || widgetObj.dataSourceId.dataSourceType == 'xls' || widgetObj.dataSourceId.dataSourceType == 'analytics' || widgetObj.dataSourceId.dataSourceType == 'pinterest' || widgetObj.dataSourceId.dataSourceType == 'https' || widgetObj.dataSourceId.dataSourceType == 'facebook' || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-12"> 
                                     <label>Network Type</label>
                                     <select class="form-control"
@@ -452,7 +459,7 @@
                                     Color
                                 </button>
                             </div>
-                            <div class="form-group" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
+                            <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
                                 <button class="btn btn-default" 
                                         ng-click="showEditor(chartTypeName, widgetObj)">
                                     Show Editor
@@ -514,6 +521,11 @@
                                 <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
                                     <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}}</a>
                                 </label>
+                                <span class="pull-right" ng-if="collectionField.expression">
+                                    <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                </span>
                             </div>
                         </li>
                     </ul>
@@ -554,14 +566,14 @@
                             <label>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
-                                      ng-model="text" 
+                                      ng-model="dataSetColumn.textExpression" 
                                       ng-disabled="dataSetColumn.functionName ? true : false" rows="5">                                          
                             </textarea>
                         </div>
                         <div class="form-group col-xs-12">
                             <label>Field Type</label>
                             <select class="form-control" ng-model="dataSetColumn.fieldType">
-                                <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
+                                <option ng-repeat="fieldType in fieldTypes track by fieldType.value" value="{{fieldType.value}}">
                                     {{fieldType.name}}
                                 </option>
                             </select>
@@ -574,7 +586,7 @@
                         </div>
                         <div class="form-group col-xs-12">
                             <button class="btn btn-info" id="btn-save" 
-                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj, text)"
+                                    ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> Save
                             </button>
@@ -647,7 +659,7 @@
                     <div class="form-group">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
                             <label>Ticker Items</label>
-                            <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" 
+                            <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap"
                                        on-select="ticker(widgetObj, tickerItem)" 
                                        on-remove="removedByTicker(widgetObj, $item, tickerItem)">
                                 <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
@@ -662,10 +674,10 @@
                     <div class="form-group">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label>Funnel Items</label>
-                            <ui-select multiple ng-model="funnelItem"  theme="bootstrap" 
+                            <ui-select multiple ng-model="funnelItem"  theme="bootstrap"
                                        on-select="funnel(widgetObj, funnelItem)" 
                                        on-remove="removedByFunnel(widgetObj,$item,funnelItem)">
-                                <ui-select-match placeholder="Data...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match placeholder=" Funnel Value...">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="collectionField in collectionFields  | filter:$select.search">
                                     {{collectionField.displayName}}
                                 </ui-select-choices>
@@ -673,10 +685,14 @@
                         </div>
                     </div>
                 </div>
-            </div>            
-            <div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">
-                <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
             </div>
+                <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
+                    <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
+                    <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
+                        <label ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'"><input type="checkbox" ng-checked="(widgetObj.selectAll == 1) || (widgetObj.selectAll == null)"
+                               ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" ng-click="selectAllColumns(collectionFields, widgetObj)">
+                        Select All</label>
+                </div>
         </div>
         <div class="row"  ng-if="showDateRange == true;">
             <div class="col-sm-12">
@@ -747,9 +763,7 @@
                                     <button class="btn btn-default" type="button">
                                         Custom</button>
                                 </span>
-                                <a class="form-control pull-right custom-daterange-box" custom-Widget-Date-Range
-                                   ng-click="selectDateRangeName(widgetObj)" 
-                                   widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
+                                <a class="form-control pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
                                     <span class="date-border" 
                                           customStartDate="{{widgetObj.customStartDate}}" 
                                           customEndDate="{{widgetObj.customEndDate}}">
@@ -849,6 +863,16 @@
                         </div>
                     </div>                            
                 </div>
+                <div ng-if="chartTypeName === 'scatter'">
+                    <div>
+                        <div scatter-Chart-Source='{{displayPreviewChart.dataSetId}}' 
+                             widget-Id="{{displayPreviewChart.id}}" 
+                             widget-Columns="{{displayPreviewChart.columns}}" 
+                             scatter-Chart-Directive 
+                             widget-Obj="{{displayPreviewChart}}">                                            
+                        </div>
+                    </div>
+                </div>
                 <div ng-if="chartTypeName === 'funnel'">
                     <div>
                         <div funnel-Directive funnel-Source=  "{{displayPreviewChart.dataSetId}}" 
@@ -872,7 +896,7 @@
                     </div>
                 </div>                
                 <div class="row" ng-if="chartTypeName === 'text'">
-                    <div class="panel-body" style="overflow: auto;height:350px;">
+                    <div class="panel-body editor" style="overflow: auto;height:350px;">
                         <div>
                             <textarea ck-Editor ng-model="widgetObj.content" rows="10" cols="99"></textarea>
                         </div>  

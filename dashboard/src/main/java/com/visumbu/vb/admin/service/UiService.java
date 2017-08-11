@@ -11,6 +11,7 @@ import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
+import com.visumbu.vb.bean.DataSetReport;
 import com.visumbu.vb.bean.JoinDataSetBean;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.bean.WidgetColumnBean;
@@ -25,6 +26,8 @@ import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
+import com.visumbu.vb.model.DataSourceFilter;
+import com.visumbu.vb.model.DataSourceSetting;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
@@ -42,13 +45,21 @@ import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
+import com.visumbu.vb.utils.DateUtils;
+import com.visumbu.vb.utils.PropertyReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.beanutils.BeanUtils;
@@ -71,6 +82,10 @@ public class UiService {
 
     @Autowired
     private UserDao userDao;
+
+    public List<WidgetColumn> getWidgetColumns(Integer widgetId) {
+        return uiDao.getWidgetColumnsByWidgetId(widgetId);
+    }
 
     public List<Product> getProduct() {
         return uiDao.read(Product.class);
@@ -919,6 +934,7 @@ public class UiService {
                 dataSetList.add(dataSetFields);
             }
         }
+
         DataSetColumns dataSetColumns = new DataSetColumns();
         dataSetColumns.setId(dataSetColumnBean.getId());
         dataSetColumns.setExpression(dataSetColumnBean.getExpression());
@@ -946,7 +962,7 @@ public class UiService {
         return dataSetList;
     }
 
-    public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
+        public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
         List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         List<DataSetColumns> dataSetColumn = new ArrayList<>();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
@@ -968,6 +984,40 @@ public class UiService {
                 dataSet = tabWidget.getDataSetId();
                 DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(), dataSet);
                 if (checkDbForColumn != null) {
+                    if (allDataSetColumn.getExpression() != null && !allDataSetColumn.getExpression().isEmpty()) {
+                    checkDbForColumn.setExpression(allDataSetColumn.getExpression());
+                    }
+                    if (allDataSetColumn.getFieldName() != null && !allDataSetColumn.getFieldName().isEmpty()) {
+                    checkDbForColumn.setFieldName(allDataSetColumn.getFieldName());
+                    }
+
+                    if (allDataSetColumn.getDisplayName() != null && !allDataSetColumn.getDisplayName().isEmpty()) {
+                    checkDbForColumn.setDisplayName(allDataSetColumn.getDisplayName());
+                    }
+                    if (allDataSetColumn.getDisplayFormat() != null && !allDataSetColumn.getDisplayFormat().isEmpty()) {
+                    checkDbForColumn.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                    }
+                    checkDbForColumn.setStatus(allDataSetColumn.getStatus());
+                    checkDbForColumn.setFunctionName(allDataSetColumn.getFunctionName());
+                    checkDbForColumn.setColumnName(allDataSetColumn.getColumnName());
+                    checkDbForColumn.setBaseField(allDataSetColumn.getBaseField());
+                    checkDbForColumn.setDateRangeName(allDataSetColumn.getDateRangeName());
+                    checkDbForColumn.setCustomStartDate(allDataSetColumn.getCustomStartDate());
+                    checkDbForColumn.setCustomEndDate(allDataSetColumn.getCustomEndDate());
+                    checkDbForColumn.setLastNdays(allDataSetColumn.getLastNdays());
+                    checkDbForColumn.setLastNmonths(allDataSetColumn.getLastNmonths());
+                    checkDbForColumn.setLastNweeks(allDataSetColumn.getLastNweeks());
+                    checkDbForColumn.setLastNyears(allDataSetColumn.getLastNyears());
+                    if (allDataSetColumn.getFieldType() != null && !allDataSetColumn.getFieldType().isEmpty()) {
+                    checkDbForColumn.setFieldType(allDataSetColumn.getFieldType());
+                    }
+                    checkDbForColumn.setSortPriority(allDataSetColumn.getSortPriority());
+                    if (widgetId != null) {
+                        checkDbForColumn.setWidgetId(tabWidget);
+                        checkDbForColumn.setDataSetId(tabWidget.getDataSetId());
+                        checkDbForColumn.setUserId(allDataSetColumn.getUserId());
+                    }
+                    uiDao.saveOrUpdate(checkDbForColumn);
                     continue;
                 }
             }
@@ -998,6 +1048,8 @@ public class UiService {
                 if (widgetId != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
+                    dataSetFields.setDataSetId(tabWidget.getDataSetId());
+                    dataSetFields.setUserId(allDataSetColumn.getUserId());
                 }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
@@ -1023,9 +1075,10 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
-                if (widgetId != null) {
+                if (allDataSetColumn.getUserId() != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
+                    dataSetFields.setUserId(allDataSetColumn.getUserId());
                 }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
@@ -1114,7 +1167,7 @@ public class UiService {
     }
 
     public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
-        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getName(), dataSource.getUserId());
+        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getUserId());
         System.out.println("dataSource" + dataSource.getName());
         DataSource newDataSource = new DataSource();
         if (joinDataSourceList.size() > 0) {
@@ -1156,7 +1209,7 @@ public class UiService {
 //        return dataSetColumn;
 //    }
     public List<DataSetColumns> getDataSetColumns(Integer datasetId, Integer widgetId) {
-        return uiDao.getDataSetColumn(datasetId, widgetId);
+        return uiDao.getDataSetColumnOfAll(datasetId, widgetId);
     }
 
     public DataSetColumns getDataSetColumn(String fieldName, ColumnDef columnDef, Integer userId, Integer dataSetId, Integer widgetId) {
@@ -1236,17 +1289,13 @@ public class UiService {
         for (Iterator<DataSetColumnBean> iterator = dataSetColumnBeans.iterator(); iterator.hasNext();) {
             DataSetColumnBean columnBean = iterator.next();
             DataSetColumns dataSetColumnFromDb = uiDao.getDataSetColumn(columnBean.getFieldName(), dataSet);
-            System.out.println("DataSetColumnFromDB ---> " + dataSetColumnFromDb);
             if (dataSetColumnFromDb == null) {
                 continue;
             }
             DataSetColumns dataSetColumn = new DataSetColumns();
             dataSetColumn.setFieldName(columnBean.getFieldName());
-            System.out.println("FIELDNAME ============> " + columnBean.getFieldName());
             dataSetColumn.setFieldType(columnBean.getFieldType());
             dataSetColumn.setDataSetId(dataSet);
-            System.out.println("EXPRESSION ============> " + columnBean.getExpression());
-            dataSetColumn.setExpression(columnBean.getExpression());
             dataSetColumn.setDisplayFormat(columnBean.getDisplayFormat());
             dataSetColumn.setDisplayName(columnBean.getDisplayName());
             dataSetColumn.setDataFormat(columnBean.getDataFormat());
@@ -1261,5 +1310,157 @@ public class UiService {
 
     public JoinDataSet getJoinDataSetById(Integer joinDataSetId) {
         return uiDao.getJoinDataSetById(joinDataSetId);
+    }
+
+    public List getDataSetReports(Integer dataSourceId) {
+        DataSource dataSource = uiDao.getDataSourceById(dataSourceId);
+        return getDataSetReports(dataSource.getName());
+}
+
+    public List getDataSetReports(String dataSourceType) {
+        return uiDao.getDataSetReport(dataSourceType);
+    }
+
+    public List<DataSourceFilter> getDataSourceFilter(String dataSourceName, String reportName) {
+        return uiDao.getDataSourceFilters(dataSourceName, reportName);
+    }
+
+    public String getDataSourceQuery(String dataSource, String dataSetReportName, String level, String segment, String frequency, Date startDate, Date endDate) {
+        List<String> select = new ArrayList<>();
+        List<String> groupBy = new ArrayList<>();
+        List<String> orderBy = new ArrayList<>();
+        System.out.println("Data Source Name " + dataSource);
+        System.out.println("Data Set Report Name " + dataSetReportName);
+        String dateField = readProperty("datasource/datasource.properties", dataSource + "." + dataSetReportName + ".datefield");
+        List<DataSourceSetting> dataSourceSettings = uiDao.getDataSourceSettings(dataSource, dataSetReportName);
+
+        for (Iterator<DataSourceSetting> iterator = dataSourceSettings.iterator(); iterator.hasNext();) {
+            DataSourceSetting dataSourceSetting = iterator.next();
+            String metricQuery = dataSourceSetting.getMetricQuery();
+            String metricName = dataSourceSetting.getMetricName();
+            String orderByForMetric = dataSourceSetting.getOrderBy();
+            String groupByForMetric = dataSourceSetting.getGroupBy();
+            if (metricQuery == null && metricName == null) {
+                continue;
+            }
+            String metricQueryName = (metricQuery == null ? metricName : metricQuery) + " " + (metricName == null ? metricQuery : metricName);
+            select.add(metricQueryName);
+            if (groupByForMetric != null && !groupByForMetric.trim().isEmpty()) {
+                groupBy.add(groupByForMetric);
+            }
+
+            if (orderByForMetric != null && !orderByForMetric.trim().isEmpty()) {
+                orderBy.add(orderByForMetric);
+            }
+
+        }
+
+        if (level != null && !level.equalsIgnoreCase("Overall")) {
+            groupBy.add(level);
+            select.add(level);
+        }
+
+        if (segment != null && !segment.equalsIgnoreCase("none")) {
+            groupBy.add(segment);
+            select.add(segment);
+
+        }
+        if (frequency != null && !frequency.equalsIgnoreCase("none")) {
+            groupBy.add(frequency);
+            select.add(frequency);
+
+        }
+        String selectQry = String.join(",", select);
+        String groupQry = String.join(",", groupBy);
+        String orderQry = String.join(",", orderBy);
+
+        String orderByAppender = "";
+        if (orderQry != null && !(orderQry.trim().isEmpty())) {
+            orderByAppender = " order by " + orderQry;
+        }
+        String groupByAppender = "";
+        if (groupQry != null && !(groupQry.trim().isEmpty())) {
+            groupByAppender = " group by " + groupQry;
+        }
+        String tableName = dataSetReportName;
+
+        String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+        String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
+        String whereCondition = "";
+        if (dateField != null) {
+            whereCondition = " where " + dateField + " between '" + startDateStr + "' and '" + endDateStr + "' ";
+        }
+        String queryStr = "select " + selectQry + " from " + tableName + whereCondition + groupByAppender + " " + orderByAppender;
+        return queryStr;
+
+    }
+
+    public Map<String, List<DataSetReport>> getReportDetails(String dataSourceName, String dataSetReport) {
+        ClassLoader classLoader = PropertyReader.class.getClassLoader();
+        File file = new File(classLoader.getResource("datasource/datasource.properties").getFile());
+        String levelPropertyValue = readProperty(file, dataSourceName + "." + dataSetReport + ".level");
+        String segmentsPropertyValue = readProperty(file, dataSourceName + "." + dataSetReport + ".segment");
+        String frequencyPropertyValue = readProperty(file, dataSourceName + "." + dataSetReport + ".frequency");
+        List<DataSetReport> levelsForReport = new ArrayList<>();
+        List<DataSetReport> segmentsForReport = new ArrayList<>();
+        List<DataSetReport> frequencyForReport = new ArrayList<>();
+
+        String[] frequencyList = frequencyPropertyValue.split(";");
+        for (int i = 0; i < frequencyList.length; i++) {
+            String levels = frequencyList[i];
+            String[] level = levels.split(",");
+            DataSetReport segmentDataSetReport = new DataSetReport();
+            segmentDataSetReport.setType(level[0]);
+            segmentDataSetReport.setName(level[1]);
+            frequencyForReport.add(segmentDataSetReport);
+        }
+        String[] segmentsList = segmentsPropertyValue.split(";");
+        for (int i = 0; i < segmentsList.length; i++) {
+            String levels = segmentsList[i];
+            String[] level = levels.split(",");
+            DataSetReport segmentDataSetReport = new DataSetReport();
+            segmentDataSetReport.setType(level[0]);
+            segmentDataSetReport.setName(level[1]);
+            segmentsForReport.add(segmentDataSetReport);
+        }
+        String[] levelsList = levelPropertyValue.split(";");
+        for (int i = 0; i < levelsList.length; i++) {
+            String levels = levelsList[i];
+            String[] level = levels.split(",");
+            DataSetReport levelDataSetReport = new DataSetReport();
+            levelDataSetReport.setType(level[0]);
+            levelDataSetReport.setName(level[1]);
+            levelsForReport.add(levelDataSetReport);
+        }
+
+        Map<String, List<DataSetReport>> returnMap = new HashMap();
+        returnMap.put("levels", levelsForReport);
+        returnMap.put("segments", segmentsForReport);
+        returnMap.put("frequency", frequencyForReport);
+        return returnMap;
+    }
+
+    public String readProperty(String filename, String name) {
+        ClassLoader classLoader = PropertyReader.class.getClassLoader();
+        File file = new File(classLoader.getResource(filename).getFile());
+        return readProperty(file, name);
+    }
+
+    public String readProperty(File file, String name) {
+        FileInputStream fileInput;
+        Properties prop = new Properties();
+        String returnProp = null;
+        try {
+            fileInput = new FileInputStream(file);
+            prop.load(fileInput);
+            returnProp = prop.getProperty(name);
+            fileInput.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(PropertyReader.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (IOException ex) {
+            Logger.getLogger(PropertyReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returnProp;
     }
 }

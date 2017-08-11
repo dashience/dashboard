@@ -21,9 +21,20 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                     value.widgetId.isFav = false;
                 }
             });
+            $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+                $scope.userChartColors = response;
+                var widgetColors;
+                if (response.optionValue) {
+                    widgetColors = response.optionValue.split(',');
+                }
+                widgetItems.forEach(function (value, key) {
+                    value.widgetId.chartColors = widgetColors;
         });
-
         $scope.favouritesWidgets = widgetItems;
+            }).error(function () {
+                $scope.favouritesWidgets = widgetItems;
+    });
+        });
     });
 
     $scope.toggleFavourite = function (favouritesWidget, index) {
@@ -67,7 +78,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         } else {
             widget.width = 3;
         }
-        saveWidgetSize(widget, expandchart)
+        saveWidgetSize(widget, expandchart);
     };
 
     function saveWidgetSize(widget, expandchart) {
@@ -186,5 +197,5 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
             }
         }
-    }
+    };
 });

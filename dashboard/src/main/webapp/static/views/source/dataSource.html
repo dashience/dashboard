@@ -149,8 +149,9 @@
                                 <option ng-repeat="sourceType in dataSourceTypes"  value="{{sourceType.type}}">{{sourceType.name}}</option>
                             </select>
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
-                            <label>Connection String</label>
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql' || dataSource.dataSourceType === 'skyZone' || dataSource.dataSourceType === 'autoMobiles' || dataSource.dataSourceType === 'dataSetSql' || dataSource.dataSourceType === 'semRush'">
+                            <label ng-if="dataSource.dataSourceType !== 'semRush'">Connection String</label>
+                            <label ng-if="dataSource.dataSourceType === 'semRush'">API Key</label>
                             <input type="text" class="form-control" ng-model="dataSource.connectionString">
                         </div>
 
@@ -212,9 +213,5 @@
                 </div>
             </div>
         </div>  
-
-
-
-
     </div>
 </section>

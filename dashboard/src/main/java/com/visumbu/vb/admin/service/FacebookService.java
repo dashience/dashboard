@@ -48,8 +48,8 @@ public class FacebookService {
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
 //    public final String APP_SECRET = ExampleConfig.APP_SECRET;
-    public final String BASE_URL = "https://graph.facebook.com/v2.8/act_";
-    public final String BASE_URL_FEED = "https://graph.facebook.com/v2.8/";
+    public final String BASE_URL = "https://graph.facebook.com/v2.9/act_";
+    public final String BASE_URL_FEED = "https://graph.facebook.com/v2.9/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
     
     public  String ACCESS_TOKEN="";
@@ -107,7 +107,6 @@ public class FacebookService {
         if (dataSet.equalsIgnoreCase("pageReactions")) {
             return getPageReactions(organicAccountId, startDate, endDate, aggregation, productSegement);
         }
-
         return null;
     }
 
