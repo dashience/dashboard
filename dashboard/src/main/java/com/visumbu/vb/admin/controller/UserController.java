@@ -123,10 +123,19 @@ public class UserController extends BaseController {
     public @ResponseBody
     LoginUserBean login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginUserBean loginUserBean) {
         HttpSession session = request.getSession();
+        Object agencyDashiencePathObject = session.getAttribute("agencyDashiencePath");
+        String agencyDashiencePath = null;
+        if (agencyDashiencePathObject != null) {
+            agencyDashiencePath = agencyDashiencePathObject + "";
+        }
+        if (agencyDashiencePath != null && !agencyDashiencePath.equalsIgnoreCase("")) {
+            loginUserBean.setDashiencePath(agencyDashiencePath);
+        }
+
         LoginUserBean userBean = userService.authenicate(loginUserBean);
         System.out.println("----------------------------------------------->");
         System.out.println(userBean);
-        
+
         session.setAttribute("isAuthenticated", userBean.getAuthenticated());
         session.setAttribute("username", userBean.getUsername());
         session.setAttribute("agencyId", userBean.getAgencyId());
@@ -137,6 +146,22 @@ public class UserController extends BaseController {
             session.setAttribute("permission", userBean.getPermission());
         }
         return userBean;
+    }
+
+    @RequestMapping(value = "getAgencyByDomain", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Agency getAgencyByDomain(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        System.out.println("agencyDashiencePath ===> " + session.getAttribute("agencyDashiencePath"));
+        Object agencyDashiencePathObject = session.getAttribute("agencyDashiencePath");
+        String agencyDashiencePath = null;
+        if (agencyDashiencePathObject != null) {
+            agencyDashiencePath = agencyDashiencePathObject + "";
+        }
+        if (agencyDashiencePath != null && !agencyDashiencePath.equalsIgnoreCase("")) {
+            return userService.getAgencyByDomain(agencyDashiencePath);
+        }
+        return null;
     }
 
     @RequestMapping(value = "getPermission", method = RequestMethod.GET, produces = "application/json")

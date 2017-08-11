@@ -66,6 +66,47 @@ public class UserDao extends BaseDao {
         return query.list();
     }
 
+    public VbUser findUser(String username, Agency agency) {
+        if(agency == null || username == null || username.isEmpty()) {
+            return null;
+        }
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId = :agency and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
+        query.setParameter("userName", username);
+        query.setParameter("agency", agency);
+        List<VbUser> users = query.list();
+        if (!users.isEmpty() && users.size() > 0) {
+            return users.get(0);
+        }
+        return null;
+    }
+
+    public VbUser findAdminUserByName(String username) {
+        if(username == null || username.isEmpty()) {
+            return null;
+        }
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");
+        query.setParameter("userName", username);
+        List<VbUser> users = query.list();
+        if (!users.isEmpty() && users.size() > 0) {
+            return users.get(0);
+        }
+        return null;
+    }
+
+    public Agency findAgencyByDashiencePath(String dashiencePath) {
+        if(dashiencePath == null || dashiencePath.isEmpty()) {
+            return null;
+        }
+        Query query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyDashiencePath = :agencyDashiencePath");
+        query.setParameter("agencyDashiencePath", dashiencePath);
+        List<Agency> agencies = query.list();
+        if (!agencies.isEmpty() && agencies.size() > 0) {
+            return agencies.get(0);
+        }
+        return null;
+    }
+
+    
     public List<VbUser> findByUserName(String username) {
 
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");//.getNamedQuery("VbUser.findByUserName");

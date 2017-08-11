@@ -48,16 +48,19 @@ public class AuthFilter implements Filter {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             System.out.println("Server name ===> " + request.getServerName());
             String dashienceDomain = filterConfig.getInitParameter("dashience-domain");
-            if(!dashienceDomain.startsWith("http")) {
+            if (!dashienceDomain.startsWith("http")) {
                 dashienceDomain = request.getScheme() + "://" + dashienceDomain;
             }
             System.out.println("The message is: " + dashienceDomain);
-            
+
             String urlDomain = VbUtils.getDomainName(dashienceDomain);
             System.out.println("url Domain ==> " + urlDomain);
-            String subDomain = request.getServerName().substring(0, request.getServerName().indexOf(urlDomain) - 1);
+            String subDomain = null;
+            if (request.getServerName().indexOf(urlDomain) > 0) {
+                subDomain = request.getServerName().substring(0, request.getServerName().indexOf(urlDomain) - 1);
+            }
             System.out.println(subDomain);
-            
+
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             HttpSession session = httpRequest.getSession();
             String url = httpRequest.getServletPath();
@@ -67,18 +70,20 @@ public class AuthFilter implements Filter {
             String fullUrl = httpRequest.getRequestURI();
             System.out.println("Full URL -> " + fullUrl);
             if (session != null) {
-                if(subDomain != null || !subDomain.isEmpty()) {
+                if (subDomain != null && !subDomain.isEmpty()) {
                     session.setAttribute("agencyDashiencePath", subDomain);
                 }
                 if (session.getAttribute("isAuthenticated") != null
                         && (boolean) session.getAttribute("isAuthenticated")
                         && session.getAttribute("username") != null) {
                     String agencyDashiencePath = session.getAttribute("agencyDashiencePath") + "";
-                    
+
                     allowRequest = true;
                     chain.doFilter(request, response);
                     return;
                 }
+            } else {
+                System.out.println("Session is null");
             }
             if (allowRequest == false) {
                 if (fullUrl.endsWith("login") || fullUrl.endsWith("logout")) {

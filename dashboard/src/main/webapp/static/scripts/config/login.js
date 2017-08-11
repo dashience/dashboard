@@ -1,6 +1,13 @@
 var app = angular.module("loginApp", ['ngCookies', 'LocalStorageModule']);
 app.controller("LoginController", function ($scope, $http, $window, $cookies, localStorageService, $timeout) {
     $scope.showErrorMessage = false;
+    $scope.agency = null;
+    $scope.getAgencyByDomain = function() {
+         $http({method: "GET", url: "admin/user/getAgencyByDomain"}).success(function (response) {
+             $scope.agency = response;
+         });
+    };
+    $scope.getAgencyByDomain();
     $scope.authenticate = function (login) {
         if (!$scope.adminForm.$valid) {
             return;
