@@ -95,7 +95,7 @@ public class UserService {
                 user.setFailedLoginCount(0);
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
-                System.out.println(loginUserBean);
+                ////System.out.println(loginUserBean);
                 loginUserBean.setId(user.getId());
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
@@ -131,9 +131,9 @@ public class UserService {
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
-        System.out.println("Agency Id " + teUser.getAgencyId());
+        ////System.out.println("Agency Id " + teUser.getAgencyId());
         userBean.setAgencyId(toAgencyBean(teUser.getAgencyId()));
-        System.out.println("AGENCY BEAN " + userBean.getAgencyId());
+        ////System.out.println("AGENCY BEAN " + userBean.getAgencyId());
 //        userBean.setPassword(teUser.getPassword());
         userBean.setFailLoginCount(teUser.getFailedLoginCount());
         userBean.setIsAdmin(teUser.getIsAdmin() != null && teUser.getIsAdmin() == true ? "admin" : "");
@@ -169,7 +169,7 @@ public class UserService {
             user = users.get(0);
         }
         if (user == null) {
-            System.out.println("Creating user " + userName);
+            ////System.out.println("Creating user " + userName);
             user = userDao.createNewUser(userId, userName, authData.getFullName());
             userDao.initUser(user);
         }
@@ -335,8 +335,8 @@ public class UserService {
 //    }
     
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
-        System.out.println("==================================>");
-        System.out.println(agencyProduct);
+        //System.out.println("==================================>");
+        //System.out.println(agencyProduct);
         return (AgencyProduct) userDao.create(agencyProduct);
     }
 
@@ -357,7 +357,7 @@ public class UserService {
     }
 
      public AgencySettings createAgencySettings(AgencySettings agencySettings) {
-         System.out.println(agencySettings.getAgencyId()+"....."+agencySettings.getCurrencyId()+"....."+agencySettings.getTimeZoneId());
+         //System.out.println(agencySettings.getAgencyId()+"....."+agencySettings.getCurrencyId()+"....."+agencySettings.getTimeZoneId());
         return (AgencySettings) userDao.create(agencySettings);
     }
      

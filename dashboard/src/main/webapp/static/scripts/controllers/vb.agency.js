@@ -53,7 +53,7 @@ app.controller('AgencyController', function ($scope, $http) {
         return $scope.tab === tabNum;
     };
     $scope.addAgency = function () {
-        $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+        $scope.agency = {logo: "static/img/sky-zone.jpg"};
     };
     $scope.agencies = [];
     function getAgency() {
@@ -62,7 +62,7 @@ app.controller('AgencyController', function ($scope, $http) {
         });
     }
     getAgency();
-    $scope.agency = {logo: "static/img/logos/deeta-logo.png"}; //Logo Upload
+    $scope.agency = {logo: "static/img/sky-zone.jpg"}; //Logo Upload
     $scope.imageUpload = function (event) {
         var files = event.target.files;
         for (var i = 0; i < files.length; i++) {
@@ -92,7 +92,7 @@ app.controller('AgencyController', function ($scope, $http) {
     };
 
     $scope.saveAgency = function (agency) {
-        if ($scope.agency.logo === "static/img/logos/deeta-logo.png") {
+        if ($scope.agency.logo === "static/img/sky-zone.jpg") {
             $scope.agency.logo = "";
         }
         var data = {
@@ -108,7 +108,7 @@ app.controller('AgencyController', function ($scope, $http) {
             console.log(response);
             getAgency();
             if (response.status == true) {
-                $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+                $scope.agency = {logo: "static/img/sky-zone.jpg"};
             } else if (response.status == false) {
                 var dialog = bootbox.dialog({
                     title: 'Alert',
@@ -120,7 +120,7 @@ app.controller('AgencyController', function ($scope, $http) {
                     }, 2000);
                 });
             } else {
-                $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+                $scope.agency = {logo: "static/img/sky-zone.jpg"};
             }
         });
 
@@ -136,7 +136,7 @@ app.controller('AgencyController', function ($scope, $http) {
             email: agency.email,
             description: agency.description,
             status: agency.status,
-            logo: agency.logo ? agency.logo : "static/img/logos/deeta-logo.png"
+            logo: agency.logo ? agency.logo : "static/img/sky-zone.jpg"
         };
         $scope.agency = data;
         $scope.selectedRow = index;
@@ -144,7 +144,7 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.showAgencyProductForm = false;
     };
     $scope.clearAgency = function () {
-        $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
+        $scope.agency = {logo: "static/img/sky-zone.jpg"};
     };
     $scope.deleteAgency = function (agency, index) {
         $http({method: 'DELETE', url: 'admin/user/agency/' + agency.id}).success(function (response) {
@@ -298,7 +298,7 @@ app.controller('AgencyController', function ($scope, $http) {
     };
 
     $scope.addAgencyProduct = function () {
-        $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+        $scope.agencyProduct = {icon: "static/img/sky-zone.jpg"};
         $scope.showAgencyProductForm = true;
     }
     $scope.selectedRows = null;
@@ -316,7 +316,7 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.showAgencyProductForm = true;
     };
 
-    $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+    $scope.agencyProduct = {icon: "static/img/sky-zone.jpg"};
     $scope.productIcon = function (event) {
         var files = event.target.files;
         for (var i = 0; i < files.length; i++) {
@@ -334,7 +334,7 @@ app.controller('AgencyController', function ($scope, $http) {
     $scope.saveAgencyProduct = function (agencyProduct) {
         console.log(agencyProduct.template)
         var agencyProductId = $scope.agencyById;
-        if ($scope.agencyProduct.icon === "static/img/logos/deeta-logo.png") {
+        if ($scope.agencyProduct.icon === "static/img/sky-zone.jpg") {
             $scope.agencyProduct.icon = "";
         }
         if (!$scope.agencyById) {
@@ -364,14 +364,14 @@ app.controller('AgencyController', function ($scope, $http) {
                     getAgencyLicence(agencyProductId);
                     $scope.showAgencyProductForm = false;
                 });
-                $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+                $scope.agencyProduct = {icon: "static/img/sky-zone.jpg"};
                 $scope.productIconEmptyMessage = "";
             }
         }
     };
     $scope.clearAgencyProduct = function () {
         $scope.showAgencyProductForm = false;
-        $scope.agencyProduct = {icon: "static/img/logos/deeta-logo.png"};
+        $scope.agencyProduct = {icon: "static/img/sky-zone.jpg"};
         $scope.productIconEmptyMessage = "";
     };
     $scope.selectedAgencyProduct = null;
