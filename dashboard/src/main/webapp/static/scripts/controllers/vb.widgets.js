@@ -3186,7 +3186,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
-                               //yaxis mapping data
+                            columns.push(xTicks);
+                            //yaxis mapping data
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -3194,7 +3195,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
                             });
-                            
+
 
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
@@ -3205,7 +3206,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             } else {
                                 gridLine = false;
                             }
-                            
+
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -4343,7 +4344,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.groupField) {
-                    groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType});
+                    groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType, displayName: value.displayName});
                 }
                 if (value.combinationType) {
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
@@ -4544,21 +4545,41 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     return a[value.fieldName] || "0";
                                 });
                                 ySeriesData.unshift(value.displayName);
+                                console.log("ySeriesData");
+
+                                console.log(ySeriesData);
                                 columns.push(ySeriesData);
                             });
+                            console.log("groupNames");
+                            console.log("new Columns");
+                            console.log(columns);
+                            console.log("len-->" + columns.length);
+
                             var groupingNames = [];
+                            console.log("grouping Fields");
+                            console.log(groupingFields);
                             angular.forEach(groupingFields, function (value, key) {
-                                groupingNames.push(value.fieldName);
+                                groupingNames.push(value.displayName);
                             });
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            console.log("grouping names");
+                            console.log(groupingNames);
+                            console.log("columns");
+                            console.log(columns);
+//                            document.write(columns);
+                            console.log("xaxis");
+                            console.log(xAxis);
+                            console.log("xTicks");
+                            console.log(xTicks);
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;
                             } else {
                                 gridLine = false;
                             }
+
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -4568,13 +4589,22 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 },
                                 bindto: element[0],
                                 data: {
+                                    //visits,0,Sessions,61101,New Users,42251,% New Sessions,69.14944108934388,Exit Rate,51.01156431344717
+//                                    columns: [
+//                                       [ "Sessions", 61101 ],
+//                                       [ "New Users", 42251 ],
+//                                       [ "% New Sessions", 69.14944108934388 ],
+//                                       [ "Exit Rate", 51.01156431344717 ]
+//                                    ],
                                     x: xAxis.fieldName,
-                                    columns: columns,
                                     labels: labels,
-                                    type: 'bar',
-                                    groups: [groupingNames],
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    columns: columns,
+                                    type: 'bar',
+                                    groups: [
+                                        groupingNames
+                                    ]
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -4585,20 +4615,59 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
-                                        }
+                                            },
+                                            culling: false
+                                        },
+
                                     },
                                     y2: y2
                                 },
                                 grid: {
-                                    x: {
-                                        show: gridLine
-                                    },
                                     y: {
-                                        show: gridLine
+                                        lines: [{value: 0}]
                                     }
                                 }
                             });
+//                            var chart = c3.generate({
+//                                padding: {
+//                                    top: 10,
+//                                    right: 50,
+//                                    bottom: 10,
+//                                    left: 50,
+//                                },
+//                                bindto: element[0],
+//                                data: {
+//                                    x: xAxis.fieldName,
+//                                    columns: columns,
+//                                    labels: labels,
+//                                    type: 'bar',
+//                                    groups: [groupingNames],
+//                                    axes: axes,
+//                                    types: chartCombinationtypes
+//                                },
+//                                color: {
+//                                    pattern: chartColors ? chartColors : defaultColors
+//                                },
+//                                tooltip: {show: true},
+//                                axis: {
+//                                    x: {
+//                                        tick: {
+//                                            format: function (x) {
+//                                                return xData[x];
+//                                            }
+//                                        }
+//                                    },
+//                                    y2: y2
+//                                },
+//                                grid: {
+//                                    x: {
+//                                        show: gridLine
+//                                    },
+//                                    y: {
+//                                        show: gridLine
+//                                    }
+//                                }
+//                            });
                         }
                     });
                 }

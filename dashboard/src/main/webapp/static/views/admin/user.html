@@ -185,11 +185,10 @@
 
                         </div>
                         <div ng-show="isSetUser(3)" class="license">
-
                             <div class="col-md-12">
                                 <form class="form-horizontal">
                                     <div>
-                                        <div class="all-permissions">
+                                        <div class="all-permissions" ng-show="allPermissions">
                                             <label>All Permissions</label>
                                             <div class="checkbox checkbox-slider--b">
                                                 <label>
@@ -199,12 +198,13 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6" ng-repeat="permission in permissions">
+
                                             <label>{{permission.permissionName}}</label>
                                             <div class="checkbox checkbox-slider--b">
                                                 <label class="col-sm-4" for="field{{$index + 1}}">
                                                     <input id="field{{$index + 1}}" type="checkbox"
                                                            ng-model="permission.status"          
-                                                           ng-click="setUserPermission(permission)"
+                                                           ng-click="setUserPermission(permission,'individualPermission')"
                                                            ng-true-value="1"
                                                            ng-false-value="0"/>
                                                     <span></span>
@@ -214,7 +214,6 @@
                                     </div>
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>

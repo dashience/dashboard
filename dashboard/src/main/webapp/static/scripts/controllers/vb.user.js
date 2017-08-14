@@ -135,14 +135,18 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
             $scope.userAccounts = response;
         });
         $http.get('admin/ui/userPermission/' + user.id).success(function (response) {
+            $scope.allPermissions = true;
             $scope.userPermissions = response;
             $http.get('admin/ui/permission').success(function (response1) {
                 $scope.permissions = response1;
                 angular.forEach($scope.permissions, function (permission) {
                     $scope.hasPermission(permission);
                 });
+                checkAllPermission(user);
             });
+            
         });
+        
     }
 
     $scope.hasPermission = function (permission) {
@@ -217,18 +221,12 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     };
 
     $scope.removeUserAccount = function (index) {
-        console.log(index);
         $scope.userAccounts.splice(index, 1);
         $scope.selectedUser = null;
     };
 
     $scope.setAllPermissions = function () {
-        console.log("all Permissions" + $scope.allPermissionStatus);
-        console.log($scope.permissions);
-        console.log($scope.userPermissions);
-        console.log("all Permission Status-->");
         angular.forEach($scope.permissions, function (val, key) {
-            console.log(val);
             if ($scope.allPermissionStatus === 1) {
                 var permissionObject = {
                     permissionName: val.permissionName,
@@ -244,17 +242,40 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                     status: 0
                 };
             }
-            $scope.saveUserPermission(permissionObject);
+            var type = "allPermission";
+            $scope.saveUserPermission(permissionObject, type);
+        });
+    };
+    $scope.allPermissions = false;
+    $scope.setUserPermission = function (permission, type) {
+        $scope.saveUserPermission(permission, type);
+    };
+
+    //check for all permisssions for the user
+    function checkAllPermission (user) {
+        var statusCount = 0;
+        var permissionLength = $scope.permissions.length;
+        $http.get('admin/ui/userPermission/' + user.id).success(function (response) {
+            $scope.userLevelPermission = response;
+            var userPermissionLength = $scope.userLevelPermission.length;
+            if (permissionLength > userPermissionLength) {
+                $scope.allPermissionStatus = 0;
+            } else {
+                $scope.userLevelPermission.forEach(function (val, key) {
+                    if (val.status === true) {
+                        statusCount++;
+                    }
+                });
+                if (permissionLength === statusCount) {
+                    $scope.allPermissionStatus = 1;
+                } else {
+                    $scope.allPermissionStatus = 0;
+                }
+            }
         });
     };
 
-    $scope.setUserPermission = function (permission) {
-        console.log("save user permission");
-        console.log(permission);
-//        $scope.saveUserPermission(permission);
-    };
-
-    $scope.saveUserPermission = function (permission) {
+    $scope.saveUserPermission = function (permission, type) {
         var userPermissionId = $scope.hasData(permission.permissionName).id;
         var currentUserId = $scope.userId;
         var data = {
@@ -263,8 +284,16 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
             userId: currentUserId.id,
             status: permission.status
         };
+        if (permission.status === 0) {
+            $scope.allPermissionStatus = 0;
+        }
         $http({method: userPermissionId ? 'PUT' : 'POST', url: 'admin/ui/userPermission', data: data}).success(function (response) {
             getUserAccount(currentUserId);
+            if (type === 'individualPermission') {
+                //check all permissions is set for the user. If set active all permisssions toggle to true else set to false
+                checkAllPermission($scope.userId);
+
+            }
         });
     };
 });
