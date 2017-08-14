@@ -395,6 +395,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.chartColors = widgetColors;
                 });
                 $scope.widgets = widgetItems;
+                console.log(widgetItems);
             });
         });
     };
@@ -3185,8 +3186,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
-                            columns.push(xTicks);
-
+                               //yaxis mapping data
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -3194,6 +3194,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
                             });
+                            
 
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
@@ -3204,6 +3205,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             } else {
                                 gridLine = false;
                             }
+                            
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -3228,7 +3230,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling: false
                                         }
                                     },
                                     y2: y2

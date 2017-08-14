@@ -222,8 +222,36 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
         $scope.selectedUser = null;
     };
 
+    $scope.setAllPermissions = function () {
+        console.log("all Permissions" + $scope.allPermissionStatus);
+        console.log($scope.permissions);
+        console.log($scope.userPermissions);
+        console.log("all Permission Status-->");
+        angular.forEach($scope.permissions, function (val, key) {
+            console.log(val);
+            if ($scope.allPermissionStatus === 1) {
+                var permissionObject = {
+                    permissionName: val.permissionName,
+                    description: val.description,
+                    id: val.id,
+                    status: true
+                };
+            } else {
+                var permissionObject = {
+                    permissionName: val.permissionName,
+                    description: val.description,
+                    id: val.id,
+                    status: 0
+                };
+            }
+            $scope.saveUserPermission(permissionObject);
+        });
+    };
+
     $scope.setUserPermission = function (permission) {
-        $scope.saveUserPermission(permission);
+        console.log("save user permission");
+        console.log(permission);
+//        $scope.saveUserPermission(permission);
     };
 
     $scope.saveUserPermission = function (permission) {

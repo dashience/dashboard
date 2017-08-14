@@ -21,10 +21,13 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $scope.logo = window.atob(value.logo);
         })
     });
-
+    
+    
+    $scope.firstDataSetLoading = true;
     $http.get('admin/report/reportWidget/' + $stateParams.reportId).success(function (response) {
         var widgetItems = response;
         $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.firstDataSetLoading = false;
             $scope.userChartColors = response;
             var widgetColors;
             if (response.optionValue) {

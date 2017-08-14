@@ -96,6 +96,8 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             });
         };
         $scope.saveDataSource = function (dataSource) {
+            console.log("Save DataSource");
+            console.log(dataSource)
             dataSource.code = $('#fbOauthToken').val();
             dataSource.accessToken = $('#fbAccessToken').val();
             var data = {
@@ -128,6 +130,11 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             $scope.selectedRow = index;
         };
         $scope.editDataSource = function (dataSource) {
+            if (dataSource.dataSourceType === "csv" || dataSource.dataSourceType === "xls") {
+                $scope.editDataSourceType = true;
+            } else {
+                $scope.editDataSourceType = false;
+            }
             var data = {
                 id: dataSource.id,
                 name: dataSource.name,
@@ -175,11 +182,18 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             }
         }
         $scope.uploadFile = function (dataSource) {
-            var file = $scope.myFile;
-            $scope.sourceFileName = file.name;
-            var uploadUrl = "admin/ui/fileUpload";
-            uploadFileToUrl(file, uploadUrl, dataSource);
-            $scope.myFile = "";
+            console.log($scope.editDataSourceType);
+            if ($scope.editDataSourceType === true) {
+                $scope.saveDataSource(dataSource);
+            } else {
+                var file = $scope.myFile;
+                console.log("scope file name-->");
+                $scope.sourceFileName = file.name;
+                var uploadUrl = "admin/ui/fileUpload";
+                uploadFileToUrl(file, uploadUrl, dataSource);
+                $scope.myFile = "";
+            }
+
         };
         function uploadFileToUrl(file, uploadUrl, dataSource) {
             var fd = new FormData();

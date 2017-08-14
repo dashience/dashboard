@@ -170,7 +170,8 @@
         </div>
     </div>
 </div>
-<div class="row content">
+<div ng-show="firstDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+<div ng-hide="firstDataSetLoading" class="row content">
     <div ng-repeat="reportWidget in reportWidgets">
         <div ng-if="reportWidget.widgetId.chartType === 'ticker'">
             <div class="col-sm-{{reportWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
