@@ -370,22 +370,69 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             }
             scope.format = function (column, value) {
+                console.log("column");
+                console.log(column);
+                console.log(column.displayFormat);
+                console.log(value);
+//                if (column.fieldType === "date") {
+//                    return value;
+//                }
+//                if (!value) {
+//                    return "-";
+//                }
+//                
+//                if (column.displayFormat) {
+//                    if (Number.isNaN(value)) {
+//                        console.log("NAN");
+//                        return "-";
+//                    }
+//                    if (column.displayFormat.indexOf("%") > -1) {
+//                        return d3.format(column.displayFormat)(value / 100);
+//                    }
+//                    return d3.format(column.displayFormat)(value);
+//                }
+//                return value;
+// ------------------------- Tested code for comma with decimal formatting
+//                var formatComma = d3.format(",.2f");
+//                if(column.displayName==="Conversions"){
+//                    console.log("inseid conversions");
+//                    var data="3538.0";
+//                    var data1="3,538.0";
+//                    var splitData=data1.split(".");
+//                    console.log("0--->"+splitData[0]);
+//                    var removeComma=splitData[0].replace(/\,/g,'');
+//                    console.log("removeComma Value--->"+removeComma);
+//                    var combinedValue=removeComma+'.'+splitData[1];
+//                    console.log("combinedValue--->"+combinedValue);
+//                    console.log("direct removal--->"+data1.replace(/\,/g,''));
+//                    value=formatComma(combinedValue);
+//                    console.log("value --->"+value);
+//                    return value;
+//                }
+                var strValue=value;
+                console.log("Column-->"+column.displayName+" and value -->"+strValue);
+                console.log("type of-->"+typeof(strValue));
+                if (strValue.toString().indexOf(',') !== -1) {
+                    value = value.replace(/\,/g, '');
+                } 
                 if (column.fieldType === "date") {
                     return value;
                 }
-                if (!value) {
-                    return "-";
+                if (column.fieldType === "string") {
+                    return value;
                 }
-                if (column.displayFormat) {
-                    if (Number.isNaN(value)) {
-                        return "-";
-                    }
+                if (column.displayFormat == null) {
+                    return value;
+                }
+                if (column && column.displayFormat) {
                     if (column.displayFormat.indexOf("%") > -1) {
                         return d3.format(column.displayFormat)(value / 100);
+                    } else if (column.displayFormat == 'H:M:S') {
+                        return formatBySecond(parseInt(value))
+                    } else {
+                        return d3.format(column.displayFormat)(value);
                     }
-                    return d3.format(column.displayFormat)(value);
                 }
-                return value;
             };
 //            var setTimeSegment, setProductSegment;
 //            if (dataSourcePath.timeSegment) {

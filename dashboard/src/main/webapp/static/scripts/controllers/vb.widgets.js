@@ -10,6 +10,10 @@ function formatBySecond(second) {
 }
 
 function dashboardFormat(column, value) {
+    var strValue = value;
+    if (strValue.toString().indexOf(',') !== -1) {
+        value = value.replace(/\,/g, '');
+    }
     if (column.fieldType === "date") {
         return value;
     }
@@ -441,6 +445,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+        console.log("Edit Widgets");
+        console.log(widget);
         $scope.dispHideBuilder = true;
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
@@ -1868,6 +1874,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
+        console.log("create widget");
+        console.log(widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2800,10 +2808,12 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             scope.loadingTicker = true;
             var tickerName = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
+
                 if (!value) {
                     return;
                 }
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
+                console.log(tickerName);
             });
 
             var format = function (column, value) {
@@ -2886,6 +2896,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         if (!response) {
                             return;
                         }
+
                         angular.forEach(tickerName, function (value, key) {
                             var tickerData = response.data;
                             var loopCount = 0;
@@ -2897,6 +2908,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                             });
                             var total = 0;
                             for (var i = 0; i < setData.length; i++) {
+                                if (setData[i].toString().indexOf(',') !== -1) {
+                                    setData[i] = setData[i].replace(/\,/g, '');
+                                }
                                 total += parseFloat(setData[i]);
                             }
                             scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
@@ -3571,7 +3585,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -4242,7 +4257,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -4999,7 +5015,8 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                                             format: function (x) {
                                                 return xData[x];
                                             },
-                                            fit: false
+                                            fit: false,
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -5552,6 +5569,8 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
         },
         link: function (scope, element, attr) {
             scope.columns = scope.queryData;
+            console.log("Query Data");
+            console.log(scope.queryData);
             if (!scope.queryData) {
                 return;
             }
@@ -5563,6 +5582,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 console.log(value.fieldType);
                 console.log(value.fieldName);
                 var typeOfValue = value.type ? value.type : value.fieldType;
+                console.log("typeof value----->" + typeOfValue);
                 if (typeOfValue == 'number') {
                     scope.fieldsType = "integer";
                 } else if (typeOfValue == 'string') {
@@ -5576,6 +5596,8 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 }
                 filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType});
             });
+            console.log("filterList");
+            console.log(filterList);
             scope.buildQuery = filterList;
             if (jsonFilter.jsonData != null) {
                 scope.jsonBuild = JSON.parse(jsonFilter.jsonData);

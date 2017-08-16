@@ -156,9 +156,10 @@ public class ProxyController {
         DataExporter exporter = new DataExporter();
         List<ColumnDef> columnDef = (List<ColumnDef>) dataMap.get("columnDefs");
         List<WidgetColumn> widgetColumns = uiService.getWidgetColumns(widgetIdInt);
+        String widgetTitle = widget.getWidgetTitle() != null ? widget.getWidgetTitle() : "Widget";
         try {
             response.setContentType("application/xlsx");
-            response.setHeader("Content-disposition", "attachment; filename=" + widget.getWidgetTitle().replaceAll(" ", "_") + ".xlsx");
+            response.setHeader("Content-disposition", "attachment; filename=" + widgetTitle.replaceAll(" ", "_") + ".xlsx");
             exporter.exportToXls(widgetColumns, dataList, response.getOutputStream());
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);

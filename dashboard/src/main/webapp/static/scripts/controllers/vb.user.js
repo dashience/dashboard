@@ -68,9 +68,17 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
 //            secondaryPhone: user.secondaryPhone,
 //            agencyId: user.agencyId.id?user.agencyId.id:''
 //        };
-        if ($scope.checkAdmin === 'admin') {
-            user.isAdmin = true;
+//        if ($scope.checkAdmin === 'admin') {
+//            user.isAdmin = true;
+//        }
+        console.log("user-->");
+        console.log(user);
+        if(user.isAdmin===null){
+            user.isAdmin=null;
+        } else {
+            user.isAdmin=true;
         }
+        console.log(user.isAdmin);
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
             getUser();
             if (!response.message) {
