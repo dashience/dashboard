@@ -503,6 +503,10 @@ public class UiController extends BaseController {
 //        return uiService.getUser();
 //    }
 
+    
+    
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @RequestMapping(value = "user", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getAgencyUser(HttpServletRequest request, HttpServletResponse response) {
@@ -694,10 +698,22 @@ public class UiController extends BaseController {
         return uiService.createDashboardTemplate(dashboardTemplate, user.getId(), accountId, productId);
     }
     
-    @RequestMapping(value = "userPrefrences", method = RequestMethod.POST, produces = "application/json")
+    //added by Paramvir for Theme settings
+    @RequestMapping(value = "userPreferences", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     UserPreferences addUserPreferences(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
+        VbUser user = userService.findByUsername(getUser(request));
+        userPreferences.setUserId(user);
         return uiService.updateThemeSettings(userPreferences);
+    }
+    
+    
+    //added by Paramvir
+    @RequestMapping(value = "userPreferences", method = RequestMethod.GET)
+    public @ResponseBody
+    UserPreferences getUserPreferencesDataByUserId(HttpServletRequest request, HttpServletResponse response) {
+       VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getUserPreferencesDataByUserId(user);
     }
     
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")

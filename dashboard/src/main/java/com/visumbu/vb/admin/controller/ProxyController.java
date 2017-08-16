@@ -437,7 +437,7 @@ public class ProxyController {
             }
         }
 
-        if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
+        if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram") || dataSourceType.equalsIgnoreCase("mongoDb")) {
             returnMap = (Map) getFbData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("csv")) {
             returnMap = (Map) getCsvData(request, response);
@@ -1797,10 +1797,10 @@ public class ProxyController {
     @RequestMapping(value = "getJson", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getJson(HttpServletRequest request, HttpServletResponse response) {
-        log.debug("Calling of getJson function in ProxyController class");
+        System.out.println("Calling of getJson function in ProxyController class");
         String url = request.getParameter("url");
         String query = request.getParameter("query");
-        log.debug("QUERY FROM BROWSER " + query);
+        System.out.println("QUERY FROM BROWSER " + query);
         String dealerId = request.getParameter("dealerId");
         Map<String, String> dealerAccountDetails = dealerService.getDealerAccountDetails(dealerId);
         Integer port = request.getServerPort();
@@ -1833,7 +1833,52 @@ public class ProxyController {
         }
         return null;
     }
+    
+    // added by Paramvir Singh for processing mongoDB request and response
+   
+    @RequestMapping(value = "getMongoJson", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getMongoJson(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("Calling of getJson function in ProxyController class");
+        String url = request.getParameter("url");
+        String query = request.getParameter("query");
+        System.out.println("QUERY FROM BROWSER " + query);
+        String dealerId = request.getParameter("dealerId");
+        Map<String, String> dealerAccountDetails = dealerService.getDealerAccountDetails(dealerId);
+        Integer port = request.getServerPort();
+        String localUrl = request.getScheme() + "://" + request.getServerName() + ":" + port + "/";
 
+        if (url.startsWith("../")) {
+            url = url.replaceAll("\\.\\./", localUrl);
+        }
+
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        for (Map.Entry<String, String> entrySet : dealerAccountDetails.entrySet()) {
+            String key = entrySet.getKey();
+            String value = entrySet.getValue();
+            valueMap.put(key, Arrays.asList(value));
+        }
+        try {
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
+                String key = entrySet.getKey();
+                String[] value = entrySet.getValue();
+                for (int i = 0; i < value.length; i++) {
+                    value[i] = URLEncoder.encode(value[i], "UTF-8");
+                }
+                valueMap.put(key, Arrays.asList(value));
+            }
+            String data = Rest.getMongoData(url, valueMap);
+            return data;
+        } catch (Exception ex) {
+            log.error("Exception in getJson Function: " + ex);
+        }
+        return null;
+    }
+    
+    
+    /////////////////////////////////////////////////////////////////////////////////
+    
     @RequestMapping(value = "get", method = RequestMethod.GET)
     public @ResponseBody
     void get(HttpServletRequest request, HttpServletResponse response) {

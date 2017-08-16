@@ -54,7 +54,6 @@ public class BaseDao {
     public Object read(Class c, Serializable id) {
         return sessionFactory.getCurrentSession().get(c, id);
     }
-
     public Object delete(Object object) {
         try {
             sessionFactory.getCurrentSession().delete(object);

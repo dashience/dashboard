@@ -586,7 +586,7 @@ public class UiService {
     }
 
     public void deleteDataSet(Integer id) {
-         uiDao.deleteDataSet(id);
+        uiDao.deleteDataSet(id);
     }
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
@@ -687,7 +687,7 @@ public class UiService {
     }
 
     public UserAccount findUserAccountById(UserAccount accountId) {
-        List <UserAccount> userAccount = uiDao.findUserAccountById(accountId);
+        List<UserAccount> userAccount = uiDao.findUserAccountById(accountId);
         if (!userAccount.isEmpty()) {
             return userAccount.get(0);
         }
@@ -833,7 +833,7 @@ public class UiService {
     }
 
     public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
-        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();        
+        List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         List<DataSetColumns> dataSetColumn = new ArrayList<>();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
             DataSetColumnBean allDataSetColumn = dataSetColumnBeanIterator.next();
@@ -841,15 +841,15 @@ public class UiService {
             System.out.println("-----------------------------------------------------------------------");
             System.out.println(allDataSetColumn.getDataSetId());
             System.out.println("-----------------------------------------------------------------------");
-        if (allDataSetColumn.getDataSetId() != null) {
-            System.out.println("*******************************************************");
-            System.out.println(allDataSetColumn.getDataSetId());
-            System.out.println("*******************************************************");
-            dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
-        } else {
-            dataSet = new DataSet();
-        }
-            
+            if (allDataSetColumn.getDataSetId() != null) {
+                System.out.println("*******************************************************");
+                System.out.println(allDataSetColumn.getDataSetId());
+                System.out.println("*******************************************************");
+                dataSet = uiDao.getDataSetById(allDataSetColumn.getDataSetId());
+            } else {
+                dataSet = new DataSet();
+            }
+
             System.out.println(allDataSetColumn.getId() + "____________" + dataSetColumnBean.getId());
             if (allDataSetColumn.getId() == null && dataSetColumnBean.getId() == null) {
                 System.out.println("if");
@@ -878,7 +878,7 @@ public class UiService {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
                     dataSetFields.setUserId(allDataSetColumn.getUserId());
-                } 
+                }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
 
@@ -904,11 +904,11 @@ public class UiService {
                 dataSetFields.setFieldType(allDataSetColumn.getFieldType());
                 dataSetFields.setSortPriority(allDataSetColumn.getSortPriority());
                 dataSetFields.setDataSetId(dataSet);
-                  if (allDataSetColumn.getUserId() != null) {
+                if (allDataSetColumn.getUserId() != null) {
                     TabWidget tabWidget = uiDao.getTabWidgetById(widgetId);
                     dataSetFields.setWidgetId(tabWidget);
                     dataSetFields.setUserId(allDataSetColumn.getUserId());
-                } 
+                }
                 uiDao.saveOrUpdate(dataSetFields);
                 dataSetColumn.add(dataSetFields);
             }
@@ -1058,9 +1058,20 @@ public class UiService {
     public List<DashboardTemplate> getDefaultTemplateById() {
         return uiDao.getDefaultTemplateById();
     }
-    
+
     //added by Paramvir for theme settings
     public UserPreferences updateThemeSettings(UserPreferences userPreferences) {
-        return (UserPreferences) uiDao.update(userPreferences);
+        VbUser user = userPreferences.getUserId();
+        Integer userId = user.getId();
+        UserPreferences userPreferencesList = uiDao.getUserPreferencesByUserId(userId);
+        if (userPreferencesList != null) {
+            userPreferences.setId(userPreferencesList.getId());
+        }
+        uiDao.saveOrUpdate(userPreferences);
+        return userPreferences;
     }
+    
+    public UserPreferences getUserPreferencesDataByUserId(VbUser userId) {
+        return uiDao.getUserPreferencesDataByUserId(userId);
+    }    
 }

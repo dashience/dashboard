@@ -88,7 +88,55 @@ public class Rest {
         }
         return returnStr;
     }
+    
+    //added by paramvir Singh 
+    
+    public static String getMongoData(String url, MultiValueMap<String, String> params) {
+        String urlString = url;
+        if (params != null) {
+            UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(url).queryParams(params).build();
+            urlString = uriComponents.toUriString();
+        }
+        String returnStr = "";
+        try {
+            System.out.println("urlString:" + urlString);
+            URL httpUrl = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
 
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                System.out.println("if condition");
+                System.out.println(urlString);
+                System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
+                return null;
+//                throw new RuntimeException("Failed : HTTP error code : "
+//                        + conn.getResponseCode());
+            } else {
+                System.out.println("else condition");
+                System.out.println(urlString);
+                System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    (conn.getInputStream())));
+
+            String output;
+            System.out.println("Output from Server .... \n");
+            while ((output = br.readLine()) != null) {
+                System.out.println(output);
+                returnStr += output;
+            }
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return returnStr;
+    }
+    
     public static String getData(String url, MultiValueMap<String, String> params, Map<String, String> header) {
         String urlString = url;
         if (params != null) {

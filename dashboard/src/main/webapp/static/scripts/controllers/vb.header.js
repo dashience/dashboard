@@ -531,17 +531,43 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $scope.dropdownChange = function (data) {
+        console.log(data);
+        var userPreference = {
+            optionName: data.name,
+            optionValue: data.value
+        };
+
         $http({
-            url: 'admin/ui/userPrefrences',
+            url: 'admin/ui/userPreferences',
             method: 'POST',
-            data: JSON.stringify(data)
+            data: JSON.stringify(userPreference)
         }).success(function (response) {
-            console.log("success data");
+            console.log(response);
         }).error(function (response) {
             console.log("Error data");
-
-        })
+        });
     };
+
+    $http.get("admin/ui/userPreferences").success(function (response) {
+        console.log(response);
+        $scope.theme = {value: response.optionValue};
+        $(document).ready(function (e) {
+            console.log($scope.theme.value);
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.theme.value + '/style.css" type="text/css" />');
+//     $("#mystyle").attr("href", "static/lib/css/blue/style.css");
+        });
+
+//     $("#mystyle").attr("href", "static/lib/css/blue/style.css");
+    });
+
+    $(document).ready(function (e) {
+        $(".inside").click(function (e) {
+            e.stopPropagation();
+            console.log($scope.theme.value);
+            $('head').append('<link rel="stylesheet" href="static/lib/css/' + $scope.theme.value + '/style.css" type="text/css" />');
+        });
+//     $("#mystyle").attr("href", "static/lib/css/blue/style.css");
+    });
 
     $(function () {
         //Initialize Select2 Elements

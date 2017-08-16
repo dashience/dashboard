@@ -3923,7 +3923,7 @@ thead {
 
 
 .header-title {
-    background: #555 !important;
+    /*background: #555 !important;*/
     color: #fff;
     padding: 5px 10px;
     border-radius: 2px;

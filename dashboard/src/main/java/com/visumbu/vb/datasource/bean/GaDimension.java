@@ -10,6 +10,7 @@ package com.visumbu.vb.datasource.bean;
  * @author user
  */
 public class GaDimension {
+
     private String name;
     private String displayName;
 

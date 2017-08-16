@@ -31,6 +31,7 @@ import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.model.WidgetTag;
@@ -744,4 +745,22 @@ public class UiDao extends BaseDao {
         //query.setParameter("agencyId", agencyId);
         return query.list();
     }
+    
+    public UserPreferences getUserPreferencesByUserId(Integer userId) {
+        String queryStr = "SELECT d FROM UserPreferences d where d.userId.id = :userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+        //query.setParameter("agencyId", agencyId);
+        return (UserPreferences) query.uniqueResult();
+    }
+    
+    public UserPreferences getUserPreferencesDataByUserId(VbUser userId) {
+        String queryStr = "SELECT d FROM UserPreferences d where d.userId = :userId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+        
+        //query.setParameter("agencyId", agencyId);
+        return (UserPreferences) query.uniqueResult();
+    }
+    
 }

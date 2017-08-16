@@ -40,6 +40,7 @@
         min-width: 200px;
     }
 </style>
+
 <div class="fixed-navbar" ng-controller="HeaderController">
     <div id="logo">
         <span>
@@ -341,7 +342,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-3">Theme </label>
                             <div class="col-md-9">
-                                <select class="col-md-12 inside" ng-change="dropdownChange(theme)" ng-model="theme" ng-options="theme.name for theme in themes">
+                                <select class="col-md-12 inside text" ng-change="dropdownChange(theme)" ng-model="theme" ng-options="theme.name for theme in themes">
                                 </select>
                             </div>
                         </div>
@@ -370,10 +371,3 @@
         </div>
     </nav>
 </div>
-<script>
-$(document).ready(function(e){
-    $(".inside").click(function(e){
-        e.stopPropagation();
-    });
-});
-</script>

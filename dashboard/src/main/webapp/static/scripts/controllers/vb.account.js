@@ -59,6 +59,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     getAccount();
 
     $scope.saveAccount = function (account) {
+        
         if ($scope.account.logo === "static/img/logos/deeta-logo.png") {
             $scope.account.logo = "";
         }
@@ -200,6 +201,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     };
 
     $scope.saveAccountUser = function (accountUser) {
+        alert(userAccountID);
         var account = $scope.accountUserId;
         if (!account) {
             var dialog = bootbox.dialog({

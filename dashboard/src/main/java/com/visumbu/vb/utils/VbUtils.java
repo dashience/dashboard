@@ -10,21 +10,16 @@ import com.visumbu.vb.bean.Permission;
 import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
 import com.visumbu.vb.bean.map.auth.SecurityAuthPermission;
 import com.visumbu.vb.bean.map.auth.SecurityAuthRoleBean;
-import com.visumbu.vb.bean.map.auth.SecurityTokenBean;
 import com.visumbu.vb.model.UserPermission;
 import com.visumbu.vb.model.VbUser;
-import static com.visumbu.vb.utils.Rest.getData;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FilenameUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+
 
 /**
  *
