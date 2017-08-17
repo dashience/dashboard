@@ -127,7 +127,7 @@ public class ApiUtils {
         adwordsReports.put("adGroupPerformance",
                 new AdwordsReport("adGroupPerformance", new String[]{"AccountDescriptiveName", "Impressions", "Clicks", "AdGroupId", "AdGroupName",
                     "Conversions", "AveragePosition",
-                    "AllConversions", "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId","AdNetworkType2"},
+                    "AllConversions", "AverageCpc", "Ctr", "Cost", "CostPerConversion", "ConversionRate", "ExternalCustomerId","AdNetworkType2","CampaignId","CampaignName"},
                         ReportDefinitionReportType.ADGROUP_PERFORMANCE_REPORT));
 
         adwordsReports.put("keywordPerformance",
