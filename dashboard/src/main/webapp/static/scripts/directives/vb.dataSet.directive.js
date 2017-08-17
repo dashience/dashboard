@@ -370,10 +370,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             }
             scope.format = function (column, value) {
-                console.log("column");
-                console.log(column);
-                console.log(column.displayFormat);
-                console.log(value);
 //                if (column.fieldType === "date") {
 //                    return value;
 //                }
@@ -392,29 +388,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                    return d3.format(column.displayFormat)(value);
 //                }
 //                return value;
-// ------------------------- Tested code for comma with decimal formatting
-//                var formatComma = d3.format(",.2f");
-//                if(column.displayName==="Conversions"){
-//                    console.log("inseid conversions");
-//                    var data="3538.0";
-//                    var data1="3,538.0";
-//                    var splitData=data1.split(".");
-//                    console.log("0--->"+splitData[0]);
-//                    var removeComma=splitData[0].replace(/\,/g,'');
-//                    console.log("removeComma Value--->"+removeComma);
-//                    var combinedValue=removeComma+'.'+splitData[1];
-//                    console.log("combinedValue--->"+combinedValue);
-//                    console.log("direct removal--->"+data1.replace(/\,/g,''));
-//                    value=formatComma(combinedValue);
-//                    console.log("value --->"+value);
-//                    return value;
 //                }
-                var strValue=value;
-                console.log("Column-->"+column.displayName+" and value -->"+strValue);
-                console.log("type of-->"+typeof(strValue));
+                var strValue = value;
                 if (strValue.toString().indexOf(',') !== -1) {
                     value = value.replace(/\,/g, '');
-                } 
+                }
                 if (column.fieldType === "date") {
                     return value;
                 }
@@ -497,13 +475,18 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.dataSetColumns = [];
+                    if (!response) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.showMessage = true;
+                        return;
+                    }
                     if (dataSourcePath.id == null) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.dataSetColumns = response.columnDefs;
                         scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
                     }
-                    console.log(response);
                     scope.tableColumns = response.columnDefs;
                     if (response.data == null || response.data.length == 0) {
                         scope.ajaxLoadingCompleted = true;

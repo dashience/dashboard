@@ -90,7 +90,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
-        console.log($scope.dataSources);
     });
 
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
@@ -101,13 +100,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tags = response;
     });
     $scope.downloadXLSByWidget = function (widget) {
-        console.log(widget)
         var fileName;
         var name = widget.widgetTitle;
         if (name) {
             fileName = name.split(' ').join("");
         } else {
-            fileName = "Skyzone"
+            fileName = "Dashience";
         }
         var url = "admin/proxy/downloadData?";
         var setProductSegment;
@@ -399,7 +397,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     value.chartColors = widgetColors;
                 });
                 $scope.widgets = widgetItems;
-                console.log(widgetItems);
             });
         });
     };
@@ -445,8 +442,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
-        console.log("Edit Widgets");
-        console.log(widget);
         $scope.dispHideBuilder = true;
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
@@ -540,7 +535,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         tableDef(widget, $scope.y1Column, $scope.y2Column);
         $timeout(function () {
             $scope.queryBuilderList = widget;
-            console.log($scope.queryBuilderList);
             resetQueryBuilder();
         }, 50);
     };
@@ -971,7 +965,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
     $scope.selectAllColumns = function (columns, widget) {
-        console.log(widget.selectAll);
         $scope.dispHideBuilder = true;
         var exists = false;
         if (widget.selectAll == 1) {
@@ -1459,9 +1452,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         $scope.ticker(widgetObj, tickerItem);
-        //var getIndex = widgetObj.columns.indexOf(column)
-        // console.log(getIndex)
-        //widgetObj.columns.splice(getIndex, 1)
     };
 // Funnel Format
     $scope.funnel = function (widget, column) {
@@ -1874,8 +1864,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
-        console.log("create widget");
-        console.log(widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2494,7 +2482,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
-                    if (!response.data) {
+                    if (!response) {
+                        scope.tableEmptyMessage = "No Data Found";
+                        scope.hideEmptyTable = true;
                         return;
                     }
                     var pdfData = {};
@@ -2813,7 +2803,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                     return;
                 }
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
-                console.log(tickerName);
             });
 
             var format = function (column, value) {
@@ -2889,14 +2878,15 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                     scope.tickers = [];
                     scope.loadingTicker = false;
-                    if (response.length === 0) {
+                    if (!response) {
+                        scope.tickerEmptyMessage = "No Data Found";
+                        scope.hideEmptyTicker = true;
+                        return;
+                    }
+                    if (response.data.length === 0) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
                     } else {
-                        if (!response) {
-                            return;
-                        }
-
                         angular.forEach(tickerName, function (value, key) {
                             var tickerData = response.data;
                             var loopCount = 0;
@@ -3153,6 +3143,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
                         scope.loadingLine = false;
                         if (!response.data) {
+                            scope.lineEmptyMessage = "No Data Found";
+                            scope.hideEmptyLine = true;
                             return;
                         }
                         if (response.data.length === 0) {
@@ -3497,6 +3489,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                         scope.loadingBar = false;
                         if (!response) {
+                            scope.barEmptyMessage = "No Data Found";
+                            scope.hideEmptyBar = true;
                             return;
                         }
                         if (response.data.length === 0) {
@@ -3830,6 +3824,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                         scope.loadingPie = false;
                         if (!response) {
+                            scope.pieEmptyMessage = "No Data Found";
+                            scope.hideEmptyPie = true;
                             return;
                         }
                         if (response.data.length === 0) {
@@ -4174,6 +4170,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                         scope.loadingArea = false;
+                        if (!response) {
+                            scope.areaEmptyMessage = "No Data Found";
+                            scope.hideEmptyArea = true;
+                            return;
+                        }
                         if (response.data.length === 0) {
                             scope.areaEmptyMessage = "No Data Found";
                             scope.hideEmptyArea = true;
@@ -4512,6 +4513,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             '&url=' + stackedBarChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
                         scope.loadingStackedBar = false;
+                        if (!response) {
+                            scope.stackedBarEmptyMessage = "No Data Found";
+                            scope.hideEmptyStackedBar = true;
+                            return;
+                        }
                         if (response.data.length === 0) {
                             scope.stackedBarEmptyMessage = "No Data Found";
                             scope.hideEmptyStackedBar = true;
@@ -4561,34 +4567,16 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     return a[value.fieldName] || "0";
                                 });
                                 ySeriesData.unshift(value.displayName);
-                                console.log("ySeriesData");
-
-                                console.log(ySeriesData);
                                 columns.push(ySeriesData);
                             });
-                            console.log("groupNames");
-                            console.log("new Columns");
-                            console.log(columns);
-                            console.log("len-->" + columns.length);
 
                             var groupingNames = [];
-                            console.log("grouping Fields");
-                            console.log(groupingFields);
                             angular.forEach(groupingFields, function (value, key) {
                                 groupingNames.push(value.displayName);
                             });
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
-                            console.log("grouping names");
-                            console.log(groupingNames);
-                            console.log("columns");
-                            console.log(columns);
-//                            document.write(columns);
-                            console.log("xaxis");
-                            console.log(xAxis);
-                            console.log("xTicks");
-                            console.log(xTicks);
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;
@@ -4633,8 +4621,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                                 return xData[x];
                                             },
                                             culling: false
-                                        },
-
+                                        }
                                     },
                                     y2: y2
                                 },
@@ -4686,7 +4673,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
 //                            });
                         }
                     });
-                }
+                };
                 scope.setStackedBarChartFn({stackedBarChartFn: scope.refreshStackedBarChart});
                 scope.refreshStackedBarChart();
             }
@@ -4922,6 +4909,8 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                             '&port=3306&schema=vb&query=' + encodeURI(scatterChartDataSource.query)).success(function (response) {
                         scope.loadingScatter = false;
                         if (!response.data) {
+                            scope.scatterEmptyMessage = "No Data Found";
+                            scope.hideEmptyScatter = true;
                             return;
                         }
                         scope.getScatterWidgetObj({obj: response.data})
@@ -5152,6 +5141,11 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             '&port=3306&schema=vb&query=' + encodeURI(funnelDataSource.query)).success(function (response) {
                         scope.funnels = [];
                         scope.loadingFunnel = false;
+                        if (!response) {
+                            scope.scatterEmptyMessage = "No Data Found";
+                            scope.hideEmptyScatter = true;
+                            return;
+                        }
                         if (response.data.length === 0) {
                             scope.funnelEmptyMessage = "No Data Found";
                             scope.hideEmptyFunnel = true;
@@ -5569,8 +5563,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
         },
         link: function (scope, element, attr) {
             scope.columns = scope.queryData;
-            console.log("Query Data");
-            console.log(scope.queryData);
             if (!scope.queryData) {
                 return;
             }
@@ -5578,11 +5570,7 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             var columnList = JSON.parse(scope.queryData);
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
-                console.log(value);
-                console.log(value.fieldType);
-                console.log(value.fieldName);
                 var typeOfValue = value.type ? value.type : value.fieldType;
-                console.log("typeof value----->" + typeOfValue);
                 if (typeOfValue == 'number') {
                     scope.fieldsType = "integer";
                 } else if (typeOfValue == 'string') {
@@ -5596,8 +5584,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
                 }
                 filterList.push({id: value.fieldName, label: value.fieldName, type: scope.fieldsType});
             });
-            console.log("filterList");
-            console.log(filterList);
             scope.buildQuery = filterList;
             if (jsonFilter.jsonData != null) {
                 scope.jsonBuild = JSON.parse(jsonFilter.jsonData);
