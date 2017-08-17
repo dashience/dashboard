@@ -340,11 +340,15 @@
     }
     .editor{
         overflow: auto;
-        height: 391px;
-        width: 520px;
-        padding-left: 27px;
+        width: 97%;
+        padding-right: 5px !important;
+        padding-left: 22px !important;
+        background: none !important;
     }
 
+    .none .input-group-btn {
+        width: 0px;
+    }
 </style>
 <div class="container">
     <div class="row main col-md-6">
@@ -686,13 +690,13 @@
                     </div>
                 </div>
             </div>
-                <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
-                    <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
-                    <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
-                        <label ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'"><input type="checkbox" ng-checked="(widgetObj.selectAll == 1) || (widgetObj.selectAll == null)"
-                               ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" ng-click="selectAllColumns(collectionFields, widgetObj)">
-                        Select All</label>
-                </div>
+            <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
+                <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
+                <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
+                <label ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'"><input type="checkbox" ng-checked="(widgetObj.selectAll == 1) || (widgetObj.selectAll == null)"
+                                                                                                       ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" ng-click="selectAllColumns(collectionFields, widgetObj)">
+                    Select All</label>
+            </div>
         </div>
         <div class="row"  ng-if="showDateRange == true;">
             <div class="col-sm-12">
@@ -770,6 +774,14 @@
                                         {{widgetObj.customStartDate ? widgetObj.customStartDate : widgetStartDate| date: "MM/dd/yyyy"}} - {{widgetObj.customEndDate ? widgetObj.customEndDate : widgetEndDate| date: "MM/dd/yyyy"}}
                                     </span>
                                 </a> 
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group none">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" ng-click="selectWidgetDuration('None', widgetObj)">
+                                        None</button>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -896,7 +908,7 @@
                     </div>
                 </div>                
                 <div class="row" ng-if="chartTypeName === 'text'">
-                    <div class="panel-body editor" style="overflow: auto;height:350px;">
+                    <div class="panel-body editor">
                         <div>
                             <textarea ck-Editor ng-model="widgetObj.content" rows="10" cols="99"></textarea>
                         </div>  

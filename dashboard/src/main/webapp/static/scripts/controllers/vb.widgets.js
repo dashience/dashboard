@@ -462,6 +462,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widget.selectAll = 0;
         }
+        if(widget.dateRangeName == "None"){
+            widget.customStartDate = "";
+            widget.customEndDate = "";
+        }
         setDefaultWidgetObj.push({
             chartType: widget.chartType,
             id: widget.id,
@@ -1844,12 +1848,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
+        $scope.widgetObj.dateRangeName = "";
         $scope.widgetObj.lastNdays = "";
         $scope.widgetObj.lastNweeks = "";
         $scope.widgetObj.lastNmonths = "";
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
-        $scope.widgetObj.customStartDate = "";
+        $scope.widgetObj.customEndDate = "";
         $scope.widgetObj.allAccount = "";
         $scope.widgetObj.selectAll = "";
         $scope.widgetObj.chartColorOption = "";

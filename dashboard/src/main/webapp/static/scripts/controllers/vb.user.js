@@ -36,7 +36,10 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     function getUser() {
         $http.get('admin/ui/user').success(function (response) {
             $scope.userAgencyDetails = [];
-            $scope.users = response;
+            $scope.users = [];
+            angular.forEach(response,function(val,key){
+                $scope.users.unshift(val);
+            });
             angular.forEach($scope.users, function (val, key) {
                 console.log(val);
                 if (!val.agencyId) {
@@ -71,22 +74,23 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
 //        if ($scope.checkAdmin === 'admin') {
 //            user.isAdmin = true;
 //        }
-        console.log("user-->");
-        console.log(user);
-        if(user.isAdmin===null){
-            user.isAdmin=null;
+        if (user.isAdmin === null) {
+            user.isAdmin = null;
         } else {
-            user.isAdmin=true;
+            user.isAdmin = true;
         }
         console.log(user.isAdmin);
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
+            console.log(response);
             getUser();
             if (!response.message) {
                 $scope.user = "";
+                $scope.selectedUser = null;
                 return;
             }
             if (response.status == true) {
                 $scope.user = "";
+                $scope.selectedUser = null;
             } else {
                 var dialog = bootbox.dialog({
                     title: 'Alert',
@@ -132,6 +136,7 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     };
 
     $scope.deleteUser = function (user, index) {
+        console.log(index);
         $http({method: 'DELETE', url: 'admin/ui/user/' + user.id}).success(function (response) {
             $scope.users.splice(index, 1);
         });
@@ -152,9 +157,9 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                 });
                 checkAllPermission(user);
             });
-            
+
         });
-        
+
     }
 
     $scope.hasPermission = function (permission) {
@@ -260,7 +265,7 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     };
 
     //check for all permisssions for the user
-    function checkAllPermission (user) {
+    function checkAllPermission(user) {
         var statusCount = 0;
         var permissionLength = $scope.permissions.length;
         $http.get('admin/ui/userPermission/' + user.id).success(function (response) {
@@ -281,7 +286,8 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                 }
             }
         });
-    };
+    }
+    ;
 
     $scope.saveUserPermission = function (permission, type) {
         var userPermissionId = $scope.hasData(permission.permissionName).id;

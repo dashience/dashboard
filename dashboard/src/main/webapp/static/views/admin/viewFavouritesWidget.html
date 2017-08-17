@@ -157,15 +157,13 @@
                         <a ng-if="favouritesWidget.widgetId.width != 3" ng-click="reduceWidget(favouritesWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
                     </div>
-                    <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'ticker'">
-                        <div set-Ticker-Fn="setTickerFn(tickerFn)"
-                             widget-Obj="{{favouritesWidget.widgetId}}"
-                             ticker-Directive
-                             ticker-Title-Name="{{favouritesWidget.widgetId.widgetTitle}}"
-                             ticker-Source="{{favouritesWidget.widgetId.dataSetId}}"
-                             ticker-Id="{{favouritesWidget.widgetId.id}}" 
-                             ticker-Columns="{{favouritesWidget.widgetId.columns}}">
-                        </div>
+                    <div set-Ticker-Fn="setTickerFn(tickerFn)"
+                         widget-Obj="{{favouritesWidget.widgetId}}"
+                         ticker-Directive
+                         ticker-Title-Name="{{favouritesWidget.widgetId.widgetTitle}}"
+                         ticker-Source="{{favouritesWidget.widgetId.dataSetId}}"
+                         ticker-Id="{{favouritesWidget.widgetId.id}}" 
+                         ticker-Columns="{{favouritesWidget.widgetId.columns}}">
                     </div>
                 </div>
             </div>
