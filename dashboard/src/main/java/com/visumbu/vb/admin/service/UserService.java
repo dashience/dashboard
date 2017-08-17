@@ -86,11 +86,23 @@ public class UserService {
         return null;
     }
 
+    public Agency getAgencyByDomain(String dashiencePath) {
+        return userDao.findAgencyByDashiencePath(dashiencePath);
+    }
+
     public LoginUserBean authenicate(LoginUserBean userBean) {
-        List<VbUser> users = userDao.findByUserName(userBean.getUsername());
+        String dashiencePath = userBean.getDashiencePath();
+        VbUser user = null;
+        if (dashiencePath == null || dashiencePath.equalsIgnoreCase("")) {
+            user = userDao.findAdminUserByName(userBean.getUsername());
+            userBean.setIsAdmin("true");
+        } else {
+            Agency agency = userDao.findAgencyByDashiencePath(dashiencePath);
+            user = userDao.findUser(dashiencePath, agency);
+        }
+
         LoginUserBean loginUserBean = null;
-        if (!users.isEmpty()) {
-            VbUser user = users.get(0);
+        if (user != null) {
             if (user.getPassword().equals(userBean.getPassword())
                     && user.getUserName().equals(userBean.getUsername())) {
                 user.setFailedLoginCount(0);
@@ -101,7 +113,6 @@ public class UserService {
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
                 if (user != null) {
-                    user.setFailedLoginCount(0);
                     user.setFailedLoginCount(user.getFailedLoginCount() + 1);
                     loginUserBean = toLoginUserBean(user);
                 }

@@ -22,6 +22,7 @@ public class LoginUserBean {
     private String announcement;
     private Permission permission;
     private AgencyBean agencyId;
+    private String dashiencePath;
 
     public Integer getId() {
         return id;
@@ -101,6 +102,14 @@ public class LoginUserBean {
 
     public void setAgencyId(AgencyBean agencyId) {
         this.agencyId = agencyId;
+    }
+
+    public String getDashiencePath() {
+        return dashiencePath;
+    }
+
+    public void setDashiencePath(String dashiencePath) {
+        this.dashiencePath = dashiencePath;
     }
 
     @Override
