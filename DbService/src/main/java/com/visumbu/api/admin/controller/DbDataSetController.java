@@ -74,7 +74,38 @@ public class DbDataSetController {
         returnMap.put("data", dbDataSetService.getData(dataSource, parameterMap));
         return returnMap;
     }
+    
+    // added by Paramvir Singh for getting mongo DB Data
+   
+    @RequestMapping(value = "getMongoData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Map getMongoData(HttpServletRequest request, HttpServletResponse response) {
+        String connectionUrl = request.getParameter("connectionUrl");
+        String driver = request.getParameter("driver");
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        Integer port = ApiUtils.toInteger(request.getParameter("port"));
+        String schemaName = request.getParameter("schema");
 
+        String query = request.getParameter("query");
+        System.out.println("Query ===> " + query);
+        String fieldsOnly = request.getParameter("fieldsOnly");
+        Map returnMap = new HashMap();
+
+        Map<String, String[]> parameterMap = request.getParameterMap();
+
+        DbDataSource dataSource = new DbDataSource(connectionUrl, driver, username, password, port, schemaName);
+        System.out.println(dataSource);
+        
+        dataSource.setQuery(query);
+        returnMap.put("columnDefs", dbDataSetService.getMeta(dataSource, parameterMap));
+        if (fieldsOnly != null) {
+            return returnMap;
+        }
+        returnMap.put("data", dbDataSetService.getData(dataSource, parameterMap));
+        return returnMap;
+    }
+        //////////////////////////////////////////////////////
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handle(HttpMessageNotReadableException e) {
