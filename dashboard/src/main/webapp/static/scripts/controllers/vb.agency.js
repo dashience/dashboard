@@ -43,6 +43,11 @@ app.controller('AgencyController', function ($scope, $http) {
 //        {countryName: "EU", timezoneFormat: '€'}
 //    ];
 
+    $scope.languages = [
+        {lanName: "English", lanType: 'en'},
+        {lanName: "Chinesh", lanType: 'cn'}
+    ];
+
 
 //Tabs
     $scope.tab = 1;
@@ -102,6 +107,7 @@ app.controller('AgencyController', function ($scope, $http) {
             email: agency.email,
             description: agency.description,
             status: agency.status,
+            agencyLanguage: agency.agencyLanguage ? agency.agencyLanguage.lanType : null,
             logo: $scope.agency.logo
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
@@ -131,12 +137,21 @@ app.controller('AgencyController', function ($scope, $http) {
         getAgencyLicence(agency);
         $scope.agencyById = agency;
         getTemplateByAgency(agency);
+
+        $scope.languages.forEach(function (val, k) {
+            if (agency.agencyLanguage == val.lanType) {
+                agency.agencyLanguage = val;
+            }
+        })
+
+
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
             agencyDashiencePath: agency.agencyDashiencePath,
             email: agency.email,
             description: agency.description,
+            agencyLanguage: agency.agencyLanguage,
             status: agency.status,
             logo: agency.logo ? agency.logo : "static/img/logos/deeta-logo.png"
         };

@@ -1,11 +1,18 @@
-var app = angular.module("loginApp", ['ngCookies', 'LocalStorageModule']);
-app.controller("LoginController", function ($scope, $http, $window, $cookies, localStorageService, $timeout) {
+var app = angular.module("loginApp", ['ngCookies', 'LocalStorageModule', 'pascalprecht.translate']);
+app.controller("LoginController", function ($scope, $http, $window, $cookies, localStorageService, $timeout, $translate) {
     $scope.showErrorMessage = false;
     $scope.agency = null;
-    $scope.getAgencyByDomain = function() {
-         $http({method: "GET", url: "admin/user/getAgencyByDomain"}).success(function (response) {
-             $scope.agency = response;
-         });
+    $scope.getAgencyByDomain = function () {
+        $http({method: "GET", url: "admin/user/getAgencyByDomain"}).success(function (response) {
+            $scope.agency = response;
+            $scope.logo = $scope.agency?$scope.agency.logo:'static/img/logos/deeta-logo.png'
+            var lan = $scope.agency ? $scope.agency.agencyLanguage : null;
+            if (lan) {
+                changeLanguage(lan);
+            } else {
+                changeLanguage('en');
+            }
+        });
     };
     $scope.getAgencyByDomain();
     $scope.authenticate = function (login) {
@@ -18,7 +25,7 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
                 $scope.showErrorMessage = true;
                 $scope.errorMessage = response.errorMessage;
             } else {
-                $cookies.putObject("userId",response.id);
+                $cookies.putObject("userId", response.id);
                 $cookies.putObject("fullname", response.username);
                 $cookies.putObject("username", response.username);
                 localStorageService.set("permission", response.permission);
@@ -29,6 +36,10 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
         });
         $scope.login = "";
     };
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 });
 
 
