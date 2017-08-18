@@ -57,6 +57,8 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
         $scope.agencyListName = agencyUserName;
     };
     $scope.saveUser = function (user) {
+        console.log("user-->");
+        console.log(user);
 //        var userData = {
 //            id: user.id,
 //            firstName: user.firstName,
@@ -71,12 +73,11 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
 //        if ($scope.checkAdmin === 'admin') {
 //            user.isAdmin = true;
 //        }
-        console.log("user-->");
-        console.log(user);
-        if(user.isAdmin===null){
-            user.isAdmin=null;
+
+        if (user.isAdmin === null || !user.isAdmin) {
+            user.isAdmin = null;
         } else {
-            user.isAdmin=true;
+            user.isAdmin = true;
         }
         console.log(user.isAdmin);
         $http({method: user.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: user}).success(function (response) {
@@ -152,9 +153,9 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                 });
                 checkAllPermission(user);
             });
-            
+
         });
-        
+
     }
 
     $scope.hasPermission = function (permission) {
@@ -260,7 +261,7 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     };
 
     //check for all permisssions for the user
-    function checkAllPermission (user) {
+    function checkAllPermission(user) {
         var statusCount = 0;
         var permissionLength = $scope.permissions.length;
         $http.get('admin/ui/userPermission/' + user.id).success(function (response) {
@@ -281,7 +282,8 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                 }
             }
         });
-    };
+    }
+    ;
 
     $scope.saveUserPermission = function (permission, type) {
         var userPermissionId = $scope.hasData(permission.permissionName).id;
