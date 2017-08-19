@@ -1,11 +1,24 @@
-app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state, $location, $rootScope) {
+app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state, $location, $rootScope, $translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
     $scope.agencyId = $cookies.getObject("agencyId");
+    console.log($scope.agencyId);
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
+
+
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
@@ -15,6 +28,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
         if ($stateParams.productId != product.id) {
             $http.get("admin/template/getProductTemplate/" + productId + "/" + $stateParams.accountId).success(function (response) {
+                console.log(response);
                 var responseObj = response;
                 // if (responseObj) {
                 lastTemplateId = responseObj ? responseObj.id : null;
@@ -53,6 +67,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.selectAccount = {};
 
     $http.get('admin/ui/userAccountByUser').success(function (response) {
+        console.log(response);
         if (!response[0]) {
             return;
         }
@@ -126,8 +141,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     }
 
     function getAgencyProduct(agencyId) {
+        console.log(agencyId)
         $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
             $scope.products = response;
+            console.log(response);
             if (!response) {
                 return;
             }
@@ -542,7 +559,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     ;
     getChartColor();
 
-    $scope.selectChartColor = function (color,chartColor) {
+    $scope.selectChartColor = function (color, chartColor) {
         console.log(chartColor);
         console.log(color);
         console.log($scope.chartColor.optionValue);
@@ -550,10 +567,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
         } else {
             $scope.chartColor = {
-                id: chartColor?chartColor.id:null,
+                id: chartColor ? chartColor.id : null,
                 optionName: 'Chart_Color_Options',
                 optionValue: color,
-                userId:chartColor?chartColor.userId:null
+                userId: chartColor ? chartColor.userId : null
             };
         }
         console.log($scope.chartColor.optionValue);
@@ -641,9 +658,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
                         'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
                         'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
-                        'This Week (Mon - Today)': [moment().startOf('week').add(1,'days'), moment().endOf(new Date())],
+                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'dayswidgetTableDateRange'), moment().endOf(new Date())],
-                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1,'days'), moment().startOf('week')],
+                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().startOf('week')],
 //                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],

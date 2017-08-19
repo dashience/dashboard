@@ -54,7 +54,7 @@
 
                         <div class="form-group select-template">
                             <ui-select ng-model="selectTemplate.selected" on-select="getTemplateById(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize">
-                                <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
+                                <ui-select-match placeholder="{{'Select template'|translate}}">{{$select.selected.templateName}}</ui-select-match>
                                 <ui-select-choices repeat="template in templates | filter: $select.search">
                                     <span ng-bind-html="template.templateName | highlight: $select.search"></span>
                                 </ui-select-choices>
@@ -157,7 +157,7 @@
                                     </div>
                                 </div>
                             </div>
-                        <li ng-if="(permission.addTab === true) && (templateUserId === userId)" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> Add Tab</li> 
+                        <li ng-if="(permission.addTab === true) && (templateUserId === userId)" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i><span translate>Add Tab</span></li> 
                         <div class="modal fade hmodal-success" id="tabModal" tabindex="-1" role="dialog"  aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">

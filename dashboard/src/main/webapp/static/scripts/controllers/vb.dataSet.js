@@ -1,4 +1,4 @@
-app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService) {
+app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService,$translate,$cookies) {
     $scope.permission = localStorageService.get("permission");
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
@@ -12,6 +12,25 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+    
+    
+     //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
+    
+    
+    
+    
     $scope.joinTypes = [
         {name: 'Left', value: 'left'},
         {name: 'Right', value: 'right'},

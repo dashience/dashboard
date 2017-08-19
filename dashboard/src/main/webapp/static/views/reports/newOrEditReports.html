@@ -116,7 +116,7 @@
 
 <div class="pull-right-container pull-right">
     <div class="btn-group"> 
-        <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
+        <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> <span translate>Back</span></a>
     </div>
     <div class="btn-group"> 
         <a style="cursor: pointer;" ng-href="#viewReportPdf/{{accountId}}/{{reportId}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
@@ -140,30 +140,30 @@
                 </div>
                 <div class="col-md-9">
                     <div class="form-group col-sm-10">
-                        <label class="col-sm-2">Report Title</label>
+                        <label class="col-sm-2" translate>Report Title</label>
                         <div ng-hide="editReport" class="form-group col-sm-10">
                             {{reportTitle}}
                         </div>
                         <div ng-show="editReport" class="form-group col-sm-10">
-                            <input type="text" ng-model="reportTitle" class="form-control" placeholder="Title">
+                            <input type="text" ng-model="reportTitle" class="form-control" placeholder="{{'Title'| translate}}">
                         </div>
                     </div>
                     <div class="form-group col-sm-10">
-                        <label class="col-sm-2">Description</label>
+                        <label class="col-sm-2" translate>Description</label>
                         <div ng-hide="editReport" class="form-group col-sm-10" style="word-break: break-all;">
                             {{description?description:"-"}}
                         </div> 
                         <div ng-show="editReport" class="form-group col-sm-10">
-                            <textarea placeholder="Description" ng-model="description" class="form-control" style="min-height: 100px;"></textarea>
+                            <textarea placeholder="{{'Description'|translate}}" ng-model="description" class="form-control" style="min-height: 100px;"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div ng-hide="editReport" class="pull-right">
-                    <button class="btn btn-block btn-success" ng-click="editReport = true;">Edit</button>
+                    <button class="btn btn-block btn-success" ng-click="editReport = true;" translate>Edit</button>
                 </div>
                 <div ng-show="editReport" class="pull-right">
-                    <button class="btn btn-info" ng-click="saveReportData(); editReport = false;">Save</button>
+                    <button class="btn btn-info" ng-click="saveReportData(); editReport = false;" translate>Save</button>
                 </div>
 
             </div>
@@ -287,15 +287,15 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color:#9DD6D7;color:black;">
-                        <strong>Delete</strong>
+                        <strong translate>Delete</strong>
                         <strong><button class="close" data-dismiss="modal">&times;</button></strong>
                     </div>
                     <div class="modal-body">
-                        <span>Want to delete ? </span>
+                        <span translate>Want to delete?</span>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal">Yes</button>
-                        <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
+                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal" translate>Yes</button>
+                        <button class="btn btn-danger btn-xs" data-dismiss="modal" translate>No</button>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@ function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+
 function formatBySecond(second) {
     var minutes = "0" + Math.floor(second / 60);
     var seconds = "0" + (second - minutes * 60);
@@ -35,7 +36,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval,$translate) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -54,6 +55,23 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.userId = $cookies.getObject("userId");
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
+    
+    
+    
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
+    
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;

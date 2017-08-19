@@ -1,4 +1,4 @@
-app.controller('WidgetEditReportController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
+app.controller('WidgetEditReportController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state,$cookies,$translate) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -8,6 +8,19 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
+
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     //Tabs
     $scope.tab = 1;

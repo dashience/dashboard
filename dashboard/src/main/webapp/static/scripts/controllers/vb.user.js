@@ -1,4 +1,4 @@
-app.controller('UserController', function ($scope, $http, localStorageService, $cookies) {
+app.controller('UserController', function ($scope, $http, localStorageService, $cookies,$translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.checkAdmin = $cookies.getObject("isAdmin");
     $scope.users = [];
@@ -13,6 +13,22 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     $scope.isSetUser = function (tabNum) {
         return $scope.tab === tabNum;
     };
+
+
+     //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+
+
 
     var unique = function (origArr) {
         var newArr = [],

@@ -5,10 +5,12 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
     $scope.getAgencyByDomain = function () {
         $http({method: "GET", url: "admin/user/getAgencyByDomain"}).success(function (response) {
             $scope.agency = response;
+            console.log($scope.agency);
             $scope.logo = $scope.agency?($scope.agency.logo?$scope.agency.logo:'static/img/logos/deeta-logo.png'):'static/img/logos/deeta-logo.png';
             var lan = $scope.agency ? $scope.agency.agencyLanguage : null;
             if (lan) {
                 changeLanguage(lan);
+                $cookies.putObject("agencyLanguage",response.agencyLanguage);
             } else {
                 changeLanguage('en');
             }

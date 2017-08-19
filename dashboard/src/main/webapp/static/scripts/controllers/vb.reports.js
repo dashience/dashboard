@@ -1,4 +1,4 @@
-app.controller("ReportController", function ($scope, $http, $stateParams, $state, localStorageService, $window) {
+app.controller("ReportController", function ($scope, $http, $stateParams, $state, localStorageService, $window, $cookies, $translate) {
     $scope.permission = localStorageService.get("permission");
     console.log($scope.permission)
     $scope.startDate = $stateParams.startDate;
@@ -14,6 +14,19 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     } else {
         $scope.showSchedulerReport = false;
         console.log($scope.showSchedulerReport)
+    }
+
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
     }
 
     $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly"];
