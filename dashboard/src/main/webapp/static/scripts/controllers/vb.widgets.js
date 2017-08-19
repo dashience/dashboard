@@ -740,6 +740,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
 //                $scope.collectionFields = response.columnDefs;
 //            } else {
+console.log(response.columnDefs);
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
 //            }

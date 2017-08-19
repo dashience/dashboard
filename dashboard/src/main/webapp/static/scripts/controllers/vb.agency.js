@@ -277,6 +277,9 @@ app.controller('AgencyController', function ($scope, $http) {
                 secondaryPhone: agencyUser.secondaryPhone,
                 agencyId: $scope.agencyById.id,
             };
+            
+            console.log("agency user data");
+            console.log(agencyUserData);
             $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
                 getAgencyLicence($scope.agencyById);
                 if (response.status == true) {

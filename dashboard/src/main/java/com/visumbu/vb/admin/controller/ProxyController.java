@@ -1128,15 +1128,15 @@ private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest 
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
 //        // System.out.println(account);
-//        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-//        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
 //        
 
         //get the acces token from settings
-        List<Settings> pinterestAccessToken = settingsService.getProperty("pinterestAccessToken");
+//        List<Settings> pinterestAccessToken = settingsService.getProperty("pinterestAccessToken");
         // System.out.println("***************************");
         // System.out.println(pinterestAccessToken);
-        String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");
+//        String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");
 
         // System.out.println("Pinterst access token--->" + accessToken);
         if (accessToken == null) {
