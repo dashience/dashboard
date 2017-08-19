@@ -104,6 +104,8 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
 
     $scope.selectedUser = null;
     $scope.editUser = function (user, index) {
+        console.log("edit user-->");
+        console.log(user);
         getUserAccount(user);
         $scope.userId = user;
         var data = {

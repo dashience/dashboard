@@ -263,6 +263,9 @@ public class ProxyController {
 
     private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
+        if(columnDefObject==null){
+            return null;
+        }
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
             DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
@@ -405,11 +408,11 @@ public class ProxyController {
         MultiValueMap<String, String> request2 = getRequest(dataSetIdSecond, valueMap);
         Map dataMap1 = getJoinDataSet(request1, request, response, dataSetIdFirst.getId());
         Map dataMap2 = getJoinDataSet(request2, request, response, dataSetIdSecond.getId());
-        
+
         System.out.println("Before Join1 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
+
         List<Map<String, Object>> dataList1 = (List<Map<String, Object>>) dataMap1.get("data");
         //dataList1 = addDerivedColumnsToDataSet(dataSetIdFirst.getId(), userIdInt, dataList1, request1, request, response);
 
@@ -419,27 +422,28 @@ public class ProxyController {
         System.out.println("Before Join2 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
-        
+
         Integer secondDataSetAppender = dataSetIdSecond.getId();
         if (!operationType.equalsIgnoreCase("union")) {
-            Set<String> columnSet = dataList1.get(0).keySet();
-            for (Iterator<Map<String, Object>> iterator = dataList2.iterator(); iterator.hasNext();) {
-                Map<String, Object> dataMap = iterator.next();
-                try {
-                    dataMap.entrySet().forEach((entry) -> {
-                        String key = entry.getKey();
-                        Object value = entry.getValue();
-                        for (String columnStr : columnSet) {
-                            if (key.equalsIgnoreCase(columnStr)) {
-                                dataMap.remove(key);
-                                dataMap.put(key + secondDataSetAppender, value);
-                                // System.out.println("dataMap ---> " + dataMap);
-                                break;
+            if (dataList1.size() != 0) {
+                Set<String> columnSet = dataList1.get(0).keySet();
+                for (Iterator<Map<String, Object>> iterator = dataList2.iterator(); iterator.hasNext();) {
+                    Map<String, Object> dataMap = iterator.next();
+                    try {
+                        dataMap.entrySet().forEach((entry) -> {
+                            String key = entry.getKey();
+                            Object value = entry.getValue();
+                            for (String columnStr : columnSet) {
+                                if (key.equalsIgnoreCase(columnStr)) {
+                                    dataMap.remove(key);
+                                    dataMap.put(key + secondDataSetAppender, value);
+                                    // System.out.println("dataMap ---> " + dataMap);
+                                    break;
+                                }
                             }
-                        }
-                    });
-                } catch (ConcurrentModificationException e) {
+                        });
+                    } catch (ConcurrentModificationException e) {
+                    }
                 }
             }
         }
@@ -447,7 +451,11 @@ public class ProxyController {
         List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetId);
         List<String> mappings = new ArrayList<>();
 
-        Map<String, Object> dataSetTwoMap = dataList2.get(0);
+        Map<String, Object> dataSetTwoMap = new HashMap<>();
+
+        if (dataList2.size()!= 0) {
+            dataSetTwoMap = dataList2.get(0);
+        }
         for (Iterator<JoinDataSetCondition> iterator = joinDatasetConditionList.iterator(); iterator.hasNext();) {
             JoinDataSetCondition joinDataSetCondition = iterator.next();
             String concatCondition = null;
@@ -586,8 +594,11 @@ public class ProxyController {
         return returnMap;
     }
 
-    public  List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
+    public List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
         boolean formatRequired = false;
+        if(columnDef==null){
+            return null;
+        }
         for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
             ColumnDef column = iterator1.next();
             if (column.getDataFormat() != null) {
@@ -948,7 +959,7 @@ public class ProxyController {
             if (isDerivedColumn) {
                 if (dataSetColumn.getExpression() != null) {
                     String expressionValue = executeExpression(dataSetColumn, data);
-                     System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
+                    System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
                     if ((expressionValue.startsWith("'") && expressionValue.endsWith("'"))) {
                         Object expValue = expressionValue.substring(1, expressionValue.length() - 1);
                         returnMap.put(dataSetColumn.getFieldName(), expValue);
@@ -1169,7 +1180,6 @@ public class ProxyController {
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                     // System.out.println(pinterestData);
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
 //                fbData.lastIndexOf(jsonObj);
 //                String likesCount = fbData.size() + "";
 //                Map<String, String> boardsSize = new HashMap<>();
@@ -1978,7 +1988,6 @@ public class ProxyController {
         }
 
         // System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
-
         if (timeSegment != null && timeSegment.equalsIgnoreCase("none")) {
             timeSegment = null;
         }
@@ -2080,7 +2089,7 @@ public class ProxyController {
                     }
                 }
             }
-            
+
             try {
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
@@ -2130,7 +2139,6 @@ public class ProxyController {
             }
 
             // System.out.println("Query ===> " + query);
-
             try {
                 query = URLEncoder.encode(query, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
