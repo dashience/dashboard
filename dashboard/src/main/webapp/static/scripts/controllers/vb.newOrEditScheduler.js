@@ -1,4 +1,4 @@
-app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter, $timeout) {
+app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter, $timeout, $translate) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -11,6 +11,15 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         $scope.reports = response;
     });
     $scope.accounts = [];
+
+    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
 
     var unique = function (origArr) {

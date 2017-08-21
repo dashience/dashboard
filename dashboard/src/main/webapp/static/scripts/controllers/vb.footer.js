@@ -1,14 +1,10 @@
-app.controller('FooterController', function ($scope,$cookies,$translate) {
+app.controller('FooterController', function ($scope, $cookies, $translate, $stateParams) {
     var d = new Date();
     $scope.year = d.getFullYear();
-    
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
 
-    console.log($scope.agencyLanguage);
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {

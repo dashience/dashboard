@@ -64,6 +64,13 @@
     .colorpicker .sp-dd {
         display:none;
     }
+    .lanLabel-btn{
+        margin-top: 0px !important;
+    }
+    .lanLabelColor{
+        background-color: #fff;
+        color: #9d9fa2;
+    }
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
     <div id="logo">
@@ -223,6 +230,12 @@
 
         <div class="navbar-right">
             <ul class="nav navbar-nav no-borders">
+                <!--                <li class="dropdown" ng-if="tempLan && tempLan != 'en'">-->
+                <li class="dropdown go" ng-if="tempLan && tempLan != 'en'">
+                    <h4 class="lanLabel-btn"><span class="label label-default lanLabelColor" ng-click="changeAgencyLang(showLangBtn)">{{showLangBtn| filterLanguage}}</span></h4>
+                </li>
+                <!--<button class="btn btn-default" ng-click="changeAgencyLang(showLangBtn)">{{showLangBtn| filterLanguage}}</button>-->
+                <!--</li>-->
                 <li class="dropdown">
                     <a class="pull-right" id="daterange-btn">
                         <span class="date-border">
@@ -237,7 +250,7 @@
                     <form role="search" class="navbar-form-custom" method="post" action="#">
                         <div class="form-group">
                             <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected)" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                                <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
+                                <ui-select-match placeholder="{{'Select Account'|translate}}">{{$select.selected.accountName}}</ui-select-match>
                                 <ui-select-choices repeat="account in accounts | filter: $select.search">
                                     <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
                                 </ui-select-choices>
@@ -265,7 +278,7 @@
                                 <div ng-if="permission.createDataSource === true;">
                                     <ul class="col-lg-3 icon-dash">                                    
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.dataSource({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.dataSource({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <img src="static/img/logos/data-source.png" width="117">
                                             </a>
                                         </li>
@@ -274,7 +287,7 @@
                                 <div ng-if="permission.createDataSet === true;">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.dataSet({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.dataSet({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-dashcube text-success"></i> <h5 translate>DataSets</h5>
                                             </a>
                                         </li>
@@ -283,7 +296,7 @@
                                 <div ng-if="isAdmin === 'admin'">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.agency({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.agency({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-cog text-warning"></i> <h5 translate>Agency</h5>
                                             </a>
                                         </li>
@@ -292,7 +305,7 @@
                                 <div ng-if="permission.createAccount === true;">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.account({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.account({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-cog text-warning"></i> <h5 translate>Account</h5>
                                             </a>
                                         </li>
@@ -301,7 +314,7 @@
                                 <div ng-if="permission.createUser === true;">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.user({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.user({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-users text-info"></i> <h5 translate>Users</h5>
                                             </a>
                                         </li>
@@ -312,7 +325,7 @@
                                 <div ng-if="permission.viewReport === true;">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.report.reports({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.report.reports({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i> <h5 translate> Reports</h5>
                                             </a>
                                         </li>
@@ -321,7 +334,7 @@
                                 <div ng-if="permission.scheduleReport === true;">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.schedulerIndex.scheduler({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-clock-o text-danger" aria-hidden="true"></i> <h5 translate> Scheduler</h5>
                                             </a>
                                         </li>
@@ -330,7 +343,7 @@
                                 <div ng-if="isAdmin === 'admin'">     
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.fieldSettings({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.fieldSettings({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-cog text-danger" aria-hidden="true"></i> <h5 translate> Field Settings</h5>
                                             </a>
                                         </li>
@@ -339,7 +352,7 @@
                                 <div ng-if="isAdmin !== 'admin'">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.viewFavouritesWidget({accountId: accountId, accountName: accountName, productId: 0, favouriteName: 'Favourite', startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.viewFavouritesWidget({lan: lan, accountId: accountId, accountName: accountName, productId: 0, favouriteName: 'Favourite', startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-heart text-info" aria-hidden="true" style="font-size: 30px !important;"></i> <h5 translate>Favorites</h5>
                                             </a>
                                         </li>
@@ -348,7 +361,7 @@
                                 <div ng-if="isAdmin === 'admin'">
                                     <ul class="col-lg-3 icon-dash"> 
                                         <li class="product-dashboard-icon" ng-click="setParams()">
-                                            <a data-ui-sref="index.settings({startDate: startDate, endDate: endDate})">
+                                            <a data-ui-sref="index.settings({lan: lan, startDate: startDate, endDate: endDate})">
                                                 <i class="fa fa-gear text-info" aria-hidden="true" style="font-size: 30px !important;"></i> <h5 translate>Settings</h5>
                                             </a>
                                         </li>
@@ -377,8 +390,8 @@
                             <div class="col-md-9">
                                 <div class="input-group colorText">
                                     <input class="form-control chartColor" type="text" ng-model="chartColor.optionValue" placeholder="{{'color with , seperate'| translate}}">
-                                    <a class="colorpicker" title="Color Picker" ui-colorpicker ng-model="color" ng-change="selectChartColor(color,chartColor)"></a>
-                                    <a class="input-group-addon btn-default btn-sm" title="Save Color" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>
+                                    <a class="colorpicker" title="{{'Color Picker'|translate}}" ui-colorpicker ng-model="color" ng-change="selectChartColor(color, chartColor)"></a>
+                                    <a class="input-group-addon btn-default btn-sm" title="{{'Save Color'|translate}}" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 var app = angular.module("loginApp", ['ngCookies', 'LocalStorageModule', 'pascalprecht.translate']);
+
 app.controller("LoginController", function ($scope, $http, $window, $cookies, localStorageService, $timeout, $translate) {
     $scope.showErrorMessage = false;
     $scope.agency = null;
@@ -6,13 +7,17 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
         $http({method: "GET", url: "admin/user/getAgencyByDomain"}).success(function (response) {
             $scope.agency = response;
             console.log($scope.agency);
-            $scope.logo = $scope.agency?($scope.agency.logo?$scope.agency.logo:'static/img/logos/deeta-logo.png'):'static/img/logos/deeta-logo.png';
+            $scope.logo = $scope.agency ? ($scope.agency.logo ? $scope.agency.logo : 'static/img/logos/deeta-logo.png') : 'static/img/logos/deeta-logo.png';
             var lan = $scope.agency ? $scope.agency.agencyLanguage : null;
             if (lan) {
                 changeLanguage(lan);
-                $cookies.putObject("agencyLanguage",response.agencyLanguage);
+                localStorageService.set("agencyLanguage", response.agencyLanguage);
+                localStorageService.set("agenLan", response.agencyLanguage);
             } else {
-                changeLanguage('en');
+                var defaultLan = 'en';
+                changeLanguage(defaultLan);
+                localStorageService.set("agencyLanguage", defaultLan);
+                //localStorageService.set("agenLan", defaultLan);
             }
         });
     };

@@ -9,20 +9,13 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     $scope.reportWidgets = [];
     if ($scope.permission.scheduleReport === true) {
         $scope.showSchedulerReport = true;
-        console.log($scope.showSchedulerReport)
-        console.log($scope.showSchedulerReport)
     } else {
         $scope.showSchedulerReport = false;
-        console.log($scope.showSchedulerReport)
     }
 
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {

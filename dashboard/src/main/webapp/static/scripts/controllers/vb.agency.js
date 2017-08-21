@@ -1,12 +1,6 @@
-app.controller('AgencyController', function ($scope, $http,$cookies,$translate) {
-
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
-
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+app.controller('AgencyController', function ($scope, $http, $translate, $stateParams) {
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");    
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
@@ -58,7 +52,8 @@ app.controller('AgencyController', function ($scope, $http,$cookies,$translate) 
 
     $scope.languages = [
         {lanName: "English", lanType: 'en'},
-        {lanName: "Chinesh", lanType: 'cn'}
+        {lanName: "Chinesh", lanType: 'cn'},
+        {lanName: "Spanish", lanType: "sp"}
     ];
 
 

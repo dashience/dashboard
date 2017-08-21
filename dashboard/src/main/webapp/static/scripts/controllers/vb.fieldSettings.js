@@ -1,20 +1,14 @@
-app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout,$cookies,$translate) {
+app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout, $cookies, $translate) {
     $scope.fieldSettings = [];
-    
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
-    
-    
+
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},
@@ -97,8 +91,8 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         var getDisplayObj = $.grep($scope.formats, function (val) {
             return getDisplayFormat === val.value;
         });
-        angular.forEach(getDisplayObj, function(val, key){
-           // field.dataFormat = val;
+        angular.forEach(getDisplayObj, function (val, key) {
+            // field.dataFormat = val;
             field.displayFormat = val;
         });
 //        var data = {

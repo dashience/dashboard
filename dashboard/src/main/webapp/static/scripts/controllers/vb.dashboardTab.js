@@ -7,23 +7,15 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userId = $cookies.getObject("userId");
     $scope.tempStartDate = $stateParams.startDate;
     $scope.tempEndDate = $stateParams.endDate;
+    $scope.agencyLanguage = $stateParams.lan;
     
-    
-    
-     //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
-
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
     
-
     //get Templates
     $scope.selectTemplate = {};
     $scope.getAllTemplate = function () {
@@ -135,6 +127,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 }
             }
             $state.go("index.dashboard.widget", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
@@ -223,6 +216,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             $scope.tabs.push({id: response.id, tabName: tab.tabName, tabClose: true});
             $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
             $state.go("index.dashboard.widget", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 templateId: $stateParams.templateId,
@@ -242,6 +236,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
 
                 $state.go("index.dashboard.widget", {
+                    lan: $stateParams.lan,
                     accountId: $stateParams.accountId,
                     accountName: $stateParams.accountName,
                     templateId: $stateParams.templateId,

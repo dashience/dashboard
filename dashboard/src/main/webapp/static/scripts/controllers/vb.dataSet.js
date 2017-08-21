@@ -1,4 +1,4 @@
-app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService,$translate,$cookies) {
+app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService, $translate, $cookies) {
     $scope.permission = localStorageService.get("permission");
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
@@ -13,23 +13,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         return $scope.tab === tabNum;
     };
     
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
     
-     //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
-
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
-    }
-    
-    
-    
-    
+    }    
     
     $scope.joinTypes = [
         {name: 'Left', value: 'left'},
@@ -340,7 +331,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
              $scope.semRushFlag = false;
-        }else if (dataSource === "semRush")
+        } else if (dataSource === "semRush")
         {
             $scope.report = $scope.semRush;
             console.log($scope.report);

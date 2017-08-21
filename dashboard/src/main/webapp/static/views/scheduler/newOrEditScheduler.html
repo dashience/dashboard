@@ -63,7 +63,7 @@
     <div class="row">
         <div class="pull-right-container pull-right agency-bt">
             <div class="btn-group"> 
-                <a ui-sref="index.schedulerIndex.scheduler({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> <span translate>Back</span></a>
+                <a ui-sref="index.schedulerIndex.scheduler({lan: agencyLanguage, accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> <span translate>Back</span></a>
             </div>
             <div class="btn-group"> 
                 <button class="btn btn-success btn-sm" ng-click="addNewScheduler()" translate>New</button>
@@ -173,7 +173,7 @@
                                     <label translate>Report</label>
                                     <div>
                                         <ui-select ng-model="scheduler.reportId" theme="select2" ng-disabled="disabled" style="min-width:225px;">
-                                            <ui-select-match placeholder="Select Report...">
+                                            <ui-select-match placeholder="{{'Select Report'|translate}}">
                                                 <img ng-if="$select.selected.logo" style="width: 40px" ng-src="{{ $select.selected.logo}}" />
                                                 <img ng-if="!$select.selected.logo" style="width: 40px" ng-src="static/img/logos/emptyLogo.jpg" />
                                                 {{$select.selected.reportTitle}}
@@ -192,7 +192,7 @@
                                     <label translate>Account</label>
                                     <div>
                                         <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">
-                                            <ui-select-match placeholder="Select Year Account...">{{$select.selected.accountName}}</ui-select-match>
+                                            <ui-select-match placeholder="{{'Select Account'|translate}}">{{$select.selected.accountName}}</ui-select-match>
                                             <ui-select-choices repeat="account in accounts | filter: $select.search">
                                                 <span ng-bind-html="account.accountName | highlight: $select.search"></span>
                                             </ui-select-choices>
@@ -294,7 +294,7 @@
                                     <label translate>Email Ids</label>
                                     <div>
                                         <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
-                                            <ui-select-match placeholder="Email Ids...">{{$item}}</ui-select-match>
+                                            <ui-select-match placeholder="{{'Email Ids'|translate}}">{{$item}}</ui-select-match>
                                             <ui-select-choices repeat="accountEmail in accountEmails | filter:$select.search">
                                                 {{accountEmail}}
                                             </ui-select-choices>
@@ -341,7 +341,7 @@
                         <div class="form-group col-md-12">
                             <div class="col-sm-8">
                                 <button class="btn btn-success btn-sm" ng-click="saveScheduler(scheduler)" translate> Save</button>
-                                <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})" translate> Cancel</button>
+                                <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({lan: agencyLanguage, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})" translate> Cancel</button>
                             </div>
                         </div>
                     </form> 

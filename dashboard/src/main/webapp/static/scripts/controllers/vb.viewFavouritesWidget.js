@@ -1,4 +1,4 @@
-app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state,$cookies,$translate) {
+app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state, $cookies, $translate) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productId = $stateParams.productId;
@@ -7,20 +7,16 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
     $scope.favouriteName = $stateParams.favouriteName;
-    
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
 
-    console.log($scope.agencyLanguage);
+    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
 
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
-    
+
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
         var widgetItems = [];
         widgetItems = response;
@@ -43,11 +39,11 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                 }
                 widgetItems.forEach(function (value, key) {
                     value.widgetId.chartColors = widgetColors;
-        });
-        $scope.favouritesWidgets = widgetItems;
+                });
+                $scope.favouritesWidgets = widgetItems;
             }).error(function () {
                 $scope.favouritesWidgets = widgetItems;
-    });
+            });
         });
     });
 
@@ -98,7 +94,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     function saveWidgetSize(widget, expandchart) {
         $timeout(function () {
             widget.chartType = expandchart;
-             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
             });
 //            var data = {
 //                id: widget.id,
@@ -120,7 +116,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
 //            });
         }, 50);
     }
-    
+
     $scope.deleteReportWidget = function (favouritesWidget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + favouritesWidget.widgetId.id}).success(function (response) {
             $scope.favouritesWidgets.splice(index, 1);
@@ -192,8 +188,8 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.setFunnelFn = function (funnelFn) {
         $scope.directiveFunnelFn = funnelFn;
     };
-    
-    $scope.onDropComplete = function(index, favWidget, evt){
+
+    $scope.onDropComplete = function (index, favWidget, evt) {
         if (favWidget !== "" && favWidget !== null) {
             var otherObj = $scope.favouritesWidgets[index];
             var otherIndex = $scope.favouritesWidgets.indexOf(favWidget);
@@ -208,7 +204,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
             }).join(',');
             if (favWidgetOrder) {
                 console.log(favWidgetOrder)
-               $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
+                $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
             }
         }
     };

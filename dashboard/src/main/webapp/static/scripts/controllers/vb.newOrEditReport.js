@@ -5,17 +5,10 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     $scope.reportId = $stateParams.reportId;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-
     $scope.reportWidgets = [];
     
-    
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
-
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {

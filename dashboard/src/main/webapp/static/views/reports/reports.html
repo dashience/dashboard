@@ -128,7 +128,7 @@
 <section class="content">
     <div class="pull-right add-group">
 
-        <span ng-if="permission.createReport === true;" ui-sref="index.report.newOrEdit({accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> <span translate>Add Reports</span></button></span>
+        <span ng-if="permission.createReport === true;" ui-sref="index.report.newOrEdit({lan: agencyLanguage, accountId: accountId, accountName: accountName, reportId: 0, startDate: startDate, endDate: endDate})"><button type="button" class="btn btn-block btn-info btn-flat"><i class="fa fa-plus-circle"></i> <span translate>Add Reports</span></button></span>
 
     </div>
 
@@ -186,13 +186,13 @@
                                     <div class="form-group">
                                         <label class="col-sm-3" translate>Start Date</label>
                                         <div class="col-sm-9">
-                                            <input type="text" jqdatepicker placeholder="{{'Start Date' | translate}}" ng-model="scheduler.startDate" class="form-control">
+                                            <input type="text" jqdatepicker placeholder="{{'Start Date'| translate}}" ng-model="scheduler.startDate" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3" translate>End Date</label>
                                         <div class="col-sm-9">
-                                            <input type="text" jqdatepicker placeholder="{{'End Date' | translate}}" ng-model="scheduler.endDate" class="form-control">
+                                            <input type="text" jqdatepicker placeholder="{{'End Date'| translate}}" ng-model="scheduler.endDate" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -210,32 +210,32 @@
                                     <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
                                         <label class="col-sm-3" translate>Time</label>
                                         <div class="col-sm-9">
-                                            <input type="text" jqdatepicker-Time placeholder="Time" ng-model="scheduler.schedulerTime" class="form-control">
+                                            <input type="text" jqdatepicker-Time placeholder="T{{'Time'|translate}}" ng-model="scheduler.schedulerTime" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Monthly'">
                                         <label class="col-sm-3" translate>Select Date And Time</label>
                                         <div class="col-sm-9">
-                                            <input type="text" jqdatetimepicker placeholder="Select Date And Time" ng-model="scheduler.schedulerMonthly" class="form-control">
+                                            <input type="text" jqdatetimepicker placeholder="{{'Select Date And Time'|translate}}" ng-model="scheduler.schedulerMonthly" class="form-control">
                                         </div>
                                     </div>
-<!--                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
-                                        <label class="col-sm-3">Select Month, Date And Time</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" jqdatetimepicker placeholder="Select Month, Date And Time" ng-model="scheduler.schedulerYearly" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Year Of Week'">
-                                        <label class="col-sm-3">Year Of Week</label>
-                                        <div class="col-sm-9">
-                                            <ui-select ng-model="scheduler.schedulerYearOfWeek" theme="select2" ng-disabled="disabled" style="width:266px">
-                                                <ui-select-match placeholder="Select Year Of Week...">{{$select.selected}}</ui-select-match>
-                                                <ui-select-choices repeat="totalYearOfWeek in totalYearOfWeeks | filter: $select.search">
-                                                    <span ng-bind-html="totalYearOfWeek | highlight: $select.search"></span>
-                                                </ui-select-choices>
-                                            </ui-select>
-                                        </div>
-                                    </div>-->
+                                    <!--                                    <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Yearly'">
+                                                                            <label class="col-sm-3">Select Month, Date And Time</label>
+                                                                            <div class="col-sm-9">
+                                                                                <input type="text" jqdatetimepicker placeholder="Select Month, Date And Time" ng-model="scheduler.schedulerYearly" class="form-control">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Year Of Week'">
+                                                                            <label class="col-sm-3">Year Of Week</label>
+                                                                            <div class="col-sm-9">
+                                                                                <ui-select ng-model="scheduler.schedulerYearOfWeek" theme="select2" ng-disabled="disabled" style="width:266px">
+                                                                                    <ui-select-match placeholder="Select Year Of Week...">{{$select.selected}}</ui-select-match>
+                                                                                    <ui-select-choices repeat="totalYearOfWeek in totalYearOfWeeks | filter: $select.search">
+                                                                                        <span ng-bind-html="totalYearOfWeek | highlight: $select.search"></span>
+                                                                                    </ui-select-choices>
+                                                                                </ui-select>
+                                                                            </div>
+                                                                        </div>-->
                                     <div class="form-group">
                                         <label class="col-sm-3" translate>Type</label>
                                         <div class="col-sm-9">
@@ -247,7 +247,7 @@
 
                                 </div>
                                 <div class="report-footer-btn">
-                                    <button class="btn btn-success pull-left" ng-click="goScheduler()" translate>Goto Scheduler</button>
+                                    <button class="btn btn-success pull-left" ng-click="goScheduler()"><span translate>Goto</span> <span translate>Scheduler</span></button>
                                     <button class="btn btn-success" ng-click="addReportToScheduler(scheduler, report); showSchedulerList[report.id] = false;" style="float: right" translate>Add</button>
                                 </div>
                             </form>

@@ -138,7 +138,7 @@
 <div class="row">    
     <div class="col-sm-12 ">
         <div class="btn-group pull-right pdf-fav"> 
-            <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{accountId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+            <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{agencyLanguage}}/{{accountId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
         </div>
     </div>
 </div>
@@ -344,7 +344,7 @@
                     </div>
                 </div>
                 <div class="report-footer-btn">
-                    <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
+                    <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto</span> <span translate>Report</span></button>
                     <button class="btn btn-success" ng-click="addWidgetToReport(favouritesWidget); showReportList[favouritesWidget.widgetId.id] = false;" style="float: right">Add</button>
                 </div>
             </div>

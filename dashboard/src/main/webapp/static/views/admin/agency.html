@@ -96,26 +96,26 @@
             <li ng-class="{ active: isSetAgency(1) }">
                 <a href ng-click="setTabAgency(1)" translate> Details</a>
             </li>
-            <li ng-class="{ active: isSetAgency(2) }" translate>
-                <a href ng-click="setTabAgency(2)"> Licence
+            <li ng-class="{ active: isSetAgency(2) }">
+                <a href ng-click="setTabAgency(2)" translate> Licence
                 </a>
             </li>
-            <li ng-class="{ active: isSetAgency(3) }" translate>
-                <a href ng-click="setTabAgency(3)"> User
+            <li ng-class="{ active: isSetAgency(3) }">
+                <a href ng-click="setTabAgency(3)" translate> User
                 </a>
             </li>
-            <li ng-class="{ active: isSetAgency(4) }" translate>
-                <a href ng-click="setTabAgency(4)"> Product
+            <li ng-class="{ active: isSetAgency(4) }">
+                <a href ng-click="setTabAgency(4)" translate> Product
                 </a>
             </li>
 
             <!--   currency-format-->
-            <li ng-class="{ active: isSetAgency(5) }" translate>
-                <a href ng-click="setTabAgency(5)"> Settings
+            <li ng-class="{ active: isSetAgency(5) }">
+                <a href ng-click="setTabAgency(5)" translate> Settings
                 </a>
             </li>  
-            <li ng-class="{ active: isSetAgency(6) }" translate>
-                <a href ng-click="setTabAgency(6)"> Property
+            <li ng-class="{ active: isSetAgency(6) }">
+                <a href ng-click="setTabAgency(6)" translate> Property
                 </a>
             </li>  
             <!--   currency-format-->
@@ -130,7 +130,7 @@
                     <div class="tab-content">
                         <div ng-show="isSetAgency(1)" class="license">
                             <div class="col-md-12">
-                                <form class="form-horizontal" novalidate name="setAgency">
+                                <form class="form-horizontal" name="setAgency" novalidate>
                                     <div class="form-group">
                                         <div class="row col-md-4 image-upload">
                                             <label for="file-input">
@@ -152,12 +152,18 @@
                                     </div>
 
                                     <div class="form-group"> 
-                                        <label translate>Dashience Domain Name</label>
-                                        <div> 
+                                        <div class="row">
+                                            <label class="col-md-12" translate>Domain Name</label>
+                                            <div class="col-md-8"> 
 
-                                            <input type="text" name="domain" id="domain" class="form-control" ng-pattern="/^[a-zA-Z]*$/" ng-model="agency.agencyDashiencePath" placeholder="{{'Domain Name'|translate}}">
-                                            <span class="text-danger"  ng-show="setAgency.domain.$error.pattern" translate>
-                                                Not a Valid Domain Name</span>
+                                                <input type="text" name="domain" id="domain" class="form-control" ng-pattern="/^[a-zA-Z]*$/" ng-model="agency.agencyDashiencePath" placeholder="{{'Domain Name'|translate}}">
+                                                <span class="text-danger"  ng-show="setAgency.domain.$error.pattern" translate>
+                                                    Not a Valid Domain Name
+                                                </span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span>.<span translate>com<span></span>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -167,7 +173,7 @@
                                             <input type="email" class="form-control" ng-model="agency.email" placeholder="{{'Email'|translate}}">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group">
                                         <label translate>Language</label>
                                         <div>                                            
@@ -294,7 +300,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label translate>Secondary Phone</label>
-                                            <input type="text" class="form-control" ng-model="agencyUser.secondaryPhone" placeholder="Secondary Phone">
+                                            <input type="text" class="form-control" ng-model="agencyUser.secondaryPhone" placeholder="{{'Secondary Phone'|translate}}">
                                         </div>
                                         <div class="form-group pull-right">
                                             <button class="btn btn-info" ng-click="saveAgencyUser(agencyUser)" translate>Save</button>
@@ -497,7 +503,7 @@
                                                             <button class="btn btn-default btn-xs" ng-click="agencyProperty.isEdit = true;">
                                                                 <i class="fa fa-pencil"></i>
                                                             </button>
-                                                            <button class="btn btn-default btn-xs" ng-click="deleteAgencyProperty(agencyProperty,$index)">
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteAgencyProperty(agencyProperty, $index)">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
                                                         </div>
@@ -538,7 +544,7 @@
                             <tr>
                                 <th class="col-xs-3" translate>Name</th>
                                 <th class="col-xs-4" translate>Email</th>
-                                <th class="col-xs-4" translate>Dashience Domain Name</th>
+                                <th class="col-xs-4" translate>Domain Name</th>
                                 <th class="col-xs-1"></th>
                             </tr>
                         </thead>

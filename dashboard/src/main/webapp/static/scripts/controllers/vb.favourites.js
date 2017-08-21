@@ -1,21 +1,17 @@
-app.controller('FavouritesController', function($http,$scope, $stateParams,$cookies,$translate){
+app.controller('FavouritesController', function ($http, $scope, $stateParams, $cookies, $translate) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-    
-    $scope.favourites=[];
-     $http.get("admin/tag").success(function (response) {
-     $scope.favourites=response;
-     })    
-     
-      //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
 
-    console.log($scope.agencyLanguage);
+    $scope.favourites = [];
+    $http.get("admin/tag").success(function (response) {
+        $scope.favourites = response;
+    })
 
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {

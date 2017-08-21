@@ -3,23 +3,16 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
-    $scope.endDate = $stateParams.endDate;
+    $scope.endDate = $stateParams.endDate;   
     
-    
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
-
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");    
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
-    
-    
+        
     $http.get("admin/scheduler/scheduler").success(function (response) {
         $scope.schedulers = response;
     });

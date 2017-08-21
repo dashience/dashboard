@@ -632,7 +632,7 @@
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y1Column" theme="bootstrap" 
                                        on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
                                        on-remove="removedByY1Column(widgetObj, $item, y1Column)">
-                                <ui-select-match allow-clear="true" placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder=" {{'y1 Axis'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y1axis in columnY1Axis | filter:$select.search">
                                     {{y1axis.displayName}}
                                 </ui-select-choices>
@@ -645,7 +645,7 @@
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
                                        on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
                                        on-remove="removedByY2Column(widgetObj, $item, y2Column)">
-                                <ui-select-match allow-clear="true" placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder="{{'y2 Axis'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y2axis in columnY2Axis  | filter:$select.search">
                                     {{y2axis.displayName}}
                                 </ui-select-choices>
@@ -658,11 +658,11 @@
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker'" ng-show="showColumnDefs" >
                     <div class="form-group">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
-                            <label>Ticker Items</label>
+                            <label translate>Ticker Items</label>
                             <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap"
                                        on-select="ticker(widgetObj, tickerItem)" 
                                        on-remove="removedByTicker(widgetObj, $item, tickerItem)">
-                                <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match placeholder="{{'Ticker Value'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
                                     {{currentColumn.displayName}}
                                 </ui-select-choices>
@@ -677,7 +677,7 @@
                             <ui-select multiple ng-model="funnelItem"  theme="bootstrap"
                                        on-select="funnel(widgetObj, funnelItem)" 
                                        on-remove="removedByFunnel(widgetObj,$item,funnelItem)">
-                                <ui-select-match placeholder=" Funnel Value...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match placeholder="{{'Funnel Value'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="collectionField in collectionFields  | filter:$select.search">
                                     {{collectionField.displayName}}
                                 </ui-select-choices>
@@ -688,7 +688,7 @@
             </div>
                 <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
                     <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
-                    <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
+                    <button class="btn btn-default" ng-click="addDerived()" translate>Add Column</button>
                         <label ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'"><input type="checkbox" ng-checked="(widgetObj.selectAll == 1) || (widgetObj.selectAll == null)"
                                ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" ng-click="selectAllColumns(collectionFields, widgetObj)" translate>
                         Select All</label>
@@ -712,7 +712,7 @@
                                        ng-model="widgetObj.lastNdays" 
                                        ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
                                        class="form-control" 
-                                       ng-model-options="{debounce: 500}" placeholder="Days"> 
+                                       ng-model-options="{debounce: 500}" placeholder="{{'Days'|translate}}"> 
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -725,7 +725,7 @@
                                        ng-model="widgetObj.lastNweeks" 
                                        ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
                                        class="form-control" 
-                                       ng-model-options="{debounce: 500}" placeholder="Weeks"> 
+                                       ng-model-options="{debounce: 500}" placeholder="{{'Weeks'|translate}}"> 
                             </div>
                         </div>
                         <div class="col-md-6">

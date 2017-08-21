@@ -1,22 +1,16 @@
-app.controller('PdfController', function ($stateParams, $http, $scope, $filter,$cookies,$translate) {
+app.controller('PdfController', function ($stateParams, $http, $scope, $filter, $cookies, $translate) {
     $scope.reportStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.reportEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
     $scope.pdfWidget = [];
-    
-    
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
 
-    console.log($scope.agencyLanguage);
+    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
 
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
-    
 
     $http.get('admin/ui/getAccount/' + $stateParams.accountId).success(function (response) {
         response.forEach(function (val, key) {
