@@ -1,4 +1,17 @@
-app.controller('AgencyController', function ($scope, $http) {
+app.controller('AgencyController', function ($scope, $http,$cookies,$translate) {
+
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     // currency-format
 //   $scope.getCurrencyDataFromServer = function() {

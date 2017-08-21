@@ -1,7 +1,22 @@
-app.controller('SettingsController', function ($scope, $cookies, $http, $filter, $stateParams, $state, $location, $rootScope) {
+app.controller('SettingsController', function ($scope, $cookies, $http, $filter, $stateParams, $state, $location, $rootScope,$translate) {
     $scope.ftps = [{userName: "admin", password: "password", url: "google.com", portNo: "8084"}]
 
     $scope.showSettings = true;
+    
+    
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
 
     $http.get("admin/settings/getSettings").success(function (response) {
         $scope.files = response;

@@ -1,5 +1,20 @@
-app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout) {
+app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout,$cookies,$translate) {
     $scope.fieldSettings = [];
+    
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
+    
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},

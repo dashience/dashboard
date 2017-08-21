@@ -1,4 +1,4 @@
-app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state) {
+app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state,$cookies,$translate) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productId = $stateParams.productId;
@@ -7,6 +7,20 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
     $scope.favouriteName = $stateParams.favouriteName;
+    
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+
+    console.log($scope.agencyLanguage);
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
         var widgetItems = [];
         widgetItems = response;

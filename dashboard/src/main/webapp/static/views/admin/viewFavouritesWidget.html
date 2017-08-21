@@ -128,7 +128,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Favorites
             </h2>               
         </div>
@@ -149,13 +149,13 @@
             <div class="col-sm-{{favouritesWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="favouritesWidget">
                     <div class="panel-tools">
-                        <a title="Favorites" ng-click="toggleFavourite(favouritesWidget, $index)">
+                        <a title="{{'Favorites'|translate}}" ng-click="toggleFavourite(favouritesWidget, $index)">
                             <i class="fa fa-heart" ng-class="{'red':favouritesWidget.widgetId.isFav, 'black': !favouritesWidget.widgetId.isFav}"></i>
                         </a>
-                        <a title="Report" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
+                        <a title="{{'Report'|translate}}" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
 
-                        <a ng-if="favouritesWidget.widgetId.width != 3" ng-click="reduceWidget(favouritesWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                        <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                        <a ng-if="favouritesWidget.widgetId.width != 3" ng-click="reduceWidget(favouritesWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
+                        <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                     </div>
                     <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)"
@@ -178,14 +178,14 @@
                             <a title="Favorites" ng-click="toggleFavourite(favouritesWidget, $index)">
                                 <i class="fa fa-heart" ng-class="{'red':favouritesWidget.widgetId.isFav, 'black': !favouritesWidget.widgetId.isFav}"></i>
                             </a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'scatter'" title="Refresh" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
-                            <a title="Report" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.chartType === 'line'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.chartType === 'bar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.chartType === 'pie'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.chartType === 'area'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.chartType === 'table'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.chartType === 'scatter'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                            <a title="{{'Report'|translate}}" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
                             <!--                        <a class="edit" ui-sref="index.editWidget({accountId: accountId, accountName: accountName, productId: 0, tabId: favouritesWidget.widgetId.tabId.id, widgetId: favouritesWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></a>-->
                             <!--<a class="closebox" data-toggle="modal" data-target="#delete{{favouritesWidget.widget.id.tab.id}}" title="Delete"><i class="fa fa-times"></i></a>-->
                             <!--                        <div id="delete{{favouritesWidget.id}}" class="modal">
@@ -205,8 +205,8 @@
                                                             </div>
                                                         </div>
                                                     </div>-->
-                            <a ng-if="favouritesWidget.widgetId.width != 3" ng-click="reduceWidget(favouritesWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.width != 3" ng-click="reduceWidget(favouritesWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
+                            <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                         </div>
                         <span class="{{favouritesWidget.widgetId.icon}}"></span> 
                         <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>
@@ -294,10 +294,10 @@
                 </div>
             </div>
             <div class="report-menuBody">
-                <label class="col-sm-2">Report</label>
+                <label class="col-sm-2" translate>Report</label>
                 <div class="col-sm-10">
                     <ui-select ng-model="favouritesWidget.widgetId.favouritesWidget" on-select="selectReport(favouritesWidget.widgetId.favouritesWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
-                        <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
+                        <ui-select-match placeholder="{{'Select Report'|translate}}">{{$select.selected.reportTitle}}</ui-select-match>
                         <ui-select-choices repeat="report in reportList | filter: $select.search">
                             <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
                         </ui-select-choices>
@@ -326,8 +326,8 @@
                             <table class="table table-bordered" ng-show="showReportWidgetName">
                                 <thead>
                                     <tr>
-                                        <th>Sl.No</th>
-                                        <th>Widget Name</th>
+                                        <th translate>S.No</th>
+                                        <th translate>Widget Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>

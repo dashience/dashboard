@@ -243,43 +243,43 @@
                                                                                                 <li ng-click="selectDuration('This Year', null)"><a>This Year</a></li>
                                                                                                 <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>-->
                                                 <li ng-click="selectDuration('Last N Days', scheduler)">
-                                                    <a>Last <input type="text"
+                                                    <a><span translate>Last</span> <input type="text"
                                                                    ng-model="scheduler.lastNdays" 
                                                                    ng-change="selectDuration('Last N Days', scheduler)" 
                                                                    class="form-control" 
                                                                    ng-model-options="{debounce: 500}"
                                                                    style="width: 60px; display: contents; height: 25px;"> 
-                                                        Days
+                                                        <span translate>Days</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Weeks', scheduler)">
-                                                    <a>Last <input type="text" 
+                                                    <a><span translate>Last</span><input type="text" 
                                                                    ng-model="scheduler.lastNweeks" 
                                                                    ng-change="selectDuration('Last N Weeks', scheduler)"
                                                                    class="form-control" 
                                                                    ng-model-options="{debounce: 500}"
                                                                    style="width: 60px; display: contents; height: 25px;"> 
-                                                        Weeks
+                                                        <span translate>Weeks</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Months', scheduler)">
-                                                    <a>Last <input type="text" 
+                                                    <a><span translate>Last</span> <input type="text" 
                                                                    ng-model="scheduler.lastNmonths" 
                                                                    ng-change="selectDuration('Last N Months', scheduler)"
                                                                    class="form-control" 
                                                                    ng-model-options="{debounce: 500}"
                                                                    style="width: 60px; display: contents; height: 25px;"> 
-                                                        Months
+                                                        <span translate>Months</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Years', scheduler)">
-                                                    <a>Last <input type="text" 
+                                                    <a><span translate>Last</span> <input type="text" 
                                                                    ng-model="scheduler.lastNyears" 
                                                                    ng-change="selectDuration('Last N Years', scheduler)"
                                                                    class="form-control" 
                                                                    ng-model-options="{debounce: 500}"
                                                                    style="width: 60px; display: contents; height: 25px;"> 
-                                                        Years
+                                                        <span translate>Years</span>
                                                     </a>
                                                 </li>
                                             </ul>
