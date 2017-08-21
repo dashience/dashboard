@@ -12,7 +12,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         widgetItems = response;
         $http.get("admin/tag/getAllFav/").success(function (favResponse) {
             widgetItems.forEach(function (value, key) {
-                favWidget = $.grep(favResponse, function (b) {
+               var favWidget = $.grep(favResponse, function (b) {
                     return b.id === value.widgetId.id;
                 });
                 if (favWidget.length > 0) {
@@ -29,11 +29,11 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                 }
                 widgetItems.forEach(function (value, key) {
                     value.widgetId.chartColors = widgetColors;
-        });
-        $scope.favouritesWidgets = widgetItems;
+                });
+                $scope.favouritesWidgets = widgetItems;
             }).error(function () {
                 $scope.favouritesWidgets = widgetItems;
-    });
+            });
         });
     });
 
@@ -84,7 +84,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     function saveWidgetSize(widget, expandchart) {
         $timeout(function () {
             widget.chartType = expandchart;
-             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
             });
 //            var data = {
 //                id: widget.id,
@@ -106,7 +106,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
 //            });
         }, 50);
     }
-    
+
     $scope.deleteReportWidget = function (favouritesWidget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + favouritesWidget.widgetId.id}).success(function (response) {
             $scope.favouritesWidgets.splice(index, 1);
@@ -178,14 +178,19 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.setFunnelFn = function (funnelFn) {
         $scope.directiveFunnelFn = funnelFn;
     };
-    
-    $scope.onDropComplete = function(index, favWidget, evt){
+
+    $scope.moveWidget = function (list, from, to) {
+        list.splice(to, 0, list.splice(from, 1)[0]);
+        return list;
+    };
+
+    $scope.onDropComplete = function (index, favWidget, evt) {
         if (favWidget !== "" && favWidget !== null) {
             var otherObj = $scope.favouritesWidgets[index];
             var otherIndex = $scope.favouritesWidgets.indexOf(favWidget);
-//            $scope.reportWidgets = $scope.moveWidget($scope.reportWidgets, otherIndex, index);
-            $scope.favouritesWidgets[index] = favWidget;
-            $scope.favouritesWidgets[otherIndex] = otherObj;
+            $scope.favouritesWidgets = $scope.moveWidget($scope.favouritesWidgets, otherIndex, index);
+//            $scope.favouritesWidgets[index] = favWidget;
+//            $scope.favouritesWidgets[otherIndex] = otherObj;
             var favWidgetOrder = $scope.favouritesWidgets.map(function (value, key) {
                 if (!value) {
                     return;
@@ -194,7 +199,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
             }).join(',');
             if (favWidgetOrder) {
                 console.log(favWidgetOrder)
-               $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
+                $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
             }
         }
     };

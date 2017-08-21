@@ -148,7 +148,7 @@
         <div ng-if="favouritesWidget.widgetId.chartType === 'ticker'">
             <div class="col-sm-{{favouritesWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="favouritesWidget">
-                    <div class="panel-tools">
+                    <div class="panel-tools ticker-icon">
                         <a title="Favorites" ng-click="toggleFavourite(favouritesWidget, $index)">
                             <i class="fa fa-heart" ng-class="{'red':favouritesWidget.widgetId.isFav, 'black': !favouritesWidget.widgetId.isFav}"></i>
                         </a>

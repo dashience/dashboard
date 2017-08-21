@@ -176,7 +176,7 @@
         <div ng-if="reportWidget.widgetId.chartType === 'ticker'">
             <div class="col-sm-{{reportWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="reportWidget">
-                    <div class="panel-tools">
+                    <div class="panel-tools ticker-icon">
                         <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
                         <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
@@ -285,7 +285,7 @@
         <div id="delete{{reportWidget.id}}" class="modal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color:#9DD6D7;color:black;">
+                    <div class="modal-header" style="color:black;">
                         <strong>Delete</strong>
                         <strong><button class="close" data-dismiss="modal">&times;</button></strong>
                     </div>

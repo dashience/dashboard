@@ -264,7 +264,7 @@
         <div ng-if="widget.chartType == 'ticker'">
             <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
-                    <div class="panel-tools">
+                    <div class="panel-tools ticker-icon">
                         <a title="Favorites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
                         <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                         <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>

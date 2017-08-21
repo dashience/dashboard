@@ -962,7 +962,7 @@ public class UiService {
         return dataSetList;
     }
 
-        public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
+    public List<DataSetColumns> createWidgetColumn(DataSetColumnBean dataSetColumnBean, VbUser user, Integer widgetId) {
         List<DataSetColumnBean> dataSetColumnList = dataSetColumnBean.getTableColumns();
         List<DataSetColumns> dataSetColumn = new ArrayList<>();
         for (Iterator<DataSetColumnBean> dataSetColumnBeanIterator = dataSetColumnList.iterator(); dataSetColumnBeanIterator.hasNext();) {
@@ -985,17 +985,17 @@ public class UiService {
                 DataSetColumns checkDbForColumn = uiDao.getDataSetColumn(allDataSetColumn.getFieldName(), dataSet);
                 if (checkDbForColumn != null) {
                     if (allDataSetColumn.getExpression() != null && !allDataSetColumn.getExpression().isEmpty()) {
-                    checkDbForColumn.setExpression(allDataSetColumn.getExpression());
+                        checkDbForColumn.setExpression(allDataSetColumn.getExpression());
                     }
                     if (allDataSetColumn.getFieldName() != null && !allDataSetColumn.getFieldName().isEmpty()) {
-                    checkDbForColumn.setFieldName(allDataSetColumn.getFieldName());
+                        checkDbForColumn.setFieldName(allDataSetColumn.getFieldName());
                     }
 
                     if (allDataSetColumn.getDisplayName() != null && !allDataSetColumn.getDisplayName().isEmpty()) {
-                    checkDbForColumn.setDisplayName(allDataSetColumn.getDisplayName());
+                        checkDbForColumn.setDisplayName(allDataSetColumn.getDisplayName());
                     }
                     if (allDataSetColumn.getDisplayFormat() != null && !allDataSetColumn.getDisplayFormat().isEmpty()) {
-                    checkDbForColumn.setDisplayFormat(allDataSetColumn.getDisplayFormat());
+                        checkDbForColumn.setDisplayFormat(allDataSetColumn.getDisplayFormat());
                     }
                     checkDbForColumn.setStatus(allDataSetColumn.getStatus());
                     checkDbForColumn.setFunctionName(allDataSetColumn.getFunctionName());
@@ -1009,7 +1009,7 @@ public class UiService {
                     checkDbForColumn.setLastNweeks(allDataSetColumn.getLastNweeks());
                     checkDbForColumn.setLastNyears(allDataSetColumn.getLastNyears());
                     if (allDataSetColumn.getFieldType() != null && !allDataSetColumn.getFieldType().isEmpty()) {
-                    checkDbForColumn.setFieldType(allDataSetColumn.getFieldType());
+                        checkDbForColumn.setFieldType(allDataSetColumn.getFieldType());
                     }
                     checkDbForColumn.setSortPriority(allDataSetColumn.getSortPriority());
                     if (widgetId != null) {
@@ -1315,7 +1315,7 @@ public class UiService {
     public List getDataSetReports(Integer dataSourceId) {
         DataSource dataSource = uiDao.getDataSourceById(dataSourceId);
         return getDataSetReports(dataSource.getName());
-}
+    }
 
     public List getDataSetReports(String dataSourceType) {
         return uiDao.getDataSetReport(dataSourceType);
@@ -1462,5 +1462,13 @@ public class UiService {
             Logger.getLogger(PropertyReader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return returnProp;
+    }
+
+    public void deleteDerivedColumn(String deleteColumns, Integer widgetId) {
+        String[] columnArray = deleteColumns.split(",");
+        for (int i = 0; i < columnArray.length; i++) {
+            uiDao.deleteDerivedColumn(columnArray[i], widgetId);
+            uiDao.deleteWidgetColumn(columnArray[i], widgetId);
+        }
     }
 }
