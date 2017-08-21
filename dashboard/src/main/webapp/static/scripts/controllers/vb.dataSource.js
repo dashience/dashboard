@@ -11,14 +11,10 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         }
         getItems();
         
-        
-         //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
+            
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
-    console.log($scope.agencyLanguage);
-
-    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {

@@ -5,7 +5,6 @@ app.controller('SettingsController', function ($scope, $cookies, $http, $filter,
 
     $http.get("admin/settings/getSettings").success(function (response) {
         $scope.files = response;
-        console.log(response);
         $scope.productArray = [];
         angular.forEach($scope.files, function (value, key) {
             var index = $scope.productArray.indexOf(value.groupName);

@@ -56,13 +56,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
     
-    
-    
-    //Chinese Translation
-    
-    $scope.agencyLanguage = $cookies.getObject("agencyLanguage");
-
-    console.log($scope.agencyLanguage);
+    $scope.agencyLanguage = $stateParams.lan;//localStorageService.get("agencyLanguage");//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
     changeLanguage(lan);
@@ -70,8 +64,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function changeLanguage(key) {
         $translate.use(key);
     }
-    
-    
+       
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
