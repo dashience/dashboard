@@ -19,7 +19,7 @@
                             </a>
                         </li>-->
             <li ng-class="{active: $state.current.activetab == 'report'}">
-                <a ui-sref="index.report.reports({locationId: locationId, reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;" translate>
+                <a ui-sref="index.report.reports({lan: agencyLanguage, locationId: locationId, reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;" translate>
                     Reports
                 </a>
             </li>

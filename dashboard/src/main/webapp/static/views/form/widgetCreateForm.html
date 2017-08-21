@@ -351,14 +351,14 @@
         <div class="row">
             <div class="form-group">
                 <div class="col-sm-6">
-                    <div class="input-group"> <div class="add-widget-title">Widget</div>
+                    <div class="input-group"> <div class="add-widget-title" translate>Widget</div>
                         <div class="box-pop">
                             <div class="form-group widget-title">
-                                <label>Widget Title</label>
+                                <label translate>Widget Title</label>
                                 <input class='form-control' type='text' ng-model='widgetObj.previewTitle'>
                             </div>
                             <div class="form-group widget-title">
-                                <label>Chart Type</label>
+                                <label translate>Chart Type</label>
                                 <div class="chart">
                                     <a class="btn chart-btn" ng-repeat="chartType in chartTypes track by chartType.id" 
                                        ng-click="selectChart(chartType, widgetObj)"> 
@@ -372,7 +372,7 @@
                             <div class="form-group widget-title">
                                 <input type="checkbox" ng-checked="(widgetObj.allAccount == 1) || (widgetObj.allAccount == null)"
                                        ng-model="widgetObj.allAccount" ng-true-value="1" ng-false-value="0">
-                                <label>All Account</label>
+                                <label translate>All Account</label>
                             </div>
                         </div>
                     </div>
@@ -383,19 +383,19 @@
             <div class="form-group">
                 <div class="col-sm-6">
 
-                    <div class="input-group"> <div class="add-widget-title">Data</div>
+                    <div class="input-group"> <div class="add-widget-title" translate>Data</div>
                         <div class="box-pop">
 
                             <div class="data-1">
                                 <div class="form-group widget-title col-sm-6"> 
-                                    <label>Data Source</label>
+                                    <label translate>Data Source</label>
                                     <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
                                             ng-change="selectWidgetDataSource(widgetObj.dataSourceId)"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                     </select>
                                 </div>
                                 <div class="form-group widget-title col-sm-6"> 
-                                    <label>Data Set</label>
+                                    <label translate>Data Set</label>
                                     <select class="form-control" 
                                             ng-model="widgetObj.dataSetId" 
                                             ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" 
@@ -405,14 +405,14 @@
                             </div>
                             <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === 'csv' || widgetObj.dataSourceId.dataSourceType == 'sql' || widgetObj.dataSourceId.dataSourceType == 'xls' || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-6"> 
-                                    <label>Time Segment</label>
+                                    <label translate>Time Segment</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="timeSeg.name for timeSeg in timeSegments track by timeSeg.type">
                                     </select>
                                 </div>
                                 <div class="form-group widget-title col-sm-6"> 
-                                    <label>Dimension</label>
+                                    <label translate>Dimension</label>
                                     <select class="form-control" 
                                             ng-model="widgetObj.productSegment" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
@@ -423,7 +423,7 @@
 
                             <div class="data-3" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === 'csv' || widgetObj.dataSourceId.dataSourceType == 'sql' || widgetObj.dataSourceId.dataSourceType == 'xls' || widgetObj.dataSourceId.dataSourceType == 'analytics' || widgetObj.dataSourceId.dataSourceType == 'pinterest' || widgetObj.dataSourceId.dataSourceType == 'https' || widgetObj.dataSourceId.dataSourceType == 'facebook' || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-12"> 
-                                    <label>Network Type</label>
+                                    <label translate>Network Type</label>
                                     <select class="form-control"
                                             ng-model="widgetObj.networkType" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
@@ -439,29 +439,29 @@
         <div class="row">
             <div class="form-group" >
                 <div class="col-sm-6">
-                    <div class="input-group"> <div class="add-widget-title">Metrics</div>
+                    <div class="input-group"> <div class="add-widget-title" translate>Metrics</div>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
                                 <button class="btn btn-default" 
-                                        ng-click="showListOfColumns()">
+                                        ng-click="showListOfColumns()" translate>
                                     Choose Columns
                                 </button>
                                 <button class="btn btn-default" 
-                                        ng-click="showFilterList()">
+                                        ng-click="showFilterList()" translate>
                                     Filter
                                 </button>
                                 <button class="btn btn-default" 
-                                        ng-click="showSortingColumn()">
+                                        ng-click="showSortingColumn()" translate>
                                     Sort
                                 </button>
                                 <button class="btn btn-success" 
-                                        ng-click="showColorList()">
+                                        ng-click="showColorList()" translate>
                                     Color
                                 </button>
                             </div>
                             <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
                                 <button class="btn btn-default" 
-                                        ng-click="showEditor(chartTypeName, widgetObj)">
+                                        ng-click="showEditor(chartTypeName, widgetObj)" translate>
                                     Show Editor
                                 </button>
                             </div>
@@ -473,10 +473,10 @@
         <div class="row" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
             <div class="form-group">
                 <div class="col-sm-6">
-                    <div class="input-group"> <div class="add-widget-title">Date Range</div>
+                    <div class="input-group"> <div class="add-widget-title" translate>Date Range</div>
                         <div class="box-pop">
                             <div class="form-group widget-title col-sm-12"> 
-                                <button class="btn btn-default" ng-click="showDateDurations()">Date Range</button>
+                                <button class="btn btn-default" ng-click="showDateDurations()" translate>Date Range</button>
                             </div>
                         </div>
                     </div>
@@ -488,14 +488,14 @@
                 <div class="form-group">
                     <button class="btn btn-default" id="btn-save" 
                             ng-click="save(widgetObj)">
-                        <i class="fa fa-save"></i> Save
+                        <i class="fa fa-save"></i> <span translate>Save</span>
                     </button>
                     <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default" 
-                            ng-click="showPreview(widgetObj, userChartColors)">Preview
+                            ng-click="showPreview(widgetObj, userChartColors)"> <span translate>Preview</span>
                     </button>
                     <button class="btn btn-default" id="btn-cancel" 
                             ng-click="cancel(widgetObj)">
-                        <i class="fa fa-close"></i> Cancel
+                        <i class="fa fa-close"></i> <span translate>Cancel</span>
                     </button>
 
                 </div>
@@ -505,7 +505,7 @@
     <div class="col-md-6">        
         <div class="panel panel-default" ng-show="showColumnDefs">
             <div class="panel-heading btnAddon5">
-                <h3 class="panel-title">
+                <h3 class="panel-title" translate>
                     Metrics</h3>
             </div>
             <div class="row">
@@ -556,14 +556,14 @@
                 <div class="col-sm-6" ng-show="showDerived">
                     <form name="dataSetForm" class="form-horizontal">
                         <div class="form-group col-xs-12">
-                            <label>Field Name</label>
+                            <label translate>Field Name</label>
                             <input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">
 
-                            <span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>
+                            <span ng-show="dataSetError" style="color:red" translate>Field Name Already Exists</span>
 
                         </div>
                         <div class="form-group col-xs-12">
-                            <label>Expression</label>
+                            <label translate>Expression</label>
                             <textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config"
                                       class="form-control code expression" 
                                       ng-model="dataSetColumn.textExpression" 
@@ -571,13 +571,13 @@
                             </textarea>
                         </div>
                         <div class="form-group col-xs-12">
-                            <label>Field Type</label>
+                            <label translate>Field Type</label>
                             <select class="form-control" ng-model="dataSetColumn.fieldType">
                                 <option ng-repeat="fieldType in fieldTypes track by fieldType.value" value="{{fieldType.value}}">
                                     {{fieldType.name}}
                                 </option>
                             </select>
-                            <label>Format</label>
+                            <label translate>Format</label>
                             <select class="form-control" ng-model="dataSetColumn.displayFormat">
                                 <option  ng-repeat="formatType in formats" value="{{formatType.value}}">
                                     {{formatType.name}}
@@ -588,11 +588,11 @@
                             <button class="btn btn-info" id="btn-save" 
                                     ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
                                     ng-disabled="dataSetError">
-                                <i class="fa fa-save"></i> Save
+                                <i class="fa fa-save"></i> <span translate>Save</span>
                             </button>
                             <button class="btn btn-default" id="btn-cancel" 
                                     ng-click="hideTextArea = false; cancelDerivedColumn(dataSetColumn)">
-                                <i class="fa fa-close"></i> Cancel
+                                <i class="fa fa-close"></i> <span translate>Cancel</span>
                             </button>
                         </div>
                     </form>
@@ -602,7 +602,7 @@
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
-                            <label ng-if="hideSelectedColumn === false;">Select X-Axis</label>
+                            <label ng-if="hideSelectedColumn === false;" translate>Select X-Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="xColumn" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
@@ -610,7 +610,7 @@
                             </select>
                         </div>
                         <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
-                            <label ng-if="hideSelectedColumn === false;">Select X Axis</label>
+                            <label ng-if="hideSelectedColumn === false;" translate>Select X Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartXAxis" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
@@ -618,7 +618,7 @@
                             </select>
                         </div>
                         <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
-                            <label ng-if="hideSelectedColumn === false">Select Y Axis</label>
+                            <label ng-if="hideSelectedColumn === false" translate>Select Y Axis</label>
                             <select ng-if="hideSelectedColumn === false" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartYAxis" 
                                     ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
@@ -628,11 +628,11 @@
                     </div>
                     <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
-                            <label ng-if="hideSelectedColumn === false;">Select Y1-Axis</label>                            
+                            <label ng-if="hideSelectedColumn === false;" translate>Select Y1-Axis</label>                            
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y1Column" theme="bootstrap" 
                                        on-select="selectY1Axis(widgetObj, y1Column, chartTypeName)" 
                                        on-remove="removedByY1Column(widgetObj, $item, y1Column)">
-                                <ui-select-match allow-clear="true" placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder=" {{'y1 Axis'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y1axis in columnY1Axis | filter:$select.search">
                                     {{y1axis.displayName}}
                                 </ui-select-choices>
@@ -641,11 +641,11 @@
                     </div>
                     <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
-                            <label ng-if="hideSelectedColumn === false;">Select Y2-Axis</label>
+                            <label ng-if="hideSelectedColumn === false;" translate>Select Y2-Axis</label>
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
                                        on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
                                        on-remove="removedByY2Column(widgetObj, $item, y2Column)">
-                                <ui-select-match allow-clear="true" placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder="{{'y2 Axis'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="y2axis in columnY2Axis  | filter:$select.search">
                                     {{y2axis.displayName}}
                                 </ui-select-choices>
@@ -658,11 +658,11 @@
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker'" ng-show="showColumnDefs" >
                     <div class="form-group">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
-                            <label>Ticker Items</label>
+                            <label translate>Ticker Items</label>
                             <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap"
                                        on-select="ticker(widgetObj, tickerItem)" 
                                        on-remove="removedByTicker(widgetObj, $item, tickerItem)">
-                                <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match placeholder="{{'Ticker Value'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
                                     {{currentColumn.displayName}}
                                 </ui-select-choices>
@@ -673,11 +673,11 @@
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel'" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
-                            <label>Funnel Items</label>
+                            <label translate>Funnel Items</label>
                             <ui-select multiple ng-model="funnelItem"  theme="bootstrap"
                                        on-select="funnel(widgetObj, funnelItem)" 
                                        on-remove="removedByFunnel(widgetObj,$item,funnelItem)">
-                                <ui-select-match placeholder=" Funnel Value...">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match placeholder="{{'Funnel Value'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="collectionField in collectionFields  | filter:$select.search">
                                     {{collectionField.displayName}}
                                 </ui-select-choices>
@@ -688,9 +688,9 @@
             </div>
                 <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
                     <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
-                    <button class="btn btn-default" ng-click="addDerived()">Add Column</button>
+                    <button class="btn btn-default" ng-click="addDerived()" translate>Add Column</button>
                         <label ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'"><input type="checkbox" ng-checked="(widgetObj.selectAll == 1) || (widgetObj.selectAll == null)"
-                               ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" ng-click="selectAllColumns(collectionFields, widgetObj)">
+                               ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" ng-click="selectAllColumns(collectionFields, widgetObj)" translate>
                         Select All</label>
                 </div>
         </div>
@@ -698,54 +698,54 @@
             <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading btnAddon5">
-                        <h3 class="panel-title">
+                        <h3 class="panel-title" translate>
                             Date Range Picker</h3>
                     </div>
                     <div class="panel-body date-widget">
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
+                                    <button class="btn btn-default" type="button" translate>
                                         Last</button>
                                 </span>
                                 <input type="text"
                                        ng-model="widgetObj.lastNdays" 
                                        ng-change="selectWidgetDuration('Last N Days', widgetObj)" 
                                        class="form-control" 
-                                       ng-model-options="{debounce: 500}" placeholder="Days"> 
+                                       ng-model-options="{debounce: 500}" placeholder="{{'Days'|translate}}"> 
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
+                                    <button class="btn btn-default" type="button" translate>
                                         Last</button>
                                 </span>
                                 <input type="text" 
                                        ng-model="widgetObj.lastNweeks" 
                                        ng-change="selectWidgetDuration('Last N Weeks', widgetObj)"
                                        class="form-control" 
-                                       ng-model-options="{debounce: 500}" placeholder="Weeks"> 
+                                       ng-model-options="{debounce: 500}" placeholder="{{'Weeks'|translate}}"> 
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
+                                    <button class="btn btn-default" type="button" translate>
                                         Last</button>
                                 </span>
                                 <input type="text" 
                                        ng-model="widgetObj.lastNmonths" 
                                        ng-change="selectWidgetDuration('Last N Months', widgetObj)"
                                        class="form-control" 
-                                       ng-model-options="{debounce: 500}" placeholder="Months"> 
+                                       ng-model-options="{debounce: 500}" placeholder="{{'Months'|translate}}"> 
 
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
+                                    <button class="btn btn-default" type="button" translate>
                                         Last</button>
                                 </span>
                                 <input type="text" 
@@ -753,14 +753,14 @@
                                        ng-change="selectWidgetDuration('Last N Years', widgetObj)"
                                        class="form-control" 
                                        ng-model-options="{debounce: 500}"
-                                       placeholder="Years"> 
+                                       placeholder="{{'Years'|translate}}"> 
 
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
+                                    <button class="btn btn-default" type="button" translate>
                                         Custom</button>
                                 </span>
                                 <a class="form-control pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
@@ -780,7 +780,7 @@
             <div class="col-sm-12">
                 <div class="panel panel-default">
                     <div class="panel-heading btnAddon5">
-                        <h3 class="panel-title">
+                        <h3 class="panel-title" translate>
                             Sorting</h3>
                     </div>
                     <div class="panel-body date-widget">
@@ -803,7 +803,7 @@
         <div class="col-sm-12" ng-show="showPreviewChart">
             <div class="panel panel-default">
                 <div class="panel-heading btnAddon5">
-                    <h3 class="panel-title">
+                    <h3 class="panel-title" translate>
                         Preview</h3>
                 </div>
                 <div ng-if="chartTypeName === 'ticker'">
@@ -906,7 +906,7 @@
         </div>
         <div class="panel panel-default" ng-show="showFilter">
             <div class="panel-heading btnAddon5">
-                <h3 class="panel-title">
+                <h3 class="panel-title" translate>
                     Filters</h3>
             </div>
             <div class="row">
@@ -916,14 +916,14 @@
                     </div>
                     <div class="footer-filter">
                         <div class="pull-right">
-                            <button id="btn-clear" class="btn btn-default reset" data-target="basic">Clear</button>
-                            <button class="btn btn-success set-json" id="btn-reset" data-target="basic">Reset</button>
+                            <button id="btn-clear" class="btn btn-default reset" data-target="basic" translate>Clear</button>
+                            <button class="btn btn-success set-json" id="btn-reset" data-target="basic" translate>Reset</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="panel-heading btnAddon5">
-                <h3 class="panel-title">
+                <h3 class="panel-title" translate>
                     Maximum Record</h3>
             </div>
             <div class="row">

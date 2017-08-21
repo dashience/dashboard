@@ -9,8 +9,6 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
 
-    //Chinese Translation
-
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage;
@@ -775,14 +773,14 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
             }
 //            $state.go("index.report.newOrEdit", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-            $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+            $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
         });
 
     };
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
 //        $state.go("index.report.newOrEdit", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-        $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
     };
 
     //Remove Tags
@@ -817,7 +815,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 //        $scope.json = JSON.stringify(newValue, null, 2);
 //        $scope.output = computed(newValue.group);
 //    }, true);
-    $scope.currentLocation = "index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
+    $scope.currentLocation = "index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
     $scope.selectDateRangeName = function (widget) {
         widget.dateRangeName = "Custom";
         widget.lastNdays = "";

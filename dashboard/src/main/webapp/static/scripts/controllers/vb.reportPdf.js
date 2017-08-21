@@ -1,7 +1,17 @@
-app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter) {
+app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter,$cookies,$translate) {
     
     $scope.reportPdfStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.reportPdfEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
+    
+    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
     
     $http.get('admin/ui/getAccount/'+$stateParams.accountId).success(function (response) {
         console.log(response)

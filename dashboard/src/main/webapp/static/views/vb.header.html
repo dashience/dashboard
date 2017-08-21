@@ -250,7 +250,7 @@
                     <form role="search" class="navbar-form-custom" method="post" action="#">
                         <div class="form-group">
                             <ui-select ng-model="selectAccount.selected" on-select="getAccountId(selectAccount.selected)" theme="selectize" ng-disabled="disabled" style="width:180px;">
-                                <ui-select-match placeholder="Select Account...">{{$select.selected.accountName}}</ui-select-match>
+                                <ui-select-match placeholder="{{'Select Account'|translate}}">{{$select.selected.accountName}}</ui-select-match>
                                 <ui-select-choices repeat="account in accounts | filter: $select.search">
                                     <span ng-bind-html="account.accountId.accountName | highlight: $select.search"></span>
                                 </ui-select-choices>
@@ -390,8 +390,8 @@
                             <div class="col-md-9">
                                 <div class="input-group colorText">
                                     <input class="form-control chartColor" type="text" ng-model="chartColor.optionValue" placeholder="{{'color with , seperate'| translate}}">
-                                    <a class="colorpicker" title="Color Picker" ui-colorpicker ng-model="color" ng-change="selectChartColor(color, chartColor)"></a>
-                                    <a class="input-group-addon btn-default btn-sm" title="Save Color" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>
+                                    <a class="colorpicker" title="{{'Color Picker'|translate}}" ui-colorpicker ng-model="color" ng-change="selectChartColor(color, chartColor)"></a>
+                                    <a class="input-group-addon btn-default btn-sm" title="{{'Save Color'|translate}}" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>
                                 </div>
                             </div>
                         </div>

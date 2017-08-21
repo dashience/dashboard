@@ -1,7 +1,5 @@
 app.controller('AgencyController', function ($scope, $http, $translate, $stateParams) {
-
-    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
-
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");    
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 

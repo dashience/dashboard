@@ -5,9 +5,9 @@ app.controller('ReportIndexController', function ($scope, $stateParams, $state,$
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.locationId = $stateParams.locationId;
-       
+    
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
-
+    
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 

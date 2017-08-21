@@ -57,15 +57,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetDataSetColumnsDefs = [];
     
     $scope.agencyLanguage = $stateParams.lan;//localStorageService.get("agencyLanguage");//$cookies.getObject("agencyLanguage");
-
+    
     var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
-       
-
+    
+    
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {

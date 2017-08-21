@@ -261,7 +261,7 @@
                                                         </div>
                                                         <div ng-show="accountUser.isEdit">
                                                             <ui-select ng-model="accountUser.userId" theme="select2" ng-disabled="disabled">
-                                                                <ui-select-match placeholder="Select User...">{{$select.selected.userName}}</ui-select-match>
+                                                                <ui-select-match placeholder="{{'Select User'|translate}}">{{$select.selected.userName}}</ui-select-match>
                                                                 <ui-select-choices repeat="user in users | filter: $select.search">
                                                                     <span ng-bind-html="user.userName | highlight: $select.search"></span>
                                                                 </ui-select-choices>
@@ -400,8 +400,6 @@
                         </div>
                     </div>  
                 </div> 
-
-
             </div>
         </div>                
     </div>
