@@ -1,4 +1,4 @@
-app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state, $location, $rootScope) {
+app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state, $location, $rootScope, $translate, $timeout) {
     $scope.permission = localStorageService.get("permission");
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
@@ -6,6 +6,36 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
+    $scope.agencyLanguage = localStorageService.get("agencyLanguage");
+    $scope.tempLan = localStorageService.get('agenLan');
+    console.log($scope.tempLan)
+    $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
+    $stateParams.lan = $scope.lan;
+    changeLanguage($scope.lan);
+
+    function changeLanguage(key) {
+        if ($scope.lan != 'en') {
+            $scope.showLangBtn = 'en';
+        } else {
+            var getAgencyLan = localStorageService.get('agenLan');
+            $scope.showLangBtn = getAgencyLan;
+        }
+        $translate.use(key);
+    }
+
+    $scope.changeAgencyLang = function (lan) {
+        if (lan == 'en') {
+            localStorageService.set('agencyLanguage', lan);
+            var agencyLan = localStorageService.get('agenLan');
+            $scope.showLangBtn = agencyLan;
+        } else {
+            localStorageService.set('agencyLanguage', lan);
+            $scope.showLangBtn = 'en';
+        }
+        $stateParams.lan = lan;
+        $scope.lan = lan;
+        $scope.loadNewUrl();
+    };
 
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
@@ -128,6 +158,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     function getAgencyProduct(agencyId) {
         $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
             $scope.products = response;
+            console.log(response);
             if (!response) {
                 return;
             }
@@ -165,6 +196,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     function defaultCalls() {
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
@@ -175,6 +207,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "editWidget") {
             $state.go("index.editWidget", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 tabId: $stateParams.tabId,
@@ -184,6 +217,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "reports") {
             $state.go("index.report.reports", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
@@ -193,6 +227,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
             $state.go("index.report.newOrEdit", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
@@ -201,6 +236,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "updateReportWidget") {
             $state.go("index.widgetEditByReport", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
@@ -210,6 +246,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "dataSource") {
             $state.go("index.dataSource", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -217,6 +254,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "dataSet") {
             $state.go("index.dataSet", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -224,6 +262,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -231,6 +270,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.schedulerIndex.editOrNewScheduler", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 schedulerId: $stateParams.schedulerId,
@@ -239,6 +279,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -246,6 +287,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "account") {
             $state.go("index.account", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -253,6 +295,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "agency") {
             $state.go("index.agency", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -260,6 +303,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
             $state.go("index.fieldSettings", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
@@ -267,6 +311,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "favourites") {
             $state.go("index.favourites", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -274,6 +319,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
             $state.go("index.viewFavouritesWidget", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
@@ -283,6 +329,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "settings") {
             $state.go("index.settings", {
+                lan: $stateParams.lan,
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });
@@ -300,7 +347,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     };
 
     $scope.loadNewUrl = function () {
-        console.log("calling url function");
         try {
             var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
 
@@ -311,6 +357,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $stateParams.endDate = endDate;
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
@@ -542,7 +589,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     ;
     getChartColor();
 
-    $scope.selectChartColor = function (color,chartColor) {
+    $scope.selectChartColor = function (color, chartColor) {
         console.log(chartColor);
         console.log(color);
         console.log($scope.chartColor.optionValue);
@@ -550,10 +597,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
         } else {
             $scope.chartColor = {
-                id: chartColor?chartColor.id:null,
+                id: chartColor ? chartColor.id : null,
                 optionName: 'Chart_Color_Options',
                 optionValue: color,
-                userId:chartColor?chartColor.userId:null
+                userId: chartColor ? chartColor.userId : null
             };
         }
         console.log($scope.chartColor.optionValue);
@@ -641,9 +688,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
                         'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
                         'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
-                        'This Week (Mon - Today)': [moment().startOf('week').add(1,'days'), moment().endOf(new Date())],
+                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'dayswidgetTableDateRange'), moment().endOf(new Date())],
-                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1,'days'), moment().startOf('week')],
+                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().startOf('week')],
 //                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
@@ -664,7 +711,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 },
                 function (startDate, endDate) {
                     $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
-                }
+                },
         );
         //Date picker
         $('#datepicker').datepicker({
@@ -717,3 +764,16 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         });
     });
 });
+app.filter('filterLanguage', [function ($http) {
+        return function (lan) {
+            var langs = [{name: 'English', type: 'en'}, {name: 'Chinese', type: 'cn'}, {name: "Spanish", type: "sp"}];
+            var returnFilterLang;
+            var returnLan = $.grep(langs, function (value) {
+                return value.type == lan;
+            });
+            angular.forEach(returnLan, function (val, k) {
+                returnFilterLang = val.name;
+            });
+            return returnFilterLang;
+        };
+    }]);

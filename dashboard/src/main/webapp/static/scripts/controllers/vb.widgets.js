@@ -2,6 +2,7 @@ function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+
 function formatBySecond(second) {
     var minutes = "0" + Math.floor(second / 60);
     var seconds = "0" + (second - minutes * 60);
@@ -39,7 +40,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval,$translate) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -58,6 +59,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.userId = $cookies.getObject("userId");
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
+    
+    $scope.agencyLanguage = $stateParams.lan;//localStorageService.get("agencyLanguage");//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+       
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
@@ -836,6 +847,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
         $scope.showDateRange = false;
+        $scope.advanced=false;
 //        $scope.xColumn = "";
 //        $scope.y1Column = "";
 //        $scope.selectPieChartXAxis = "";
@@ -877,6 +889,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.showColor = false;
         $scope.hideSelectedColumn = false;
+        $scope.advanced=false;
     };
 
     $scope.showFilterList = function () {
@@ -886,6 +899,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
         $scope.showColor = false;
+        $scope.advanced=false;
         $scope.showSortBy = false;
     };
 
@@ -895,6 +909,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = true;
         $scope.showColor = false;
         $scope.showDateRange = false;
+        $scope.advanced=false;
     };
 
     $scope.showDateDurations = function () {
@@ -905,6 +920,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showColor = false;
         $scope.showPreviewChart = false;
+        $scope.advanced=false;
     };
 
     $scope.showSortingColumn = function () {
@@ -915,10 +931,23 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showColor = false;
         $scope.showPreviewChart = false;
+        $scope.advanced=false;
     };
 
     $scope.showColorList = function () {
         $scope.showColor = true;
+        $scope.showFilter = false;
+        $scope.showSortBy = false;
+        $scope.loadingColumnsGif = false;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+        $scope.showDateRange = false;
+        $scope.advanced=false;
+    };
+    $scope.advanced=false;
+    $scope.showAdvancedOptions = function () {
+        $scope.advanced=true;
+        $scope.showColor = false;
         $scope.showFilter = false;
         $scope.showSortBy = false;
         $scope.loadingColumnsGif = false;
@@ -936,6 +965,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showDateRange = false;
         $scope.showColor = false;
+        $scope.advanced=false;
         $scope.chartTypeName = null;
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
@@ -1866,6 +1896,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.showSortBy = false;
         $scope.showColor = false;
+        $scope.advanced=false;
     }
 
     $scope.save = function (widget) {
@@ -2139,6 +2170,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showColor = false;
         $scope.showDateRange = false;
+        $scope.advanced=false;
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
         if ($scope.chartColorOptionsVal) {

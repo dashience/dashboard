@@ -79,6 +79,10 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "email")
     private String email;
+    
+    @Size(max = 255)
+    @Column(name = "agency_language")
+    private String agencyLanguage;
 
     public Agency() {
     }
@@ -141,6 +145,14 @@ public class Agency implements Serializable {
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public String getAgencyLanguage() {
+        return agencyLanguage;
+    }
+
+    public void setAgencyLanguage(String agencyLanguage) {
+        this.agencyLanguage = agencyLanguage;
     }
 
     @Override

@@ -1,4 +1,4 @@
-app.controller('AccountController', function ($scope, $http, $state, $stateParams, localStorageService) {
+app.controller('AccountController', function ($scope, $http, $state, $stateParams, localStorageService,$translate,$cookies) {
     $scope.permission = localStorageService.get("permission");
     $scope.$state = $state;
     $scope.accounts = [];
@@ -14,6 +14,18 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+        
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+
+    
+    
 
     $scope.account = {logo: "static/img/logos/deeta-logo.png"}; //Logo Upload
     $scope.imageUpload = function (event) {

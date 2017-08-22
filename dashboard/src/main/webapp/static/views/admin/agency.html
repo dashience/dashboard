@@ -130,7 +130,7 @@
                     <div class="tab-content">
                         <div ng-show="isSetAgency(1)" class="license">
                             <div class="col-md-12">
-                                <form class="form-horizontal" novalidate name="setAgency">
+                                <form class="form-horizontal" name="setAgency" novalidate>
                                     <div class="form-group">
                                         <div class="row col-md-4 image-upload">
                                             <label for="file-input">
@@ -152,12 +152,18 @@
                                     </div>
 
                                     <div class="form-group"> 
-                                        <label>Dashience Domain Name</label>
-                                        <div> 
+                                        <div class="row">
+                                            <label class="col-md-12">Dashience Domain Name</label>
+                                            <div class="col-md-8"> 
 
-                                            <input type="text" name="domain" id="domain" class="form-control" ng-pattern="/^[a-zA-Z]*$/" ng-model="agency.agencyDashiencePath" placeholder="Domain Name">
-                                            <span class="text-danger"  ng-show="setAgency.domain.$error.pattern">
-                                                Not a Valid Domain Name</span>
+                                                <input type="text" name="domain" id="domain" class="form-control" ng-pattern="/^[a-zA-Z]*$/" ng-model="agency.agencyDashiencePath" placeholder="Domain Name">
+                                                <span class="text-danger"  ng-show="setAgency.domain.$error.pattern">
+                                                    Not a Valid Domain Name
+                                                </span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <span>.com</span>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -169,13 +175,20 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <label>Language</label>
+                                        <div>                                            
+                                            <select class="form-control" ng-model="agency.agencyLanguage" ng-options="language.lanName for language in languages"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
                                         <label>Description</label>
                                         <div>
                                             <textarea class="form-control" ng-model="agency.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group pull-right">
-                                        <button class="btn btn-info" ng-disabled="myForm.domain.$error.pattern" ng-click="saveAgency(agency)">Save</button>
+                                        <button class="btn btn-info" ng-disabled="setAgency.domain.$error.pattern" ng-click="saveAgency(agency)">Save</button>
                                         <button class="btn btn-warning" ng-click="clearAgency(agency)">Cancel</button>
                                     </div>
                                 </form>
@@ -490,7 +503,7 @@
                                                             <button class="btn btn-default btn-xs" ng-click="agencyProperty.isEdit = true;">
                                                                 <i class="fa fa-pencil"></i>
                                                             </button>
-                                                            <button class="btn btn-default btn-xs" ng-click="deleteAgencyProperty(agencyProperty,$index)">
+                                                            <button class="btn btn-default btn-xs" ng-click="deleteAgencyProperty(agencyProperty, $index)">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
                                                         </div>

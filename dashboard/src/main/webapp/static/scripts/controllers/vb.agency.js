@@ -1,4 +1,13 @@
-app.controller('AgencyController', function ($scope, $http) {
+app.controller('AgencyController', function ($scope, $http, $translate, $stateParams) {
+
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     // currency-format
 //   $scope.getCurrencyDataFromServer = function() {
@@ -42,6 +51,12 @@ app.controller('AgencyController', function ($scope, $http) {
 //        {countryName: "JPN", timezoneFormat: '¥'},
 //        {countryName: "EU", timezoneFormat: '€'}
 //    ];
+
+    $scope.languages = [
+        {lanName: "English", lanType: 'en'},
+        {lanName: "Chinesh", lanType: 'cn'},
+        {lanName: "Spanish", lanType: "sp"}
+    ];
 
 
 //Tabs
@@ -102,6 +117,7 @@ app.controller('AgencyController', function ($scope, $http) {
             email: agency.email,
             description: agency.description,
             status: agency.status,
+            agencyLanguage: agency.agencyLanguage ? agency.agencyLanguage.lanType : null,
             logo: $scope.agency.logo
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
@@ -131,12 +147,21 @@ app.controller('AgencyController', function ($scope, $http) {
         getAgencyLicence(agency);
         $scope.agencyById = agency;
         getTemplateByAgency(agency);
+
+        $scope.languages.forEach(function (val, k) {
+            if (agency.agencyLanguage == val.lanType) {
+                agency.agencyLanguage = val;
+            }
+        })
+
+
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
             agencyDashiencePath: agency.agencyDashiencePath,
             email: agency.email,
             description: agency.description,
+            agencyLanguage: agency.agencyLanguage,
             status: agency.status,
             logo: agency.logo ? agency.logo : "static/img/logos/deeta-logo.png"
         };

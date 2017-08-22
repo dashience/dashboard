@@ -1,12 +1,23 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout,$cookies,$translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-
     $scope.reportWidgets = [];
+    
+    
+    //Chinese Translation
+    
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     $http.get("admin/report/" + $stateParams.reportId).success(function (response) {
         $scope.reports = response;

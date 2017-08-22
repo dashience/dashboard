@@ -1,9 +1,21 @@
-app.controller("SchedulerController", function ($scope, $http, localStorageService, $stateParams) {
+app.controller("SchedulerController", function ($scope, $http, localStorageService, $stateParams,$cookies,$translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
+    
+   
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
+    
     $http.get("admin/scheduler/scheduler").success(function (response) {
         $scope.schedulers = response;
     });

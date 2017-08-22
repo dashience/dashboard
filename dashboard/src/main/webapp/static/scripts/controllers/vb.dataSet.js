@@ -1,4 +1,4 @@
-app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService) {
+app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService, $translate, $cookies) {
     $scope.permission = localStorageService.get("permission");
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
@@ -12,6 +12,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+
+
+
+
+
     $scope.joinTypes = [
         {name: 'Left', value: 'left'},
         {name: 'Right', value: 'right'},
@@ -274,7 +288,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
-            $scope.semRushFlag = false;            
+            $scope.semRushFlag = false;
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
@@ -320,8 +334,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.report = $scope.bingPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-             $scope.semRushFlag = false;
-        }else if (dataSource === "semRush")
+            $scope.semRushFlag = false;
+        } else if (dataSource === "semRush")
         {
             $scope.report = $scope.semRush;
             console.log($scope.report);
@@ -4221,7 +4235,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
         }
-         if ($scope.dataSet.dataSourceId.dataSourceType == "semRush")
+        if ($scope.dataSet.dataSourceId.dataSourceType == "semRush")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.semRush);
             $scope.timeSegment = $scope.semRush[index].timeSegments;

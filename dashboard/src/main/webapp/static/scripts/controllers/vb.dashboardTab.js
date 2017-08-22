@@ -1,4 +1,4 @@
-app.controller('UiController', function ($scope, $http, $stateParams, $state, $filter, $cookies, $timeout, localStorageService, $rootScope) {
+app.controller('UiController', function ($scope, $http, $stateParams, $state, $filter, $cookies, $timeout, localStorageService, $rootScope, $translate) {
     $scope.userName = $cookies.getObject("username");
     $scope.permission = localStorageService.get("permission");
     $scope.isAdmin = $cookies.getObject("isAdmin");
@@ -7,6 +7,14 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userId = $cookies.getObject("userId");
     $scope.tempStartDate = $stateParams.startDate;
     $scope.tempEndDate = $stateParams.endDate;
+    $scope.agencyLanguage = $stateParams.lan;
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     //get Templates
     $scope.selectTemplate = {};
@@ -75,7 +83,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     if ($stateParams.productId) {
         $http.get(tabUrl).success(function (response) {
             var getCurrentUrl;
-                var setTabId;
+            var setTabId;
             $scope.loadTab = false;
             if (!response[0].templateId) {
                 $scope.tabs = response;
@@ -124,8 +132,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 productId: $stateParams.productId,
                 templateId: $stateParams.templateId,
                 tabId: setTabId
-               // startDate: $stateParams.startDate,
-                //endDate: $stateParams.endDate
+                        // startDate: $stateParams.startDate,
+                        //endDate: $stateParams.endDate
             });
 //            }
         });
