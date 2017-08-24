@@ -22,7 +22,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         widgetItems = response;
         $http.get("admin/tag/getAllFav/").success(function (favResponse) {
             widgetItems.forEach(function (value, key) {
-                favWidget = $.grep(favResponse, function (b) {
+               var favWidget = $.grep(favResponse, function (b) {
                     return b.id === value.widgetId.id;
                 });
                 if (favWidget.length > 0) {
@@ -189,13 +189,18 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         $scope.directiveFunnelFn = funnelFn;
     };
 
+    $scope.moveWidget = function (list, from, to) {
+        list.splice(to, 0, list.splice(from, 1)[0]);
+        return list;
+    };
+
     $scope.onDropComplete = function (index, favWidget, evt) {
         if (favWidget !== "" && favWidget !== null) {
             var otherObj = $scope.favouritesWidgets[index];
             var otherIndex = $scope.favouritesWidgets.indexOf(favWidget);
-//            $scope.reportWidgets = $scope.moveWidget($scope.reportWidgets, otherIndex, index);
-            $scope.favouritesWidgets[index] = favWidget;
-            $scope.favouritesWidgets[otherIndex] = otherObj;
+            $scope.favouritesWidgets = $scope.moveWidget($scope.favouritesWidgets, otherIndex, index);
+//            $scope.favouritesWidgets[index] = favWidget;
+//            $scope.favouritesWidgets[otherIndex] = otherObj;
             var favWidgetOrder = $scope.favouritesWidgets.map(function (value, key) {
                 if (!value) {
                     return;

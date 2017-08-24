@@ -81,9 +81,15 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         $scope.field = "";
     };
     $scope.deleteField = function (fields) {
-        $http({method: "DELETE", url: 'admin/fieldSettings/' + fields.id}).success(function (response) {
-            $scope.getFields();
-        });
+        if ($scope.deleteFieldOnCreate === true) {
+            $scope.deleteFieldSettings($scope.deleteFieldIndex);
+        } else {
+            var field=$scope.deleteFieldItems;
+            $http({method: "DELETE", url: 'admin/fieldSettings/' + field.id}).success(function (response) {
+                $scope.getFields();
+            });
+        }
+
     };
     $scope.updateField = function (field) {
         var getDisplayFormat = field.displayFormat;
@@ -109,5 +115,21 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
     $scope.deleteFieldSettings = function (index) {
         $scope.fieldSettings.splice(index, 1);
     };
+
+    $scope.deleteFieldSettingsItem = function (fields, index, type) {
+        console.log(fields);
+        if (type === "create") {
+            $scope.deleteFieldOnCreate = true;
+            $scope.deleteFieldIndex = index;
+            $scope.deleteFieldItems = fields;
+        } else {
+            $scope.deleteFieldOnCreate = false;
+            $scope.deleteFieldIndex = index;
+            $scope.deleteFieldItems = fields;
+            
+        }
+
+    };
+
 });
 

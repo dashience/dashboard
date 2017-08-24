@@ -11,6 +11,10 @@ function formatBySecond(second) {
 }
 
 function dashboardFormat(column, value) {
+    var strValue = value;
+    if (strValue.toString().indexOf(',') !== -1) {
+        value = value.replace(/\,/g, '');
+    }
     if (column.fieldType === "date") {
         return value;
     }
@@ -97,7 +101,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
-        console.log($scope.dataSources);
     });
 
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
@@ -108,13 +111,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tags = response;
     });
     $scope.downloadXLSByWidget = function (widget) {
-        console.log(widget)
         var fileName;
         var name = widget.widgetTitle;
         if (name) {
             fileName = name.split(' ').join("");
         } else {
-            fileName = "Skyzone"
+            fileName = "Dashience";
         }
         var url = "admin/proxy/downloadData?";
         var setProductSegment;
@@ -326,6 +328,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widgetObj.lastNmonths = "";
         } else {
             widgetObj.dateRangeName = dateRangeName;
+            widgetObj.customEndDate = "";
+            widgetObj.customStartDate = "";
             widgetObj.lastNdays = "";
             widgetObj.lastNweeks = "";
             widgetObj.lastNmonths = "";
@@ -386,7 +390,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
             $http.get("admin/tag/getAllFav/").success(function (favResponse) {
                 widgetItems.forEach(function (value, key) {
-                    favWidget = $.grep(favResponse, function (b) {
+                    var favWidget = $.grep(favResponse, function (b) {
                         return b.id === value.id;
                     });
                     if (favWidget.length > 0) {
@@ -471,6 +475,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widget.selectAll = 0;
         }
+        if (widget.dateRangeName == "None") {
+            widget.customStartDate = "";
+            widget.customEndDate = "";
+        }
         setDefaultWidgetObj.push({
             chartType: widget.chartType,
             id: widget.id,
@@ -544,7 +552,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         tableDef(widget, $scope.y1Column, $scope.y2Column);
         $timeout(function () {
             $scope.queryBuilderList = widget;
-            console.log($scope.queryBuilderList);
             resetQueryBuilder();
         }, 50);
     };
@@ -746,6 +753,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
 //                $scope.collectionFields = response.columnDefs;
 //            } else {
+            console.log(response.columnDefs);
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
 //            }
@@ -975,7 +983,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
     $scope.selectAllColumns = function (columns, widget) {
-        console.log(widget.selectAll);
         $scope.dispHideBuilder = true;
         var exists = false;
         if (widget.selectAll == 1) {
@@ -1243,6 +1250,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setFunnelFn = function (funnelFn) {
         $scope.directiveFunnelFn = funnelFn;
     };
+    $scope.setCustomDatePickerFn = function (customDateFn) {
+        $scope.directiveDateFn = customDateFn;
+    };
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
@@ -1463,9 +1473,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         $scope.ticker(widgetObj, tickerItem);
-        //var getIndex = widgetObj.columns.indexOf(column)
-        // console.log(getIndex)
-        //widgetObj.columns.splice(getIndex, 1)
     };
 // Funnel Format
     $scope.funnel = function (widget, column) {
@@ -1536,6 +1543,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectPieChartY = function (widget, column) {
         $scope.dispHideBuilder = true;
+        if (!column) {
+            return;
+        }
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
             if (column.fieldName == value.fieldName) {
@@ -1599,6 +1609,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             };
             $scope.dataSetColumn = data;
         }
+    };
+    var deleteColumns = [];
+    $scope.removeDerivedColumn = function (obj, widgetObj) {
+        var checkColumnDef = obj.selectColumnDef;
+        if (checkColumnDef === 1) {
+            var data = {
+                derivedId: obj.id,
+                agregationFunction: obj.agregationFunction,
+                columnsButtons: obj.columnsButtons,
+                displayFormat: obj.displayFormat,
+                displayName: obj.displayName,
+                expression: obj.expression,
+                fieldName: obj.fieldName,
+                fieldType: obj.fieldType,
+                functionName: obj.functionName,
+                groupPriority: obj.groupPriority,
+                selectColumnDef: obj.selectColumnDef,
+                sortOrder: obj.sortOrder,
+                sortPriority: obj.sortPriority,
+                status: obj.status,
+                type: obj.type,
+                userId: obj.userId,
+                widgetId: obj.widgetId
+            };
+        }
+        console.log(data);
+        var index = $scope.collectionFields.indexOf(obj);
+        $scope.collectionFields.splice(index, 1);
+        if (data) {
+            var getIndex = widgetObj.columns.findIndex(x => x.fieldName == data.fieldName);
+            if (getIndex != -1) {
+                widgetObj.columns.splice(getIndex, 1);
+            }
+        }
+        deleteColumns.push({id: obj.id, fieldName: obj.fieldName});
+        console.log(deleteColumns);
     };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget) {
@@ -1858,12 +1904,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
         $scope.dataSetColumn.displayFormat = "";
+        $scope.widgetObj.dateRangeName = "";
         $scope.widgetObj.lastNdays = "";
         $scope.widgetObj.lastNweeks = "";
         $scope.widgetObj.lastNmonths = "";
         $scope.widgetObj.lastNyears = "";
         $scope.widgetObj.customStartDate = "";
-        $scope.widgetObj.customStartDate = "";
+        $scope.widgetObj.customEndDate = "";
         $scope.widgetObj.allAccount = "";
         $scope.widgetObj.selectAll = "";
         $scope.widgetObj.chartColorOption = "";
@@ -1998,6 +2045,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             chartColorOption: widgetColor
         };
         clearEditAllWidgetData();
+
+        var deleteColumnDef = deleteColumns.map(function (value, key) {
+            if (value) {
+                return value.fieldName;
+            }
+        }).join(',');
+        console.log(deleteColumnDef);
+        if (data.id) {
+            $http({method: 'DELETE', url: 'admin/ui/deleteDerivedColumn/' + data.id + '?deleteColumns=' + deleteColumnDef}).success(function (response) {
+            });
+        }
+        deleteColumns = [];
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             var widgetColors;
             var newWidgetResponse = response;
@@ -2102,6 +2161,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.cancel = function (widgetObj) {
         resetQueryBuilder();
         addColor = [];
+        deleteColumns = [];
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
@@ -2389,7 +2449,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
 //                    if (isNaN(value)) {
 //                        return "aa-";
 //                    }
-                    return dashboardFormat(column, value);
+                    var columnValue = dashboardFormat(column, value);
+                    if (columnValue == 'NaN') {
+                        columnValue = "-";
+                    }
+                    return columnValue;
                 }
                 return value;
             };
@@ -2398,7 +2462,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 var val = parseFloat(rating);
                 var size = val / 5 * 100;
                 return size + '%';
-            }
+            };
 
             function sortByDay(list, sortFields) {
                 var returnSortDay;
@@ -2496,7 +2560,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         '&port=3306&schema=vb&query=' + encodeURI(tableDataSource.query)).success(function (response) {
                     scope.ajaxLoadingCompleted = true;
                     scope.loadingTable = false;
-                    if (!response.data) {
+                    if (!response) {
+                        scope.tableEmptyMessage = "No Data Found";
+                        scope.hideEmptyTable = true;
                         return;
                     }
                     var pdfData = {};
@@ -2810,6 +2876,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             scope.loadingTicker = true;
             var tickerName = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
+
                 if (!value) {
                     return;
                 }
@@ -2824,7 +2891,11 @@ app.directive('tickerDirective', function ($http, $stateParams) {
 //                    if (isNaN(value)) {
 //                        return "-";
 //                    }
-                    return dashboardFormat(column, value);
+                    var columnValue = dashboardFormat(column, value);
+                    if (columnValue == 'NaN') {
+                        columnValue = "-";
+                    }
+                    return columnValue;
                 }
                 return value;
             };
@@ -2889,13 +2960,15 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                     scope.tickers = [];
                     scope.loadingTicker = false;
-                    if (response.length === 0) {
+                    if (!response) {
+                        scope.tickerEmptyMessage = "No Data Found";
+                        scope.hideEmptyTicker = true;
+                        return;
+                    }
+                    if (response.data.length === 0) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
                     } else {
-                        if (!response) {
-                            return;
-                        }
                         angular.forEach(tickerName, function (value, key) {
                             var tickerData = response.data;
                             var loopCount = 0;
@@ -2907,6 +2980,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                             });
                             var total = 0;
                             for (var i = 0; i < setData.length; i++) {
+                                if (setData[i].toString().indexOf(',') !== -1) {
+                                    setData[i] = setData[i].replace(/\,/g, '');
+                                }
                                 total += parseFloat(setData[i]);
                             }
                             scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
@@ -3149,6 +3225,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
                         scope.loadingLine = false;
                         if (!response.data) {
+                            scope.lineEmptyMessage = "No Data Found";
+                            scope.hideEmptyLine = true;
                             return;
                         }
                         if (response.data.length === 0) {
@@ -3190,14 +3268,16 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
-                            xTicks = [xAxis.fieldName];
-                            xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
-                                return a[xAxis.fieldName];
-                            });
-                            columns.push(xTicks);
-
+                            if (xAxis) {
+                                xTicks = [xAxis.fieldName];
+                                xData = chartData.map(function (a) {
+                                    xTicks.push(loopCount);
+                                    loopCount++;
+                                    return a[xAxis.fieldName];
+                                });
+                                columns.push(xTicks);
+                            }
+                            //yaxis mapping data
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -3205,6 +3285,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
                             });
+
 
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
@@ -3215,6 +3296,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             } else {
                                 gridLine = false;
                             }
+
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -3239,7 +3321,8 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -3490,6 +3573,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                         scope.loadingBar = false;
                         if (!response) {
+                            scope.barEmptyMessage = "No Data Found";
+                            scope.hideEmptyBar = true;
                             return;
                         }
                         if (response.data.length === 0) {
@@ -3578,7 +3663,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -3822,6 +3908,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                         scope.loadingPie = false;
                         if (!response) {
+                            scope.pieEmptyMessage = "No Data Found";
+                            scope.hideEmptyPie = true;
                             return;
                         }
                         if (response.data.length === 0) {
@@ -3858,14 +3946,15 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     }
                                 });
                             }
-
-                            xTicks = [xAxis.fieldName];
-                            xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
-                                return a[xAxis.fieldName];
-                            });
-                            columns.push(xTicks);
+                            if (xAxis) {
+                                xTicks = [xAxis.fieldName];
+                                xData = chartData.map(function (a) {
+                                    xTicks.push(loopCount);
+                                    loopCount++;
+                                    return a[xAxis.fieldName];
+                                });
+                                columns.push(xTicks);
+                            }
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -3899,7 +3988,11 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     label: {
                                         format: function (value, ratio, id) {
                                             var percentage = d3.format("%.2f")(ratio);
-                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
+                                            var columnValue = dashboardFormat(yAxisField, value);
+                                            if (columnValue == 'NaN') {
+                                                columnValue = "-";
+                                            }
+                                            return  percentage + ", \n" + columnValue;
                                         }
                                     }
                                 },
@@ -3911,7 +4004,11 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     format: {
                                         value: function (value, ratio, id) {
                                             var percentage = d3.format("%.2f")(ratio);
-                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
+                                            var columnValue = dashboardFormat(yAxisField, value);
+                                            if (columnValue == 'NaN') {
+                                                columnValue = "-";
+                                            }
+                                            return  percentage + ", \n" + columnValue;
                                         }
                                     }
                                 },
@@ -3935,7 +4032,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             });
                         }
                     });
-                }
+                };
                 scope.setPieChartFn({pieFn: scope.refreshPieChart});
                 scope.refreshPieChart();
             }
@@ -4166,6 +4263,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                         scope.loadingArea = false;
+                        if (!response) {
+                            scope.areaEmptyMessage = "No Data Found";
+                            scope.hideEmptyArea = true;
+                            return;
+                        }
                         if (response.data.length === 0) {
                             scope.areaEmptyMessage = "No Data Found";
                             scope.hideEmptyArea = true;
@@ -4249,7 +4351,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -4351,7 +4454,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.groupField) {
-                    groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType});
+                    groupingFields.push({fieldName: value.fieldName, groupField: value.groupField, fieldType: value.fieldType, displayName: value.displayName});
                 }
                 if (value.combinationType) {
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
@@ -4503,6 +4606,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             '&url=' + stackedBarChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
                         scope.loadingStackedBar = false;
+                        if (!response) {
+                            scope.stackedBarEmptyMessage = "No Data Found";
+                            scope.hideEmptyStackedBar = true;
+                            return;
+                        }
                         if (response.data.length === 0) {
                             scope.stackedBarEmptyMessage = "No Data Found";
                             scope.hideEmptyStackedBar = true;
@@ -4554,9 +4662,10 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
                             });
+
                             var groupingNames = [];
                             angular.forEach(groupingFields, function (value, key) {
-                                groupingNames.push(value.fieldName);
+                                groupingNames.push(value.displayName);
                             });
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
@@ -4567,6 +4676,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             } else {
                                 gridLine = false;
                             }
+
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -4576,13 +4686,22 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 },
                                 bindto: element[0],
                                 data: {
+                                    //visits,0,Sessions,61101,New Users,42251,% New Sessions,69.14944108934388,Exit Rate,51.01156431344717
+//                                    columns: [
+//                                       [ "Sessions", 61101 ],
+//                                       [ "New Users", 42251 ],
+//                                       [ "% New Sessions", 69.14944108934388 ],
+//                                       [ "Exit Rate", 51.01156431344717 ]
+//                                    ],
                                     x: xAxis.fieldName,
-                                    columns: columns,
                                     labels: labels,
-                                    type: 'bar',
-                                    groups: [groupingNames],
                                     axes: axes,
-                                    types: chartCombinationtypes
+                                    types: chartCombinationtypes,
+                                    columns: columns,
+                                    type: 'bar',
+                                    groups: [
+                                        groupingNames
+                                    ]
                                 },
                                 color: {
                                     pattern: chartColors ? chartColors : defaultColors
@@ -4593,23 +4712,61 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling: false
                                         }
                                     },
                                     y2: y2
                                 },
                                 grid: {
-                                    x: {
-                                        show: gridLine
-                                    },
                                     y: {
-                                        show: gridLine
+                                        lines: [{value: 0}]
                                     }
                                 }
                             });
+//                            var chart = c3.generate({
+//                                padding: {
+//                                    top: 10,
+//                                    right: 50,
+//                                    bottom: 10,
+//                                    left: 50,
+//                                },
+//                                bindto: element[0],
+//                                data: {
+//                                    x: xAxis.fieldName,
+//                                    columns: columns,
+//                                    labels: labels,
+//                                    type: 'bar',
+//                                    groups: [groupingNames],
+//                                    axes: axes,
+//                                    types: chartCombinationtypes
+//                                },
+//                                color: {
+//                                    pattern: chartColors ? chartColors : defaultColors
+//                                },
+//                                tooltip: {show: true},
+//                                axis: {
+//                                    x: {
+//                                        tick: {
+//                                            format: function (x) {
+//                                                return xData[x];
+//                                            }
+//                                        }
+//                                    },
+//                                    y2: y2
+//                                },
+//                                grid: {
+//                                    x: {
+//                                        show: gridLine
+//                                    },
+//                                    y: {
+//                                        show: gridLine
+//                                    }
+//                                }
+//                            });
                         }
                     });
-                }
+                };
                 scope.setStackedBarChartFn({stackedBarChartFn: scope.refreshStackedBarChart});
                 scope.refreshStackedBarChart();
             }
@@ -4845,6 +5002,8 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                             '&port=3306&schema=vb&query=' + encodeURI(scatterChartDataSource.query)).success(function (response) {
                         scope.loadingScatter = false;
                         if (!response.data) {
+                            scope.scatterEmptyMessage = "No Data Found";
+                            scope.hideEmptyScatter = true;
                             return;
                         }
                         scope.getScatterWidgetObj({obj: response.data})
@@ -4938,7 +5097,8 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                                             format: function (x) {
                                                 return xData[x];
                                             },
-                                            fit: false
+                                            fit: false,
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -5074,6 +5234,11 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             '&port=3306&schema=vb&query=' + encodeURI(funnelDataSource.query)).success(function (response) {
                         scope.funnels = [];
                         scope.loadingFunnel = false;
+                        if (!response) {
+                            scope.scatterEmptyMessage = "No Data Found";
+                            scope.hideEmptyScatter = true;
+                            return;
+                        }
                         if (response.data.length === 0) {
                             scope.funnelEmptyMessage = "No Data Found";
                             scope.hideEmptyFunnel = true;
@@ -5163,7 +5328,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         });
                     });
                 }
-                ;
                 scope.setFunnelFn({funnelFn: scope.refreshFunnel});
                 scope.refreshFunnel();
             }
@@ -5440,6 +5604,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                         $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
                     }
             );
+
             $(".ranges ul").find("li").addClass("custom-pickers");
             $(".custom-pickers").click(function (e) {
                 $(".scheduler-list-style").hide();
@@ -5498,9 +5663,6 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
             var columnList = JSON.parse(scope.queryData);
             var filterList = [];
             columnList.columns.forEach(function (value, key) {
-                console.log(value);
-                console.log(value.fieldType);
-                console.log(value.fieldName);
                 var typeOfValue = value.type ? value.type : value.fieldType;
                 if (typeOfValue == 'number') {
                     scope.fieldsType = "integer";

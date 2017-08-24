@@ -170,17 +170,17 @@
         </div>
     </div>
 </div>
-<div class="row content">
+<div ng-show="firstDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+<div ng-hide="firstDataSetLoading" class="row content">
     <div ng-repeat="reportWidget in reportWidgets">
         <div ng-if="reportWidget.widgetId.chartType === 'ticker'">
             <div class="col-sm-{{reportWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="reportWidget">
-                    <div class="panel-tools">
+                    <div class="panel-tools ticker-icon">
                         <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
                         <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                     </div>
-                    <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)"
                              widget-Obj="{{reportWidget.widgetId}}"
                              ticker-Directive
@@ -189,7 +189,6 @@
                              ticker-Id="{{reportWidget.widgetId.id}}" 
                              ticker-Columns="{{reportWidget.widgetId.columns}}">
                         </div>
-                    </div>
                 </div>
             </div>
         </div>

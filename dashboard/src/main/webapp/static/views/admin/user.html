@@ -185,17 +185,25 @@
 
                         </div>
                         <div ng-show="isSetUser(3)" class="license">
-
                             <div class="col-md-12">
                                 <form class="form-horizontal">
                                     <div>
+                                        <div class="all-permissions" ng-show="allPermissions">
+                                            <label>All Permissions</label>
+                                            <div class="checkbox checkbox-slider--b">
+                                                <label>
+                                                    <input type="checkbox" ng-model="allPermissionStatus" ng-true-value="1" ng-false-value="0" 
+                                                           ng-click="setAllPermissions()"><span></span>
+                                                </label>
+                                            </div>
+                                        </div>
                                         <div class="form-group col-md-6" ng-repeat="permission in permissions">
                                             <label translate>{{permission.permissionName}}</label>
                                             <div class="checkbox checkbox-slider--b">
                                                 <label class="col-sm-4" for="field{{$index + 1}}">
                                                     <input id="field{{$index + 1}}" type="checkbox"
                                                            ng-model="permission.status"          
-                                                           ng-click="setUserPermission(permission)"
+                                                           ng-click="setUserPermission(permission, 'individualPermission')"
                                                            ng-true-value="1"
                                                            ng-false-value="0"/>
                                                     <span></span>
@@ -205,7 +213,6 @@
                                     </div>
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -248,7 +255,7 @@
                         </thead>
                         <tbody>
                             <!--<tr ng-show="user.users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>-->
-                            <tr class="accountUser-Table" data-dir-paginate="user in users|filter: searchUser|filter:agencyListName|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">
+                            <tr class="accountUser-Table" data-dir-paginate="user in users | filter: searchUser|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">
                                 <!--<tr class="accountUser-Table" data-dir-paginate="user in users|filter: searchUser|filter:agencyListName.agencyName|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">-->
 
                                 <!--<tr dir-paginate="user in users | itemsPerPage:2" ng-class="{'selectedTableRow':$index == selectedUser}">-->
